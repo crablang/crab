@@ -3,7 +3,7 @@
 extern crate an_rlib;
 
 // This should not be exported
-pub fn public_rust_function_from_cdylib() {}
+pub fn public_crablang_function_from_cdylib() {}
 
 // This should be exported
 #[no_mangle]

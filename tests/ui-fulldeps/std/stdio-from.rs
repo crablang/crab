@@ -17,7 +17,7 @@ fn main() {
 }
 
 fn parent() -> io::Result<()> {
-    let td = PathBuf::from(env::var_os("RUST_TEST_TMPDIR").unwrap());
+    let td = PathBuf::from(env::var_os("CRABLANG_TEST_TMPDIR").unwrap());
     let input = td.join("stdio-from-input");
     let output = td.join("stdio-from-output");
 

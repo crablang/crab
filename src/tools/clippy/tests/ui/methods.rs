@@ -118,7 +118,7 @@ impl Mul<T> for T {
 }
 
 /// Checks implementation of `FILTER_NEXT` lint.
-#[rustfmt::skip]
+#[crablangfmt::skip]
 fn filter_next() {
     let v = vec![3, 2, 1, 0, -1, -2, -3];
 

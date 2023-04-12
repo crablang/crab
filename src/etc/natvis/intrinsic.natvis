@@ -160,7 +160,7 @@
 
   <!--
     This is the visualizer for all enums. It takes care of selecting the active variant.
-    See `compiler\rustc_codegen_llvm\src\debuginfo\metadata\enums\cpp_like.rs` for more information.
+    See `compiler\crablangc_codegen_llvm\src\debuginfo\metadata\enums\cpp_like.rs` for more information.
   -->
   <Type Name="enum2$&lt;*&gt;">
     <!-- NOTE: That tag ranges can wrap around, in which case `end` is less than `begin` and we

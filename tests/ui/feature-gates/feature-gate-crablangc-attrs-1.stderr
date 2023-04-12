@@ -1,0 +1,27 @@
+error[E0658]: the `#[crablangc_variance]` attribute is just used for crablangc unit tests and will never be stable
+  --> $DIR/feature-gate-crablangc-attrs-1.rs:3:1
+   |
+LL | #[crablangc_variance]
+   | ^^^^^^^^^^^^^^^^^
+   |
+   = help: add `#![feature(crablangc_attrs)]` to the crate attributes to enable
+
+error[E0658]: the `#[crablangc_error]` attribute is just used for crablangc unit tests and will never be stable
+  --> $DIR/feature-gate-crablangc-attrs-1.rs:4:1
+   |
+LL | #[crablangc_error]
+   | ^^^^^^^^^^^^^^
+   |
+   = help: add `#![feature(crablangc_attrs)]` to the crate attributes to enable
+
+error[E0658]: the `#[crablangc_nonnull_optimization_guaranteed]` attribute is just used to enable niche optimizations in libcore and libstd and will never be stable
+  --> $DIR/feature-gate-crablangc-attrs-1.rs:5:1
+   |
+LL | #[crablangc_nonnull_optimization_guaranteed]
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: add `#![feature(crablangc_attrs)]` to the crate attributes to enable
+
+error: aborting due to 3 previous errors
+
+For more information about this error, try `crablangc --explain E0658`.

@@ -30,4 +30,4 @@ LL | fn bar<const N: &u8>() {}
 
 error: aborting due to 5 previous errors
 
-For more information about this error, try `rustc --explain E0637`.
+For more information about this error, try `crablangc --explain E0637`.

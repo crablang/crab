@@ -6,7 +6,7 @@
 include ../tools.mk
 
 all:
-	$(RUSTC) --crate-type bin driver.rs -L "$(TMPDIR)"
+	$(CRABLANGC) --crate-type bin driver.rs -L "$(TMPDIR)"
 	$(call COMPILE_OBJ,"$(TMPDIR)"/extern.obj,extern.c)
 ifdef IS_MSVC
 	$(CC) "$(TMPDIR)"/extern.obj extern.msvc.def -link -dll -out:"$(TMPDIR)"/extern.dll -noimplib
@@ -15,7 +15,7 @@ else
 endif
 	"$(TMPDIR)"/driver > "$(TMPDIR)"/output.txt
 
-ifdef RUSTC_BLESS_TEST
+ifdef CRABLANGC_BLESS_TEST
 	cp "$(TMPDIR)"/output.txt output.txt
 else
 	$(DIFF) output.txt "$(TMPDIR)"/output.txt

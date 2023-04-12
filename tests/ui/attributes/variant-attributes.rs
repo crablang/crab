@@ -3,29 +3,29 @@
 // pretty-expanded FIXME #23616
 
 #![allow(non_camel_case_types)]
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 
 enum crew_of_enterprise_d {
 
-    #[rustc_dummy]
+    #[crablangc_dummy]
     jean_luc_picard,
 
-    #[rustc_dummy]
+    #[crablangc_dummy]
     william_t_riker,
 
-    #[rustc_dummy]
+    #[crablangc_dummy]
     beverly_crusher,
 
-    #[rustc_dummy]
+    #[crablangc_dummy]
     deanna_troi,
 
-    #[rustc_dummy]
+    #[crablangc_dummy]
     data,
 
-    #[rustc_dummy]
+    #[crablangc_dummy]
     worf,
 
-    #[rustc_dummy]
+    #[crablangc_dummy]
     geordi_la_forge,
 }
 

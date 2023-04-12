@@ -20,6 +20,6 @@ all:
 	mkdir $(SRC)/mydir
 	mkdir $(INCR)
 	cp main.rs $(SRC)/main.rs
-	$(RUSTC) --test -C incremental=$(INCR) $(SRC)/main.rs --target $(TARGET)
+	$(CRABLANGC) --test -C incremental=$(INCR) $(SRC)/main.rs --target $(TARGET)
 	mv $(SRC)/main.rs $(SRC)/mydir/main.rs
-	$(RUSTC) --test -C incremental=$(INCR) $(SRC)/mydir/main.rs --target $(TARGET)
+	$(CRABLANGC) --test -C incremental=$(INCR) $(SRC)/mydir/main.rs --target $(TARGET)

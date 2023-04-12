@@ -2,7 +2,7 @@
 // denoting non-empty arrays of non-`Eq` types, but *accept* empty
 // arrays of such types.
 //
-// See rust-lang/rust#62336.
+// See crablang/crablang#62336.
 
 // run-pass
 

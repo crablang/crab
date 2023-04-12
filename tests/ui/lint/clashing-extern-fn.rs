@@ -94,7 +94,7 @@ extern "C" {
 fn tricky_no_clash() {
     extern "C" {
         // Shouldn't warn, because the declaration above actually declares a different symbol (and
-        // Rust's name resolution rules around shadowing will handle this gracefully).
+        // CrabLang's name resolution rules around shadowing will handle this gracefully).
         fn link_name_specified() -> u32;
 
         // The case of a no_mangle name colliding with an extern decl (see #28179) is related but

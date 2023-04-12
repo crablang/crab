@@ -6,26 +6,26 @@ use clippy_utils::ty::expr_sig;
 use clippy_utils::visitors::contains_unsafe_block;
 use clippy_utils::{get_expr_use_or_unification_node, is_lint_allowed, path_def_id, path_to_local, paths};
 use if_chain::if_chain;
-use rustc_errors::{Applicability, MultiSpan};
-use rustc_hir::def_id::DefId;
-use rustc_hir::hir_id::HirIdMap;
-use rustc_hir::intravisit::{walk_expr, Visitor};
-use rustc_hir::{
+use crablangc_errors::{Applicability, MultiSpan};
+use crablangc_hir::def_id::DefId;
+use crablangc_hir::hir_id::HirIdMap;
+use crablangc_hir::intravisit::{walk_expr, Visitor};
+use crablangc_hir::{
     self as hir, AnonConst, BinOpKind, BindingAnnotation, Body, Expr, ExprKind, FnRetTy, FnSig, GenericArg,
     ImplItemKind, ItemKind, Lifetime, Mutability, Node, Param, PatKind, QPath, TraitFn, TraitItem, TraitItemKind,
     TyKind, Unsafety,
 };
-use rustc_infer::infer::TyCtxtInferExt;
-use rustc_infer::traits::{Obligation, ObligationCause};
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_middle::hir::nested_filter;
-use rustc_middle::ty::{self, Binder, Clause, ExistentialPredicate, List, PredicateKind, Ty};
-use rustc_session::{declare_lint_pass, declare_tool_lint};
-use rustc_span::source_map::Span;
-use rustc_span::sym;
-use rustc_span::symbol::Symbol;
-use rustc_trait_selection::infer::InferCtxtExt as _;
-use rustc_trait_selection::traits::query::evaluate_obligation::InferCtxtExt as _;
+use crablangc_infer::infer::TyCtxtInferExt;
+use crablangc_infer::traits::{Obligation, ObligationCause};
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_middle::hir::nested_filter;
+use crablangc_middle::ty::{self, Binder, Clause, ExistentialPredicate, List, PredicateKind, Ty};
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_span::source_map::Span;
+use crablangc_span::sym;
+use crablangc_span::symbol::Symbol;
+use crablangc_trait_selection::infer::InferCtxtExt as _;
+use crablangc_trait_selection::traits::query::evaluate_obligation::InferCtxtExt as _;
 use std::fmt;
 use std::iter;
 
@@ -75,7 +75,7 @@ declare_clippy_lint! {
     /// method instead
     ///
     /// ### Example
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// use std::ptr;
     ///
     /// if x == ptr::null {
@@ -84,7 +84,7 @@ declare_clippy_lint! {
     /// ```
     ///
     /// Use instead:
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// if x.is_null() {
     ///     // ..
     /// }
@@ -109,8 +109,8 @@ declare_clippy_lint! {
     /// immutable reference is unsound as it allows creating multiple live
     /// mutable references to the same object.
     ///
-    /// This [error](https://github.com/rust-lang/rust/issues/39465) actually
-    /// lead to an interim Rust release 1.15.1.
+    /// This [error](https://github.com/crablang/crablang/issues/39465) actually
+    /// lead to an interim CrabLang release 1.15.1.
     ///
     /// ### Known problems
     /// This pattern is used by memory allocators to allow allocating multiple

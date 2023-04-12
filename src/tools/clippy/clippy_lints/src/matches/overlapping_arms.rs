@@ -1,11 +1,11 @@
 use clippy_utils::consts::{constant, constant_full_int, miri_to_const, FullInt};
 use clippy_utils::diagnostics::span_lint_and_note;
 use core::cmp::Ordering;
-use rustc_hir::{Arm, Expr, PatKind, RangeEnd};
-use rustc_lint::LateContext;
-use rustc_middle::mir;
-use rustc_middle::ty::Ty;
-use rustc_span::Span;
+use crablangc_hir::{Arm, Expr, PatKind, RangeEnd};
+use crablangc_lint::LateContext;
+use crablangc_middle::mir;
+use crablangc_middle::ty::Ty;
+use crablangc_span::Span;
 
 use super::MATCH_OVERLAPPING_ARM;
 
@@ -158,7 +158,7 @@ where
 
 #[test]
 fn test_overlapping() {
-    use rustc_span::source_map::DUMMY_SP;
+    use crablangc_span::source_map::DUMMY_SP;
 
     let sp = |s, e| SpannedRange {
         span: DUMMY_SP,

@@ -29,7 +29,7 @@ impl Case1 for S1 {
 
 // Ensure we don't have opaque `impl Trait` desugaring:
 
-// What is this supposed to mean? Rustc currently lowers `: Default` in the
+// What is this supposed to mean? CrabLangc currently lowers `: Default` in the
 // bounds of `Out`, but trait selection can't find the bound since it applies
 // to a type other than `Self::Out`.
 pub trait Foo { type Out: Baz<Assoc: Default>; }

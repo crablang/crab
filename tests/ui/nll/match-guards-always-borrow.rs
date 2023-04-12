@@ -1,6 +1,6 @@
 #![feature(if_let_guard)]
 
-// Here is arielb1's basic example from rust-lang/rust#27282
+// Here is arielb1's basic example from crablang/crablang#27282
 // that AST borrowck is flummoxed by:
 
 fn should_reject_destructive_mutate_in_guard() {

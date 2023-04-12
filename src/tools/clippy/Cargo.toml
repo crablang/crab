@@ -1,8 +1,8 @@
 [package]
 name = "clippy"
 version = "0.1.70"
-description = "A bunch of helpful lints to avoid common pitfalls in Rust"
-repository = "https://github.com/rust-lang/rust-clippy"
+description = "A bunch of helpful lints to avoid common pitfalls in CrabLang"
+repository = "https://github.com/crablang/crablang-clippy"
 readme = "README.md"
 license = "MIT OR Apache-2.0"
 keywords = ["clippy", "lint", "plugin"]
@@ -23,7 +23,7 @@ path = "src/driver.rs"
 [dependencies]
 clippy_lints = { path = "clippy_lints" }
 semver = "1.0"
-rustc_tools_util = "0.3.0"
+crablangc_tools_util = "0.3.0"
 tempfile = { version = "3.2", optional = true }
 termize = "0.1"
 
@@ -36,10 +36,10 @@ walkdir = "2.3"
 # This is used by the `collect-metadata` alias.
 filetime = "0.2"
 
-# A noop dependency that changes in the Rust repository, it's a bit of a hack.
-# See the `src/tools/rustc-workspace-hack/README.md` file in `rust-lang/rust`
+# A noop dependency that changes in the CrabLang repository, it's a bit of a hack.
+# See the `src/tools/crablangc-workspace-hack/README.md` file in `crablang/crablang`
 # for more information.
-rustc-workspace-hack = "1.0"
+crablangc-workspace-hack = "1.0"
 
 # UI test dependencies
 clap = { version = "4.1.4", features = ["derive"] }
@@ -53,16 +53,16 @@ syn = { version = "1.0", features = ["full"] }
 futures = "0.3"
 parking_lot = "0.12"
 tokio = { version = "1", features = ["io-util"] }
-rustc-semver = "1.1"
+crablangc-semver = "1.1"
 
 [build-dependencies]
-rustc_tools_util = "0.3.0"
+crablangc_tools_util = "0.3.0"
 
 [features]
 deny-warnings = ["clippy_lints/deny-warnings"]
 integration = ["tempfile"]
 internal = ["clippy_lints/internal", "tempfile"]
 
-[package.metadata.rust-analyzer]
-# This package uses #[feature(rustc_private)]
-rustc_private = true
+[package.metadata.crablang-analyzer]
+# This package uses #[feature(crablangc_private)]
+crablangc_private = true

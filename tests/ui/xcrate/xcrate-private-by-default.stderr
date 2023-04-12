@@ -120,4 +120,4 @@ LL | mod foo {
 
 error: aborting due to 10 previous errors
 
-For more information about this error, try `rustc --explain E0603`.
+For more information about this error, try `crablangc --explain E0603`.

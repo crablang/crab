@@ -10,7 +10,7 @@ use crate::{iter::FusedIterator, ops::Try};
 /// [`Iterator`]: trait.Iterator.html
 #[derive(Clone, Debug)]
 #[must_use = "iterators are lazy and do nothing unless consumed"]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub struct Cycle<I> {
     orig: I,
     iter: I,
@@ -22,7 +22,7 @@ impl<I: Clone> Cycle<I> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<I> Iterator for Cycle<I>
 where
     I: Clone + Iterator,
@@ -81,7 +81,7 @@ where
     }
 
     #[inline]
-    #[rustc_inherit_overflow_checks]
+    #[crablangc_inherit_overflow_checks]
     fn advance_by(&mut self, n: usize) -> Result<(), NonZeroUsize> {
         let mut n = match self.iter.advance_by(n) {
             Ok(()) => return Ok(()),

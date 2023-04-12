@@ -1,9 +1,9 @@
 // edition:2018
 // aux-build:removing-extern-crate.rs
-// run-rustfix
+// run-crablangfix
 // check-pass
 
-#![warn(rust_2018_idioms)]
+#![warn(crablang_2018_idioms)]
 
 extern crate removing_extern_crate as foo; //~ WARNING unused extern crate
 extern crate core; //~ WARNING unused extern crate

@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 #![deny(clippy::trait_duplication_in_bounds)]
 #![allow(unused)]
 

@@ -1,4 +1,4 @@
-// Regression test for rust-lang/rust#63154
+// Regression test for crablang/crablang#63154
 //
 // Before, we would ICE after failing to normalize the destination type
 // when checking call destinations and also when checking MIR

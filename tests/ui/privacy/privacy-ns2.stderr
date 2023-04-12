@@ -99,4 +99,4 @@ LL |     let _x: Box<Bar>;
 error: aborting due to 8 previous errors
 
 Some errors have detailed explanations: E0423, E0573, E0603, E0747.
-For more information about an error, try `rustc --explain E0423`.
+For more information about an error, try `crablangc --explain E0423`.

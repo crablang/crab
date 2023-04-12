@@ -67,4 +67,4 @@ LL | impl<const N: u8> Foo for C<N, { T }> {}
 error: aborting due to 5 previous errors
 
 Some errors have detailed explanations: E0412, E0747.
-For more information about an error, try `rustc --explain E0412`.
+For more information about an error, try `crablangc --explain E0412`.

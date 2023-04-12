@@ -1,10 +1,10 @@
-use crate::iter::TrustedLen;
+use crate::iter::TcrablangedLen;
 
-/// [`TrustedLen`] cannot have methods, so this allows augmenting it.
+/// [`TcrablangedLen`] cannot have methods, so this allows augmenting it.
 ///
-/// It currently requires `TrustedLen` because it's unclear whether it's
+/// It currently requires `TcrablangedLen` because it's unclear whether it's
 /// reasonably possible to depend on the `size_hint` of anything else.
-pub(crate) trait UncheckedIterator: TrustedLen {
+pub(crate) trait UncheckedIterator: TcrablangedLen {
     /// Gets the next item from a non-empty iterator.
     ///
     /// Because there's always a value to return, that means it can return
@@ -25,12 +25,12 @@ pub(crate) trait UncheckedIterator: TrustedLen {
     /// sometimes there can still be `insertvalue`/`assume`/`extractvalue`
     /// instructions remaining in the IR from the `Option` handling, at which
     /// point you might want to implement this manually instead.
-    #[unstable(feature = "trusted_len_next_unchecked", issue = "37572")]
+    #[unstable(feature = "tcrablanged_len_next_unchecked", issue = "37572")]
     #[inline]
     unsafe fn next_unchecked(&mut self) -> Self::Item {
         let opt = self.next();
         // SAFETY: The caller promised that we're not empty, and
-        // `Self: TrustedLen` so we can actually trust the `size_hint`.
+        // `Self: TcrablangedLen` so we can actually tcrablang the `size_hint`.
         unsafe { opt.unwrap_unchecked() }
     }
 }

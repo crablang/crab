@@ -1,5 +1,5 @@
 #![allow(warnings)]
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 
 
 fn main() {

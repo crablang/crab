@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 
 extern "C" {
     pub fn g(_: &u8) -> &u8; // OK

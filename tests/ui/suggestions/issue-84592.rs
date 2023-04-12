@@ -1,7 +1,7 @@
 /* Checks whether issue #84592 has been resolved. The issue was
  * that in this example, there are two expected/missing lifetime
  * parameters with *different spans*, leading to incorrect
- * suggestions from rustc.
+ * suggestions from crablangc.
  */
 
 struct TwoLifetimes<'x, 'y> {

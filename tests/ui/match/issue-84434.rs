@@ -1,4 +1,4 @@
-// https://github.com/rust-lang/rust/issues/84434
+// https://github.com/crablang/crablang/issues/84434
 // check-pass
 
 use std::path::Path;

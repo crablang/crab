@@ -8,4 +8,4 @@ LL | const fn slice(&[a, b]: &[i32]) -> i32 {
 
 error: aborting due to previous error
 
-For more information about this error, try `rustc --explain E0005`.
+For more information about this error, try `crablangc --explain E0005`.

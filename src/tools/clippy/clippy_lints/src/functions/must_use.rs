@@ -1,13 +1,13 @@
-use rustc_ast::ast::Attribute;
-use rustc_errors::Applicability;
-use rustc_hir::def_id::DefIdSet;
-use rustc_hir::{self as hir, def::Res, QPath};
-use rustc_lint::{LateContext, LintContext};
-use rustc_middle::{
+use crablangc_ast::ast::Attribute;
+use crablangc_errors::Applicability;
+use crablangc_hir::def_id::DefIdSet;
+use crablangc_hir::{self as hir, def::Res, QPath};
+use crablangc_lint::{LateContext, LintContext};
+use crablangc_middle::{
     lint::in_external_macro,
     ty::{self, Ty},
 };
-use rustc_span::{sym, Span, Symbol};
+use crablangc_span::{sym, Span, Symbol};
 
 use clippy_utils::attrs::is_proc_macro;
 use clippy_utils::diagnostics::{span_lint_and_help, span_lint_and_then};

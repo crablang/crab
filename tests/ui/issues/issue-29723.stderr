@@ -33,4 +33,4 @@ LL |         0 if let Some(()) = { drop(s.clone()); None } => String::from("oops
 
 error: aborting due to 2 previous errors
 
-For more information about this error, try `rustc --explain E0382`.
+For more information about this error, try `crablangc --explain E0382`.

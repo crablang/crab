@@ -144,7 +144,7 @@ where
     }
 
     if !wrote_data {
-        println!("note: diff is identical to nightly rustdoc");
+        println!("note: diff is identical to nightly crablangdoc");
         assert!(diff_output.metadata().unwrap().len() == 0);
         return false;
     } else if verbose {

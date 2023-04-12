@@ -1,9 +1,9 @@
 # Miri
 
-An experimental interpreter for [Rust][rust]'s
+An experimental interpreter for [CrabLang][crablang]'s
 [mid-level intermediate representation][mir] (MIR). It can run binaries and
 test suites of cargo projects and detect certain classes of
-[undefined behavior](https://doc.rust-lang.org/reference/behavior-considered-undefined.html),
+[undefined behavior](https://doc.crablang.org/reference/behavior-considered-undefined.html),
 for example:
 
 * Out-of-bounds memory accesses and use-after-free
@@ -23,7 +23,7 @@ On top of that, Miri will also tell you about memory leaks: when there is memory
 still allocated at the end of the execution, and that memory is not reachable
 from a global `static`, Miri will raise an error.
 
-Miri supports almost all Rust language features; in particular, unwinding and
+Miri supports almost all CrabLang language features; in particular, unwinding and
 concurrency are properly supported (including some experimental emulation of
 weak memory effects, i.e., reads can return outdated values).
 
@@ -70,33 +70,33 @@ behavior** in your program, and cannot run all programs:
   not support networking. System API support varies between targets; if you run
   on Windows it is a good idea to use `--target x86_64-unknown-linux-gnu` to get
   better support.
-* Weak memory emulation may [produce weak behaviours](https://github.com/rust-lang/miri/issues/2301)
+* Weak memory emulation may [produce weak behaviours](https://github.com/crablang/miri/issues/2301)
   unobservable by compiled programs running on real hardware when `SeqCst` fences are used, and it
   cannot produce all behaviors possibly observable on real hardware.
 
-[rust]: https://www.rust-lang.org/
-[mir]: https://github.com/rust-lang/rfcs/blob/master/text/1211-mir.md
-[`unreachable_unchecked`]: https://doc.rust-lang.org/stable/std/hint/fn.unreachable_unchecked.html
-[`copy_nonoverlapping`]: https://doc.rust-lang.org/stable/std/ptr/fn.copy_nonoverlapping.html
-[Stacked Borrows]: https://github.com/rust-lang/unsafe-code-guidelines/blob/master/wip/stacked-borrows.md
+[crablang]: https://www.crablang.org/
+[mir]: https://github.com/crablang/rfcs/blob/master/text/1211-mir.md
+[`unreachable_unchecked`]: https://doc.crablang.org/stable/std/hint/fn.unreachable_unchecked.html
+[`copy_nonoverlapping`]: https://doc.crablang.org/stable/std/ptr/fn.copy_nonoverlapping.html
+[Stacked Borrows]: https://github.com/crablang/unsafe-code-guidelines/blob/master/wip/stacked-borrows.md
 [Tree Borrows]: https://perso.crans.org/vanille/treebor/
 
 
 ## Using Miri
 
-Install Miri on Rust nightly via `rustup`:
+Install Miri on CrabLang nightly via `crablangup`:
 
 ```sh
-rustup +nightly component add miri
+crablangup +nightly component add miri
 ```
 
-If `rustup` says the `miri` component is unavailable, that's because not all
+If `crablangup` says the `miri` component is unavailable, that's because not all
 nightly releases come with all tools. Check out
-[this website](https://rust-lang.github.io/rustup-components-history) to
-determine a nightly version that comes with Miri and install that using `rustup
+[this website](https://crablang.github.io/crablangup-components-history) to
+determine a nightly version that comes with Miri and install that using `crablangup
 toolchain install nightly-YYYY-MM-DD`. Either way, all of the following commands
-assume the right toolchain is pinned via `rustup override set nightly` or
-`rustup override set nightly-YYYY-MM-DD`. (Alternatively, use `cargo
+assume the right toolchain is pinned via `crablangup override set nightly` or
+`crablangup override set nightly-YYYY-MM-DD`. (Alternatively, use `cargo
 +nightly`/`cargo +nightly-YYYY-MM-DD` for each of the following commands.)
 
 Now you can run your project in Miri:
@@ -122,7 +122,7 @@ When compiling code via `cargo miri`, the `cfg(miri)` config flag is set for cod
 that will be interpret under Miri. You can use this to ignore test cases that fail
 under Miri because they do things Miri does not support:
 
-```rust
+```crablang
 #[test]
 #[cfg_attr(miri, ignore)]
 fn does_not_work_on_miri() {
@@ -156,13 +156,13 @@ endian-sensitive code.
 ### Running Miri on CI
 
 To run Miri on CI, make sure that you handle the case where the latest nightly
-does not ship the Miri component because it currently does not build. `rustup
+does not ship the Miri component because it currently does not build. `crablangup
 toolchain install --component` knows how to handle this situation, so the
 following snippet should always work:
 
 ```sh
-rustup toolchain install nightly --component miri
-rustup override set nightly
+crablangup toolchain install nightly --component miri
+crablangup override set nightly
 
 cargo miri test
 ```
@@ -177,8 +177,8 @@ Here is an example job for GitHub Actions:
       - uses: actions/checkout@v3
       - name: Install Miri
         run: |
-          rustup toolchain install nightly --component miri
-          rustup override set nightly
+          crablangup toolchain install nightly --component miri
+          crablangup override set nightly
           cargo miri setup
       - name: Test with Miri
         run: cargo miri test
@@ -206,7 +206,7 @@ done
 
 ### Supported targets
 
-Miri does not support all targets supported by Rust. The good news, however, is
+Miri does not support all targets supported by CrabLang. The good news, however, is
 that no matter your host OS/platform, it is easy to run code for *any* target
 using `--target`!
 
@@ -230,7 +230,7 @@ degree documented below):
 
 ### Running tests in parallel
 
-Though it implements Rust threading, Miri itself is a single-threaded interpreter.
+Though it implements CrabLang threading, Miri itself is a single-threaded interpreter.
 This means that when running `cargo miri test`, you will probably see a dramatic
 increase in the amount of time it takes to run your whole test suite due to the
 inherent interpreter slowdown and a loss of parallelism.
@@ -253,17 +253,17 @@ Note: `cargo-nextest` does not support doctests, see https://github.com/nextest-
 When using the above instructions, you may encounter a number of confusing compiler
 errors.
 
-#### "note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace"
+#### "note: run with `CRABLANG_BACKTRACE=1` environment variable to display a backtrace"
 
 You may see this when trying to get Miri to display a backtrace. By default, Miri
 doesn't expose any environment to the program, so running
-`RUST_BACKTRACE=1 cargo miri test` will not do what you expect.
+`CRABLANG_BACKTRACE=1 cargo miri test` will not do what you expect.
 
 To get a backtrace, you need to disable isolation
 [using `-Zmiri-disable-isolation`][miri-flags]:
 
 ```sh
-RUST_BACKTRACE=1 MIRIFLAGS="-Zmiri-disable-isolation" cargo miri test
+CRABLANG_BACKTRACE=1 MIRIFLAGS="-Zmiri-disable-isolation" cargo miri test
 ```
 
 #### "found possibly newer version of crate `std` which `<dependency>` depends on"
@@ -272,7 +272,7 @@ Your build directory may contain artifacts from an earlier build that have/have
 not been built for Miri. Run `cargo clean` before switching from non-Miri to
 Miri builds and vice-versa.
 
-#### "found crate `std` compiled by an incompatible version of rustc"
+#### "found crate `std` compiled by an incompatible version of crablangc"
 
 You may be running `cargo miri` with a different compiler version than the one
 used to build the custom libstd that Miri uses, and Miri failed to detect that.
@@ -317,7 +317,7 @@ environment variable. We first document the most relevant and most commonly used
   number of available CPUs is `1`. Note that this flag does not affect how miri handles threads in
   any way.
 * `-Zmiri-permissive-provenance` disables the warning for integer-to-pointer casts and
-  [`ptr::from_exposed_addr`](https://doc.rust-lang.org/nightly/std/ptr/fn.from_exposed_addr.html).
+  [`ptr::from_exposed_addr`](https://doc.crablang.org/nightly/std/ptr/fn.from_exposed_addr.html).
   This will necessarily miss some bugs as those operations are not efficiently and accurately
   implementable in a sanitizer, but it will only miss bugs that concern memory/pointers which is
   subject to these operations.
@@ -334,7 +334,7 @@ environment variable. We first document the most relevant and most commonly used
   is enabled (the default), this is also used to emulate system entropy. The default seed is 0. You
   can increase test coverage by running Miri multiple times with different seeds.
 * `-Zmiri-strict-provenance` enables [strict
-  provenance](https://github.com/rust-lang/rust/issues/95228) checking in Miri. This means that
+  provenance](https://github.com/crablang/crablang/issues/95228) checking in Miri. This means that
   casting an integer to a pointer yields a result with 'invalid' provenance, i.e., with provenance
   that cannot be used for any memory access.
 * `-Zmiri-symbolic-alignment-check` makes the alignment check more strict.  By default, alignment is
@@ -382,11 +382,11 @@ to Miri failing to detect cases of undefined behavior in a program.
   This is **work in progress**; currently, only integer arguments and return values are
   supported (and no, pointer/integer casts to work around this limitation will not work;
   they will fail horribly). It also only works on unix hosts for now.
-  Follow [the discussion on supporting other types](https://github.com/rust-lang/miri/issues/2365).
+  Follow [the discussion on supporting other types](https://github.com/crablang/miri/issues/2365).
 * `-Zmiri-measureme=<name>` enables `measureme` profiling for the interpreted program.
    This can be used to find which parts of your program are executing slowly under Miri.
    The profile is written out to a file with the prefix `<name>`, and can be processed
-   using the tools in the repository https://github.com/rust-lang/measureme.
+   using the tools in the repository https://github.com/crablang/measureme.
 * `-Zmiri-mute-stdout-stderr` silently ignores all writes to stdout and stderr,
   but reports to the program that it did actually write. This is useful when you
   are not interested in the actual program's output, but only want to see Miri's
@@ -399,7 +399,7 @@ to Miri failing to detect cases of undefined behavior in a program.
 * `-Zmiri-retag-fields` changes Stacked Borrows retagging to recurse into *all* fields.
   This means that references in fields of structs/enums/tuples/arrays/... are retagged,
   and in particular, they are protected when passed as function arguments.
-  (The default is to recurse only in cases where rustc would actually emit a `noalias` attribute.)
+  (The default is to recurse only in cases where crablangc would actually emit a `noalias` attribute.)
 * `-Zmiri-retag-fields=<all|none|scalar>` controls when Stacked Borrows retagging recurses into
   fields. `all` means it always recurses (like `-Zmiri-retag-fields`), `none` means it never
   recurses, `scalar` (the default) means it only recurses for types where we would also emit
@@ -432,14 +432,14 @@ to Miri failing to detect cases of undefined behavior in a program.
 * `-Zmiri-force-page-size=<num>` overrides the default page size for an architecture, in multiples of 1k.
   `4` is default for most targets. This value should always be a power of 2 and nonzero.
 
-[function ABI]: https://doc.rust-lang.org/reference/items/functions.html#extern-function-qualifier
+[function ABI]: https://doc.crablang.org/reference/items/functions.html#extern-function-qualifier
 
-Some native rustc `-Z` flags are also very relevant for Miri:
+Some native crablangc `-Z` flags are also very relevant for Miri:
 
 * `-Zmir-opt-level` controls how many MIR optimizations are performed.  Miri
   overrides the default to be `0`; be advised that using any higher level can
   make Miri miss bugs in your program because they got optimized away.
-* `-Zalways-encode-mir` makes rustc dump MIR even for completely monomorphic
+* `-Zalways-encode-mir` makes crablangc dump MIR even for completely monomorphic
   functions.  This is needed so that Miri can execute such functions, so Miri
   sets this flag per default.
 * `-Zmir-emit-retag` controls whether `Retag` statements are emitted. Miri
@@ -447,7 +447,7 @@ Some native rustc `-Z` flags are also very relevant for Miri:
 
 Moreover, Miri recognizes some environment variables:
 
-* `MIRI_AUTO_OPS` indicates whether the automatic execution of rustfmt, clippy and toolchain setup
+* `MIRI_AUTO_OPS` indicates whether the automatic execution of crablangfmt, clippy and toolchain setup
   should be skipped. If it is set to any value, they are skipped. This is used for avoiding infinite
   recursion in `./miri` and to allow automated IDE actions to avoid the auto ops.
 * `MIRI_LOG`, `MIRI_BACKTRACE` control logging and backtrace printing during
@@ -456,12 +456,12 @@ Moreover, Miri recognizes some environment variables:
   flags to be passed to Miri.
 * `MIRI_LIB_SRC` defines the directory where Miri expects the sources of the
   standard library that it will build and use for interpretation. This directory
-  must point to the `library` subdirectory of a `rust-lang/rust` repository
+  must point to the `library` subdirectory of a `crablang/crablang` repository
   checkout. Note that changing files in that directory does not automatically
   trigger a re-build of the standard library; you have to clear the Miri build
   cache manually (on Linux, `rm -rf ~/.cache/miri`;
-  on Windows, `rmdir /S "%LOCALAPPDATA%\rust-lang\miri\cache"`;
-  and on macOS, `rm -rf ~/Library/Caches/org.rust-lang.miri`).
+  on Windows, `rmdir /S "%LOCALAPPDATA%\crablang\miri\cache"`;
+  and on macOS, `rm -rf ~/Library/Caches/org.crablang.miri`).
 * `MIRI_SYSROOT` (recognized by `cargo miri` and the Miri driver) indicates the sysroot to use. When
   using `cargo miri`, this skips the automatic setup -- only set this if you do not want to use the
   automatically created sysroot. For directly invoking the Miri driver, this variable (or a
@@ -481,17 +481,17 @@ The following environment variables are *internal* and must not be used by
 anyone but Miri itself. They are used to communicate between different Miri
 binaries, and as such worth documenting:
 
-* `MIRI_BE_RUSTC` can be set to `host` or `target`. It tells the Miri driver to
-  actually not interpret the code but compile it like rustc would. With `target`, Miri sets
+* `MIRI_BE_CRABLANGC` can be set to `host` or `target`. It tells the Miri driver to
+  actually not interpret the code but compile it like crablangc would. With `target`, Miri sets
   some compiler flags to prepare the code for interpretation; with `host`, this is not done.
   This environment variable is useful to be sure that the compiled `rlib`s are compatible
   with Miri.
 * `MIRI_CALLED_FROM_SETUP` is set during the Miri sysroot build,
-  which will re-invoke `cargo-miri` as the `rustc` to use for this build.
-* `MIRI_CALLED_FROM_RUSTDOC` when set to any value tells `cargo-miri` that it is
-  running as a child process of `rustdoc`, which invokes it twice for each doc-test
+  which will re-invoke `cargo-miri` as the `crablangc` to use for this build.
+* `MIRI_CALLED_FROM_CRABLANGDOC` when set to any value tells `cargo-miri` that it is
+  running as a child process of `crablangdoc`, which invokes it twice for each doc-test
   and requires special treatment, most notably a check-only build before interpretation.
-  This is set by `cargo-miri` itself when running as a `rustdoc`-wrapper.
+  This is set by `cargo-miri` itself when running as a `crablangdoc`-wrapper.
 * `MIRI_CWD` when set to any value tells the Miri driver to change to the given
   directory after loading all the source files, but before commencing
   interpretation. This is useful if the interpreted program wants a different
@@ -518,21 +518,21 @@ If you want to contribute to Miri, great!  Please check out our
 [contribution guide](CONTRIBUTING.md).
 
 For help with running Miri, you can open an issue here on
-GitHub or use the [Miri stream on the Rust Zulip][zulip].
+GitHub or use the [Miri stream on the CrabLang Zulip][zulip].
 
-[zulip]: https://rust-lang.zulipchat.com/#narrow/stream/269128-miri
+[zulip]: https://crablang.zulipchat.com/#narrow/stream/269128-miri
 
 ## History
 
 This project began as part of an undergraduate research course in 2015 by
 @solson at the [University of Saskatchewan][usask].  There are [slides] and a
 [report] available from that project.  In 2016, @oli-obk joined to prepare Miri
-for eventually being used as const evaluator in the Rust compiler itself
+for eventually being used as const evaluator in the CrabLang compiler itself
 (basically, for `const` and `static` stuff), replacing the old evaluator that
 worked directly on the AST.  In 2017, @RalfJung did an internship with Mozilla
 and began developing Miri towards a tool for detecting undefined behavior, and
 also using Miri as a way to explore the consequences of various possible
-definitions for undefined behavior in Rust.  @oli-obk's move of the Miri engine
+definitions for undefined behavior in CrabLang.  @oli-obk's move of the Miri engine
 into the compiler finally came to completion in early 2018.  Meanwhile, later
 that year, @RalfJung did a second internship, developing Miri further with
 support for checking basic type invariants and verifying that references are
@@ -544,21 +544,21 @@ used according to their aliasing restrictions.
 
 ## Bugs found by Miri
 
-Miri has already found a number of bugs in the Rust standard library and beyond, which we collect here.
+Miri has already found a number of bugs in the CrabLang standard library and beyond, which we collect here.
 
 Definite bugs found:
 
-* [`Debug for vec_deque::Iter` accessing uninitialized memory](https://github.com/rust-lang/rust/issues/53566)
-* [`Vec::into_iter` doing an unaligned ZST read](https://github.com/rust-lang/rust/pull/53804)
-* [`From<&[T]> for Rc` creating a not sufficiently aligned reference](https://github.com/rust-lang/rust/issues/54908)
-* [`BTreeMap` creating a shared reference pointing to a too small allocation](https://github.com/rust-lang/rust/issues/54957)
-* [`Vec::append` creating a dangling reference](https://github.com/rust-lang/rust/pull/61082)
-* [Futures turning a shared reference into a mutable one](https://github.com/rust-lang/rust/pull/56319)
-* [`str` turning a shared reference into a mutable one](https://github.com/rust-lang/rust/pull/58200)
-* [`rand` performing unaligned reads](https://github.com/rust-random/rand/issues/779)
-* [The Unix allocator calling `posix_memalign` in an invalid way](https://github.com/rust-lang/rust/issues/62251)
-* [`getrandom` calling the `getrandom` syscall in an invalid way](https://github.com/rust-random/getrandom/pull/73)
-* [`Vec`](https://github.com/rust-lang/rust/issues/69770) and [`BTreeMap`](https://github.com/rust-lang/rust/issues/69769) leaking memory under some (panicky) conditions
+* [`Debug for vec_deque::Iter` accessing uninitialized memory](https://github.com/crablang/crablang/issues/53566)
+* [`Vec::into_iter` doing an unaligned ZST read](https://github.com/crablang/crablang/pull/53804)
+* [`From<&[T]> for Rc` creating a not sufficiently aligned reference](https://github.com/crablang/crablang/issues/54908)
+* [`BTreeMap` creating a shared reference pointing to a too small allocation](https://github.com/crablang/crablang/issues/54957)
+* [`Vec::append` creating a dangling reference](https://github.com/crablang/crablang/pull/61082)
+* [Futures turning a shared reference into a mutable one](https://github.com/crablang/crablang/pull/56319)
+* [`str` turning a shared reference into a mutable one](https://github.com/crablang/crablang/pull/58200)
+* [`rand` performing unaligned reads](https://github.com/crablang-random/rand/issues/779)
+* [The Unix allocator calling `posix_memalign` in an invalid way](https://github.com/crablang/crablang/issues/62251)
+* [`getrandom` calling the `getrandom` syscall in an invalid way](https://github.com/crablang-random/getrandom/pull/73)
+* [`Vec`](https://github.com/crablang/crablang/issues/69770) and [`BTreeMap`](https://github.com/crablang/crablang/issues/69769) leaking memory under some (panicky) conditions
 * [`beef` leaking memory](https://github.com/maciejhirsz/beef/issues/12)
 * [`EbrCell` using uninitialized memory incorrectly](https://github.com/Firstyear/concread/commit/b15be53b6ec076acb295a5c0483cdb4bf9be838f#diff-6282b2fc8e98bd089a1f0c86f648157cR229)
 * [TiKV performing an unaligned pointer access](https://github.com/tikv/tikv/issues/7613)
@@ -566,41 +566,41 @@ Definite bugs found:
 * [TiKV constructing out-of-bounds pointers (and overlapping mutable references)](https://github.com/tikv/tikv/pull/7751)
 * [`encoding_rs` doing out-of-bounds pointer arithmetic](https://github.com/hsivonen/encoding_rs/pull/53)
 * [TiKV using `Vec::from_raw_parts` incorrectly](https://github.com/tikv/agatedb/pull/24)
-* Incorrect doctests for [`AtomicPtr`](https://github.com/rust-lang/rust/pull/84052) and [`Box::from_raw_in`](https://github.com/rust-lang/rust/pull/84053)
+* Incorrect doctests for [`AtomicPtr`](https://github.com/crablang/crablang/pull/84052) and [`Box::from_raw_in`](https://github.com/crablang/crablang/pull/84053)
 * [Insufficient alignment in `ThinVec`](https://github.com/Gankra/thin-vec/pull/27)
 * [`crossbeam-epoch` calling `assume_init` on a partly-initialized `MaybeUninit`](https://github.com/crossbeam-rs/crossbeam/pull/779)
 * [`integer-encoding` dereferencing a misaligned pointer](https://github.com/dermesser/integer-encoding-rs/pull/23)
 * [`rkyv` constructing a `Box<[u8]>` from an overaligned allocation](https://github.com/rkyv/rkyv/commit/a9417193a34757e12e24263178be8b2eebb72456)
-* [Data race in `thread::scope`](https://github.com/rust-lang/rust/issues/98498)
-* [`regex` incorrectly handling unaligned `Vec<u8>` buffers](https://www.reddit.com/r/rust/comments/vq3mmu/comment/ienc7t0?context=3)
+* [Data race in `thread::scope`](https://github.com/crablang/crablang/issues/98498)
+* [`regex` incorrectly handling unaligned `Vec<u8>` buffers](https://www.reddit.com/r/crablang/comments/vq3mmu/comment/ienc7t0?context=3)
 * [Incorrect use of `compare_exchange_weak` in `once_cell`](https://github.com/matklad/once_cell/issues/186)
-* [Dropping with unaligned pointers in `vec::IntoIter`](https://github.com/rust-lang/rust/pull/106084)
+* [Dropping with unaligned pointers in `vec::IntoIter`](https://github.com/crablang/crablang/pull/106084)
 
 Violations of [Stacked Borrows] found that are likely bugs (but Stacked Borrows is currently just an experiment):
 
-* [`VecDeque::drain` creating overlapping mutable references](https://github.com/rust-lang/rust/pull/56161)
+* [`VecDeque::drain` creating overlapping mutable references](https://github.com/crablang/crablang/pull/56161)
 * Various `BTreeMap` problems
-    * [`BTreeMap` iterators creating mutable references that overlap with shared references](https://github.com/rust-lang/rust/pull/58431)
-    * [`BTreeMap::iter_mut` creating overlapping mutable references](https://github.com/rust-lang/rust/issues/73915)
-    * [`BTreeMap` node insertion using raw pointers outside their valid memory area](https://github.com/rust-lang/rust/issues/78477)
-* [`LinkedList` cursor insertion creating overlapping mutable references](https://github.com/rust-lang/rust/pull/60072)
-* [`Vec::push` invalidating existing references into the vector](https://github.com/rust-lang/rust/issues/60847)
-* [`align_to_mut` violating uniqueness of mutable references](https://github.com/rust-lang/rust/issues/68549)
+    * [`BTreeMap` iterators creating mutable references that overlap with shared references](https://github.com/crablang/crablang/pull/58431)
+    * [`BTreeMap::iter_mut` creating overlapping mutable references](https://github.com/crablang/crablang/issues/73915)
+    * [`BTreeMap` node insertion using raw pointers outside their valid memory area](https://github.com/crablang/crablang/issues/78477)
+* [`LinkedList` cursor insertion creating overlapping mutable references](https://github.com/crablang/crablang/pull/60072)
+* [`Vec::push` invalidating existing references into the vector](https://github.com/crablang/crablang/issues/60847)
+* [`align_to_mut` violating uniqueness of mutable references](https://github.com/crablang/crablang/issues/68549)
 * [`sized-chunks` creating aliasing mutable references](https://github.com/bodil/sized-chunks/issues/8)
-* [`String::push_str` invalidating existing references into the string](https://github.com/rust-lang/rust/issues/70301)
+* [`String::push_str` invalidating existing references into the string](https://github.com/crablang/crablang/issues/70301)
 * [`ryu` using raw pointers outside their valid memory area](https://github.com/dtolnay/ryu/issues/24)
-* [ink! creating overlapping mutable references](https://github.com/rust-lang/miri/issues/1364)
+* [ink! creating overlapping mutable references](https://github.com/crablang/miri/issues/1364)
 * [TiKV creating overlapping mutable reference and raw pointer](https://github.com/tikv/tikv/pull/7709)
-* [Windows `Env` iterator using a raw pointer outside its valid memory area](https://github.com/rust-lang/rust/pull/70479)
-* [`VecDeque::iter_mut` creating overlapping mutable references](https://github.com/rust-lang/rust/issues/74029)
-* [Various standard library aliasing issues involving raw pointers](https://github.com/rust-lang/rust/pull/78602)
-* [`<[T]>::copy_within` using a loan after invalidating it](https://github.com/rust-lang/rust/pull/85610)
+* [Windows `Env` iterator using a raw pointer outside its valid memory area](https://github.com/crablang/crablang/pull/70479)
+* [`VecDeque::iter_mut` creating overlapping mutable references](https://github.com/crablang/crablang/issues/74029)
+* [Various standard library aliasing issues involving raw pointers](https://github.com/crablang/crablang/pull/78602)
+* [`<[T]>::copy_within` using a loan after invalidating it](https://github.com/crablang/crablang/pull/85610)
 
 ## Scientific papers employing Miri
 
-* [Stacked Borrows: An Aliasing Model for Rust](https://plv.mpi-sws.org/rustbelt/stacked-borrows/)
+* [Stacked Borrows: An Aliasing Model for CrabLang](https://plv.mpi-sws.org/crablangbelt/stacked-borrows/)
 * [Using Lightweight Formal Methods to Validate a Key-Value Storage Node in Amazon S3](https://www.amazon.science/publications/using-lightweight-formal-methods-to-validate-a-key-value-storage-node-in-amazon-s3)
-* [SyRust: Automatic Testing of Rust Libraries with Semantic-Aware Program Synthesis](https://dl.acm.org/doi/10.1145/3453483.3454084)
+* [SyCrabLang: Automatic Testing of CrabLang Libraries with Semantic-Aware Program Synthesis](https://dl.acm.org/doi/10.1145/3453483.3454084)
 
 ## License
 

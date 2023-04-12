@@ -2,7 +2,7 @@
 // Tests "transitivity" of super-builtin-kinds on traits. Here, if
 // we have a Foo, we know we have a Bar, and if we have a Bar, we
 // know we have a Send. So if we have a Foo we should know we have
-// a Send. Basically this just makes sure rustc is using
+// a Send. Basically this just makes sure crablangc is using
 // each_bound_trait_and_supertraits in type_contents correctly.
 
 

@@ -1,10 +1,10 @@
 use clippy_utils::diagnostics::span_lint_and_then;
 use clippy_utils::paths;
 use clippy_utils::ty::match_type;
-use rustc_ast::ast::LitKind;
-use rustc_hir::{Expr, ExprKind};
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_ast::ast::LitKind;
+use crablangc_hir::{Expr, ExprKind};
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
 
 declare_clippy_lint! {
     /// ### What it does
@@ -14,7 +14,7 @@ declare_clippy_lint! {
     /// On Unix platforms this results in the file being world writable,
     /// equivalent to `chmod a+w <file>`.
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// use std::fs::File;
     /// let f = File::create("foo.txt").unwrap();
     /// let metadata = f.metadata().unwrap();
@@ -44,7 +44,7 @@ impl<'tcx> LateLintPass<'tcx> for PermissionsSetReadonlyFalse {
                 |diag| {
                     diag.note("on Unix platforms this results in the file being world writable");
                     diag.help("you can set the desired permissions using `PermissionsExt`. For more information, see\n\
-                        https://doc.rust-lang.org/std/os/unix/fs/trait.PermissionsExt.html");
+                        https://doc.crablang.org/std/os/unix/fs/trait.PermissionsExt.html");
                 }
             );
         }

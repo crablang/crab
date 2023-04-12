@@ -72,4 +72,4 @@ LL |     *u3.a = String::from("new");
 
 error: aborting due to 9 previous errors
 
-For more information about this error, try `rustc --explain E0133`.
+For more information about this error, try `crablangc --explain E0133`.

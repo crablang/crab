@@ -9,7 +9,7 @@
 // where the descriptors to inherit were already stdio descriptors.
 // This test checks to avoid that regression.
 
-#![cfg_attr(unix, feature(rustc_private))]
+#![cfg_attr(unix, feature(crablangc_private))]
 #![cfg_attr(not(unix), allow(unused_imports))]
 
 #[cfg(unix)]

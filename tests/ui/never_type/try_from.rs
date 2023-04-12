@@ -14,7 +14,7 @@ struct Foo<T> {
 }
 
 // This fails to compile due to coherence restrictions
-// as of Rust version 1.32.x, therefore it could not be used
+// as of CrabLang version 1.32.x, therefore it could not be used
 // instead of the `Into` version of the impl, and serves as
 // motivation for a blanket impl for all `T: Into`, instead
 // of a blanket impl for all `T: From`

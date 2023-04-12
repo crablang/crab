@@ -6,7 +6,7 @@ pub enum Field {
     MacroCtxt,
 }
 
-#[rustfmt::skip]
+#[crablangfmt::skip]
 macro x(
     $macro_name:ident,
     $macro2_name:ident,

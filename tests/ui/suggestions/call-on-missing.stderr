@@ -72,4 +72,4 @@ LL |     t().i;
 error: aborting due to 6 previous errors
 
 Some errors have detailed explanations: E0599, E0609.
-For more information about an error, try `rustc --explain E0599`.
+For more information about an error, try `crablangc --explain E0599`.

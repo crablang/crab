@@ -1,4 +1,4 @@
-use crate::iter::{adapters::SourceIter, FusedIterator, TrustedLen};
+use crate::iter::{adapters::SourceIter, FusedIterator, TcrablangedLen};
 use crate::ops::{ControlFlow, Try};
 
 /// An iterator with a `peek()` that returns an optional reference to the next
@@ -11,7 +11,7 @@ use crate::ops::{ControlFlow, Try};
 /// [`Iterator`]: trait.Iterator.html
 #[derive(Clone, Debug)]
 #[must_use = "iterators are lazy and do nothing unless consumed"]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub struct Peekable<I: Iterator> {
     iter: I,
     /// Remember a peeked value, even if it was None.
@@ -28,7 +28,7 @@ impl<I: Iterator> Peekable<I> {
 // It ensures that `.peek(); .peek();` or `.peek(); .next();` only advances the
 // underlying iterator at most once. This does not by itself make the iterator
 // fused.
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<I: Iterator> Iterator for Peekable<I> {
     type Item = I::Item;
 
@@ -41,7 +41,7 @@ impl<I: Iterator> Iterator for Peekable<I> {
     }
 
     #[inline]
-    #[rustc_inherit_overflow_checks]
+    #[crablangc_inherit_overflow_checks]
     fn count(mut self) -> usize {
         match self.peeked.take() {
             Some(None) => 0,
@@ -165,7 +165,7 @@ where
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<I: ExactSizeIterator> ExactSizeIterator for Peekable<I> {}
 
 #[stable(feature = "fused", since = "1.26.0")]
@@ -210,7 +210,7 @@ impl<I: Iterator> Peekable<I> {
     /// assert_eq!(iter.next(), None);
     /// ```
     #[inline]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn peek(&mut self) -> Option<&I::Item> {
         let iter = &mut self.iter;
         self.peeked.get_or_insert_with(|| iter.next()).as_ref()
@@ -317,8 +317,8 @@ impl<I: Iterator> Peekable<I> {
     }
 }
 
-#[unstable(feature = "trusted_len", issue = "37572")]
-unsafe impl<I> TrustedLen for Peekable<I> where I: TrustedLen {}
+#[unstable(feature = "tcrablanged_len", issue = "37572")]
+unsafe impl<I> TcrablangedLen for Peekable<I> where I: TcrablangedLen {}
 
 #[unstable(issue = "none", feature = "inplace_iteration")]
 unsafe impl<I: Iterator> SourceIter for Peekable<I>

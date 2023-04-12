@@ -1,11 +1,11 @@
 #![deny(clippy::internal)]
-#![feature(rustc_private)]
+#![feature(crablangc_private)]
 
 #[macro_use]
-extern crate rustc_middle;
+extern crate crablangc_middle;
 #[macro_use]
-extern crate rustc_session;
-extern crate rustc_lint;
+extern crate crablangc_session;
+extern crate crablangc_lint;
 
 ///////////////////////
 // Valid descriptions

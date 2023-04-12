@@ -78,4 +78,4 @@ LL |     if let (_, ref _y) = mm { }
 
 error: aborting due to 6 previous errors
 
-For more information about this error, try `rustc --explain E0382`.
+For more information about this error, try `crablangc --explain E0382`.

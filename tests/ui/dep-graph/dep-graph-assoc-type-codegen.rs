@@ -4,7 +4,7 @@
 // incremental
 // compile-flags: -Z query-dep-graph
 
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 #![allow(warnings)]
 
 fn main() { }
@@ -17,7 +17,7 @@ pub trait Foo: Sized {
 mod x {
     use Foo;
 
-    #[rustc_if_this_changed]
+    #[crablangc_if_this_changed]
     impl Foo for char { type T = char; }
 
     impl Foo for u32 { type T = u32; }
@@ -26,7 +26,7 @@ mod x {
 mod y {
     use Foo;
 
-    #[rustc_then_this_would_need(typeck)] //~ ERROR OK
+    #[crablangc_then_this_would_need(typeck)] //~ ERROR OK
     pub fn use_char_assoc() {
         // Careful here: in the representation, <char as Foo>::T gets
         // normalized away, so at a certain point we had no edge to

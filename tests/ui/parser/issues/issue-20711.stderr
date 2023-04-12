@@ -3,7 +3,7 @@ error: expected item after attributes
    |
 LL | impl Foo {
    |          - while parsing this item list starting here
-LL |     #[stable(feature = "rust1", since = "1.0.0")]
+LL |     #[stable(feature = "crablang1", since = "1.0.0")]
    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 LL |
 LL | }

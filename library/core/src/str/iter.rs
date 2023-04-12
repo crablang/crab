@@ -3,8 +3,8 @@
 use crate::char as char_mod;
 use crate::fmt::{self, Write};
 use crate::iter::{Chain, FlatMap, Flatten};
-use crate::iter::{Copied, Filter, FusedIterator, Map, TrustedLen};
-use crate::iter::{TrustedRandomAccess, TrustedRandomAccessNoCoerce};
+use crate::iter::{Copied, Filter, FusedIterator, Map, TcrablangedLen};
+use crate::iter::{TcrablangedRandomAccess, TcrablangedRandomAccessNoCoerce};
 use crate::ops::Try;
 use crate::option;
 use crate::slice::{self, Split as SliceSplit};
@@ -28,12 +28,12 @@ use super::{IsAsciiWhitespace, IsNotEmpty, IsWhitespace};
 /// [`chars`]: str::chars
 #[derive(Clone)]
 #[must_use = "iterators are lazy and do nothing unless consumed"]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub struct Chars<'a> {
     pub(super) iter: slice::Iter<'a, u8>,
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<'a> Iterator for Chars<'a> {
     type Item = char;
 
@@ -75,7 +75,7 @@ impl fmt::Debug for Chars<'_> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<'a> DoubleEndedIterator for Chars<'a> {
     #[inline]
     fn next_back(&mut self) -> Option<char> {
@@ -124,13 +124,13 @@ impl<'a> Chars<'a> {
 /// [`char_indices`]: str::char_indices
 #[derive(Clone, Debug)]
 #[must_use = "iterators are lazy and do nothing unless consumed"]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub struct CharIndices<'a> {
     pub(super) front_offset: usize,
     pub(super) iter: Chars<'a>,
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<'a> Iterator for CharIndices<'a> {
     type Item = (usize, char);
 
@@ -165,7 +165,7 @@ impl<'a> Iterator for CharIndices<'a> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<'a> DoubleEndedIterator for CharIndices<'a> {
     #[inline]
     fn next_back(&mut self) -> Option<(usize, char)> {
@@ -224,11 +224,11 @@ impl<'a> CharIndices<'a> {
 ///
 /// [`bytes`]: str::bytes
 #[must_use = "iterators are lazy and do nothing unless consumed"]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[derive(Clone, Debug)]
 pub struct Bytes<'a>(pub(super) Copied<slice::Iter<'a, u8>>);
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl Iterator for Bytes<'_> {
     type Item = u8;
 
@@ -305,7 +305,7 @@ impl Iterator for Bytes<'_> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl DoubleEndedIterator for Bytes<'_> {
     #[inline]
     fn next_back(&mut self) -> Option<u8> {
@@ -326,7 +326,7 @@ impl DoubleEndedIterator for Bytes<'_> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl ExactSizeIterator for Bytes<'_> {
     #[inline]
     fn len(&self) -> usize {
@@ -342,16 +342,16 @@ impl ExactSizeIterator for Bytes<'_> {
 #[stable(feature = "fused", since = "1.26.0")]
 impl FusedIterator for Bytes<'_> {}
 
-#[unstable(feature = "trusted_len", issue = "37572")]
-unsafe impl TrustedLen for Bytes<'_> {}
+#[unstable(feature = "tcrablanged_len", issue = "37572")]
+unsafe impl TcrablangedLen for Bytes<'_> {}
 
 #[doc(hidden)]
-#[unstable(feature = "trusted_random_access", issue = "none")]
-unsafe impl TrustedRandomAccess for Bytes<'_> {}
+#[unstable(feature = "tcrablanged_random_access", issue = "none")]
+unsafe impl TcrablangedRandomAccess for Bytes<'_> {}
 
 #[doc(hidden)]
-#[unstable(feature = "trusted_random_access", issue = "none")]
-unsafe impl TrustedRandomAccessNoCoerce for Bytes<'_> {
+#[unstable(feature = "tcrablanged_random_access", issue = "none")]
+unsafe impl TcrablangedRandomAccessNoCoerce for Bytes<'_> {
     const MAY_HAVE_SIDE_EFFECT: bool = false;
 }
 
@@ -740,7 +740,7 @@ generate_pattern_iterators! {
         /// [`rsplit`]: str::rsplit
         struct RSplit;
     stability:
-        #[stable(feature = "rust1", since = "1.0.0")]
+        #[stable(feature = "crablang1", since = "1.0.0")]
     internal:
         SplitInternal yielding (&'a str);
     delegate double ended;
@@ -804,7 +804,7 @@ generate_pattern_iterators! {
         /// [`rsplit_terminator`]: str::rsplit_terminator
         struct RSplitTerminator;
     stability:
-        #[stable(feature = "rust1", since = "1.0.0")]
+        #[stable(feature = "crablang1", since = "1.0.0")]
     internal:
         SplitInternal yielding (&'a str);
     delegate double ended;
@@ -931,7 +931,7 @@ generate_pattern_iterators! {
         /// [`rsplitn`]: str::rsplitn
         struct RSplitN;
     stability:
-        #[stable(feature = "rust1", since = "1.0.0")]
+        #[stable(feature = "crablang1", since = "1.0.0")]
     internal:
         SplitNInternal yielding (&'a str);
     delegate single ended;
@@ -1101,12 +1101,12 @@ generate_pattern_iterators! {
 /// See its documentation for more.
 ///
 /// [`lines`]: str::lines
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[must_use = "iterators are lazy and do nothing unless consumed"]
 #[derive(Clone, Debug)]
 pub struct Lines<'a>(pub(super) Map<SplitInclusive<'a, char>, LinesMap>);
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<'a> Iterator for Lines<'a> {
     type Item = &'a str;
 
@@ -1126,7 +1126,7 @@ impl<'a> Iterator for Lines<'a> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<'a> DoubleEndedIterator for Lines<'a> {
     #[inline]
     fn next_back(&mut self) -> Option<&'a str> {
@@ -1140,14 +1140,14 @@ impl FusedIterator for Lines<'_> {}
 /// Created with the method [`lines_any`].
 ///
 /// [`lines_any`]: str::lines_any
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[deprecated(since = "1.4.0", note = "use lines()/Lines instead now")]
 #[must_use = "iterators are lazy and do nothing unless consumed"]
 #[derive(Clone, Debug)]
 #[allow(deprecated)]
 pub struct LinesAny<'a>(pub(super) Lines<'a>);
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[allow(deprecated)]
 impl<'a> Iterator for LinesAny<'a> {
     type Item = &'a str;
@@ -1163,7 +1163,7 @@ impl<'a> Iterator for LinesAny<'a> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[allow(deprecated)]
 impl<'a> DoubleEndedIterator for LinesAny<'a> {
     #[inline]

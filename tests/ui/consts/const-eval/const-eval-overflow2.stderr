@@ -48,4 +48,4 @@ LL |      u64::MIN - 1,
 
 error: aborting due to 8 previous errors
 
-For more information about this error, try `rustc --explain E0080`.
+For more information about this error, try `crablangc --explain E0080`.

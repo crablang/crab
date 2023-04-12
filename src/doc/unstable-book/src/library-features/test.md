@@ -9,7 +9,7 @@ most widely used part of the `test` crate are benchmark tests, which can test
 the performance of your code.  Let's make our `src/lib.rs` look like this
 (comments elided):
 
-```rust,no_run
+```crablang,no_run
 #![feature(test)]
 
 extern crate test;
@@ -58,7 +58,7 @@ test result: ok. 0 passed; 0 failed; 1 ignored; 1 measured
 ```
 
 Our non-benchmark test was ignored. You may have noticed that `cargo bench`
-takes a bit longer than `cargo test`. This is because Rust runs our benchmark
+takes a bit longer than `cargo test`. This is because CrabLang runs our benchmark
 a number of times, and then takes the average. Because we're doing so little
 work in this example, we have a `1 ns/iter (+/- 0)`, but this would show
 the variance if there was one.
@@ -83,7 +83,7 @@ the benchmark is no longer benchmarking what one expects. For example, the
 compiler might recognize that some calculation has no external effects and
 remove it entirely.
 
-```rust,no_run
+```crablang,no_run
 #![feature(test)]
 
 extern crate test;
@@ -112,7 +112,7 @@ optimizer to consider the result used and ensures it cannot remove the
 computation entirely. This could be done for the example above by adjusting the
 `b.iter` call to
 
-```rust
+```crablang
 # struct X;
 # impl X { fn iter<T, F>(&self, _: F) where F: FnMut() -> T {} } let b = X;
 b.iter(|| {
@@ -125,7 +125,7 @@ Or, the other option is to call the generic `test::black_box` function, which
 is an opaque "black box" to the optimizer and so forces it to consider any
 argument as used.
 
-```rust
+```crablang
 #![feature(test)]
 
 extern crate test;

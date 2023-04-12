@@ -99,4 +99,4 @@ LL |         foo(1, 2, 1u16);
 error: aborting due to 11 previous errors
 
 Some errors have detailed explanations: E0045, E0060, E0308, E0617.
-For more information about an error, try `rustc --explain E0045`.
+For more information about an error, try `crablangc --explain E0045`.

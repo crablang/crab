@@ -78,4 +78,4 @@ LL | fn ordering4 < 'a , 'b, F     > ( a :            ,   self , self ,   self ,
 
 error: aborting due to 11 previous errors
 
-For more information about this error, try `rustc --explain E0412`.
+For more information about this error, try `crablangc --explain E0412`.

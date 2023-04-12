@@ -243,7 +243,7 @@ impl<T, A: Allocator> RawVec<T, A> {
         } else {
             // We could use Layout::array here which ensures the absence of isize and usize overflows
             // and could hypothetically handle differences between stride and size, but this memory
-            // has already been allocated so we know it can't overflow and currently rust does not
+            // has already been allocated so we know it can't overflow and currently crablang does not
             // support such types. So we can do better by skipping some checks and avoid an unwrap.
             let _: () = const { assert!(mem::size_of::<T>() % mem::align_of::<T>() == 0) };
             unsafe {

@@ -1,18 +1,18 @@
-#![feature(core_intrinsics, rustc_attrs)]
+#![feature(core_intrinsics, crablangc_attrs)]
 
-use std::intrinsics::rustc_peek;
+use std::intrinsics::crablangc_peek;
 
-#[rustc_mir(rustc_peek_liveness, stop_after_dataflow)]
+#[crablangc_mir(crablangc_peek_liveness, stop_after_dataflow)]
 fn foo() -> Option<i32> {
     let mut x = None;
 
     // `x` is live here since it is used in the next statement...
-    rustc_peek(x);
+    crablangc_peek(x);
 
     dbg!(x);
 
     // But not here, since it is overwritten below
-    rustc_peek(x); //~ ERROR rustc_peek: bit not set
+    crablangc_peek(x); //~ ERROR crablangc_peek: bit not set
 
     x = Some(4);
 

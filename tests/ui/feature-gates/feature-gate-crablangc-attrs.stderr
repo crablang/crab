@@ -1,0 +1,47 @@
+error: attributes starting with `crablangc` are reserved for use by the `crablangc` compiler
+  --> $DIR/feature-gate-crablangc-attrs.rs:8:3
+   |
+LL | #[crablangc::unknown]
+   |   ^^^^^
+
+error: expected attribute, found macro `crablangc::unknown`
+  --> $DIR/feature-gate-crablangc-attrs.rs:8:3
+   |
+LL | #[crablangc::unknown]
+   |   ^^^^^^^^^^^^^^ not an attribute
+
+error: attributes starting with `crablangc` are reserved for use by the `crablangc` compiler
+  --> $DIR/feature-gate-crablangc-attrs.rs:13:12
+   |
+LL | #[unknown::crablangc]
+   |            ^^^^^
+
+error: expected attribute, found macro `unknown::crablangc`
+  --> $DIR/feature-gate-crablangc-attrs.rs:13:3
+   |
+LL | #[unknown::crablangc]
+   |   ^^^^^^^^^^^^^^ not an attribute
+
+error: attributes starting with `crablangc` are reserved for use by the `crablangc` compiler
+  --> $DIR/feature-gate-crablangc-attrs.rs:20:3
+   |
+LL | #[crablangc_unknown]
+   |   ^^^^^^^^^^^^^
+
+error: cannot find attribute `crablangc_unknown` in this scope
+  --> $DIR/feature-gate-crablangc-attrs.rs:20:3
+   |
+LL | #[crablangc_unknown]
+   |   ^^^^^^^^^^^^^
+
+error[E0658]: the `#[crablangc_dummy]` attribute is just used for crablangc unit tests and will never be stable
+  --> $DIR/feature-gate-crablangc-attrs.rs:18:1
+   |
+LL | #[crablangc_dummy]
+   | ^^^^^^^^^^^^^^
+   |
+   = help: add `#![feature(crablangc_attrs)]` to the crate attributes to enable
+
+error: aborting due to 7 previous errors
+
+For more information about this error, try `crablangc --explain E0658`.

@@ -4,8 +4,8 @@ This document explains the basics for hacking on Clippy. Besides others, this
 includes how to build and test Clippy. For a more in depth description on the
 codebase take a look at [Adding Lints] or [Common Tools].
 
-[Adding Lints]: https://github.com/rust-lang/rust-clippy/blob/master/book/src/development/adding_lints.md
-[Common Tools]: https://github.com/rust-lang/rust-clippy/blob/master/book/src/development/common_tools_writing_lints.md
+[Adding Lints]: https://github.com/crablang/crablang-clippy/blob/master/book/src/development/adding_lints.md
+[Common Tools]: https://github.com/crablang/crablang-clippy/blob/master/book/src/development/common_tools_writing_lints.md
 
 - [Basics for hacking on Clippy](#basics-for-hacking-on-clippy)
   - [Get the Code](#get-the-code)
@@ -23,15 +23,15 @@ your first time working on Clippy, create a fork of the repository and clone it
 afterwards with the following command:
 
 ```bash
-git clone git@github.com:<your-username>/rust-clippy
+git clone git@github.com:<your-username>/crablang-clippy
 ```
 
 If you've already cloned Clippy in the past, update it to the latest version:
 
 ```bash
 # If the upstream remote has not been added yet
-git remote add upstream https://github.com/rust-lang/rust-clippy
-# upstream has to be the remote of the rust-lang/rust-clippy repo
+git remote add upstream https://github.com/crablang/crablang-clippy
+# upstream has to be the remote of the crablang/crablang-clippy repo
 git fetch upstream
 # make sure that you are on the master branch
 git checkout master
@@ -43,7 +43,7 @@ git push
 
 ## Building and Testing
 
-You can build and test Clippy like every other Rust project:
+You can build and test Clippy like every other CrabLang project:
 
 ```bash
 cargo build  # builds Clippy
@@ -75,7 +75,7 @@ or if you modify a test file to add a test case.
 > _Note:_ This command may update more files than you intended. In that case
 > only commit the files you wanted to update.
 
-[UI test]: https://rustc-dev-guide.rust-lang.org/tests/adding.html#guide-to-the-ui-tests
+[UI test]: https://crablangc-dev-guide.crablang.org/tests/adding.html#guide-to-the-ui-tests
 
 ## `cargo dev`
 
@@ -95,7 +95,7 @@ cargo dev new_lint
 cargo dev deprecate
 # automatically formatting all code before each commit
 cargo dev setup git-hook
-# (experimental) Setup Clippy to work with IntelliJ-Rust
+# (experimental) Setup Clippy to work with IntelliJ-CrabLang
 cargo dev setup intellij
 # runs the `dogfood` tests
 cargo dev dogfood
@@ -103,7 +103,7 @@ cargo dev dogfood
 
 More about [intellij] command usage and reasons.
 
-[intellij]: https://github.com/rust-lang/rust-clippy/blob/master/CONTRIBUTING.md#intellij-rust
+[intellij]: https://github.com/crablang/crablang-clippy/blob/master/CONTRIBUTING.md#intellij-crablang
 
 ## lintcheck
 
@@ -115,12 +115,12 @@ are no false positives and that the suggestions are valid.
 
 Refer to the tools [README] for more details.
 
-[README]: https://github.com/rust-lang/rust-clippy/blob/master/lintcheck/README.md
+[README]: https://github.com/crablang/crablang-clippy/blob/master/lintcheck/README.md
 
 ## PR
 
-We follow a rustc no merge-commit policy. See
-<https://rustc-dev-guide.rust-lang.org/contributing.html#opening-a-pr>.
+We follow a crablangc no merge-commit policy. See
+<https://crablangc-dev-guide.crablang.org/contributing.html#opening-a-pr>.
 
 ## Common Abbreviations
 
@@ -136,7 +136,7 @@ We follow a rustc no merge-commit policy. See
 | TCX          | Type context                           |
 
 This is a concise list of abbreviations that can come up during Clippy
-development. An extensive general list can be found in the [rustc-dev-guide
+development. An extensive general list can be found in the [crablangc-dev-guide
 glossary][glossary]. Always feel free to ask if an abbreviation or meaning is
 unclear to you.
 
@@ -146,11 +146,11 @@ If you are hacking on Clippy and want to install it from source, do the
 following:
 
 First, take note of the toolchain
-[override](https://rust-lang.github.io/rustup/overrides.html) in
-`/rust-toolchain`. We will use this override to install Clippy into the right
+[override](https://crablang.github.io/crablangup/overrides.html) in
+`/crablang-toolchain`. We will use this override to install Clippy into the right
 toolchain.
 
-> Tip: You can view the active toolchain for the current directory with `rustup
+> Tip: You can view the active toolchain for the current directory with `crablangup
 > show active-toolchain`.
 
 From the Clippy project root, run the following command to build the Clippy
@@ -158,7 +158,7 @@ binaries and copy them into the toolchain directory. This will override the
 currently installed Clippy component.
 
 ```terminal
-cargo build --release --bin cargo-clippy --bin clippy-driver -Zunstable-options --out-dir "$(rustc --print=sysroot)/bin"
+cargo build --release --bin cargo-clippy --bin clippy-driver -Zunstable-options --out-dir "$(crablangc --print=sysroot)/bin"
 ```
 
 Now you may run `cargo clippy` in any project, using the toolchain where you
@@ -179,15 +179,15 @@ If you need to restore the default Clippy installation, run the following (from
 the Clippy project root).
 
 ```terminal
-rustup component remove clippy
-rustup component add clippy
+crablangup component remove clippy
+crablangup component add clippy
 ```
 
 > **DO NOT** install using `cargo install --path . --force` since this will
-> overwrite rustup
-> [proxies](https://rust-lang.github.io/rustup/concepts/proxies.html). That is,
+> overwrite crablangup
+> [proxies](https://crablang.github.io/crablangup/concepts/proxies.html). That is,
 > `~/.cargo/bin/cargo-clippy` and `~/.cargo/bin/clippy-driver` should be hard or
-> soft links to `~/.cargo/bin/rustup`. You can repair these by running `rustup
+> soft links to `~/.cargo/bin/crablangup`. You can repair these by running `crablangup
 > update`.
 
-[glossary]: https://rustc-dev-guide.rust-lang.org/appendix/glossary.html
+[glossary]: https://crablangc-dev-guide.crablang.org/appendix/glossary.html

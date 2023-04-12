@@ -1,4 +1,4 @@
-% The (old) Rust Ownership Guide
+% The (old) CrabLang Ownership Guide
 
 This content has moved into
-[the Rust Programming Language book](book/ch04-00-understanding-ownership.html).
+[the CrabLang Programming Language book](book/ch04-00-understanding-ownership.html).

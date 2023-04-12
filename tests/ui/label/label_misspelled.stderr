@@ -203,4 +203,4 @@ LL |         break 'for_loop;
 error: aborting due to 11 previous errors; 10 warnings emitted
 
 Some errors have detailed explanations: E0425, E0571.
-For more information about an error, try `rustc --explain E0425`.
+For more information about an error, try `crablangc --explain E0425`.

@@ -4,15 +4,15 @@ use clippy_utils::ty::is_type_lang_item;
 use clippy_utils::{get_expr_use_or_unification_node, peel_blocks, SpanlessEq};
 use clippy_utils::{get_parent_expr, is_lint_allowed, match_function_call, method_calls, paths};
 use if_chain::if_chain;
-use rustc_errors::Applicability;
-use rustc_hir::def_id::DefId;
-use rustc_hir::{BinOpKind, BorrowKind, Expr, ExprKind, LangItem, Node, QPath};
-use rustc_lint::{LateContext, LateLintPass, LintContext};
-use rustc_middle::lint::in_external_macro;
-use rustc_middle::ty;
-use rustc_session::{declare_lint_pass, declare_tool_lint};
-use rustc_span::source_map::Spanned;
-use rustc_span::sym;
+use crablangc_errors::Applicability;
+use crablangc_hir::def_id::DefId;
+use crablangc_hir::{BinOpKind, BorrowKind, Expr, ExprKind, LangItem, Node, QPath};
+use crablangc_lint::{LateContext, LateLintPass, LintContext};
+use crablangc_middle::lint::in_external_macro;
+use crablangc_middle::ty;
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_span::source_map::Spanned;
+use crablangc_span::sym;
 
 declare_clippy_lint! {
     /// ### What it does
@@ -24,7 +24,7 @@ declare_clippy_lint! {
     /// `.push_str(_)` method is more readable.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// let mut x = "Hello".to_owned();
     /// x = x + ", World";
     ///
@@ -56,13 +56,13 @@ declare_clippy_lint! {
     /// particular lint `allow` by default.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// let x = "Hello".to_owned();
     /// x + ", World";
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// let mut x = "Hello".to_owned();
     /// x.push_str(", World");
     /// ```
@@ -104,12 +104,12 @@ declare_clippy_lint! {
     /// more readable than a function call.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// let bstr = "a byte string".as_bytes();
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// let bstr = b"a byte string";
     /// ```
     #[clippy::version = "pre 1.29.0"]
@@ -133,7 +133,7 @@ declare_clippy_lint! {
     /// obtained via `char_indices` over the same string), it is totally OK.
     ///
     /// # Example
-    /// ```rust,should_panic
+    /// ```crablang,should_panic
     /// &"Ölkanne"[1..];
     /// ```
     #[clippy::version = "1.58.0"]
@@ -229,12 +229,12 @@ declare_clippy_lint! {
     /// It's unnecessary, the string can be used directly.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// std::str::from_utf8(&"Hello World!".as_bytes()[6..11]).unwrap();
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// &"Hello World!"[6..11];
     /// ```
     #[clippy::version = "1.50.0"]
@@ -251,7 +251,7 @@ declare_lint_pass!(StringLitAsBytes => [STRING_LIT_AS_BYTES, STRING_FROM_UTF8_AS
 impl<'tcx> LateLintPass<'tcx> for StringLitAsBytes {
     #[expect(clippy::too_many_lines)]
     fn check_expr(&mut self, cx: &LateContext<'tcx>, e: &'tcx Expr<'_>) {
-        use rustc_ast::LitKind;
+        use crablangc_ast::LitKind;
 
         if_chain! {
             // Find std::str::converts::from_utf8
@@ -383,12 +383,12 @@ declare_clippy_lint! {
     /// expressed with `.to_owned()`.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// // example code where clippy issues a warning
     /// let _ = "str".to_string();
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// // example code which does not raise clippy warning
     /// let _ = "str".to_owned();
     /// ```
@@ -431,13 +431,13 @@ declare_clippy_lint! {
     /// When called on a `String` it only clones the `String`, which can be better expressed with `.clone()`.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// // example code where clippy issues a warning
     /// let msg = String::from("Hello World");
     /// let _ = msg.to_string();
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// // example code which does not raise clippy warning
     /// let msg = String::from("Hello World");
     /// let _ = msg.clone();
@@ -479,11 +479,11 @@ declare_clippy_lint! {
     /// `split_whitespace` already ignores leading and trailing whitespace.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// " A B C ".trim().split_whitespace();
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// " A B C ".split_whitespace();
     /// ```
     #[clippy::version = "1.62.0"]

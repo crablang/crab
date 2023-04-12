@@ -51,4 +51,4 @@ LL |     foo::<{ baz() }>();
 error: aborting due to 5 previous errors
 
 Some errors have detailed explanations: E0573, E0747.
-For more information about an error, try `rustc --explain E0573`.
+For more information about an error, try `crablangc --explain E0573`.

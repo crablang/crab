@@ -19,4 +19,4 @@ error: language item required, but not found: `eh_personality`
 
 error: aborting due to 3 previous errors
 
-For more information about this error, try `rustc --explain E0259`.
+For more information about this error, try `crablangc --explain E0259`.

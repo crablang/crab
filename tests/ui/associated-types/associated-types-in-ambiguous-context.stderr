@@ -52,4 +52,4 @@ LL |     fn get(&self) -> <Example as Get>::Value;
 
 error: aborting due to 5 previous errors
 
-For more information about this error, try `rustc --explain E0223`.
+For more information about this error, try `crablangc --explain E0223`.

@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 #![warn(clippy::excessive_precision)]
 #![allow(dead_code, unused_variables, clippy::print_literal)]
 

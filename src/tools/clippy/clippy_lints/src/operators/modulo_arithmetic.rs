@@ -2,9 +2,9 @@ use clippy_utils::consts::{constant, Constant};
 use clippy_utils::diagnostics::span_lint_and_then;
 use clippy_utils::sext;
 use if_chain::if_chain;
-use rustc_hir::{BinOpKind, Expr};
-use rustc_lint::LateContext;
-use rustc_middle::ty::{self, Ty};
+use crablangc_hir::{BinOpKind, Expr};
+use crablangc_lint::LateContext;
+use crablangc_middle::ty::{self, Ty};
 use std::fmt::Display;
 
 use super::MODULO_ARITHMETIC;

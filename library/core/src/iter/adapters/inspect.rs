@@ -11,7 +11,7 @@ use crate::ops::Try;
 /// [`inspect`]: Iterator::inspect
 /// [`Iterator`]: trait.Iterator.html
 #[must_use = "iterators are lazy and do nothing unless consumed"]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[derive(Clone)]
 pub struct Inspect<I, F> {
     iter: I,
@@ -64,7 +64,7 @@ fn inspect_try_fold<'a, T, Acc, R>(
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<I: Iterator, F> Iterator for Inspect<I, F>
 where
     F: FnMut(&I::Item),
@@ -101,7 +101,7 @@ where
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<I: DoubleEndedIterator, F> DoubleEndedIterator for Inspect<I, F>
 where
     F: FnMut(&I::Item),
@@ -131,7 +131,7 @@ where
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<I: ExactSizeIterator, F> ExactSizeIterator for Inspect<I, F>
 where
     F: FnMut(&I::Item),

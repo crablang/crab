@@ -26,4 +26,4 @@ LL |     let guard: Guard<Arc<usize>> = <Arc<ArcSwapAny<Arc<usize>>> as Access<T
 
 error: aborting due to previous error
 
-For more information about this error, try `rustc --explain E0283`.
+For more information about this error, try `crablangc --explain E0283`.

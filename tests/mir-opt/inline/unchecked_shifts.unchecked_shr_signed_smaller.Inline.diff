@@ -138,7 +138,7 @@
 +         _0 = unchecked_shr::<i16>(_3, move _5) -> [return: bb2, unwind unreachable]; // scope 2 at $SRC_DIR/core/src/num/int_macros.rs:LL:COL
 +                                          // mir::Constant
 +                                          // + span: $SRC_DIR/core/src/num/int_macros.rs:LL:COL
-+                                          // + literal: Const { ty: unsafe extern "rust-intrinsic" fn(i16, i16) -> i16 {unchecked_shr::<i16>}, val: Value(<ZST>) }
++                                          // + literal: Const { ty: unsafe extern "crablang-intrinsic" fn(i16, i16) -> i16 {unchecked_shr::<i16>}, val: Value(<ZST>) }
       }
   }
   

@@ -1,17 +1,17 @@
 use clippy_utils::diagnostics::span_lint_and_then;
 use clippy_utils::{get_expr_use_or_unification_node, get_parent_node, path_def_id, path_to_local, path_to_local_id};
 use core::cell::Cell;
-use rustc_data_structures::fx::FxHashMap;
-use rustc_errors::Applicability;
-use rustc_hir::def_id::DefId;
-use rustc_hir::hir_id::HirIdMap;
-use rustc_hir::{Body, Expr, ExprKind, HirId, ImplItem, ImplItemKind, Node, PatKind, TraitItem, TraitItemKind};
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_middle::ty::subst::{EarlyBinder, GenericArgKind, SubstsRef};
-use rustc_middle::ty::{self, ConstKind};
-use rustc_session::{declare_tool_lint, impl_lint_pass};
-use rustc_span::symbol::{kw, Ident};
-use rustc_span::Span;
+use crablangc_data_structures::fx::FxHashMap;
+use crablangc_errors::Applicability;
+use crablangc_hir::def_id::DefId;
+use crablangc_hir::hir_id::HirIdMap;
+use crablangc_hir::{Body, Expr, ExprKind, HirId, ImplItem, ImplItemKind, Node, PatKind, TraitItem, TraitItemKind};
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_middle::ty::subst::{EarlyBinder, GenericArgKind, SubstsRef};
+use crablangc_middle::ty::{self, ConstKind};
+use crablangc_session::{declare_tool_lint, impl_lint_pass};
+use crablangc_span::symbol::{kw, Ident};
+use crablangc_span::Span;
 use std::iter;
 
 declare_clippy_lint! {
@@ -31,7 +31,7 @@ declare_clippy_lint! {
     ///
     /// In some cases, this would not catch all useless arguments.
     ///
-    /// ```rust
+    /// ```crablang
     /// fn foo(a: usize, b: usize) -> usize {
     ///     let f = |x| x + 1;
     ///
@@ -54,7 +54,7 @@ declare_clippy_lint! {
     /// Also, when you recurse the function name with path segments, it is not possible to detect.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// fn f(a: usize, b: usize) -> usize {
     ///     if a == 0 {
     ///         1
@@ -67,7 +67,7 @@ declare_clippy_lint! {
     /// # }
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// fn f(a: usize) -> usize {
     ///     if a == 0 {
     ///         1

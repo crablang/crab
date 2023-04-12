@@ -12,4 +12,4 @@ LL |     const VALUE: usize;
 
 error: aborting due to previous error
 
-For more information about this error, try `rustc --explain E0326`.
+For more information about this error, try `crablangc --explain E0326`.

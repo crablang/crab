@@ -19,7 +19,7 @@ fn main() {
         let has_unwind = build.is_flag_supported("-lunwind").expect("Unable to invoke compiler");
 
         if has_unwind {
-            println!("cargo:rustc-cfg=feature=\"system-llvm-libunwind\"");
+            println!("cargo:crablangc-cfg=feature=\"system-llvm-libunwind\"");
         }
     }
 }

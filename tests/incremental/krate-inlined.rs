@@ -6,8 +6,8 @@
 // compile-flags: -Z query-dep-graph
 
 #![allow(warnings)]
-#![feature(rustc_attrs)]
-#![rustc_partition_reused(module = "krate_inlined-x", cfg = "rpass2")]
+#![feature(crablangc_attrs)]
+#![crablangc_partition_reused(module = "krate_inlined-x", cfg = "rpass2")]
 
 fn main() {
     x::method();

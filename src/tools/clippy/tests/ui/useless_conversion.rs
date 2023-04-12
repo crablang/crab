@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 
 #![deny(clippy::useless_conversion)]
 #![allow(clippy::unnecessary_wraps)]

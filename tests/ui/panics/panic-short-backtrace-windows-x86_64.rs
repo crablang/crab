@@ -4,20 +4,20 @@
 
 // Regression test for #87481: short backtrace formatting cut off the entire stack trace.
 
-// Codegen-units is specified here so that we can replicate a typical rustc invocation which
-// is not normally limited to 1 CGU. This is important so that the `__rust_begin_short_backtrace`
-// and `__rust_end_short_backtrace` symbols are not marked internal to the CGU and thus will be
+// Codegen-units is specified here so that we can replicate a typical crablangc invocation which
+// is not normally limited to 1 CGU. This is important so that the `__crablang_begin_short_backtrace`
+// and `__crablang_end_short_backtrace` symbols are not marked internal to the CGU and thus will be
 // named in the symbol table.
 // compile-flags: -O -Ccodegen-units=8
 
 // run-fail
 // check-run-results
-// exec-env:RUST_BACKTRACE=1
+// exec-env:CRABLANG_BACKTRACE=1
 
 // We need to normalize out frame 5 because without debug info, dbghelp.dll doesn't know where CGU
 // internal functions like `main` start or end and so it will return whatever symbol happens
 // to be located near the address.
-// normalize-stderr-test: "5: .*" -> "5: some Rust fn"
+// normalize-stderr-test: "5: .*" -> "5: some CrabLang fn"
 
 // Backtraces are pretty broken in general on i686-pc-windows-msvc (#62897).
 // only-x86_64-pc-windows-msvc

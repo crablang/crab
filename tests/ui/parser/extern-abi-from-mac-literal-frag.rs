@@ -30,16 +30,16 @@ macro_rules! abi_from_expr_frag {
     };
 }
 
-mod rust {
-    abi_from_lit_frag!("Rust");
+mod crablang {
+    abi_from_lit_frag!("CrabLang");
 }
 
 mod c {
     abi_from_lit_frag!("C");
 }
 
-mod rust_expr {
-    abi_from_expr_frag!("Rust");
+mod crablang_expr {
+    abi_from_expr_frag!("CrabLang");
 }
 
 mod c_expr {

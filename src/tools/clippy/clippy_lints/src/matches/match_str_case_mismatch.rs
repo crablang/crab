@@ -1,13 +1,13 @@
 use clippy_utils::diagnostics::span_lint_and_sugg;
 use clippy_utils::ty::is_type_lang_item;
-use rustc_ast::ast::LitKind;
-use rustc_errors::Applicability;
-use rustc_hir::intravisit::{walk_expr, Visitor};
-use rustc_hir::{Arm, Expr, ExprKind, LangItem, PatKind};
-use rustc_lint::LateContext;
-use rustc_middle::ty;
-use rustc_span::symbol::Symbol;
-use rustc_span::Span;
+use crablangc_ast::ast::LitKind;
+use crablangc_errors::Applicability;
+use crablangc_hir::intravisit::{walk_expr, Visitor};
+use crablangc_hir::{Arm, Expr, ExprKind, LangItem, PatKind};
+use crablangc_lint::LateContext;
+use crablangc_middle::ty;
+use crablangc_span::symbol::Symbol;
+use crablangc_span::Span;
 
 use super::MATCH_STR_CASE_MISMATCH;
 

@@ -1,4 +1,4 @@
-// rust-lang/rust#52059: Regardless of whether you are moving out of a
+// crablang/crablang#52059: Regardless of whether you are moving out of a
 // Drop type or just introducing an inadvertent alias via a borrow of
 // one of its fields, it is useful to be reminded of the significance
 // of the fact that the type implements Drop.

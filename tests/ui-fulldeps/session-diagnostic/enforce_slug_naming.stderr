@@ -4,7 +4,7 @@ error: diagnostic slug and crate name do not match
 LL | #[diag(compiletest_example, code = "E0123")]
    |        ^^^^^^^^^^^^^^^^^^^
    |
-   = note: slug is `compiletest_example` but the crate name is `rustc_dummy`
+   = note: slug is `compiletest_example` but the crate name is `crablangc_dummy`
    = help: expected a slug starting with `dummy_...`
 
 error: aborting due to previous error

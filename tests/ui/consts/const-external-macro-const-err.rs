@@ -3,7 +3,7 @@
 
 // Ensure that CONST_ERR lint errors
 // are not silenced in external macros.
-// https://github.com/rust-lang/rust/issues/65300
+// https://github.com/crablang/crablang/issues/65300
 
 extern crate external_macro;
 use external_macro::static_assert;

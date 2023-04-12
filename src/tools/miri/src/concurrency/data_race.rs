@@ -46,12 +46,12 @@ use std::{
     mem,
 };
 
-use rustc_ast::Mutability;
-use rustc_data_structures::fx::{FxHashMap, FxHashSet};
-use rustc_index::vec::{Idx, IndexVec};
-use rustc_middle::mir;
-use rustc_span::Span;
-use rustc_target::abi::{Align, Size};
+use crablangc_ast::Mutability;
+use crablangc_data_structures::fx::{FxHashMap, FxHashSet};
+use crablangc_index::vec::{Idx, IndexVec};
+use crablangc_middle::mir;
+use crablangc_span::Span;
+use crablangc_target::abi::{Align, Size};
 
 use crate::diagnostics::RacingOp;
 use crate::*;
@@ -479,7 +479,7 @@ pub trait EvalContextExt<'mir, 'tcx: 'mir>: MiriInterpCxExt<'mir, 'tcx> {
         // side effects from a read the program did not perform. So we have to initialise
         // the store buffer with the value currently being written
         // ONCE this is fixed please remove the hack in buffered_atomic_write() in weak_memory.rs
-        // https://github.com/rust-lang/miri/issues/2164
+        // https://github.com/crablang/miri/issues/2164
         this.buffered_atomic_write(val, dest, atomic, val)
     }
 
@@ -694,7 +694,7 @@ impl VClockAlloc {
         let (alloc_timestamp, alloc_index) = match kind {
             // User allocated and stack memory should track allocation.
             MemoryKind::Machine(
-                MiriMemoryKind::Rust
+                MiriMemoryKind::CrabLang
                 | MiriMemoryKind::Miri
                 | MiriMemoryKind::C
                 | MiriMemoryKind::WinHeap,
@@ -1000,7 +1000,7 @@ trait EvalContextPrivExt<'mir, 'tcx: 'mir>: MiriInterpCxExt<'mir, 'tcx> {
         // memory on many targets (i.e., they segfault if taht memory is mapped read-only), and
         // atomic loads can be implemented via compare_exchange on some targets. There could
         // possibly be some very specific exceptions to this, see
-        // <https://github.com/rust-lang/miri/pull/2464#discussion_r939636130> for details.
+        // <https://github.com/crablang/miri/pull/2464#discussion_r939636130> for details.
         // We avoid `get_ptr_alloc` since we do *not* want to run the access hooks -- the actual
         // access will happen later.
         let (alloc_id, _offset, _prov) =
@@ -1013,7 +1013,7 @@ trait EvalContextPrivExt<'mir, 'tcx: 'mir>: MiriInterpCxExt<'mir, 'tcx> {
                 (and is hence nominally read-only)\n\
                 some platforms implement (some) atomic loads via compare-exchange, which means they do not work on read-only memory; \
                 it is possible that we could have an exception permitting this for specific kinds of loads\n\
-                please report an issue at <https://github.com/rust-lang/miri/issues> if this is a problem for you"
+                please report an issue at <https://github.com/crablang/miri/issues> if this is a problem for you"
             );
         }
         Ok(())

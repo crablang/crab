@@ -10,7 +10,7 @@ body:
 
         If possible, try to provide a minimal verifiable example.
 
-        You can read "[Rust Bug Minimization Patterns](http://blog.pnkfx.org/blog/2019/11/18/rust-bug-minimization-patterns/)" for how to create smaller examples.
+        You can read "[CrabLang Bug Minimization Patterns](http://blog.pnkfx.org/blog/2019/11/18/crablang-bug-minimization-patterns/)" for how to create smaller examples.
 
   - type: textarea
     id: code
@@ -18,7 +18,7 @@ body:
       label: Code
       description: Please provide code or a link to a repository that can reproduce the problem
       placeholder: code
-      render: Rust
+      render: CrabLang
     validations:
       required: false
 
@@ -39,12 +39,12 @@ body:
   - type: textarea
     id: version
     attributes:
-      label: Rust Version
-      description: Please provide the `rustc` version, `rustc --version --verbose`
+      label: CrabLang Version
+      description: Please provide the `crablangc` version, `crablangc --version --verbose`
       placeholder: |
-        $ rustc --version --verbose
-        rustc 1.XX.Y (SHORTHASH DATE)
-        binary: rustc
+        $ crablangc --version --verbose
+        crablangc 1.XX.Y (SHORTHASH DATE)
+        binary: crablangc
         commit-hash: LONGHASHVALUE
         commit-date: DATE
         host: PLATFORMTRIPLE
@@ -58,7 +58,7 @@ body:
     id: output
     attributes:
       label: Current error output
-      description: Please provide the `rustc` output you see
+      description: Please provide the `crablangc` output you see
       placeholder: output
       render: Shell
     validations:
@@ -68,7 +68,7 @@ body:
     id: backtrace
     attributes:
       label: Backtrace
-      description: Include a backtrace in the code block by setting `RUST_BACKTRACE=full` in your environment, e.g. `RUST_BACKTRACE=full cargo build`
+      description: Include a backtrace in the code block by setting `CRABLANG_BACKTRACE=full` in your environment, e.g. `CRABLANG_BACKTRACE=full cargo build`
       render: Shell
     validations:
       required: true

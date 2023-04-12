@@ -1,17 +1,17 @@
 use clippy_utils::diagnostics::span_lint_hir;
-use rustc_hir::intravisit;
-use rustc_hir::{self, AssocItemKind, Body, FnDecl, HirId, HirIdSet, Impl, ItemKind, Node, Pat, PatKind};
-use rustc_hir_typeck::expr_use_visitor::{Delegate, ExprUseVisitor, PlaceBase, PlaceWithHirId};
-use rustc_infer::infer::TyCtxtInferExt;
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_middle::mir::FakeReadCause;
-use rustc_middle::ty::layout::LayoutOf;
-use rustc_middle::ty::{self, TraitRef, Ty};
-use rustc_session::{declare_tool_lint, impl_lint_pass};
-use rustc_span::def_id::LocalDefId;
-use rustc_span::source_map::Span;
-use rustc_span::symbol::kw;
-use rustc_target::spec::abi::Abi;
+use crablangc_hir::intravisit;
+use crablangc_hir::{self, AssocItemKind, Body, FnDecl, HirId, HirIdSet, Impl, ItemKind, Node, Pat, PatKind};
+use crablangc_hir_typeck::expr_use_visitor::{Delegate, ExprUseVisitor, PlaceBase, PlaceWithHirId};
+use crablangc_infer::infer::TyCtxtInferExt;
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_middle::mir::FakeReadCause;
+use crablangc_middle::ty::layout::LayoutOf;
+use crablangc_middle::ty::{self, TraitRef, Ty};
+use crablangc_session::{declare_tool_lint, impl_lint_pass};
+use crablangc_span::def_id::LocalDefId;
+use crablangc_span::source_map::Span;
+use crablangc_span::symbol::kw;
+use crablangc_target::spec::abi::Abi;
 
 #[derive(Copy, Clone)]
 pub struct BoxedLocal {
@@ -29,12 +29,12 @@ declare_clippy_lint! {
     /// into something.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// fn foo(x: Box<u32>) {}
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// fn foo(x: u32) {}
     /// ```
     #[clippy::version = "pre 1.29.0"]
@@ -67,7 +67,7 @@ impl<'tcx> LateLintPass<'tcx> for BoxedLocal {
         fn_def_id: LocalDefId,
     ) {
         if let Some(header) = fn_kind.header() {
-            if header.abi != Abi::Rust {
+            if header.abi != Abi::CrabLang {
                 return;
             }
         }
@@ -126,7 +126,7 @@ impl<'tcx> LateLintPass<'tcx> for BoxedLocal {
 }
 
 // TODO: Replace with Map::is_argument(..) when it's fixed
-fn is_argument(map: rustc_middle::hir::map::Map<'_>, id: HirId) -> bool {
+fn is_argument(map: crablangc_middle::hir::map::Map<'_>, id: HirId) -> bool {
     match map.find(id) {
         Some(Node::Pat(Pat {
             kind: PatKind::Binding(..),
@@ -180,7 +180,7 @@ impl<'a, 'tcx> Delegate<'tcx> for EscapeDelegate<'a, 'tcx> {
         }
     }
 
-    fn fake_read(&mut self, _: &rustc_hir_typeck::expr_use_visitor::PlaceWithHirId<'tcx>, _: FakeReadCause, _: HirId) {}
+    fn fake_read(&mut self, _: &crablangc_hir_typeck::expr_use_visitor::PlaceWithHirId<'tcx>, _: FakeReadCause, _: HirId) {}
 }
 
 impl<'a, 'tcx> EscapeDelegate<'a, 'tcx> {

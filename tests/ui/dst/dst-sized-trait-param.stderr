@@ -30,4 +30,4 @@ LL | trait Foo<T> : Sized { fn take(self, x: &T) { } } // Note: T is sized
 
 error: aborting due to 2 previous errors
 
-For more information about this error, try `rustc --explain E0277`.
+For more information about this error, try `crablangc --explain E0277`.

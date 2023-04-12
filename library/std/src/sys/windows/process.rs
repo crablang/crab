@@ -40,7 +40,7 @@ use libc::{c_void, EXIT_FAILURE, EXIT_SUCCESS};
 pub struct EnvKey {
     os_string: OsString,
     // This stores a UTF-16 encoded string to workaround the mismatch between
-    // Rust's OsString (WTF-8) and the Windows API string type (UTF-16).
+    // CrabLang's OsString (WTF-8) and the Windows API string type (UTF-16).
     // Normally converting on every API call is acceptable but here
     // `c::CompareStringOrdinal` will be called for every use of `==`.
     utf16: Vec<u16>,
@@ -376,7 +376,7 @@ impl fmt::Debug for Command {
 // This function may also append `.exe` to the name. The rationale for doing so is as follows:
 //
 // It is a very strong convention that Windows executables have the `exe` extension.
-// In Rust, it is common to omit this extension.
+// In CrabLang, it is common to omit this extension.
 // Therefore this functions first assumes `.exe` was intended.
 // It falls back to the plain file name if a full path is given and the extension is omitted
 // or if only a file name is given and it already contains an extension.
@@ -455,7 +455,7 @@ where
     Exists: FnMut(PathBuf) -> Option<Vec<u16>>,
 {
     // 1. Child paths
-    // This is for consistency with Rust's historic behaviour.
+    // This is for consistency with CrabLang's historic behaviour.
     if let Some(paths) = child_paths {
         for path in env::split_paths(paths).filter(|p| !p.as_os_str().is_empty()) {
             if let Some(path) = exists(path) {

@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 
 #![warn(clippy::match_like_matches_macro)]
 #![allow(
@@ -68,8 +68,8 @@ fn main() {
     }
     {
         // lint
-        // skip rustfmt to prevent removing block for first pattern
-        #[rustfmt::skip]
+        // skip crablangfmt to prevent removing block for first pattern
+        #[crablangfmt::skip]
         let _ans = match x {
             E::A(_) => {
                 true

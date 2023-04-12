@@ -1,5 +1,5 @@
 // ignore-tidy-tab
-// run-rustfix
+// run-crablangfix
 
 #![warn(unused_mut, unused_parens)] // UI tests pass `-A unused`—see Issue #43896
 
@@ -22,7 +22,7 @@ mod badlands {
     #[no_mangle] pub const DAUNTLESS: bool = true;
     //~^ ERROR const items should never be `#[no_mangle]`
     //~| HELP try a static value
-    #[allow(dead_code)] // for rustfix
+    #[allow(dead_code)] // for crablangfix
     #[no_mangle] pub fn val_jean<T>() {}
     //~^ WARN functions generic over types or consts must be mangled
     //~| HELP remove this attribute
@@ -31,7 +31,7 @@ mod badlands {
     #[no_mangle] pub(crate) const VETAR: bool = true;
     //~^ ERROR const items should never be `#[no_mangle]`
     //~| HELP try a static value
-    #[allow(dead_code)] // for rustfix
+    #[allow(dead_code)] // for crablangfix
     #[no_mangle] pub(crate) fn crossfield<T>() {}
     //~^ WARN functions generic over types or consts must be mangled
     //~| HELP remove this attribute
@@ -57,7 +57,7 @@ fn main() {
         //~| HELP remove this `mut`
         let d = Equinox { warp_factor: 9.975 };
         match d {
-            #[allow(unused_variables)] // for rustfix
+            #[allow(unused_variables)] // for crablangfix
             Equinox { warp_factor: warp_factor } => {}
             //~^ WARN this pattern is redundant
             //~| HELP use shorthand field pattern

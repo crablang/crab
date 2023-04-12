@@ -3,7 +3,7 @@ PRINT-DERIVE INPUT (DISPLAY): struct Foo
     val :
     [bool ;
     {
-        let a = #[rustc_dummy(first)] #[rustc_dummy(second)]
+        let a = #[crablangc_dummy(first)] #[crablangc_dummy(second)]
         { #! [allow(unused)] 30 } ; 0
     }]
 }
@@ -65,7 +65,7 @@ PRINT-DERIVE INPUT (DEBUG): TokenStream [
                                 delimiter: Bracket,
                                 stream: TokenStream [
                                     Ident {
-                                        ident: "rustc_dummy",
+                                        ident: "crablangc_dummy",
                                         span: $DIR/macro-rules-derive-cfg.rs:19:48: 19:59 (#4),
                                     },
                                     Group {
@@ -90,7 +90,7 @@ PRINT-DERIVE INPUT (DEBUG): TokenStream [
                                 delimiter: Bracket,
                                 stream: TokenStream [
                                     Ident {
-                                        ident: "rustc_dummy",
+                                        ident: "crablangc_dummy",
                                         span: $DIR/macro-rules-derive-cfg.rs:26:36: 26:47 (#0),
                                     },
                                     Group {

@@ -1,11 +1,11 @@
 use clippy_utils::diagnostics::span_lint_and_sugg;
 use clippy_utils::{higher, is_integer_literal, peel_blocks_with_stmt, SpanlessEq};
 use if_chain::if_chain;
-use rustc_ast::ast::LitKind;
-use rustc_errors::Applicability;
-use rustc_hir::{BinOpKind, Expr, ExprKind, QPath};
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_ast::ast::LitKind;
+use crablangc_errors::Applicability;
+use crablangc_hir::{BinOpKind, Expr, ExprKind, QPath};
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
 
 declare_clippy_lint! {
     /// ### What it does
@@ -15,7 +15,7 @@ declare_clippy_lint! {
     /// Simplicity and readability. Instead we can easily use an builtin function.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// # let end: u32 = 10;
     /// # let start: u32 = 5;
     /// let mut i: u32 = end - start;
@@ -26,7 +26,7 @@ declare_clippy_lint! {
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// # let end: u32 = 10;
     /// # let start: u32 = 5;
     /// let mut i: u32 = end - start;

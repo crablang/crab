@@ -1,4 +1,4 @@
-/// ```rust
+/// ```crablang
 /// assert_eq!(foo::foo(), 1);
 /// ```
 #[cfg(feature = "bar")]

@@ -31,7 +31,7 @@ error[E0658]: `let` expressions in this position are unstable
 LL |     if true && let 0 = 1 {}
    |                ^^^^^^^^^
    |
-   = note: see issue #53667 <https://github.com/rust-lang/rust/issues/53667> for more information
+   = note: see issue #53667 <https://github.com/crablang/crablang/issues/53667> for more information
    = help: add `#![feature(let_chains)]` to the crate attributes to enable
 
 error[E0658]: `let` expressions in this position are unstable
@@ -40,7 +40,7 @@ error[E0658]: `let` expressions in this position are unstable
 LL |     if let 0 = 1 && true {}
    |        ^^^^^^^^^
    |
-   = note: see issue #53667 <https://github.com/rust-lang/rust/issues/53667> for more information
+   = note: see issue #53667 <https://github.com/crablang/crablang/issues/53667> for more information
    = help: add `#![feature(let_chains)]` to the crate attributes to enable
 
 error[E0658]: `let` expressions in this position are unstable
@@ -49,7 +49,7 @@ error[E0658]: `let` expressions in this position are unstable
 LL |     if let Range { start: _, end: _ } = (true..true) && false {}
    |        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
    |
-   = note: see issue #53667 <https://github.com/rust-lang/rust/issues/53667> for more information
+   = note: see issue #53667 <https://github.com/crablang/crablang/issues/53667> for more information
    = help: add `#![feature(let_chains)]` to the crate attributes to enable
 
 error[E0658]: `let` expressions in this position are unstable
@@ -58,7 +58,7 @@ error[E0658]: `let` expressions in this position are unstable
 LL |     if let 1 = 1 && let true = { true } && false {
    |        ^^^^^^^^^
    |
-   = note: see issue #53667 <https://github.com/rust-lang/rust/issues/53667> for more information
+   = note: see issue #53667 <https://github.com/crablang/crablang/issues/53667> for more information
    = help: add `#![feature(let_chains)]` to the crate attributes to enable
 
 error[E0658]: `let` expressions in this position are unstable
@@ -67,7 +67,7 @@ error[E0658]: `let` expressions in this position are unstable
 LL |     if let 1 = 1 && let true = { true } && false {
    |                     ^^^^^^^^^^^^^^^^^^^
    |
-   = note: see issue #53667 <https://github.com/rust-lang/rust/issues/53667> for more information
+   = note: see issue #53667 <https://github.com/crablang/crablang/issues/53667> for more information
    = help: add `#![feature(let_chains)]` to the crate attributes to enable
 
 error[E0658]: `let` expressions in this position are unstable
@@ -76,7 +76,7 @@ error[E0658]: `let` expressions in this position are unstable
 LL |     while true && let 0 = 1 {}
    |                   ^^^^^^^^^
    |
-   = note: see issue #53667 <https://github.com/rust-lang/rust/issues/53667> for more information
+   = note: see issue #53667 <https://github.com/crablang/crablang/issues/53667> for more information
    = help: add `#![feature(let_chains)]` to the crate attributes to enable
 
 error[E0658]: `let` expressions in this position are unstable
@@ -85,7 +85,7 @@ error[E0658]: `let` expressions in this position are unstable
 LL |     while let 0 = 1 && true {}
    |           ^^^^^^^^^
    |
-   = note: see issue #53667 <https://github.com/rust-lang/rust/issues/53667> for more information
+   = note: see issue #53667 <https://github.com/crablang/crablang/issues/53667> for more information
    = help: add `#![feature(let_chains)]` to the crate attributes to enable
 
 error[E0658]: `let` expressions in this position are unstable
@@ -94,7 +94,7 @@ error[E0658]: `let` expressions in this position are unstable
 LL |     while let Range { start: _, end: _ } = (true..true) && false {}
    |           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
    |
-   = note: see issue #53667 <https://github.com/rust-lang/rust/issues/53667> for more information
+   = note: see issue #53667 <https://github.com/crablang/crablang/issues/53667> for more information
    = help: add `#![feature(let_chains)]` to the crate attributes to enable
 
 error[E0658]: `let` expressions in this position are unstable
@@ -103,7 +103,7 @@ error[E0658]: `let` expressions in this position are unstable
 LL |     #[cfg(FALSE)] (let 0 = 1);
    |                    ^^^^^^^^^
    |
-   = note: see issue #53667 <https://github.com/rust-lang/rust/issues/53667> for more information
+   = note: see issue #53667 <https://github.com/crablang/crablang/issues/53667> for more information
    = help: add `#![feature(let_chains)]` to the crate attributes to enable
 
 error[E0658]: `let` expressions in this position are unstable
@@ -112,9 +112,9 @@ error[E0658]: `let` expressions in this position are unstable
 LL |     noop_expr!((let 0 = 1));
    |                 ^^^^^^^^^
    |
-   = note: see issue #53667 <https://github.com/rust-lang/rust/issues/53667> for more information
+   = note: see issue #53667 <https://github.com/crablang/crablang/issues/53667> for more information
    = help: add `#![feature(let_chains)]` to the crate attributes to enable
 
 error: aborting due to 13 previous errors
 
-For more information about this error, try `rustc --explain E0658`.
+For more information about this error, try `crablangc --explain E0658`.

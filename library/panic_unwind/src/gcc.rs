@@ -61,7 +61,7 @@ struct Exception {
 pub unsafe fn panic(data: Box<dyn Any + Send>) -> u32 {
     let exception = Box::new(Exception {
         _uwe: uw::_Unwind_Exception {
-            exception_class: rust_exception_class(),
+            exception_class: crablang_exception_class(),
             exception_cleanup,
             private: [0; uw::unwinder_private_data_size],
         },
@@ -77,37 +77,37 @@ pub unsafe fn panic(data: Box<dyn Any + Send>) -> u32 {
     ) {
         unsafe {
             let _: Box<Exception> = Box::from_raw(exception as *mut Exception);
-            super::__rust_drop_panic();
+            super::__crablang_drop_panic();
         }
     }
 }
 
 pub unsafe fn cleanup(ptr: *mut u8) -> Box<dyn Any + Send> {
     let exception = ptr as *mut uw::_Unwind_Exception;
-    if (*exception).exception_class != rust_exception_class() {
+    if (*exception).exception_class != crablang_exception_class() {
         uw::_Unwind_DeleteException(exception);
-        super::__rust_foreign_exception();
+        super::__crablang_foreign_exception();
     }
 
     let exception = exception.cast::<Exception>();
     // Just access the canary field, avoid accessing the entire `Exception` as
-    // it can be a foreign Rust exception.
+    // it can be a foreign CrabLang exception.
     let canary = ptr::addr_of!((*exception).canary).read();
     if !ptr::eq(canary, &CANARY) {
-        // A foreign Rust exception, treat it slightly differently from other
+        // A foreign CrabLang exception, treat it slightly differently from other
         // foreign exceptions, because call into `_Unwind_DeleteException` will
-        // call into `__rust_drop_panic` which produces a confusing
-        // "Rust panic must be rethrown" message.
-        super::__rust_foreign_exception();
+        // call into `__crablang_drop_panic` which produces a confusing
+        // "CrabLang panic must be rethrown" message.
+        super::__crablang_foreign_exception();
     }
 
     let exception = Box::from_raw(exception as *mut Exception);
     exception.cause
 }
 
-// Rust's exception class identifier.  This is used by personality routines to
+// CrabLang's exception class identifier.  This is used by personality routines to
 // determine whether the exception was thrown by their own runtime.
-fn rust_exception_class() -> uw::_Unwind_Exception_Class {
+fn crablang_exception_class() -> uw::_Unwind_Exception_Class {
     // M O Z \0  R U S T -- vendor, language
     0x4d4f5a_00_52555354
 }

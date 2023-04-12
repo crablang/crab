@@ -65,7 +65,7 @@ impl io::Write for Stderr {
 pub const STDIN_BUF_SIZE: usize = crate::sys_common::io::DEFAULT_BUF_SIZE;
 
 pub fn is_ebadf(err: &io::Error) -> bool {
-    // FIXME: Rust normally maps Unix EBADF to `Uncategorized`
+    // FIXME: CrabLang normally maps Unix EBADF to `Uncategorized`
     err.raw_os_error() == Some(abi::Error::BrokenPipe as _)
 }
 
@@ -77,7 +77,7 @@ pub fn panic_output() -> Option<impl io::Write> {
 // for the target specification, so keep that in sync.
 #[cfg(not(test))]
 #[no_mangle]
-pub unsafe extern "C" fn __rust_print_err(m: *mut u8, s: i32) {
+pub unsafe extern "C" fn __crablang_print_err(m: *mut u8, s: i32) {
     if s < 0 {
         return;
     }

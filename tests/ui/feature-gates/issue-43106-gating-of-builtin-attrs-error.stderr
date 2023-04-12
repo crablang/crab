@@ -1,10 +1,10 @@
-error[E0658]: the `#[rustc_main]` attribute is used internally to specify test entry point function
+error[E0658]: the `#[crablangc_main]` attribute is used internally to specify test entry point function
   --> $DIR/issue-43106-gating-of-builtin-attrs-error.rs:14:1
    |
-LL | #![rustc_main]
+LL | #![crablangc_main]
    | ^^^^^^^^^^^^^^
    |
-   = help: add `#![feature(rustc_attrs)]` to the crate attributes to enable
+   = help: add `#![feature(crablangc_attrs)]` to the crate attributes to enable
 
 error: attribute must be of the form `#[inline]` or `#[inline(always|never)]`
   --> $DIR/issue-43106-gating-of-builtin-attrs-error.rs:40:5
@@ -13,7 +13,7 @@ LL |     #[inline = "2100"] fn f() { }
    |     ^^^^^^^^^^^^^^^^^^
    |
    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
-   = note: for more information, see issue #57571 <https://github.com/rust-lang/rust/issues/57571>
+   = note: for more information, see issue #57571 <https://github.com/crablang/crablang/issues/57571>
    = note: `#[deny(ill_formed_attribute_input)]` on by default
 
 error: `start` attribute can only be used on functions
@@ -135,15 +135,15 @@ help: perhaps you meant to use an outer attribute
 LL | #[macro_export]
    |
 
-error: `rustc_main` attribute cannot be used at crate level
+error: `crablangc_main` attribute cannot be used at crate level
   --> $DIR/issue-43106-gating-of-builtin-attrs-error.rs:14:1
    |
-LL | #![rustc_main]
+LL | #![crablangc_main]
    | ^^^^^^^^^^^^^^
    |
 help: perhaps you meant to use an outer attribute
    |
-LL | #[rustc_main]
+LL | #[crablangc_main]
    | ~~~~~~~~~~~~~
 
 error: `start` attribute cannot be used at crate level
@@ -307,4 +307,4 @@ LL |     #[repr(C)] impl S { }
 error: aborting due to 39 previous errors
 
 Some errors have detailed explanations: E0517, E0518, E0658.
-For more information about an error, try `rustc --explain E0517`.
+For more information about an error, try `crablangc --explain E0517`.

@@ -24,4 +24,4 @@ LL | |         }
 error: aborting due to 2 previous errors
 
 Some errors have detailed explanations: E0308, E0767.
-For more information about an error, try `rustc --explain E0308`.
+For more information about an error, try `crablangc --explain E0308`.

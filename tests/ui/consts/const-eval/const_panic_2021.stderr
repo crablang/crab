@@ -80,4 +80,4 @@ LL | const E_CORE: () = core::panic!("{}", MSG);
 
 error: aborting due to 10 previous errors
 
-For more information about this error, try `rustc --explain E0080`.
+For more information about this error, try `crablangc --explain E0080`.

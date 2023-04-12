@@ -26,7 +26,7 @@ pub fn shuffle_tests(shuffle_seed: u64, tests: &mut [(TestId, TestDescAndFn)]) {
     shuffle(&mut rng, tests);
 }
 
-// `shuffle` is from `rust-analyzer/src/cli/analysis_stats.rs`.
+// `shuffle` is from `crablang-analyzer/src/cli/analysis_stats.rs`.
 fn shuffle<T>(rng: &mut Rng, slice: &mut [T]) {
     for i in 0..slice.len() {
         randomize_first(rng, &mut slice[i..]);

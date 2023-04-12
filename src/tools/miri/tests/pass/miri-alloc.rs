@@ -5,7 +5,7 @@
 // windows linker section, we can run this test on windows again.
 //@ignore-target-windows: no-std not supported on Windows
 
-extern "Rust" {
+extern "CrabLang" {
     fn miri_alloc(size: usize, align: usize) -> *mut u8;
     fn miri_dealloc(ptr: *mut u8, size: usize, align: usize);
 }

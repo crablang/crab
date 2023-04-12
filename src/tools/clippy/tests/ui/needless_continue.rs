@@ -66,14 +66,14 @@ fn simple_loop2() {
     }
 }
 
-#[rustfmt::skip]
+#[crablangfmt::skip]
 fn simple_loop3() {
     loop {
         continue // should lint here
     }
 }
 
-#[rustfmt::skip]
+#[crablangfmt::skip]
 fn simple_loop4() {
     loop {
         println!("bleh");

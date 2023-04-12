@@ -1,9 +1,9 @@
 use std::sync::OnceLock;
 
-use rustc_ast::Attribute;
-use rustc_semver::RustcVersion;
-use rustc_session::Session;
-use rustc_span::Span;
+use crablangc_ast::Attribute;
+use crablangc_semver::CrabLangcVersion;
+use crablangc_session::Session;
+use crablangc_span::Span;
 
 use crate::attrs::get_unique_attr;
 
@@ -12,7 +12,7 @@ macro_rules! msrv_aliases {
         $($name:ident),* $(,)?
     })*) => {
         $($(
-        pub const $name: RustcVersion = RustcVersion::new($major, $minor, $patch);
+        pub const $name: CrabLangcVersion = CrabLangcVersion::new($major, $minor, $patch);
         )*)*
     };
 }
@@ -49,12 +49,12 @@ msrv_aliases! {
     1,16,0 { STR_REPEAT }
 }
 
-fn parse_msrv(msrv: &str, sess: Option<&Session>, span: Option<Span>) -> Option<RustcVersion> {
-    if let Ok(version) = RustcVersion::parse(msrv) {
+fn parse_msrv(msrv: &str, sess: Option<&Session>, span: Option<Span>) -> Option<CrabLangcVersion> {
+    if let Ok(version) = CrabLangcVersion::parse(msrv) {
         return Some(version);
     } else if let Some(sess) = sess {
         if let Some(span) = span {
-            sess.span_err(span, format!("`{msrv}` is not a valid Rust version"));
+            sess.span_err(span, format!("`{msrv}` is not a valid CrabLang version"));
         }
     }
     None
@@ -63,24 +63,24 @@ fn parse_msrv(msrv: &str, sess: Option<&Session>, span: Option<Span>) -> Option<
 /// Tracks the current MSRV from `clippy.toml`, `Cargo.toml` or set via `#[clippy::msrv]`
 #[derive(Debug, Clone, Default)]
 pub struct Msrv {
-    stack: Vec<RustcVersion>,
+    stack: Vec<CrabLangcVersion>,
 }
 
 impl Msrv {
-    fn new(initial: Option<RustcVersion>) -> Self {
+    fn new(initial: Option<CrabLangcVersion>) -> Self {
         Self {
             stack: Vec::from_iter(initial),
         }
     }
 
     fn read_inner(conf_msrv: &Option<String>, sess: &Session) -> Self {
-        let cargo_msrv = std::env::var("CARGO_PKG_RUST_VERSION")
+        let cargo_msrv = std::env::var("CARGO_PKG_CRABLANG_VERSION")
             .ok()
             .and_then(|v| parse_msrv(&v, None, None));
         let clippy_msrv = conf_msrv.as_ref().and_then(|s| {
             parse_msrv(s, None, None).or_else(|| {
                 sess.err(format!(
-                    "error reading Clippy's configuration file. `{s}` is not a valid Rust version"
+                    "error reading Clippy's configuration file. `{s}` is not a valid CrabLang version"
                 ));
                 None
             })
@@ -99,7 +99,7 @@ impl Msrv {
         Self::new(clippy_msrv.or(cargo_msrv))
     }
 
-    /// Set the initial MSRV from the Clippy config file or from Cargo due to the `rust-version`
+    /// Set the initial MSRV from the Clippy config file or from Cargo due to the `crablang-version`
     /// field in `Cargo.toml`
     ///
     /// Returns a `&'static Msrv` as `Copy` types are more easily passed to the
@@ -110,15 +110,15 @@ impl Msrv {
         PARSED.get_or_init(|| Self::read_inner(conf_msrv, sess))
     }
 
-    pub fn current(&self) -> Option<RustcVersion> {
+    pub fn current(&self) -> Option<CrabLangcVersion> {
         self.stack.last().copied()
     }
 
-    pub fn meets(&self, required: RustcVersion) -> bool {
+    pub fn meets(&self, required: CrabLangcVersion) -> bool {
         self.current().map_or(true, |version| version.meets(required))
     }
 
-    fn parse_attr(sess: &Session, attrs: &[Attribute]) -> Option<RustcVersion> {
+    fn parse_attr(sess: &Session, attrs: &[Attribute]) -> Option<CrabLangcVersion> {
         if let Some(msrv_attr) = get_unique_attr(sess, attrs, "msrv") {
             if let Some(msrv) = msrv_attr.value_str() {
                 return parse_msrv(&msrv.to_string(), Some(sess), Some(msrv_attr.span));

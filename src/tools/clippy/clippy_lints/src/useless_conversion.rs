@@ -4,12 +4,12 @@ use clippy_utils::sugg::Sugg;
 use clippy_utils::ty::{is_copy, is_type_diagnostic_item, same_type_and_consts};
 use clippy_utils::{get_parent_expr, is_trait_method, match_def_path, path_to_local, paths};
 use if_chain::if_chain;
-use rustc_errors::Applicability;
-use rustc_hir::{BindingAnnotation, Expr, ExprKind, HirId, MatchSource, Node, PatKind};
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_middle::ty;
-use rustc_session::{declare_tool_lint, impl_lint_pass};
-use rustc_span::sym;
+use crablangc_errors::Applicability;
+use crablangc_hir::{BindingAnnotation, Expr, ExprKind, HirId, MatchSource, Node, PatKind};
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_middle::ty;
+use crablangc_session::{declare_tool_lint, impl_lint_pass};
+use crablangc_span::sym;
 
 declare_clippy_lint! {
     /// ### What it does
@@ -20,13 +20,13 @@ declare_clippy_lint! {
     /// Redundant code.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// // format!() returns a `String`
     /// let s: String = format!("hello").into();
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// let s: String = format!("hello");
     /// ```
     #[clippy::version = "1.45.0"]

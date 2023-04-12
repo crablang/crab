@@ -50,7 +50,7 @@ pub mod pipes {
         }
     }
 
-    mod rusti {
+    mod crablangi {
       pub fn atomic_xchg(_dst: &mut isize, _src: isize) -> isize { panic!(); }
       pub fn atomic_xchg_acq(_dst: &mut isize, _src: isize) -> isize { panic!(); }
       pub fn atomic_xchg_rel(_dst: &mut isize, _src: isize) -> isize { panic!(); }
@@ -64,13 +64,13 @@ pub mod pipes {
 
     pub fn swap_state_acq(dst: &mut state, src: state) -> state {
         unsafe {
-            transmute(rusti::atomic_xchg_acq(transmute(dst), src as isize))
+            transmute(crablangi::atomic_xchg_acq(transmute(dst), src as isize))
         }
     }
 
     pub fn swap_state_rel(dst: &mut state, src: state) -> state {
         unsafe {
-            transmute(rusti::atomic_xchg_rel(transmute(dst), src as isize))
+            transmute(crablangi::atomic_xchg_rel(transmute(dst), src as isize))
         }
     }
 

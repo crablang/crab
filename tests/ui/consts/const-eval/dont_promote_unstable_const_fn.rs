@@ -5,8 +5,8 @@
 
 #![feature(staged_api)]
 
-#[stable(feature = "rust1", since = "1.0.0")]
-#[rustc_const_unstable(feature="foo", issue = "none")]
+#[stable(feature = "crablang1", since = "1.0.0")]
+#[crablangc_const_unstable(feature="foo", issue = "none")]
 const fn foo() -> u32 { 42 }
 
 fn meh() -> u32 { 42 }

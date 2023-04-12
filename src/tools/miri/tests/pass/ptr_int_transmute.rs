@@ -1,7 +1,7 @@
 //@revisions: stack tree
 //@[tree]compile-flags: -Zmiri-tree-borrows
 // Test what happens when we read parts of a pointer.
-// Related to <https://github.com/rust-lang/rust/issues/69488>.
+// Related to <https://github.com/crablang/crablang/issues/69488>.
 fn ptr_partial_read() {
     let x = 13;
     let y = &x;

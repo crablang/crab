@@ -1,5 +1,5 @@
-// run-rustfix
-#![feature(rustc_private)]
+// run-crablangfix
+#![feature(crablangc_private)]
 #![deny(clippy::internal)]
 #![allow(
     clippy::borrow_deref_ref,
@@ -8,14 +8,14 @@
     clippy::missing_clippy_version_attribute
 )]
 
-extern crate rustc_span;
+extern crate crablangc_span;
 
-use rustc_span::symbol::{Ident, Symbol};
+use crablangc_span::symbol::{Ident, Symbol};
 
 fn main() {
-    Symbol::intern("foo") == rustc_span::sym::clippy;
-    Symbol::intern("foo") == rustc_span::symbol::kw::SelfLower;
-    Symbol::intern("foo") != rustc_span::symbol::kw::SelfUpper;
-    Ident::empty().name == rustc_span::sym::clippy;
-    rustc_span::sym::clippy == Ident::empty().name;
+    Symbol::intern("foo") == crablangc_span::sym::clippy;
+    Symbol::intern("foo") == crablangc_span::symbol::kw::SelfLower;
+    Symbol::intern("foo") != crablangc_span::symbol::kw::SelfUpper;
+    Ident::empty().name == crablangc_span::sym::clippy;
+    crablangc_span::sym::clippy == Ident::empty().name;
 }

@@ -5,7 +5,7 @@ authors = ["Miri Team"]
 edition = "2018"
 
 [lib]
-# cargo-miri used to handle `cdylib` crate-type specially (https://github.com/rust-lang/miri/pull/1577).
+# cargo-miri used to handle `cdylib` crate-type specially (https://github.com/crablang/miri/pull/1577).
 crate-type = ["cdylib"]
 
 [dependencies]

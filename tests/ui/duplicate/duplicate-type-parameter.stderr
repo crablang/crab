@@ -63,4 +63,4 @@ LL | impl<T,T> Qux<T,T> for Option<T> {}
 error: aborting due to 8 previous errors
 
 Some errors have detailed explanations: E0207, E0403.
-For more information about an error, try `rustc --explain E0207`.
+For more information about an error, try `crablangc --explain E0207`.

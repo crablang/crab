@@ -21,8 +21,8 @@ macro_rules! tuple_impls {
     (@impl $( $T:ident )+) => {
         maybe_tuple_doc! {
             $($T)+ @
-            #[stable(feature = "rust1", since = "1.0.0")]
-            #[rustc_const_unstable(feature = "const_cmp", issue = "92391")]
+            #[stable(feature = "crablang1", since = "1.0.0")]
+            #[crablangc_const_unstable(feature = "const_cmp", issue = "92391")]
             impl<$($T: ~const PartialEq),+> const PartialEq for ($($T,)+)
             where
                 last_type!($($T,)+): ?Sized
@@ -40,7 +40,7 @@ macro_rules! tuple_impls {
 
         maybe_tuple_doc! {
             $($T)+ @
-            #[stable(feature = "rust1", since = "1.0.0")]
+            #[stable(feature = "crablang1", since = "1.0.0")]
             impl<$($T: Eq),+> Eq for ($($T,)+)
             where
                 last_type!($($T,)+): ?Sized
@@ -49,8 +49,8 @@ macro_rules! tuple_impls {
 
         maybe_tuple_doc! {
             $($T)+ @
-            #[stable(feature = "rust1", since = "1.0.0")]
-            #[rustc_const_unstable(feature = "const_cmp", issue = "92391")]
+            #[stable(feature = "crablang1", since = "1.0.0")]
+            #[crablangc_const_unstable(feature = "const_cmp", issue = "92391")]
             impl<$($T: ~const PartialOrd + ~const PartialEq),+> const PartialOrd for ($($T,)+)
             where
                 last_type!($($T,)+): ?Sized
@@ -80,8 +80,8 @@ macro_rules! tuple_impls {
 
         maybe_tuple_doc! {
             $($T)+ @
-            #[stable(feature = "rust1", since = "1.0.0")]
-            #[rustc_const_unstable(feature = "const_cmp", issue = "92391")]
+            #[stable(feature = "crablang1", since = "1.0.0")]
+            #[crablangc_const_unstable(feature = "const_cmp", issue = "92391")]
             impl<$($T: ~const Ord),+> const Ord for ($($T,)+)
             where
                 last_type!($($T,)+): ?Sized
@@ -95,8 +95,8 @@ macro_rules! tuple_impls {
 
         maybe_tuple_doc! {
             $($T)+ @
-            #[stable(feature = "rust1", since = "1.0.0")]
-            #[rustc_const_unstable(feature = "const_default_impls", issue = "87864")]
+            #[stable(feature = "crablang1", since = "1.0.0")]
+            #[crablangc_const_unstable(feature = "const_default_impls", issue = "87864")]
             impl<$($T: ~const Default),+> const Default for ($($T,)+) {
                 #[inline]
                 fn default() -> ($($T,)+) {

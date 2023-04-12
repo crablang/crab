@@ -5,12 +5,12 @@ use clippy_utils::higher;
 use clippy_utils::visitors::is_local_used;
 use clippy_utils::{path_to_local_id, peel_blocks_with_stmt};
 use if_chain::if_chain;
-use rustc_errors::Applicability;
-use rustc_hir::def::{DefKind, Res};
-use rustc_hir::{Expr, Pat, PatKind};
-use rustc_lint::LateContext;
-use rustc_middle::ty;
-use rustc_span::source_map::Span;
+use crablangc_errors::Applicability;
+use crablangc_hir::def::{DefKind, Res};
+use crablangc_hir::{Expr, Pat, PatKind};
+use crablangc_lint::LateContext;
+use crablangc_middle::ty;
+use crablangc_span::source_map::Span;
 
 /// Check for unnecessary `if let` usage in a for loop where only the `Some` or `Ok` variant of the
 /// iterator element is used.

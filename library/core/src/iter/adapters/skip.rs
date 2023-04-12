@@ -12,7 +12,7 @@ use crate::ops::{ControlFlow, Try};
 /// [`Iterator`]: trait.Iterator.html
 #[derive(Clone, Debug)]
 #[must_use = "iterators are lazy and do nothing unless consumed"]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub struct Skip<I> {
     iter: I,
     n: usize,
@@ -24,7 +24,7 @@ impl<I> Skip<I> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<I> Iterator for Skip<I>
 where
     I: Iterator,
@@ -128,7 +128,7 @@ where
     }
 
     #[inline]
-    #[rustc_inherit_overflow_checks]
+    #[crablangc_inherit_overflow_checks]
     fn advance_by(&mut self, mut n: usize) -> Result<(), NonZeroUsize> {
         let skip_inner = self.n;
         let skip_and_advance = skip_inner.saturating_add(n);
@@ -153,7 +153,7 @@ where
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<I> ExactSizeIterator for Skip<I> where I: ExactSizeIterator {}
 
 #[stable(feature = "double_ended_skip_iterator", since = "1.9.0")]

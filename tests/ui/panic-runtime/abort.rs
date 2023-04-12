@@ -35,7 +35,7 @@ fn main() {
 
     // ARMv6 hanges while printing the backtrace, see #41004
     if cfg!(target_arch = "arm") && cfg!(target_env = "gnu") {
-        cmd.env("RUST_BACKTRACE", "0");
+        cmd.env("CRABLANG_BACKTRACE", "0");
     }
 
     let s = cmd.status();

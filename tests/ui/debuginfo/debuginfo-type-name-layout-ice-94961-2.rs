@@ -1,7 +1,7 @@
 // Make sure the compiler does not ICE when trying to generate the debuginfo name of a type that
 // causes a layout error.
 // This version of the test already ICE'd before the commit that introduce the ICE described in
-// https://github.com/rust-lang/rust/issues/94961.
+// https://github.com/crablang/crablang/issues/94961.
 
 // compile-flags:-C debuginfo=2
 // build-fail

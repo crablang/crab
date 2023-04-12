@@ -1,7 +1,7 @@
 use clippy_utils::diagnostics::span_lint_and_help;
-use rustc_hir::{Pat, PatKind, QPath};
-use rustc_lint::LateContext;
-use rustc_middle::ty;
+use crablangc_hir::{Pat, PatKind, QPath};
+use crablangc_lint::LateContext;
+use crablangc_middle::ty;
 
 use super::REST_PAT_IN_FULLY_BOUND_STRUCTS;
 

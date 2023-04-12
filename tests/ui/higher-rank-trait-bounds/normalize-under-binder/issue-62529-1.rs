@@ -40,7 +40,7 @@ impl<Q> Annotate<Q> {
 
 // This function annotate a closure so it can have Higher-Rank Lifetime Bounds
 //
-// See 'annotate' workaround: https://github.com/rust-lang/rust/issues/58052
+// See 'annotate' workaround: https://github.com/crablang/crablang/issues/58052
 fn annotate<F, Q>(_q: Annotate<Q>, func: F) -> impl Execute + 'static
 where
     F: for<'r> FnOnce(<<Q as Inject>::I as FamilyLt<'r>>::Out) + 'static,

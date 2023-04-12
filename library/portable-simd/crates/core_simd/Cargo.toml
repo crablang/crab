@@ -2,8 +2,8 @@
 name = "core_simd"
 version = "0.1.0"
 edition = "2021"
-homepage = "https://github.com/rust-lang/portable-simd"
-repository = "https://github.com/rust-lang/portable-simd"
+homepage = "https://github.com/crablang/portable-simd"
+repository = "https://github.com/crablang/portable-simd"
 keywords = ["core", "simd", "intrinsics"]
 categories = ["hardware-support", "no-std"]
 license = "MIT OR Apache-2.0"

@@ -1,19 +1,19 @@
 /// Custom code within the destructor.
 ///
-/// When a value is no longer needed, Rust will run a "destructor" on that value.
+/// When a value is no longer needed, CrabLang will run a "destructor" on that value.
 /// The most common way that a value is no longer needed is when it goes out of
 /// scope. Destructors may still run in other circumstances, but we're going to
 /// focus on scope for the examples here. To learn about some of those other cases,
 /// please see [the reference] section on destructors.
 ///
-/// [the reference]: https://doc.rust-lang.org/reference/destructors.html
+/// [the reference]: https://doc.crablang.org/reference/destructors.html
 ///
 /// This destructor consists of two components:
 /// - A call to `Drop::drop` for that value, if this special `Drop` trait is implemented for its type.
 /// - The automatically generated "drop glue" which recursively calls the destructors
 ///     of all the fields of this value.
 ///
-/// As Rust automatically calls the destructors of all contained fields,
+/// As CrabLang automatically calls the destructors of all contained fields,
 /// you don't have to implement `Drop` in most cases. But there are some cases where
 /// it is useful, for example for types which directly manage a resource.
 /// That resource may be memory, it may be a file descriptor, it may be a network socket.
@@ -25,7 +25,7 @@
 ///
 /// To see destructors in action, let's take a look at the following program:
 ///
-/// ```rust
+/// ```crablang
 /// struct HasDrop;
 ///
 /// impl Drop for HasDrop {
@@ -51,7 +51,7 @@
 /// }
 /// ```
 ///
-/// Rust will first call `Drop::drop` for `_x` and then for both `_x.one` and `_x.two`,
+/// CrabLang will first call `Drop::drop` for `_x` and then for both `_x.one` and `_x.two`,
 /// meaning that running this will print
 ///
 /// ```text
@@ -74,7 +74,7 @@
 ///
 /// Because `Drop::drop` is used to clean up a value, it may be dangerous to use this value after
 /// the method has been called. As `Drop::drop` does not take ownership of its input,
-/// Rust prevents misuse by not allowing you to call `Drop::drop` directly.
+/// CrabLang prevents misuse by not allowing you to call `Drop::drop` directly.
 ///
 /// In other words, if you tried to explicitly call `Drop::drop` in the above example, you'd get a compiler error.
 ///
@@ -92,7 +92,7 @@
 ///
 /// Unlike for structs, local variables are dropped in reverse order:
 ///
-/// ```rust
+/// ```crablang
 /// struct Foo;
 ///
 /// impl Drop for Foo {
@@ -124,7 +124,7 @@
 ///
 /// Please see [the reference] for the full rules.
 ///
-/// [the reference]: https://doc.rust-lang.org/reference/destructors.html
+/// [the reference]: https://doc.crablang.org/reference/destructors.html
 ///
 /// ## `Copy` and `Drop` are exclusive
 ///
@@ -133,7 +133,7 @@
 /// hard to predict when, and how often destructors will be executed. As such,
 /// these types cannot have destructors.
 #[lang = "drop"]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[const_trait]
 pub trait Drop {
     /// Executes the destructor for this type.
@@ -161,6 +161,6 @@ pub trait Drop {
     /// [`panic!`]: crate::panic!
     /// [`mem::drop`]: drop
     /// [`ptr::drop_in_place`]: crate::ptr::drop_in_place
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     fn drop(&mut self);
 }

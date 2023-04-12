@@ -31,7 +31,7 @@ ARCH=$1
 TARGET=$ARCH-linux-musl
 
 # Don't depend on the mirrors of sabotage linux that musl-cross-make uses.
-LINUX_HEADERS_SITE=https://ci-mirrors.rust-lang.org/rustc/sabotage-linux-tarballs
+LINUX_HEADERS_SITE=https://ci-mirrors.crablang.org/crablangc/sabotage-linux-tarballs
 
 OUTPUT=/usr/local
 shift

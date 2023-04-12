@@ -14,7 +14,7 @@ endif
 
 OUT_FILE=$(TMPDIR)/with_deployment_target.dylib
 all:
-	env MACOSX_DEPLOYMENT_TARGET=10.9 $(RUSTC) with_deployment_target.rs -o $(OUT_FILE)
+	env MACOSX_DEPLOYMENT_TARGET=10.9 $(CRABLANGC) with_deployment_target.rs -o $(OUT_FILE)
 # XXX: The check is for either the x86_64 minimum OR the aarch64 minimum (M1 starts at macOS 11).
 # They also use different load commands, so we let that change with each too. The aarch64 check
 # isn't as robust as the x86 one, but testing both seems unneeded.

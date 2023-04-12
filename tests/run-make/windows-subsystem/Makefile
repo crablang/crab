@@ -2,5 +2,5 @@
 include ../tools.mk
 
 all:
-	$(RUSTC) windows.rs
-	$(RUSTC) console.rs
+	$(CRABLANGC) windows.rs
+	$(CRABLANGC) console.rs

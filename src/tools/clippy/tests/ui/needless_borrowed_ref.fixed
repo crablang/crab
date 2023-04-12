@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 
 #![warn(clippy::needless_borrowed_reference)]
 #![allow(

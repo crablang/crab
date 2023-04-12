@@ -167,10 +167,10 @@ mod issue_3739 {
 
 /// Issue #5542
 ///
-/// This shouldn't warn for `boxed_local` as it is intended to called from non-Rust code.
+/// This shouldn't warn for `boxed_local` as it is intended to called from non-CrabLang code.
 pub extern "C" fn do_not_warn_me(_c_pointer: Box<String>) -> () {}
 
-#[rustfmt::skip] // Forces rustfmt to not add ABI
+#[crablangfmt::skip] // Forces crablangfmt to not add ABI
 pub extern fn do_not_warn_me_no_abi(_c_pointer: Box<String>) -> () {}
 
 // Issue #4804 - default implementation in trait

@@ -2,8 +2,8 @@
 
 The tracking issues for this feature are:
 
-* [#39699](https://github.com/rust-lang/rust/issues/39699).
-* [#89653](https://github.com/rust-lang/rust/issues/89653).
+* [#39699](https://github.com/crablang/crablang/issues/39699).
+* [#89653](https://github.com/crablang/crablang/issues/89653).
 
 ------------------------
 
@@ -29,7 +29,7 @@ To enable a sanitizer compile with `-Zsanitizer=address`,`-Zsanitizer=cfi`,
 `-Zsanitizer=memtag`, `-Zsanitizer=shadow-call-stack`, or `-Zsanitizer=thread`.
 You might also need the `--target` and `build-std` flags. Example:
 ```shell
-$ RUSTFLAGS=-Zsanitizer=address cargo build -Zbuild-std --target x86_64-unknown-linux-gnu
+$ CRABLANGFLAGS=-Zsanitizer=address cargo build -Zbuild-std --target x86_64-unknown-linux-gnu
 ```
 
 # AddressSanitizer
@@ -67,7 +67,7 @@ See the [Clang AddressSanitizer documentation][clang-asan] for more details.
 
 Stack buffer overflow:
 
-```rust
+```crablang
 fn main() {
     let xs = [0, 1, 2, 3];
     let _y = unsafe { *xs.as_ptr().offset(4) };
@@ -75,7 +75,7 @@ fn main() {
 ```
 
 ```shell
-$ export RUSTFLAGS=-Zsanitizer=address RUSTDOCFLAGS=-Zsanitizer=address
+$ export CRABLANGFLAGS=-Zsanitizer=address CRABLANGDOCFLAGS=-Zsanitizer=address
 $ cargo run -Zbuild-std --target x86_64-unknown-linux-gnu
 ==37882==ERROR: AddressSanitizer: stack-buffer-overflow on address 0x7ffe400e6250 at pc 0x5609a841fb20 bp 0x7ffe400e6210 sp 0x7ffe400e6208
 READ of size 4 at 0x7ffe400e6250 thread T0
@@ -127,7 +127,7 @@ Shadow byte legend (one shadow byte represents 8 application bytes):
 
 Use of a stack object after its scope has already ended:
 
-```rust
+```crablang
 static mut P: *mut usize = std::ptr::null_mut();
 
 fn main() {
@@ -142,12 +142,12 @@ fn main() {
 ```
 
 ```shell
-$ export RUSTFLAGS=-Zsanitizer=address RUSTDOCFLAGS=-Zsanitizer=address
+$ export CRABLANGFLAGS=-Zsanitizer=address CRABLANGDOCFLAGS=-Zsanitizer=address
 $ cargo run -Zbuild-std --target x86_64-unknown-linux-gnu
 =================================================================
 ==39249==ERROR: AddressSanitizer: stack-use-after-scope on address 0x7ffc7ed3e1a0 at pc 0x55c98b262a8e bp 0x7ffc7ed3e050 sp 0x7ffc7ed3e048
 WRITE of size 8 at 0x7ffc7ed3e1a0 thread T0
-    #0 0x55c98b262a8d in core::ptr::write_volatile::he21f1df5a82f329a /.../src/rust/src/libcore/ptr/mod.rs:1048:5
+    #0 0x55c98b262a8d in core::ptr::write_volatile::he21f1df5a82f329a /.../src/crablang/src/libcore/ptr/mod.rs:1048:5
     #1 0x55c98b262cd2 in example::main::h628ffc6626ed85b2 /.../src/main.rs:9:9
     ...
 
@@ -158,7 +158,7 @@ Address 0x7ffc7ed3e1a0 is located in stack of thread T0 at offset 32 in frame
     [32, 40) 'x' (line 6) <== Memory access at offset 32 is inside this variable
 HINT: this may be a false positive if your program uses some custom stack unwind mechanism, swapcontext or vfork
       (longjmp and C++ exceptions *are* supported)
-SUMMARY: AddressSanitizer: stack-use-after-scope /.../src/rust/src/libcore/ptr/mod.rs:1048:5 in core::ptr::write_volatile::he21f1df5a82f329a
+SUMMARY: AddressSanitizer: stack-use-after-scope /.../src/crablang/src/libcore/ptr/mod.rs:1048:5 in core::ptr::write_volatile::he21f1df5a82f329a
 Shadow bytes around the buggy address:
   0x10000fd9fbe0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
   0x10000fd9fbf0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
@@ -196,16 +196,16 @@ Shadow byte legend (one shadow byte represents 8 application bytes):
 
 # ControlFlowIntegrity
 
-The LLVM Control Flow Integrity (CFI) support in the Rust compiler initially
-provides forward-edge control flow protection for Rust-compiled code only by
+The LLVM Control Flow Integrity (CFI) support in the CrabLang compiler initially
+provides forward-edge control flow protection for CrabLang-compiled code only by
 aggregating function pointers in groups identified by their return and parameter
 types.
 
-Forward-edge control flow protection for C or C++ and Rust -compiled code "mixed
-binaries" (i.e., for when C or C++ and Rust -compiled code share the same
+Forward-edge control flow protection for C or C++ and CrabLang -compiled code "mixed
+binaries" (i.e., for when C or C++ and CrabLang -compiled code share the same
 virtual address space) will be provided in later work by defining and using
 compatible type identifiers (see Type metadata in the design document in the
-tracking issue [#89653](https://github.com/rust-lang/rust/issues/89653)).
+tracking issue [#89653](https://github.com/crablang/crablang/issues/89653)).
 
 LLVM CFI can be enabled with -Zsanitizer=cfi and requires LTO (i.e., -Clto).
 
@@ -213,7 +213,7 @@ See the [Clang ControlFlowIntegrity documentation][clang-cfi] for more details.
 
 ## Example
 
-```rust,ignore (making doc tests pass cross-platform is hard)
+```crablang,ignore (making doc tests pass cross-platform is hard)
 #![feature(naked_functions)]
 
 use std::arch::asm;
@@ -267,14 +267,14 @@ fn main() {
 }
 ```
 Fig. 1. Modified example from the [Advanced Functions and
-Closures][rust-book-ch19-05] chapter of the [The Rust Programming
-Language][rust-book] book.
+Closures][crablang-book-ch19-05] chapter of the [The CrabLang Programming
+Language][crablang-book] book.
 
 ```shell
 $ cargo run --release
-   Compiling rust-cfi-1 v0.1.0 (/home/rcvalle/rust-cfi-1)
+   Compiling crablang-cfi-1 v0.1.0 (/home/rcvalle/crablang-cfi-1)
     Finished release [optimized] target(s) in 0.76s
-     Running `target/release/rust-cfi-1`
+     Running `target/release/crablang-cfi-1`
 The answer is: 12
 With CFI enabled, you should not see the next answer
 The next answer is: 14
@@ -283,10 +283,10 @@ $
 Fig. 2. Build and execution of the modified example with LLVM CFI disabled.
 
 ```shell
-$ RUSTFLAGS="-Zsanitizer=cfi -Cembed-bitcode=yes -Clto" cargo run --release
-   Compiling rust-cfi-1 v0.1.0 (/home/rcvalle/rust-cfi-1)
+$ CRABLANGFLAGS="-Zsanitizer=cfi -Cembed-bitcode=yes -Clto" cargo run --release
+   Compiling crablang-cfi-1 v0.1.0 (/home/rcvalle/crablang-cfi-1)
     Finished release [optimized] target(s) in 3.39s
-     Running `target/release/rust-cfi-1`
+     Running `target/release/crablang-cfi-1`
 The answer is: 12
 With CFI enabled, you should not see the next answer
 Illegal instruction
@@ -298,7 +298,7 @@ When LLVM CFI is enabled, if there are any attempts to change/hijack control
 flow using an indirect branch/call to an invalid destination, the execution is
 terminated (see Fig. 3).
 
-```rust
+```crablang
 use std::mem;
 
 fn add_one(x: i32) -> i32 {
@@ -327,14 +327,14 @@ fn main() {
 }
 ```
 Fig. 4. Another modified example from the [Advanced Functions and
-Closures][rust-book-ch19-05] chapter of the [The Rust Programming
-Language][rust-book] book.
+Closures][crablang-book-ch19-05] chapter of the [The CrabLang Programming
+Language][crablang-book] book.
 
 ```shell
 $ cargo run --release
-   Compiling rust-cfi-2 v0.1.0 (/home/rcvalle/rust-cfi-2)
+   Compiling crablang-cfi-2 v0.1.0 (/home/rcvalle/crablang-cfi-2)
     Finished release [optimized] target(s) in 0.76s
-     Running `target/release/rust-cfi-2`
+     Running `target/release/crablang-cfi-2`
 The answer is: 12
 With CFI enabled, you should not see the next answer
 The next answer is: 14
@@ -343,10 +343,10 @@ $
 Fig. 5. Build and execution of the modified example with LLVM CFI disabled.
 
 ```shell
-$ RUSTFLAGS="-Zsanitizer=cfi -Cembed-bitcode=yes -Clto" cargo run --release
-   Compiling rust-cfi-2 v0.1.0 (/home/rcvalle/rust-cfi-2)
+$ CRABLANGFLAGS="-Zsanitizer=cfi -Cembed-bitcode=yes -Clto" cargo run --release
+   Compiling crablang-cfi-2 v0.1.0 (/home/rcvalle/crablang-cfi-2)
     Finished release [optimized] target(s) in 3.38s
-     Running `target/release/rust-cfi-2`
+     Running `target/release/crablang-cfi-2`
 The answer is: 12
 With CFI enabled, you should not see the next answer
 Illegal instruction
@@ -359,7 +359,7 @@ flow using an indirect branch/call to a function with different number of
 parameters than arguments intended/passed in the call/branch site, the
 execution is also terminated (see Fig. 6).
 
-```rust
+```crablang
 use std::mem;
 
 fn add_one(x: i32) -> i32 {
@@ -388,14 +388,14 @@ fn main() {
 }
 ```
 Fig. 7. Another modified example from the [Advanced Functions and
-Closures][rust-book-ch19-05] chapter of the [The Rust Programming
-Language][rust-book] book.
+Closures][crablang-book-ch19-05] chapter of the [The CrabLang Programming
+Language][crablang-book] book.
 
 ```shell
  cargo run --release
-   Compiling rust-cfi-3 v0.1.0 (/home/rcvalle/rust-cfi-3)
+   Compiling crablang-cfi-3 v0.1.0 (/home/rcvalle/crablang-cfi-3)
     Finished release [optimized] target(s) in 0.74s
-     Running `target/release/rust-cfi-3`
+     Running `target/release/crablang-cfi-3`
 The answer is: 12
 With CFI enabled, you should not see the next answer
 The next answer is: 14
@@ -404,10 +404,10 @@ $
 Fig. 8. Build and execution of the modified example with LLVM CFI disabled.
 
 ```shell
-$ RUSTFLAGS="-Zsanitizer=cfi -Cembed-bitcode=yes -Clto" cargo run --release
-   Compiling rust-cfi-3 v0.1.0 (/home/rcvalle/rust-cfi-3)
+$ CRABLANGFLAGS="-Zsanitizer=cfi -Cembed-bitcode=yes -Clto" cargo run --release
+   Compiling crablang-cfi-3 v0.1.0 (/home/rcvalle/crablang-cfi-3)
     Finished release [optimized] target(s) in 3.40s
-     Running `target/release/rust-cfi-3`
+     Running `target/release/crablang-cfi-3`
 The answer is: 12
 With CFI enabled, you should not see the next answer
 Illegal instruction
@@ -420,8 +420,8 @@ flow using an indirect branch/call to a function with different return and
 parameter types than the return type expected and arguments intended/passed in
 the call/branch site, the execution is also terminated (see Fig. 9).
 
-[rust-book-ch19-05]: ../../book/ch19-05-advanced-functions-and-closures.html
-[rust-book]: ../../book/title-page.html
+[crablang-book-ch19-05]: ../../book/ch19-05-advanced-functions-and-closures.html
+[crablang-book]: ../../book/title-page.html
 
 # HWAddressSanitizer
 
@@ -443,7 +443,7 @@ See the [Clang HWAddressSanitizer documentation][clang-hwasan] for more details.
 
 Heap buffer overflow:
 
-```rust
+```crablang
 fn main() {
     let xs = vec![0, 1, 2, 3];
     let _y = unsafe { *xs.as_ptr().offset(4) };
@@ -451,7 +451,7 @@ fn main() {
 ```
 
 ```shell
-$ rustc main.rs -Zsanitizer=hwaddress -C target-feature=+tagged-globals -C
+$ crablangc main.rs -Zsanitizer=hwaddress -C target-feature=+tagged-globals -C
 linker=aarch64-linux-gnu-gcc -C link-arg=-fuse-ld=lld --target
 aarch64-unknown-linux-gnu
 ```
@@ -507,17 +507,17 @@ SUMMARY: HWAddressSanitizer: tag-mismatch (/.../main+0x54a94)
 
 # KernelControlFlowIntegrity
 
-The LLVM Kernel Control Flow Integrity (CFI) support to the Rust compiler
+The LLVM Kernel Control Flow Integrity (CFI) support to the CrabLang compiler
 initially provides forward-edge control flow protection for operating systems
-kernels for Rust-compiled code only by aggregating function pointers in groups
+kernels for CrabLang-compiled code only by aggregating function pointers in groups
 identified by their return and parameter types. (See [LLVM commit cff5bef "KCFI
 sanitizer"](https://github.com/llvm/llvm-project/commit/cff5bef948c91e4919de8a5fb9765e0edc13f3de).)
 
-Forward-edge control flow protection for C or C++ and Rust -compiled code "mixed
-binaries" (i.e., for when C or C++ and Rust -compiled code share the same
+Forward-edge control flow protection for C or C++ and CrabLang -compiled code "mixed
+binaries" (i.e., for when C or C++ and CrabLang -compiled code share the same
 virtual address space) will be provided in later work by defining and using
 compatible type identifiers (see Type metadata in the design document in the
-tracking issue [#89653](https://github.com/rust-lang/rust/issues/89653)).
+tracking issue [#89653](https://github.com/crablang/crablang/issues/89653)).
 
 LLVM KCFI can be enabled with `-Zsanitizer=kcfi`.
 
@@ -585,7 +585,7 @@ instruments the standard library, and is strictly necessary for the correct
 operation of the tool. The `-Zsanitizer-memory-track-origins` enables tracking
 of the origins of uninitialized memory:
 
-```rust
+```crablang
 use std::mem::MaybeUninit;
 
 fn main() {
@@ -599,15 +599,15 @@ fn main() {
 
 ```shell
 $ export \
-  RUSTFLAGS='-Zsanitizer=memory -Zsanitizer-memory-track-origins' \
-  RUSTDOCFLAGS='-Zsanitizer=memory -Zsanitizer-memory-track-origins'
+  CRABLANGFLAGS='-Zsanitizer=memory -Zsanitizer-memory-track-origins' \
+  CRABLANGDOCFLAGS='-Zsanitizer=memory -Zsanitizer-memory-track-origins'
 $ cargo clean
 $ cargo run -Zbuild-std --target x86_64-unknown-linux-gnu
 ==9416==WARNING: MemorySanitizer: use-of-uninitialized-value
-    #0 0x560c04f7488a in core::fmt::num::imp::fmt_u64::haa293b0b098501ca $RUST/build/x86_64-unknown-linux-gnu/stage1/lib/rustlib/src/rust/src/libcore/fmt/num.rs:202:16
+    #0 0x560c04f7488a in core::fmt::num::imp::fmt_u64::haa293b0b098501ca $CRABLANG/build/x86_64-unknown-linux-gnu/stage1/lib/crablanglib/src/crablang/src/libcore/fmt/num.rs:202:16
 ...
   Uninitialized value was stored to memory at
-    #0 0x560c04ae898a in __msan_memcpy.part.0 $RUST/src/llvm-project/compiler-rt/lib/msan/msan_interceptors.cc:1558:3
+    #0 0x560c04ae898a in __msan_memcpy.part.0 $CRABLANG/src/llvm-project/compiler-rt/lib/msan/msan_interceptors.cc:1558:3
     #1 0x560c04b2bf88 in memory::main::hd2333c1899d997f5 $CWD/src/main.rs:6:16
 
   Uninitialized value was created by an allocation of 'a' in the stack frame of function '_ZN6memory4main17hd2333c1899d997f5E'
@@ -667,7 +667,7 @@ See the [Clang ThreadSanitizer documentation][clang-tsan] for more details.
 
 ## Example
 
-```rust
+```crablang
 static mut A: usize = 0;
 
 fn main() {
@@ -681,7 +681,7 @@ fn main() {
 ```
 
 ```shell
-$ export RUSTFLAGS=-Zsanitizer=thread RUSTDOCFLAGS=-Zsanitizer=thread
+$ export CRABLANGFLAGS=-Zsanitizer=thread CRABLANGDOCFLAGS=-Zsanitizer=thread
 $ cargo run -Zbuild-std --target x86_64-unknown-linux-gnu
 ==================
 WARNING: ThreadSanitizer: data race (pid=10574)
@@ -716,10 +716,10 @@ functionality][build-std].
 Use of sanitizers together with build scripts and procedural macros is
 technically possible, but in almost all cases it would be best avoided.  This
 is especially true for procedural macros which would require an instrumented
-version of rustc.
+version of crablangc.
 
 In more practical terms when using cargo always remember to pass `--target`
-flag, so that rustflags will not be applied to build scripts and procedural
+flag, so that crablangflags will not be applied to build scripts and procedural
 macros.
 
 # Symbolizing the Reports

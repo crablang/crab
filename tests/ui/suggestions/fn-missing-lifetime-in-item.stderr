@@ -4,7 +4,7 @@ error[E0261]: use of undeclared lifetime name `'a`
 LL | struct S1<F: Fn(&i32, &i32) -> &'a i32>(F);
    |                                 ^^ undeclared lifetime
    |
-   = note: for more information on higher-ranked polymorphism, visit https://doc.rust-lang.org/nomicon/hrtb.html
+   = note: for more information on higher-ranked polymorphism, visit https://doc.crablang.org/nomicon/hrtb.html
 help: consider making the bound lifetime-generic with a new `'a` lifetime
    |
 LL | struct S1<F: for<'a> Fn(&i32, &i32) -> &'a i32>(F);
@@ -45,4 +45,4 @@ LL | const C: Option<Box<dyn for<'a> Fn(&usize, &usize) -> &'a usize>> = None;
 error: aborting due to 4 previous errors
 
 Some errors have detailed explanations: E0106, E0261, E0582.
-For more information about an error, try `rustc --explain E0106`.
+For more information about an error, try `crablangc --explain E0106`.

@@ -1,9 +1,9 @@
 use clippy_utils::diagnostics::span_lint_and_note;
 use clippy_utils::ty::is_copy;
-use rustc_hir::{Impl, Item, ItemKind};
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_session::{declare_lint_pass, declare_tool_lint};
-use rustc_span::sym;
+use crablangc_hir::{Impl, Item, ItemKind};
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_span::sym;
 
 use if_chain::if_chain;
 
@@ -17,7 +17,7 @@ declare_clippy_lint! {
     /// iterator combinators.
     ///
     /// ### Example
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// #[derive(Copy, Clone)]
     /// struct Countdown(u8);
     ///

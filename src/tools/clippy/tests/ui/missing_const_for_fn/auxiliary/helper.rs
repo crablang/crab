@@ -4,5 +4,5 @@
 #![stable(feature = "1", since = "1.0.0")]
 
 #[stable(feature = "1", since = "1.0.0")]
-#[rustc_const_unstable(feature = "foo", issue = "none")]
+#[crablangc_const_unstable(feature = "foo", issue = "none")]
 pub const fn unstably_const_fn() {}

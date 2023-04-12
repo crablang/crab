@@ -6,11 +6,11 @@ use clippy_utils::{
     is_res_lang_ctor, is_unit_expr, path_to_local, peel_blocks_with_stmt, peel_ref_operators, SpanlessEq,
 };
 use if_chain::if_chain;
-use rustc_errors::MultiSpan;
-use rustc_hir::LangItem::OptionNone;
-use rustc_hir::{Arm, Expr, Guard, HirId, Let, Pat, PatKind};
-use rustc_lint::LateContext;
-use rustc_span::Span;
+use crablangc_errors::MultiSpan;
+use crablangc_hir::LangItem::OptionNone;
+use crablangc_hir::{Arm, Expr, Guard, HirId, Let, Pat, PatKind};
+use crablangc_lint::LateContext;
+use crablangc_span::Span;
 
 use super::COLLAPSIBLE_MATCH;
 

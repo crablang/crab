@@ -3,8 +3,8 @@
 // check-pass
 
 struct S (
-    #[rustfmt::skip]
-    #[rustfmt::skip]
+    #[crablangfmt::skip]
+    #[crablangfmt::skip]
     u8
 );
 

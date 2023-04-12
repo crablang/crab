@@ -5,7 +5,7 @@ LL |     let Either::A(()) = foo();
    |         ^^^^^^^^^^^^^ pattern `Either::B(_)` not covered
    |
    = note: `let` bindings require an "irrefutable pattern", like a `struct` or an `enum` with only one variant
-   = note: for more information, visit https://doc.rust-lang.org/book/ch18-02-refutability.html
+   = note: for more information, visit https://doc.crablang.org/book/ch18-02-refutability.html
 note: `Either<(), !>` defined here
   --> $DIR/exhaustive_patterns.rs:10:6
    |
@@ -22,4 +22,4 @@ LL |     if let Either::A(()) = foo() { todo!() };
 
 error: aborting due to previous error
 
-For more information about this error, try `rustc --explain E0005`.
+For more information about this error, try `crablangc --explain E0005`.

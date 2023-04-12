@@ -1,4 +1,4 @@
-#![stable(feature = "rust1", since = "1.0.0")]
+#![stable(feature = "crablang1", since = "1.0.0")]
 
 //! Thread-safe reference-counting pointers.
 //!
@@ -88,7 +88,7 @@ macro_rules! acquire {
 /// pointer to a given allocation is destroyed, the value stored in that allocation (often
 /// referred to as "inner value") is also dropped.
 ///
-/// Shared references in Rust disallow mutation by default, and `Arc` is no
+/// Shared references in CrabLang disallow mutation by default, and `Arc` is no
 /// exception: you cannot generally obtain a mutable reference to something
 /// inside an `Arc`. If you need to mutate through an `Arc`, use
 /// [`Mutex`][mutex], [`RwLock`][rwlock], or one of the [`Atomic`][atomic]
@@ -197,7 +197,7 @@ macro_rules! acquire {
 /// [`RefCell<T>`]: core::cell::RefCell
 /// [`std::sync`]: ../../std/sync/index.html
 /// [`Arc::clone(&from)`]: Arc::clone
-/// [fully qualified syntax]: https://doc.rust-lang.org/book/ch19-03-advanced-traits.html#fully-qualified-syntax-for-disambiguation-calling-methods-with-the-same-name
+/// [fully qualified syntax]: https://doc.crablang.org/book/ch19-03-advanced-traits.html#fully-qualified-syntax-for-disambiguation-calling-methods-with-the-same-name
 ///
 /// # Examples
 ///
@@ -247,16 +247,16 @@ macro_rules! acquire {
 /// counting in general.
 ///
 /// [rc_examples]: crate::rc#examples
-#[cfg_attr(not(test), rustc_diagnostic_item = "Arc")]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[cfg_attr(not(test), crablangc_diagnostic_item = "Arc")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub struct Arc<T: ?Sized> {
     ptr: NonNull<ArcInner<T>>,
     phantom: PhantomData<ArcInner<T>>,
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 unsafe impl<T: ?Sized + Sync + Send> Send for Arc<T> {}
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 unsafe impl<T: ?Sized + Sync + Send> Sync for Arc<T> {}
 
 #[stable(feature = "catch_unwind", since = "1.9.0")]
@@ -365,7 +365,7 @@ impl<T> Arc<T> {
     /// ```
     #[cfg(not(no_global_oom_handling))]
     #[inline]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn new(data: T) -> Arc<T> {
         // Start the weak pointer count as 1 which is the weak pointer that's
         // held by all the strong pointers (kinda), see std/rc.rs for more info
@@ -796,7 +796,7 @@ impl<T> Arc<T> {
     /// y_thread.join().unwrap();
     /// ```
     #[inline]
-    #[stable(feature = "arc_into_inner", since = "CURRENT_RUSTC_VERSION")]
+    #[stable(feature = "arc_into_inner", since = "CURRENT_CRABLANGC_VERSION")]
     pub fn into_inner(this: Self) -> Option<T> {
         // Make sure that the ordinary `Drop` implementation isn’t called as well
         let mut this = mem::ManuallyDrop::new(this);
@@ -1472,7 +1472,7 @@ impl<T: Copy> ArcFromSlice<T> for Arc<[T]> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: ?Sized> Clone for Arc<T> {
     /// Makes a clone of the `Arc` pointer.
     ///
@@ -1526,7 +1526,7 @@ impl<T: ?Sized> Clone for Arc<T> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: ?Sized> Deref for Arc<T> {
     type Target = T;
 
@@ -1819,7 +1819,7 @@ impl<T: ?Sized> Arc<T> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 unsafe impl<#[may_dangle] T: ?Sized> Drop for Arc<T> {
     /// Drops the `Arc`.
     ///
@@ -1882,7 +1882,7 @@ unsafe impl<#[may_dangle] T: ?Sized> Drop for Arc<T> {
         // situations. See [2].
         //
         // [1]: (www.boost.org/doc/libs/1_55_0/doc/html/atomic/usage_examples.html)
-        // [2]: (https://github.com/rust-lang/rust/pull/41714)
+        // [2]: (https://github.com/crablang/crablang/pull/41714)
         acquire!(self.inner().strong);
 
         unsafe {
@@ -1982,7 +1982,7 @@ impl<T> Weak<T> {
     /// assert!(empty.upgrade().is_none());
     /// ```
     #[stable(feature = "downgraded_weak", since = "1.10.0")]
-    #[rustc_const_unstable(feature = "const_weak_new", issue = "95091", reason = "recently added")]
+    #[crablangc_const_unstable(feature = "const_weak_new", issue = "95091", reason = "recently added")]
     #[must_use]
     pub const fn new() -> Weak<T> {
         Weak { ptr: unsafe { NonNull::new_unchecked(ptr::invalid_mut::<ArcInner<T>>(usize::MAX)) } }
@@ -2394,13 +2394,13 @@ unsafe impl<#[may_dangle] T: ?Sized> Drop for Weak<T> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 trait ArcEqIdent<T: ?Sized + PartialEq> {
     fn eq(&self, other: &Arc<T>) -> bool;
     fn ne(&self, other: &Arc<T>) -> bool;
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: ?Sized + PartialEq> ArcEqIdent<T> for Arc<T> {
     #[inline]
     default fn eq(&self, other: &Arc<T>) -> bool {
@@ -2419,7 +2419,7 @@ impl<T: ?Sized + PartialEq> ArcEqIdent<T> for Arc<T> {
 /// the same value, than two `&T`s.
 ///
 /// We can only do this when `T: Eq` as a `PartialEq` might be deliberately irreflexive.
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: ?Sized + crate::rc::MarkerEq> ArcEqIdent<T> for Arc<T> {
     #[inline]
     fn eq(&self, other: &Arc<T>) -> bool {
@@ -2432,7 +2432,7 @@ impl<T: ?Sized + crate::rc::MarkerEq> ArcEqIdent<T> for Arc<T> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: ?Sized + PartialEq> PartialEq for Arc<T> {
     /// Equality for two `Arc`s.
     ///
@@ -2478,7 +2478,7 @@ impl<T: ?Sized + PartialEq> PartialEq for Arc<T> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: ?Sized + PartialOrd> PartialOrd for Arc<T> {
     /// Partial comparison for two `Arc`s.
     ///
@@ -2566,7 +2566,7 @@ impl<T: ?Sized + PartialOrd> PartialOrd for Arc<T> {
         *(*self) >= *(*other)
     }
 }
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: ?Sized + Ord> Ord for Arc<T> {
     /// Comparison for two `Arc`s.
     ///
@@ -2586,24 +2586,24 @@ impl<T: ?Sized + Ord> Ord for Arc<T> {
         (**self).cmp(&**other)
     }
 }
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: ?Sized + Eq> Eq for Arc<T> {}
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: ?Sized + fmt::Display> fmt::Display for Arc<T> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         fmt::Display::fmt(&**self, f)
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: ?Sized + fmt::Debug> fmt::Debug for Arc<T> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         fmt::Debug::fmt(&**self, f)
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: ?Sized> fmt::Pointer for Arc<T> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         fmt::Pointer::fmt(&(&**self as *const T), f)
@@ -2611,7 +2611,7 @@ impl<T: ?Sized> fmt::Pointer for Arc<T> {
 }
 
 #[cfg(not(no_global_oom_handling))]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: Default> Default for Arc<T> {
     /// Creates a new `Arc<T>`, with the `Default` value for `T`.
     ///
@@ -2628,7 +2628,7 @@ impl<T: Default> Default for Arc<T> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: ?Sized + Hash> Hash for Arc<T> {
     fn hash<H: Hasher>(&self, state: &mut H) {
         (**self).hash(state)
@@ -2645,7 +2645,7 @@ impl<T> From<T> for Arc<T> {
     /// calling `Arc::new(t)`.
     ///
     /// # Example
-    /// ```rust
+    /// ```crablang
     /// # use std::sync::Arc;
     /// let x = 5;
     /// let arc = Arc::new(5);
@@ -2768,7 +2768,7 @@ where
     ///
     /// # Example
     ///
-    /// ```rust
+    /// ```crablang
     /// # use std::sync::Arc;
     /// # use std::borrow::Cow;
     /// let cow: Cow<str> = Cow::Borrowed("eggplant");
@@ -2828,7 +2828,7 @@ impl<T> iter::FromIterator<T> for Arc<[T]> {
     /// In the general case, collecting into `Arc<[T]>` is done by first
     /// collecting into a `Vec<T>`. That is, when writing the following:
     ///
-    /// ```rust
+    /// ```crablang
     /// # use std::sync::Arc;
     /// let evens: Arc<[u8]> = (0..10).filter(|&x| x % 2 == 0).collect();
     /// # assert_eq!(&*evens, &[0, 2, 4, 6, 8]);
@@ -2836,7 +2836,7 @@ impl<T> iter::FromIterator<T> for Arc<[T]> {
     ///
     /// this behaves as if we wrote:
     ///
-    /// ```rust
+    /// ```crablang
     /// # use std::sync::Arc;
     /// let evens: Arc<[u8]> = (0..10).filter(|&x| x % 2 == 0)
     ///     .collect::<Vec<_>>() // The first set of allocations happens here.
@@ -2849,10 +2849,10 @@ impl<T> iter::FromIterator<T> for Arc<[T]> {
     ///
     /// ## Iterators of known length
     ///
-    /// When your `Iterator` implements `TrustedLen` and is of an exact size,
+    /// When your `Iterator` implements `TcrablangedLen` and is of an exact size,
     /// a single allocation will be made for the `Arc<[T]>`. For example:
     ///
-    /// ```rust
+    /// ```crablang
     /// # use std::sync::Arc;
     /// let evens: Arc<[u8]> = (0..10).collect(); // Just a single allocation happens here.
     /// # assert_eq!(&*evens, &*(0..10).collect::<Vec<_>>());
@@ -2875,15 +2875,15 @@ impl<T, I: Iterator<Item = T>> ToArcSlice<T> for I {
 }
 
 #[cfg(not(no_global_oom_handling))]
-impl<T, I: iter::TrustedLen<Item = T>> ToArcSlice<T> for I {
+impl<T, I: iter::TcrablangedLen<Item = T>> ToArcSlice<T> for I {
     fn to_arc_slice(self) -> Arc<[T]> {
-        // This is the case for a `TrustedLen` iterator.
+        // This is the case for a `TcrablangedLen` iterator.
         let (low, high) = self.size_hint();
         if let Some(high) = high {
             debug_assert_eq!(
                 low,
                 high,
-                "TrustedLen iterator's size hint is not exact: {:?}",
+                "TcrablangedLen iterator's size hint is not exact: {:?}",
                 (low, high)
             );
 
@@ -2892,7 +2892,7 @@ impl<T, I: iter::TrustedLen<Item = T>> ToArcSlice<T> for I {
                 Arc::from_iter_exact(self, low)
             }
         } else {
-            // TrustedLen contract guarantees that `upper_bound == None` implies an iterator
+            // TcrablangedLen contract guarantees that `upper_bound == None` implies an iterator
             // length exceeding `usize::MAX`.
             // The default implementation would collect into a vec which would panic.
             // Thus we panic here immediately without invoking `Vec` code.
@@ -2901,7 +2901,7 @@ impl<T, I: iter::TrustedLen<Item = T>> ToArcSlice<T> for I {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: ?Sized> borrow::Borrow<T> for Arc<T> {
     fn borrow(&self) -> &T {
         &**self

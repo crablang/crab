@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 
 pub fn f() -> String {  //~ ERROR mismatched types
     0u8;

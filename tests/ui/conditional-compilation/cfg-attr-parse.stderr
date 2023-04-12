@@ -4,7 +4,7 @@ error: malformed `cfg_attr` attribute input
 LL | #[cfg_attr()]
    | ^^^^^^^^^^^^^ help: missing condition and attribute: `#[cfg_attr(condition, attribute, other_attribute, ...)]`
    |
-   = note: for more information, visit <https://doc.rust-lang.org/reference/conditional-compilation.html#the-cfg_attr-attribute>
+   = note: for more information, visit <https://doc.crablang.org/reference/conditional-compilation.html#the-cfg_attr-attribute>
 
 error: expected `,`, found end of `cfg_attr` input
   --> $DIR/cfg-attr-parse.rs:8:17
@@ -13,7 +13,7 @@ LL | #[cfg_attr(all())]
    |                 ^ expected `,`
    |
    = help: the valid syntax is `#[cfg_attr(condition, attribute, other_attribute, ...)]`
-   = note: for more information, visit <https://doc.rust-lang.org/reference/conditional-compilation.html#the-cfg_attr-attribute>
+   = note: for more information, visit <https://doc.crablang.org/reference/conditional-compilation.html#the-cfg_attr-attribute>
 
 error: expected identifier, found `,`
   --> $DIR/cfg-attr-parse.rs:16:18
@@ -22,7 +22,7 @@ LL | #[cfg_attr(all(),,)]
    |                  ^ expected identifier
    |
    = help: the valid syntax is `#[cfg_attr(condition, attribute, other_attribute, ...)]`
-   = note: for more information, visit <https://doc.rust-lang.org/reference/conditional-compilation.html#the-cfg_attr-attribute>
+   = note: for more information, visit <https://doc.crablang.org/reference/conditional-compilation.html#the-cfg_attr-attribute>
 
 error: expected identifier, found `,`
   --> $DIR/cfg-attr-parse.rs:28:28
@@ -31,7 +31,7 @@ LL | #[cfg_attr(all(), must_use,,)]
    |                            ^ expected identifier
    |
    = help: the valid syntax is `#[cfg_attr(condition, attribute, other_attribute, ...)]`
-   = note: for more information, visit <https://doc.rust-lang.org/reference/conditional-compilation.html#the-cfg_attr-attribute>
+   = note: for more information, visit <https://doc.crablang.org/reference/conditional-compilation.html#the-cfg_attr-attribute>
 
 error: expected identifier, found `,`
   --> $DIR/cfg-attr-parse.rs:40:40
@@ -40,7 +40,7 @@ LL | #[cfg_attr(all(), must_use, deprecated,,)]
    |                                        ^ expected identifier
    |
    = help: the valid syntax is `#[cfg_attr(condition, attribute, other_attribute, ...)]`
-   = note: for more information, visit <https://doc.rust-lang.org/reference/conditional-compilation.html#the-cfg_attr-attribute>
+   = note: for more information, visit <https://doc.crablang.org/reference/conditional-compilation.html#the-cfg_attr-attribute>
 
 error: wrong `cfg_attr` delimiters
   --> $DIR/cfg-attr-parse.rs:44:11
@@ -60,7 +60,7 @@ LL | #[cfg_attr[all(),,]]
    |                  ^ expected identifier
    |
    = help: the valid syntax is `#[cfg_attr(condition, attribute, other_attribute, ...)]`
-   = note: for more information, visit <https://doc.rust-lang.org/reference/conditional-compilation.html#the-cfg_attr-attribute>
+   = note: for more information, visit <https://doc.crablang.org/reference/conditional-compilation.html#the-cfg_attr-attribute>
 
 error: wrong `cfg_attr` delimiters
   --> $DIR/cfg-attr-parse.rs:50:11
@@ -80,7 +80,7 @@ LL | #[cfg_attr{all(),,}]
    |                  ^ expected identifier
    |
    = help: the valid syntax is `#[cfg_attr(condition, attribute, other_attribute, ...)]`
-   = note: for more information, visit <https://doc.rust-lang.org/reference/conditional-compilation.html#the-cfg_attr-attribute>
+   = note: for more information, visit <https://doc.crablang.org/reference/conditional-compilation.html#the-cfg_attr-attribute>
 
 error: aborting due to 9 previous errors
 

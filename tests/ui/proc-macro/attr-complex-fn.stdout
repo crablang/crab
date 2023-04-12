@@ -76,7 +76,7 @@ PRINT-ATTR INPUT (DEBUG): TokenStream [
         span: $DIR/attr-complex-fn.rs:19:42: 19:44 (#0),
     },
 ]
-PRINT-ATTR INPUT (DISPLAY): impl < T > MyTrait < T > for MyStruct < { true } > { #! [rustc_dummy] }
+PRINT-ATTR INPUT (DISPLAY): impl < T > MyTrait < T > for MyStruct < { true } > { #! [crablangc_dummy] }
 PRINT-ATTR INPUT (DEBUG): TokenStream [
     Ident {
         ident: "impl",
@@ -159,7 +159,7 @@ PRINT-ATTR INPUT (DEBUG): TokenStream [
                 delimiter: Bracket,
                 stream: TokenStream [
                     Ident {
-                        ident: "rustc_dummy",
+                        ident: "crablangc_dummy",
                         span: $DIR/attr-complex-fn.rs:23:8: 23:19 (#0),
                     },
                 ],

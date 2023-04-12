@@ -1,7 +1,7 @@
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 
-#[rustc_outlives]
-struct Foo<'a, T: Iterator> { //~ ERROR rustc_outlives
+#[crablangc_outlives]
+struct Foo<'a, T: Iterator> { //~ ERROR crablangc_outlives
     bar: &'a T::Item
 }
 

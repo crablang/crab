@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 
 fn get_vowel_count(string: &str) -> usize {
     string

@@ -1,7 +1,7 @@
 // check-pass
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 
-#[rustc_main]
+#[crablangc_main]
 fn actual_main() {}
 
 mod foo {

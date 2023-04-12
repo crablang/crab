@@ -2,7 +2,7 @@
 
 The tracking issue for this feature is: [#65991]
 
-[#65991]: https://github.com/rust-lang/rust/issues/65991
+[#65991]: https://github.com/crablang/crablang/issues/65991
 
 ------------------------
 
@@ -10,7 +10,7 @@ The `trait_upcasting` feature adds support for trait upcasting coercion. This al
 trait object of type `dyn Bar` to be cast to a trait object of type `dyn Foo`
 so long as `Bar: Foo`.
 
-```rust,edition2018
+```crablang,edition2018
 #![feature(trait_upcasting)]
 #![allow(incomplete_features)]
 

@@ -6,6 +6,6 @@ include ../tools.mk
 # used in the inner functions should each appear only once in the generated IR.
 
 all:
-	$(RUSTC) foo.rs --emit=llvm-ir
+	$(CRABLANGC) foo.rs --emit=llvm-ir
 	[ "$$(grep -c 'ret i32 8675309' "$(TMPDIR)/foo.ll")" -eq "1" ]
 	[ "$$(grep -c 'ret i32 11235813' "$(TMPDIR)/foo.ll")" -eq "1" ]

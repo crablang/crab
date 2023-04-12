@@ -3,11 +3,11 @@ use clippy_utils::source::{snippet_opt, snippet_with_applicability};
 use clippy_utils::ty::{is_type_diagnostic_item, match_type};
 use clippy_utils::{match_def_path, paths};
 use if_chain::if_chain;
-use rustc_errors::Applicability;
-use rustc_hir::{Expr, ExprKind};
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_session::{declare_lint_pass, declare_tool_lint};
-use rustc_span::sym;
+use crablangc_errors::Applicability;
+use crablangc_hir::{Expr, ExprKind};
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_span::sym;
 
 declare_clippy_lint! {
     /// ### What it does
@@ -18,7 +18,7 @@ declare_clippy_lint! {
     /// unintended file permissions.
     ///
     /// ### Example
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// use std::fs::OpenOptions;
     /// use std::os::unix::fs::OpenOptionsExt;
     ///
@@ -26,7 +26,7 @@ declare_clippy_lint! {
     /// options.mode(644);
     /// ```
     /// Use instead:
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// use std::fs::OpenOptions;
     /// use std::os::unix::fs::OpenOptionsExt;
     ///

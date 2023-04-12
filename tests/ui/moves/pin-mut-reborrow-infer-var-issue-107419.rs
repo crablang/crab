@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 use std::pin::Pin;
 
 fn foo(_: &mut ()) {}

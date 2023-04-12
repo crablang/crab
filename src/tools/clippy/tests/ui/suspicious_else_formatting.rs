@@ -10,7 +10,7 @@ fn foo() -> bool {
     true
 }
 
-#[rustfmt::skip]
+#[crablangfmt::skip]
 fn main() {
     // weird `else` formatting:
     if foo() {

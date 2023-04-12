@@ -1,4 +1,4 @@
-error[]8;;https://doc.rust-lang.org/error_codes/E0308.htmlE0308]8;;]: mismatched types
+error[]8;;https://doc.crablang.org/error_codes/E0308.htmlE0308]8;;]: mismatched types
   --> $DIR/terminal_urls.rs:3:9
    |
 LL |     let () = 4;
@@ -8,4 +8,4 @@ LL |     let () = 4;
 
 error: aborting due to previous error
 
-For more information about this error, try `rustc --explain E0308`.
+For more information about this error, try `crablangc --explain E0308`.

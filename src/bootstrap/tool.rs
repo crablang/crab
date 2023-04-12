@@ -42,7 +42,7 @@ fn tooling_output(
 ) -> String {
     match mode {
         // depends on compiler stage, different to host compiler
-        Mode::ToolRustc => {
+        Mode::ToolCrabLangc => {
             if host == target {
                 format!("Building tool {} (stage{} -> stage{})", tool, build_stage, build_stage + 1)
             } else {
@@ -90,9 +90,9 @@ impl Step for ToolBuild {
         let is_optional_tool = self.is_optional_tool;
 
         match self.mode {
-            Mode::ToolRustc => {
+            Mode::ToolCrabLangc => {
                 builder.ensure(compile::Std::new(compiler, compiler.host));
-                builder.ensure(compile::Rustc::new(compiler, target));
+                builder.ensure(compile::CrabLangc::new(compiler, target));
             }
             Mode::ToolStd => builder.ensure(compile::Std::new(compiler, target)),
             Mode::ToolBootstrap => {} // uses downloaded stage0 compiler libs
@@ -124,7 +124,7 @@ impl Step for ToolBuild {
         let is_expected = compile::stream_cargo(builder, cargo, vec![], &mut |msg| {
             // Only care about big things like the RLS/Cargo for now
             match tool {
-                "rls" | "cargo" | "clippy-driver" | "miri" | "rustfmt" => {}
+                "rls" | "cargo" | "clippy-driver" | "miri" | "crablangfmt" => {}
 
                 _ => return,
             }
@@ -243,7 +243,7 @@ impl Step for ToolBuild {
             eprintln!();
             eprintln!(
                 "to fix this you will probably want to edit the local \
-                      src/tools/rustc-workspace-hack/Cargo.toml crate, as \
+                      src/tools/crablangc-workspace-hack/Cargo.toml crate, as \
                       that will update the dependency graph to ensure that \
                       these crates all share the same feature set"
             );
@@ -266,7 +266,7 @@ impl Step for ToolBuild {
             // compiletest confuses HTML tidy with the in-tree tidy. Name the in-tree tidy something
             // different so the problem doesn't come up.
             if tool == "tidy" {
-                tool = "rust-tidy";
+                tool = "crablang-tidy";
             }
             let cargo_out = builder.cargo_out(compiler, self.mode, target).join(exe(tool, target));
             let bin = builder.tools_dir(compiler).join(exe(tool, target));
@@ -296,10 +296,10 @@ pub fn prepare_tool_cargo(
             || path.ends_with("rls")
             || path.ends_with("clippy")
             || path.ends_with("miri")
-            || path.ends_with("rustfmt")
+            || path.ends_with("crablangfmt")
         {
             cargo.env("LIBZ_SYS_STATIC", "1");
-            features.push("rustc-workspace-hack/all-static".to_string());
+            features.push("crablangc-workspace-hack/all-static".to_string());
         }
     }
 
@@ -311,14 +311,14 @@ pub fn prepare_tool_cargo(
     // own copy
     cargo.env("LZMA_API_STATIC", "1");
 
-    // CFG_RELEASE is needed by rustfmt (and possibly other tools) which
-    // import rustc-ap-rustc_attr which requires this to be set for the
+    // CFG_RELEASE is needed by crablangfmt (and possibly other tools) which
+    // import crablangc-ap-crablangc_attr which requires this to be set for the
     // `#[cfg(version(...))]` attribute.
-    cargo.env("CFG_RELEASE", builder.rust_release());
+    cargo.env("CFG_RELEASE", builder.crablang_release());
     cargo.env("CFG_RELEASE_CHANNEL", &builder.config.channel);
-    cargo.env("CFG_VERSION", builder.rust_version());
+    cargo.env("CFG_VERSION", builder.crablang_version());
     cargo.env("CFG_RELEASE_NUM", &builder.version);
-    cargo.env("DOC_RUST_LANG_ORG_CHANNEL", builder.doc_rust_lang_org_channel());
+    cargo.env("DOC_CRABLANG_LANG_ORG_CHANNEL", builder.doc_crablang_lang_org_channel());
 
     let info = GitInfo::new(builder.config.omit_git_hash, &dir);
     if let Some(sha) = info.sha() {
@@ -414,7 +414,7 @@ macro_rules! bootstrap_tool {
 }
 
 bootstrap_tool!(
-    Rustbook, "src/tools/rustbook", "rustbook";
+    CrabLangbook, "src/tools/crablangbook", "crablangbook";
     UnstableBookGen, "src/tools/unstable-book-gen", "unstable-book-gen";
     Tidy, "src/tools/tidy", "tidy";
     Linkchecker, "src/tools/linkchecker", "linkchecker";
@@ -422,8 +422,8 @@ bootstrap_tool!(
     Compiletest, "src/tools/compiletest", "compiletest", is_unstable_tool = true, allow_features = "test";
     BuildManifest, "src/tools/build-manifest", "build-manifest";
     RemoteTestClient, "src/tools/remote-test-client", "remote-test-client";
-    RustInstaller, "src/tools/rust-installer", "rust-installer", is_external_tool = true;
-    RustdocTheme, "src/tools/rustdoc-themes", "rustdoc-themes";
+    CrabLangInstaller, "src/tools/crablang-installer", "crablang-installer", is_external_tool = true;
+    CrabLangdocTheme, "src/tools/crablangdoc-themes", "crablangdoc-themes";
     ExpandYamlAnchors, "src/tools/expand-yaml-anchors", "expand-yaml-anchors";
     LintDocs, "src/tools/lint-docs", "lint-docs";
     JsonDocCk, "src/tools/jsondocck", "jsondocck";
@@ -442,12 +442,12 @@ pub struct ErrorIndex {
 
 impl ErrorIndex {
     pub fn command(builder: &Builder<'_>) -> Command {
-        // Error-index-generator links with the rustdoc library, so we need to add `rustc_lib_paths`
-        // for rustc_private and libLLVM.so, and `sysroot_lib` for libstd, etc.
+        // Error-index-generator links with the crablangdoc library, so we need to add `crablangc_lib_paths`
+        // for crablangc_private and libLLVM.so, and `sysroot_lib` for libstd, etc.
         let host = builder.config.build;
         let compiler = builder.compiler_for(builder.top_stage, host, host);
         let mut cmd = Command::new(builder.ensure(ErrorIndex { compiler }));
-        let mut dylib_paths = builder.rustc_lib_paths(compiler);
+        let mut dylib_paths = builder.crablangc_lib_paths(compiler);
         dylib_paths.push(PathBuf::from(&builder.sysroot_libdir(compiler, compiler.host)));
         add_dylib_path(dylib_paths, &mut cmd);
         cmd
@@ -462,8 +462,8 @@ impl Step for ErrorIndex {
     }
 
     fn make_run(run: RunConfig<'_>) {
-        // Compile the error-index in the same stage as rustdoc to avoid
-        // recompiling rustdoc twice if we can.
+        // Compile the error-index in the same stage as crablangdoc to avoid
+        // recompiling crablangdoc twice if we can.
         //
         // NOTE: This `make_run` isn't used in normal situations, only if you
         // manually build the tool with `x.py build
@@ -481,7 +481,7 @@ impl Step for ErrorIndex {
                 compiler: self.compiler,
                 target: self.compiler.host,
                 tool: "error_index_generator",
-                mode: Mode::ToolRustc,
+                mode: Mode::ToolCrabLangc,
                 path: "src/tools/error_index_generator",
                 is_optional_tool: false,
                 source_type: SourceType::InTree,
@@ -530,25 +530,25 @@ impl Step for RemoteTestServer {
 }
 
 #[derive(Debug, Copy, Clone, Hash, PartialEq, Eq, Ord, PartialOrd)]
-pub struct Rustdoc {
+pub struct CrabLangdoc {
     /// This should only ever be 0 or 2.
-    /// We sometimes want to reference the "bootstrap" rustdoc, which is why this option is here.
+    /// We sometimes want to reference the "bootstrap" crablangdoc, which is why this option is here.
     pub compiler: Compiler,
 }
 
-impl Step for Rustdoc {
+impl Step for CrabLangdoc {
     type Output = PathBuf;
     const DEFAULT: bool = true;
     const ONLY_HOSTS: bool = true;
 
     fn should_run(run: ShouldRun<'_>) -> ShouldRun<'_> {
-        run.path("src/tools/rustdoc").path("src/librustdoc")
+        run.path("src/tools/crablangdoc").path("src/libcrablangdoc")
     }
 
     fn make_run(run: RunConfig<'_>) {
-        run.builder.ensure(Rustdoc {
+        run.builder.ensure(CrabLangdoc {
             // Note: this is somewhat unique in that we actually want a *target*
-            // compiler here, because rustdoc *is* a compiler. We won't be using
+            // compiler here, because crablangdoc *is* a compiler. We won't be using
             // this as the compiler to build with, but rather this is "what
             // compiler are we producing"?
             compiler: run.builder.compiler(run.builder.top_stage, run.target),
@@ -559,36 +559,36 @@ impl Step for Rustdoc {
         let target_compiler = self.compiler;
         if target_compiler.stage == 0 {
             if !target_compiler.is_snapshot(builder) {
-                panic!("rustdoc in stage 0 must be snapshot rustdoc");
+                panic!("crablangdoc in stage 0 must be snapshot crablangdoc");
             }
-            return builder.initial_rustc.with_file_name(exe("rustdoc", target_compiler.host));
+            return builder.initial_crablangc.with_file_name(exe("crablangdoc", target_compiler.host));
         }
         let target = target_compiler.host;
         // Similar to `compile::Assemble`, build with the previous stage's compiler. Otherwise
-        // we'd have stageN/bin/rustc and stageN/bin/rustdoc be effectively different stage
-        // compilers, which isn't what we want. Rustdoc should be linked in the same way as the
-        // rustc compiler it's paired with, so it must be built with the previous stage compiler.
+        // we'd have stageN/bin/crablangc and stageN/bin/crablangdoc be effectively different stage
+        // compilers, which isn't what we want. CrabLangdoc should be linked in the same way as the
+        // crablangc compiler it's paired with, so it must be built with the previous stage compiler.
         let build_compiler = builder.compiler(target_compiler.stage - 1, builder.config.build);
 
-        // When using `download-rustc` and a stage0 build_compiler, copying rustc doesn't actually
+        // When using `download-crablangc` and a stage0 build_compiler, copying crablangc doesn't actually
         // build stage0 libstd (because the libstd in sysroot has the wrong ABI). Explicitly build
         // it.
         builder.ensure(compile::Std::new(build_compiler, target_compiler.host));
-        builder.ensure(compile::Rustc::new(build_compiler, target_compiler.host));
-        // NOTE: this implies that `download-rustc` is pretty useless when compiling with the stage0
+        builder.ensure(compile::CrabLangc::new(build_compiler, target_compiler.host));
+        // NOTE: this implies that `download-crablangc` is pretty useless when compiling with the stage0
         // compiler, since you do just as much work.
-        if !builder.config.dry_run() && builder.download_rustc() && build_compiler.stage == 0 {
+        if !builder.config.dry_run() && builder.download_crablangc() && build_compiler.stage == 0 {
             println!(
-                "warning: `download-rustc` does nothing when building stage1 tools; consider using `--stage 2` instead"
+                "warning: `download-crablangc` does nothing when building stage1 tools; consider using `--stage 2` instead"
             );
         }
 
         // The presence of `target_compiler` ensures that the necessary libraries (codegen backends,
-        // compiler libraries, ...) are built. Rustdoc does not require the presence of any
-        // libraries within sysroot_libdir (i.e., rustlib), though doctests may want it (since
+        // compiler libraries, ...) are built. CrabLangdoc does not require the presence of any
+        // libraries within sysroot_libdir (i.e., crablanglib), though doctests may want it (since
         // they'll be linked to those libraries). As such, don't explicitly `ensure` any additional
         // libraries here. The intuition here is that If we've built a compiler, we should be able
-        // to build rustdoc.
+        // to build crablangdoc.
         //
         let mut features = Vec::new();
         if builder.config.jemalloc {
@@ -598,21 +598,21 @@ impl Step for Rustdoc {
         let mut cargo = prepare_tool_cargo(
             builder,
             build_compiler,
-            Mode::ToolRustc,
+            Mode::ToolCrabLangc,
             target,
             "build",
-            "src/tools/rustdoc",
+            "src/tools/crablangdoc",
             SourceType::InTree,
             features.as_slice(),
         );
 
-        if builder.config.rustc_parallel {
-            cargo.rustflag("--cfg=parallel_compiler");
+        if builder.config.crablangc_parallel {
+            cargo.crablangflag("--cfg=parallel_compiler");
         }
 
         let msg = tooling_output(
-            Mode::ToolRustc,
-            "rustdoc",
+            Mode::ToolCrabLangc,
+            "crablangdoc",
             build_compiler.stage,
             &self.compiler.host,
             &target,
@@ -621,23 +621,23 @@ impl Step for Rustdoc {
         builder.run(&mut cargo.into());
 
         // Cargo adds a number of paths to the dylib search path on windows, which results in
-        // the wrong rustdoc being executed. To avoid the conflicting rustdocs, we name the "tool"
-        // rustdoc a different name.
-        let tool_rustdoc = builder
-            .cargo_out(build_compiler, Mode::ToolRustc, target)
-            .join(exe("rustdoc_tool_binary", target_compiler.host));
+        // the wrong crablangdoc being executed. To avoid the conflicting crablangdocs, we name the "tool"
+        // crablangdoc a different name.
+        let tool_crablangdoc = builder
+            .cargo_out(build_compiler, Mode::ToolCrabLangc, target)
+            .join(exe("crablangdoc_tool_binary", target_compiler.host));
 
         // don't create a stage0-sysroot/bin directory.
         if target_compiler.stage > 0 {
             let sysroot = builder.sysroot(target_compiler);
             let bindir = sysroot.join("bin");
             t!(fs::create_dir_all(&bindir));
-            let bin_rustdoc = bindir.join(exe("rustdoc", target_compiler.host));
-            let _ = fs::remove_file(&bin_rustdoc);
-            builder.copy(&tool_rustdoc, &bin_rustdoc);
-            bin_rustdoc
+            let bin_crablangdoc = bindir.join(exe("crablangdoc", target_compiler.host));
+            let _ = fs::remove_file(&bin_crablangdoc);
+            builder.copy(&tool_crablangdoc, &bin_crablangdoc);
+            bin_crablangdoc
         } else {
-            tool_rustdoc
+            tool_crablangdoc
         }
     }
 }
@@ -678,7 +678,7 @@ impl Step for Cargo {
                 compiler: self.compiler,
                 target: self.target,
                 tool: "cargo",
-                mode: Mode::ToolRustc,
+                mode: Mode::ToolCrabLangc,
                 path: "src/tools/cargo",
                 is_optional_tool: false,
                 source_type: SourceType::Submodule,
@@ -694,7 +694,7 @@ impl Step for Cargo {
                 compiler: self.compiler,
                 target: self.target,
                 tool: name,
-                mode: Mode::ToolRustc,
+                mode: Mode::ToolCrabLangc,
                 path,
                 is_optional_tool: true,
                 source_type: SourceType::Submodule,
@@ -756,35 +756,35 @@ impl Step for LldWrapper {
 }
 
 #[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
-pub struct RustAnalyzer {
+pub struct CrabLangAnalyzer {
     pub compiler: Compiler,
     pub target: TargetSelection,
 }
 
-impl RustAnalyzer {
+impl CrabLangAnalyzer {
     pub const ALLOW_FEATURES: &str =
         "proc_macro_internals,proc_macro_diagnostic,proc_macro_span,proc_macro_span_shrink";
 }
 
-impl Step for RustAnalyzer {
+impl Step for CrabLangAnalyzer {
     type Output = Option<PathBuf>;
     const DEFAULT: bool = true;
     const ONLY_HOSTS: bool = true;
 
     fn should_run(run: ShouldRun<'_>) -> ShouldRun<'_> {
         let builder = run.builder;
-        run.path("src/tools/rust-analyzer").default_condition(
+        run.path("src/tools/crablang-analyzer").default_condition(
             builder.config.extended
                 && builder
                     .config
                     .tools
                     .as_ref()
-                    .map_or(true, |tools| tools.iter().any(|tool| tool == "rust-analyzer")),
+                    .map_or(true, |tools| tools.iter().any(|tool| tool == "crablang-analyzer")),
         )
     }
 
     fn make_run(run: RunConfig<'_>) {
-        run.builder.ensure(RustAnalyzer {
+        run.builder.ensure(CrabLangAnalyzer {
             compiler: run.builder.compiler(run.builder.top_stage, run.builder.config.build),
             target: run.target,
         });
@@ -794,42 +794,42 @@ impl Step for RustAnalyzer {
         builder.ensure(ToolBuild {
             compiler: self.compiler,
             target: self.target,
-            tool: "rust-analyzer",
+            tool: "crablang-analyzer",
             mode: Mode::ToolStd,
-            path: "src/tools/rust-analyzer",
-            extra_features: vec!["rust-analyzer/in-rust-tree".to_owned()],
+            path: "src/tools/crablang-analyzer",
+            extra_features: vec!["crablang-analyzer/in-crablang-tree".to_owned()],
             is_optional_tool: false,
             source_type: SourceType::InTree,
-            allow_features: RustAnalyzer::ALLOW_FEATURES,
+            allow_features: CrabLangAnalyzer::ALLOW_FEATURES,
         })
     }
 }
 
 #[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
-pub struct RustAnalyzerProcMacroSrv {
+pub struct CrabLangAnalyzerProcMacroSrv {
     pub compiler: Compiler,
     pub target: TargetSelection,
 }
 
-impl Step for RustAnalyzerProcMacroSrv {
+impl Step for CrabLangAnalyzerProcMacroSrv {
     type Output = Option<PathBuf>;
     const DEFAULT: bool = true;
     const ONLY_HOSTS: bool = true;
 
     fn should_run(run: ShouldRun<'_>) -> ShouldRun<'_> {
         let builder = run.builder;
-        // Allow building `rust-analyzer-proc-macro-srv` both as part of the `rust-analyzer` and as a stand-alone tool.
-        run.path("src/tools/rust-analyzer")
-            .path("src/tools/rust-analyzer/crates/proc-macro-srv-cli")
+        // Allow building `crablang-analyzer-proc-macro-srv` both as part of the `crablang-analyzer` and as a stand-alone tool.
+        run.path("src/tools/crablang-analyzer")
+            .path("src/tools/crablang-analyzer/crates/proc-macro-srv-cli")
             .default_condition(builder.config.tools.as_ref().map_or(true, |tools| {
                 tools
                     .iter()
-                    .any(|tool| tool == "rust-analyzer" || tool == "rust-analyzer-proc-macro-srv")
+                    .any(|tool| tool == "crablang-analyzer" || tool == "crablang-analyzer-proc-macro-srv")
             }))
     }
 
     fn make_run(run: RunConfig<'_>) {
-        run.builder.ensure(RustAnalyzerProcMacroSrv {
+        run.builder.ensure(CrabLangAnalyzerProcMacroSrv {
             compiler: run.builder.compiler(run.builder.top_stage, run.builder.config.build),
             target: run.target,
         });
@@ -839,20 +839,20 @@ impl Step for RustAnalyzerProcMacroSrv {
         let path = builder.ensure(ToolBuild {
             compiler: self.compiler,
             target: self.target,
-            tool: "rust-analyzer-proc-macro-srv",
+            tool: "crablang-analyzer-proc-macro-srv",
             mode: Mode::ToolStd,
-            path: "src/tools/rust-analyzer/crates/proc-macro-srv-cli",
+            path: "src/tools/crablang-analyzer/crates/proc-macro-srv-cli",
             extra_features: vec!["proc-macro-srv/sysroot-abi".to_owned()],
             is_optional_tool: false,
             source_type: SourceType::InTree,
-            allow_features: RustAnalyzer::ALLOW_FEATURES,
+            allow_features: CrabLangAnalyzer::ALLOW_FEATURES,
         })?;
 
-        // Copy `rust-analyzer-proc-macro-srv` to `<sysroot>/libexec/`
+        // Copy `crablang-analyzer-proc-macro-srv` to `<sysroot>/libexec/`
         // so that r-a can use it.
         let libexec_path = builder.sysroot(self.compiler).join("libexec");
         t!(fs::create_dir_all(&libexec_path));
-        builder.copy(&path, &libexec_path.join("rust-analyzer-proc-macro-srv"));
+        builder.copy(&path, &libexec_path.join("crablang-analyzer-proc-macro-srv"));
 
         Some(path)
     }
@@ -912,7 +912,7 @@ macro_rules! tool_extended {
                     compiler: $sel.compiler,
                     target: $sel.target,
                     tool: $tool_name,
-                    mode: if false $(|| $tool_std)? { Mode::ToolStd } else { Mode::ToolRustc },
+                    mode: if false $(|| $tool_std)? { Mode::ToolStd } else { Mode::ToolCrabLangc },
                     path: $path,
                     extra_features: $sel.extra_features,
                     is_optional_tool: true,
@@ -930,7 +930,7 @@ macro_rules! tool_extended {
 // Note: Most submodule updates for tools are handled by bootstrap.py, since they're needed just to
 // invoke Cargo to build bootstrap. See the comment there for more details.
 tool_extended!((self, builder),
-    Cargofmt, "src/tools/rustfmt", "cargo-fmt", stable=true;
+    Cargofmt, "src/tools/crablangfmt", "cargo-fmt", stable=true;
     CargoClippy, "src/tools/clippy", "cargo-clippy", stable=true;
     Clippy, "src/tools/clippy", "clippy-driver", stable=true;
     Miri, "src/tools/miri", "miri", stable=false;
@@ -939,8 +939,8 @@ tool_extended!((self, builder),
     // But `builder.cargo` doesn't know how to handle ToolBootstrap in stages other than 0,
     // and this is close enough for now.
     Rls, "src/tools/rls", "rls", stable=true, tool_std=true;
-    RustDemangler, "src/tools/rust-demangler", "rust-demangler", stable=false, tool_std=true;
-    Rustfmt, "src/tools/rustfmt", "rustfmt", stable=true;
+    CrabLangDemangler, "src/tools/crablang-demangler", "crablang-demangler", stable=false, tool_std=true;
+    CrabLangfmt, "src/tools/crablangfmt", "crablangfmt", stable=true;
 );
 
 impl<'a> Builder<'a> {
@@ -955,7 +955,7 @@ impl<'a> Builder<'a> {
         // Notably this munges the dynamic library lookup path to point to the
         // right location to run `compiler`.
         let mut lib_paths: Vec<PathBuf> = vec![
-            self.build.rustc_snapshot_libdir(),
+            self.build.crablangc_snapshot_libdir(),
             self.cargo_out(compiler, Mode::ToolBootstrap, *host).join("deps"),
         ];
 
@@ -979,8 +979,8 @@ impl<'a> Builder<'a> {
 
         add_dylib_path(lib_paths, &mut cmd);
 
-        // Provide a RUSTC for this command to use.
-        cmd.env("RUSTC", &self.initial_rustc);
+        // Provide a CRABLANGC for this command to use.
+        cmd.env("CRABLANGC", &self.initial_crablangc);
 
         cmd
     }

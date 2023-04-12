@@ -1,10 +1,10 @@
 [book]
 title = "Error codes index"
-description = "Book listing all Rust error codes"
+description = "Book listing all CrabLang error codes"
 src = ""
 
 [output.html]
-git-repository-url = "https://github.com/rust-lang/rust/"
+git-repository-url = "https://github.com/crablang/crablang/"
 additional-css = ["error-index.css"]
 additional-js = ["error-index.js"]
 input-404 = ""

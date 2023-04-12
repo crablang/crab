@@ -6,4 +6,4 @@ LL | #[link(name = "")] extern "C" {}
 
 error: aborting due to previous error
 
-For more information about this error, try `rustc --explain E0454`.
+For more information about this error, try `crablangc --explain E0454`.

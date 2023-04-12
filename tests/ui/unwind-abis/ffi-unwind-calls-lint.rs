@@ -14,7 +14,7 @@ extern "C-unwind" {
 }
 
 fn main() {
-    // Call to Rust function is fine.
+    // Call to CrabLang function is fine.
     foo::foo();
     // Call to foreign function should warn.
     unsafe { foo(); }

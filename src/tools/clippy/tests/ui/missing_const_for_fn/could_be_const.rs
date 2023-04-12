@@ -29,7 +29,7 @@ fn two() -> i32 {
     abc
 }
 
-// Could be const (since Rust 1.39)
+// Could be const (since CrabLang 1.39)
 fn string() -> String {
     String::new()
 }

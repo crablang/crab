@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 // compile-flags: --test
 #![allow(dead_code)]
 

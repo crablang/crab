@@ -11,7 +11,7 @@
 // Once I was young and foolish and had the impudence to imagine that I could
 // shake free from the coils by which that creature had us tightly bound. I
 // dared to suggest that there was a better way: a brighter future, in which
-// Rustaceans both new and old could be rid of that vile beast. But alas! In
+// CrabLangaceans both new and old could be rid of that vile beast. But alas! In
 // my foolhardiness my ignorance was unveiled and my dreams were dashed
 // unforgivingly against the rock of syntactic ambiguity.
 //
@@ -32,8 +32,8 @@
 // Here stands the Bastion of the Turbofish, a memorial to Anna Harren,
 // Guardian Angel of these Hallowed Grounds. <3
 
-// See https://github.com/rust-lang/rust/pull/53562
-// and https://github.com/rust-lang/rfcs/pull/2527
+// See https://github.com/crablang/crablang/pull/53562
+// and https://github.com/crablang/rfcs/pull/2527
 // and https://web.archive.org/web/20211010063452/https://twitter.com/garblefart/status/1393236602856611843
 // for context.
 

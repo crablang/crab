@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 
 #![feature(lint_reasons)]
 #![feature(yeet_expr)]
@@ -31,12 +31,12 @@ fn test_no_semicolon() -> bool {
     return true;
 }
 
-#[rustfmt::skip]
+#[crablangfmt::skip]
 fn test_multiple_semicolon() -> bool {
     return true;;;
 }
 
-#[rustfmt::skip]
+#[crablangfmt::skip]
 fn test_multiple_semicolon_with_spaces() -> bool {
     return true;; ; ;
 }
@@ -287,7 +287,7 @@ mod issue9416 {
         return;
     }
 
-    #[rustfmt::skip]
+    #[crablangfmt::skip]
     pub fn oneline() {
         let _ = 42; return;
     }

@@ -1,10 +1,10 @@
 use clippy_utils::{diagnostics::span_lint_and_then, source::snippet_opt};
-use rustc_ast::ast::{Item, ItemKind, VariantData};
-use rustc_errors::Applicability;
-use rustc_lexer::TokenKind;
-use rustc_lint::{EarlyContext, EarlyLintPass};
-use rustc_session::{declare_lint_pass, declare_tool_lint};
-use rustc_span::Span;
+use crablangc_ast::ast::{Item, ItemKind, VariantData};
+use crablangc_errors::Applicability;
+use crablangc_lexer::TokenKind;
+use crablangc_lint::{EarlyContext, EarlyLintPass};
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_span::Span;
 
 declare_clippy_lint! {
     /// ### What it does
@@ -14,11 +14,11 @@ declare_clippy_lint! {
     /// Empty brackets after a struct declaration can be omitted.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// struct Cookie {}
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// struct Cookie;
     /// ```
     #[clippy::version = "1.62.0"]
@@ -53,7 +53,7 @@ impl EarlyLintPass for EmptyStructsWithBrackets {
 }
 
 fn has_no_ident_token(braces_span_str: &str) -> bool {
-    !rustc_lexer::tokenize(braces_span_str).any(|t| t.kind == TokenKind::Ident)
+    !crablangc_lexer::tokenize(braces_span_str).any(|t| t.kind == TokenKind::Ident)
 }
 
 fn has_brackets(var_data: &VariantData) -> bool {

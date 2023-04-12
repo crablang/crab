@@ -1,7 +1,7 @@
 #!/bin/bash
 # Upload all the artifacts to our S3 bucket. All the files inside ${upload_dir}
 # will be uploaded to the deploy bucket and eventually signed and released in
-# static.rust-lang.org.
+# static.crablang.org.
 
 set -euo pipefail
 IFS=$'\n\t'
@@ -37,9 +37,9 @@ echo "Files that will be uploaded:"
 ls -lah "${upload_dir}"
 echo
 
-deploy_dir="rustc-builds"
+deploy_dir="crablangc-builds"
 if [[ "${DEPLOY_ALT-0}" -eq "1" ]]; then
-    deploy_dir="rustc-builds-alt"
+    deploy_dir="crablangc-builds-alt"
 fi
 deploy_url="s3://${DEPLOY_BUCKET}/${deploy_dir}/$(ciCommit)"
 

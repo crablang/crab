@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 
 fn take_str_maybe(_: Option<&str>) { }
 fn main() {

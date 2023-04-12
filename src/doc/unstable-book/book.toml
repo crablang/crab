@@ -1,6 +1,6 @@
 [book]
-title = "The Rust Unstable Book"
-author = "The Rust Community"
+title = "The CrabLang Unstable Book"
+author = "The CrabLang Community"
 
 [output.html]
-git-repository-url = "https://github.com/rust-lang/rust/tree/master/src/doc/unstable-book"
+git-repository-url = "https://github.com/crablang/crablang/tree/master/src/doc/unstable-book"

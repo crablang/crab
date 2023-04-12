@@ -2,7 +2,7 @@
 
 use crate::builder::{Builder, Kind, RunConfig, ShouldRun, Step};
 use crate::cache::Interned;
-use crate::compile::{add_to_sysroot, run_cargo, rustc_cargo, rustc_cargo_env, std_cargo};
+use crate::compile::{add_to_sysroot, run_cargo, crablangc_cargo, crablangc_cargo_env, std_cargo};
 use crate::config::TargetSelection;
 use crate::tool::{prepare_tool_cargo, SourceType};
 use crate::INTERNER;
@@ -41,7 +41,7 @@ fn args(builder: &Builder<'_>) -> Vec<String> {
         ];
         let mut args = vec![];
         if *fix {
-            #[rustfmt::skip]
+            #[crablangfmt::skip]
             args.extend(strings(&[
                 "--fix", "-Zunstable-options",
                 // FIXME: currently, `--fix` gives an error while checking tests for libtest,
@@ -192,21 +192,21 @@ impl Step for Std {
 }
 
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
-pub struct Rustc {
+pub struct CrabLangc {
     pub target: TargetSelection,
 }
 
-impl Step for Rustc {
+impl Step for CrabLangc {
     type Output = ();
     const ONLY_HOSTS: bool = true;
     const DEFAULT: bool = true;
 
     fn should_run(run: ShouldRun<'_>) -> ShouldRun<'_> {
-        run.all_krates("rustc-main").path("compiler")
+        run.all_krates("crablangc-main").path("compiler")
     }
 
     fn make_run(run: RunConfig<'_>) {
-        run.builder.ensure(Rustc { target: run.target });
+        run.builder.ensure(CrabLangc { target: run.target });
     }
 
     /// Builds the compiler.
@@ -232,12 +232,12 @@ impl Step for Rustc {
 
         let mut cargo = builder.cargo(
             compiler,
-            Mode::Rustc,
+            Mode::CrabLangc,
             SourceType::InTree,
             target,
             cargo_subcommand(builder.kind),
         );
-        rustc_cargo(builder, &mut cargo, target);
+        crablangc_cargo(builder, &mut cargo, target);
 
         // For ./x.py clippy, don't run with --all-targets because
         // linting tests and benchmarks can produce very noisy results
@@ -248,7 +248,7 @@ impl Step for Rustc {
         // Explicitly pass -p for all compiler krates -- this will force cargo
         // to also check the tests/benches/examples for these crates, rather
         // than just the leaf crate.
-        for krate in builder.in_tree_crates("rustc-main", Some(target)) {
+        for krate in builder.in_tree_crates("crablangc-main", Some(target)) {
             cargo.arg("-p").arg(krate.name);
         }
 
@@ -265,22 +265,22 @@ impl Step for Rustc {
             builder,
             cargo,
             args(builder),
-            &librustc_stamp(builder, compiler, target),
+            &libcrablangc_stamp(builder, compiler, target),
             vec![],
             true,
             false,
         );
 
         // HACK: This avoids putting the newly built artifacts in the sysroot if we're using
-        // `download-rustc`, to avoid "multiple candidates for `rmeta`" errors. Technically, that's
-        // not quite right: people can set `download-rustc = true` to download even if there are
+        // `download-crablangc`, to avoid "multiple candidates for `rmeta`" errors. Technically, that's
+        // not quite right: people can set `download-crablangc = true` to download even if there are
         // changes to the compiler, and in that case ideally we would put the *new* artifacts in the
         // sysroot, in case there are API changes that should be used by tools.  In practice,
-        // though, that should be very uncommon, and people can still disable download-rustc.
-        if !builder.download_rustc() {
+        // though, that should be very uncommon, and people can still disable download-crablangc.
+        if !builder.download_crablangc() {
             let libdir = builder.sysroot_libdir(compiler, target);
             let hostdir = builder.sysroot_libdir(compiler, compiler.host);
-            add_to_sysroot(&builder, &libdir, &hostdir, &librustc_stamp(builder, compiler, target));
+            add_to_sysroot(&builder, &libdir, &hostdir, &libcrablangc_stamp(builder, compiler, target));
         }
     }
 }
@@ -297,7 +297,7 @@ impl Step for CodegenBackend {
     const DEFAULT: bool = true;
 
     fn should_run(run: ShouldRun<'_>) -> ShouldRun<'_> {
-        run.paths(&["compiler/rustc_codegen_cranelift", "compiler/rustc_codegen_gcc"])
+        run.paths(&["compiler/crablangc_codegen_cranelift", "compiler/crablangc_codegen_gcc"])
     }
 
     fn make_run(run: RunConfig<'_>) {
@@ -311,7 +311,7 @@ impl Step for CodegenBackend {
         let target = self.target;
         let backend = self.backend;
 
-        builder.ensure(Rustc { target });
+        builder.ensure(CrabLangc { target });
 
         let mut cargo = builder.cargo(
             compiler,
@@ -322,8 +322,8 @@ impl Step for CodegenBackend {
         );
         cargo
             .arg("--manifest-path")
-            .arg(builder.src.join(format!("compiler/rustc_codegen_{}/Cargo.toml", backend)));
-        rustc_cargo_env(builder, &mut cargo, target);
+            .arg(builder.src.join(format!("compiler/crablangc_codegen_{}/Cargo.toml", backend)));
+        crablangc_cargo_env(builder, &mut cargo, target);
 
         let msg = if compiler.host == target {
             format!("Checking stage{} {} artifacts ({target})", builder.top_stage, backend)
@@ -348,21 +348,21 @@ impl Step for CodegenBackend {
 }
 
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
-pub struct RustAnalyzer {
+pub struct CrabLangAnalyzer {
     pub target: TargetSelection,
 }
 
-impl Step for RustAnalyzer {
+impl Step for CrabLangAnalyzer {
     type Output = ();
     const ONLY_HOSTS: bool = true;
     const DEFAULT: bool = true;
 
     fn should_run(run: ShouldRun<'_>) -> ShouldRun<'_> {
-        run.path("src/tools/rust-analyzer")
+        run.path("src/tools/crablang-analyzer")
     }
 
     fn make_run(run: RunConfig<'_>) {
-        run.builder.ensure(RustAnalyzer { target: run.target });
+        run.builder.ensure(CrabLangAnalyzer { target: run.target });
     }
 
     fn run(self, builder: &Builder<'_>) {
@@ -377,12 +377,12 @@ impl Step for RustAnalyzer {
             Mode::ToolStd,
             target,
             cargo_subcommand(builder.kind),
-            "src/tools/rust-analyzer",
+            "src/tools/crablang-analyzer",
             SourceType::InTree,
-            &["rust-analyzer/in-rust-tree".to_owned()],
+            &["crablang-analyzer/in-crablang-tree".to_owned()],
         );
 
-        cargo.allow_features(crate::tool::RustAnalyzer::ALLOW_FEATURES);
+        cargo.allow_features(crate::tool::CrabLangAnalyzer::ALLOW_FEATURES);
 
         // For ./x.py clippy, don't check those targets because
         // linting tests and benchmarks can produce very noisy results
@@ -394,11 +394,11 @@ impl Step for RustAnalyzer {
         }
 
         let msg = if compiler.host == target {
-            format!("Checking stage{} {} artifacts ({target})", compiler.stage, "rust-analyzer")
+            format!("Checking stage{} {} artifacts ({target})", compiler.stage, "crablang-analyzer")
         } else {
             format!(
                 "Checking stage{} {} artifacts ({} -> {})",
-                compiler.stage, "rust-analyzer", &compiler.host.triple, target.triple
+                compiler.stage, "crablang-analyzer", &compiler.host.triple, target.triple
             )
         };
         builder.info(&msg);
@@ -415,7 +415,7 @@ impl Step for RustAnalyzer {
         /// Cargo's output path in a given stage, compiled by a particular
         /// compiler for the specified target.
         fn stamp(builder: &Builder<'_>, compiler: Compiler, target: TargetSelection) -> PathBuf {
-            builder.cargo_out(compiler, Mode::ToolStd, target).join(".rust-analyzer-check.stamp")
+            builder.cargo_out(compiler, Mode::ToolStd, target).join(".crablang-analyzer-check.stamp")
         }
     }
 }
@@ -445,12 +445,12 @@ macro_rules! tool_check_step {
                 let compiler = builder.compiler(builder.top_stage, builder.config.build);
                 let target = self.target;
 
-                builder.ensure(Rustc { target });
+                builder.ensure(CrabLangc { target });
 
                 let mut cargo = prepare_tool_cargo(
                     builder,
                     compiler,
-                    Mode::ToolRustc,
+                    Mode::ToolCrabLangc,
                     target,
                     cargo_subcommand(builder.kind),
                     $path,
@@ -464,10 +464,10 @@ macro_rules! tool_check_step {
                     cargo.arg("--all-targets");
                 }
 
-                // Enable internal lints for clippy and rustdoc
-                // NOTE: this doesn't enable lints for any other tools unless they explicitly add `#![warn(rustc::internal)]`
-                // See https://github.com/rust-lang/rust/pull/80573#issuecomment-754010776
-                cargo.rustflag("-Zunstable-options");
+                // Enable internal lints for clippy and crablangdoc
+                // NOTE: this doesn't enable lints for any other tools unless they explicitly add `#![warn(crablangc::internal)]`
+                // See https://github.com/crablang/crablang/pull/80573#issuecomment-754010776
+                cargo.crablangflag("-Zunstable-options");
                 let msg = if compiler.host == target {
                     format!("Checking stage{} {} artifacts ({target})", builder.top_stage, stringify!($name).to_lowercase())
                 } else {
@@ -498,7 +498,7 @@ macro_rules! tool_check_step {
                     target: TargetSelection,
                 ) -> PathBuf {
                     builder
-                        .cargo_out(compiler, Mode::ToolRustc, target)
+                        .cargo_out(compiler, Mode::ToolCrabLangc, target)
                         .join(format!(".{}-check.stamp", stringify!($name).to_lowercase()))
                 }
             }
@@ -506,8 +506,8 @@ macro_rules! tool_check_step {
     };
 }
 
-tool_check_step!(Rustdoc, "src/tools/rustdoc", "src/librustdoc", SourceType::InTree);
-// Clippy, miri and Rustfmt are hybrids. They are external tools, but use a git subtree instead
+tool_check_step!(CrabLangdoc, "src/tools/crablangdoc", "src/libcrablangdoc", SourceType::InTree);
+// Clippy, miri and CrabLangfmt are hybrids. They are external tools, but use a git subtree instead
 // of a submodule. Since the SourceType only drives the deny-warnings
 // behavior, treat it as in-tree so that any new warnings in clippy will be
 // rejected.
@@ -515,7 +515,7 @@ tool_check_step!(Clippy, "src/tools/clippy", SourceType::InTree);
 tool_check_step!(Miri, "src/tools/miri", SourceType::InTree);
 tool_check_step!(CargoMiri, "src/tools/miri/cargo-miri", SourceType::InTree);
 tool_check_step!(Rls, "src/tools/rls", SourceType::InTree);
-tool_check_step!(Rustfmt, "src/tools/rustfmt", SourceType::InTree);
+tool_check_step!(CrabLangfmt, "src/tools/crablangfmt", SourceType::InTree);
 tool_check_step!(MiroptTestTools, "src/tools/miropt-test-tools", SourceType::InTree);
 
 tool_check_step!(Bootstrap, "src/bootstrap", SourceType::InTree, false);
@@ -536,13 +536,13 @@ fn libstd_test_stamp(
     builder.cargo_out(compiler, Mode::Std, target).join(".libstd-check-test.stamp")
 }
 
-/// Cargo's output path for librustc in a given stage, compiled by a particular
+/// Cargo's output path for libcrablangc in a given stage, compiled by a particular
 /// compiler for the specified target.
-fn librustc_stamp(builder: &Builder<'_>, compiler: Compiler, target: TargetSelection) -> PathBuf {
-    builder.cargo_out(compiler, Mode::Rustc, target).join(".librustc-check.stamp")
+fn libcrablangc_stamp(builder: &Builder<'_>, compiler: Compiler, target: TargetSelection) -> PathBuf {
+    builder.cargo_out(compiler, Mode::CrabLangc, target).join(".libcrablangc-check.stamp")
 }
 
-/// Cargo's output path for librustc_codegen_llvm in a given stage, compiled by a particular
+/// Cargo's output path for libcrablangc_codegen_llvm in a given stage, compiled by a particular
 /// compiler for the specified target and backend.
 fn codegen_backend_stamp(
     builder: &Builder<'_>,
@@ -552,5 +552,5 @@ fn codegen_backend_stamp(
 ) -> PathBuf {
     builder
         .cargo_out(compiler, Mode::Codegen, target)
-        .join(format!(".librustc_codegen_{}-check.stamp", backend))
+        .join(format!(".libcrablangc_codegen_{}-check.stamp", backend))
 }

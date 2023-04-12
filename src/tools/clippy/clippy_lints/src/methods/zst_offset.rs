@@ -1,8 +1,8 @@
 use clippy_utils::diagnostics::span_lint;
 use if_chain::if_chain;
-use rustc_hir as hir;
-use rustc_lint::LateContext;
-use rustc_middle::ty;
+use crablangc_hir as hir;
+use crablangc_lint::LateContext;
+use crablangc_middle::ty;
 
 use super::ZST_OFFSET;
 

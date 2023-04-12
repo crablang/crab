@@ -111,4 +111,4 @@ LL |     unsafe { ptr1.offset_from(ptr2.wrapping_offset(1)) }
 
 error: aborting due to 15 previous errors
 
-For more information about this error, try `rustc --explain E0080`.
+For more information about this error, try `crablangc --explain E0080`.

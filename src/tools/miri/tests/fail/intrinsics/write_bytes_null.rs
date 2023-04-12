@@ -1,7 +1,7 @@
 #![feature(intrinsics)]
 
 // Directly call intrinsic to avoid debug assertions in libstd
-extern "rust-intrinsic" {
+extern "crablang-intrinsic" {
     fn write_bytes<T>(dst: *mut T, val: u8, count: usize);
 }
 

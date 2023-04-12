@@ -4,14 +4,14 @@ use clippy_utils::source::snippet_opt;
 use clippy_utils::ty::needs_ordered_drop;
 use clippy_utils::visitors::{for_each_expr, for_each_expr_with_closures, is_local_used};
 use core::ops::ControlFlow;
-use rustc_errors::{Applicability, MultiSpan};
-use rustc_hir::{
+use crablangc_errors::{Applicability, MultiSpan};
+use crablangc_hir::{
     BindingAnnotation, Block, Expr, ExprKind, HirId, Local, LocalSource, MatchSource, Node, Pat, PatKind, Stmt,
     StmtKind,
 };
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_session::{declare_lint_pass, declare_tool_lint};
-use rustc_span::Span;
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_span::Span;
 
 declare_clippy_lint! {
     /// ### What it does
@@ -22,7 +22,7 @@ declare_clippy_lint! {
     /// Assigning in the `let` statement is less repetitive.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// let a;
     /// a = 1;
     ///
@@ -41,7 +41,7 @@ declare_clippy_lint! {
     /// }
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// let a = 1;
     ///
     /// let b = match 3 {
@@ -193,11 +193,11 @@ fn assignment_suggestions<'tcx>(
 
     match suggestions.len() {
         // All of `exprs` are never types
-        // https://github.com/rust-lang/rust-clippy/issues/8911
+        // https://github.com/crablang/crablang-clippy/issues/8911
         0 => None,
         1 => Some((Applicability::MachineApplicable, suggestions)),
-        // multiple suggestions don't work with rustfix in multipart_suggest
-        // https://github.com/rust-lang/rustfix/issues/141
+        // multiple suggestions don't work with crablangfix in multipart_suggest
+        // https://github.com/crablang/crablangfix/issues/141
         _ => Some((Applicability::Unspecified, suggestions)),
     }
 }

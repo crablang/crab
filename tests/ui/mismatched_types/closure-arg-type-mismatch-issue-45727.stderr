@@ -35,4 +35,4 @@ LL +     let _ = (-10..=10).find(|x: &i32| x.signum() == 0);
 
 error: aborting due to 2 previous errors
 
-For more information about this error, try `rustc --explain E0631`.
+For more information about this error, try `crablangc --explain E0631`.

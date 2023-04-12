@@ -1,12 +1,12 @@
 use clippy_utils::diagnostics::span_lint_and_then;
 use clippy_utils::{match_def_path, paths};
-use rustc_data_structures::fx::FxHashMap;
-use rustc_hir::def_id::DefId;
-use rustc_hir::{AsyncGeneratorKind, Body, BodyId, GeneratorKind};
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_middle::ty::GeneratorInteriorTypeCause;
-use rustc_session::{declare_tool_lint, impl_lint_pass};
-use rustc_span::{sym, Span};
+use crablangc_data_structures::fx::FxHashMap;
+use crablangc_hir::def_id::DefId;
+use crablangc_hir::{AsyncGeneratorKind, Body, BodyId, GeneratorKind};
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_middle::ty::GeneratorInteriorTypeCause;
+use crablangc_session::{declare_tool_lint, impl_lint_pass};
+use crablangc_span::{sym, Span};
 
 use crate::utils::conf::DisallowedPath;
 
@@ -25,11 +25,11 @@ declare_clippy_lint! {
     ///
     /// ### Known problems
     /// Will report false positive for explicitly dropped guards
-    /// ([#6446](https://github.com/rust-lang/rust-clippy/issues/6446)). A workaround for this is
+    /// ([#6446](https://github.com/crablang/crablang-clippy/issues/6446)). A workaround for this is
     /// to wrap the `.lock()` call in a block instead of explicitly dropping the guard.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// # use std::sync::Mutex;
     /// # async fn baz() {}
     /// async fn foo(x: &Mutex<u32>) {
@@ -47,7 +47,7 @@ declare_clippy_lint! {
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// # use std::sync::Mutex;
     /// # async fn baz() {}
     /// async fn foo(x: &Mutex<u32>) {
@@ -83,11 +83,11 @@ declare_clippy_lint! {
     ///
     /// ### Known problems
     /// Will report false positive for explicitly dropped refs
-    /// ([#6353](https://github.com/rust-lang/rust-clippy/issues/6353)). A workaround for this is
+    /// ([#6353](https://github.com/crablang/crablang-clippy/issues/6353)). A workaround for this is
     /// to wrap the `.borrow[_mut]()` call in a block instead of explicitly dropping the ref.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// # use std::cell::RefCell;
     /// # async fn baz() {}
     /// async fn foo(x: &RefCell<u32>) {
@@ -105,7 +105,7 @@ declare_clippy_lint! {
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// # use std::cell::RefCell;
     /// # async fn baz() {}
     /// async fn foo(x: &RefCell<u32>) {
@@ -151,7 +151,7 @@ declare_clippy_lint! {
     /// ]
     /// ```
     ///
-    /// ```rust
+    /// ```crablang
     /// # async fn baz() {}
     /// struct CustomLockType;
     /// struct OtherCustomLockType;
@@ -213,7 +213,7 @@ impl LateLintPass<'_> for AwaitHolding {
 impl AwaitHolding {
     fn check_interior_types(&self, cx: &LateContext<'_>, ty_causes: &[GeneratorInteriorTypeCause<'_>], span: Span) {
         for ty_cause in ty_causes {
-            if let rustc_middle::ty::Adt(adt, _) = ty_cause.ty.kind() {
+            if let crablangc_middle::ty::Adt(adt, _) = ty_cause.ty.kind() {
                 if is_mutex_guard(cx, adt.did()) {
                     span_lint_and_then(
                         cx,

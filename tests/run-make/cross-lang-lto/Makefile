@@ -13,8 +13,8 @@ ifndef IS_WINDOWS
 ASSERT_IS_BITCODE_OBJ=("$(LLVM_BIN_DIR)"/llvm-bcanalyzer $(1))
 EXTRACT_OBJS=(cd $(TMPDIR); rm -f ./*.o; "$(LLVM_BIN_DIR)"/llvm-ar x $(1))
 
-BUILD_LIB=$(RUSTC) lib.rs -Copt-level=2 -Clinker-plugin-lto -Ccodegen-units=1
-BUILD_EXE=$(RUSTC) main.rs -Copt-level=2 -Clinker-plugin-lto -Ccodegen-units=1 --emit=obj
+BUILD_LIB=$(CRABLANGC) lib.rs -Copt-level=2 -Clinker-plugin-lto -Ccodegen-units=1
+BUILD_EXE=$(CRABLANGC) main.rs -Copt-level=2 -Clinker-plugin-lto -Ccodegen-units=1 --emit=obj
 
 all: staticlib staticlib-fat-lto staticlib-thin-lto rlib exe cdylib rdylib
 

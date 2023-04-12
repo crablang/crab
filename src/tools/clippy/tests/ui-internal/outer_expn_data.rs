@@ -1,16 +1,16 @@
-// run-rustfix
+// run-crablangfix
 
 #![deny(clippy::internal)]
 #![allow(clippy::missing_clippy_version_attribute)]
-#![feature(rustc_private)]
+#![feature(crablangc_private)]
 
-extern crate rustc_hir;
-extern crate rustc_lint;
-extern crate rustc_middle;
+extern crate crablangc_hir;
+extern crate crablangc_lint;
+extern crate crablangc_middle;
 #[macro_use]
-extern crate rustc_session;
-use rustc_hir::Expr;
-use rustc_lint::{LateContext, LateLintPass};
+extern crate crablangc_session;
+use crablangc_hir::Expr;
+use crablangc_lint::{LateContext, LateLintPass};
 
 declare_lint! {
     pub TEST_LINT,

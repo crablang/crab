@@ -1,7 +1,7 @@
 use std::collections::VecDeque;
 use std::num::NonZeroU32;
 
-use rustc_index::vec::Idx;
+use crablangc_index::vec::Idx;
 
 use super::sync::EvalContextExtPriv as _;
 use super::thread::MachineCallback;

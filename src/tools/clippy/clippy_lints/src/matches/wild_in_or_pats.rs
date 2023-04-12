@@ -1,7 +1,7 @@
 use clippy_utils::diagnostics::span_lint_and_help;
 use clippy_utils::is_wild;
-use rustc_hir::{Arm, PatKind};
-use rustc_lint::LateContext;
+use crablangc_hir::{Arm, PatKind};
+use crablangc_lint::LateContext;
 
 use super::WILDCARD_IN_OR_PATTERNS;
 

@@ -4,13 +4,13 @@
 
 // pp-exact
 
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 
 fn main() {
-    #![rustc_dummy]
-    #[rustc_dummy]
+    #![crablangc_dummy]
+    #[crablangc_dummy]
     fn f() {}
 
-    #[rustc_dummy]
+    #[crablangc_dummy]
     fn g() {}
 }

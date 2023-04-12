@@ -3,7 +3,7 @@
 // outlive the location in which the type appears. Issue #22246.
 
 #![allow(dead_code)]
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 
 pub trait TheTrait {
     type TheAssocType;

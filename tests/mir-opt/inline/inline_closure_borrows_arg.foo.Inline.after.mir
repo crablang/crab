@@ -30,7 +30,7 @@ fn foo(_1: T, _2: &i32) -> i32 {
                                          // + substs: [
                                          //     T,
                                          //     i8,
-                                         //     for<'a, 'b> extern "rust-call" fn((&'a i32, &'b i32)) -> i32,
+                                         //     for<'a, 'b> extern "crablang-call" fn((&'a i32, &'b i32)) -> i32,
                                          //     (),
                                          // ]
         StorageLive(_4);                 // scope 1 at $DIR/inline_closure_borrows_arg.rs:+5:5: +5:6

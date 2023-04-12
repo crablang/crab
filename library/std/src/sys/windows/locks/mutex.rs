@@ -11,7 +11,7 @@
 //!    Unix implementation deadlocks so consistency is preferred. See #19962 for
 //!    more details.
 //!
-//! 3. While CriticalSection is fair and SRWLock is not, the current Rust policy
+//! 3. While CriticalSection is fair and SRWLock is not, the current CrabLang policy
 //!    is that there are no guarantees of fairness.
 
 use crate::cell::UnsafeCell;

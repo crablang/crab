@@ -1,5 +1,5 @@
 #![feature(intrinsics)]
-extern "rust-intrinsic" {
+extern "crablang-intrinsic" {
     fn atomic_foo(); //~ ERROR E0092
 }
 

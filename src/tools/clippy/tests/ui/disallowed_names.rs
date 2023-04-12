@@ -16,7 +16,7 @@ fn main() {
     let quux = 42;
     // Unlike these others, `bar` is actually considered an acceptable name.
     // Among many other legitimate uses, bar commonly refers to a period of time in music.
-    // See https://github.com/rust-lang/rust-clippy/issues/5225.
+    // See https://github.com/crablang/crablang-clippy/issues/5225.
     let bar = 42;
 
     let food = 42;

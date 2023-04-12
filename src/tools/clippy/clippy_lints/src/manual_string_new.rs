@@ -1,11 +1,11 @@
 use clippy_utils::diagnostics::span_lint_and_sugg;
-use rustc_ast::LitKind;
-use rustc_errors::Applicability::MachineApplicable;
-use rustc_hir::{Expr, ExprKind, PathSegment, QPath, TyKind};
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_middle::ty;
-use rustc_session::{declare_lint_pass, declare_tool_lint};
-use rustc_span::{sym, symbol, Span};
+use crablangc_ast::LitKind;
+use crablangc_errors::Applicability::MachineApplicable;
+use crablangc_hir::{Expr, ExprKind, PathSegment, QPath, TyKind};
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_middle::ty;
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_span::{sym, symbol, Span};
 
 declare_clippy_lint! {
     /// ### What it does
@@ -19,12 +19,12 @@ declare_clippy_lint! {
     /// be confusing.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// let a = "".to_string();
     /// let b: String = "".into();
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// let a = String::new();
     /// let b = String::new();
     /// ```

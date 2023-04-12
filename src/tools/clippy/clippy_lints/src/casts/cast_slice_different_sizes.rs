@@ -1,10 +1,10 @@
 use clippy_utils::msrvs::{self, Msrv};
 use clippy_utils::{diagnostics::span_lint_and_then, source};
 use if_chain::if_chain;
-use rustc_ast::Mutability;
-use rustc_hir::{Expr, ExprKind, Node};
-use rustc_lint::LateContext;
-use rustc_middle::ty::{self, layout::LayoutOf, Ty, TypeAndMut};
+use crablangc_ast::Mutability;
+use crablangc_hir::{Expr, ExprKind, Node};
+use crablangc_lint::LateContext;
+use crablangc_middle::ty::{self, layout::LayoutOf, Ty, TypeAndMut};
 
 use super::CAST_SLICE_DIFFERENT_SIZES;
 
@@ -56,7 +56,7 @@ pub(super) fn check<'tcx>(cx: &LateContext<'tcx>, expr: &Expr<'tcx>, msrv: &Msrv
                             expr.span,
                             format!("replace with `ptr::slice_from_raw_parts{mutbl_fn_str}`"),
                             sugg,
-                            rustc_errors::Applicability::HasPlaceholders,
+                            crablangc_errors::Applicability::HasPlaceholders,
                         );
                     },
                 );

@@ -34,4 +34,4 @@ LL | mod main;
 
 error: aborting due to 2 previous errors; 2 warnings emitted
 
-For more information about this error, try `rustc --explain E0583`.
+For more information about this error, try `crablangc --explain E0583`.

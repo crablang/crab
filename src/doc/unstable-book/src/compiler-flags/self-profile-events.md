@@ -9,7 +9,7 @@ This flag takes a comma delimited list of event types to record.
 For example:
 
 ```console
-$ rustc -Zself-profile -Zself-profile-events=default,args
+$ crablangc -Zself-profile -Zself-profile-events=default,args
 ```
 
 ## Event types
@@ -63,12 +63,12 @@ $ rustc -Zself-profile -Zself-profile-events=default,args
 Enable the profiler and capture the default set of events (both invocations are equivalent):
 
 ```console
-$ rustc -Zself-profile
-$ rustc -Zself-profile -Zself-profile-events=default
+$ crablangc -Zself-profile
+$ crablangc -Zself-profile -Zself-profile-events=default
 ```
 
 Enable the profiler and capture the default events and their arguments:
 
 ```console
-$ rustc -Zself-profile -Zself-profile-events=default,args
+$ crablangc -Zself-profile -Zself-profile-events=default,args
 ```

@@ -22,7 +22,7 @@ error[E0658]: `impl Trait` in type aliases is unstable
 LL |     type Out = impl Debug;
    |                ^^^^^^^^^^
    |
-   = note: see issue #63063 <https://github.com/rust-lang/rust/issues/63063> for more information
+   = note: see issue #63063 <https://github.com/crablang/crablang/issues/63063> for more information
    = help: add `#![feature(type_alias_impl_trait)]` to the crate attributes to enable
 
 error[E0658]: `impl Trait` in type aliases is unstable
@@ -31,7 +31,7 @@ error[E0658]: `impl Trait` in type aliases is unstable
 LL | type InTypeAlias<R> = impl Debug;
    |                       ^^^^^^^^^^
    |
-   = note: see issue #63063 <https://github.com/rust-lang/rust/issues/63063> for more information
+   = note: see issue #63063 <https://github.com/crablang/crablang/issues/63063> for more information
    = help: add `#![feature(type_alias_impl_trait)]` to the crate attributes to enable
 
 error[E0658]: `impl Trait` in type aliases is unstable
@@ -40,7 +40,7 @@ error[E0658]: `impl Trait` in type aliases is unstable
 LL | type InReturnInTypeAlias<R> = fn() -> impl Debug;
    |                                       ^^^^^^^^^^
    |
-   = note: see issue #63063 <https://github.com/rust-lang/rust/issues/63063> for more information
+   = note: see issue #63063 <https://github.com/crablang/crablang/issues/63063> for more information
    = help: add `#![feature(type_alias_impl_trait)]` to the crate attributes to enable
 
 error[E0562]: `impl Trait` only allowed in function and inherent method return types, not in `fn` pointer params
@@ -151,7 +151,7 @@ error[E0562]: `impl Trait` only allowed in function and inherent method return t
 LL |     fn in_return() -> impl Debug;
    |                       ^^^^^^^^^^
    |
-   = note: see issue #91611 <https://github.com/rust-lang/rust/issues/91611> for more information
+   = note: see issue #91611 <https://github.com/crablang/crablang/issues/91611> for more information
    = help: add `#![feature(return_position_impl_trait_in_trait)]` to the crate attributes to enable
 
 error[E0562]: `impl Trait` only allowed in function and inherent method return types, not in `impl` method return types
@@ -160,7 +160,7 @@ error[E0562]: `impl Trait` only allowed in function and inherent method return t
 LL |     fn in_trait_impl_return() -> impl Debug { () }
    |                                  ^^^^^^^^^^
    |
-   = note: see issue #91611 <https://github.com/rust-lang/rust/issues/91611> for more information
+   = note: see issue #91611 <https://github.com/crablang/crablang/issues/91611> for more information
    = help: add `#![feature(return_position_impl_trait_in_trait)]` to the crate attributes to enable
 
 error[E0562]: `impl Trait` only allowed in function and inherent method return types, not in `extern fn` params
@@ -290,7 +290,7 @@ LL | impl <T = impl Debug> T {}
    |       ^^^^^^^^^^^^^^
    |
    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
-   = note: for more information, see issue #36887 <https://github.com/rust-lang/rust/issues/36887>
+   = note: for more information, see issue #36887 <https://github.com/crablang/crablang/issues/36887>
    = note: `#[deny(invalid_type_param_default)]` on by default
 
 error: defaults for type parameters are only allowed in `struct`, `enum`, `type`, or `trait` definitions
@@ -300,7 +300,7 @@ LL | fn in_method_generic_param_default<T = impl Debug>(_: T) {}
    |                                    ^^^^^^^^^^^^^^
    |
    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
-   = note: for more information, see issue #36887 <https://github.com/rust-lang/rust/issues/36887>
+   = note: for more information, see issue #36887 <https://github.com/crablang/crablang/issues/36887>
 
 error[E0118]: no nominal type found for inherent implementation
   --> $DIR/where-allowed.rs:233:1
@@ -313,4 +313,4 @@ LL | impl <T = impl Debug> T {}
 error: aborting due to 47 previous errors
 
 Some errors have detailed explanations: E0118, E0562, E0658, E0666.
-For more information about an error, try `rustc --explain E0118`.
+For more information about an error, try `crablangc --explain E0118`.

@@ -1,6 +1,6 @@
 // The double space in `impl  Iterator` is load bearing! We want to make sure we don't regress by
 // accident if the internal string representation changes.
-#[rustfmt::skip]
+#[crablangfmt::skip]
 fn foo(constraints: impl  Iterator) {
     for constraint in constraints {
         qux(constraint);
@@ -39,7 +39,7 @@ fn bak(constraints: impl  Iterator + std::fmt::Debug) {
     }
 }
 
-#[rustfmt::skip]
+#[crablangfmt::skip]
 fn baw<>(constraints: impl Iterator) {
     for constraint in constraints {
         qux(constraint);

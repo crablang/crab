@@ -1,9 +1,9 @@
-// Test that `rustc_specialization_trait` requires always applicable impls.
+// Test that `crablangc_specialization_trait` requires always applicable impls.
 
 #![feature(min_specialization)]
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 
-#[rustc_specialization_trait]
+#[crablangc_specialization_trait]
 trait SpecMarker {
     fn f();
 }

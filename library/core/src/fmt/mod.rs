@@ -1,6 +1,6 @@
 //! Utilities for formatting and printing strings.
 
-#![stable(feature = "rust1", since = "1.0.0")]
+#![stable(feature = "crablang1", since = "1.0.0")]
 
 use crate::cell::{Cell, Ref, RefCell, RefMut, SyncUnsafeCell, UnsafeCell};
 use crate::char::EscapeDebugExtArgs;
@@ -20,7 +20,7 @@ mod nofloat;
 mod num;
 
 #[stable(feature = "fmt_flags_align", since = "1.28.0")]
-#[cfg_attr(not(test), rustc_diagnostic_item = "Alignment")]
+#[cfg_attr(not(test), crablangc_diagnostic_item = "Alignment")]
 /// Possible alignments returned by `Formatter::align`
 #[derive(Copy, Clone, Debug, PartialEq, Eq)]
 pub enum Alignment {
@@ -68,7 +68,7 @@ pub mod rt {
 ///
 /// assert_eq!(format!("{pythagorean_triple}"), "(3, 4, 5)");
 /// ```
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub type Result = result::Result<(), Error>;
 
 /// The error type which is returned from formatting a message into a stream.
@@ -86,7 +86,7 @@ pub type Result = result::Result<(), Error>;
 ///
 /// # Examples
 ///
-/// ```rust
+/// ```crablang
 /// use std::fmt::{self, write};
 ///
 /// let mut output = String::new();
@@ -94,7 +94,7 @@ pub type Result = result::Result<(), Error>;
 ///     panic!("An error occurred");
 /// }
 /// ```
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[derive(Copy, Clone, Debug, Default, Eq, Hash, Ord, PartialEq, PartialOrd)]
 pub struct Error;
 
@@ -106,7 +106,7 @@ pub struct Error;
 ///
 /// [`std::io::Write`]: ../../std/io/trait.Write.html
 /// [flushable]: ../../std/io/trait.Write.html#tymethod.flush
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub trait Write {
     /// Writes a string slice into this writer, returning whether the write
     /// succeeded.
@@ -136,7 +136,7 @@ pub trait Write {
     /// writer(&mut buf, "hola").unwrap();
     /// assert_eq!(&buf, "hola");
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     fn write_str(&mut self, s: &str) -> Result;
 
     /// Writes a [`char`] into this writer, returning whether the write succeeded.
@@ -192,7 +192,7 @@ pub trait Write {
     /// writer(&mut buf, "world").unwrap();
     /// assert_eq!(&buf, "world");
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     fn write_fmt(mut self: &mut Self, args: Arguments<'_>) -> Result {
         write(&mut self, args)
     }
@@ -223,7 +223,7 @@ impl<W: Write + ?Sized> Write for &mut W {
 /// various options related to formatting. For examples, please see the
 /// documentation of the methods defined on `Formatter` below.
 #[allow(missing_debug_implementations)]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub struct Formatter<'a> {
     flags: u32,
     fill: char,
@@ -332,7 +332,7 @@ macro_rules! arg_new {
     };
 }
 
-#[rustc_diagnostic_item = "ArgumentV1Methods"]
+#[crablangc_diagnostic_item = "ArgumentV1Methods"]
 impl<'a> ArgumentV1<'a> {
     #[doc(hidden)]
     #[unstable(feature = "fmt_internals", reason = "internal to format_args!", issue = "none")]
@@ -367,7 +367,7 @@ impl<'a> ArgumentV1<'a> {
 
     fn as_usize(&self) -> Option<usize> {
         // We are type punning a bit here: USIZE_MARKER only takes an &usize but
-        // formatter takes an &Opaque. Rust understandably doesn't think we should compare
+        // formatter takes an &Opaque. CrabLang understandably doesn't think we should compare
         // the function pointers if they don't have the same signature, so we cast to
         // usizes to tell it that we just want to compare addresses.
         if self.formatter as usize == USIZE_MARKER as usize {
@@ -395,7 +395,7 @@ impl<'a> Arguments<'a> {
     #[doc(hidden)]
     #[inline]
     #[unstable(feature = "fmt_internals", issue = "none")]
-    #[rustc_const_unstable(feature = "const_fmt_arguments_new", issue = "none")]
+    #[crablangc_const_unstable(feature = "const_fmt_arguments_new", issue = "none")]
     pub const fn new_const(pieces: &'a [&'static str]) -> Self {
         if pieces.len() > 1 {
             panic!("invalid args");
@@ -420,7 +420,7 @@ impl<'a> Arguments<'a> {
     #[doc(hidden)]
     #[inline]
     #[unstable(feature = "fmt_internals", reason = "internal to format_args!", issue = "none")]
-    #[rustc_const_unstable(feature = "const_fmt_arguments_new", issue = "none")]
+    #[crablangc_const_unstable(feature = "const_fmt_arguments_new", issue = "none")]
     pub const fn new_v1(pieces: &'a [&'static str], args: &'a [ArgumentV1<'a>]) -> Arguments<'a> {
         if pieces.len() < args.len() || pieces.len() > args.len() + 1 {
             panic!("invalid args");
@@ -489,7 +489,7 @@ impl<'a> Arguments<'a> {
 /// and `Display` format to the same thing: the interpolated format string
 /// in `format_args!`.
 ///
-/// ```rust
+/// ```crablang
 /// let debug = format!("{:?}", format_args!("{} foo {:?}", 1, 2));
 /// let display = format!("{}", format_args!("{} foo {:?}", 1, 2));
 /// assert_eq!("1 foo 2", display);
@@ -498,7 +498,7 @@ impl<'a> Arguments<'a> {
 ///
 /// [`format()`]: ../../std/fmt/fn.format.html
 #[lang = "format_arguments"]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[derive(Copy, Clone)]
 pub struct Arguments<'a> {
     // Format string pieces to print.
@@ -536,7 +536,7 @@ impl<'a> Arguments<'a> {
     ///
     /// # Examples
     ///
-    /// ```rust
+    /// ```crablang
     /// use std::fmt::Arguments;
     ///
     /// fn write_str(_: &str) { /* ... */ }
@@ -550,13 +550,13 @@ impl<'a> Arguments<'a> {
     /// }
     /// ```
     ///
-    /// ```rust
+    /// ```crablang
     /// assert_eq!(format_args!("hello").as_str(), Some("hello"));
     /// assert_eq!(format_args!("").as_str(), Some(""));
     /// assert_eq!(format_args!("{:?}", std::env::current_dir()).as_str(), None);
     /// ```
     #[stable(feature = "fmt_as_str", since = "1.52.0")]
-    #[rustc_const_unstable(feature = "const_arguments_as_str", issue = "103900")]
+    #[crablangc_const_unstable(feature = "const_arguments_as_str", issue = "103900")]
     #[must_use]
     #[inline]
     pub const fn as_str(&self) -> Option<&'static str> {
@@ -568,14 +568,14 @@ impl<'a> Arguments<'a> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl Debug for Arguments<'_> {
     fn fmt(&self, fmt: &mut Formatter<'_>) -> Result {
         Display::fmt(self, fmt)
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl Display for Arguments<'_> {
     fn fmt(&self, fmt: &mut Formatter<'_>) -> Result {
         write(fmt.buf, *self)
@@ -602,10 +602,10 @@ impl Display for Arguments<'_> {
 ///
 /// # Stability
 ///
-/// Derived `Debug` formats are not stable, and so may change with future Rust
+/// Derived `Debug` formats are not stable, and so may change with future CrabLang
 /// versions. Additionally, `Debug` implementations of types provided by the
 /// standard library (`std`, `core`, `alloc`, etc.) are not stable, and
-/// may also change with future Rust versions.
+/// may also change with future CrabLang versions.
 ///
 /// # Examples
 ///
@@ -692,8 +692,8 @@ impl Display for Arguments<'_> {
 /// }");
 /// ```
 
-#[stable(feature = "rust1", since = "1.0.0")]
-#[rustc_on_unimplemented(
+#[stable(feature = "crablang1", since = "1.0.0")]
+#[crablangc_on_unimplemented(
     on(
         crate_local,
         label = "`{Self}` cannot be formatted using `{{:?}}`",
@@ -703,8 +703,8 @@ impl Display for Arguments<'_> {
     label = "`{Self}` cannot be formatted using `{{:?}}` because it doesn't implement `{Debug}`"
 )]
 #[doc(alias = "{:?}")]
-#[rustc_diagnostic_item = "Debug"]
-#[rustc_trivial_field_reads]
+#[crablangc_diagnostic_item = "Debug"]
+#[crablangc_trivial_field_reads]
 pub trait Debug {
     /// Formats the value using the given formatter.
     ///
@@ -735,14 +735,14 @@ pub trait Debug {
     ///     2.983,
     /// )");
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     fn fmt(&self, f: &mut Formatter<'_>) -> Result;
 }
 
 // Separate module to reexport the macro `Debug` from prelude without the trait `Debug`.
 pub(crate) mod macros {
     /// Derive macro generating an impl of the trait `Debug`.
-    #[rustc_builtin_macro]
+    #[crablangc_builtin_macro]
     #[stable(feature = "builtin_macro_prelude", since = "1.38.0")]
     #[allow_internal_unstable(core_intrinsics, fmt_helpers_for_derive)]
     pub macro Debug($item:item) {
@@ -791,7 +791,7 @@ pub use macros::Debug;
 ///
 /// assert_eq!(format!("The origin is: {origin}"), "The origin is: (0, 0)");
 /// ```
-#[rustc_on_unimplemented(
+#[crablangc_on_unimplemented(
     on(
         any(_Self = "std::path::Path", _Self = "std::path::PathBuf"),
         label = "`{Self}` cannot be formatted with the default formatter; call `.display()` on it",
@@ -803,8 +803,8 @@ pub use macros::Debug;
     note = "in format strings you may be able to use `{{:?}}` (or {{:#?}} for pretty-print) instead"
 )]
 #[doc(alias = "{}")]
-#[rustc_diagnostic_item = "Display"]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[crablangc_diagnostic_item = "Display"]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub trait Display {
     /// Formats the value using the given formatter.
     ///
@@ -827,7 +827,7 @@ pub trait Display {
     /// assert_eq!("(1.987, 2.983)",
     ///            format!("{}", Position { longitude: 1.987, latitude: 2.983, }));
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     fn fmt(&self, f: &mut Formatter<'_>) -> Result;
 }
 
@@ -878,10 +878,10 @@ pub trait Display {
 ///
 /// assert_eq!(format!("l as octal is: {l:#06o}"), "l as octal is: 0o0011");
 /// ```
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub trait Octal {
     /// Formats the value using the given formatter.
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     fn fmt(&self, f: &mut Formatter<'_>) -> Result;
 }
 
@@ -935,10 +935,10 @@ pub trait Octal {
 ///     "l as binary is: 0b000000000000000000000001101011"
 /// );
 /// ```
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub trait Binary {
     /// Formats the value using the given formatter.
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     fn fmt(&self, f: &mut Formatter<'_>) -> Result;
 }
 
@@ -990,10 +990,10 @@ pub trait Binary {
 ///
 /// assert_eq!(format!("l as hex is: {l:#010x}"), "l as hex is: 0x00000009");
 /// ```
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub trait LowerHex {
     /// Formats the value using the given formatter.
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     fn fmt(&self, f: &mut Formatter<'_>) -> Result;
 }
 
@@ -1045,10 +1045,10 @@ pub trait LowerHex {
 ///
 /// assert_eq!(format!("l as hex is: {l:#010X}"), "l as hex is: 0x7FFFFFFF");
 /// ```
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub trait UpperHex {
     /// Formats the value using the given formatter.
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     fn fmt(&self, f: &mut Formatter<'_>) -> Result;
 }
 
@@ -1095,11 +1095,11 @@ pub trait UpperHex {
 /// assert_eq!(l_ptr.len(), 18);
 /// assert_eq!(&l_ptr[..2], "0x");
 /// ```
-#[stable(feature = "rust1", since = "1.0.0")]
-#[rustc_diagnostic_item = "Pointer"]
+#[stable(feature = "crablang1", since = "1.0.0")]
+#[crablangc_diagnostic_item = "Pointer"]
 pub trait Pointer {
     /// Formats the value using the given formatter.
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     fn fmt(&self, f: &mut Formatter<'_>) -> Result;
 }
 
@@ -1147,10 +1147,10 @@ pub trait Pointer {
 ///     "l in scientific notation is: 001e2"
 /// );
 /// ```
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub trait LowerExp {
     /// Formats the value using the given formatter.
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     fn fmt(&self, f: &mut Formatter<'_>) -> Result;
 }
 
@@ -1198,10 +1198,10 @@ pub trait LowerExp {
 ///     "l in scientific notation is: 001E2"
 /// );
 /// ```
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub trait UpperExp {
     /// Formats the value using the given formatter.
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     fn fmt(&self, f: &mut Formatter<'_>) -> Result;
 }
 
@@ -1236,7 +1236,7 @@ pub trait UpperExp {
 /// ```
 ///
 /// [`write!`]: crate::write!
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub fn write(output: &mut dyn Write, args: Arguments<'_>) -> Result {
     let mut formatter = Formatter::new(output);
     let mut idx = 0;
@@ -1402,7 +1402,7 @@ impl<'a> Formatter<'a> {
     /// assert_eq!(format!("{:#}", Foo::new(-1)), "-Foo 1");
     /// assert_eq!(format!("{:0>#8}", Foo::new(-1)), "00-Foo 1");
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn pad_integral(&mut self, is_nonnegative: bool, prefix: &str, buf: &str) -> Result {
         let mut width = buf.len();
 
@@ -1496,7 +1496,7 @@ impl<'a> Formatter<'a> {
     /// assert_eq!(format!("{Foo:<4}"), "Foo ");
     /// assert_eq!(format!("{Foo:0>4}"), "0Foo");
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn pad(&mut self, s: &str) -> Result {
         // Make sure there's a fast path up front
         if self.width.is_none() && self.precision.is_none() {
@@ -1680,7 +1680,7 @@ impl<'a> Formatter<'a> {
     /// assert_eq!(format!("{Foo}"), "Foo");
     /// assert_eq!(format!("{Foo:0>8}"), "Foo");
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn write_str(&mut self, data: &str) -> Result {
         self.buf.write_str(data)
     }
@@ -1703,14 +1703,14 @@ impl<'a> Formatter<'a> {
     /// assert_eq!(format!("{}", Foo(-1)), "Foo -1");
     /// assert_eq!(format!("{:0>8}", Foo(2)), "Foo 2");
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn write_fmt(&mut self, fmt: Arguments<'_>) -> Result {
         write(self.buf, fmt)
     }
 
     /// Flags for formatting
     #[must_use]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[deprecated(
         since = "1.24.0",
         note = "use the `sign_plus`, `sign_minus`, `alternate`, \
@@ -1972,7 +1972,7 @@ impl<'a> Formatter<'a> {
     }
 
     // FIXME: Decide what public API we want for these two flags.
-    // https://github.com/rust-lang/rust/issues/48584
+    // https://github.com/crablang/crablang/issues/48584
     fn debug_lower_hex(&self) -> bool {
         self.flags & (1 << FlagV1::DebugLowerHex as u32) != 0
     }
@@ -1988,7 +1988,7 @@ impl<'a> Formatter<'a> {
     ///
     /// # Examples
     ///
-    /// ```rust
+    /// ```crablang
     /// use std::fmt;
     /// use std::net::Ipv4Addr;
     ///
@@ -2150,7 +2150,7 @@ impl<'a> Formatter<'a> {
     ///
     /// # Examples
     ///
-    /// ```rust
+    /// ```crablang
     /// use std::fmt;
     /// use std::marker::PhantomData;
     ///
@@ -2283,7 +2283,7 @@ impl<'a> Formatter<'a> {
     ///
     /// # Examples
     ///
-    /// ```rust
+    /// ```crablang
     /// use std::fmt;
     ///
     /// struct Foo(Vec<i32>);
@@ -2306,7 +2306,7 @@ impl<'a> Formatter<'a> {
     ///
     /// # Examples
     ///
-    /// ```rust
+    /// ```crablang
     /// use std::fmt;
     ///
     /// struct Foo(Vec<i32>);
@@ -2325,7 +2325,7 @@ impl<'a> Formatter<'a> {
     /// In this more complex example, we use [`format_args!`] and `.debug_set()`
     /// to build a list of match arms:
     ///
-    /// ```rust
+    /// ```crablang
     /// use std::fmt;
     ///
     /// struct Arm<'a, L: 'a, R: 'a>(&'a (L, R));
@@ -2364,7 +2364,7 @@ impl<'a> Formatter<'a> {
     ///
     /// # Examples
     ///
-    /// ```rust
+    /// ```crablang
     /// use std::fmt;
     ///
     /// struct Foo(Vec<(String, i32)>);
@@ -2401,7 +2401,7 @@ impl Write for Formatter<'_> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl Display for Error {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result {
         Display::fmt("an error occurred when formatting an argument", f)
@@ -2413,11 +2413,11 @@ impl Display for Error {
 macro_rules! fmt_refs {
     ($($tr:ident),*) => {
         $(
-        #[stable(feature = "rust1", since = "1.0.0")]
+        #[stable(feature = "crablang1", since = "1.0.0")]
         impl<T: ?Sized + $tr> $tr for &T {
             fn fmt(&self, f: &mut Formatter<'_>) -> Result { $tr::fmt(&**self, f) }
         }
-        #[stable(feature = "rust1", since = "1.0.0")]
+        #[stable(feature = "crablang1", since = "1.0.0")]
         impl<T: ?Sized + $tr> $tr for &mut T {
             fn fmt(&self, f: &mut Formatter<'_>) -> Result { $tr::fmt(&**self, f) }
         }
@@ -2441,7 +2441,7 @@ impl Display for ! {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl Debug for bool {
     #[inline]
     fn fmt(&self, f: &mut Formatter<'_>) -> Result {
@@ -2449,14 +2449,14 @@ impl Debug for bool {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl Display for bool {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result {
         Display::fmt(if *self { "true" } else { "false" }, f)
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl Debug for str {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result {
         f.write_char('"')?;
@@ -2481,14 +2481,14 @@ impl Debug for str {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl Display for str {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result {
         f.pad(self)
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl Debug for char {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result {
         f.write_char('\'')?;
@@ -2503,7 +2503,7 @@ impl Debug for char {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl Display for char {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result {
         if f.width.is_none() && f.precision.is_none() {
@@ -2514,7 +2514,7 @@ impl Display for char {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: ?Sized> Pointer for *const T {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result {
         // Cast is needed here because `.expose_addr()` requires `T: Sized`.
@@ -2528,7 +2528,7 @@ impl<T: ?Sized> Pointer for *const T {
 /// This uses `ptr_addr: usize` and not `ptr: *const ()` to be able to use this for
 /// `fn(...) -> ...` without using [problematic] "Oxford Casts".
 ///
-/// [problematic]: https://github.com/rust-lang/rust/issues/95489
+/// [problematic]: https://github.com/crablang/crablang/issues/95489
 pub(crate) fn pointer_fmt_inner(ptr_addr: usize, f: &mut Formatter<'_>) -> Result {
     let old_width = f.width;
     let old_flags = f.flags;
@@ -2554,21 +2554,21 @@ pub(crate) fn pointer_fmt_inner(ptr_addr: usize, f: &mut Formatter<'_>) -> Resul
     ret
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: ?Sized> Pointer for *mut T {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result {
         Pointer::fmt(&(*self as *const T), f)
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: ?Sized> Pointer for &T {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result {
         Pointer::fmt(&(*self as *const T), f)
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: ?Sized> Pointer for &mut T {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result {
         Pointer::fmt(&(&**self as *const T), f)
@@ -2577,13 +2577,13 @@ impl<T: ?Sized> Pointer for &mut T {
 
 // Implementation of Display/Debug for various core types
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: ?Sized> Debug for *const T {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result {
         Pointer::fmt(self, f)
     }
 }
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: ?Sized> Debug for *mut T {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result {
         Pointer::fmt(self, f)
@@ -2599,7 +2599,7 @@ macro_rules! tuple {
     ( $($name:ident,)+ ) => (
         maybe_tuple_doc! {
             $($name)+ @
-            #[stable(feature = "rust1", since = "1.0.0")]
+            #[stable(feature = "crablang1", since = "1.0.0")]
             impl<$($name:Debug),+> Debug for ($($name,)+) where last_type!($($name,)+): ?Sized {
                 #[allow(non_snake_case, unused_assignments)]
                 fn fmt(&self, f: &mut Formatter<'_>) -> Result {
@@ -2638,35 +2638,35 @@ macro_rules! last_type {
 
 tuple! { E, D, C, B, A, Z, Y, X, W, V, U, T, }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: Debug> Debug for [T] {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result {
         f.debug_list().entries(self.iter()).finish()
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl Debug for () {
     #[inline]
     fn fmt(&self, f: &mut Formatter<'_>) -> Result {
         f.pad("()")
     }
 }
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: ?Sized> Debug for PhantomData<T> {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result {
         write!(f, "PhantomData<{}>", crate::any::type_name::<T>())
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: Copy + Debug> Debug for Cell<T> {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result {
         f.debug_struct("Cell").field("value", &self.get()).finish()
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: ?Sized + Debug> Debug for RefCell<T> {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result {
         match self.try_borrow() {
@@ -2688,14 +2688,14 @@ impl<T: ?Sized + Debug> Debug for RefCell<T> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: ?Sized + Debug> Debug for Ref<'_, T> {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result {
         Debug::fmt(&**self, f)
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: ?Sized + Debug> Debug for RefMut<'_, T> {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result {
         Debug::fmt(&*(self.deref()), f)

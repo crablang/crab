@@ -1,10 +1,10 @@
 // check that reservation impls can't be used as normal impls in positive reasoning.
 // revisions: old next
 //[next] compile-flags: -Ztrait-solver=next
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 
 trait MyTrait { fn foo(&self); }
-#[rustc_reservation_impl = "foo"]
+#[crablangc_reservation_impl = "foo"]
 impl MyTrait for () { fn foo(&self) {} }
 
 fn main() {

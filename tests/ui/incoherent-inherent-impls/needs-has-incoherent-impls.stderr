@@ -5,7 +5,7 @@ LL | impl extern_crate::StructWithAttr {
    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
    |
    = help: consider moving this inherent impl into the crate defining the type if possible
-help: alternatively add `#[rustc_allow_incoherent_impl]` to the relevant impl items
+help: alternatively add `#[crablangc_allow_incoherent_impl]` to the relevant impl items
   --> $DIR/needs-has-incoherent-impls.rs:7:5
    |
 LL |     fn foo() {}
@@ -18,7 +18,7 @@ LL | impl extern_crate::StructNoAttr {
    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
    |
    = help: consider moving this inherent impl into the crate defining the type if possible
-help: alternatively add `#[rustc_has_incoherent_inherent_impls]` to the type and `#[rustc_allow_incoherent_impl]` to the relevant impl items
+help: alternatively add `#[crablangc_has_incoherent_inherent_impls]` to the type and `#[crablangc_allow_incoherent_impl]` to the relevant impl items
   --> $DIR/needs-has-incoherent-impls.rs:13:1
    |
 LL | impl extern_crate::StructNoAttr {
@@ -31,7 +31,7 @@ LL | impl extern_crate::StructNoAttr {
    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
    |
    = help: consider moving this inherent impl into the crate defining the type if possible
-help: alternatively add `#[rustc_has_incoherent_inherent_impls]` to the type and `#[rustc_allow_incoherent_impl]` to the relevant impl items
+help: alternatively add `#[crablangc_has_incoherent_inherent_impls]` to the type and `#[crablangc_allow_incoherent_impl]` to the relevant impl items
   --> $DIR/needs-has-incoherent-impls.rs:17:1
    |
 LL | impl extern_crate::StructNoAttr {
@@ -44,7 +44,7 @@ LL | impl extern_crate::EnumWithAttr {
    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
    |
    = help: consider moving this inherent impl into the crate defining the type if possible
-help: alternatively add `#[rustc_allow_incoherent_impl]` to the relevant impl items
+help: alternatively add `#[crablangc_allow_incoherent_impl]` to the relevant impl items
   --> $DIR/needs-has-incoherent-impls.rs:24:5
    |
 LL |     fn foo() {}
@@ -57,7 +57,7 @@ LL | impl extern_crate::EnumNoAttr {
    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
    |
    = help: consider moving this inherent impl into the crate defining the type if possible
-help: alternatively add `#[rustc_has_incoherent_inherent_impls]` to the type and `#[rustc_allow_incoherent_impl]` to the relevant impl items
+help: alternatively add `#[crablangc_has_incoherent_inherent_impls]` to the type and `#[crablangc_allow_incoherent_impl]` to the relevant impl items
   --> $DIR/needs-has-incoherent-impls.rs:30:1
    |
 LL | impl extern_crate::EnumNoAttr {
@@ -70,7 +70,7 @@ LL | impl extern_crate::EnumNoAttr {
    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
    |
    = help: consider moving this inherent impl into the crate defining the type if possible
-help: alternatively add `#[rustc_has_incoherent_inherent_impls]` to the type and `#[rustc_allow_incoherent_impl]` to the relevant impl items
+help: alternatively add `#[crablangc_has_incoherent_inherent_impls]` to the type and `#[crablangc_allow_incoherent_impl]` to the relevant impl items
   --> $DIR/needs-has-incoherent-impls.rs:34:1
    |
 LL | impl extern_crate::EnumNoAttr {
@@ -78,4 +78,4 @@ LL | impl extern_crate::EnumNoAttr {
 
 error: aborting due to 6 previous errors
 
-For more information about this error, try `rustc --explain E0390`.
+For more information about this error, try `crablangc --explain E0390`.

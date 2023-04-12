@@ -3,7 +3,7 @@
 //
 // Check that if we promise to not impl what would overlap it doesn't actually overlap
 
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 #![feature(with_negative_coherence)]
 
 extern crate option_future as lib;

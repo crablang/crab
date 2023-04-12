@@ -2,7 +2,7 @@
 // attributes later in the same scope. (We already ensure that you cannot
 // override it in nested scopes).
 
-// If you turn off deduplicate diagnostics (which rustc turns on by default but
+// If you turn off deduplicate diagnostics (which crablangc turns on by default but
 // compiletest turns off when it runs ui tests), then the errors are
 // (unfortunately) repeated here because the checking is done as we read in the
 // errors, and currently that happens two or three different times, depending on

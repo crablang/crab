@@ -26,7 +26,7 @@ union NoDrop<T> { inner: ManuallyDrop<T> }
 
 // Copy currently can't be implemented on drop-containing unions,
 // this may change later
-// https://github.com/rust-lang/rust/pull/38934#issuecomment-271219289
+// https://github.com/crablang/crablang/pull/38934#issuecomment-271219289
 
 // // We should be able to implement Copy for NoDrop
 // impl<T> Copy for NoDrop<T> {}

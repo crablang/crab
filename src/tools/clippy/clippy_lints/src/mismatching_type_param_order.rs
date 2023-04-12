@@ -1,10 +1,10 @@
 use clippy_utils::diagnostics::span_lint_and_help;
-use rustc_data_structures::fx::FxHashMap;
-use rustc_hir::def::{DefKind, Res};
-use rustc_hir::{GenericArg, Item, ItemKind, QPath, Ty, TyKind};
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_middle::ty::GenericParamDefKind;
-use rustc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_data_structures::fx::FxHashMap;
+use crablangc_hir::def::{DefKind, Res};
+use crablangc_hir::{GenericArg, Item, ItemKind, QPath, Ty, TyKind};
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_middle::ty::GenericParamDefKind;
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
 
 declare_clippy_lint! {
     /// ### What it does
@@ -24,7 +24,7 @@ declare_clippy_lint! {
     /// ignored.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// struct Foo<A, B> {
     ///     x: A,
     ///     y: B,
@@ -33,7 +33,7 @@ declare_clippy_lint! {
     /// impl<B, A> Foo<B, A> {}
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// struct Foo<A, B> {
     ///     x: A,
     ///     y: B,

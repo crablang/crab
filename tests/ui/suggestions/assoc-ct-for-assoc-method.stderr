@@ -44,4 +44,4 @@ LL |     let y: i32 = i32::max(/* i32 */, /* i32 */) - 42;
 error: aborting due to 3 previous errors
 
 Some errors have detailed explanations: E0308, E0369.
-For more information about an error, try `rustc --explain E0308`.
+For more information about an error, try `crablangc --explain E0308`.

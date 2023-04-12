@@ -4,7 +4,7 @@ set -ex
 
 # Check sysroot handling
 sysroot=$(./target/debug/clippy-driver --print sysroot)
-test "$sysroot" = "$(rustc --print sysroot)"
+test "$sysroot" = "$(crablangc --print sysroot)"
 
 if [[ ${OS} == "Windows" ]]; then
 	desired_sysroot=C:/tmp
@@ -19,9 +19,9 @@ test "$sysroot" = $desired_sysroot
 
 # Check that the --sysroot argument is only passed once (SYSROOT is ignored)
 (
-    cd rustc_tools_util
+    cd crablangc_tools_util
     touch src/lib.rs
-    SYSROOT=/tmp RUSTFLAGS="--sysroot=$(rustc --print sysroot)" ../target/debug/cargo-clippy clippy --verbose
+    SYSROOT=/tmp CRABLANGFLAGS="--sysroot=$(crablangc --print sysroot)" ../target/debug/cargo-clippy clippy --verbose
 )
 
 # Make sure this isn't set - clippy-driver should cope without it
@@ -33,14 +33,14 @@ unset CARGO_MANIFEST_DIR
 sed -e "s,tests/ui,\$DIR," -e "/= help/d" double_neg.stderr >normalized.stderr
 diff -u normalized.stderr tests/ui/double_neg.stderr
 
-# make sure "clippy-driver --rustc --arg" and "rustc --arg" behave the same
-SYSROOT=$(rustc --print sysroot)
-diff -u <(LD_LIBRARY_PATH=${SYSROOT}/lib ./target/debug/clippy-driver --rustc --version --verbose) <(rustc --version --verbose)
+# make sure "clippy-driver --crablangc --arg" and "crablangc --arg" behave the same
+SYSROOT=$(crablangc --print sysroot)
+diff -u <(LD_LIBRARY_PATH=${SYSROOT}/lib ./target/debug/clippy-driver --crablangc --version --verbose) <(crablangc --version --verbose)
 
 echo "fn main() {}" >target/driver_test.rs
-# we can't run 2 rustcs on the same file at the same time
-CLIPPY=$(LD_LIBRARY_PATH=${SYSROOT}/lib ./target/debug/clippy-driver ./target/driver_test.rs --rustc)
-RUSTC=$(rustc ./target/driver_test.rs)
-diff -u <($CLIPPY) <($RUSTC)
+# we can't run 2 crablangcs on the same file at the same time
+CLIPPY=$(LD_LIBRARY_PATH=${SYSROOT}/lib ./target/debug/clippy-driver ./target/driver_test.rs --crablangc)
+CRABLANGC=$(crablangc ./target/driver_test.rs)
+diff -u <($CLIPPY) <($CRABLANGC)
 
 # TODO: CLIPPY_CONF_DIR / CARGO_MANIFEST_DIR

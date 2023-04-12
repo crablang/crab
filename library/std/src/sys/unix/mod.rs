@@ -48,7 +48,7 @@ pub fn init(argc: isize, argv: *const *const u8, _sigpipe: u8) {}
 
 #[cfg(not(target_os = "espidf"))]
 // SAFETY: must be called only once during runtime initialization.
-// NOTE: this is not guaranteed to run, for example when Rust code is called externally.
+// NOTE: this is not guaranteed to run, for example when CrabLang code is called externally.
 // See `fn init()` in `library/std/src/rt.rs` for docs on `sigpipe`.
 pub unsafe fn init(argc: isize, argv: *const *const u8, sigpipe: u8) {
     // The standard streams might be closed on application startup. To prevent
@@ -123,7 +123,7 @@ pub unsafe fn init(argc: isize, argv: *const *const u8, sigpipe: u8) {
                 if open64("/dev/null\0".as_ptr().cast(), libc::O_RDWR, 0) == -1 {
                     // If the stream is closed but we failed to reopen it, abort the
                     // process. Otherwise we wouldn't preserve the safety of
-                    // operations on the corresponding Rust object Stdin, Stdout, or
+                    // operations on the corresponding CrabLang object Stdin, Stdout, or
                     // Stderr.
                     libc::abort();
                 }
@@ -152,7 +152,7 @@ pub unsafe fn init(argc: isize, argv: *const *const u8, sigpipe: u8) {
                     if open64("/dev/null\0".as_ptr().cast(), libc::O_RDWR, 0) == -1 {
                         // If the stream is closed but we failed to reopen it, abort the
                         // process. Otherwise we wouldn't preserve the safety of
-                        // operations on the corresponding Rust object Stdin, Stdout, or
+                        // operations on the corresponding CrabLang object Stdin, Stdout, or
                         // Stderr.
                         libc::abort();
                     }
@@ -167,7 +167,7 @@ pub unsafe fn init(argc: isize, argv: *const *const u8, sigpipe: u8) {
             // We don't want to add this as a public type to std, nor do we
             // want to `include!` a file from the compiler (which would break
             // Miri and xargo for example), so we choose to duplicate these
-            // constants from `compiler/rustc_session/src/config/sigpipe.rs`.
+            // constants from `compiler/crablangc_session/src/config/sigpipe.rs`.
             // See the other file for docs. NOTE: Make sure to keep them in
             // sync!
             mod sigpipe {
@@ -343,8 +343,8 @@ pub fn cvt_nz(error: libc::c_int) -> crate::io::Result<()> {
 // failures generated from C, will go via abort().
 //
 // On systems with old, buggy, libcs, the impact can be severe for a
-// multithreaded C program.  It is much less severe for Rust, because Rust
-// stdlib doesn't use libc stdio buffering.  In a typical Rust program, which
+// multithreaded C program.  It is much less severe for CrabLang, because CrabLang
+// stdlib doesn't use libc stdio buffering.  In a typical CrabLang program, which
 // does not use C stdio, even a buggy libc::abort() is, in fact, safe.
 pub fn abort_internal() -> ! {
     unsafe { libc::abort() }

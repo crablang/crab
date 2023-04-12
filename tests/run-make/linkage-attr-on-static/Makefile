@@ -2,5 +2,5 @@
 include ../tools.mk
 
 all: $(call NATIVE_STATICLIB,foo)
-	$(RUSTC) bar.rs
+	$(CRABLANGC) bar.rs
 	$(call RUN,bar) || exit 1

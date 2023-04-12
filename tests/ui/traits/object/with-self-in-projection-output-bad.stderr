@@ -18,4 +18,4 @@ LL |     let _y: Box<dyn NormalizableHelper<Target=i32>> = Box::new(2u32);
 
 error: aborting due to 2 previous errors
 
-For more information about this error, try `rustc --explain E0191`.
+For more information about this error, try `crablangc --explain E0191`.

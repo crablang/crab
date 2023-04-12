@@ -12,7 +12,7 @@ fn main() {
     refcell_basic();
     ref_protector();
     ref_mut_protector();
-    rust_issue_68303();
+    crablang_issue_68303();
 }
 
 fn aliasing_mut_and_shr() {
@@ -54,7 +54,7 @@ fn aliasing_frz_and_shr() {
 }
 
 // Getting a pointer into a union with interior mutability used to be tricky
-// business (https://github.com/rust-lang/miri/issues/615), but it should work
+// business (https://github.com/crablang/miri/issues/615), but it should work
 // now.
 fn into_interior_mutability() {
     let mut x: MaybeUninit<(Cell<u32>, u32)> = MaybeUninit::uninit();
@@ -76,7 +76,7 @@ fn unsafe_cell_2phase() {
 }
 
 /// Make sure we can deallocate an UnsafeCell that was passed to an active fn call.
-/// (This is the fix for https://github.com/rust-lang/rust/issues/55005.)
+/// (This is the fix for https://github.com/crablang/crablang/issues/55005.)
 fn unsafe_cell_deallocate() {
     fn f(x: &UnsafeCell<i32>) {
         let b: Box<i32> = unsafe { Box::from_raw(x as *const _ as *mut i32) };
@@ -167,7 +167,7 @@ fn ref_mut_protector() {
 }
 
 /// Make sure we do not have bad enum layout optimizations.
-fn rust_issue_68303() {
+fn crablang_issue_68303() {
     let optional = Some(RefCell::new(false));
     let mut handle = optional.as_ref().unwrap().borrow_mut();
     assert!(optional.is_some());

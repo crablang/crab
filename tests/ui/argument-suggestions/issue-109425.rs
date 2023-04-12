@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 
 fn f() {}
 fn i(_: u32) {}

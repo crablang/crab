@@ -12,4 +12,4 @@ LL | const _ALIGN: usize = unsafe { min_align_of_val(&4 as *const i32 as *const 
 
 error: aborting due to 2 previous errors
 
-For more information about this error, try `rustc --explain E0080`.
+For more information about this error, try `crablangc --explain E0080`.

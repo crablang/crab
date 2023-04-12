@@ -43,7 +43,7 @@ use crate::fmt;
 /// }
 /// ```
 #[derive(Copy, Eq, PartialEq, Clone, Debug)]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub struct Utf8Error {
     pub(super) valid_up_to: usize,
     pub(super) error_len: Option<u8>,
@@ -73,7 +73,7 @@ impl Utf8Error {
     /// assert_eq!(1, error.valid_up_to());
     /// ```
     #[stable(feature = "utf8_error", since = "1.5.0")]
-    #[rustc_const_stable(feature = "const_str_from_utf8_shared", since = "1.63.0")]
+    #[crablangc_const_stable(feature = "const_str_from_utf8_shared", since = "1.63.0")]
     #[must_use]
     #[inline]
     pub const fn valid_up_to(&self) -> usize {
@@ -96,7 +96,7 @@ impl Utf8Error {
     ///
     /// [U+FFFD]: ../../std/char/constant.REPLACEMENT_CHARACTER.html
     #[stable(feature = "utf8_error_error_len", since = "1.20.0")]
-    #[rustc_const_stable(feature = "const_str_from_utf8_shared", since = "1.63.0")]
+    #[crablangc_const_stable(feature = "const_str_from_utf8_shared", since = "1.63.0")]
     #[must_use]
     #[inline]
     pub const fn error_len(&self) -> Option<usize> {
@@ -108,7 +108,7 @@ impl Utf8Error {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl fmt::Display for Utf8Error {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         if let Some(error_len) = self.error_len {
@@ -123,7 +123,7 @@ impl fmt::Display for Utf8Error {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl Error for Utf8Error {
     #[allow(deprecated)]
     fn description(&self) -> &str {
@@ -136,17 +136,17 @@ impl Error for Utf8Error {
 /// [`from_str`]: super::FromStr::from_str
 #[derive(Debug, Clone, PartialEq, Eq)]
 #[non_exhaustive]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub struct ParseBoolError;
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl fmt::Display for ParseBoolError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         "provided string was not `true` or `false`".fmt(f)
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl Error for ParseBoolError {
     #[allow(deprecated)]
     fn description(&self) -> &str {

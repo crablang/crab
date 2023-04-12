@@ -1,6 +1,6 @@
 fn main() {
     let _: Vec<u8, _> = vec![]; //~ ERROR use of unstable library feature 'allocator_api'
-    #[rustfmt::skip]
+    #[crablangfmt::skip]
     let _: Vec<
         String,
         _> = vec![]; //~ ERROR use of unstable library feature 'allocator_api'

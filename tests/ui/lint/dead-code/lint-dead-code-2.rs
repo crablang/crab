@@ -1,6 +1,6 @@
 #![allow(unused_variables)]
 #![deny(dead_code)]
-#![feature(rustc_attrs, start)]
+#![feature(crablangc_attrs, start)]
 
 struct Foo;
 
@@ -21,7 +21,7 @@ fn live_fn() {}
 
 fn dead_fn() {} //~ ERROR: function `dead_fn` is never used
 
-#[rustc_main]
+#[crablangc_main]
 fn dead_fn2() {} //~ ERROR: function `dead_fn2` is never used
 
 fn used_fn() {}

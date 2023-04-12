@@ -116,7 +116,7 @@ fn main() {
     //~^ some fields are not explicitly listed
     //~^^ some fields are not explicitly listed
 
-    // Ok: this tests https://github.com/rust-lang/rust/issues/89382
+    // Ok: this tests https://github.com/crablang/crablang/issues/89382
     #[warn(non_exhaustive_omitted_patterns)]
     let MixedVisFields { a, b, .. } = MixedVisFields::default();
 

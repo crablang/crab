@@ -1,8 +1,8 @@
 use cargo_metadata::Metadata;
 use clippy_utils::diagnostics::span_lint;
 use if_chain::if_chain;
-use rustc_lint::LateContext;
-use rustc_span::source_map::DUMMY_SP;
+use crablangc_lint::LateContext;
+use crablangc_span::source_map::DUMMY_SP;
 
 use super::WILDCARD_DEPENDENCIES;
 

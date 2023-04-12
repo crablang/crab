@@ -5,7 +5,7 @@ fn main() {
     if foo().is_err() {
         eprintln!(
             "error: Clippy is no longer available via crates.io\n\n\
-             help: please run `rustup component add clippy` instead"
+             help: please run `crablangup component add clippy` instead"
         );
     }
     std::process::exit(1);
@@ -31,7 +31,7 @@ fn foo() -> Result<()> {
     write!(t, "please run `")?;
 
     t.attr(Attr::Bold)?;
-    write!(t, "rustup component add clippy")?;
+    write!(t, "crablangup component add clippy")?;
 
     t.reset()?;
     t.fg(WHITE)?;

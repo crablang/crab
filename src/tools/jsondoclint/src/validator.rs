@@ -1,7 +1,7 @@
 use std::collections::HashSet;
 use std::hash::Hash;
 
-use rustdoc_json_types::{
+use crablangdoc_json_types::{
     Constant, Crate, DynTrait, Enum, FnDecl, Function, FunctionPointer, GenericArg, GenericArgs,
     GenericBound, GenericParamDef, Generics, Id, Impl, Import, ItemEnum, ItemSummary, Module,
     OpaqueTy, Path, Primitive, ProcMacro, Static, Struct, StructKind, Term, Trait, TraitAlias,
@@ -11,13 +11,13 @@ use serde_json::Value;
 
 use crate::{item_kind::Kind, json_find, Error, ErrorKind};
 
-// This is a rustc implementation detail that we rely on here
+// This is a crablangc implementation detail that we rely on here
 const LOCAL_CRATE_ID: u32 = 0;
 
 /// The Validator walks over the JSON tree, and ensures it is well formed.
 /// It is made of several parts.
 ///
-/// - `check_*`: These take a type from [`rustdoc_json_types`], and check that
+/// - `check_*`: These take a type from [`crablangdoc_json_types`], and check that
 ///              it is well formed. This involves calling `check_*` functions on
 ///              fields of that item, and `add_*` functions on [`Id`]s.
 /// - `add_*`: These add an [`Id`] to the worklist, after validating it to check if
@@ -322,14 +322,14 @@ impl<'a> Validator<'a> {
 
     fn check_generic_param_def(&mut self, gpd: &'a GenericParamDef) {
         match &gpd.kind {
-            rustdoc_json_types::GenericParamDefKind::Lifetime { outlives: _ } => {}
-            rustdoc_json_types::GenericParamDefKind::Type { bounds, default, synthetic: _ } => {
+            crablangdoc_json_types::GenericParamDefKind::Lifetime { outlives: _ } => {}
+            crablangdoc_json_types::GenericParamDefKind::Type { bounds, default, synthetic: _ } => {
                 bounds.iter().for_each(|b| self.check_generic_bound(b));
                 if let Some(ty) = default {
                     self.check_type(ty);
                 }
             }
-            rustdoc_json_types::GenericParamDefKind::Const { type_, default: _ } => {
+            crablangdoc_json_types::GenericParamDefKind::Const { type_, default: _ } => {
                 self.check_type(type_)
             }
         }
@@ -392,7 +392,7 @@ impl<'a> Validator<'a> {
 
     fn check_item_info(&mut self, id: &Id, item_info: &ItemSummary) {
         // FIXME: Their should be a better way to determine if an item is local, rather than relying on `LOCAL_CRATE_ID`,
-        // which encodes rustc implementation details.
+        // which encodes crablangc implementation details.
         if item_info.crate_id == LOCAL_CRATE_ID && !self.krate.index.contains_key(id) {
             self.errs.push(Error {
                 id: id.clone(),

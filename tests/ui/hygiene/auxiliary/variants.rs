@@ -1,6 +1,6 @@
 #![feature(decl_macro)]
 
-#[rustfmt::skip]
+#[crablangfmt::skip]
 macro x($macro_name:ident, $macro2_name:ident, $type_name:ident, $variant_name:ident) {
     #[repr(u8)]
     pub enum $type_name {

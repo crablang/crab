@@ -4,13 +4,13 @@ use clippy_utils::higher;
 use clippy_utils::source::snippet_with_applicability;
 use clippy_utils::ty::is_copy;
 use if_chain::if_chain;
-use rustc_errors::Applicability;
-use rustc_hir::{BorrowKind, Expr, ExprKind, Mutability};
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_middle::ty::layout::LayoutOf;
-use rustc_middle::ty::{self, Ty};
-use rustc_session::{declare_tool_lint, impl_lint_pass};
-use rustc_span::source_map::Span;
+use crablangc_errors::Applicability;
+use crablangc_hir::{BorrowKind, Expr, ExprKind, Mutability};
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_middle::ty::layout::LayoutOf;
+use crablangc_middle::ty::{self, Ty};
+use crablangc_session::{declare_tool_lint, impl_lint_pass};
+use crablangc_span::source_map::Span;
 
 #[expect(clippy::module_name_repetitions)]
 #[derive(Copy, Clone)]
@@ -27,14 +27,14 @@ declare_clippy_lint! {
     /// This is less efficient.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// fn foo(_x: &[u8]) {}
     ///
     /// foo(&vec![1, 2]);
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// # fn foo(_x: &[u8]) {}
     /// foo(&[1, 2]);
     /// ```

@@ -1,5 +1,5 @@
 // check-pass
-// https://github.com/rust-lang/rust/issues/51300
+// https://github.com/crablang/crablang/issues/51300
 
 #[derive(PartialEq, Eq, Clone, Copy)]
 pub struct Stat {

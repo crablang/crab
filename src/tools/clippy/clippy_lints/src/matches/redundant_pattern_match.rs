@@ -6,14 +6,14 @@ use clippy_utils::ty::{is_type_diagnostic_item, needs_ordered_drop};
 use clippy_utils::visitors::any_temporaries_need_ordered_drop;
 use clippy_utils::{higher, is_trait_method};
 use if_chain::if_chain;
-use rustc_ast::ast::LitKind;
-use rustc_errors::Applicability;
-use rustc_hir::def::{DefKind, Res};
-use rustc_hir::LangItem::{self, OptionNone, OptionSome, PollPending, PollReady, ResultErr, ResultOk};
-use rustc_hir::{Arm, Expr, ExprKind, Node, Pat, PatKind, QPath, UnOp};
-use rustc_lint::LateContext;
-use rustc_middle::ty::{self, subst::GenericArgKind, Ty};
-use rustc_span::{sym, Symbol};
+use crablangc_ast::ast::LitKind;
+use crablangc_errors::Applicability;
+use crablangc_hir::def::{DefKind, Res};
+use crablangc_hir::LangItem::{self, OptionNone, OptionSome, PollPending, PollReady, ResultErr, ResultOk};
+use crablangc_hir::{Arm, Expr, ExprKind, Node, Pat, PatKind, QPath, UnOp};
+use crablangc_lint::LateContext;
+use crablangc_middle::ty::{self, subst::GenericArgKind, Ty};
+use crablangc_span::{sym, Symbol};
 
 pub(super) fn check<'tcx>(cx: &LateContext<'tcx>, expr: &'tcx Expr<'_>) {
     if let Some(higher::WhileLet { let_pat, let_expr, .. }) = higher::WhileLet::hir(expr) {

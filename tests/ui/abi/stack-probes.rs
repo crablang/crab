@@ -16,9 +16,9 @@ use std::mem::MaybeUninit;
 use std::process::Command;
 use std::thread;
 
-#[link(name = "rust_test_helpers", kind = "static")]
+#[link(name = "crablang_test_helpers", kind = "static")]
 extern "C" {
-    #[link_name = "rust_dbg_extern_identity_u64"]
+    #[link_name = "crablang_dbg_extern_identity_u64"]
     fn black_box(u: u64);
 }
 

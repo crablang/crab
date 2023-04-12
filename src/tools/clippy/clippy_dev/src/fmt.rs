@@ -11,7 +11,7 @@ use walkdir::WalkDir;
 pub enum CliError {
     CommandFailed(String, String),
     IoError(io::Error),
-    RustfmtNotInstalled,
+    CrabLangfmtNotInstalled,
     WalkDirError(walkdir::Error),
     IntellijSetupActive,
 }
@@ -31,7 +31,7 @@ impl From<walkdir::Error> for CliError {
 struct FmtContext {
     check: bool,
     verbose: bool,
-    rustfmt_path: String,
+    crablangfmt_path: String,
 }
 
 // the "main" function of cargo dev fmt
@@ -41,8 +41,8 @@ pub fn run(check: bool, verbose: bool) {
 
         let project_root = clippy_project_root();
 
-        // if we added a local rustc repo as path dependency to clippy for rust analyzer, we do NOT want to
-        // format because rustfmt would also format the entire rustc repo as it is a local
+        // if we added a local crablangc repo as path dependency to clippy for crablang analyzer, we do NOT want to
+        // format because crablangfmt would also format the entire crablangc repo as it is a local
         // dependency
         if fs::read_to_string(project_root.join("Cargo.toml"))
             .expect("Failed to read clippy Cargo.toml")
@@ -51,11 +51,11 @@ pub fn run(check: bool, verbose: bool) {
             return Err(CliError::IntellijSetupActive);
         }
 
-        rustfmt_test(context)?;
+        crablangfmt_test(context)?;
 
         success &= cargo_fmt(context, project_root.as_path())?;
         success &= cargo_fmt(context, &project_root.join("clippy_dev"))?;
-        success &= cargo_fmt(context, &project_root.join("rustc_tools_util"))?;
+        success &= cargo_fmt(context, &project_root.join("crablangc_tools_util"))?;
         success &= cargo_fmt(context, &project_root.join("lintcheck"))?;
 
         let chunks = WalkDir::new(project_root.join("tests"))
@@ -73,7 +73,7 @@ pub fn run(check: bool, verbose: bool) {
             .chunks(250);
 
         for chunk in &chunks {
-            success &= rustfmt(context, chunk)?;
+            success &= crablangfmt(context, chunk)?;
         }
 
         Ok(success)
@@ -87,15 +87,15 @@ pub fn run(check: bool, verbose: bool) {
             CliError::IoError(err) => {
                 eprintln!("error: {err}");
             },
-            CliError::RustfmtNotInstalled => {
-                eprintln!("error: rustfmt nightly is not installed.");
+            CliError::CrabLangfmtNotInstalled => {
+                eprintln!("error: crablangfmt nightly is not installed.");
             },
             CliError::WalkDirError(err) => {
                 eprintln!("error: {err}");
             },
             CliError::IntellijSetupActive => {
                 eprintln!(
-                    "error: a local rustc repo is enabled as path dependency via `cargo dev setup intellij`.
+                    "error: a local crablangc repo is enabled as path dependency via `cargo dev setup intellij`.
 Not formatting because that would format the local repo as well!
 Please revert the changes to Cargo.tomls with `cargo dev remove intellij`."
                 );
@@ -103,22 +103,22 @@ Please revert the changes to Cargo.tomls with `cargo dev remove intellij`."
         }
     }
 
-    let output = Command::new("rustup")
-        .args(["which", "rustfmt"])
+    let output = Command::new("crablangup")
+        .args(["which", "crablangfmt"])
         .stderr(Stdio::inherit())
         .output()
-        .expect("error running `rustup which rustfmt`");
+        .expect("error running `crablangup which crablangfmt`");
     if !output.status.success() {
-        eprintln!("`rustup which rustfmt` did not execute successfully");
+        eprintln!("`crablangup which crablangfmt` did not execute successfully");
         process::exit(1);
     }
-    let mut rustfmt_path = String::from_utf8(output.stdout).expect("invalid rustfmt path");
-    rustfmt_path.truncate(rustfmt_path.trim_end().len());
+    let mut crablangfmt_path = String::from_utf8(output.stdout).expect("invalid crablangfmt path");
+    crablangfmt_path.truncate(crablangfmt_path.trim_end().len());
 
     let context = FmtContext {
         check,
         verbose,
-        rustfmt_path,
+        crablangfmt_path,
     };
     let result = try_run(&context);
     let code = match result {
@@ -159,7 +159,7 @@ fn exec(
     }
 
     let output = Command::new(&program)
-        .env("RUSTFMT", &context.rustfmt_path)
+        .env("CRABLANGFMT", &context.crablangfmt_path)
         .current_dir(&dir)
         .args(args.iter())
         .output()
@@ -187,8 +187,8 @@ fn cargo_fmt(context: &FmtContext, path: &Path) -> Result<bool, CliError> {
     Ok(success)
 }
 
-fn rustfmt_test(context: &FmtContext) -> Result<(), CliError> {
-    let program = "rustfmt";
+fn crablangfmt_test(context: &FmtContext) -> Result<(), CliError> {
+    let program = "crablangfmt";
     let dir = std::env::current_dir()?;
     let args = &["--version"];
 
@@ -202,9 +202,9 @@ fn rustfmt_test(context: &FmtContext) -> Result<(), CliError> {
         Ok(())
     } else if std::str::from_utf8(&output.stderr)
         .unwrap_or("")
-        .starts_with("error: 'rustfmt' is not installed")
+        .starts_with("error: 'crablangfmt' is not installed")
     {
-        Err(CliError::RustfmtNotInstalled)
+        Err(CliError::CrabLangfmtNotInstalled)
     } else {
         Err(CliError::CommandFailed(
             format_command(program, &dir, args),
@@ -213,14 +213,14 @@ fn rustfmt_test(context: &FmtContext) -> Result<(), CliError> {
     }
 }
 
-fn rustfmt(context: &FmtContext, paths: impl Iterator<Item = OsString>) -> Result<bool, CliError> {
+fn crablangfmt(context: &FmtContext, paths: impl Iterator<Item = OsString>) -> Result<bool, CliError> {
     let mut args = Vec::new();
     if context.check {
         args.push(OsString::from("--check"));
     }
     args.extend(paths);
 
-    let success = exec(context, &context.rustfmt_path, std::env::current_dir()?, &args)?;
+    let success = exec(context, &context.crablangfmt_path, std::env::current_dir()?, &args)?;
 
     Ok(success)
 }

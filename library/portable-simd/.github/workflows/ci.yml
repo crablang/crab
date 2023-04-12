@@ -8,21 +8,21 @@ on:
 
 env:
   CARGO_NET_RETRY: 10
-  RUSTUP_MAX_RETRIES: 10
+  CRABLANGUP_MAX_RETRIES: 10
 
 jobs:
-  rustfmt:
-    name: "rustfmt"
+  crablangfmt:
+    name: "crablangfmt"
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v2
-      - name: Setup Rust
+      - name: Setup CrabLang
         run: |
-          rustup update nightly --no-self-update
-          rustup default nightly
-          rustup component add rustfmt
-      - name: Run rustfmt
+          crablangup update nightly --no-self-update
+          crablangup default nightly
+          crablangup component add crablangfmt
+      - name: Run crablangfmt
         run: cargo fmt --all -- --check
 
   clippy:
@@ -49,12 +49,12 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - name: Setup Rust
+      - name: Setup CrabLang
         run: |
-          rustup update nightly --no-self-update
-          rustup default nightly
-          rustup target add ${{ matrix.target }}
-          rustup component add clippy
+          crablangup update nightly --no-self-update
+          crablangup default nightly
+          crablangup target add ${{ matrix.target }}
+          crablangup component add clippy
       - name: Run Clippy
         run: cargo clippy --all-targets --target ${{ matrix.target }}
 
@@ -98,41 +98,41 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - name: Setup Rust
+      - name: Setup CrabLang
         run: |
-          rustup update nightly --no-self-update
-          rustup default nightly
-          rustup target add ${{ matrix.target }}
+          crablangup update nightly --no-self-update
+          crablangup default nightly
+          crablangup target add ${{ matrix.target }}
 
-      - name: Configure RUSTFLAGS
+      - name: Configure CRABLANGFLAGS
         shell: bash
         run: |
           case "${{ matrix.target_feature }}" in
             default)
-              echo "RUSTFLAGS=-Dwarnings" >> $GITHUB_ENV;;
+              echo "CRABLANGFLAGS=-Dwarnings" >> $GITHUB_ENV;;
             native)
-              echo "RUSTFLAGS=-Dwarnings -Ctarget-cpu=native" >> $GITHUB_ENV
+              echo "CRABLANGFLAGS=-Dwarnings -Ctarget-cpu=native" >> $GITHUB_ENV
               ;;
             *)
-              echo "RUSTFLAGS=-Dwarnings -Ctarget-feature=${{ matrix.target_feature }}" >> $GITHUB_ENV
+              echo "CRABLANGFLAGS=-Dwarnings -Ctarget-feature=${{ matrix.target_feature }}" >> $GITHUB_ENV
               ;;
           esac
 
       # Super useful for debugging why a SIGILL occurred.
       - name: Dump target configuration and support
         run: |
-          rustc -Vv
+          crablangc -Vv
 
           echo "Caveat: not all target features are expected to be logged"
 
-          echo "## Requested target configuration (RUSTFLAGS=$RUSTFLAGS)"
-          rustc --print=cfg --target=${{ matrix.target }} $RUSTFLAGS
+          echo "## Requested target configuration (CRABLANGFLAGS=$CRABLANGFLAGS)"
+          crablangc --print=cfg --target=${{ matrix.target }} $CRABLANGFLAGS
 
           echo "## Supported target configuration for --target=${{ matrix.target }}"
-          rustc --print=cfg --target=${{ matrix.target }} -Ctarget-cpu=native
+          crablangc --print=cfg --target=${{ matrix.target }} -Ctarget-cpu=native
 
           echo "## Natively supported target configuration"
-          rustc --print=cfg -Ctarget-cpu=native
+          crablangc --print=cfg -Ctarget-cpu=native
 
       - name: Test (debug)
         run: cargo test --verbose --target=${{ matrix.target }}
@@ -146,24 +146,24 @@ jobs:
     strategy:
       matrix:
         include:
-          - { name: default, RUSTFLAGS: "" }
-          - { name: simd128, RUSTFLAGS: "-C target-feature=+simd128" }
+          - { name: default, CRABLANGFLAGS: "" }
+          - { name: simd128, CRABLANGFLAGS: "-C target-feature=+simd128" }
     steps:
       - uses: actions/checkout@v2
-      - name: Setup Rust
+      - name: Setup CrabLang
         run: |
-          rustup update nightly --no-self-update
-          rustup default nightly
+          crablangup update nightly --no-self-update
+          crablangup default nightly
       - name: Install wasm-pack
-        run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
+        run: curl https://crablangwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
       - name: Test (debug)
         run: wasm-pack test --firefox --headless crates/core_simd
         env:
-            RUSTFLAGS: ${{ matrix.rustflags }}
+            CRABLANGFLAGS: ${{ matrix.crablangflags }}
       - name: Test (release)
         run: wasm-pack test --firefox --headless crates/core_simd --release
         env:
-            RUSTFLAGS: ${{ matrix.rustflags }}
+            CRABLANGFLAGS: ${{ matrix.crablangflags }}
 
   cross-tests:
     name: "${{ matrix.target }} (via cross)"
@@ -174,12 +174,12 @@ jobs:
       # because `cross` doesn't tell qemu to enable any non-default cpu
       # features, nor does it give us a way to do so.
       #
-      # Ultimately, we'd like to do something like [rust-lang/stdarch][stdarch].
+      # Ultimately, we'd like to do something like [crablang/stdarch][stdarch].
       # This is a lot more complex... but in practice it's likely that we can just
       # snarf the docker config from around [here][1000-dockerfiles].
       #
-      # [stdarch]: https://github.com/rust-lang/stdarch/blob/a5db4eaf/.github/workflows/main.yml#L67
-      # [1000-dockerfiles]: https://github.com/rust-lang/stdarch/tree/a5db4eaf/ci/docker
+      # [stdarch]: https://github.com/crablang/stdarch/blob/a5db4eaf/.github/workflows/main.yml#L67
+      # [1000-dockerfiles]: https://github.com/crablang/stdarch/tree/a5db4eaf/ci/docker
 
       matrix:
         target:
@@ -203,12 +203,12 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - name: Setup Rust
+      - name: Setup CrabLang
         run: |
-          rustup update nightly --no-self-update
-          rustup default nightly
-          rustup target add ${{ matrix.target }}
-          rustup component add rust-src
+          crablangup update nightly --no-self-update
+          crablangup default nightly
+          crablangup target add ${{ matrix.target }}
+          crablangup component add crablang-src
 
       - name: Install Cross
         # Equivalent to `cargo install cross`, but downloading a prebuilt
@@ -216,7 +216,7 @@ jobs:
         # being part of the tarball means we can't just use the download/latest
         # URL :(
         run: |
-          CROSS_URL=https://github.com/rust-embedded/cross/releases/download/v0.2.1/cross-v0.2.1-x86_64-unknown-linux-gnu.tar.gz
+          CROSS_URL=https://github.com/crablang-embedded/cross/releases/download/v0.2.1/cross-v0.2.1-x86_64-unknown-linux-gnu.tar.gz
           mkdir -p "$HOME/.bin"
           curl -sfSL --retry-delay 10 --retry 5 "${CROSS_URL}" | tar zxf - -C "$HOME/.bin"
           echo "$HOME/.bin" >> $GITHUB_PATH
@@ -244,17 +244,17 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - name: Setup Rust
+      - name: Setup CrabLang
         run: |
-          rustup update nightly --no-self-update
-          rustup default nightly
+          crablangup update nightly --no-self-update
+          crablangup default nightly
       - name: Detect AVX512
         run: echo "CPU_FEATURE=$(lscpu | grep -o avx512[a-z]* | sed s/avx/+avx/ | tr '\n' ',' )" >> $GITHUB_ENV
       - name: Check build
         if: ${{ matrix.simd == '' }}
-        run: RUSTFLAGS="-Dwarnings" cargo check --all-targets --no-default-features ${{ matrix.features }}
+        run: CRABLANGFLAGS="-Dwarnings" cargo check --all-targets --no-default-features ${{ matrix.features }}
       - name: Check AVX
         if: ${{ matrix.simd == 'avx512' && contains(env.CPU_FEATURE, 'avx512') }}
         run: |
           echo "Found AVX features: $CPU_FEATURE"
-          RUSTFLAGS="-Dwarnings -Ctarget-feature=$CPU_FEATURE" cargo check --all-targets --no-default-features ${{ matrix.features }}
+          CRABLANGFLAGS="-Dwarnings -Ctarget-feature=$CPU_FEATURE" cargo check --all-targets --no-default-features ${{ matrix.features }}

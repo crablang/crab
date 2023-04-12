@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 
 fn foo<N>(_x: N) {}
 //~^ NOTE function defined here

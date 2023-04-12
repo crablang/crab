@@ -11,7 +11,7 @@ pub const LANG_FEATURES_DIR: &str = "src/language-features";
 
 pub const LIB_FEATURES_DIR: &str = "src/library-features";
 
-/// Builds the path to the Unstable Book source directory from the Rust 'src' directory.
+/// Builds the path to the Unstable Book source directory from the CrabLang 'src' directory.
 pub fn unstable_book_path(base_src_path: &Path) -> PathBuf {
     base_src_path.join(PATH_STR)
 }

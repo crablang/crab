@@ -6,6 +6,6 @@ ifdef IS_MSVC
 all:
 else
 all: $(call STATICLIB,foo) $(call STATICLIB,bar)
-	$(RUSTC) main.rs
+	$(CRABLANGC) main.rs
 	$(call RUN,main)
 endif

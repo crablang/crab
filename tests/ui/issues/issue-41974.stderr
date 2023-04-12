@@ -16,4 +16,4 @@ LL | impl<T> Drop for T where T: A {
 error: aborting due to 2 previous errors
 
 Some errors have detailed explanations: E0120, E0210.
-For more information about an error, try `rustc --explain E0120`.
+For more information about an error, try `crablangc --explain E0120`.

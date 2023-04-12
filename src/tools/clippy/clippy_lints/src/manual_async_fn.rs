@@ -1,16 +1,16 @@
 use clippy_utils::diagnostics::span_lint_and_then;
 use clippy_utils::source::{position_before_rarrow, snippet_block, snippet_opt};
 use if_chain::if_chain;
-use rustc_errors::Applicability;
-use rustc_hir::intravisit::FnKind;
-use rustc_hir::{
+use crablangc_errors::Applicability;
+use crablangc_hir::intravisit::FnKind;
+use crablangc_hir::{
     AsyncGeneratorKind, Block, Body, Closure, Expr, ExprKind, FnDecl, FnRetTy, GeneratorKind, GenericArg, GenericBound,
     ImplItem, Item, ItemKind, LifetimeName, Node, Term, TraitRef, Ty, TyKind, TypeBindingKind,
 };
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_session::{declare_lint_pass, declare_tool_lint};
-use rustc_span::def_id::LocalDefId;
-use rustc_span::{sym, Span};
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_span::def_id::LocalDefId;
+use crablangc_span::{sym, Span};
 
 declare_clippy_lint! {
     /// ### What it does
@@ -20,13 +20,13 @@ declare_clippy_lint! {
     /// It's more idiomatic to use the dedicated syntax.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// use std::future::Future;
     ///
     /// fn foo() -> impl Future<Output = i32> { async { 42 } }
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// async fn foo() -> i32 { 42 }
     /// ```
     #[clippy::version = "1.45.0"]

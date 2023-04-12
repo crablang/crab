@@ -27,4 +27,4 @@ LL | fn func<'a, T: Test + 'a>(foo: &'a Foo<'a>, t: T) {
 
 error: aborting due to previous error
 
-For more information about this error, try `rustc --explain E0311`.
+For more information about this error, try `crablangc --explain E0311`.

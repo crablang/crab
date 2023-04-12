@@ -8,7 +8,7 @@ LL | |     panic!()
 LL | | }
    | |_- this function will not propagate the caller location
    |
-   = note: see issue #87417 <https://github.com/rust-lang/rust/issues/87417> for more information
+   = note: see issue #87417 <https://github.com/crablang/crablang/issues/87417> for more information
    = help: add `#![feature(closure_track_caller)]` to the crate attributes to enable
    = note: `#[warn(ungated_async_fn_track_caller)]` on by default
 
@@ -22,7 +22,7 @@ LL | |         panic!();
 LL | |     }
    | |_____- this function will not propagate the caller location
    |
-   = note: see issue #87417 <https://github.com/rust-lang/rust/issues/87417> for more information
+   = note: see issue #87417 <https://github.com/crablang/crablang/issues/87417> for more information
    = help: add `#![feature(closure_track_caller)]` to the crate attributes to enable
 
 warning: 2 warnings emitted

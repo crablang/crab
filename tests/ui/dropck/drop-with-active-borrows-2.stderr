@@ -9,4 +9,4 @@ LL |     raw_lines.iter().map(|l| l.trim()).collect()
 
 error: aborting due to previous error
 
-For more information about this error, try `rustc --explain E0515`.
+For more information about this error, try `crablangc --explain E0515`.

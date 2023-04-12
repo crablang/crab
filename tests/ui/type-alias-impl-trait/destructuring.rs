@@ -2,7 +2,7 @@
 
 // check-pass
 
-// issue: https://github.com/rust-lang/rust/issues/104551
+// issue: https://github.com/crablang/crablang/issues/104551
 
 fn main() {
     type T = impl Sized;

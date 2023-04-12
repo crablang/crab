@@ -9,7 +9,7 @@
 //! new code should instead use the associated constants
 //! defined directly on the `f64` type.
 
-#![stable(feature = "rust1", since = "1.0.0")]
+#![stable(feature = "crablang1", since = "1.0.0")]
 #![allow(missing_docs)]
 
 #[cfg(test)]
@@ -20,7 +20,7 @@ use crate::intrinsics;
 #[cfg(not(test))]
 use crate::sys::cmath;
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[allow(deprecated, deprecated_in_future)]
 pub use core::f64::{
     consts, DIGITS, EPSILON, INFINITY, MANTISSA_DIGITS, MAX, MAX_10_EXP, MAX_EXP, MIN, MIN_10_EXP,
@@ -42,9 +42,9 @@ impl f64 {
     /// assert_eq!(g.floor(), 3.0);
     /// assert_eq!(h.floor(), -4.0);
     /// ```
-    #[rustc_allow_incoherent_impl]
+    #[crablangc_allow_incoherent_impl]
     #[must_use = "method returns a new number and does not mutate the original value"]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     pub fn floor(self) -> f64 {
         unsafe { intrinsics::floorf64(self) }
@@ -61,9 +61,9 @@ impl f64 {
     /// assert_eq!(f.ceil(), 4.0);
     /// assert_eq!(g.ceil(), 4.0);
     /// ```
-    #[rustc_allow_incoherent_impl]
+    #[crablangc_allow_incoherent_impl]
     #[must_use = "method returns a new number and does not mutate the original value"]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     pub fn ceil(self) -> f64 {
         unsafe { intrinsics::ceilf64(self) }
@@ -87,9 +87,9 @@ impl f64 {
     /// assert_eq!(i.round(), 4.0);
     /// assert_eq!(j.round(), 5.0);
     /// ```
-    #[rustc_allow_incoherent_impl]
+    #[crablangc_allow_incoherent_impl]
     #[must_use = "method returns a new number and does not mutate the original value"]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     pub fn round(self) -> f64 {
         unsafe { intrinsics::roundf64(self) }
@@ -113,7 +113,7 @@ impl f64 {
     /// assert_eq!(h.round_ties_even(), 4.0);
     /// assert_eq!(i.round_ties_even(), 4.0);
     /// ```
-    #[rustc_allow_incoherent_impl]
+    #[crablangc_allow_incoherent_impl]
     #[must_use = "method returns a new number and does not mutate the original value"]
     #[unstable(feature = "round_ties_even", issue = "96710")]
     #[inline]
@@ -135,9 +135,9 @@ impl f64 {
     /// assert_eq!(g.trunc(), 3.0);
     /// assert_eq!(h.trunc(), -3.0);
     /// ```
-    #[rustc_allow_incoherent_impl]
+    #[crablangc_allow_incoherent_impl]
     #[must_use = "method returns a new number and does not mutate the original value"]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     pub fn trunc(self) -> f64 {
         unsafe { intrinsics::truncf64(self) }
@@ -156,9 +156,9 @@ impl f64 {
     /// assert!(abs_difference_x < 1e-10);
     /// assert!(abs_difference_y < 1e-10);
     /// ```
-    #[rustc_allow_incoherent_impl]
+    #[crablangc_allow_incoherent_impl]
     #[must_use = "method returns a new number and does not mutate the original value"]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     pub fn fract(self) -> f64 {
         self - self.trunc()
@@ -180,9 +180,9 @@ impl f64 {
     ///
     /// assert!(f64::NAN.abs().is_nan());
     /// ```
-    #[rustc_allow_incoherent_impl]
+    #[crablangc_allow_incoherent_impl]
     #[must_use = "method returns a new number and does not mutate the original value"]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     pub fn abs(self) -> f64 {
         unsafe { intrinsics::fabsf64(self) }
@@ -204,9 +204,9 @@ impl f64 {
     ///
     /// assert!(f64::NAN.signum().is_nan());
     /// ```
-    #[rustc_allow_incoherent_impl]
+    #[crablangc_allow_incoherent_impl]
     #[must_use = "method returns a new number and does not mutate the original value"]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     pub fn signum(self) -> f64 {
         if self.is_nan() { Self::NAN } else { 1.0_f64.copysign(self) }
@@ -233,7 +233,7 @@ impl f64 {
     ///
     /// assert!(f64::NAN.copysign(1.0).is_nan());
     /// ```
-    #[rustc_allow_incoherent_impl]
+    #[crablangc_allow_incoherent_impl]
     #[must_use = "method returns a new number and does not mutate the original value"]
     #[stable(feature = "copysign", since = "1.35.0")]
     #[inline]
@@ -261,9 +261,9 @@ impl f64 {
     ///
     /// assert!(abs_difference < 1e-10);
     /// ```
-    #[rustc_allow_incoherent_impl]
+    #[crablangc_allow_incoherent_impl]
     #[must_use = "method returns a new number and does not mutate the original value"]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     pub fn mul_add(self, a: f64, b: f64) -> f64 {
         unsafe { intrinsics::fmaf64(self, a, b) }
@@ -286,7 +286,7 @@ impl f64 {
     /// assert_eq!(a.div_euclid(-b), -1.0); // 7.0 >= -4.0 * -1.0
     /// assert_eq!((-a).div_euclid(-b), 2.0); // -7.0 >= -4.0 * 2.0
     /// ```
-    #[rustc_allow_incoherent_impl]
+    #[crablangc_allow_incoherent_impl]
     #[must_use = "method returns a new number and does not mutate the original value"]
     #[inline]
     #[stable(feature = "euclidean_division", since = "1.38.0")]
@@ -321,7 +321,7 @@ impl f64 {
     /// // limitation due to round-off error
     /// assert!((-f64::EPSILON).rem_euclid(3.0) != 0.0);
     /// ```
-    #[rustc_allow_incoherent_impl]
+    #[crablangc_allow_incoherent_impl]
     #[must_use = "method returns a new number and does not mutate the original value"]
     #[inline]
     #[stable(feature = "euclidean_division", since = "1.38.0")]
@@ -344,9 +344,9 @@ impl f64 {
     ///
     /// assert!(abs_difference < 1e-10);
     /// ```
-    #[rustc_allow_incoherent_impl]
+    #[crablangc_allow_incoherent_impl]
     #[must_use = "method returns a new number and does not mutate the original value"]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     pub fn powi(self, n: i32) -> f64 {
         unsafe { intrinsics::powif64(self, n) }
@@ -362,9 +362,9 @@ impl f64 {
     ///
     /// assert!(abs_difference < 1e-10);
     /// ```
-    #[rustc_allow_incoherent_impl]
+    #[crablangc_allow_incoherent_impl]
     #[must_use = "method returns a new number and does not mutate the original value"]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     pub fn powf(self, n: f64) -> f64 {
         unsafe { intrinsics::powf64(self, n) }
@@ -387,9 +387,9 @@ impl f64 {
     /// assert!(negative.sqrt().is_nan());
     /// assert!(negative_zero.sqrt() == negative_zero);
     /// ```
-    #[rustc_allow_incoherent_impl]
+    #[crablangc_allow_incoherent_impl]
     #[must_use = "method returns a new number and does not mutate the original value"]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     pub fn sqrt(self) -> f64 {
         unsafe { intrinsics::sqrtf64(self) }
@@ -409,9 +409,9 @@ impl f64 {
     ///
     /// assert!(abs_difference < 1e-10);
     /// ```
-    #[rustc_allow_incoherent_impl]
+    #[crablangc_allow_incoherent_impl]
     #[must_use = "method returns a new number and does not mutate the original value"]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     pub fn exp(self) -> f64 {
         unsafe { intrinsics::expf64(self) }
@@ -429,9 +429,9 @@ impl f64 {
     ///
     /// assert!(abs_difference < 1e-10);
     /// ```
-    #[rustc_allow_incoherent_impl]
+    #[crablangc_allow_incoherent_impl]
     #[must_use = "method returns a new number and does not mutate the original value"]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     pub fn exp2(self) -> f64 {
         unsafe { intrinsics::exp2f64(self) }
@@ -451,9 +451,9 @@ impl f64 {
     ///
     /// assert!(abs_difference < 1e-10);
     /// ```
-    #[rustc_allow_incoherent_impl]
+    #[crablangc_allow_incoherent_impl]
     #[must_use = "method returns a new number and does not mutate the original value"]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     pub fn ln(self) -> f64 {
         self.log_wrapper(|n| unsafe { intrinsics::logf64(n) })
@@ -475,9 +475,9 @@ impl f64 {
     ///
     /// assert!(abs_difference < 1e-10);
     /// ```
-    #[rustc_allow_incoherent_impl]
+    #[crablangc_allow_incoherent_impl]
     #[must_use = "method returns a new number and does not mutate the original value"]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     pub fn log(self, base: f64) -> f64 {
         self.ln() / base.ln()
@@ -495,9 +495,9 @@ impl f64 {
     ///
     /// assert!(abs_difference < 1e-10);
     /// ```
-    #[rustc_allow_incoherent_impl]
+    #[crablangc_allow_incoherent_impl]
     #[must_use = "method returns a new number and does not mutate the original value"]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     pub fn log2(self) -> f64 {
         self.log_wrapper(|n| {
@@ -520,9 +520,9 @@ impl f64 {
     ///
     /// assert!(abs_difference < 1e-10);
     /// ```
-    #[rustc_allow_incoherent_impl]
+    #[crablangc_allow_incoherent_impl]
     #[must_use = "method returns a new number and does not mutate the original value"]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     pub fn log10(self) -> f64 {
         self.log_wrapper(|n| unsafe { intrinsics::log10f64(n) })
@@ -545,9 +545,9 @@ impl f64 {
     /// assert!(abs_difference_x < 1e-10);
     /// assert!(abs_difference_y < 1e-10);
     /// ```
-    #[rustc_allow_incoherent_impl]
+    #[crablangc_allow_incoherent_impl]
     #[must_use = "method returns a new number and does not mutate the original value"]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     #[deprecated(
         since = "1.10.0",
@@ -575,9 +575,9 @@ impl f64 {
     ///
     /// assert!(abs_difference < 1e-10);
     /// ```
-    #[rustc_allow_incoherent_impl]
+    #[crablangc_allow_incoherent_impl]
     #[must_use = "method returns a new number and does not mutate the original value"]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     pub fn cbrt(self) -> f64 {
         unsafe { cmath::cbrt(self) }
@@ -597,9 +597,9 @@ impl f64 {
     ///
     /// assert!(abs_difference < 1e-10);
     /// ```
-    #[rustc_allow_incoherent_impl]
+    #[crablangc_allow_incoherent_impl]
     #[must_use = "method returns a new number and does not mutate the original value"]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     pub fn hypot(self, other: f64) -> f64 {
         unsafe { cmath::hypot(self, other) }
@@ -616,9 +616,9 @@ impl f64 {
     ///
     /// assert!(abs_difference < 1e-10);
     /// ```
-    #[rustc_allow_incoherent_impl]
+    #[crablangc_allow_incoherent_impl]
     #[must_use = "method returns a new number and does not mutate the original value"]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     pub fn sin(self) -> f64 {
         unsafe { intrinsics::sinf64(self) }
@@ -635,9 +635,9 @@ impl f64 {
     ///
     /// assert!(abs_difference < 1e-10);
     /// ```
-    #[rustc_allow_incoherent_impl]
+    #[crablangc_allow_incoherent_impl]
     #[must_use = "method returns a new number and does not mutate the original value"]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     pub fn cos(self) -> f64 {
         unsafe { intrinsics::cosf64(self) }
@@ -653,9 +653,9 @@ impl f64 {
     ///
     /// assert!(abs_difference < 1e-14);
     /// ```
-    #[rustc_allow_incoherent_impl]
+    #[crablangc_allow_incoherent_impl]
     #[must_use = "method returns a new number and does not mutate the original value"]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     pub fn tan(self) -> f64 {
         unsafe { cmath::tan(self) }
@@ -675,9 +675,9 @@ impl f64 {
     ///
     /// assert!(abs_difference < 1e-10);
     /// ```
-    #[rustc_allow_incoherent_impl]
+    #[crablangc_allow_incoherent_impl]
     #[must_use = "method returns a new number and does not mutate the original value"]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     pub fn asin(self) -> f64 {
         unsafe { cmath::asin(self) }
@@ -697,9 +697,9 @@ impl f64 {
     ///
     /// assert!(abs_difference < 1e-10);
     /// ```
-    #[rustc_allow_incoherent_impl]
+    #[crablangc_allow_incoherent_impl]
     #[must_use = "method returns a new number and does not mutate the original value"]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     pub fn acos(self) -> f64 {
         unsafe { cmath::acos(self) }
@@ -718,9 +718,9 @@ impl f64 {
     ///
     /// assert!(abs_difference < 1e-10);
     /// ```
-    #[rustc_allow_incoherent_impl]
+    #[crablangc_allow_incoherent_impl]
     #[must_use = "method returns a new number and does not mutate the original value"]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     pub fn atan(self) -> f64 {
         unsafe { cmath::atan(self) }
@@ -752,9 +752,9 @@ impl f64 {
     /// assert!(abs_difference_1 < 1e-10);
     /// assert!(abs_difference_2 < 1e-10);
     /// ```
-    #[rustc_allow_incoherent_impl]
+    #[crablangc_allow_incoherent_impl]
     #[must_use = "method returns a new number and does not mutate the original value"]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     pub fn atan2(self, other: f64) -> f64 {
         unsafe { cmath::atan2(self, other) }
@@ -775,8 +775,8 @@ impl f64 {
     /// assert!(abs_difference_0 < 1e-10);
     /// assert!(abs_difference_1 < 1e-10);
     /// ```
-    #[rustc_allow_incoherent_impl]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[crablangc_allow_incoherent_impl]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     pub fn sin_cos(self) -> (f64, f64) {
         (self.sin(), self.cos())
@@ -796,9 +796,9 @@ impl f64 {
     ///
     /// assert!(abs_difference < 1e-20);
     /// ```
-    #[rustc_allow_incoherent_impl]
+    #[crablangc_allow_incoherent_impl]
     #[must_use = "method returns a new number and does not mutate the original value"]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     pub fn exp_m1(self) -> f64 {
         unsafe { cmath::expm1(self) }
@@ -818,9 +818,9 @@ impl f64 {
     ///
     /// assert!(abs_difference < 1e-20);
     /// ```
-    #[rustc_allow_incoherent_impl]
+    #[crablangc_allow_incoherent_impl]
     #[must_use = "method returns a new number and does not mutate the original value"]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     pub fn ln_1p(self) -> f64 {
         unsafe { cmath::log1p(self) }
@@ -841,9 +841,9 @@ impl f64 {
     ///
     /// assert!(abs_difference < 1e-10);
     /// ```
-    #[rustc_allow_incoherent_impl]
+    #[crablangc_allow_incoherent_impl]
     #[must_use = "method returns a new number and does not mutate the original value"]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     pub fn sinh(self) -> f64 {
         unsafe { cmath::sinh(self) }
@@ -864,9 +864,9 @@ impl f64 {
     /// // Same result
     /// assert!(abs_difference < 1.0e-10);
     /// ```
-    #[rustc_allow_incoherent_impl]
+    #[crablangc_allow_incoherent_impl]
     #[must_use = "method returns a new number and does not mutate the original value"]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     pub fn cosh(self) -> f64 {
         unsafe { cmath::cosh(self) }
@@ -887,9 +887,9 @@ impl f64 {
     ///
     /// assert!(abs_difference < 1.0e-10);
     /// ```
-    #[rustc_allow_incoherent_impl]
+    #[crablangc_allow_incoherent_impl]
     #[must_use = "method returns a new number and does not mutate the original value"]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     pub fn tanh(self) -> f64 {
         unsafe { cmath::tanh(self) }
@@ -907,9 +907,9 @@ impl f64 {
     ///
     /// assert!(abs_difference < 1.0e-10);
     /// ```
-    #[rustc_allow_incoherent_impl]
+    #[crablangc_allow_incoherent_impl]
     #[must_use = "method returns a new number and does not mutate the original value"]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     pub fn asinh(self) -> f64 {
         let ax = self.abs();
@@ -929,9 +929,9 @@ impl f64 {
     ///
     /// assert!(abs_difference < 1.0e-10);
     /// ```
-    #[rustc_allow_incoherent_impl]
+    #[crablangc_allow_incoherent_impl]
     #[must_use = "method returns a new number and does not mutate the original value"]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     pub fn acosh(self) -> f64 {
         if self < 1.0 {
@@ -953,9 +953,9 @@ impl f64 {
     ///
     /// assert!(abs_difference < 1.0e-10);
     /// ```
-    #[rustc_allow_incoherent_impl]
+    #[crablangc_allow_incoherent_impl]
     #[must_use = "method returns a new number and does not mutate the original value"]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     pub fn atanh(self) -> f64 {
         0.5 * ((2.0 * self) / (1.0 - self)).ln_1p()
@@ -964,7 +964,7 @@ impl f64 {
     // Solaris/Illumos requires a wrapper around log, log2, and log10 functions
     // because of their non-standard behavior (e.g., log(-n) returns -Inf instead
     // of expected NaN).
-    #[rustc_allow_incoherent_impl]
+    #[crablangc_allow_incoherent_impl]
     fn log_wrapper<F: Fn(f64) -> f64>(self, log_fn: F) -> f64 {
         if !cfg!(any(target_os = "solaris", target_os = "illumos")) {
             log_fn(self)

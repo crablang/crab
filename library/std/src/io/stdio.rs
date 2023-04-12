@@ -228,7 +228,7 @@ fn handle_ebadf<T>(r: io::Result<T>, default: T) -> io::Result<T> {
 ///     Ok(())
 /// }
 /// ```
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub struct Stdin {
     inner: &'static Mutex<BufReader<StdinRaw>>,
 }
@@ -266,7 +266,7 @@ pub struct Stdin {
 /// }
 /// ```
 #[must_use = "if unused stdin will immediately unlock"]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub struct StdinLock<'a> {
     inner: MutexGuard<'a, BufReader<StdinRaw>>,
 }
@@ -318,7 +318,7 @@ pub struct StdinLock<'a> {
 /// }
 /// ```
 #[must_use]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub fn stdin() -> Stdin {
     static INSTANCE: OnceLock<Mutex<BufReader<StdinRaw>>> = OnceLock::new();
     Stdin {
@@ -350,7 +350,7 @@ impl Stdin {
     ///     Ok(())
     /// }
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn lock(&self) -> StdinLock<'static> {
         // Locks this handle with 'static lifetime. This depends on the
         // implementation detail that the underlying `Mutex` is static.
@@ -383,7 +383,7 @@ impl Stdin {
     /// - Give it text interactively by running the executable directly,
     ///   in which case it will wait for the Enter key to be pressed before
     ///   continuing
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn read_line(&self, buf: &mut String) -> io::Result<usize> {
         self.lock().read_line(buf)
     }
@@ -417,7 +417,7 @@ impl fmt::Debug for Stdin {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl Read for Stdin {
     fn read(&mut self, buf: &mut [u8]) -> io::Result<usize> {
         self.lock().read(buf)
@@ -451,7 +451,7 @@ impl StdinLock<'_> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl Read for StdinLock<'_> {
     fn read(&mut self, buf: &mut [u8]) -> io::Result<usize> {
         self.inner.read(buf)
@@ -483,7 +483,7 @@ impl Read for StdinLock<'_> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl BufRead for StdinLock<'_> {
     fn fill_buf(&mut self) -> io::Result<&[u8]> {
         self.inner.fill_buf()
@@ -531,7 +531,7 @@ impl fmt::Debug for StdinLock<'_> {
 ///
 /// [`lock`]: Stdout::lock
 /// [`io::stdout`]: stdout
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub struct Stdout {
     // FIXME: this should be LineWriter or BufWriter depending on the state of
     //        stdout (tty or not). Note that if this is not line buffered it
@@ -556,7 +556,7 @@ pub struct Stdout {
 /// `Write` will do nothing and silently succeed. All other I/O operations, via the
 /// standard library or via raw Windows API calls, will fail.
 #[must_use = "if unused stdout will immediately unlock"]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub struct StdoutLock<'a> {
     inner: ReentrantMutexGuard<'a, RefCell<LineWriter<StdoutRaw>>>,
 }
@@ -610,7 +610,7 @@ static STDOUT: OnceLock<ReentrantMutex<RefCell<LineWriter<StdoutRaw>>>> = OnceLo
 /// }
 /// ```
 #[must_use]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub fn stdout() -> Stdout {
     Stdout {
         inner: STDOUT
@@ -659,7 +659,7 @@ impl Stdout {
     ///     Ok(())
     /// }
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn lock(&self) -> StdoutLock<'static> {
         // Locks this handle with 'static lifetime. This depends on the
         // implementation detail that the underlying `ReentrantMutex` is
@@ -675,7 +675,7 @@ impl fmt::Debug for Stdout {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl Write for Stdout {
     fn write(&mut self, buf: &[u8]) -> io::Result<usize> {
         (&*self).write(buf)
@@ -727,7 +727,7 @@ impl Write for &Stdout {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl Write for StdoutLock<'_> {
     fn write(&mut self, buf: &[u8]) -> io::Result<usize> {
         self.inner.borrow_mut().write(buf)
@@ -774,7 +774,7 @@ impl fmt::Debug for StdoutLock<'_> {
 /// the contained handle will be null. In such cases, the standard library's `Read` and
 /// `Write` will do nothing and silently succeed. All other I/O operations, via the
 /// standard library or via raw Windows API calls, will fail.
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub struct Stderr {
     inner: &'static ReentrantMutex<RefCell<StderrRaw>>,
 }
@@ -796,7 +796,7 @@ pub struct Stderr {
 /// `Write` will do nothing and silently succeed. All other I/O operations, via the
 /// standard library or via raw Windows API calls, will fail.
 #[must_use = "if unused stderr will immediately unlock"]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub struct StderrLock<'a> {
     inner: ReentrantMutexGuard<'a, RefCell<StderrRaw>>,
 }
@@ -846,7 +846,7 @@ pub struct StderrLock<'a> {
 /// }
 /// ```
 #[must_use]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub fn stderr() -> Stderr {
     // Note that unlike `stdout()` we don't use `at_exit` here to register a
     // destructor. Stderr is not buffered, so there's no need to run a
@@ -878,7 +878,7 @@ impl Stderr {
     ///     Ok(())
     /// }
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn lock(&self) -> StderrLock<'static> {
         // Locks this handle with 'static lifetime. This depends on the
         // implementation detail that the underlying `ReentrantMutex` is
@@ -894,7 +894,7 @@ impl fmt::Debug for Stderr {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl Write for Stderr {
     fn write(&mut self, buf: &[u8]) -> io::Result<usize> {
         (&*self).write(buf)
@@ -946,7 +946,7 @@ impl Write for &Stderr {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl Write for StderrLock<'_> {
     fn write(&mut self, buf: &[u8]) -> io::Result<usize> {
         self.inner.borrow_mut().write(buf)
@@ -1051,7 +1051,7 @@ pub(crate) fn attempt_print_to_stderr(args: fmt::Arguments<'_>) {
 pub trait IsTerminal: crate::sealed::Sealed {
     /// Returns `true` if the descriptor/handle refers to a terminal/tty.
     ///
-    /// On platforms where Rust does not know how to detect a terminal yet, this will return
+    /// On platforms where CrabLang does not know how to detect a terminal yet, this will return
     /// `false`. This will also return `false` if an unexpected error occurred, such as from
     /// passing an invalid file descriptor.
     ///

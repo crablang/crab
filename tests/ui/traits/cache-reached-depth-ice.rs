@@ -1,4 +1,4 @@
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 
 // Test for a particular corner case where the evaluation
 // cache can get out of date. The problem here is that
@@ -36,7 +36,7 @@ struct C {
     b: Option<Box<B>>,
 }
 
-#[rustc_evaluate_where_clauses]
+#[crablangc_evaluate_where_clauses]
 fn test<X: ?Sized + Send>() {}
 
 fn main() {

@@ -114,7 +114,7 @@ impl ProcOutput {
                 let mut tail = &*tail;
 
                 // Skip over '{' at the start of the tail, so we don't later wrongfully consider this as json.
-                // See <https://rust-lang.zulipchat.com/#narrow/stream/182449-t-compiler.2Fhelp/topic/Weird.20CI.20failure/near/321797811>
+                // See <https://crablang.zulipchat.com/#narrow/stream/182449-t-compiler.2Fhelp/topic/Weird.20CI.20failure/near/321797811>
                 while tail.get(0) == Some(&b'{') {
                     tail = &tail[1..];
                     skipped += 1;

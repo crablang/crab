@@ -53,7 +53,7 @@ fn test_named_thread_truncation() {
         .collect::<String>();
 
     let result = Builder::new().name(long_name.clone()).spawn(move || {
-        // Rust remembers the full thread name itself.
+        // CrabLang remembers the full thread name itself.
         assert_eq!(thread::current().name(), Some(long_name.as_str()));
 
         // But the system is limited -- make sure we successfully set a truncation.
@@ -383,7 +383,7 @@ fn test_scoped_threads_nll() {
     foo(&x);
 }
 
-// Regression test for https://github.com/rust-lang/rust/issues/98498.
+// Regression test for https://github.com/crablang/crablang/issues/98498.
 #[test]
 #[cfg(miri)] // relies on Miri's data race detector
 fn scope_join_race() {

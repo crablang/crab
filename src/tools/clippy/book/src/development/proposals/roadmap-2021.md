@@ -15,7 +15,7 @@ contributors.
 
 # Motivation
 
-With the ongoing growth of the Rust language and with that of the whole
+With the ongoing growth of the CrabLang language and with that of the whole
 ecosystem, also Clippy gets more and more users and contributors. This is good
 for the project, but also brings challenges along. Some of these challenges are:
 
@@ -24,11 +24,11 @@ for the project, but also brings challenges along. Some of these challenges are:
 - Bigger projects don't get completed due to the lack of processes and/or time
   of the team members
 
-Additionally, according to the [Rust Roadmap 2021], clear processes should be
+Additionally, according to the [CrabLang Roadmap 2021], clear processes should be
 defined by every team and unified across teams. This Roadmap is the first step
 towards this.
 
-[Rust Roadmap 2021]: https://github.com/rust-lang/rfcs/pull/3037
+[CrabLang Roadmap 2021]: https://github.com/crablang/rfcs/pull/3037
 
 # Explanation
 
@@ -53,13 +53,13 @@ In the following, plans to improve the usability are covered.
 #### No Output After `cargo check`
 
 Currently when `cargo clippy` is run after `cargo check`, it does not produce
-any output. This is especially problematic since `rust-analyzer` is on the rise
+any output. This is especially problematic since `crablang-analyzer` is on the rise
 and it uses `cargo check` for checking code. A fix is already implemented, but
 it still has to be pushed over the finish line. This also includes the
 stabilization of the `cargo clippy --fix` command or the support of multi-span
-suggestions in `rustfix`.
+suggestions in `crablangfix`.
 
-- [#4612](https://github.com/rust-lang/rust-clippy/issues/4612)
+- [#4612](https://github.com/crablang/crablang-clippy/issues/4612)
 
 #### `lints.toml` Configuration
 
@@ -69,9 +69,9 @@ nothing specific or to "we need an RFC for this". And this is exactly what needs
 to be done. Get together with the cargo team and write an RFC and implement such
 a configuration file somehow and somewhere.
 
-- [#3164](https://github.com/rust-lang/rust-clippy/issues/3164)
-- [cargo#5034](https://github.com/rust-lang/cargo/issues/5034)
-- [IRLO](https://internals.rust-lang.org/t/proposal-cargo-lint-configuration/9135/8)
+- [#3164](https://github.com/crablang/crablang-clippy/issues/3164)
+- [cargo#5034](https://github.com/crablang/cargo/issues/5034)
+- [IRLO](https://internals.crablang.org/t/proposal-cargo-lint-configuration/9135/8)
 
 #### Lint Groups
 
@@ -80,11 +80,11 @@ are hard to implement with a guarantee of no/few false positives (FPs). One way
 to address this might be to introduce more lint groups to give users the ability
 to better manage lints, or improve the process of classifying lints, so that
 disabling lints due to FPs becomes rare. It is important to note, that Clippy
-lints are less conservative than `rustc` lints, which won't change in the
+lints are less conservative than `crablangc` lints, which won't change in the
 future.
 
-- [#5537](https://github.com/rust-lang/rust-clippy/issues/5537)
-- [#6366](https://github.com/rust-lang/rust-clippy/issues/6366)
+- [#5537](https://github.com/crablang/crablang-clippy/issues/5537)
+- [#6366](https://github.com/crablang/crablang-clippy/issues/6366)
 
 ### Reliability
 
@@ -94,12 +94,12 @@ In the following, plans to improve the reliability are covered.
 
 In the worst case, new lints are only available in nightly for 2 weeks, before
 hitting beta and ultimately stable. This and the fact that fewer people use
-nightly Rust nowadays makes it more probable that a lint with many FPs hits
+nightly CrabLang nowadays makes it more probable that a lint with many FPs hits
 stable. This leads to annoyed users, that will disable these new lints in the
 best case and to more annoyed users, that will stop using Clippy in the worst.
 A process should be developed and implemented to prevent this from happening.
 
-- [#6429](https://github.com/rust-lang/rust-clippy/issues/6429)
+- [#6429](https://github.com/crablang/crablang-clippy/issues/6429)
 
 ## Internal
 
@@ -118,7 +118,7 @@ team members and contributors.
 
 #### Clear Expectations for Team Members
 
-According to the [Rust Roadmap 2021], a document specifying what it means to be
+According to the [CrabLang Roadmap 2021], a document specifying what it means to be
 a member of the team should be produced. This should not put more pressure on
 the team members, but rather help them and interested folks to know what the
 expectations are. With this it should also be easier to recruit new team members
@@ -140,12 +140,12 @@ for sync-ups. Besides the asynchronous communication, that works well for
 working on separate lints, a meeting adds a synchronous alternative at a known
 time. This is especially helpful if there are bigger things that need to be
 discussed (like the projects in this roadmap). For starters bi-weekly meetings
-before Rust syncs might make sense.
+before CrabLang syncs might make sense.
 
 #### Triaging
 
 To get a handle on the influx of open issues, a process for triaging issues and
-PRs should be developed. Officially, Clippy follows the Rust triage process, but
+PRs should be developed. Officially, Clippy follows the CrabLang triage process, but
 currently no one enforces it. This can be improved by sharing triage teams
 across projects or by implementing dashboards / tools which simplify triaging.
 
@@ -163,8 +163,8 @@ be implemented on how to classify lints. In addition, a test system should be
 developed to find out which lints are currently problematic in real world code
 to fix or disable them.
 
-- [#6429 (comment)](https://github.com/rust-lang/rust-clippy/issues/6429#issuecomment-741056379)
-- [#6429 (comment)](https://github.com/rust-lang/rust-clippy/issues/6429#issuecomment-741153345)
+- [#6429 (comment)](https://github.com/crablang/crablang-clippy/issues/6429#issuecomment-741056379)
+- [#6429 (comment)](https://github.com/crablang/crablang-clippy/issues/6429#issuecomment-741153345)
 
 #### Processes
 
@@ -179,7 +179,7 @@ There's already `cargo dev` which makes Clippy development easier and more
 pleasant. This can still be expanded, so that it covers more areas of the
 development process.
 
-- [#5394](https://github.com/rust-lang/rust-clippy/issues/5394)
+- [#5394](https://github.com/crablang/crablang-clippy/issues/5394)
 
 #### Contributor Guide
 
@@ -188,16 +188,16 @@ contribute to Clippy might be helpful for new and existing contributors. There's
 already the `doc` directory in the Clippy repo, this can be turned into a
 `mdbook`.
 
-#### `rustc` integration
+#### `crablangc` integration
 
-Recently Clippy was integrated with `git subtree` into the `rust-lang/rust`
+Recently Clippy was integrated with `git subtree` into the `crablang/crablang`
 repository. This made syncing between the two repositories easier. A
 `#[non_exhaustive]` list of things that still can be improved is:
 
-1. Use the same `rustfmt` version and configuration as `rustc`.
-2. Make `cargo dev` work in the Rust repo, just as it works in the Clippy repo.
+1. Use the same `crablangfmt` version and configuration as `crablangc`.
+2. Make `cargo dev` work in the CrabLang repo, just as it works in the Clippy repo.
    E.g. `cargo dev bless` or `cargo dev update_lints`. And even add more things
-   to it that might be useful for the Rust repo, e.g. `cargo dev deprecate`.
+   to it that might be useful for the CrabLang repo, e.g. `cargo dev deprecate`.
 3. Easier sync process. The `subtree` situation is not ideal.
 
 ## Prioritization
@@ -217,13 +217,13 @@ regarding the user facing issues.
 
 # Prior Art
 
-## Rust Roadmap
+## CrabLang Roadmap
 
-Rust's roadmap process was established by [RFC 1728] in 2016. Since then every
+CrabLang's roadmap process was established by [RFC 1728] in 2016. Since then every
 year a roadmap was published, that defined the bigger plans for the coming
-years. This years roadmap can be found [here][Rust Roadmap 2021].
+years. This years roadmap can be found [here][CrabLang Roadmap 2021].
 
-[RFC 1728]: https://rust-lang.github.io/rfcs/1728-north-star.html
+[RFC 1728]: https://crablang.github.io/rfcs/1728-north-star.html
 
 # Drawbacks
 

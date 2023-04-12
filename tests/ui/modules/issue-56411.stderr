@@ -30,4 +30,4 @@ LL | import!(("issue-56411-aux.rs", issue_56411_aux));
 error: aborting due to 2 previous errors
 
 Some errors have detailed explanations: E0255, E0365.
-For more information about an error, try `rustc --explain E0255`.
+For more information about an error, try `crablangc --explain E0255`.

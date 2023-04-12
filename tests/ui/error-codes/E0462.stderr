@@ -10,4 +10,4 @@ LL | extern crate found_staticlib;
 
 error: aborting due to previous error
 
-For more information about this error, try `rustc --explain E0462`.
+For more information about this error, try `crablangc --explain E0462`.

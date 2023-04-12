@@ -23,9 +23,9 @@ mod verbose_bit_mask;
 
 pub(crate) mod arithmetic_side_effects;
 
-use rustc_hir::{Body, Expr, ExprKind, UnOp};
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_session::{declare_tool_lint, impl_lint_pass};
+use crablangc_hir::{Body, Expr, ExprKind, UnOp};
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_session::{declare_tool_lint, impl_lint_pass};
 
 declare_clippy_lint! {
     /// ### What it does
@@ -48,7 +48,7 @@ declare_clippy_lint! {
     /// like `#[cfg(target_pointer_width = "64")] ..` instead.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// let vec: Vec<isize> = Vec::new();
     /// if vec.len() <= 0 {}
     /// if 100 > i32::MAX {}
@@ -63,8 +63,8 @@ declare_clippy_lint! {
     /// ### What it does
     /// Checks any kind of arithmetic operation of any type.
     ///
-    /// Operators like `+`, `-`, `*` or `<<` are usually capable of overflowing according to the [Rust
-    /// Reference](https://doc.rust-lang.org/reference/expressions/operator-expr.html#overflow),
+    /// Operators like `+`, `-`, `*` or `<<` are usually capable of overflowing according to the [CrabLang
+    /// Reference](https://doc.crablang.org/reference/expressions/operator-expr.html#overflow),
     /// or can panic (`/`, `%`).
     ///
     /// Known safe built-in types like `Wrapping` or `Saturating`, floats, operations in constant
@@ -76,7 +76,7 @@ declare_clippy_lint! {
     /// desirable to explicitly call checked, wrapping or saturating arithmetic methods.
     ///
     /// #### Example
-    /// ```rust
+    /// ```crablang
     /// // `n` can be any number, including `i32::MAX`.
     /// fn foo(n: i32) -> i32 {
     ///   n + 1
@@ -86,8 +86,8 @@ declare_clippy_lint! {
     /// Third-party types can also overflow or present unwanted side-effects.
     ///
     /// #### Example
-    /// ```ignore,rust
-    /// use rust_decimal::Decimal;
+    /// ```ignore,crablang
+    /// use crablang_decimal::Decimal;
     /// let _n = Decimal::MAX + Decimal::MAX;
     /// ```
     #[clippy::version = "1.64.0"]
@@ -101,8 +101,8 @@ declare_clippy_lint! {
     /// Checks for integer arithmetic operations which could overflow or panic.
     ///
     /// Specifically, checks for any operators (`+`, `-`, `*`, `<<`, etc) which are capable
-    /// of overflowing according to the [Rust
-    /// Reference](https://doc.rust-lang.org/reference/expressions/operator-expr.html#overflow),
+    /// of overflowing according to the [CrabLang
+    /// Reference](https://doc.crablang.org/reference/expressions/operator-expr.html#overflow),
     /// or which can panic (`/`, `%`). No bounds analysis or sophisticated reasoning is
     /// attempted.
     ///
@@ -112,7 +112,7 @@ declare_clippy_lint! {
     /// wants explicitly checked, wrapping or saturating arithmetic.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// # let a = 0;
     /// a + 1;
     /// ```
@@ -131,7 +131,7 @@ declare_clippy_lint! {
     /// can be useful to rule out floating-point numbers.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// # let a = 0.0;
     /// a + 1.0;
     /// ```
@@ -154,7 +154,7 @@ declare_clippy_lint! {
     /// implementations that differ from the regular `Op` impl.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// let mut a = 5;
     /// let b = 0;
     /// // ...
@@ -163,7 +163,7 @@ declare_clippy_lint! {
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// let mut a = 5;
     /// let b = 0;
     /// // ...
@@ -191,7 +191,7 @@ declare_clippy_lint! {
     /// written as `a = a op a op b` as it's less confusing.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// let mut a = 5;
     /// let b = 2;
     /// // ...
@@ -227,11 +227,11 @@ declare_clippy_lint! {
     /// `false` (depending on mask, compared value, and operators).
     ///
     /// So the code is actively misleading, and the only reason someone would write
-    /// this intentionally is to win an underhanded Rust contest or create a
+    /// this intentionally is to win an underhanded CrabLang contest or create a
     /// test-case for this lint.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// # let x = 1;
     /// if (x & 1 == 2) { }
     /// ```
@@ -264,7 +264,7 @@ declare_clippy_lint! {
     /// uncommon).
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// # let x = 1;
     /// if (x | 1 > 3) {  }
     /// ```
@@ -287,7 +287,7 @@ declare_clippy_lint! {
     /// llvm generates better code for `x & 15 == 0` on x86
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// # let x = 1;
     /// if x & 0b1111 == 0 { }
     /// ```
@@ -306,7 +306,7 @@ declare_clippy_lint! {
     /// Readability.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// # let x = 1;
     /// # let y = 2;
     /// if x == y || x < y {}
@@ -314,7 +314,7 @@ declare_clippy_lint! {
     ///
     /// Use instead:
     ///
-    /// ```rust
+    /// ```crablang
     /// # let x = 1;
     /// # let y = 2;
     /// if x <= y {}
@@ -335,7 +335,7 @@ declare_clippy_lint! {
     /// `Duration::subsec_millis()` than to calculate them.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// # use std::time::Duration;
     /// # let duration = Duration::new(5, 0);
     /// let micros = duration.subsec_nanos() / 1_000;
@@ -343,7 +343,7 @@ declare_clippy_lint! {
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// # use std::time::Duration;
     /// # let duration = Duration::new(5, 0);
     /// let micros = duration.subsec_micros();
@@ -371,7 +371,7 @@ declare_clippy_lint! {
     /// calls. We may introduce a list of known pure functions in the future.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// # let x = 1;
     /// if x + 1 == x + 1 {}
     ///
@@ -397,12 +397,12 @@ declare_clippy_lint! {
     /// It is more idiomatic to dereference the other argument.
     ///
     /// ### Example
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// &x == y
     /// ```
     ///
     /// Use instead:
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// x == *y
     /// ```
     #[clippy::version = "pre 1.29.0"]
@@ -421,7 +421,7 @@ declare_clippy_lint! {
     /// corrected
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// let x = 1;
     /// 0 / x;
     /// 0 * x;
@@ -449,13 +449,13 @@ declare_clippy_lint! {
     /// with an allow.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// pub fn is_roughly_equal(a: f32, b: f32) -> bool {
     ///     (a - b) < f32::EPSILON
     /// }
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// pub fn is_roughly_equal(a: f32, b: f32) -> bool {
     ///     (a - b).abs() < f32::EPSILON
     /// }
@@ -475,7 +475,7 @@ declare_clippy_lint! {
     /// meaning. So it just obscures what's going on. Delete it mercilessly.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// # let x = 1;
     /// x / 1 + 0 * 1 - 0 | 0;
     /// ```
@@ -495,13 +495,13 @@ declare_clippy_lint! {
     /// remainder.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// let x = 3 / 2;
     /// println!("{}", x);
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// let x = 3f32 / 2f32;
     /// println!("{}", x);
     /// ```
@@ -520,13 +520,13 @@ declare_clippy_lint! {
     /// even itself – so those comparisons are simply wrong.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// # let x = 1.0;
     /// if x == f32::NAN { }
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// # let x = 1.0f32;
     /// if x.is_nan() { }
     /// ```
@@ -547,14 +547,14 @@ declare_clippy_lint! {
     /// needlessly consuming code and heap space.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// # let x = "foo";
     /// # let y = String::from("foo");
     /// if x.to_owned() == y {}
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// # let x = "foo";
     /// # let y = String::from("foo");
     /// if x == y {}
@@ -578,7 +578,7 @@ declare_clippy_lint! {
     /// guide](http://www.floating-point-gui.de/errors/comparison).
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// let x = 1.2331f64;
     /// let y = 1.2332f64;
     ///
@@ -587,11 +587,11 @@ declare_clippy_lint! {
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// # let x = 1.2331f64;
     /// # let y = 1.2332f64;
     /// let error_margin = f64::EPSILON; // Use an epsilon for comparison
-    /// // Or, if Rust <= 1.42, use `std::f64::EPSILON` constant instead.
+    /// // Or, if CrabLang <= 1.42, use `std::f64::EPSILON` constant instead.
     /// // let error_margin = std::f64::EPSILON;
     /// if (y - 1.23f64).abs() < error_margin { }
     /// if (y - x).abs() > error_margin { }
@@ -615,7 +615,7 @@ declare_clippy_lint! {
     /// guide](http://www.floating-point-gui.de/errors/comparison).
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// let x: f64 = 1.0;
     /// const ONE: f64 = 1.00;
     ///
@@ -623,11 +623,11 @@ declare_clippy_lint! {
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// # let x: f64 = 1.0;
     /// # const ONE: f64 = 1.00;
     /// let error_margin = f64::EPSILON; // Use an epsilon for comparison
-    /// // Or, if Rust <= 1.42, use `std::f64::EPSILON` constant instead.
+    /// // Or, if CrabLang <= 1.42, use `std::f64::EPSILON` constant instead.
     /// // let error_margin = std::f64::EPSILON;
     /// if (x - ONE).abs() < error_margin { }
     /// ```
@@ -646,11 +646,11 @@ declare_clippy_lint! {
     /// The result for a divisor of one can only ever be zero; for
     /// minus one it can cause panic/overflow (if the left operand is the minimal value of
     /// the respective integer type) or results in zero. No one will write such code
-    /// deliberately, unless trying to win an Underhanded Rust Contest. Even for that
+    /// deliberately, unless trying to win an Underhanded CrabLang Contest. Even for that
     /// contest, it's probably a bad idea. Use something more underhanded.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// # let x = 1;
     /// let a = x % 1;
     /// let a = x % -1;
@@ -671,10 +671,10 @@ declare_clippy_lint! {
     /// If you interop with different languages it might be beneficial
     /// to double check all places that use modulo arithmetic.
     ///
-    /// For example, in Rust `17 % -3 = 2`, but in Python `17 % -3 = -1`.
+    /// For example, in CrabLang `17 % -3 = 2`, but in Python `17 % -3 = -1`.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// let x = -17 % 3;
     /// ```
     #[clippy::version = "1.42.0"]
@@ -697,12 +697,12 @@ declare_clippy_lint! {
     /// determination is quite conservative.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// let (x,y) = (true, false);
     /// if x & !y {} // where both x and y are booleans
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// let (x,y) = (true, false);
     /// if x && !y {}
     /// ```
@@ -722,14 +722,14 @@ declare_clippy_lint! {
     /// comparing the values they point to.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// let a = &[1, 2, 3];
     /// let b = &[1, 2, 3];
     ///
     /// assert!(a as *const _ as usize == b as *const _ as usize);
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// let a = &[1, 2, 3];
     /// let b = &[1, 2, 3];
     ///
@@ -754,7 +754,7 @@ declare_clippy_lint! {
     /// indexing operations they are assumed not to have any side effects.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// struct Event {
     ///     x: i32,
     /// }
@@ -765,7 +765,7 @@ declare_clippy_lint! {
     /// ```
     ///
     /// Should be:
-    /// ```rust
+    /// ```crablang
     /// struct Event {
     ///     x: i32,
     /// }

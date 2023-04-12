@@ -5,7 +5,7 @@
 // test that ordinary fat pointer operations work.
 
 #![feature(braced_empty_structs)]
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 
 use std::sync::atomic;
 use std::sync::atomic::Ordering::SeqCst;

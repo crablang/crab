@@ -73,11 +73,11 @@ unsafe fn _print_fmt(fmt: &mut fmt::Formatter<'_>, print_fmt: PrintFmt) -> fmt::
             hit = true;
             if print_fmt == PrintFmt::Short {
                 if let Some(sym) = symbol.name().and_then(|s| s.as_str()) {
-                    if start && sym.contains("__rust_begin_short_backtrace") {
+                    if start && sym.contains("__crablang_begin_short_backtrace") {
                         stop = true;
                         return;
                     }
-                    if sym.contains("__rust_end_short_backtrace") {
+                    if sym.contains("__crablang_end_short_backtrace") {
                         start = true;
                         return;
                     }
@@ -117,17 +117,17 @@ unsafe fn _print_fmt(fmt: &mut fmt::Formatter<'_>, print_fmt: PrintFmt) -> fmt::
         writeln!(
             fmt,
             "note: Some details are omitted, \
-             run with `RUST_BACKTRACE=full` for a verbose backtrace."
+             run with `CRABLANG_BACKTRACE=full` for a verbose backtrace."
         )?;
     }
     Ok(())
 }
 
-/// Fixed frame used to clean the backtrace with `RUST_BACKTRACE=1`. Note that
+/// Fixed frame used to clean the backtrace with `CRABLANG_BACKTRACE=1`. Note that
 /// this is only inline(never) when backtraces in std are enabled, otherwise
 /// it's fine to optimize away.
 #[cfg_attr(feature = "backtrace", inline(never))]
-pub fn __rust_begin_short_backtrace<F, T>(f: F) -> T
+pub fn __crablang_begin_short_backtrace<F, T>(f: F) -> T
 where
     F: FnOnce() -> T,
 {
@@ -139,11 +139,11 @@ where
     result
 }
 
-/// Fixed frame used to clean the backtrace with `RUST_BACKTRACE=1`. Note that
+/// Fixed frame used to clean the backtrace with `CRABLANG_BACKTRACE=1`. Note that
 /// this is only inline(never) when backtraces in std are enabled, otherwise
 /// it's fine to optimize away.
 #[cfg_attr(feature = "backtrace", inline(never))]
-pub fn __rust_end_short_backtrace<F, T>(f: F) -> T
+pub fn __crablang_end_short_backtrace<F, T>(f: F) -> T
 where
     F: FnOnce() -> T,
 {

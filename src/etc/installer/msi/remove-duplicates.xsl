@@ -10,8 +10,8 @@
     </xsl:template>
     <xsl:output method="xml" indent="yes" />
 
-    <!-- LICENSE* files are installed from rustc dir. -->
-    <xsl:key name="duplicates-cmp-ids" match="wix:Component[./wix:File[contains(@Source, 'LICENSE')]|./wix:File[contains(@Source, 'rust-installer-version')]]" use="@Id" />
+    <!-- LICENSE* files are installed from crablangc dir. -->
+    <xsl:key name="duplicates-cmp-ids" match="wix:Component[./wix:File[contains(@Source, 'LICENSE')]|./wix:File[contains(@Source, 'crablang-installer-version')]]" use="@Id" />
     <xsl:template match="wix:Component[key('duplicates-cmp-ids', @Id)]" />
     <xsl:template match="wix:ComponentRef[key('duplicates-cmp-ids', @Id)]" />
 

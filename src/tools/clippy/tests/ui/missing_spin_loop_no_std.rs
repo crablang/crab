@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 #![warn(clippy::missing_spin_loop)]
 #![feature(lang_items, start, libc)]
 #![no_std]

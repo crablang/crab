@@ -1,8 +1,8 @@
 use clippy_utils::consts::{constant, Constant};
 use clippy_utils::diagnostics::span_lint;
-use rustc_hir::{BinOpKind, Expr, ExprKind};
-use rustc_lint::LateContext;
-use rustc_span::source_map::Span;
+use crablangc_hir::{BinOpKind, Expr, ExprKind};
+use crablangc_lint::LateContext;
+use crablangc_span::source_map::Span;
 
 use super::{BAD_BIT_MASK, INEFFECTIVE_BIT_MASK};
 

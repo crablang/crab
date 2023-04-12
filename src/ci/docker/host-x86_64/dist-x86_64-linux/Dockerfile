@@ -1,6 +1,6 @@
 # We document platform support for minimum glibc 2.17 and kernel 3.2.
 # CentOS 7 has headers for kernel 3.10, but that's fine as long as we don't
-# actually use newer APIs in rustc or std without a fallback. It's more
+# actually use newer APIs in crablangc or std without a fallback. It's more
 # important that we match glibc for ELF symbol versioning.
 FROM centos:7
 
@@ -35,11 +35,11 @@ RUN yum upgrade -y && \
       zlib-devel.x86_64 \
       && yum clean all
 
-RUN mkdir -p /rustroot/bin && ln -s /usr/bin/cmake3 /rustroot/bin/cmake
+RUN mkdir -p /crablangroot/bin && ln -s /usr/bin/cmake3 /crablangroot/bin/cmake
 
-ENV PATH=/rustroot/bin:$PATH
-ENV LD_LIBRARY_PATH=/rustroot/lib64:/rustroot/lib32:/rustroot/lib
-ENV PKG_CONFIG_PATH=/rustroot/lib/pkgconfig
+ENV PATH=/crablangroot/bin:$PATH
+ENV LD_LIBRARY_PATH=/crablangroot/lib64:/crablangroot/lib32:/crablangroot/lib
+ENV PKG_CONFIG_PATH=/crablangroot/lib/pkgconfig
 WORKDIR /tmp
 RUN mkdir /home/user
 COPY host-x86_64/dist-x86_64-linux/shared.sh /tmp/
@@ -54,11 +54,11 @@ COPY host-x86_64/dist-x86_64-linux/build-clang.sh /tmp/
 RUN ./build-clang.sh
 ENV CC=clang CXX=clang++
 
-# rustc-perf version from 2023-03-15
+# crablangc-perf version from 2023-03-15
 ENV PERF_COMMIT 9dfaa35193154b690922347ee1141a06ec87a199
-RUN curl -LS -o perf.zip https://github.com/rust-lang/rustc-perf/archive/$PERF_COMMIT.zip && \
+RUN curl -LS -o perf.zip https://github.com/crablang/crablangc-perf/archive/$PERF_COMMIT.zip && \
     unzip perf.zip && \
-    mv rustc-perf-$PERF_COMMIT rustc-perf && \
+    mv crablangc-perf-$PERF_COMMIT crablangc-perf && \
     rm perf.zip
 
 COPY scripts/sccache.sh /scripts/
@@ -68,19 +68,19 @@ ENV PGO_HOST=x86_64-unknown-linux-gnu
 
 ENV HOSTS=x86_64-unknown-linux-gnu
 
-ENV RUST_CONFIGURE_ARGS \
+ENV CRABLANG_CONFIGURE_ARGS \
       --enable-full-tools \
       --enable-sanitizers \
       --enable-profiler \
       --enable-compiler-docs \
       --set target.x86_64-unknown-linux-gnu.linker=clang \
-      --set target.x86_64-unknown-linux-gnu.ar=/rustroot/bin/llvm-ar \
-      --set target.x86_64-unknown-linux-gnu.ranlib=/rustroot/bin/llvm-ranlib \
+      --set target.x86_64-unknown-linux-gnu.ar=/crablangroot/bin/llvm-ar \
+      --set target.x86_64-unknown-linux-gnu.ranlib=/crablangroot/bin/llvm-ranlib \
       --set llvm.thin-lto=true \
       --set llvm.ninja=false \
-      --set rust.jemalloc \
-      --set rust.use-lld=true \
-      --set rust.lto=thin
+      --set crablang.jemalloc \
+      --set crablang.use-lld=true \
+      --set crablang.lto=thin
 ENV SCRIPT python3 ../src/ci/stage-build.py python3 ../x.py dist \
     --host $HOSTS --target $HOSTS \
     --include-default-paths \

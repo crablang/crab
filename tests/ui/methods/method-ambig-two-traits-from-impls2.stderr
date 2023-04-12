@@ -25,4 +25,4 @@ LL |     <AB as B>::foo();
 
 error: aborting due to previous error
 
-For more information about this error, try `rustc --explain E0034`.
+For more information about this error, try `crablangc --explain E0034`.

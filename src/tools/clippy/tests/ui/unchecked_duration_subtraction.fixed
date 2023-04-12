@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 #![warn(clippy::unchecked_duration_subtraction)]
 
 use std::time::{Duration, Instant};

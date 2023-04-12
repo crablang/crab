@@ -1,16 +1,16 @@
 // This test enumerates various cases of interest for partial
 // [re]initialization of ADTs and tuples.
 //
-// See rust-lang/rust#21232, rust-lang/rust#54986, and rust-lang/rust#54987.
+// See crablang/crablang#21232, crablang/crablang#54986, and crablang/crablang#54987.
 //
 // All of tests in this file are expected to change from being
-// rejected, at least under NLL (by rust-lang/rust#54986) to being
-// **accepted** when rust-lang/rust#54987 is implemented.
+// rejected, at least under NLL (by crablang/crablang#54986) to being
+// **accepted** when crablang/crablang#54987 is implemented.
 // (That's why there are assertions in the code.)
 //
 // See issue-21232-partial-init-and-erroneous-use.rs for cases of
 // tests that are meant to continue failing to compile once
-// rust-lang/rust#54987 is implemented.
+// crablang/crablang#54987 is implemented.
 
 struct S<Y> {
     x: u32,

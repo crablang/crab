@@ -1,10 +1,10 @@
 use clippy_utils::diagnostics::span_lint;
 use clippy_utils::paths;
 use clippy_utils::ty::match_type;
-use rustc_ast::ast::LitKind;
-use rustc_hir::{Expr, ExprKind};
-use rustc_lint::LateContext;
-use rustc_span::source_map::{Span, Spanned};
+use crablangc_ast::ast::LitKind;
+use crablangc_hir::{Expr, ExprKind};
+use crablangc_lint::LateContext;
+use crablangc_span::source_map::{Span, Spanned};
 
 use super::NONSENSICAL_OPEN_OPTIONS;
 

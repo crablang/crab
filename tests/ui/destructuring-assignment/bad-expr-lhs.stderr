@@ -41,4 +41,4 @@ LL |     None = Some(3);
 error: aborting due to 5 previous errors
 
 Some errors have detailed explanations: E0067, E0070.
-For more information about an error, try `rustc --explain E0067`.
+For more information about an error, try `crablangc --explain E0067`.

@@ -2,12 +2,12 @@
 
 use clippy_utils::diagnostics::span_lint_and_then;
 use clippy_utils::sugg::DiagnosticExt;
-use rustc_ast::ast::Attribute;
-use rustc_errors::Applicability;
-use rustc_hir::{TraitFn, TraitItem, TraitItemKind};
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_session::{declare_lint_pass, declare_tool_lint};
-use rustc_span::{sym, Symbol};
+use crablangc_ast::ast::Attribute;
+use crablangc_errors::Applicability;
+use crablangc_hir::{TraitFn, TraitItem, TraitItemKind};
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_span::{sym, Symbol};
 
 declare_clippy_lint! {
     /// ### What it does
@@ -18,7 +18,7 @@ declare_clippy_lint! {
     /// The inline attribute is ignored for trait methods without bodies.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// trait Animal {
     ///     #[inline]
     ///     fn name(&self) -> &'static str;

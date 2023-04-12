@@ -39,4 +39,4 @@ LL | #![warn(unused_imports)]
 
 error: aborting due to 2 previous errors; 1 warning emitted
 
-For more information about this error, try `rustc --explain E0412`.
+For more information about this error, try `crablangc --explain E0412`.

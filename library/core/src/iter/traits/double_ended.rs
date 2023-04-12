@@ -36,8 +36,8 @@ use crate::ops::{ControlFlow, Try};
 /// assert_eq!(None, iter.next());
 /// assert_eq!(None, iter.next_back());
 /// ```
-#[stable(feature = "rust1", since = "1.0.0")]
-#[cfg_attr(not(test), rustc_diagnostic_item = "DoubleEndedIterator")]
+#[stable(feature = "crablang1", since = "1.0.0")]
+#[cfg_attr(not(test), crablangc_diagnostic_item = "DoubleEndedIterator")]
 pub trait DoubleEndedIterator: Iterator {
     /// Removes and returns an element from the end of the iterator.
     ///
@@ -90,7 +90,7 @@ pub trait DoubleEndedIterator: Iterator {
     ///     vec![(2, 'b'), (1, 'c')]
     /// );
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     fn next_back(&mut self) -> Option<Self::Item>;
 
     /// Advances the iterator from the back by `n` elements.
@@ -212,7 +212,7 @@ pub trait DoubleEndedIterator: Iterator {
     /// Short-circuiting:
     ///
     /// ```
-    /// let a = ["1", "rust", "3"];
+    /// let a = ["1", "crablang", "3"];
     /// let mut it = a.iter();
     /// let sum = it
     ///     .by_ref()
@@ -368,7 +368,7 @@ pub trait DoubleEndedIterator: Iterator {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<'a, I: DoubleEndedIterator + ?Sized> DoubleEndedIterator for &'a mut I {
     fn next_back(&mut self) -> Option<I::Item> {
         (**self).next_back()

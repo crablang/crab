@@ -4,9 +4,9 @@ error[E0658]: the `#[debugger_visualizer]` attribute is an experimental feature
 LL | #![debugger_visualizer(natvis_file = "auxiliary/debugger-visualizer.natvis")]
    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
    |
-   = note: see issue #95939 <https://github.com/rust-lang/rust/issues/95939> for more information
+   = note: see issue #95939 <https://github.com/crablang/crablang/issues/95939> for more information
    = help: add `#![feature(debugger_visualizer)]` to the crate attributes to enable
 
 error: aborting due to previous error
 
-For more information about this error, try `rustc --explain E0658`.
+For more information about this error, try `crablangc --explain E0658`.

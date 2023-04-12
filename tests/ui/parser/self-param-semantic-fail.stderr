@@ -217,4 +217,4 @@ LL | type X8 = fn(mut self: u8);
 error: aborting due to 28 previous errors
 
 Some errors have detailed explanations: E0130, E0561.
-For more information about an error, try `rustc --explain E0130`.
+For more information about an error, try `crablangc --explain E0130`.

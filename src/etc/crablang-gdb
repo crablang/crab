@@ -1,0 +1,28 @@
+#!/bin/sh
+# Exit if anything fails
+set -e
+
+# Prefer crablangc in the same directory as this script
+DIR="$(dirname "$0")"
+if [ -x "$DIR/crablangc" ]; then
+  CRABLANGC="$DIR/crablangc"
+else
+  CRABLANGC="crablangc"
+fi
+
+# Find out where the pretty printer Python module is
+CRABLANGC_SYSROOT="$("$CRABLANGC" --print=sysroot)"
+GDB_PYTHON_MODULE_DIRECTORY="$CRABLANGC_SYSROOT/lib/crablanglib/etc"
+# Get the commit hash for path remapping
+CRABLANGC_COMMIT_HASH="$("$CRABLANGC" -vV | sed -n 's/commit-hash: \(\w*\)/\1/p')"
+
+# Run GDB with the additional arguments that load the pretty printers
+# Set the environment variable `CRABLANG_GDB` to overwrite the call to a
+# different/specific command (defaults to `gdb`).
+CRABLANG_GDB="${CRABLANG_GDB:-gdb}"
+PYTHONPATH="$PYTHONPATH:$GDB_PYTHON_MODULE_DIRECTORY" exec ${CRABLANG_GDB} \
+  --directory="$GDB_PYTHON_MODULE_DIRECTORY" \
+  -iex "add-auto-load-safe-path $GDB_PYTHON_MODULE_DIRECTORY" \
+  -iex "set substitute-path /crablangc/$CRABLANGC_COMMIT_HASH $CRABLANGC_SYSROOT/lib/crablanglib/src/crablang" \
+  "$@"
+ 

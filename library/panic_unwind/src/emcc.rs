@@ -1,6 +1,6 @@
 //! Unwinding for *emscripten* target.
 //!
-//! Whereas Rust's usual unwinding implementation for Unix platforms
+//! Whereas CrabLang's usual unwinding implementation for Unix platforms
 //! calls into the libunwind APIs directly, on Emscripten we instead
 //! call into the C++ unwinding APIs. This is just an expedience since
 //! Emscripten's runtime always implements those APIs and does not
@@ -37,14 +37,14 @@ extern "C" {
     static CLASS_TYPE_INFO_VTABLE: [usize; 3];
 }
 
-// std::type_info for a rust_panic class
+// std::type_info for a crablang_panic class
 #[lang = "eh_catch_typeinfo"]
 static EXCEPTION_TYPE_INFO: TypeInfo = TypeInfo {
     // Normally we would use .as_ptr().add(2) but this doesn't work in a const context.
     vtable: unsafe { &CLASS_TYPE_INFO_VTABLE[2] },
     // This intentionally doesn't use the normal name mangling scheme because
-    // we don't want C++ to be able to produce or catch Rust panics.
-    name: b"rust_panic\0".as_ptr(),
+    // we don't want C++ to be able to produce or catch CrabLang panics.
+    name: b"crablang_panic\0".as_ptr(),
 };
 
 // NOTE(nbdd0121): The `canary` field will be part of stable ABI after `c_unwind` stabilization.
@@ -70,18 +70,18 @@ pub unsafe fn cleanup(ptr: *mut u8) -> Box<dyn Any + Send> {
     #[repr(C)]
     struct CatchData {
         ptr: *mut u8,
-        is_rust_panic: bool,
+        is_crablang_panic: bool,
     }
     let catch_data = &*(ptr as *mut CatchData);
 
     let adjusted_ptr = __cxa_begin_catch(catch_data.ptr as *mut libc::c_void) as *mut Exception;
-    if !catch_data.is_rust_panic {
-        super::__rust_foreign_exception();
+    if !catch_data.is_crablang_panic {
+        super::__crablang_foreign_exception();
     }
 
     let canary = ptr::addr_of!((*adjusted_ptr).canary).read();
     if !ptr::eq(canary, &EXCEPTION_TYPE_INFO) {
-        super::__rust_foreign_exception();
+        super::__crablang_foreign_exception();
     }
 
     let was_caught = (*adjusted_ptr).caught.swap(true, Ordering::SeqCst);
@@ -114,7 +114,7 @@ extern "C" fn exception_cleanup(ptr: *mut libc::c_void) -> *mut libc::c_void {
     unsafe {
         if let Some(b) = (ptr as *mut Exception).read().data {
             drop(b);
-            super::__rust_drop_panic();
+            super::__crablang_drop_panic();
         }
         ptr
     }

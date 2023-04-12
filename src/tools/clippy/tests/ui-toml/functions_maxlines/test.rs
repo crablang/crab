@@ -36,7 +36,7 @@ fn closure_too_many_lines() {
 }
 
 // This should be considered one line.
-#[rustfmt::skip]
+#[crablangfmt::skip]
 fn comment_starts_after_code() {
     let _ = 5; /* closing comment. */ /*
     this line shouldn't be counted theoretically.
@@ -49,7 +49,7 @@ fn comment_after_code() {
 }
 
 // This should fail since it is technically two lines.
-#[rustfmt::skip]
+#[crablangfmt::skip]
 fn comment_before_code() {
     let _ = "test";
     /* This comment extends to the front of

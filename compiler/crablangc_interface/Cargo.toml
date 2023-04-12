@@ -1,0 +1,55 @@
+[package]
+name = "crablangc_interface"
+version = "0.0.0"
+edition = "2021"
+
+[lib]
+
+[dependencies]
+libloading = "0.7.1"
+tracing = "0.1"
+crablangc-rayon-core = { version = "0.5.0", optional = true }
+crablangc-rayon = { version = "0.5.0", optional = true }
+smallvec = { version = "1.8.1", features = ["union", "may_dangle"] }
+crablangc_ast = { path = "../crablangc_ast" }
+crablangc_attr = { path = "../crablangc_attr" }
+crablangc_borrowck = { path = "../crablangc_borrowck" }
+crablangc_builtin_macros = { path = "../crablangc_builtin_macros" }
+crablangc_expand = { path = "../crablangc_expand" }
+crablangc_fs_util = { path = "../crablangc_fs_util" }
+crablangc_macros = { path = "../crablangc_macros" }
+crablangc_parse = { path = "../crablangc_parse" }
+crablangc_session = { path = "../crablangc_session" }
+crablangc_span = { path = "../crablangc_span" }
+crablangc_middle = { path = "../crablangc_middle" }
+crablangc_ast_lowering = { path = "../crablangc_ast_lowering" }
+crablangc_ast_passes = { path = "../crablangc_ast_passes" }
+crablangc_incremental = { path = "../crablangc_incremental" }
+crablangc_index = { path = "../crablangc_index" }
+crablangc_traits = { path = "../crablangc_traits" }
+crablangc_data_structures = { path = "../crablangc_data_structures" }
+crablangc_codegen_ssa = { path = "../crablangc_codegen_ssa" }
+crablangc_symbol_mangling = { path = "../crablangc_symbol_mangling" }
+crablangc_codegen_llvm = { path = "../crablangc_codegen_llvm", optional = true }
+crablangc_hir = { path = "../crablangc_hir" }
+crablangc_metadata = { path = "../crablangc_metadata" }
+crablangc_const_eval = { path = "../crablangc_const_eval" }
+crablangc_mir_build = { path = "../crablangc_mir_build" }
+crablangc_mir_transform = { path = "../crablangc_mir_transform" }
+crablangc_monomorphize = { path = "../crablangc_monomorphize" }
+crablangc_passes = { path = "../crablangc_passes" }
+crablangc_hir_analysis = { path = "../crablangc_hir_analysis" }
+crablangc_hir_typeck = { path = "../crablangc_hir_typeck" }
+crablangc_lint = { path = "../crablangc_lint" }
+crablangc_errors = { path = "../crablangc_errors" }
+crablangc_plugin_impl = { path = "../crablangc_plugin_impl" }
+crablangc_privacy = { path = "../crablangc_privacy" }
+crablangc_query_impl = { path = "../crablangc_query_impl" }
+crablangc_resolve = { path = "../crablangc_resolve" }
+crablangc_target = { path = "../crablangc_target" }
+crablangc_trait_selection = { path = "../crablangc_trait_selection" }
+crablangc_ty_utils = { path = "../crablangc_ty_utils" }
+
+[features]
+llvm = ['crablangc_codegen_llvm']
+crablangc_use_parallel_compiler = ['crablangc-rayon', 'crablangc-rayon-core', 'crablangc_query_impl/crablangc_use_parallel_compiler', 'crablangc_errors/crablangc_use_parallel_compiler']

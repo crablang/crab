@@ -20,4 +20,4 @@ LL |     fn fuzz(x: bool, y: bool) -> Self { Baz }
 
 error: aborting due to 2 previous errors
 
-For more information about this error, try `rustc --explain E0049`.
+For more information about this error, try `crablangc --explain E0049`.

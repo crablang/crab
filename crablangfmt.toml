@@ -1,0 +1,43 @@
+# Run crablangfmt with this config (it should be picked up automatically).
+version = "Two"
+use_small_heuristics = "Max"
+merge_derives = false
+
+# by default we ignore everything in the repository
+# tidy only checks files which are not ignored, each entry follows gitignore style
+ignore = [
+    "/build/",
+    "/*-build/",
+    "/build-*/",
+    "/vendor/",
+
+    # tests for now are not formatted, as they are sometimes pretty-printing constrained
+    # (and generally crablangfmt can move around comments in UI-testing incompatible ways)
+    "tests",
+
+    # do not format submodules
+    "library/backtrace",
+    "library/portable-simd",
+    "library/stdarch",
+    "compiler/crablangc_codegen_gcc",
+    "src/doc/book",
+    "src/doc/edition-guide",
+    "src/doc/embedded-book",
+    "src/doc/nomicon",
+    "src/doc/reference",
+    "src/doc/crablang-by-example",
+    "src/doc/crablangc-dev-guide",
+    "src/llvm-project",
+    "src/tools/cargo",
+    "src/tools/clippy",
+    "src/tools/miri",
+    "src/tools/rls",
+    "src/tools/crablang-analyzer",
+    "src/tools/crablangfmt",
+    "src/tools/crablang-installer",
+
+    # these are ignored by a standard cargo fmt run
+    "compiler/crablangc_codegen_cranelift/y.rs", # running crablangfmt breaks this file
+    "compiler/crablangc_codegen_cranelift/example",
+    "compiler/crablangc_codegen_cranelift/scripts",
+]

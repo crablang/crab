@@ -55,7 +55,7 @@ fn init(num: isize, something: *const *const u8) -> isize {
 
 trait Foo {
     // This should not be suggested to be made const
-    // (rustc doesn't allow const trait methods)
+    // (crablangc doesn't allow const trait methods)
     fn f() -> u32;
 
     // This should not be suggested to be made const either

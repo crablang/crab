@@ -718,10 +718,10 @@ impl fmt::Debug for UdpSocket {
 // Converting SocketAddr to libc representation
 ////////////////////////////////////////////////////////////////////////////////
 
-/// A type with the same memory layout as `c::sockaddr`. Used in converting Rust level
+/// A type with the same memory layout as `c::sockaddr`. Used in converting CrabLang level
 /// SocketAddr* types into their system representation. The benefit of this specific
 /// type over using `c::sockaddr_storage` is that this type is exactly as large as it
-/// needs to be and not a lot larger. And it can be initialized more cleanly from Rust.
+/// needs to be and not a lot larger. And it can be initialized more cleanly from CrabLang.
 #[repr(C)]
 pub(crate) union SocketAddrCRepr {
     v4: c::sockaddr_in,

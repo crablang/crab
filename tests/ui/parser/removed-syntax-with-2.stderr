@@ -14,4 +14,4 @@ LL |     let b = S { foo: (), with a };
 
 error: aborting due to 2 previous errors
 
-For more information about this error, try `rustc --explain E0063`.
+For more information about this error, try `crablangc --explain E0063`.

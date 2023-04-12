@@ -22,4 +22,4 @@ LL | fn bar2<'a,'b,A:Is<'b> + 'a>(x: Inv<'a>, y: Inv<'b>, a: A) {
 
 error: aborting due to 2 previous errors
 
-For more information about this error, try `rustc --explain E0309`.
+For more information about this error, try `crablangc --explain E0309`.

@@ -3,15 +3,15 @@ use clippy_utils::eq_expr_value;
 use clippy_utils::source::snippet_opt;
 use clippy_utils::ty::{implements_trait, is_type_diagnostic_item};
 use if_chain::if_chain;
-use rustc_ast::ast::LitKind;
-use rustc_errors::Applicability;
-use rustc_hir::intravisit::{walk_expr, FnKind, Visitor};
-use rustc_hir::{BinOpKind, Body, Expr, ExprKind, FnDecl, UnOp};
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_session::{declare_lint_pass, declare_tool_lint};
-use rustc_span::def_id::LocalDefId;
-use rustc_span::source_map::Span;
-use rustc_span::sym;
+use crablangc_ast::ast::LitKind;
+use crablangc_errors::Applicability;
+use crablangc_hir::intravisit::{walk_expr, FnKind, Visitor};
+use crablangc_hir::{BinOpKind, Body, Expr, ExprKind, FnDecl, UnOp};
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_span::def_id::LocalDefId;
+use crablangc_span::source_map::Span;
+use crablangc_span::sym;
 
 declare_clippy_lint! {
     /// ### What it does
@@ -33,7 +33,7 @@ declare_clippy_lint! {
     /// ```
     ///
     /// Use instead:
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// if a {}
     /// if a != b {}
     /// ```
@@ -55,13 +55,13 @@ declare_clippy_lint! {
     /// Ignores short circuiting behavior.
     ///
     /// ### Example
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// // The `b` is unnecessary, the expression is equivalent to `if a`.
     /// if a && b || a { ... }
     /// ```
     ///
     /// Use instead:
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// if a {}
     /// ```
     #[clippy::version = "pre 1.29.0"]

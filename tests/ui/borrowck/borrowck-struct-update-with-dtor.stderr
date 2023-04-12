@@ -18,4 +18,4 @@ LL |     let _s2 = T{a: 2, ..s0};
 
 error: aborting due to 2 previous errors
 
-For more information about this error, try `rustc --explain E0509`.
+For more information about this error, try `crablangc --explain E0509`.

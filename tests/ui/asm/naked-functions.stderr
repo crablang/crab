@@ -235,7 +235,7 @@ error[E0787]: asm options unsupported in naked functions: `may_unwind`
 LL |     asm!("", options(noreturn, may_unwind));
    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-warning: Rust ABI is unsupported in naked functions
+warning: CrabLang ABI is unsupported in naked functions
   --> $DIR/naked-functions.rs:124:1
    |
 LL | pub unsafe fn default_abi() {
@@ -243,10 +243,10 @@ LL | pub unsafe fn default_abi() {
    |
    = note: `#[warn(undefined_naked_function_abi)]` on by default
 
-warning: Rust ABI is unsupported in naked functions
+warning: CrabLang ABI is unsupported in naked functions
   --> $DIR/naked-functions.rs:130:1
    |
-LL | pub unsafe fn rust_abi() {
+LL | pub unsafe fn crablang_abi() {
    | ^^^^^^^^^^^^^^^^^^^^^^^^
 
 error: naked functions cannot be inlined
@@ -287,4 +287,4 @@ LL | #[inline(never)]
 
 error: aborting due to 33 previous errors; 2 warnings emitted
 
-For more information about this error, try `rustc --explain E0787`.
+For more information about this error, try `crablangc --explain E0787`.

@@ -34,4 +34,4 @@ LL |     let bar: Bar<i32, &str, Z> = bar(1, "");
 
 error: aborting due to 2 previous errors
 
-For more information about this error, try `rustc --explain E0283`.
+For more information about this error, try `crablangc --explain E0283`.

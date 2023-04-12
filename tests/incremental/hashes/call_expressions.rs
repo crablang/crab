@@ -14,7 +14,7 @@
 
 
 #![allow(warnings)]
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 #![crate_type="rlib"]
 
 fn callee1(_x: u32, _y: i64) {}
@@ -28,10 +28,10 @@ pub fn change_callee_function() {
 }
 
 #[cfg(not(any(cfail1,cfail4)))]
-#[rustc_clean(cfg="cfail2", except="hir_owner_nodes,optimized_mir,typeck")]
-#[rustc_clean(cfg="cfail3")]
-#[rustc_clean(cfg="cfail5", except="hir_owner_nodes,optimized_mir,typeck")]
-#[rustc_clean(cfg="cfail6")]
+#[crablangc_clean(cfg="cfail2", except="hir_owner_nodes,optimized_mir,typeck")]
+#[crablangc_clean(cfg="cfail3")]
+#[crablangc_clean(cfg="cfail5", except="hir_owner_nodes,optimized_mir,typeck")]
+#[crablangc_clean(cfg="cfail6")]
 pub fn change_callee_function() {
     callee2(1, 2)
 }
@@ -45,10 +45,10 @@ pub fn change_argument_function() {
 }
 
 #[cfg(not(any(cfail1,cfail4)))]
-#[rustc_clean(cfg="cfail2", except="hir_owner_nodes,optimized_mir")]
-#[rustc_clean(cfg="cfail3")]
-#[rustc_clean(cfg="cfail5", except="hir_owner_nodes,optimized_mir")]
-#[rustc_clean(cfg="cfail6")]
+#[crablangc_clean(cfg="cfail2", except="hir_owner_nodes,optimized_mir")]
+#[crablangc_clean(cfg="cfail3")]
+#[crablangc_clean(cfg="cfail5", except="hir_owner_nodes,optimized_mir")]
+#[crablangc_clean(cfg="cfail6")]
 pub fn change_argument_function() {
     callee1(1, 3)
 }
@@ -62,10 +62,10 @@ mod change_callee_indirectly_function {
     #[cfg(not(any(cfail1,cfail4)))]
     use super::callee2 as callee;
 
-    #[rustc_clean(except="hir_owner_nodes,typeck", cfg="cfail2")]
-    #[rustc_clean(cfg="cfail3")]
-    #[rustc_clean(except="hir_owner_nodes,typeck", cfg="cfail5")]
-    #[rustc_clean(cfg="cfail6")]
+    #[crablangc_clean(except="hir_owner_nodes,typeck", cfg="cfail2")]
+    #[crablangc_clean(cfg="cfail3")]
+    #[crablangc_clean(except="hir_owner_nodes,typeck", cfg="cfail5")]
+    #[crablangc_clean(cfg="cfail6")]
     pub fn change_callee_indirectly_function() {
         callee(1, 2)
     }
@@ -86,10 +86,10 @@ pub fn change_callee_method() {
 }
 
 #[cfg(not(any(cfail1,cfail4)))]
-#[rustc_clean(cfg="cfail2", except="hir_owner_nodes,optimized_mir,typeck")]
-#[rustc_clean(cfg="cfail3")]
-#[rustc_clean(cfg="cfail5", except="hir_owner_nodes,optimized_mir,typeck")]
-#[rustc_clean(cfg="cfail6")]
+#[crablangc_clean(cfg="cfail2", except="hir_owner_nodes,optimized_mir,typeck")]
+#[crablangc_clean(cfg="cfail3")]
+#[crablangc_clean(cfg="cfail5", except="hir_owner_nodes,optimized_mir,typeck")]
+#[crablangc_clean(cfg="cfail6")]
 pub fn change_callee_method() {
     let s = Struct;
     s.method2('x', true);
@@ -105,10 +105,10 @@ pub fn change_argument_method() {
 }
 
 #[cfg(not(any(cfail1,cfail4)))]
-#[rustc_clean(cfg="cfail2", except="hir_owner_nodes,optimized_mir")]
-#[rustc_clean(cfg="cfail3")]
-#[rustc_clean(cfg="cfail5", except="hir_owner_nodes,optimized_mir")]
-#[rustc_clean(cfg="cfail6")]
+#[crablangc_clean(cfg="cfail2", except="hir_owner_nodes,optimized_mir")]
+#[crablangc_clean(cfg="cfail3")]
+#[crablangc_clean(cfg="cfail5", except="hir_owner_nodes,optimized_mir")]
+#[crablangc_clean(cfg="cfail6")]
 pub fn change_argument_method() {
     let s = Struct;
     s.method1('y', true);
@@ -124,10 +124,10 @@ pub fn change_ufcs_callee_method() {
 }
 
 #[cfg(not(any(cfail1,cfail4)))]
-#[rustc_clean(cfg="cfail2", except="hir_owner_nodes,optimized_mir,typeck")]
-#[rustc_clean(cfg="cfail3")]
-#[rustc_clean(cfg="cfail5", except="hir_owner_nodes,optimized_mir,typeck")]
-#[rustc_clean(cfg="cfail6")]
+#[crablangc_clean(cfg="cfail2", except="hir_owner_nodes,optimized_mir,typeck")]
+#[crablangc_clean(cfg="cfail3")]
+#[crablangc_clean(cfg="cfail5", except="hir_owner_nodes,optimized_mir,typeck")]
+#[crablangc_clean(cfg="cfail6")]
 pub fn change_ufcs_callee_method() {
     let s = Struct;
     Struct::method2(&s, 'x', true);
@@ -143,10 +143,10 @@ pub fn change_argument_method_ufcs() {
 }
 
 #[cfg(not(any(cfail1,cfail4)))]
-#[rustc_clean(cfg="cfail2", except="hir_owner_nodes,optimized_mir")]
-#[rustc_clean(cfg="cfail3")]
-#[rustc_clean(cfg="cfail5", except="hir_owner_nodes,optimized_mir")]
-#[rustc_clean(cfg="cfail6")]
+#[crablangc_clean(cfg="cfail2", except="hir_owner_nodes,optimized_mir")]
+#[crablangc_clean(cfg="cfail3")]
+#[crablangc_clean(cfg="cfail5", except="hir_owner_nodes,optimized_mir")]
+#[crablangc_clean(cfg="cfail6")]
 pub fn change_argument_method_ufcs() {
     let s = Struct;
     Struct::method1(&s, 'x',false);
@@ -162,10 +162,10 @@ pub fn change_to_ufcs() {
 }
 
 #[cfg(not(any(cfail1,cfail4)))]
-#[rustc_clean(cfg="cfail2", except="hir_owner_nodes,optimized_mir,typeck")]
-#[rustc_clean(cfg="cfail3")]
-#[rustc_clean(cfg="cfail5", except="hir_owner_nodes,optimized_mir,typeck")]
-#[rustc_clean(cfg="cfail6")]
+#[crablangc_clean(cfg="cfail2", except="hir_owner_nodes,optimized_mir,typeck")]
+#[crablangc_clean(cfg="cfail3")]
+#[crablangc_clean(cfg="cfail5", except="hir_owner_nodes,optimized_mir,typeck")]
+#[crablangc_clean(cfg="cfail6")]
 // One might think this would be expanded in the hir_owner_nodes/Mir, but it actually
 // results in slightly different hir_owner/Mir.
 pub fn change_to_ufcs() {
@@ -186,10 +186,10 @@ pub mod change_ufcs_callee_indirectly {
     #[cfg(not(any(cfail1,cfail4)))]
     use super::Struct2 as Struct;
 
-    #[rustc_clean(cfg="cfail2", except="hir_owner_nodes,optimized_mir,typeck")]
-    #[rustc_clean(cfg="cfail3")]
-    #[rustc_clean(cfg="cfail5", except="hir_owner_nodes,optimized_mir,typeck")]
-    #[rustc_clean(cfg="cfail6")]
+    #[crablangc_clean(cfg="cfail2", except="hir_owner_nodes,optimized_mir,typeck")]
+    #[crablangc_clean(cfg="cfail3")]
+    #[crablangc_clean(cfg="cfail5", except="hir_owner_nodes,optimized_mir,typeck")]
+    #[crablangc_clean(cfg="cfail6")]
     pub fn change_ufcs_callee_indirectly() {
         let s = Struct;
         Struct::method1(&s, 'q', false)

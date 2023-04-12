@@ -31,8 +31,8 @@ fn unique_aliasing() {
     // pointers as a special case, these are treated like any other raw pointer.
     // However, there are existing Github issues which may lead to `Unique<T>`
     // becoming a special case through asserting unique ownership over the pointee:
-    // - https://github.com/rust-lang/unsafe-code-guidelines/issues/258
-    // - https://github.com/rust-lang/unsafe-code-guidelines/issues/262
+    // - https://github.com/crablang/unsafe-code-guidelines/issues/258
+    // - https://github.com/crablang/unsafe-code-guidelines/issues/262
     // Below, the calls to `String::remove` and `String::insert[_str]` follow
     // code paths that would trigger undefined behavior in case `Unique<T>`
     // would ever assert semantic ownership over the pointee. Internally,

@@ -9,4 +9,4 @@ LL | fn foo(x: impl Fn(<S as T<'_>>::A) -> <S as T<'_>>::A) {}
 
 error: aborting due to previous error
 
-For more information about this error, try `rustc --explain E0582`.
+For more information about this error, try `crablangc --explain E0582`.

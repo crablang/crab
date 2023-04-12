@@ -1,5 +1,5 @@
-use rustc_span::Symbol;
-use rustc_target::spec::abi::Abi;
+use crablangc_span::Symbol;
+use crablangc_target::spec::abi::Abi;
 
 use crate::machine::SIGRTMAX;
 use crate::*;
@@ -220,7 +220,7 @@ fn getrandom<'tcx>(
 
     // The only supported flags are GRND_RANDOM and GRND_NONBLOCK,
     // neither of which have any effect on our current PRNG.
-    // See <https://github.com/rust-lang/rust/pull/79196> for a discussion of argument sizes.
+    // See <https://github.com/crablang/crablang/pull/79196> for a discussion of argument sizes.
     let _flags = this.read_scalar(flags)?.to_i32();
 
     this.gen_random(ptr, len)?;

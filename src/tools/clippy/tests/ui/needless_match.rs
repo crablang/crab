@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 #![warn(clippy::needless_match)]
 #![allow(clippy::manual_map)]
 #![allow(dead_code)]

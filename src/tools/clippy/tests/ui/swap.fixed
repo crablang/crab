@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 // aux-build: macro_rules.rs
 
 #![warn(clippy::all)]
@@ -109,7 +109,7 @@ fn distinct_slice() {
     std::mem::swap(&mut foo[0][1], &mut bar[1][0]);
 }
 
-#[rustfmt::skip]
+#[crablangfmt::skip]
 fn main() {
 
     let mut a = 42;

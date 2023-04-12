@@ -1,4 +1,4 @@
-// https://github.com/rust-lang/rust/issues/49208
+// https://github.com/crablang/crablang/issues/49208
 
 trait Foo {
     fn foo();

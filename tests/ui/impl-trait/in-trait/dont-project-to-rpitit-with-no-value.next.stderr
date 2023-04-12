@@ -4,7 +4,7 @@ warning: the feature `return_position_impl_trait_in_trait` is incomplete and may
 LL | #![feature(return_position_impl_trait_in_trait)]
    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
    |
-   = note: see issue #91611 <https://github.com/rust-lang/rust/issues/91611> for more information
+   = note: see issue #91611 <https://github.com/crablang/crablang/issues/91611> for more information
    = note: `#[warn(incomplete_features)]` on by default
 
 error[E0046]: not all trait items implemented, missing: `foo`
@@ -18,4 +18,4 @@ LL | impl MyTrait for i32 {
 
 error: aborting due to previous error; 1 warning emitted
 
-For more information about this error, try `rustc --explain E0046`.
+For more information about this error, try `crablangc --explain E0046`.

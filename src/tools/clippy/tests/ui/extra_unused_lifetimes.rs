@@ -93,7 +93,7 @@ mod issue6437 {
     }
 }
 
-// https://github.com/rust-lang/rust-clippy/pull/8737#pullrequestreview-951268213
+// https://github.com/crablang/crablang-clippy/pull/8737#pullrequestreview-951268213
 mod first_case {
     use serde::de::Visitor;
     pub trait Expected {
@@ -108,7 +108,7 @@ mod first_case {
     }
 }
 
-// https://github.com/rust-lang/rust-clippy/pull/8737#pullrequestreview-951268213
+// https://github.com/crablang/crablang-clippy/pull/8737#pullrequestreview-951268213
 mod second_case {
     pub trait Source {
         fn hey();

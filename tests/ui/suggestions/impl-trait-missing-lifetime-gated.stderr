@@ -169,4 +169,4 @@ LL |     fn g<'a>(mut x: impl Foo<'a, ()>) -> Option<&()> { x.next() }
 error: aborting due to 14 previous errors
 
 Some errors have detailed explanations: E0106, E0658.
-For more information about an error, try `rustc --explain E0106`.
+For more information about an error, try `crablangc --explain E0106`.

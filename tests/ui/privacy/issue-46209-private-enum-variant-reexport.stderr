@@ -48,4 +48,4 @@ LL |     pub use self::Crewman::*;
 
 error: aborting due to 5 previous errors
 
-For more information about this error, try `rustc --explain E0364`.
+For more information about this error, try `crablangc --explain E0364`.

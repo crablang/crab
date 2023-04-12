@@ -1,7 +1,7 @@
 #![feature(intrinsics)]
 
 // Directly call intrinsic to avoid debug assertions in libstd
-extern "rust-intrinsic" {
+extern "crablang-intrinsic" {
     fn copy_nonoverlapping<T>(src: *const T, dst: *mut T, count: usize);
 }
 

@@ -1,0 +1,29 @@
+[package]
+name = "crablangc_resolve"
+version = "0.0.0"
+edition = "2021"
+
+[lib]
+
+[dependencies]
+bitflags = "1.2.1"
+pulldown-cmark = { version = "0.9.2", default-features = false }
+crablangc_arena = { path = "../crablangc_arena" }
+crablangc_ast = { path = "../crablangc_ast" }
+crablangc_ast_pretty = { path = "../crablangc_ast_pretty" }
+crablangc_attr = { path = "../crablangc_attr" }
+crablangc_data_structures = { path = "../crablangc_data_structures" }
+crablangc_errors = { path = "../crablangc_errors" }
+crablangc_expand = { path = "../crablangc_expand" }
+crablangc_feature = { path = "../crablangc_feature" }
+crablangc_hir = { path = "../crablangc_hir" }
+crablangc_index = { path = "../crablangc_index" }
+crablangc_macros = { path = "../crablangc_macros" }
+crablangc_metadata = { path = "../crablangc_metadata" }
+crablangc_middle = { path = "../crablangc_middle" }
+crablangc_query_system = { path = "../crablangc_query_system" }
+crablangc_session = { path = "../crablangc_session" }
+crablangc_span = { path = "../crablangc_span" }
+smallvec = { version = "1.8.1", features = ["union", "may_dangle"] }
+thin-vec = "0.2.12"
+tracing = "0.1"

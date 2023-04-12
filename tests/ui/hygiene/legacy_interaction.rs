@@ -8,14 +8,14 @@
 
 extern crate legacy_interaction;
 // ^ defines
-// ```rust
+// ```crablang
 //  macro_rules! m {
 //     () => {
 //         fn f() {} // (1)
 //         g() // (2)
 //     }
 // }
-// ```rust
+// ```crablang
 
 mod def_site {
     // Unless this macro opts out of hygiene, it should resolve the same wherever it is invoked.

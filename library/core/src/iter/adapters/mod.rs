@@ -26,7 +26,7 @@ mod take;
 mod take_while;
 mod zip;
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub use self::{
     chain::Chain, cycle::Cycle, enumerate::Enumerate, filter::Filter, filter_map::FilterMap,
     flatten::FlatMap, fuse::Fuse, inspect::Inspect, map::Map, peekable::Peekable, rev::Rev,
@@ -57,11 +57,11 @@ pub use self::intersperse::{Intersperse, IntersperseWith};
 #[stable(feature = "iter_map_while", since = "1.57.0")]
 pub use self::map_while::MapWhile;
 
-#[unstable(feature = "trusted_random_access", issue = "none")]
-pub use self::zip::TrustedRandomAccess;
+#[unstable(feature = "tcrablanged_random_access", issue = "none")]
+pub use self::zip::TcrablangedRandomAccess;
 
-#[unstable(feature = "trusted_random_access", issue = "none")]
-pub use self::zip::TrustedRandomAccessNoCoerce;
+#[unstable(feature = "tcrablanged_random_access", issue = "none")]
+pub use self::zip::TcrablangedRandomAccessNoCoerce;
 
 #[stable(feature = "iter_zip", since = "1.59.0")]
 pub use self::zip::zip;
@@ -106,7 +106,7 @@ pub use self::zip::zip;
 /// [`as_inner`]: SourceIter::as_inner
 #[unstable(issue = "none", feature = "inplace_iteration")]
 #[doc(hidden)]
-#[rustc_specialization_trait]
+#[crablangc_specialization_trait]
 pub unsafe trait SourceIter {
     /// A source stage in an iterator pipeline.
     type Source;

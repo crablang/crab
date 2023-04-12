@@ -14,23 +14,23 @@ LL | use clippy::a;
    |
    = help: consider adding `extern crate clippy` to use the `clippy` crate
 
-error[E0433]: failed to resolve: maybe a missing crate `rustdoc`?
+error[E0433]: failed to resolve: maybe a missing crate `crablangdoc`?
   --> $DIR/tool-mod-child.rs:5:5
    |
-LL | use rustdoc::a::b;
-   |     ^^^^^^^ maybe a missing crate `rustdoc`?
+LL | use crablangdoc::a::b;
+   |     ^^^^^^^ maybe a missing crate `crablangdoc`?
    |
-   = help: consider adding `extern crate rustdoc` to use the `rustdoc` crate
+   = help: consider adding `extern crate crablangdoc` to use the `crablangdoc` crate
 
-error[E0432]: unresolved import `rustdoc`
+error[E0432]: unresolved import `crablangdoc`
   --> $DIR/tool-mod-child.rs:4:5
    |
-LL | use rustdoc::a;
-   |     ^^^^^^^ maybe a missing crate `rustdoc`?
+LL | use crablangdoc::a;
+   |     ^^^^^^^ maybe a missing crate `crablangdoc`?
    |
-   = help: consider adding `extern crate rustdoc` to use the `rustdoc` crate
+   = help: consider adding `extern crate crablangdoc` to use the `crablangdoc` crate
 
 error: aborting due to 4 previous errors
 
 Some errors have detailed explanations: E0432, E0433.
-For more information about an error, try `rustc --explain E0432`.
+For more information about an error, try `crablangc --explain E0432`.

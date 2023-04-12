@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <installer-gui-script minSpecVersion="2">
-    <title>The Rust Compiler</title>
+    <title>The CrabLang Compiler</title>
     <license file="LICENSE.txt" mime-type="text/plain"/>
-    <pkg-ref id="org.rust-lang.rust"/>
+    <pkg-ref id="org.crablang.crablang"/>
     <options customize="always" require-scripts="false" hostArchitectures="i386,x86_64"/>
     <domains enable_anywhere="false" enable_currentUserHome="false" enable_localSystem="true" />
     <volume-check>
@@ -12,12 +12,12 @@
     </volume-check>
     <choices-outline>
       <line choice="install">
-      <line choice="rustc"/>
-      <line choice="rust-std"/>
+      <line choice="crablangc"/>
+      <line choice="crablang-std"/>
       <line choice="cargo"/>
-      <!-- tool-rust-docs-start -->
-      <line choice="rust-docs"/>
-      <!-- tool-rust-docs-end -->
+      <!-- tool-crablang-docs-start -->
+      <line choice="crablang-docs"/>
+      <!-- tool-crablang-docs-end -->
       </line>
       <line choice="uninstall" />
     </choices-outline>
@@ -27,51 +27,51 @@
     the installer uses to traverse the options after one is toggled.
       -->
     <choice id="install" visible="true"
-        title="Install Rust" description="Install the Rust compiler, package manager and documentation."
+        title="Install CrabLang" description="Install the CrabLang compiler, package manager and documentation."
         customLocation="/usr/local"
         selected="!choices.uninstall.selected"
         />
     <choice id="uninstall" visible="true"
-        title="Uninstall Rust" description="Select this option to uninstall an existing Rust installation."
+        title="Uninstall CrabLang" description="Select this option to uninstall an existing CrabLang installation."
         customLocation="/usr/local"
-        selected="!(choices.install.selected || choices.rustc.selected || choices.cargo.selected || choices['rust-docs'].selected)"
+        selected="!(choices.install.selected || choices.crablangc.selected || choices.cargo.selected || choices['crablang-docs'].selected)"
         start_selected="false"
         >
-        <pkg-ref id="org.rust-lang.uninstall"/>
+        <pkg-ref id="org.crablang.uninstall"/>
     </choice>
-    <choice id="rustc" visible="true"
-        title="Compiler" description="rustc, the Rust compiler, and rustdoc, the API documentation tool."
-        selected="(!choices.uninstall.selected &amp;&amp; choices.rustc.selected) || (choices.uninstall.selected &amp;&amp; choices.install.selected)"
+    <choice id="crablangc" visible="true"
+        title="Compiler" description="crablangc, the CrabLang compiler, and crablangdoc, the API documentation tool."
+        selected="(!choices.uninstall.selected &amp;&amp; choices.crablangc.selected) || (choices.uninstall.selected &amp;&amp; choices.install.selected)"
         >
-        <pkg-ref id="org.rust-lang.rustc"/>
+        <pkg-ref id="org.crablang.crablangc"/>
     </choice>
     <choice id="cargo" visible="true"
-        title="Cargo" description="cargo, the Rust package manager."
+        title="Cargo" description="cargo, the CrabLang package manager."
         selected="(!choices.uninstall.selected &amp;&amp; choices.cargo.selected) || (choices.uninstall.selected &amp;&amp; choices.install.selected)"
         >
-        <pkg-ref id="org.rust-lang.cargo"/>
+        <pkg-ref id="org.crablang.cargo"/>
     </choice>
-    <choice id="rust-std" visible="true"
-        title="Standard Library" description="The Rust standard library."
-        selected="(!choices.uninstall.selected &amp;&amp; choices['rust-std'].selected) || (choices.uninstall.selected &amp;&amp; choices.install.selected)"
+    <choice id="crablang-std" visible="true"
+        title="Standard Library" description="The CrabLang standard library."
+        selected="(!choices.uninstall.selected &amp;&amp; choices['crablang-std'].selected) || (choices.uninstall.selected &amp;&amp; choices.install.selected)"
         >
-        <pkg-ref id="org.rust-lang.rust-std"/>
+        <pkg-ref id="org.crablang.crablang-std"/>
     </choice>
-    <!-- tool-rust-docs-start -->
-    <choice id="rust-docs" visible="true"
+    <!-- tool-crablang-docs-start -->
+    <choice id="crablang-docs" visible="true"
         title="Documentation" description="HTML documentation."
-        selected="(!choices.uninstall.selected &amp;&amp; choices['rust-docs'].selected) || (choices.uninstall.selected &amp;&amp; choices.install.selected)"
+        selected="(!choices.uninstall.selected &amp;&amp; choices['crablang-docs'].selected) || (choices.uninstall.selected &amp;&amp; choices.install.selected)"
         >
-        <pkg-ref id="org.rust-lang.rust-docs"/>
+        <pkg-ref id="org.crablang.crablang-docs"/>
     </choice>
-    <!-- tool-rust-docs-end -->
-    <pkg-ref id="org.rust-lang.rustc" version="0" onConclusion="none">rustc.pkg</pkg-ref>
-    <pkg-ref id="org.rust-lang.cargo" version="0" onConclusion="none">cargo.pkg</pkg-ref>
-    <!-- tool-rust-docs-start -->
-    <pkg-ref id="org.rust-lang.rust-docs" version="0" onConclusion="none">rust-docs.pkg</pkg-ref>
-    <!-- tool-rust-docs-end -->
-    <pkg-ref id="org.rust-lang.rust-std" version="0" onConclusion="none">rust-std.pkg</pkg-ref>
-    <pkg-ref id="org.rust-lang.uninstall" version="0" onConclusion="none">uninstall.pkg</pkg-ref>
-    <background file="rust-logo.png" mime-type="image/png"
+    <!-- tool-crablang-docs-end -->
+    <pkg-ref id="org.crablang.crablangc" version="0" onConclusion="none">crablangc.pkg</pkg-ref>
+    <pkg-ref id="org.crablang.cargo" version="0" onConclusion="none">cargo.pkg</pkg-ref>
+    <!-- tool-crablang-docs-start -->
+    <pkg-ref id="org.crablang.crablang-docs" version="0" onConclusion="none">crablang-docs.pkg</pkg-ref>
+    <!-- tool-crablang-docs-end -->
+    <pkg-ref id="org.crablang.crablang-std" version="0" onConclusion="none">crablang-std.pkg</pkg-ref>
+    <pkg-ref id="org.crablang.uninstall" version="0" onConclusion="none">uninstall.pkg</pkg-ref>
+    <background file="crablang-logo.png" mime-type="image/png"
                 alignment="bottomleft"/>
 </installer-gui-script>

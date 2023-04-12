@@ -8,7 +8,7 @@ LL |         Self::foo(None)
    |
    = note: expected struct `Box<Option<S>>`
                 found enum `Option<_>`
-   = note: for more on the distinction between the stack and the heap, read https://doc.rust-lang.org/book/ch15-01-box.html, https://doc.rust-lang.org/rust-by-example/std/box.html, and https://doc.rust-lang.org/std/boxed/index.html
+   = note: for more on the distinction between the stack and the heap, read https://doc.crablang.org/book/ch15-01-box.html, https://doc.crablang.org/crablang-by-example/std/box.html, and https://doc.crablang.org/std/boxed/index.html
 note: associated function defined here
   --> $DIR/issue-90213-expected-boxfuture-self-ice.rs:7:8
    |
@@ -21,4 +21,4 @@ LL |         Self::foo(Box::new(None))
 
 error: aborting due to previous error
 
-For more information about this error, try `rustc --explain E0308`.
+For more information about this error, try `crablangc --explain E0308`.

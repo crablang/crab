@@ -18,7 +18,7 @@
 // [cfail3]compile-flags: -Zincremental-ignore-spans
 
 #![allow(warnings)]
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 #![feature(stmt_expr_attributes)]
 #![crate_type="rlib"]
 
@@ -29,10 +29,10 @@
 enum     EnumVisibility { A }
 
 #[cfg(not(any(cfail1,cfail4)))]
-#[rustc_clean(cfg="cfail2")]
-#[rustc_clean(cfg="cfail3")]
-#[rustc_clean(cfg="cfail5", except="hir_owner,hir_owner_nodes")]
-#[rustc_clean(cfg="cfail6")]
+#[crablangc_clean(cfg="cfail2")]
+#[crablangc_clean(cfg="cfail3")]
+#[crablangc_clean(cfg="cfail5", except="hir_owner,hir_owner_nodes")]
+#[crablangc_clean(cfg="cfail6")]
 pub enum EnumVisibility { A }
 
 
@@ -45,10 +45,10 @@ enum EnumChangeNameCStyleVariant {
 }
 
 #[cfg(not(any(cfail1,cfail4)))]
-#[rustc_clean(cfg="cfail2", except="hir_owner,hir_owner_nodes,type_of")]
-#[rustc_clean(cfg="cfail3")]
-#[rustc_clean(cfg="cfail5", except="hir_owner,hir_owner_nodes,type_of")]
-#[rustc_clean(cfg="cfail6")]
+#[crablangc_clean(cfg="cfail2", except="hir_owner,hir_owner_nodes,type_of")]
+#[crablangc_clean(cfg="cfail3")]
+#[crablangc_clean(cfg="cfail5", except="hir_owner,hir_owner_nodes,type_of")]
+#[crablangc_clean(cfg="cfail6")]
 enum EnumChangeNameCStyleVariant {
     Variant1,
     Variant2Changed,
@@ -64,10 +64,10 @@ enum EnumChangeNameTupleStyleVariant {
 }
 
 #[cfg(not(any(cfail1,cfail4)))]
-#[rustc_clean(cfg="cfail2", except="hir_owner,hir_owner_nodes,type_of")]
-#[rustc_clean(cfg="cfail3")]
-#[rustc_clean(cfg="cfail5", except="hir_owner,hir_owner_nodes,type_of")]
-#[rustc_clean(cfg="cfail6")]
+#[crablangc_clean(cfg="cfail2", except="hir_owner,hir_owner_nodes,type_of")]
+#[crablangc_clean(cfg="cfail3")]
+#[crablangc_clean(cfg="cfail5", except="hir_owner,hir_owner_nodes,type_of")]
+#[crablangc_clean(cfg="cfail6")]
 enum EnumChangeNameTupleStyleVariant {
     Variant1,
     Variant2Changed(u32, f32),
@@ -83,10 +83,10 @@ enum EnumChangeNameStructStyleVariant {
 }
 
 #[cfg(not(any(cfail1,cfail4)))]
-#[rustc_clean(cfg="cfail2", except="hir_owner,hir_owner_nodes,type_of")]
-#[rustc_clean(cfg="cfail3")]
-#[rustc_clean(cfg="cfail5", except="hir_owner,hir_owner_nodes,type_of")]
-#[rustc_clean(cfg="cfail6")]
+#[crablangc_clean(cfg="cfail2", except="hir_owner,hir_owner_nodes,type_of")]
+#[crablangc_clean(cfg="cfail3")]
+#[crablangc_clean(cfg="cfail5", except="hir_owner,hir_owner_nodes,type_of")]
+#[crablangc_clean(cfg="cfail6")]
 enum EnumChangeNameStructStyleVariant {
     Variant1,
     Variant2Changed { a: u32, b: f32 },
@@ -102,10 +102,10 @@ enum EnumChangeValueCStyleVariant0 {
 }
 
 #[cfg(not(any(cfail1,cfail4)))]
-#[rustc_clean(cfg="cfail2", except="hir_owner_nodes")]
-#[rustc_clean(cfg="cfail3")]
-#[rustc_clean(cfg="cfail5", except="hir_owner_nodes")]
-#[rustc_clean(cfg="cfail6")]
+#[crablangc_clean(cfg="cfail2", except="hir_owner_nodes")]
+#[crablangc_clean(cfg="cfail3")]
+#[crablangc_clean(cfg="cfail5", except="hir_owner_nodes")]
+#[crablangc_clean(cfg="cfail6")]
 enum EnumChangeValueCStyleVariant0 {
     Variant1,
     Variant2 = 22,
@@ -118,10 +118,10 @@ enum EnumChangeValueCStyleVariant1 {
 }
 
 #[cfg(not(any(cfail1,cfail4)))]
-#[rustc_clean(cfg="cfail2", except="hir_owner,hir_owner_nodes,type_of")]
-#[rustc_clean(cfg="cfail3")]
-#[rustc_clean(cfg="cfail5", except="hir_owner,hir_owner_nodes,type_of")]
-#[rustc_clean(cfg="cfail6")]
+#[crablangc_clean(cfg="cfail2", except="hir_owner,hir_owner_nodes,type_of")]
+#[crablangc_clean(cfg="cfail3")]
+#[crablangc_clean(cfg="cfail5", except="hir_owner,hir_owner_nodes,type_of")]
+#[crablangc_clean(cfg="cfail6")]
 enum EnumChangeValueCStyleVariant1 {
     Variant1,
     Variant2 = 11,
@@ -136,10 +136,10 @@ enum EnumAddCStyleVariant {
 }
 
 #[cfg(not(any(cfail1,cfail4)))]
-#[rustc_clean(cfg="cfail2", except="hir_owner,hir_owner_nodes,type_of")]
-#[rustc_clean(cfg="cfail3")]
-#[rustc_clean(cfg="cfail5", except="hir_owner,hir_owner_nodes,type_of")]
-#[rustc_clean(cfg="cfail6")]
+#[crablangc_clean(cfg="cfail2", except="hir_owner,hir_owner_nodes,type_of")]
+#[crablangc_clean(cfg="cfail3")]
+#[crablangc_clean(cfg="cfail5", except="hir_owner,hir_owner_nodes,type_of")]
+#[crablangc_clean(cfg="cfail6")]
 enum EnumAddCStyleVariant {
     Variant1,
     Variant2,
@@ -155,10 +155,10 @@ enum EnumRemoveCStyleVariant {
 }
 
 #[cfg(not(any(cfail1,cfail4)))]
-#[rustc_clean(cfg="cfail2", except="hir_owner,hir_owner_nodes,type_of")]
-#[rustc_clean(cfg="cfail3")]
-#[rustc_clean(cfg="cfail5", except="hir_owner,hir_owner_nodes,type_of")]
-#[rustc_clean(cfg="cfail6")]
+#[crablangc_clean(cfg="cfail2", except="hir_owner,hir_owner_nodes,type_of")]
+#[crablangc_clean(cfg="cfail3")]
+#[crablangc_clean(cfg="cfail5", except="hir_owner,hir_owner_nodes,type_of")]
+#[crablangc_clean(cfg="cfail6")]
 enum EnumRemoveCStyleVariant {
     Variant1,
 }
@@ -172,10 +172,10 @@ enum EnumAddTupleStyleVariant {
 }
 
 #[cfg(not(any(cfail1,cfail4)))]
-#[rustc_clean(cfg="cfail2", except="hir_owner,hir_owner_nodes,type_of")]
-#[rustc_clean(cfg="cfail3")]
-#[rustc_clean(cfg="cfail5", except="hir_owner,hir_owner_nodes,type_of")]
-#[rustc_clean(cfg="cfail6")]
+#[crablangc_clean(cfg="cfail2", except="hir_owner,hir_owner_nodes,type_of")]
+#[crablangc_clean(cfg="cfail3")]
+#[crablangc_clean(cfg="cfail5", except="hir_owner,hir_owner_nodes,type_of")]
+#[crablangc_clean(cfg="cfail6")]
 enum EnumAddTupleStyleVariant {
     Variant1,
     Variant2(u32, f32),
@@ -191,10 +191,10 @@ enum EnumRemoveTupleStyleVariant {
 }
 
 #[cfg(not(any(cfail1,cfail4)))]
-#[rustc_clean(cfg="cfail2", except="hir_owner,hir_owner_nodes,type_of")]
-#[rustc_clean(cfg="cfail3")]
-#[rustc_clean(cfg="cfail5", except="hir_owner,hir_owner_nodes,type_of")]
-#[rustc_clean(cfg="cfail6")]
+#[crablangc_clean(cfg="cfail2", except="hir_owner,hir_owner_nodes,type_of")]
+#[crablangc_clean(cfg="cfail3")]
+#[crablangc_clean(cfg="cfail5", except="hir_owner,hir_owner_nodes,type_of")]
+#[crablangc_clean(cfg="cfail6")]
 enum EnumRemoveTupleStyleVariant {
     Variant1,
 }
@@ -208,10 +208,10 @@ enum EnumAddStructStyleVariant {
 }
 
 #[cfg(not(any(cfail1,cfail4)))]
-#[rustc_clean(cfg="cfail2", except="hir_owner,hir_owner_nodes,type_of")]
-#[rustc_clean(cfg="cfail3")]
-#[rustc_clean(cfg="cfail5", except="hir_owner,hir_owner_nodes,type_of")]
-#[rustc_clean(cfg="cfail6")]
+#[crablangc_clean(cfg="cfail2", except="hir_owner,hir_owner_nodes,type_of")]
+#[crablangc_clean(cfg="cfail3")]
+#[crablangc_clean(cfg="cfail5", except="hir_owner,hir_owner_nodes,type_of")]
+#[crablangc_clean(cfg="cfail6")]
 enum EnumAddStructStyleVariant {
     Variant1,
     Variant2 { a: u32, b: f32 },
@@ -227,10 +227,10 @@ enum EnumRemoveStructStyleVariant {
 }
 
 #[cfg(not(any(cfail1,cfail4)))]
-#[rustc_clean(cfg="cfail2", except="hir_owner,hir_owner_nodes,type_of")]
-#[rustc_clean(cfg="cfail3")]
-#[rustc_clean(cfg="cfail5", except="hir_owner,hir_owner_nodes,type_of")]
-#[rustc_clean(cfg="cfail6")]
+#[crablangc_clean(cfg="cfail2", except="hir_owner,hir_owner_nodes,type_of")]
+#[crablangc_clean(cfg="cfail3")]
+#[crablangc_clean(cfg="cfail5", except="hir_owner,hir_owner_nodes,type_of")]
+#[crablangc_clean(cfg="cfail6")]
 enum EnumRemoveStructStyleVariant {
     Variant1,
 }
@@ -244,10 +244,10 @@ enum EnumChangeFieldTypeTupleStyleVariant {
 }
 
 #[cfg(not(any(cfail1,cfail4)))]
-#[rustc_clean(cfg="cfail2", except="hir_owner,hir_owner_nodes")]
-#[rustc_clean(cfg="cfail3")]
-#[rustc_clean(cfg="cfail5", except="hir_owner,hir_owner_nodes")]
-#[rustc_clean(cfg="cfail6")]
+#[crablangc_clean(cfg="cfail2", except="hir_owner,hir_owner_nodes")]
+#[crablangc_clean(cfg="cfail3")]
+#[crablangc_clean(cfg="cfail5", except="hir_owner,hir_owner_nodes")]
+#[crablangc_clean(cfg="cfail6")]
 enum EnumChangeFieldTypeTupleStyleVariant {
     Variant1(u32,
         u64),
@@ -263,10 +263,10 @@ enum EnumChangeFieldTypeStructStyleVariant {
 }
 
 #[cfg(not(any(cfail1,cfail4)))]
-#[rustc_clean(cfg="cfail2", except="hir_owner,hir_owner_nodes")]
-#[rustc_clean(cfg="cfail3")]
-#[rustc_clean(cfg="cfail5", except="hir_owner,hir_owner_nodes")]
-#[rustc_clean(cfg="cfail6")]
+#[crablangc_clean(cfg="cfail2", except="hir_owner,hir_owner_nodes")]
+#[crablangc_clean(cfg="cfail3")]
+#[crablangc_clean(cfg="cfail5", except="hir_owner,hir_owner_nodes")]
+#[crablangc_clean(cfg="cfail6")]
 enum EnumChangeFieldTypeStructStyleVariant {
     Variant1,
     Variant2 {
@@ -284,10 +284,10 @@ enum EnumChangeFieldNameStructStyleVariant {
 }
 
 #[cfg(not(any(cfail1,cfail4)))]
-#[rustc_clean(cfg="cfail2", except="hir_owner,hir_owner_nodes,type_of")]
-#[rustc_clean(cfg="cfail3")]
-#[rustc_clean(cfg="cfail5", except="hir_owner,hir_owner_nodes,type_of")]
-#[rustc_clean(cfg="cfail6")]
+#[crablangc_clean(cfg="cfail2", except="hir_owner,hir_owner_nodes,type_of")]
+#[crablangc_clean(cfg="cfail3")]
+#[crablangc_clean(cfg="cfail5", except="hir_owner,hir_owner_nodes,type_of")]
+#[crablangc_clean(cfg="cfail6")]
 enum EnumChangeFieldNameStructStyleVariant {
     Variant1 { a: u32, c: u32 },
 }
@@ -301,10 +301,10 @@ enum EnumChangeOrderTupleStyleVariant {
 }
 
 #[cfg(not(any(cfail1,cfail4)))]
-#[rustc_clean(cfg="cfail2", except="hir_owner,hir_owner_nodes")]
-#[rustc_clean(cfg="cfail3")]
-#[rustc_clean(cfg="cfail5", except="hir_owner,hir_owner_nodes")]
-#[rustc_clean(cfg="cfail6")]
+#[crablangc_clean(cfg="cfail2", except="hir_owner,hir_owner_nodes")]
+#[crablangc_clean(cfg="cfail3")]
+#[crablangc_clean(cfg="cfail5", except="hir_owner,hir_owner_nodes")]
+#[crablangc_clean(cfg="cfail6")]
 enum EnumChangeOrderTupleStyleVariant {
     Variant1(
         u64,
@@ -320,10 +320,10 @@ enum EnumChangeFieldOrderStructStyleVariant {
 }
 
 #[cfg(not(any(cfail1,cfail4)))]
-#[rustc_clean(cfg="cfail2", except="hir_owner,hir_owner_nodes,type_of")]
-#[rustc_clean(cfg="cfail3")]
-#[rustc_clean(cfg="cfail5", except="hir_owner,hir_owner_nodes,type_of")]
-#[rustc_clean(cfg="cfail6")]
+#[crablangc_clean(cfg="cfail2", except="hir_owner,hir_owner_nodes,type_of")]
+#[crablangc_clean(cfg="cfail3")]
+#[crablangc_clean(cfg="cfail5", except="hir_owner,hir_owner_nodes,type_of")]
+#[crablangc_clean(cfg="cfail6")]
 enum EnumChangeFieldOrderStructStyleVariant {
     Variant1 { b: f32, a: u32 },
 }
@@ -337,10 +337,10 @@ enum EnumAddFieldTupleStyleVariant {
 }
 
 #[cfg(not(any(cfail1,cfail4)))]
-#[rustc_clean(cfg="cfail2", except="hir_owner,hir_owner_nodes,type_of")]
-#[rustc_clean(cfg="cfail3")]
-#[rustc_clean(cfg="cfail5", except="hir_owner,hir_owner_nodes,type_of")]
-#[rustc_clean(cfg="cfail6")]
+#[crablangc_clean(cfg="cfail2", except="hir_owner,hir_owner_nodes,type_of")]
+#[crablangc_clean(cfg="cfail3")]
+#[crablangc_clean(cfg="cfail5", except="hir_owner,hir_owner_nodes,type_of")]
+#[crablangc_clean(cfg="cfail6")]
 enum EnumAddFieldTupleStyleVariant {
     Variant1(u32, u32, u32),
 }
@@ -354,10 +354,10 @@ enum EnumAddFieldStructStyleVariant {
 }
 
 #[cfg(not(any(cfail1,cfail4)))]
-#[rustc_clean(cfg="cfail2", except="hir_owner,hir_owner_nodes,type_of")]
-#[rustc_clean(cfg="cfail3")]
-#[rustc_clean(cfg="cfail5", except="hir_owner,hir_owner_nodes,type_of")]
-#[rustc_clean(cfg="cfail6")]
+#[crablangc_clean(cfg="cfail2", except="hir_owner,hir_owner_nodes,type_of")]
+#[crablangc_clean(cfg="cfail3")]
+#[crablangc_clean(cfg="cfail5", except="hir_owner,hir_owner_nodes,type_of")]
+#[crablangc_clean(cfg="cfail6")]
 enum EnumAddFieldStructStyleVariant {
     Variant1 { a: u32, b: u32, c: u32 },
 }
@@ -372,10 +372,10 @@ enum EnumAddMustUse {
 }
 
 #[cfg(not(any(cfail1,cfail4)))]
-#[rustc_clean(cfg="cfail2")]
-#[rustc_clean(cfg="cfail3")]
-#[rustc_clean(cfg="cfail5")]
-#[rustc_clean(cfg="cfail6")]
+#[crablangc_clean(cfg="cfail2")]
+#[crablangc_clean(cfg="cfail3")]
+#[crablangc_clean(cfg="cfail5")]
+#[crablangc_clean(cfg="cfail6")]
 #[must_use]
 enum EnumAddMustUse {
     Variant1,
@@ -392,10 +392,10 @@ enum EnumAddReprC {
 }
 
 #[cfg(not(any(cfail1,cfail4)))]
-#[rustc_clean(cfg="cfail2", except="type_of")]
-#[rustc_clean(cfg="cfail3")]
-#[rustc_clean(cfg="cfail5", except="type_of")]
-#[rustc_clean(cfg="cfail6")]
+#[crablangc_clean(cfg="cfail2", except="type_of")]
+#[crablangc_clean(cfg="cfail3")]
+#[crablangc_clean(cfg="cfail5", except="type_of")]
+#[crablangc_clean(cfg="cfail6")]
 #[repr(C)]
 enum EnumAddReprC {
     Variant1,
@@ -411,10 +411,10 @@ enum EnumChangeNameOfTypeParameter<S> {
 }
 
 #[cfg(not(any(cfail1,cfail4)))]
-#[rustc_clean(cfg="cfail2", except="hir_owner,hir_owner_nodes,generics_of,predicates_of,type_of")]
-#[rustc_clean(cfg="cfail3")]
-#[rustc_clean(cfg="cfail5", except="hir_owner,hir_owner_nodes,generics_of,predicates_of,type_of")]
-#[rustc_clean(cfg="cfail6")]
+#[crablangc_clean(cfg="cfail2", except="hir_owner,hir_owner_nodes,generics_of,predicates_of,type_of")]
+#[crablangc_clean(cfg="cfail3")]
+#[crablangc_clean(cfg="cfail5", except="hir_owner,hir_owner_nodes,generics_of,predicates_of,type_of")]
+#[crablangc_clean(cfg="cfail6")]
 enum EnumChangeNameOfTypeParameter<T> {
     Variant1(T),
 }
@@ -429,10 +429,10 @@ enum EnumAddTypeParameter<S> {
 }
 
 #[cfg(not(any(cfail1,cfail4)))]
-#[rustc_clean(cfg="cfail2", except="hir_owner,hir_owner_nodes,generics_of,predicates_of,type_of")]
-#[rustc_clean(cfg="cfail3")]
-#[rustc_clean(cfg="cfail5", except="hir_owner,hir_owner_nodes,generics_of,predicates_of,type_of")]
-#[rustc_clean(cfg="cfail6")]
+#[crablangc_clean(cfg="cfail2", except="hir_owner,hir_owner_nodes,generics_of,predicates_of,type_of")]
+#[crablangc_clean(cfg="cfail3")]
+#[crablangc_clean(cfg="cfail5", except="hir_owner,hir_owner_nodes,generics_of,predicates_of,type_of")]
+#[crablangc_clean(cfg="cfail6")]
 enum EnumAddTypeParameter<S, T> {
     Variant1(S),
     Variant2(T),
@@ -447,10 +447,10 @@ enum EnumChangeNameOfLifetimeParameter<'a> {
 }
 
 #[cfg(not(any(cfail1,cfail4)))]
-#[rustc_clean(cfg="cfail2", except="hir_owner,hir_owner_nodes,generics_of,type_of")]
-#[rustc_clean(cfg="cfail3")]
-#[rustc_clean(cfg="cfail5", except="hir_owner,hir_owner_nodes,generics_of,type_of")]
-#[rustc_clean(cfg="cfail6")]
+#[crablangc_clean(cfg="cfail2", except="hir_owner,hir_owner_nodes,generics_of,type_of")]
+#[crablangc_clean(cfg="cfail3")]
+#[crablangc_clean(cfg="cfail5", except="hir_owner,hir_owner_nodes,generics_of,type_of")]
+#[crablangc_clean(cfg="cfail6")]
 enum EnumChangeNameOfLifetimeParameter<'b> {
     Variant1(&'b u32),
 }
@@ -465,10 +465,10 @@ enum EnumAddLifetimeParameter<'a> {
 }
 
 #[cfg(not(any(cfail1,cfail4)))]
-#[rustc_clean(cfg="cfail2", except="hir_owner,hir_owner_nodes,generics_of,type_of")]
-#[rustc_clean(cfg="cfail3")]
-#[rustc_clean(cfg="cfail5", except="hir_owner,hir_owner_nodes,generics_of,type_of")]
-#[rustc_clean(cfg="cfail6")]
+#[crablangc_clean(cfg="cfail2", except="hir_owner,hir_owner_nodes,generics_of,type_of")]
+#[crablangc_clean(cfg="cfail3")]
+#[crablangc_clean(cfg="cfail5", except="hir_owner,hir_owner_nodes,generics_of,type_of")]
+#[crablangc_clean(cfg="cfail6")]
 enum EnumAddLifetimeParameter<'a, 'b> {
     Variant1(&'a u32),
     Variant2(&'b u32),
@@ -484,10 +484,10 @@ enum EnumAddLifetimeParameterBound<'a, 'b> {
 }
 
 #[cfg(not(any(cfail1,cfail4)))]
-#[rustc_clean(cfg="cfail2", except="hir_owner,hir_owner_nodes,predicates_of")]
-#[rustc_clean(cfg="cfail3")]
-#[rustc_clean(cfg="cfail5", except="hir_owner,hir_owner_nodes,predicates_of")]
-#[rustc_clean(cfg="cfail6")]
+#[crablangc_clean(cfg="cfail2", except="hir_owner,hir_owner_nodes,predicates_of")]
+#[crablangc_clean(cfg="cfail3")]
+#[crablangc_clean(cfg="cfail5", except="hir_owner,hir_owner_nodes,predicates_of")]
+#[crablangc_clean(cfg="cfail6")]
 enum EnumAddLifetimeParameterBound<'a, 'b: 'a> {
     Variant1(&'a u32),
     Variant2(&'b u32),
@@ -501,10 +501,10 @@ enum EnumAddLifetimeBoundToParameter<'a, T> {
 }
 
 #[cfg(not(any(cfail1,cfail4)))]
-#[rustc_clean(cfg="cfail2", except="hir_owner,hir_owner_nodes,predicates_of")]
-#[rustc_clean(cfg="cfail3")]
-#[rustc_clean(cfg="cfail5", except="hir_owner,hir_owner_nodes,predicates_of")]
-#[rustc_clean(cfg="cfail6")]
+#[crablangc_clean(cfg="cfail2", except="hir_owner,hir_owner_nodes,predicates_of")]
+#[crablangc_clean(cfg="cfail3")]
+#[crablangc_clean(cfg="cfail5", except="hir_owner,hir_owner_nodes,predicates_of")]
+#[crablangc_clean(cfg="cfail6")]
 enum EnumAddLifetimeBoundToParameter<'a, T: 'a> {
     Variant1(T),
     Variant2(&'a u32),
@@ -519,10 +519,10 @@ enum EnumAddTraitBound<S> {
 }
 
 #[cfg(not(any(cfail1,cfail4)))]
-#[rustc_clean(cfg="cfail2", except="hir_owner,hir_owner_nodes,generics_of,predicates_of,type_of")]
-#[rustc_clean(cfg="cfail3")]
-#[rustc_clean(cfg="cfail5", except="hir_owner,hir_owner_nodes,generics_of,predicates_of,type_of")]
-#[rustc_clean(cfg="cfail6")]
+#[crablangc_clean(cfg="cfail2", except="hir_owner,hir_owner_nodes,generics_of,predicates_of,type_of")]
+#[crablangc_clean(cfg="cfail3")]
+#[crablangc_clean(cfg="cfail5", except="hir_owner,hir_owner_nodes,generics_of,predicates_of,type_of")]
+#[crablangc_clean(cfg="cfail6")]
 enum EnumAddTraitBound<T: Sync> {
     Variant1(T),
 }
@@ -537,10 +537,10 @@ enum EnumAddLifetimeParameterBoundWhere<'a, 'b> {
 }
 
 #[cfg(not(any(cfail1,cfail4)))]
-#[rustc_clean(cfg="cfail2", except="hir_owner,hir_owner_nodes,predicates_of")]
-#[rustc_clean(cfg="cfail3")]
-#[rustc_clean(cfg="cfail5", except="hir_owner,hir_owner_nodes,predicates_of")]
-#[rustc_clean(cfg="cfail6")]
+#[crablangc_clean(cfg="cfail2", except="hir_owner,hir_owner_nodes,predicates_of")]
+#[crablangc_clean(cfg="cfail3")]
+#[crablangc_clean(cfg="cfail5", except="hir_owner,hir_owner_nodes,predicates_of")]
+#[crablangc_clean(cfg="cfail6")]
 enum EnumAddLifetimeParameterBoundWhere<'a, 'b> where 'b: 'a {
     Variant1(&'a u32),
     Variant2(&'b u32),
@@ -556,10 +556,10 @@ enum EnumAddLifetimeBoundToParameterWhere<'a, T> {
 }
 
 #[cfg(not(any(cfail1,cfail4)))]
-#[rustc_clean(cfg="cfail2", except="hir_owner,hir_owner_nodes,predicates_of")]
-#[rustc_clean(cfg="cfail3")]
-#[rustc_clean(cfg="cfail5", except="hir_owner,hir_owner_nodes,predicates_of")]
-#[rustc_clean(cfg="cfail6")]
+#[crablangc_clean(cfg="cfail2", except="hir_owner,hir_owner_nodes,predicates_of")]
+#[crablangc_clean(cfg="cfail3")]
+#[crablangc_clean(cfg="cfail5", except="hir_owner,hir_owner_nodes,predicates_of")]
+#[crablangc_clean(cfg="cfail6")]
 enum EnumAddLifetimeBoundToParameterWhere<'a, T> where T: 'a {
     Variant1(T),
     Variant2(&'a u32),
@@ -574,10 +574,10 @@ enum EnumAddTraitBoundWhere<S> {
 }
 
 #[cfg(not(any(cfail1,cfail4)))]
-#[rustc_clean(cfg="cfail2", except="hir_owner,hir_owner_nodes,generics_of,predicates_of,type_of")]
-#[rustc_clean(cfg="cfail3")]
-#[rustc_clean(cfg="cfail5", except="hir_owner,hir_owner_nodes,generics_of,predicates_of,type_of")]
-#[rustc_clean(cfg="cfail6")]
+#[crablangc_clean(cfg="cfail2", except="hir_owner,hir_owner_nodes,generics_of,predicates_of,type_of")]
+#[crablangc_clean(cfg="cfail3")]
+#[crablangc_clean(cfg="cfail5", except="hir_owner,hir_owner_nodes,generics_of,predicates_of,type_of")]
+#[crablangc_clean(cfg="cfail6")]
 enum EnumAddTraitBoundWhere<T> where T: Sync {
     Variant1(T),
 }
@@ -592,10 +592,10 @@ enum EnumSwapUsageTypeParameters<A, B> {
 }
 
 #[cfg(not(any(cfail1,cfail4)))]
-#[rustc_clean(cfg="cfail2", except="hir_owner,hir_owner_nodes")]
-#[rustc_clean(cfg="cfail3")]
-#[rustc_clean(cfg="cfail5", except="hir_owner,hir_owner_nodes")]
-#[rustc_clean(cfg="cfail6")]
+#[crablangc_clean(cfg="cfail2", except="hir_owner,hir_owner_nodes")]
+#[crablangc_clean(cfg="cfail3")]
+#[crablangc_clean(cfg="cfail5", except="hir_owner,hir_owner_nodes")]
+#[crablangc_clean(cfg="cfail6")]
 enum EnumSwapUsageTypeParameters<A, B> {
     Variant1 {
         a: B
@@ -615,10 +615,10 @@ enum EnumSwapUsageLifetimeParameters<'a, 'b> {
 }
 
 #[cfg(not(any(cfail1,cfail4)))]
-#[rustc_clean(cfg="cfail2", except="hir_owner,hir_owner_nodes")]
-#[rustc_clean(cfg="cfail3")]
-#[rustc_clean(cfg="cfail5", except="hir_owner,hir_owner_nodes")]
-#[rustc_clean(cfg="cfail6")]
+#[crablangc_clean(cfg="cfail2", except="hir_owner,hir_owner_nodes")]
+#[crablangc_clean(cfg="cfail3")]
+#[crablangc_clean(cfg="cfail5", except="hir_owner,hir_owner_nodes")]
+#[crablangc_clean(cfg="cfail6")]
 enum EnumSwapUsageLifetimeParameters<'a, 'b> {
     Variant1 {
         a: &'b u32
@@ -642,10 +642,10 @@ mod change_field_type_indirectly_tuple_style {
     #[cfg(not(any(cfail1,cfail4)))]
     use super::ReferencedType2 as FieldType;
 
-    #[rustc_clean(cfg="cfail2", except="hir_owner,hir_owner_nodes")]
-    #[rustc_clean(cfg="cfail3")]
-    #[rustc_clean(cfg="cfail5", except="hir_owner,hir_owner_nodes")]
-    #[rustc_clean(cfg="cfail6")]
+    #[crablangc_clean(cfg="cfail2", except="hir_owner,hir_owner_nodes")]
+    #[crablangc_clean(cfg="cfail3")]
+    #[crablangc_clean(cfg="cfail5", except="hir_owner,hir_owner_nodes")]
+    #[crablangc_clean(cfg="cfail6")]
     enum TupleStyle {
         Variant1(
             FieldType
@@ -662,10 +662,10 @@ mod change_field_type_indirectly_struct_style {
     #[cfg(not(any(cfail1,cfail4)))]
     use super::ReferencedType2 as FieldType;
 
-    #[rustc_clean(cfg="cfail2", except="hir_owner,hir_owner_nodes")]
-    #[rustc_clean(cfg="cfail3")]
-    #[rustc_clean(cfg="cfail5", except="hir_owner,hir_owner_nodes")]
-    #[rustc_clean(cfg="cfail6")]
+    #[crablangc_clean(cfg="cfail2", except="hir_owner,hir_owner_nodes")]
+    #[crablangc_clean(cfg="cfail3")]
+    #[crablangc_clean(cfg="cfail5", except="hir_owner,hir_owner_nodes")]
+    #[crablangc_clean(cfg="cfail6")]
     enum StructStyle {
         Variant1 {
             a: FieldType
@@ -687,10 +687,10 @@ mod change_trait_bound_indirectly {
     #[cfg(not(any(cfail1,cfail4)))]
     use super::ReferencedTrait2 as Trait;
 
-    #[rustc_clean(cfg="cfail2", except="hir_owner,hir_owner_nodes,predicates_of")]
-    #[rustc_clean(cfg="cfail3")]
-    #[rustc_clean(cfg="cfail5", except="hir_owner,hir_owner_nodes,predicates_of")]
-    #[rustc_clean(cfg="cfail6")]
+    #[crablangc_clean(cfg="cfail2", except="hir_owner,hir_owner_nodes,predicates_of")]
+    #[crablangc_clean(cfg="cfail3")]
+    #[crablangc_clean(cfg="cfail5", except="hir_owner,hir_owner_nodes,predicates_of")]
+    #[crablangc_clean(cfg="cfail6")]
     enum Enum<T: Trait> {
         Variant1(T)
     }
@@ -705,10 +705,10 @@ mod change_trait_bound_indirectly_where {
     #[cfg(not(any(cfail1,cfail4)))]
     use super::ReferencedTrait2 as Trait;
 
-    #[rustc_clean(cfg="cfail2", except="hir_owner,hir_owner_nodes,predicates_of")]
-    #[rustc_clean(cfg="cfail3")]
-    #[rustc_clean(cfg="cfail5", except="hir_owner,hir_owner_nodes,predicates_of")]
-    #[rustc_clean(cfg="cfail6")]
+    #[crablangc_clean(cfg="cfail2", except="hir_owner,hir_owner_nodes,predicates_of")]
+    #[crablangc_clean(cfg="cfail3")]
+    #[crablangc_clean(cfg="cfail5", except="hir_owner,hir_owner_nodes,predicates_of")]
+    #[crablangc_clean(cfg="cfail6")]
     enum Enum<T> where T: Trait {
         Variant1(T)
     }

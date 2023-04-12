@@ -2,9 +2,9 @@ use clippy_utils::diagnostics::span_lint_and_help;
 use clippy_utils::macros::root_macro_call_first_node;
 use clippy_utils::visitors::is_local_used;
 use if_chain::if_chain;
-use rustc_hir::{Body, Impl, ImplItem, ImplItemKind, ItemKind};
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_session::{declare_tool_lint, impl_lint_pass};
+use crablangc_hir::{Body, Impl, ImplItem, ImplItemKind, ItemKind};
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_session::{declare_tool_lint, impl_lint_pass};
 use std::ops::ControlFlow;
 
 declare_clippy_lint! {
@@ -16,7 +16,7 @@ declare_clippy_lint! {
     /// of an instance method if it doesn't require `self`.
     ///
     /// ### Example
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// struct A;
     /// impl A {
     ///     fn method(&self) {}
@@ -25,7 +25,7 @@ declare_clippy_lint! {
     ///
     /// Could be written:
     ///
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// struct A;
     /// impl A {
     ///     fn method() {}

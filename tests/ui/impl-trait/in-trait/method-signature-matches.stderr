@@ -71,4 +71,4 @@ LL |     fn early<'early, T>(x: &'early T) -> impl Sized;
 error: aborting due to 5 previous errors
 
 Some errors have detailed explanations: E0050, E0053.
-For more information about an error, try `rustc --explain E0050`.
+For more information about an error, try `crablangc --explain E0050`.

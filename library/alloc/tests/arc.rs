@@ -1,7 +1,7 @@
 use std::any::Any;
 use std::cell::RefCell;
 use std::cmp::PartialEq;
-use std::iter::TrustedLen;
+use std::iter::TcrablangedLen;
 use std::mem;
 use std::sync::{Arc, Weak};
 
@@ -94,13 +94,13 @@ type Rc<T> = Arc<T>;
 
 const SHARED_ITER_MAX: u16 = 100;
 
-fn assert_trusted_len<I: TrustedLen>(_: &I) {}
+fn assert_tcrablanged_len<I: TcrablangedLen>(_: &I) {}
 
 #[test]
 fn shared_from_iter_normal() {
-    // Exercise the base implementation for non-`TrustedLen` iterators.
+    // Exercise the base implementation for non-`TcrablangedLen` iterators.
     {
-        // `Filter` is never `TrustedLen` since we don't
+        // `Filter` is never `TcrablangedLen` since we don't
         // know statically how many elements will be kept:
         let iter = (0..SHARED_ITER_MAX).filter(|x| x % 2 == 0).map(Box::new);
 
@@ -119,12 +119,12 @@ fn shared_from_iter_normal() {
 }
 
 #[test]
-fn shared_from_iter_trustedlen_normal() {
-    // Exercise the `TrustedLen` implementation under normal circumstances
+fn shared_from_iter_tcrablangedlen_normal() {
+    // Exercise the `TcrablangedLen` implementation under normal circumstances
     // where `size_hint()` matches `(_, Some(exact_len))`.
     {
         let iter = (0..SHARED_ITER_MAX).map(Box::new);
-        assert_trusted_len(&iter);
+        assert_tcrablanged_len(&iter);
 
         // Collecting into a `Vec<T>` or `Rc<[T]>` should make no difference:
         let vec = iter.clone().collect::<Vec<_>>();
@@ -157,26 +157,26 @@ fn shared_from_iter_trustedlen_normal() {
 
 #[test]
 #[should_panic = "I've almost got 99 problems."]
-fn shared_from_iter_trustedlen_panic() {
-    // Exercise the `TrustedLen` implementation when `size_hint()` matches
+fn shared_from_iter_tcrablangedlen_panic() {
+    // Exercise the `TcrablangedLen` implementation when `size_hint()` matches
     // `(_, Some(exact_len))` but where `.next()` drops before the last iteration.
     let iter = (0..SHARED_ITER_MAX).map(|val| match val {
         98 => panic!("I've almost got 99 problems."),
         _ => Box::new(val),
     });
-    assert_trusted_len(&iter);
+    assert_tcrablanged_len(&iter);
     let _ = iter.collect::<Rc<[_]>>();
 
     panic!("I am unreachable.");
 }
 
 #[test]
-fn shared_from_iter_trustedlen_no_fuse() {
-    // Exercise the `TrustedLen` implementation when `size_hint()` matches
+fn shared_from_iter_tcrablangedlen_no_fuse() {
+    // Exercise the `TcrablangedLen` implementation when `size_hint()` matches
     // `(_, Some(exact_len))` but where the iterator does not behave in a fused manner.
     struct Iter(std::vec::IntoIter<Option<Box<u8>>>);
 
-    unsafe impl TrustedLen for Iter {}
+    unsafe impl TcrablangedLen for Iter {}
 
     impl Iterator for Iter {
         fn size_hint(&self) -> (usize, Option<usize>) {
@@ -192,7 +192,7 @@ fn shared_from_iter_trustedlen_no_fuse() {
 
     let vec = vec![Some(Box::new(42)), Some(Box::new(24)), None, Some(Box::new(12))];
     let iter = Iter(vec.into_iter());
-    assert_trusted_len(&iter);
+    assert_tcrablanged_len(&iter);
     assert_eq!(&[Box::new(42), Box::new(24)], &*iter.collect::<Rc<[_]>>());
 }
 

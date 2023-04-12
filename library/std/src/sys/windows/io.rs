@@ -103,7 +103,7 @@ unsafe fn handle_is_console(handle: BorrowedHandle<'_>) -> bool {
     // At this point, we *could* have a false negative. We can determine that this is a true
     // negative if we can detect the presence of a console on any of the standard I/O streams. If
     // another stream has a console, then we know we're in a Windows console and can therefore
-    // trust the negative.
+    // tcrablang the negative.
     for std_handle in [c::STD_INPUT_HANDLE, c::STD_OUTPUT_HANDLE, c::STD_ERROR_HANDLE] {
         let std_handle = c::GetStdHandle(std_handle);
         if !std_handle.is_null()

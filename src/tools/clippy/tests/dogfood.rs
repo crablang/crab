@@ -5,18 +5,18 @@
 
 #![feature(lazy_cell)]
 #![cfg_attr(feature = "deny-warnings", deny(warnings))]
-#![warn(rust_2018_idioms, unused_lifetimes)]
+#![warn(crablang_2018_idioms, unused_lifetimes)]
 
 use itertools::Itertools;
 use std::path::PathBuf;
 use std::process::Command;
-use test_utils::IS_RUSTC_TEST_SUITE;
+use test_utils::IS_CRABLANGC_TEST_SUITE;
 
 mod test_utils;
 
 #[test]
 fn dogfood_clippy() {
-    if IS_RUSTC_TEST_SUITE {
+    if IS_CRABLANGC_TEST_SUITE {
         return;
     }
 
@@ -29,7 +29,7 @@ fn dogfood_clippy() {
         "clippy_lints",
         "clippy_utils",
         "lintcheck",
-        "rustc_tools_util",
+        "crablangc_tools_util",
     ] {
         if !run_clippy_for_package(package, &["-D", "clippy::all", "-D", "clippy::pedantic"]) {
             failed_packages.push(if package.is_empty() { "root" } else { package });

@@ -982,4 +982,4 @@ LL |     let Some(ref _s) = a.a else {
 
 error: aborting due to 61 previous errors
 
-For more information about this error, try `rustc --explain E0507`.
+For more information about this error, try `crablangc --explain E0507`.

@@ -35,7 +35,7 @@ fn switch_stdout_to(file: File) {
 }
 
 fn main() {
-    let path = PathBuf::from(env::var_os("RUST_TEST_TMPDIR").unwrap());
+    let path = PathBuf::from(env::var_os("CRABLANG_TEST_TMPDIR").unwrap());
     let path = path.join("switch-stdout-output");
     let f = File::create(&path).unwrap();
 

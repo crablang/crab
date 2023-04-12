@@ -3,7 +3,7 @@
 //! This module contains functions for querying the size and alignment of
 //! types, initializing and manipulating memory.
 
-#![stable(feature = "rust1", since = "1.0.0")]
+#![stable(feature = "crablang1", since = "1.0.0")]
 
 use crate::clone;
 use crate::cmp;
@@ -25,7 +25,7 @@ mod transmutability;
 #[unstable(feature = "transmutability", issue = "99571")]
 pub use transmutability::{Assume, BikeshedIntrinsicFrom};
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[doc(inline)]
 pub use crate::intrinsics::transmute;
 
@@ -42,11 +42,11 @@ pub use crate::intrinsics::transmute;
 ///
 /// # Safety
 ///
-/// `forget` is not marked as `unsafe`, because Rust's safety guarantees
+/// `forget` is not marked as `unsafe`, because CrabLang's safety guarantees
 /// do not include a guarantee that destructors will always run. For example,
 /// a program can create a reference cycle using [`Rc`][rc], or call
 /// [`process::exit`][exit] to exit without running destructors. Thus, allowing
-/// `mem::forget` from safe code does not fundamentally change Rust's safety
+/// `mem::forget` from safe code does not fundamentally change CrabLang's safety
 /// guarantees.
 ///
 /// That said, leaking resources such as memory or I/O objects is usually undesirable.
@@ -75,7 +75,7 @@ pub use crate::intrinsics::transmute;
 /// ```
 ///
 /// This is useful when the ownership of the underlying resource was previously
-/// transferred to code outside of Rust, for example by transmitting the raw
+/// transferred to code outside of CrabLang, for example by transmitting the raw
 /// file descriptor to C code.
 ///
 /// # Relationship with `ManuallyDrop`
@@ -142,9 +142,9 @@ pub use crate::intrinsics::transmute;
 /// [`mem::drop`]: drop
 /// [ub]: ../../reference/behavior-considered-undefined.html
 #[inline]
-#[rustc_const_stable(feature = "const_forget", since = "1.46.0")]
-#[stable(feature = "rust1", since = "1.0.0")]
-#[cfg_attr(not(test), rustc_diagnostic_item = "mem_forget")]
+#[crablangc_const_stable(feature = "const_forget", since = "1.46.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
+#[cfg_attr(not(test), crablangc_diagnostic_item = "mem_forget")]
 pub const fn forget<T>(t: T) {
     let _ = ManuallyDrop::new(t);
 }
@@ -301,10 +301,10 @@ pub fn forget_unsized<T: ?Sized>(t: T) {
 /// [alignment]: align_of
 #[inline(always)]
 #[must_use]
-#[stable(feature = "rust1", since = "1.0.0")]
-#[rustc_promotable]
-#[rustc_const_stable(feature = "const_mem_size_of", since = "1.24.0")]
-#[cfg_attr(not(test), rustc_diagnostic_item = "mem_size_of")]
+#[stable(feature = "crablang1", since = "1.0.0")]
+#[crablangc_promotable]
+#[crablangc_const_stable(feature = "const_mem_size_of", since = "1.24.0")]
+#[cfg_attr(not(test), crablangc_diagnostic_item = "mem_size_of")]
 pub const fn size_of<T>() -> usize {
     intrinsics::size_of::<T>()
 }
@@ -330,9 +330,9 @@ pub const fn size_of<T>() -> usize {
 /// ```
 #[inline]
 #[must_use]
-#[stable(feature = "rust1", since = "1.0.0")]
-#[rustc_const_unstable(feature = "const_size_of_val", issue = "46571")]
-#[cfg_attr(not(test), rustc_diagnostic_item = "mem_size_of_val")]
+#[stable(feature = "crablang1", since = "1.0.0")]
+#[crablangc_const_unstable(feature = "const_size_of_val", issue = "46571")]
+#[cfg_attr(not(test), crablangc_diagnostic_item = "mem_size_of_val")]
 pub const fn size_of_val<T: ?Sized>(val: &T) -> usize {
     // SAFETY: `val` is a reference, so it's a valid raw pointer
     unsafe { intrinsics::size_of_val(val) }
@@ -381,7 +381,7 @@ pub const fn size_of_val<T: ?Sized>(val: &T) -> usize {
 #[inline]
 #[must_use]
 #[unstable(feature = "layout_for_ptr", issue = "69835")]
-#[rustc_const_unstable(feature = "const_size_of_val_raw", issue = "46571")]
+#[crablangc_const_unstable(feature = "const_size_of_val_raw", issue = "46571")]
 pub const unsafe fn size_of_val_raw<T: ?Sized>(val: *const T) -> usize {
     // SAFETY: the caller must provide a valid raw pointer
     unsafe { intrinsics::size_of_val(val) }
@@ -405,7 +405,7 @@ pub const unsafe fn size_of_val_raw<T: ?Sized>(val: *const T) -> usize {
 /// ```
 #[inline]
 #[must_use]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[deprecated(note = "use `align_of` instead", since = "1.2.0")]
 pub fn min_align_of<T>() -> usize {
     intrinsics::min_align_of::<T>()
@@ -428,7 +428,7 @@ pub fn min_align_of<T>() -> usize {
 /// ```
 #[inline]
 #[must_use]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[deprecated(note = "use `align_of_val` instead", since = "1.2.0")]
 pub fn min_align_of_val<T: ?Sized>(val: &T) -> usize {
     // SAFETY: val is a reference, so it's a valid raw pointer
@@ -452,9 +452,9 @@ pub fn min_align_of_val<T: ?Sized>(val: &T) -> usize {
 /// ```
 #[inline(always)]
 #[must_use]
-#[stable(feature = "rust1", since = "1.0.0")]
-#[rustc_promotable]
-#[rustc_const_stable(feature = "const_align_of", since = "1.24.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
+#[crablangc_promotable]
+#[crablangc_const_stable(feature = "const_align_of", since = "1.24.0")]
 pub const fn align_of<T>() -> usize {
     intrinsics::min_align_of::<T>()
 }
@@ -475,8 +475,8 @@ pub const fn align_of<T>() -> usize {
 /// ```
 #[inline]
 #[must_use]
-#[stable(feature = "rust1", since = "1.0.0")]
-#[rustc_const_unstable(feature = "const_align_of_val", issue = "46571")]
+#[stable(feature = "crablang1", since = "1.0.0")]
+#[crablangc_const_unstable(feature = "const_align_of_val", issue = "46571")]
 #[allow(deprecated)]
 pub const fn align_of_val<T: ?Sized>(val: &T) -> usize {
     // SAFETY: val is a reference, so it's a valid raw pointer
@@ -523,7 +523,7 @@ pub const fn align_of_val<T: ?Sized>(val: &T) -> usize {
 #[inline]
 #[must_use]
 #[unstable(feature = "layout_for_ptr", issue = "69835")]
-#[rustc_const_unstable(feature = "const_align_of_val_raw", issue = "46571")]
+#[crablangc_const_unstable(feature = "const_align_of_val_raw", issue = "46571")]
 pub const unsafe fn align_of_val_raw<T: ?Sized>(val: *const T) -> usize {
     // SAFETY: the caller must provide a valid raw pointer
     unsafe { intrinsics::min_align_of_val(val) }
@@ -588,8 +588,8 @@ pub const unsafe fn align_of_val_raw<T: ?Sized>(val: *const T) -> usize {
 #[inline]
 #[must_use]
 #[stable(feature = "needs_drop", since = "1.21.0")]
-#[rustc_const_stable(feature = "const_mem_needs_drop", since = "1.36.0")]
-#[rustc_diagnostic_item = "needs_drop"]
+#[crablangc_const_stable(feature = "const_mem_needs_drop", since = "1.36.0")]
+#[crablangc_diagnostic_item = "needs_drop"]
 pub const fn needs_drop<T: ?Sized>() -> bool {
     intrinsics::needs_drop::<T>()
 }
@@ -602,7 +602,7 @@ pub const fn needs_drop<T: ?Sized>() -> bool {
 /// There is no guarantee that an all-zero byte-pattern represents a valid value
 /// of some type `T`. For example, the all-zero byte-pattern is not a valid value
 /// for reference types (`&T`, `&mut T`) and functions pointers. Using `zeroed`
-/// on such types causes immediate [undefined behavior][ub] because [the Rust
+/// on such types causes immediate [undefined behavior][ub] because [the CrabLang
 /// compiler assumes][inv] that there always is a valid value in a variable it
 /// considers initialized.
 ///
@@ -626,7 +626,7 @@ pub const fn needs_drop<T: ?Sized>() -> bool {
 ///
 /// *Incorrect* usage of this function: initializing a reference with zero.
 ///
-/// ```rust,no_run
+/// ```crablang,no_run
 /// # #![allow(invalid_value)]
 /// use std::mem;
 ///
@@ -635,10 +635,10 @@ pub const fn needs_drop<T: ?Sized>() -> bool {
 /// ```
 #[inline(always)]
 #[must_use]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[allow(deprecated_in_future)]
 #[allow(deprecated)]
-#[rustc_diagnostic_item = "mem_zeroed"]
+#[crablangc_diagnostic_item = "mem_zeroed"]
 #[track_caller]
 pub unsafe fn zeroed<T>() -> T {
     // SAFETY: the caller must guarantee that an all-zero value is valid for `T`.
@@ -648,7 +648,7 @@ pub unsafe fn zeroed<T>() -> T {
     }
 }
 
-/// Bypasses Rust's normal memory-initialization checks by pretending to
+/// Bypasses CrabLang's normal memory-initialization checks by pretending to
 /// produce a value of type `T`, while doing nothing at all.
 ///
 /// **This function is deprecated.** Use [`MaybeUninit<T>`] instead.
@@ -658,7 +658,7 @@ pub unsafe fn zeroed<T>() -> T {
 /// The reason for deprecation is that the function basically cannot be used
 /// correctly: it has the same effect as [`MaybeUninit::uninit().assume_init()`][uninit].
 /// As the [`assume_init` documentation][assume_init] explains,
-/// [the Rust compiler assumes][inv] that values are properly initialized.
+/// [the CrabLang compiler assumes][inv] that values are properly initialized.
 ///
 /// Truly uninitialized memory like what gets returned here
 /// is special in that the compiler knows that it does not have a fixed value.
@@ -674,10 +674,10 @@ pub unsafe fn zeroed<T>() -> T {
 #[inline(always)]
 #[must_use]
 #[deprecated(since = "1.39.0", note = "use `mem::MaybeUninit` instead")]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[allow(deprecated_in_future)]
 #[allow(deprecated)]
-#[rustc_diagnostic_item = "mem_uninitialized"]
+#[crablangc_diagnostic_item = "mem_uninitialized"]
 #[track_caller]
 pub unsafe fn uninitialized<T>() -> T {
     // SAFETY: the caller must guarantee that an uninitialized value is valid for `T`.
@@ -714,8 +714,8 @@ pub unsafe fn uninitialized<T>() -> T {
 /// assert_eq!(5, y);
 /// ```
 #[inline]
-#[stable(feature = "rust1", since = "1.0.0")]
-#[rustc_const_unstable(feature = "const_swap", issue = "83163")]
+#[stable(feature = "crablang1", since = "1.0.0")]
+#[crablangc_const_unstable(feature = "const_swap", issue = "83163")]
 pub const fn swap<T>(x: &mut T, y: &mut T) {
     // NOTE(eddyb) SPIR-V's Logical addressing model doesn't allow for arbitrary
     // reinterpretation of values as (chunkable) byte arrays, and the loop in the
@@ -751,7 +751,7 @@ pub const fn swap<T>(x: &mut T, y: &mut T) {
 /// Same as [`swap`] semantically, but always uses the simple implementation.
 ///
 /// Used elsewhere in `mem` and `ptr` at the bottom layer of calls.
-#[rustc_const_unstable(feature = "const_swap", issue = "83163")]
+#[crablangc_const_unstable(feature = "const_swap", issue = "83163")]
 #[inline]
 pub(crate) const fn swap_simple<T>(x: &mut T, y: &mut T) {
     // We arrange for this to typically be called with small types,
@@ -897,10 +897,10 @@ pub fn take<T: Default>(dest: &mut T) -> T {
 /// assert_eq!(buffer.buf[0], 2);
 /// ```
 #[inline]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[must_use = "if you don't need the old value, you can just assign the new value directly"]
-#[rustc_const_unstable(feature = "const_replace", issue = "83164")]
-#[cfg_attr(not(test), rustc_diagnostic_item = "mem_replace")]
+#[crablangc_const_unstable(feature = "const_replace", issue = "83164")]
+#[cfg_attr(not(test), crablangc_diagnostic_item = "mem_replace")]
 pub const fn replace<T>(dest: &mut T, src: T) -> T {
     // SAFETY: We read from `dest` but directly write `src` into it afterwards,
     // such that the old value is not duplicated. Nothing is dropped and
@@ -974,8 +974,8 @@ pub const fn replace<T>(dest: &mut T, src: T) -> T {
 ///
 /// [`RefCell`]: crate::cell::RefCell
 #[inline]
-#[stable(feature = "rust1", since = "1.0.0")]
-#[cfg_attr(not(test), rustc_diagnostic_item = "mem_drop")]
+#[stable(feature = "crablang1", since = "1.0.0")]
+#[cfg_attr(not(test), crablangc_diagnostic_item = "mem_drop")]
 pub fn drop<T>(_x: T) {}
 
 /// Bitwise-copies a value.
@@ -1042,8 +1042,8 @@ pub const fn copy<T: Copy>(x: &T) -> T {
 /// ```
 #[inline]
 #[must_use]
-#[stable(feature = "rust1", since = "1.0.0")]
-#[rustc_const_unstable(feature = "const_transmute_copy", issue = "83165")]
+#[stable(feature = "crablang1", since = "1.0.0")]
+#[crablangc_const_unstable(feature = "const_transmute_copy", issue = "83165")]
 pub const unsafe fn transmute_copy<Src, Dst>(src: &Src) -> Dst {
     assert!(
         size_of::<Src>() >= size_of::<Dst>(),
@@ -1189,8 +1189,8 @@ impl<T> fmt::Debug for Discriminant<T> {
 /// // assert_eq!(0, unsafe { std::mem::transmute::<_, u8>(std::mem::discriminant(&unit_like)) });
 /// ```
 #[stable(feature = "discriminant_value", since = "1.21.0")]
-#[rustc_const_unstable(feature = "const_discriminant", issue = "69821")]
-#[cfg_attr(not(test), rustc_diagnostic_item = "mem_discriminant")]
+#[crablangc_const_unstable(feature = "const_discriminant", issue = "69821")]
+#[cfg_attr(not(test), crablangc_diagnostic_item = "mem_discriminant")]
 #[cfg_attr(miri, track_caller)] // even without panics, this helps for Miri backtraces
 pub const fn discriminant<T>(v: &T) -> Discriminant<T> {
     Discriminant(intrinsics::discriminant_value(v))
@@ -1226,8 +1226,8 @@ pub const fn discriminant<T>(v: &T) -> Discriminant<T> {
 #[inline(always)]
 #[must_use]
 #[unstable(feature = "variant_count", issue = "73662")]
-#[rustc_const_unstable(feature = "variant_count", issue = "73662")]
-#[rustc_diagnostic_item = "mem_variant_count"]
+#[crablangc_const_unstable(feature = "variant_count", issue = "73662")]
+#[crablangc_diagnostic_item = "mem_variant_count"]
 pub const fn variant_count<T>() -> usize {
     intrinsics::variant_count::<T>()
 }

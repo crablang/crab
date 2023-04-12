@@ -1,10 +1,10 @@
 use super::TRANSMUTE_UNDEFINED_REPR;
 use clippy_utils::diagnostics::span_lint_and_then;
 use clippy_utils::ty::is_c_void;
-use rustc_hir::Expr;
-use rustc_lint::LateContext;
-use rustc_middle::ty::SubstsRef;
-use rustc_middle::ty::{self, IntTy, Ty, TypeAndMut, UintTy};
+use crablangc_hir::Expr;
+use crablangc_lint::LateContext;
+use crablangc_middle::ty::SubstsRef;
+use crablangc_middle::ty::{self, IntTy, Ty, TypeAndMut, UintTy};
 
 #[expect(clippy::too_many_lines)]
 pub(super) fn check<'tcx>(

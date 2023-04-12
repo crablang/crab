@@ -36,4 +36,4 @@ LL |     let _ = r#union;
 
 error: aborting due to 6 previous errors
 
-For more information about this error, try `rustc --explain E0425`.
+For more information about this error, try `crablangc --explain E0425`.

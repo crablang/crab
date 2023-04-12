@@ -1,18 +1,18 @@
-//! Implementation of Rust panics via process aborts
+//! Implementation of CrabLang panics via process aborts
 //!
 //! When compared to the implementation via unwinding, this crate is *much*
 //! simpler! That being said, it's not quite as versatile, but here goes!
 
 #![no_std]
 #![unstable(feature = "panic_abort", issue = "32837")]
-#![doc(issue_tracker_base_url = "https://github.com/rust-lang/rust/issues/")]
+#![doc(issue_tracker_base_url = "https://github.com/crablang/crablang/issues/")]
 #![panic_runtime]
 #![allow(unused_features)]
 #![feature(core_intrinsics)]
 #![feature(panic_runtime)]
 #![feature(std_internals)]
 #![feature(staged_api)]
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 #![feature(c_unwind)]
 
 #[cfg(target_os = "android")]
@@ -21,15 +21,15 @@ mod android;
 use core::any::Any;
 use core::panic::BoxMeUp;
 
-#[rustc_std_internal_symbol]
+#[crablangc_std_internal_symbol]
 #[allow(improper_ctypes_definitions)]
-pub unsafe extern "C" fn __rust_panic_cleanup(_: *mut u8) -> *mut (dyn Any + Send + 'static) {
+pub unsafe extern "C" fn __crablang_panic_cleanup(_: *mut u8) -> *mut (dyn Any + Send + 'static) {
     unreachable!()
 }
 
 // "Leak" the payload and shim to the relevant abort on the platform in question.
-#[rustc_std_internal_symbol]
-pub unsafe fn __rust_start_panic(_payload: &mut dyn BoxMeUp) -> u32 {
+#[crablangc_std_internal_symbol]
+pub unsafe fn __crablang_start_panic(_payload: &mut dyn BoxMeUp) -> u32 {
     // Android has the ability to attach a message as part of the abort.
     #[cfg(target_os = "android")]
     android::android_set_abort_message(_payload);
@@ -47,9 +47,9 @@ pub unsafe fn __rust_start_panic(_payload: &mut dyn BoxMeUp) -> u32 {
             unsafe fn abort() -> ! {
                 // call std::sys::abort_internal
                 extern "C" {
-                    pub fn __rust_abort() -> !;
+                    pub fn __crablang_abort() -> !;
                 }
-                __rust_abort();
+                __crablang_abort();
             }
         } else if #[cfg(all(windows, not(miri)))] {
             // On Windows, use the processor-specific __fastfail mechanism. In Windows 8
@@ -94,7 +94,7 @@ pub unsafe fn __rust_start_panic(_payload: &mut dyn BoxMeUp) -> u32 {
 // compatible with as many situations as possible. The compiler, however,
 // requires a "personality function" for all functions compiled with `-C
 // panic=unwind`. This personality function is hardcoded to the symbol
-// `rust_eh_personality` and is defined by the `eh_personality` lang item.
+// `crablang_eh_personality` and is defined by the `eh_personality` lang item.
 //
 // So... why not just define that lang item here? Good question! The way that
 // panic runtimes are linked in is actually a little subtle in that they're
@@ -123,8 +123,8 @@ pub mod personalities {
     // Since panics don't generate exceptions and foreign exceptions are
     // currently UB with -C panic=abort (although this may be subject to
     // change), any catch_unwind calls will never use this typeinfo.
-    #[rustc_std_internal_symbol]
+    #[crablangc_std_internal_symbol]
     #[allow(non_upper_case_globals)]
     #[cfg(target_os = "emscripten")]
-    static rust_eh_catch_typeinfo: [usize; 2] = [0; 2];
+    static crablang_eh_catch_typeinfo: [usize; 2] = [0; 2];
 }

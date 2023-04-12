@@ -1,6 +1,6 @@
 // run-pass
 // compile-flags: -O
-// Regression test for https://github.com/rust-lang/rust/issues/33868
+// Regression test for https://github.com/crablang/crablang/issues/33868
 
 #[repr(C)]
 pub struct S {

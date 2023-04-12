@@ -10,7 +10,7 @@ impl<T: fmt::Debug> ops::FnOnce<(),> for Debuger<T> {
     type Output = ();
     fn call_once(self, _args: ()) {
     //~^ ERROR `call_once` has an incompatible type for trait
-    //~| expected signature `extern "rust-call" fn
+    //~| expected signature `extern "crablang-call" fn
     //~| found signature `fn
         println!("{:?}", self.x);
     }

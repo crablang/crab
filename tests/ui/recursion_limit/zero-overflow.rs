@@ -1,4 +1,4 @@
-//~ ERROR overflow evaluating the requirement `&mut Self: DispatchFromDyn<&mut RustaceansAreAwesome>
+//~ ERROR overflow evaluating the requirement `&mut Self: DispatchFromDyn<&mut CrabLangaceansAreAwesome>
 //~| HELP consider increasing the recursion limit
 // build-fail
 

@@ -1,4 +1,4 @@
-// rust-lang/rust#55492: errors detected during MIR-borrowck's
+// crablang/crablang#55492: errors detected during MIR-borrowck's
 // analysis of a closure body may only be caught when AST-borrowck
 // looks at some parent.
 

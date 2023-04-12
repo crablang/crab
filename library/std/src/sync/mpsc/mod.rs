@@ -135,7 +135,7 @@
 //! println!("completed");
 //! ```
 
-#![stable(feature = "rust1", since = "1.0.0")]
+#![stable(feature = "crablang1", since = "1.0.0")]
 
 #[cfg(all(test, not(target_os = "emscripten")))]
 mod tests;
@@ -153,7 +153,7 @@ use crate::fmt;
 use crate::sync::mpmc;
 use crate::time::{Duration, Instant};
 
-/// The receiving half of Rust's [`channel`] (or [`sync_channel`]) type.
+/// The receiving half of CrabLang's [`channel`] (or [`sync_channel`]) type.
 /// This half can only be owned by one thread.
 ///
 /// Messages sent to the channel can be retrieved using [`recv`].
@@ -162,7 +162,7 @@ use crate::time::{Duration, Instant};
 ///
 /// # Examples
 ///
-/// ```rust
+/// ```crablang
 /// use std::sync::mpsc::channel;
 /// use std::thread;
 /// use std::time::Duration;
@@ -179,18 +179,18 @@ use crate::time::{Duration, Instant};
 /// println!("Waiting...");
 /// println!("{}", recv.recv().unwrap()); // Received after 2 seconds
 /// ```
-#[stable(feature = "rust1", since = "1.0.0")]
-#[cfg_attr(not(test), rustc_diagnostic_item = "Receiver")]
+#[stable(feature = "crablang1", since = "1.0.0")]
+#[cfg_attr(not(test), crablangc_diagnostic_item = "Receiver")]
 pub struct Receiver<T> {
     inner: mpmc::Receiver<T>,
 }
 
 // The receiver port can be sent from place to place, so long as it
 // is not used to receive non-sendable things.
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 unsafe impl<T: Send> Send for Receiver<T> {}
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T> !Sync for Receiver<T> {}
 
 /// An iterator over messages on a [`Receiver`], created by [`iter`].
@@ -204,7 +204,7 @@ impl<T> !Sync for Receiver<T> {}
 ///
 /// # Examples
 ///
-/// ```rust
+/// ```crablang
 /// use std::sync::mpsc::channel;
 /// use std::thread;
 ///
@@ -220,7 +220,7 @@ impl<T> !Sync for Receiver<T> {}
 ///     println!("Got: {x}");
 /// }
 /// ```
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[derive(Debug)]
 pub struct Iter<'a, T: 'a> {
     rx: &'a Receiver<T>,
@@ -239,7 +239,7 @@ pub struct Iter<'a, T: 'a> {
 ///
 /// # Examples
 ///
-/// ```rust
+/// ```crablang
 /// use std::sync::mpsc::channel;
 /// use std::thread;
 /// use std::time::Duration;
@@ -281,7 +281,7 @@ pub struct TryIter<'a, T: 'a> {
 ///
 /// # Examples
 ///
-/// ```rust
+/// ```crablang
 /// use std::sync::mpsc::channel;
 /// use std::thread;
 ///
@@ -303,7 +303,7 @@ pub struct IntoIter<T> {
     rx: Receiver<T>,
 }
 
-/// The sending-half of Rust's asynchronous [`channel`] type. This half can only be
+/// The sending-half of CrabLang's asynchronous [`channel`] type. This half can only be
 /// owned by one thread, but it can be cloned to send to other threads.
 ///
 /// Messages can be sent through this channel with [`send`].
@@ -315,7 +315,7 @@ pub struct IntoIter<T> {
 ///
 /// # Examples
 ///
-/// ```rust
+/// ```crablang
 /// use std::sync::mpsc::channel;
 /// use std::thread;
 ///
@@ -337,20 +337,20 @@ pub struct IntoIter<T> {
 ///
 /// assert_eq!(3, msg + msg2);
 /// ```
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub struct Sender<T> {
     inner: mpmc::Sender<T>,
 }
 
 // The send port can be sent from place to place, so long as it
 // is not used to send non-sendable things.
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 unsafe impl<T: Send> Send for Sender<T> {}
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T> !Sync for Sender<T> {}
 
-/// The sending-half of Rust's synchronous [`sync_channel`] type.
+/// The sending-half of CrabLang's synchronous [`sync_channel`] type.
 ///
 /// Messages can be sent through this channel with [`send`] or [`try_send`].
 ///
@@ -361,7 +361,7 @@ impl<T> !Sync for Sender<T> {}
 ///
 /// # Examples
 ///
-/// ```rust
+/// ```crablang
 /// use std::sync::mpsc::sync_channel;
 /// use std::thread;
 ///
@@ -396,12 +396,12 @@ impl<T> !Sync for Sender<T> {}
 ///
 /// println!("message {msg} received");
 /// ```
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub struct SyncSender<T> {
     inner: mpmc::Sender<T>,
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 unsafe impl<T: Send> Send for SyncSender<T> {}
 
 /// An error returned from the [`Sender::send`] or [`SyncSender::send`]
@@ -410,9 +410,9 @@ unsafe impl<T: Send> Send for SyncSender<T> {}
 /// A **send** operation can only fail if the receiving end of a channel is
 /// disconnected, implying that the data could never be received. The error
 /// contains the data being sent as a payload so it can be recovered.
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[derive(PartialEq, Eq, Clone, Copy)]
-pub struct SendError<T>(#[stable(feature = "rust1", since = "1.0.0")] pub T);
+pub struct SendError<T>(#[stable(feature = "crablang1", since = "1.0.0")] pub T);
 
 /// An error returned from the [`recv`] function on a [`Receiver`].
 ///
@@ -422,7 +422,7 @@ pub struct SendError<T>(#[stable(feature = "rust1", since = "1.0.0")] pub T);
 ///
 /// [`recv`]: Receiver::recv
 #[derive(PartialEq, Eq, Clone, Copy, Debug)]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub struct RecvError;
 
 /// This enumeration is the list of the possible reasons that [`try_recv`] could
@@ -431,16 +431,16 @@ pub struct RecvError;
 ///
 /// [`try_recv`]: Receiver::try_recv
 #[derive(PartialEq, Eq, Clone, Copy, Debug)]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub enum TryRecvError {
     /// This **channel** is currently empty, but the **Sender**(s) have not yet
     /// disconnected, so data may yet become available.
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     Empty,
 
     /// The **channel**'s sending half has become disconnected, and there will
     /// never be any more data received on it.
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     Disconnected,
 }
 
@@ -466,7 +466,7 @@ pub enum RecvTimeoutError {
 /// [`try_send`] method.
 ///
 /// [`try_send`]: SyncSender::try_send
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[derive(PartialEq, Eq, Clone, Copy)]
 pub enum TrySendError<T> {
     /// The data could not be sent on the [`sync_channel`] because it would require that
@@ -475,13 +475,13 @@ pub enum TrySendError<T> {
     /// If this is a buffered channel, then the buffer is full at this time. If
     /// this is not a buffered channel, then there is no [`Receiver`] available to
     /// acquire the data.
-    #[stable(feature = "rust1", since = "1.0.0")]
-    Full(#[stable(feature = "rust1", since = "1.0.0")] T),
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    Full(#[stable(feature = "crablang1", since = "1.0.0")] T),
 
     /// This [`sync_channel`]'s receiving half has disconnected, so the data could not be
     /// sent. The data is returned back to the callee in this case.
-    #[stable(feature = "rust1", since = "1.0.0")]
-    Disconnected(#[stable(feature = "rust1", since = "1.0.0")] T),
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    Disconnected(#[stable(feature = "crablang1", since = "1.0.0")] T),
 }
 
 /// Creates a new asynchronous channel, returning the sender/receiver halves.
@@ -522,7 +522,7 @@ pub enum TrySendError<T> {
 /// println!("{:?}", receiver.recv().unwrap());
 /// ```
 #[must_use]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub fn channel<T>() -> (Sender<T>, Receiver<T>) {
     let (tx, rx) = mpmc::channel();
     (Sender { inner: tx }, Receiver { inner: rx })
@@ -571,7 +571,7 @@ pub fn channel<T>() -> (Sender<T>, Receiver<T>) {
 /// assert_eq!(receiver.recv().unwrap(), 2);
 /// ```
 #[must_use]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub fn sync_channel<T>(bound: usize) -> (SyncSender<T>, Receiver<T>) {
     let (tx, rx) = mpmc::sync_channel(bound);
     (SyncSender { inner: tx }, Receiver { inner: rx })
@@ -609,13 +609,13 @@ impl<T> Sender<T> {
     /// drop(rx);
     /// assert_eq!(tx.send(1).unwrap_err().0, 1);
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn send(&self, t: T) -> Result<(), SendError<T>> {
         self.inner.send(t)
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T> Clone for Sender<T> {
     /// Clone a sender to send to other threads.
     ///
@@ -627,7 +627,7 @@ impl<T> Clone for Sender<T> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T> Drop for Sender<T> {
     fn drop(&mut self) {}
 }
@@ -662,7 +662,7 @@ impl<T> SyncSender<T> {
     ///
     /// # Examples
     ///
-    /// ```rust
+    /// ```crablang
     /// use std::sync::mpsc::sync_channel;
     /// use std::thread;
     ///
@@ -680,7 +680,7 @@ impl<T> SyncSender<T> {
     /// let msg = receiver.recv().unwrap();
     /// assert_eq!(1, msg);
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn send(&self, t: T) -> Result<(), SendError<T>> {
         self.inner.send(t)
     }
@@ -699,7 +699,7 @@ impl<T> SyncSender<T> {
     ///
     /// # Examples
     ///
-    /// ```rust
+    /// ```crablang
     /// use std::sync::mpsc::sync_channel;
     /// use std::thread;
     ///
@@ -734,7 +734,7 @@ impl<T> SyncSender<T> {
     ///     Err(_) => println!("the third message was never sent"),
     /// }
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn try_send(&self, t: T) -> Result<(), TrySendError<T>> {
         self.inner.try_send(t)
     }
@@ -749,14 +749,14 @@ impl<T> SyncSender<T> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T> Clone for SyncSender<T> {
     fn clone(&self) -> SyncSender<T> {
         SyncSender { inner: self.inner.clone() }
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T> Drop for SyncSender<T> {
     fn drop(&mut self) {}
 }
@@ -789,14 +789,14 @@ impl<T> Receiver<T> {
     ///
     /// # Examples
     ///
-    /// ```rust
+    /// ```crablang
     /// use std::sync::mpsc::{Receiver, channel};
     ///
     /// let (_, receiver): (_, Receiver<i32>) = channel();
     ///
     /// assert!(receiver.try_recv().is_err());
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn try_recv(&self) -> Result<T, TryRecvError> {
         self.inner.try_recv()
     }
@@ -855,7 +855,7 @@ impl<T> Receiver<T> {
     /// assert_eq!(Ok(3), recv.recv());
     /// assert_eq!(Err(RecvError), recv.recv());
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn recv(&self) -> Result<T, RecvError> {
         self.inner.recv()
     }
@@ -986,7 +986,7 @@ impl<T> Receiver<T> {
     ///
     /// # Examples
     ///
-    /// ```rust
+    /// ```crablang
     /// use std::sync::mpsc::channel;
     /// use std::thread;
     ///
@@ -1004,7 +1004,7 @@ impl<T> Receiver<T> {
     /// assert_eq!(iter.next(), Some(3));
     /// assert_eq!(iter.next(), None);
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn iter(&self) -> Iter<'_, T> {
         Iter { rx: self }
     }
@@ -1051,7 +1051,7 @@ impl<T> Receiver<T> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<'a, T> Iterator for Iter<'a, T> {
     type Item = T;
 
@@ -1097,7 +1097,7 @@ impl<T> IntoIterator for Receiver<T> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T> Drop for Receiver<T> {
     fn drop(&mut self) {}
 }
@@ -1109,21 +1109,21 @@ impl<T> fmt::Debug for Receiver<T> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T> fmt::Debug for SendError<T> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_struct("SendError").finish_non_exhaustive()
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T> fmt::Display for SendError<T> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         "sending on a closed channel".fmt(f)
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: Send> error::Error for SendError<T> {
     #[allow(deprecated)]
     fn description(&self) -> &str {
@@ -1131,7 +1131,7 @@ impl<T: Send> error::Error for SendError<T> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T> fmt::Debug for TrySendError<T> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match *self {
@@ -1141,7 +1141,7 @@ impl<T> fmt::Debug for TrySendError<T> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T> fmt::Display for TrySendError<T> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match *self {
@@ -1151,7 +1151,7 @@ impl<T> fmt::Display for TrySendError<T> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: Send> error::Error for TrySendError<T> {
     #[allow(deprecated)]
     fn description(&self) -> &str {
@@ -1176,14 +1176,14 @@ impl<T> From<SendError<T>> for TrySendError<T> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl fmt::Display for RecvError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         "receiving on a closed channel".fmt(f)
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl error::Error for RecvError {
     #[allow(deprecated)]
     fn description(&self) -> &str {
@@ -1191,7 +1191,7 @@ impl error::Error for RecvError {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl fmt::Display for TryRecvError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match *self {
@@ -1201,7 +1201,7 @@ impl fmt::Display for TryRecvError {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl error::Error for TryRecvError {
     #[allow(deprecated)]
     fn description(&self) -> &str {

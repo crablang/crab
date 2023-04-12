@@ -1,5 +1,5 @@
 // aux-build:proc_macros.rs
-// run-rustfix
+// run-crablangfix
 #![warn(clippy::uninlined_format_args)]
 #![allow(named_arguments_used_positionally, unused_imports, unused_macros, unused_variables)]
 #![allow(clippy::eq_op, clippy::format_in_format_args, clippy::print_literal)]

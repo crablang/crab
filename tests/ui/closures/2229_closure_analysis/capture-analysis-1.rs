@@ -1,6 +1,6 @@
 // edition:2021
 
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 
 #[derive(Debug)]
 struct Point {
@@ -12,9 +12,9 @@ fn main() {
     let p = Point { x: 10, y: 10 };
     let q = Point { x: 10, y: 10 };
 
-    let c = #[rustc_capture_analysis]
+    let c = #[crablangc_capture_analysis]
     //~^ ERROR: attributes on expressions are experimental
-    //~| NOTE: see issue #15701 <https://github.com/rust-lang/rust/issues/15701>
+    //~| NOTE: see issue #15701 <https://github.com/crablang/crablang/issues/15701>
     || {
     //~^ First Pass analysis includes:
     //~| Min Capture analysis includes:

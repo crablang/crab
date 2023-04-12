@@ -10,7 +10,7 @@ macro_rules! descriptions {
 
 // item
 descriptions! { DOG is "an animal" }
-descriptions! { RUST is "a language" }
+descriptions! { CRABLANG is "a language" }
 
 pub fn main() {
 }

@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 // aux-build:proc_macros.rs
 
 #![warn(clippy::ptr_as_ptr)]

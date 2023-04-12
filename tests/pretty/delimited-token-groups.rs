@@ -1,6 +1,6 @@
 // pp-exact
 
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 
 macro_rules! mac { ($($tt : tt) *) => () }
 
@@ -35,14 +35,14 @@ mac! {
     aaaaaaaa aaaaaaaa
 }
 
-#[rustc_dummy(aaaaaaaa aaaaaaaa aaaaaaaa aaaaaaaa aaaaaaaa aaaaaaaa aaaaaaaa
+#[crablangc_dummy(aaaaaaaa aaaaaaaa aaaaaaaa aaaaaaaa aaaaaaaa aaaaaaaa aaaaaaaa
 aaaaaaaa aaaaaaaa aaaaaaaa)]
-#[rustc_dummy[aaaaaaaa aaaaaaaa aaaaaaaa aaaaaaaa aaaaaaaa aaaaaaaa aaaaaaaa
+#[crablangc_dummy[aaaaaaaa aaaaaaaa aaaaaaaa aaaaaaaa aaaaaaaa aaaaaaaa aaaaaaaa
 aaaaaaaa aaaaaaaa aaaaaaaa]]
-#[rustc_dummy {
+#[crablangc_dummy {
     aaaaaaaa aaaaaaaa aaaaaaaa aaaaaaaa aaaaaaaa aaaaaaaa aaaaaaaa aaaaaaaa
     aaaaaaaa aaaaaaaa
 }]
-#[rustc_dummy =
+#[crablangc_dummy =
 "aaaaaaaa aaaaaaaa aaaaaaaa aaaaaaaa aaaaaaaa aaaaaaaa aaaaaaaa aaaaaaaa aaaaaaaa aaaaaaaa"]
 fn main() {}

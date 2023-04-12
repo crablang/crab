@@ -86,7 +86,7 @@ LL | #[derive(B)]
    |          - the attribute is introduced here
    |
    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
-   = note: for more information, see issue #79202 <https://github.com/rust-lang/rust/issues/79202>
+   = note: for more information, see issue #79202 <https://github.com/crablang/crablang/issues/79202>
    = note: `#[warn(legacy_derive_helpers)]` on by default
 
 warning: derive helper attribute is used before it is introduced
@@ -99,7 +99,7 @@ LL | #[derive(B)]
    |          - the attribute is introduced here
    |
    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
-   = note: for more information, see issue #79202 <https://github.com/rust-lang/rust/issues/79202>
+   = note: for more information, see issue #79202 <https://github.com/crablang/crablang/issues/79202>
 
 warning: derive helper attribute is used before it is introduced
   --> $DIR/proc-macro-attributes.rs:13:3
@@ -111,7 +111,7 @@ LL | #[derive(B)]
    |          - the attribute is introduced here
    |
    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
-   = note: for more information, see issue #79202 <https://github.com/rust-lang/rust/issues/79202>
+   = note: for more information, see issue #79202 <https://github.com/crablang/crablang/issues/79202>
 
 warning: derive helper attribute is used before it is introduced
   --> $DIR/proc-macro-attributes.rs:16:3
@@ -123,8 +123,8 @@ LL | #[derive(B)]
    |          - the attribute is introduced here
    |
    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
-   = note: for more information, see issue #79202 <https://github.com/rust-lang/rust/issues/79202>
+   = note: for more information, see issue #79202 <https://github.com/crablang/crablang/issues/79202>
 
 error: aborting due to 5 previous errors; 4 warnings emitted
 
-For more information about this error, try `rustc --explain E0659`.
+For more information about this error, try `crablangc --explain E0659`.

@@ -146,4 +146,4 @@ LL +         (126_u8..=127_u8, false) => todo!()
 
 error: aborting due to 12 previous errors
 
-For more information about this error, try `rustc --explain E0004`.
+For more information about this error, try `crablangc --explain E0004`.

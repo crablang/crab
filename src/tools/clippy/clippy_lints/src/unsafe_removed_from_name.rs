@@ -1,9 +1,9 @@
 use clippy_utils::diagnostics::span_lint;
-use rustc_ast::ast::{Item, ItemKind, UseTree, UseTreeKind};
-use rustc_lint::{EarlyContext, EarlyLintPass};
-use rustc_session::{declare_lint_pass, declare_tool_lint};
-use rustc_span::source_map::Span;
-use rustc_span::symbol::Ident;
+use crablangc_ast::ast::{Item, ItemKind, UseTree, UseTreeKind};
+use crablangc_lint::{EarlyContext, EarlyLintPass};
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_span::source_map::Span;
+use crablangc_span::symbol::Ident;
 
 declare_clippy_lint! {
     /// ### What it does
@@ -15,7 +15,7 @@ declare_clippy_lint! {
     /// structures are unsafe.
     ///
     /// ### Example
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// use std::cell::{UnsafeCell as TotallySafeCell};
     ///
     /// extern crate crossbeam;

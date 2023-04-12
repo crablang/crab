@@ -5,5 +5,5 @@ include ../tools.mk
 PATH=$(SYSTEMROOT)/system32
 
 all:
-	$(RUSTC) hello.rs
+	$(CRABLANGC) hello.rs
 	$(TMPDIR)/hello.exe

@@ -113,4 +113,4 @@ LL |     let _y = (E::V { x: 1.0, y: 2.0 }, E::V(/* fields */));
 error: aborting due to 8 previous errors
 
 Some errors have detailed explanations: E0559, E0560.
-For more information about an error, try `rustc --explain E0559`.
+For more information about an error, try `crablangc --explain E0559`.

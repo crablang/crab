@@ -22,4 +22,4 @@ LL |     let Some(n): &mut Option<i32> = &&mut Some(5i32) else { return };
 
 error: aborting due to 2 previous errors
 
-For more information about this error, try `rustc --explain E0308`.
+For more information about this error, try `crablangc --explain E0308`.

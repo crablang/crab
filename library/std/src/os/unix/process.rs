@@ -2,7 +2,7 @@
 //!
 //! [`std::process`]: crate::process
 
-#![stable(feature = "rust1", since = "1.0.0")]
+#![stable(feature = "crablang1", since = "1.0.0")]
 
 use crate::ffi::OsStr;
 use crate::io;
@@ -34,17 +34,17 @@ cfg_if! {
 ///
 /// This trait is sealed: it cannot be implemented outside the standard library.
 /// This is so that future additional methods are not breaking changes.
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub trait CommandExt: Sealed {
     /// Sets the child process's user ID. This translates to a
     /// `setuid` call in the child process. Failure in the `setuid`
     /// call will cause the spawn to fail.
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     fn uid(&mut self, id: UserId) -> &mut process::Command;
 
     /// Similar to `uid`, but sets the group ID of the child process. This has
     /// the same semantics as the `uid` field.
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     fn gid(&mut self, id: GroupId) -> &mut process::Command;
 
     /// Sets the supplementary group IDs for the calling process. Translates to
@@ -189,7 +189,7 @@ pub trait CommandExt: Sealed {
     fn process_group(&mut self, pgroup: i32) -> &mut process::Command;
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl CommandExt for process::Command {
     fn uid(&mut self, id: UserId) -> &mut process::Command {
         self.as_inner_mut().uid(id);
@@ -243,12 +243,12 @@ impl CommandExt for process::Command {
 /// as returned by one of the `wait` family of system
 /// calls.
 ///
-/// A Unix wait status (a Rust `ExitStatus`) can represent a Unix exit status, but can also
+/// A Unix wait status (a CrabLang `ExitStatus`) can represent a Unix exit status, but can also
 /// represent other kinds of process event.
 ///
 /// This trait is sealed: it cannot be implemented outside the standard library.
 /// This is so that future additional methods are not breaking changes.
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub trait ExitStatusExt: Sealed {
     /// Creates a new `ExitStatus` or `ExitStatusError` from the raw underlying integer status
     /// value from `wait`
@@ -266,7 +266,7 @@ pub trait ExitStatusExt: Sealed {
     /// If the process was terminated by a signal, returns that signal.
     ///
     /// In other words, if `WIFSIGNALED`, this returns `WTERMSIG`.
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     fn signal(&self) -> Option<i32>;
 
     /// If the process was terminated by a signal, says whether it dumped core.
@@ -294,7 +294,7 @@ pub trait ExitStatusExt: Sealed {
     fn into_raw(self) -> i32;
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl ExitStatusExt for process::ExitStatus {
     fn from_raw(raw: i32) -> Self {
         process::ExitStatus::from_inner(From::from(raw))

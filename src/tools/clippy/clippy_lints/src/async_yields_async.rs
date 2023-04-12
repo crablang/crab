@@ -1,10 +1,10 @@
 use clippy_utils::diagnostics::span_lint_hir_and_then;
 use clippy_utils::source::snippet;
 use clippy_utils::ty::implements_trait;
-use rustc_errors::Applicability;
-use rustc_hir::{AsyncGeneratorKind, Body, BodyId, ExprKind, GeneratorKind, QPath};
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_errors::Applicability;
+use crablangc_hir::{AsyncGeneratorKind, Body, BodyId, ExprKind, GeneratorKind, QPath};
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
 
 declare_clippy_lint! {
     /// ### What it does
@@ -15,7 +15,7 @@ declare_clippy_lint! {
     /// An await is likely missing.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// async fn foo() {}
     ///
     /// fn bar() {
@@ -26,7 +26,7 @@ declare_clippy_lint! {
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// async fn foo() {}
     ///
     /// fn bar() {

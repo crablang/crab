@@ -7,7 +7,7 @@ struct Test;
 impl FnOnce<(u32, u32)> for Test {
     type Output = u32;
 
-    extern "rust-call" fn call_once(self, (a, b): (u32, u32)) -> u32 {
+    extern "crablang-call" fn call_once(self, (a, b): (u32, u32)) -> u32 {
         a + b
     }
 }

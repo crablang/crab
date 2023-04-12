@@ -37,4 +37,4 @@ LL | struct TooBig([f32; 65536]);
 error: aborting due to 6 previous errors
 
 Some errors have detailed explanations: E0075, E0076, E0077.
-For more information about an error, try `rustc --explain E0075`.
+For more information about an error, try `crablangc --explain E0075`.

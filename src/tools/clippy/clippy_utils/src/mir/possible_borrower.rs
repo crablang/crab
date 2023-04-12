@@ -1,11 +1,11 @@
 use super::{possible_origin::PossibleOriginVisitor, transitive_relation::TransitiveRelation};
 use crate::ty::is_copy;
-use rustc_data_structures::fx::FxHashMap;
-use rustc_index::bit_set::{BitSet, HybridBitSet};
-use rustc_lint::LateContext;
-use rustc_middle::mir::{self, visit::Visitor as _, Mutability};
-use rustc_middle::ty::{self, visit::TypeVisitor, TyCtxt};
-use rustc_mir_dataflow::{impls::MaybeStorageLive, Analysis, ResultsCursor};
+use crablangc_data_structures::fx::FxHashMap;
+use crablangc_index::bit_set::{BitSet, HybridBitSet};
+use crablangc_lint::LateContext;
+use crablangc_middle::mir::{self, visit::Visitor as _, Mutability};
+use crablangc_middle::ty::{self, visit::TypeVisitor, TyCtxt};
+use crablangc_mir_dataflow::{impls::MaybeStorageLive, Analysis, ResultsCursor};
 use std::borrow::Cow;
 use std::ops::ControlFlow;
 
@@ -145,7 +145,7 @@ impl TypeVisitor<TyCtxt<'_>> for ContainsRegion {
 }
 
 fn rvalue_locals(rvalue: &mir::Rvalue<'_>, mut visit: impl FnMut(mir::Local)) {
-    use rustc_middle::mir::Rvalue::{Aggregate, BinaryOp, Cast, CheckedBinaryOp, Repeat, UnaryOp, Use};
+    use crablangc_middle::mir::Rvalue::{Aggregate, BinaryOp, Cast, CheckedBinaryOp, Repeat, UnaryOp, Use};
 
     let mut visit_op = |op: &mir::Operand<'_>| match op {
         mir::Operand::Copy(p) | mir::Operand::Move(p) => visit(p.local),

@@ -227,7 +227,7 @@ unsafe fn register_dtor(key: &'static StaticKey) {
 // wired up.
 //
 // We don't actually use the `/INCLUDE` linker flag here like the article
-// mentions because the Rust compiler doesn't propagate linker flags, but
+// mentions because the CrabLang compiler doesn't propagate linker flags, but
 // instead we use a shim function which performs a volatile 1-byte load from
 // the address of the symbol to ensure it sticks around.
 

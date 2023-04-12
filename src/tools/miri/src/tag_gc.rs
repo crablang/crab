@@ -1,4 +1,4 @@
-use rustc_data_structures::fx::FxHashSet;
+use crablangc_data_structures::fx::FxHashSet;
 
 use crate::*;
 

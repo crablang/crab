@@ -52,4 +52,4 @@ LL |     fn hash(&self, hasher: &mut impl Hasher) {}
 
 error: aborting due to 4 previous errors
 
-For more information about this error, try `rustc --explain E0643`.
+For more information about this error, try `crablangc --explain E0643`.

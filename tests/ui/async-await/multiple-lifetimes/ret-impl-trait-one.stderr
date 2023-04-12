@@ -33,4 +33,4 @@ LL | async fn async_ret_impl_trait1<'a, 'b>(a: &'a u8, b: &'b u8) -> impl Trait<
 
 error: aborting due to 2 previous errors
 
-For more information about this error, try `rustc --explain E0700`.
+For more information about this error, try `crablangc --explain E0700`.

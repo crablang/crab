@@ -12,15 +12,15 @@
 #![stable(feature = "proc_macro_lib", since = "1.15.0")]
 #![deny(missing_docs)]
 #![doc(
-    html_playground_url = "https://play.rust-lang.org/",
-    issue_tracker_base_url = "https://github.com/rust-lang/rust/issues/",
+    html_playground_url = "https://play.crablang.org/",
+    issue_tracker_base_url = "https://github.com/crablang/crablang/issues/",
     test(no_crate_inject, attr(deny(warnings))),
     test(attr(allow(dead_code, deprecated, unused_variables, unused_mut)))
 )]
-// This library is copied into rust-analyzer to allow loading rustc compiled proc macros.
+// This library is copied into crablang-analyzer to allow loading crablangc compiled proc macros.
 // Please avoid unstable features where possible to minimize the amount of changes necessary
-// to make it compile with rust-analyzer on stable.
-#![feature(rustc_allow_const_fn_unstable)]
+// to make it compile with crablang-analyzer on stable.
+#![feature(crablangc_allow_const_fn_unstable)]
 #![feature(staged_api)]
 #![feature(allow_internal_unstable)]
 #![feature(decl_macro)]
@@ -29,7 +29,7 @@
 #![feature(negative_impls)]
 #![feature(new_uninit)]
 #![feature(restricted_std)]
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 #![feature(min_specialization)]
 #![feature(strict_provenance)]
 #![recursion_limit = "256"]
@@ -55,9 +55,9 @@ use std::{error, fmt, iter};
 /// The proc_macro crate is only intended for use inside the implementation of
 /// procedural macros. All the functions in this crate panic if invoked from
 /// outside of a procedural macro, such as from a build script or unit test or
-/// ordinary Rust binary.
+/// ordinary CrabLang binary.
 ///
-/// With consideration for Rust libraries that are designed to support both
+/// With consideration for CrabLang libraries that are designed to support both
 /// macro and non-macro use cases, `proc_macro::is_available()` provides a
 /// non-panicking way to detect whether the infrastructure required to use the
 /// API of proc_macro is presently available. Returns true if invoked from
@@ -74,7 +74,7 @@ pub fn is_available() -> bool {
 ///
 /// This is both the input and output of `#[proc_macro]`, `#[proc_macro_attribute]`
 /// and `#[proc_macro_derive]` definitions.
-#[rustc_diagnostic_item = "TokenStream"]
+#[crablangc_diagnostic_item = "TokenStream"]
 #[stable(feature = "proc_macro_lib", since = "1.15.0")]
 #[derive(Clone)]
 pub struct TokenStream(Option<bridge::client::TokenStream>);
@@ -412,7 +412,7 @@ pub mod token_stream {
 /// To quote `$` itself, use `$$`.
 #[unstable(feature = "proc_macro_quote", issue = "54722")]
 #[allow_internal_unstable(proc_macro_def_site, proc_macro_internals)]
-#[rustc_builtin_macro]
+#[crablangc_builtin_macro]
 pub macro quote($($t:tt)*) {
     /* compiler built-in */
 }
@@ -645,7 +645,7 @@ impl SourceFile {
     pub fn is_real(&self) -> bool {
         // This is a hack until intercrate spans are implemented and we can have real source files
         // for spans generated in external macros.
-        // https://github.com/rust-lang/rust/pull/43604#issuecomment-333334368
+        // https://github.com/crablang/crablang/pull/43604#issuecomment-333334368
         self.0.is_real()
     }
 }
@@ -1062,7 +1062,7 @@ impl Ident {
     /// The `string` argument must be a valid identifier permitted by the
     /// language (including keywords, e.g. `self` or `fn`). Otherwise, the function will panic.
     ///
-    /// Note that `span`, currently in rustc, configures the hygiene information
+    /// Note that `span`, currently in crablangc, configures the hygiene information
     /// for this identifier.
     ///
     /// As of this time `Span::call_site()` explicitly opts-in to "call-site" hygiene

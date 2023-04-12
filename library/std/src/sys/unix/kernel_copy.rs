@@ -220,7 +220,7 @@ impl<R: CopyRead, W: CopyWrite> SpecCopy for Copier<'_, '_, R, W> {
     }
 }
 
-#[rustc_specialization_trait]
+#[crablangc_specialization_trait]
 trait CopyRead: Read {
     /// Implementations that contain buffers (i.e. `BufReader`) must transfer data from their internal
     /// buffers into `writer` until either the buffers are emptied or `limit` bytes have been
@@ -248,7 +248,7 @@ trait CopyRead: Read {
     fn properties(&self) -> CopyParams;
 }
 
-#[rustc_specialization_trait]
+#[crablangc_specialization_trait]
 trait CopyWrite: Write {
     /// Extracts the file descriptor and hints/metadata, delegating through wrappers if necessary.
     fn properties(&self) -> CopyParams;

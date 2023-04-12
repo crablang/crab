@@ -22,4 +22,4 @@ LL |     Pin::new(&mut b).resume(());
 error: aborting due to 2 previous errors
 
 Some errors have detailed explanations: E0502, E0626.
-For more information about an error, try `rustc --explain E0502`.
+For more information about an error, try `crablangc --explain E0502`.

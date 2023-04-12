@@ -1,4 +1,4 @@
-// Shows that rust-lang/rust/83601 is resolved
+// Shows that crablang/crablang/83601 is resolved
 
 #[derive(Debug, PartialEq, Eq)]
 struct Foo(u32);

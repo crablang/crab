@@ -1,5 +1,5 @@
 // run-pass
-// run-rustfix
+// run-crablangfix
 
 #![allow(dead_code)]
 #![warn(unused_parens)]

@@ -4,9 +4,9 @@ use clippy_utils::higher;
 use clippy_utils::source::snippet_with_applicability;
 use clippy_utils::ty::needs_ordered_drop;
 use clippy_utils::visitors::any_temporaries_need_ordered_drop;
-use rustc_errors::Applicability;
-use rustc_hir::{Block, Expr, ExprKind, Local, MatchSource, Pat, StmtKind};
-use rustc_lint::LateContext;
+use crablangc_errors::Applicability;
+use crablangc_hir::{Block, Expr, ExprKind, Local, MatchSource, Pat, StmtKind};
+use crablangc_lint::LateContext;
 
 pub(super) fn check<'tcx>(cx: &LateContext<'tcx>, expr: &'tcx Expr<'_>, loop_block: &'tcx Block<'_>) {
     let (init, has_trailing_exprs) = match (loop_block.stmts, loop_block.expr) {

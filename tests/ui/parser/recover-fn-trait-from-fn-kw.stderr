@@ -45,4 +45,4 @@ LL | fn foo2<T: fn(i32)>(_: T) {}
 error: aborting due to 4 previous errors
 
 Some errors have detailed explanations: E0308, E0631.
-For more information about an error, try `rustc --explain E0308`.
+For more information about an error, try `crablangc --explain E0308`.

@@ -1,7 +1,7 @@
 fn f1() {}
 enum E1 { V }
 struct S1 {
-    #[rustfmt::skip]
+    #[crablangfmt::skip]
     bar: i32,
 }
 mod m1 {
@@ -16,7 +16,7 @@ pub(crate) enum E2 {
     V
 }
 pub(crate) struct S2 {
-    #[rustfmt::skip]
+    #[crablangfmt::skip]
     bar: i32,
 }
 mod m2 {
@@ -32,7 +32,7 @@ mod m3 {
         V
     }
     pub(crate) struct S3 {
-        #[rustfmt::skip]
+        #[crablangfmt::skip]
         bar: i32,
     }
 }

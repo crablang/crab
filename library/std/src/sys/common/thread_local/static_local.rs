@@ -46,7 +46,7 @@ macro_rules! __thread_local_inner {
 
                 // FIXME: remove the #[allow(...)] marker when macros don't
                 // raise warning for missing/extraneous unsafe blocks anymore.
-                // See https://github.com/rust-lang/rust/issues/74838.
+                // See https://github.com/crablang/crablang/issues/74838.
                 #[allow(unused_unsafe)]
                 unsafe {
                     __KEY.get(move || {

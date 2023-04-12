@@ -1,4 +1,4 @@
-// rust-lang/rust#45696: This test is checking that we can return
+// crablang/crablang#45696: This test is checking that we can return
 // mutable borrows owned by boxes even when the boxes are dropped.
 
 // run-pass

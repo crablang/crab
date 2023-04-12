@@ -1,4 +1,4 @@
-extern "Rust" {
+extern "CrabLang" {
     fn miri_backtrace_size(flags: u64) -> usize;
     fn miri_get_backtrace(flags: u64, buf: *mut *mut ());
     fn miri_resolve_frame_names(ptr: *mut (), flags: u64, name_buf: *mut u8, filename_buf: *mut u8);

@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 
 macro_rules! my_wrapper {
     ($expr:expr) => { MyWrapper($expr) }

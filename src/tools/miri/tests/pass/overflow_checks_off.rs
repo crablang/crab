@@ -4,7 +4,7 @@
 // when they are not being overflow-checked.
 
 // FIXME: if we call the functions in `std::ops`, we still get the panics.
-// Miri does not implement the codegen-time hack that backs `#[rustc_inherit_overflow_checks]`.
+// Miri does not implement the codegen-time hack that backs `#[crablangc_inherit_overflow_checks]`.
 // use std::ops::*;
 
 fn main() {

@@ -67,4 +67,4 @@ LL |     _g();
 error: aborting due to 4 previous errors
 
 Some errors have detailed explanations: E0004, E0505.
-For more information about an error, try `rustc --explain E0004`.
+For more information about an error, try `crablangc --explain E0004`.

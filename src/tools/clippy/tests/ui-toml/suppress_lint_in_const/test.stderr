@@ -62,9 +62,9 @@ LL |     v[M];
 error[E0080]: evaluation of constant value failed
   --> $DIR/test.rs:10:24
    |
-LL | const REF_ERR: &i32 = &ARR[idx4()]; // Ok, let rustc handle const contexts.
+LL | const REF_ERR: &i32 = &ARR[idx4()]; // Ok, let crablangc handle const contexts.
    |                        ^^^^^^^^^^^ index out of bounds: the length is 2 but the index is 4
 
 error: aborting due to 8 previous errors
 
-For more information about this error, try `rustc --explain E0080`.
+For more information about this error, try `crablangc --explain E0080`.

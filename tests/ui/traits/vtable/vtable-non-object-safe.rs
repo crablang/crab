@@ -1,10 +1,10 @@
 // build-fail
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 
 // Ensure that non-object-safe methods in Iterator does not generate
 // vtable entries.
 
-#[rustc_dump_vtable]
+#[crablangc_dump_vtable]
 trait A: Iterator {}
 //~^ error vtable
 

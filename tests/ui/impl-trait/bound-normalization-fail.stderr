@@ -25,7 +25,7 @@ error[E0658]: `impl Trait` return type cannot contain a projection or `Self` tha
 LL |     fn foo2_fail<'a, T: Trait<'a>>() -> impl FooLike<Output = T::Assoc> {
    |                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
    |
-   = note: see issue #103532 <https://github.com/rust-lang/rust/issues/103532> for more information
+   = note: see issue #103532 <https://github.com/crablang/crablang/issues/103532> for more information
    = help: add `#![feature(impl_trait_projections)]` to the crate attributes to enable
 
 error[E0271]: type mismatch resolving `<Foo<()> as FooLike>::Output == <T as Trait<'a>>::Assoc`
@@ -52,4 +52,4 @@ LL |     fn foo2_fail<'a, T: Trait<'a, Assoc = ()>>() -> impl FooLike<Output = T
 error: aborting due to 3 previous errors
 
 Some errors have detailed explanations: E0271, E0658.
-For more information about an error, try `rustc --explain E0271`.
+For more information about an error, try `crablangc --explain E0271`.

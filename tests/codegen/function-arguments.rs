@@ -132,7 +132,7 @@ pub fn mutable_borrow_ret() -> &'static mut i32 {
 // CHECK: @mutable_notunpin_borrow({{i32\*|ptr}} noundef nonnull align 4 %_1)
 // This one is *not* `noalias` because it might be self-referential.
 // It is also not `dereferenceable` due to
-// <https://github.com/rust-lang/unsafe-code-guidelines/issues/381>.
+// <https://github.com/crablang/unsafe-code-guidelines/issues/381>.
 pub fn mutable_notunpin_borrow(_: &mut NotUnpin) {
 }
 

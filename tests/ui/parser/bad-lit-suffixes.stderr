@@ -13,7 +13,7 @@ LL |     "C"suffix
 error: unexpected expression: `"string"suffix`
   --> $DIR/bad-lit-suffixes.rs:30:17
    |
-LL | #[rustc_dummy = "string"suffix]
+LL | #[crablangc_dummy = "string"suffix]
    |                 ^^^^^^^^^^^^^^
 
 error: unexpected expression: `"string"suffix`
@@ -31,7 +31,7 @@ LL | #[link(name = "string"suffix)]
 error: invalid suffix `suffix` for number literal
   --> $DIR/bad-lit-suffixes.rs:42:41
    |
-LL | #[rustc_layout_scalar_valid_range_start(0suffix)]
+LL | #[crablangc_layout_scalar_valid_range_start(0suffix)]
    |                                         ^^^^^^^ invalid suffix `suffix`
    |
    = help: the suffix must be one of the numeric types (`u32`, `isize`, `f32`, etc.)

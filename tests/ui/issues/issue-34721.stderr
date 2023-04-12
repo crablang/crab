@@ -25,4 +25,4 @@ LL |     pub fn baz<T: Foo + Copy>(x: T) -> T {
 
 error: aborting due to previous error
 
-For more information about this error, try `rustc --explain E0382`.
+For more information about this error, try `crablangc --explain E0382`.

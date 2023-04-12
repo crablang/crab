@@ -38,7 +38,7 @@ dist=$objdir/build/dist
 
 source "$ci_dir/shared.sh"
 
-CACHE_DOMAIN="${CACHE_DOMAIN:-ci-caches.rust-lang.org}"
+CACHE_DOMAIN="${CACHE_DOMAIN:-ci-caches.crablang.org}"
 
 if [ -f "$docker_dir/$image/Dockerfile" ]; then
     if [ "$CI" != "" ]; then
@@ -69,14 +69,14 @@ if [ -f "$docker_dir/$image/Dockerfile" ]; then
       url="https://$CACHE_DOMAIN/docker/$cksum"
 
       echo "Attempting to download $url"
-      rm -f /tmp/rustci_docker_cache
+      rm -f /tmp/crablangci_docker_cache
       set +e
       retry curl --max-time 600 -y 30 -Y 10 --connect-timeout 30 -f -L -C - \
-        -o /tmp/rustci_docker_cache "$url"
+        -o /tmp/crablangci_docker_cache "$url"
       echo "Loading images into docker"
       # docker load sometimes hangs in the CI, so time out after 10 minutes with TERM,
       # KILL after 12 minutes
-      loaded_images=$(/usr/bin/timeout -k 720 600 docker load -i /tmp/rustci_docker_cache \
+      loaded_images=$(/usr/bin/timeout -k 720 600 docker load -i /tmp/crablangci_docker_cache \
         | sed 's/.* sha/sha/')
       set -e
       echo "Downloaded containers:\n$loaded_images"
@@ -92,19 +92,19 @@ if [ -f "$docker_dir/$image/Dockerfile" ]; then
     retry docker \
       build \
       --rm \
-      -t rust-ci \
+      -t crablang-ci \
       -f "$dockerfile" \
       "$context"
 
     if [ "$CI" != "" ]; then
       s3url="s3://$SCCACHE_BUCKET/docker/$cksum"
       upload="aws s3 cp - $s3url"
-      digest=$(docker inspect rust-ci --format '{{.Id}}')
+      digest=$(docker inspect crablang-ci --format '{{.Id}}')
       echo "Built container $digest"
       if ! grep -q "$digest" <(echo "$loaded_images"); then
         echo "Uploading finished image to $url"
         set +e
-        docker history -q rust-ci | \
+        docker history -q crablang-ci | \
           grep -v missing | \
           xargs docker save | \
           gzip | \
@@ -113,7 +113,7 @@ if [ -f "$docker_dir/$image/Dockerfile" ]; then
       else
         echo "Looks like docker image is the same as before, not uploading"
       fi
-      # Record the container image for reuse, e.g. by rustup.rs builds
+      # Record the container image for reuse, e.g. by crablangup.rs builds
       info="$dist/image-$image.txt"
       mkdir -p "$dist"
       echo "$url" >"$info"
@@ -128,7 +128,7 @@ elif [ -f "$docker_dir/disabled/$image/Dockerfile" ]; then
     tar --transform 's#disabled/#./#' -C $script_dir -c . | docker \
       build \
       --rm \
-      -t rust-ci \
+      -t crablang-ci \
       -f "host-$(uname -m)/$image/Dockerfile" \
       -
 else
@@ -211,7 +211,7 @@ else
   args="$args --volume $root_dir:/checkout:ro"
   args="$args --volume $objdir:/checkout/obj"
   args="$args --volume $HOME/.cargo:/cargo"
-  args="$args --volume $HOME/rustsrc:$HOME/rustsrc"
+  args="$args --volume $HOME/crablangsrc:$HOME/crablangsrc"
   args="$args --volume /tmp/toolstate:/tmp/toolstate"
 
   id=$(id -u)
@@ -239,7 +239,7 @@ if [ "$CI" != "" ]; then
   #
   # This command gets the last merge commit which we'll use as base to list
   # deleted files since then.
-  BASE_COMMIT="$(git log --author=bors@rust-lang.org -n 2 --pretty=format:%H | tail -n 1)"
+  BASE_COMMIT="$(git log --author=bors@crablang.org -n 2 --pretty=format:%H | tail -n 1)"
 else
   BASE_COMMIT=""
 fi
@@ -260,12 +260,12 @@ docker \
   --env TOOLSTATE_REPO_ACCESS_TOKEN \
   --env TOOLSTATE_REPO \
   --env TOOLSTATE_PUBLISH \
-  --env RUST_CI_OVERRIDE_RELEASE_CHANNEL \
+  --env CRABLANG_CI_OVERRIDE_RELEASE_CHANNEL \
   --env CI_JOB_NAME="${CI_JOB_NAME-$IMAGE}" \
   --env BASE_COMMIT="$BASE_COMMIT" \
   --init \
   --rm \
-  rust-ci \
+  crablang-ci \
   $command
 
 if [ -f /.dockerenv ]; then

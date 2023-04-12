@@ -1,6 +1,6 @@
 #![cfg_attr(feature = "deny-warnings", deny(warnings))]
-// warn on lints, that are included in `rust-lang/rust`s bootstrap
-#![warn(rust_2018_idioms, unused_lifetimes)]
+// warn on lints, that are included in `crablang/crablang`s bootstrap
+#![warn(crablang_2018_idioms, unused_lifetimes)]
 
 use clap::{Arg, ArgAction, ArgMatches, Command};
 use clippy_dev::{bless, dogfood, fmt, lint, new_lint, serve, setup, update_lints};
@@ -47,11 +47,11 @@ fn main() {
         Some(("setup", sub_command)) => match sub_command.subcommand() {
             Some(("intellij", matches)) => {
                 if matches.get_flag("remove") {
-                    setup::intellij::remove_rustc_src();
+                    setup::intellij::remove_crablangc_src();
                 } else {
-                    setup::intellij::setup_rustc_src(
+                    setup::intellij::setup_crablangc_src(
                         matches
-                            .get_one::<String>("rustc-repo-path")
+                            .get_one::<String>("crablangc-repo-path")
                             .expect("this field is mandatory and therefore always valid"),
                     );
                 }
@@ -74,7 +74,7 @@ fn main() {
         },
         Some(("remove", sub_command)) => match sub_command.subcommand() {
             Some(("git-hook", _)) => setup::git_hook::remove_hook(),
-            Some(("intellij", _)) => setup::intellij::remove_rustc_src(),
+            Some(("intellij", _)) => setup::intellij::remove_crablangc_src(),
             Some(("vscode-tasks", _)) => setup::vscode::remove_tasks(),
             _ => {},
         },
@@ -130,12 +130,12 @@ fn get_clap_config() -> ArgMatches {
                     .requires("fix"),
             ]),
             Command::new("fmt")
-                .about("Run rustfmt on all projects and tests")
+                .about("Run crablangfmt on all projects and tests")
                 .args([
                     Arg::new("check")
                         .long("check")
                         .action(ArgAction::SetTrue)
-                        .help("Use the rustfmt --check option"),
+                        .help("Use the crablangfmt --check option"),
                     Arg::new("verbose")
                         .short('v')
                         .long("verbose")
@@ -210,16 +210,16 @@ fn get_clap_config() -> ArgMatches {
                 .arg_required_else_help(true)
                 .subcommands([
                     Command::new("intellij")
-                        .about("Alter dependencies so Intellij Rust can find rustc internals")
+                        .about("Alter dependencies so Intellij CrabLang can find crablangc internals")
                         .args([
                             Arg::new("remove")
                                 .long("remove")
                                 .action(ArgAction::SetTrue)
                                 .help("Remove the dependencies added with 'cargo dev setup intellij'"),
-                            Arg::new("rustc-repo-path")
+                            Arg::new("crablangc-repo-path")
                                 .long("repo-path")
                                 .short('r')
-                                .help("The path to a rustc repo that will be used for setting the dependencies")
+                                .help("The path to a crablangc repo that will be used for setting the dependencies")
                                 .value_name("path")
                                 .conflicts_with("remove")
                                 .required(true),
@@ -257,7 +257,7 @@ fn get_clap_config() -> ArgMatches {
                 .subcommands([
                     Command::new("git-hook").about("Remove any existing pre-commit git hook"),
                     Command::new("vscode-tasks").about("Remove any existing vscode tasks"),
-                    Command::new("intellij").about("Removes rustc source paths added via `cargo dev setup intellij`"),
+                    Command::new("intellij").about("Removes crablangc source paths added via `cargo dev setup intellij`"),
                 ]),
             Command::new("serve")
                 .about("Launch a local 'ALL the Clippy Lints' website in a browser")
@@ -281,7 +281,7 @@ fn get_clap_config() -> ArgMatches {
                             cargo dev lint tests/ui-cargo/wildcard_dependencies/fail
                             cargo dev lint ~/my-project
 
-                        Run rustfix:
+                        Run crablangfix:
                             cargo dev lint ~/my-project -- --fix
 
                         Set lint levels:
@@ -308,7 +308,7 @@ fn get_clap_config() -> ArgMatches {
                 Arg::new("uplift")
                     .long("uplift")
                     .action(ArgAction::SetTrue)
-                    .help("This lint will be uplifted into rustc"),
+                    .help("This lint will be uplifted into crablangc"),
             ]),
             Command::new("deprecate").about("Deprecates the given lint").args([
                 Arg::new("name")

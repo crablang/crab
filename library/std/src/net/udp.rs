@@ -54,7 +54,7 @@ use crate::time::Duration;
 ///     Ok(())
 /// }
 /// ```
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub struct UdpSocket(net_imp::UdpSocket);
 
 impl UdpSocket {
@@ -90,7 +90,7 @@ impl UdpSocket {
     /// ];
     /// let socket = UdpSocket::bind(&addrs[..]).expect("couldn't bind to address");
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn bind<A: ToSocketAddrs>(addr: A) -> io::Result<UdpSocket> {
         super::each_addr(addr, net_imp::UdpSocket::bind).map(UdpSocket)
     }
@@ -113,7 +113,7 @@ impl UdpSocket {
     ///                                         .expect("Didn't receive data");
     /// let filled_buf = &mut buf[..number_of_bytes];
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn recv_from(&self, buf: &mut [u8]) -> io::Result<(usize, SocketAddr)> {
         self.0.recv_from(buf)
     }
@@ -170,8 +170,8 @@ impl UdpSocket {
     /// socket.send_to(&[0; 10], "127.0.0.1:4242").expect("couldn't send data");
     /// ```
     ///
-    /// [Issue #34202]: https://github.com/rust-lang/rust/issues/34202
-    #[stable(feature = "rust1", since = "1.0.0")]
+    /// [Issue #34202]: https://github.com/crablang/crablang/issues/34202
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn send_to<A: ToSocketAddrs>(&self, buf: &[u8], addr: A) -> io::Result<usize> {
         match addr.to_socket_addrs()?.next() {
             Some(addr) => self.0.send_to(buf, &addr),
@@ -221,7 +221,7 @@ impl UdpSocket {
     /// assert_eq!(socket.local_addr().unwrap(),
     ///            SocketAddr::V4(SocketAddrV4::new(Ipv4Addr::new(127, 0, 0, 1), 34254)));
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn local_addr(&self) -> io::Result<SocketAddr> {
         self.0.socket_addr()
     }
@@ -240,7 +240,7 @@ impl UdpSocket {
     /// let socket = UdpSocket::bind("127.0.0.1:34254").expect("couldn't bind to address");
     /// let socket_clone = socket.try_clone().expect("couldn't clone the socket");
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn try_clone(&self) -> io::Result<UdpSocket> {
         self.0.duplicate().map(UdpSocket)
     }
@@ -805,7 +805,7 @@ impl IntoInner<net_imp::UdpSocket> for UdpSocket {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl fmt::Debug for UdpSocket {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         self.0.fmt(f)

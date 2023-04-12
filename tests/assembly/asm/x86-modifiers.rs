@@ -8,20 +8,20 @@
 // compile-flags: -C llvm-args=--x86-asm-syntax=intel
 // compile-flags: -C target-feature=+avx512bw
 
-#![feature(no_core, lang_items, rustc_attrs)]
+#![feature(no_core, lang_items, crablangc_attrs)]
 #![crate_type = "rlib"]
 #![no_core]
 #![allow(asm_sub_register)]
 
-#[rustc_builtin_macro]
+#[crablangc_builtin_macro]
 macro_rules! asm {
     () => {};
 }
-#[rustc_builtin_macro]
+#[crablangc_builtin_macro]
 macro_rules! concat {
     () => {};
 }
-#[rustc_builtin_macro]
+#[crablangc_builtin_macro]
 macro_rules! stringify {
     () => {};
 }
@@ -39,7 +39,7 @@ macro_rules! check {
         #[no_mangle]
         pub unsafe extern "C" fn $func() -> i32 {
             // Hack to avoid function merging
-            extern "Rust" {
+            extern "CrabLang" {
                 fn dont_merge(s: &str);
             }
             dont_merge(stringify!($func));

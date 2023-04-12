@@ -1,18 +1,18 @@
 // Test if the on_unimplemented message override works
 
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 
 
 struct Foo<T>(T);
 struct Bar<T>(T);
 
-#[rustc_on_unimplemented = "trait message"]
+#[crablangc_on_unimplemented = "trait message"]
 trait Index<Idx: ?Sized> {
     type Output: ?Sized;
     fn index(&self, index: Idx) -> &Self::Output;
 }
 
-#[rustc_on_unimplemented = "on impl for Foo"]
+#[crablangc_on_unimplemented = "on impl for Foo"]
 impl Index<Foo<usize>> for [i32] {
     type Output = i32;
     fn index(&self, _index: Foo<usize>) -> &i32 {
@@ -20,7 +20,7 @@ impl Index<Foo<usize>> for [i32] {
     }
 }
 
-#[rustc_on_unimplemented = "on impl for Bar"]
+#[crablangc_on_unimplemented = "on impl for Bar"]
 impl Index<Bar<usize>> for [i32] {
     type Output = i32;
     fn index(&self, _index: Bar<usize>) -> &i32 {

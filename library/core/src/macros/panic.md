@@ -10,7 +10,7 @@ tests. `panic!` is closely tied with the `unwrap` method of both
 
 When using `panic!()` you can specify a string payload, that is built using
 the [`format!`] syntax. That payload is used when injecting the panic into
-the calling Rust thread, causing the thread to panic entirely.
+the calling CrabLang thread, causing the thread to panic entirely.
 
 The behavior of the default `std` hook, i.e. the code that runs directly
 after the panic is invoked, is to print the message payload to
@@ -24,7 +24,7 @@ See also the macro [`compile_error!`], for raising errors during compilation.
 
 # When to use `panic!` vs `Result`
 
-The Rust language provides two complementary systems for constructing /
+The CrabLang language provides two complementary systems for constructing /
 representing, reporting, propagating, reacting to, and discarding errors. These
 responsibilities are collectively known as "error handling." `panic!` and
 `Result` are similar in that they are each the primary interface of their

@@ -7,10 +7,10 @@ impl FnOnce<(u32, u32)> for Test {
 //~| ERROR manual implementations of `FnOnce` are experimental
     type Output = u32;
 
-    extern "rust-call" fn call_once(self, (a, b): (u32, u32)) -> u32 {
+    extern "crablang-call" fn call_once(self, (a, b): (u32, u32)) -> u32 {
         a + b
     }
-    //~^^^ ERROR rust-call ABI is subject to change
+    //~^^^ ERROR crablang-call ABI is subject to change
 }
 
 fn main() {

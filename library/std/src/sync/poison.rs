@@ -92,7 +92,7 @@ pub struct Guard {
 /// ```
 /// [`Mutex`]: crate::sync::Mutex
 /// [`RwLock`]: crate::sync::RwLock
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub struct PoisonError<T> {
     guard: T,
 }
@@ -106,15 +106,15 @@ pub struct PoisonError<T> {
 /// [`try_write`]: crate::sync::RwLock::try_write
 /// [`Mutex`]: crate::sync::Mutex
 /// [`RwLock`]: crate::sync::RwLock
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub enum TryLockError<T> {
     /// The lock could not be acquired because another thread failed while holding
     /// the lock.
-    #[stable(feature = "rust1", since = "1.0.0")]
-    Poisoned(#[stable(feature = "rust1", since = "1.0.0")] PoisonError<T>),
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    Poisoned(#[stable(feature = "crablang1", since = "1.0.0")] PoisonError<T>),
     /// The lock could not be acquired at this time because the operation would
     /// otherwise block.
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     WouldBlock,
 }
 
@@ -127,7 +127,7 @@ pub enum TryLockError<T> {
 /// method.
 ///
 /// [`into_inner`]: PoisonError::into_inner
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub type LockResult<Guard> = Result<Guard, PoisonError<Guard>>;
 
 /// A type alias for the result of a nonblocking locking method.
@@ -135,24 +135,24 @@ pub type LockResult<Guard> = Result<Guard, PoisonError<Guard>>;
 /// For more information, see [`LockResult`]. A `TryLockResult` doesn't
 /// necessarily hold the associated guard in the [`Err`] type as the lock might not
 /// have been acquired for other reasons.
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub type TryLockResult<Guard> = Result<Guard, TryLockError<Guard>>;
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T> fmt::Debug for PoisonError<T> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_struct("PoisonError").finish_non_exhaustive()
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T> fmt::Display for PoisonError<T> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         "poisoned lock: another task failed inside".fmt(f)
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T> Error for PoisonError<T> {
     #[allow(deprecated)]
     fn description(&self) -> &str {
@@ -214,14 +214,14 @@ impl<T> PoisonError<T> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T> From<PoisonError<T>> for TryLockError<T> {
     fn from(err: PoisonError<T>) -> TryLockError<T> {
         TryLockError::Poisoned(err)
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T> fmt::Debug for TryLockError<T> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match *self {
@@ -231,7 +231,7 @@ impl<T> fmt::Debug for TryLockError<T> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T> fmt::Display for TryLockError<T> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match *self {
@@ -242,7 +242,7 @@ impl<T> fmt::Display for TryLockError<T> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T> Error for TryLockError<T> {
     #[allow(deprecated, deprecated_in_future)]
     fn description(&self) -> &str {

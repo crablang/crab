@@ -36,4 +36,4 @@ LL |     let Foo { present: (), #[cfg(all())] absent: () } = foo;
 error: aborting due to 4 previous errors
 
 Some errors have detailed explanations: E0026, E0027, E0063, E0560.
-For more information about an error, try `rustc --explain E0026`.
+For more information about an error, try `crablangc --explain E0026`.

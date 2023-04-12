@@ -74,7 +74,7 @@ pub fn anon_pipe(ours_readable: bool, their_handle_inheritable: bool) -> io::Res
         loop {
             tries += 1;
             name = format!(
-                r"\\.\pipe\__rust_anonymous_pipe1__.{}.{}",
+                r"\\.\pipe\__crablang_anonymous_pipe1__.{}.{}",
                 c::GetCurrentProcessId(),
                 random_number()
             );
@@ -116,7 +116,7 @@ pub fn anon_pipe(ours_readable: bool, their_handle_inheritable: bool) -> io::Res
             // Proper fix would increase the number of FFI imports and introduce
             // significant amount of Windows XP specific code with no clean
             // testing strategy
-            // For more info, see https://github.com/rust-lang/rust/pull/37677.
+            // For more info, see https://github.com/crablang/crablang/pull/37677.
             if handle == c::INVALID_HANDLE_VALUE {
                 let err = io::Error::last_os_error();
                 let raw_os_err = err.raw_os_error();

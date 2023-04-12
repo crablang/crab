@@ -12,9 +12,9 @@ pub struct ShortReader {
     lengths: Vec<usize>,
 }
 
-// FIXME: rustfmt and tidy disagree about the correct formatting of this
+// FIXME: crablangfmt and tidy disagree about the correct formatting of this
 // function. This leads to issues for users with editors configured to
-// rustfmt-on-save.
+// crablangfmt-on-save.
 impl Read for ShortReader {
     fn read(&mut self, _: &mut [u8]) -> io::Result<usize> {
         if self.lengths.is_empty() { Ok(0) } else { Ok(self.lengths.remove(0)) }

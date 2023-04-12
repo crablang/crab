@@ -9,8 +9,8 @@ fn miri_path() -> PathBuf {
 }
 
 fn get_host() -> String {
-    rustc_version::VersionMeta::for_command(std::process::Command::new(miri_path()))
-        .expect("failed to parse rustc version info")
+    crablangc_version::VersionMeta::for_command(std::process::Command::new(miri_path()))
+        .expect("failed to parse crablangc version info")
         .host
 }
 
@@ -55,13 +55,13 @@ fn run_tests(mode: Mode, path: &str, target: &str, with_dependencies: bool) -> R
         ..Config::default()
     };
 
-    let in_rustc_test_suite = option_env!("RUSTC_STAGE").is_some();
+    let in_crablangc_test_suite = option_env!("CRABLANGC_STAGE").is_some();
 
     // Add some flags we always want.
     config.args.push("--edition".into());
     config.args.push("2018".into());
-    if in_rustc_test_suite {
-        // Less aggressive warnings to make the rustc toolstate management less painful.
+    if in_crablangc_test_suite {
+        // Less aggressive warnings to make the crablangc toolstate management less painful.
         // (We often get warnings when e.g. a feature gets stabilized or some lint gets added/improved.)
         config.args.push("-Astable-features".into());
         config.args.push("-Aunused".into());
@@ -169,8 +169,8 @@ regexes! {
     "sys::[a-z]+::"                  => "sys::PLATFORM::",
     // Windows file paths
     r"\\"                           => "/",
-    // erase Rust stdlib path
-    "[^ `]*/(rust[^/]*|checkout)/library/" => "RUSTLIB/",
+    // erase CrabLang stdlib path
+    "[^ `]*/(crablang[^/]*|checkout)/library/" => "CRABLANGLIB/",
     // erase platform file paths
     "sys/[a-z]+/"                    => "sys/PLATFORM/",
     // erase paths into the crate registry

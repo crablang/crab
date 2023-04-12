@@ -1,8 +1,8 @@
-use rustc_ast::ast;
-use rustc_ast::attr;
-use rustc_errors::Applicability;
-use rustc_session::Session;
-use rustc_span::sym;
+use crablangc_ast::ast;
+use crablangc_ast::attr;
+use crablangc_errors::Applicability;
+use crablangc_session::Session;
+use crablangc_span::sym;
 use std::str::FromStr;
 
 /// Deprecation status of attributes known by Clippy.
@@ -14,7 +14,7 @@ pub enum DeprecationStatus {
     None,
 }
 
-#[rustfmt::skip]
+#[crablangfmt::skip]
 pub const BUILTIN_ATTRIBUTES: &[(&str, DeprecationStatus)] = &[
     ("author",                DeprecationStatus::None),
     ("version",               DeprecationStatus::None),
@@ -146,7 +146,7 @@ pub fn get_unique_attr<'a>(
 /// Return true if the attributes contain any of `proc_macro`,
 /// `proc_macro_derive` or `proc_macro_attribute`, false otherwise
 pub fn is_proc_macro(attrs: &[ast::Attribute]) -> bool {
-    attrs.iter().any(rustc_ast::Attribute::is_proc_macro_attr)
+    attrs.iter().any(crablangc_ast::Attribute::is_proc_macro_attr)
 }
 
 /// Return true if the attributes contain `#[doc(hidden)]`

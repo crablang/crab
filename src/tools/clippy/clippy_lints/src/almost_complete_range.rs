@@ -1,12 +1,12 @@
 use clippy_utils::diagnostics::span_lint_and_then;
 use clippy_utils::msrvs::{self, Msrv};
 use clippy_utils::source::{trim_span, walk_span_to_context};
-use rustc_ast::ast::{Expr, ExprKind, LitKind, Pat, PatKind, RangeEnd, RangeLimits};
-use rustc_errors::Applicability;
-use rustc_lint::{EarlyContext, EarlyLintPass, LintContext};
-use rustc_middle::lint::in_external_macro;
-use rustc_session::{declare_tool_lint, impl_lint_pass};
-use rustc_span::Span;
+use crablangc_ast::ast::{Expr, ExprKind, LitKind, Pat, PatKind, RangeEnd, RangeLimits};
+use crablangc_errors::Applicability;
+use crablangc_lint::{EarlyContext, EarlyLintPass, LintContext};
+use crablangc_middle::lint::in_external_macro;
+use crablangc_session::{declare_tool_lint, impl_lint_pass};
+use crablangc_span::Span;
 
 declare_clippy_lint! {
     /// ### What it does
@@ -17,11 +17,11 @@ declare_clippy_lint! {
     /// This (`'a'..'z'`) is almost certainly a typo meant to include all letters.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// let _ = 'a'..'z';
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// let _ = 'a'..='z';
     /// ```
     #[clippy::version = "1.68.0"]

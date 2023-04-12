@@ -1,10 +1,10 @@
 use clippy_utils::diagnostics::span_lint_and_help;
 use clippy_utils::ty::is_type_lang_item;
 use clippy_utils::{match_def_path, paths, peel_hir_expr_refs};
-use rustc_hir::{BinOpKind, Expr, ExprKind, LangItem};
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_session::{declare_lint_pass, declare_tool_lint};
-use rustc_span::sym;
+use crablangc_hir::{BinOpKind, Expr, ExprKind, LangItem};
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_span::sym;
 
 declare_clippy_lint! {
     /// ### What it does
@@ -21,13 +21,13 @@ declare_clippy_lint! {
     /// While using `write!` in the suggested way should never fail, this isn't necessarily clear to the programmer.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// let mut s = String::new();
     /// s += &format!("0x{:X}", 1024);
     /// s.push_str(&format!("0x{:X}", 1024));
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// use std::fmt::Write as _; // import without risk of name clashing
     ///
     /// let mut s = String::new();

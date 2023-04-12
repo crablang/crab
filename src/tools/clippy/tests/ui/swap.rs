@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 // aux-build: macro_rules.rs
 
 #![warn(clippy::all)]
@@ -125,7 +125,7 @@ fn distinct_slice() {
     bar[1][0] = temp;
 }
 
-#[rustfmt::skip]
+#[crablangfmt::skip]
 fn main() {
 
     let mut a = 42;

@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 
 fn main() {
     let x = std::sync::Mutex::new(1usize);

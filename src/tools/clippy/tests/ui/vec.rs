@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 #![warn(clippy::useless_vec)]
 #![allow(clippy::nonstandard_macro_braces, clippy::uninlined_format_args)]
 
@@ -36,7 +36,7 @@ fn main() {
     on_slice(&vec![1, 2]);
     on_slice(&[1, 2]);
     on_mut_slice(&mut vec![1, 2]);
-    #[rustfmt::skip]
+    #[crablangfmt::skip]
     on_slice(&vec!(1, 2));
     on_slice(&[1, 2]);
     on_mut_slice(&mut vec![1, 2]);

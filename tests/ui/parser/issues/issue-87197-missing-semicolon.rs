@@ -1,6 +1,6 @@
-// run-rustfix
+// run-crablangfix
 // Parser should know when a semicolon is missing.
-// https://github.com/rust-lang/rust/issues/87197
+// https://github.com/crablang/crablang/issues/87197
 
 fn main() {
     let x = 100 //~ ERROR: expected `;`

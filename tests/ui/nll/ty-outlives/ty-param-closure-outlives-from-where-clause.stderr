@@ -6,7 +6,7 @@ LL |     with_signature(a, b, |x, y| {
    |
    = note: defining type: no_region::<T>::{closure#0} with closure substs [
                i32,
-               extern "rust-call" fn((std::cell::Cell<&'_#1r ()>, T)),
+               extern "crablang-call" fn((std::cell::Cell<&'_#1r ()>, T)),
                (),
            ]
    = note: late-bound region is '_#2r
@@ -40,7 +40,7 @@ LL |     with_signature(a, b, |x, y| {
    |
    = note: defining type: correct_region::<'_#1r, T>::{closure#0} with closure substs [
                i32,
-               extern "rust-call" fn((std::cell::Cell<&'_#2r ()>, T)),
+               extern "crablang-call" fn((std::cell::Cell<&'_#2r ()>, T)),
                (),
            ]
    = note: number of external vids: 3
@@ -64,7 +64,7 @@ LL |     with_signature(a, b, |x, y| {
    |
    = note: defining type: wrong_region::<'_#1r, T>::{closure#0} with closure substs [
                i32,
-               extern "rust-call" fn((std::cell::Cell<&'_#2r ()>, T)),
+               extern "crablang-call" fn((std::cell::Cell<&'_#2r ()>, T)),
                (),
            ]
    = note: late-bound region is '_#3r
@@ -100,7 +100,7 @@ LL |     with_signature(a, b, |x, y| {
    |
    = note: defining type: outlives_region::<'_#1r, '_#2r, T>::{closure#0} with closure substs [
                i32,
-               extern "rust-call" fn((std::cell::Cell<&'_#3r ()>, T)),
+               extern "crablang-call" fn((std::cell::Cell<&'_#3r ()>, T)),
                (),
            ]
    = note: number of external vids: 4
@@ -119,4 +119,4 @@ LL | |     'b: 'a,
 
 error: aborting due to 2 previous errors
 
-For more information about this error, try `rustc --explain E0309`.
+For more information about this error, try `crablangc --explain E0309`.

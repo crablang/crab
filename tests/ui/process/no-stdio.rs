@@ -5,7 +5,7 @@
 // revisions: mir thir
 // [thir]compile-flags: -Zthir-unsafeck
 
-#![feature(rustc_private)]
+#![feature(crablangc_private)]
 
 extern crate libc;
 

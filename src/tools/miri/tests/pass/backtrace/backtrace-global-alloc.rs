@@ -1,5 +1,5 @@
 //@compile-flags: -Zmiri-disable-isolation
-//@rustc-env: RUST_BACKTRACE=1
+//@crablangc-env: CRABLANG_BACKTRACE=1
 
 use std::alloc::System;
 use std::backtrace::Backtrace;

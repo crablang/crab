@@ -1,9 +1,9 @@
 // Regression test for issue #105637: `-Zdylib-lto` with LTO duplicated symbols from other dylibs,
 // in this case from libstd.
 //
-// That manifested as both `rustc_driver` and rustc's "main" (`compiler/rustc`) having their own
-// `std::panicking::HOOK` static, and the hook in rustc's main (the default stdlib's) being executed
-// when rustc ICEs, instead of the overriden hook from `rustc_driver` (which also displays the query
+// That manifested as both `crablangc_driver` and crablangc's "main" (`compiler/crablangc`) having their own
+// `std::panicking::HOOK` static, and the hook in crablangc's main (the default stdlib's) being executed
+// when crablangc ICEs, instead of the overriden hook from `crablangc_driver` (which also displays the query
 // stack and information on how to open a GH issue for the encountered ICE).
 //
 // In this test, we reproduce this setup by installing a panic hook in both the main and an LTOed

@@ -3,12 +3,12 @@ use clippy_utils::is_lint_allowed;
 use clippy_utils::peel_blocks;
 use clippy_utils::source::snippet_opt;
 use clippy_utils::ty::has_drop;
-use rustc_errors::Applicability;
-use rustc_hir::def::{DefKind, Res};
-use rustc_hir::{is_range_literal, BinOpKind, BlockCheckMode, Expr, ExprKind, PatKind, Stmt, StmtKind, UnsafeSource};
-use rustc_lint::{LateContext, LateLintPass, LintContext};
-use rustc_middle::lint::in_external_macro;
-use rustc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_errors::Applicability;
+use crablangc_hir::def::{DefKind, Res};
+use crablangc_hir::{is_range_literal, BinOpKind, BlockCheckMode, Expr, ExprKind, PatKind, Stmt, StmtKind, UnsafeSource};
+use crablangc_lint::{LateContext, LateLintPass, LintContext};
+use crablangc_middle::lint::in_external_macro;
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
 use std::ops::Deref;
 
 declare_clippy_lint! {
@@ -21,7 +21,7 @@ declare_clippy_lint! {
     /// readable.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// 0;
     /// ```
     #[clippy::version = "pre 1.29.0"]
@@ -44,7 +44,7 @@ declare_clippy_lint! {
     /// used later in the code.
     ///
     /// ### Example
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// let _i_serve_no_purpose = 1;
     /// ```
     #[clippy::version = "1.58.0"]
@@ -63,7 +63,7 @@ declare_clippy_lint! {
     /// Having such expressions reduces readability.
     ///
     /// ### Example
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// compute_array()[0];
     /// ```
     #[clippy::version = "pre 1.29.0"]

@@ -27,4 +27,4 @@ LL | impl Fn(&isize) for Error {
 error: aborting due to 3 previous errors
 
 Some errors have detailed explanations: E0183, E0229, E0407.
-For more information about an error, try `rustc --explain E0183`.
+For more information about an error, try `crablangc --explain E0183`.

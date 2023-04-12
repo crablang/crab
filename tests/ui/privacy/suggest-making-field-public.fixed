@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 mod a {
     pub struct A(pub String);
 }

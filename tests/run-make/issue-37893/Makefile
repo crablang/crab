@@ -2,4 +2,4 @@
 include ../tools.mk
 
 all:
-	$(RUSTC) a.rs && $(RUSTC) b.rs && $(RUSTC) c.rs
+	$(CRABLANGC) a.rs && $(CRABLANGC) b.rs && $(CRABLANGC) c.rs

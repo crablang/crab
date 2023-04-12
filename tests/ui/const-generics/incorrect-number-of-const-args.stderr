@@ -32,4 +32,4 @@ LL | fn foo<const X: usize, const Y: usize>() -> usize {
 
 error: aborting due to 2 previous errors
 
-For more information about this error, try `rustc --explain E0107`.
+For more information about this error, try `crablangc --explain E0107`.

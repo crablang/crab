@@ -1,9 +1,9 @@
 use clippy_utils::diagnostics::span_lint_and_help;
-use rustc_hir::def_id::DefId;
-use rustc_hir::{def::Res, HirId, Path, PathSegment};
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_session::{declare_tool_lint, impl_lint_pass};
-use rustc_span::{sym, symbol::kw, Span};
+use crablangc_hir::def_id::DefId;
+use crablangc_hir::{def::Res, HirId, Path, PathSegment};
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_session::{declare_tool_lint, impl_lint_pass};
+use crablangc_span::{sym, symbol::kw, Span};
 
 declare_clippy_lint! {
     /// ### What it does
@@ -17,11 +17,11 @@ declare_clippy_lint! {
     /// migrating to become `no_std` compatible.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// use std::hash::Hasher;
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// use core::hash::Hasher;
     /// ```
     #[clippy::version = "1.64.0"]
@@ -42,11 +42,11 @@ declare_clippy_lint! {
     /// for crates migrating to become `no_std` compatible.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// use std::vec::Vec;
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// # extern crate alloc;
     /// use alloc::vec::Vec;
     /// ```
@@ -68,12 +68,12 @@ declare_clippy_lint! {
     /// is also useful for crates migrating to become `no_std` compatible.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// # extern crate alloc;
     /// use alloc::slice::from_ref;
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// use core::slice::from_ref;
     /// ```
     #[clippy::version = "1.64.0"]
@@ -150,7 +150,7 @@ fn get_first_segment<'tcx>(path: &Path<'tcx>) -> Option<&'tcx PathSegment<'tcx>>
 }
 
 /// Checks if all ancestors of `def_id` are stable, to avoid linting
-/// [unstable moves](https://github.com/rust-lang/rust/pull/95956)
+/// [unstable moves](https://github.com/crablang/crablang/pull/95956)
 fn is_stable(cx: &LateContext<'_>, mut def_id: DefId) -> bool {
     loop {
         if cx

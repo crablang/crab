@@ -9,7 +9,7 @@ fn foo() -> bool {
     true
 }
 
-#[rustfmt::skip]
+#[crablangfmt::skip]
 fn main() {
     // weird op_eq formatting:
     let mut a = 42;

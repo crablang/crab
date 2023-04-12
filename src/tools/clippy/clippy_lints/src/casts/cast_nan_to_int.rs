@@ -2,9 +2,9 @@ use super::CAST_NAN_TO_INT;
 
 use clippy_utils::consts::{constant, Constant};
 use clippy_utils::diagnostics::span_lint_and_note;
-use rustc_hir::Expr;
-use rustc_lint::LateContext;
-use rustc_middle::ty::Ty;
+use crablangc_hir::Expr;
+use crablangc_lint::LateContext;
+use crablangc_middle::ty::Ty;
 
 pub(super) fn check(cx: &LateContext<'_>, expr: &Expr<'_>, cast_expr: &Expr<'_>, from_ty: Ty<'_>, to_ty: Ty<'_>) {
     if from_ty.is_floating_point() && to_ty.is_integral() && is_known_nan(cx, cast_expr) {

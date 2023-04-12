@@ -95,8 +95,8 @@ use crate::fmt;
 /// [loader lock]: https://docs.microsoft.com/en-us/windows/win32/dlls/dynamic-link-library-best-practices
 /// [`JoinHandle::join`]: crate::thread::JoinHandle::join
 /// [`with`]: LocalKey::with
-#[cfg_attr(not(test), rustc_diagnostic_item = "LocalKey")]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[cfg_attr(not(test), crablangc_diagnostic_item = "LocalKey")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub struct LocalKey<T: 'static> {
     // This outer `LocalKey<T>` type is what's going to be stored in statics,
     // but actual data inside will sometimes be tagged with #[thread_local].
@@ -145,8 +145,8 @@ impl<T: 'static> fmt::Debug for LocalKey<T> {
 ///
 /// [`std::thread::LocalKey`]: crate::thread::LocalKey
 #[macro_export]
-#[stable(feature = "rust1", since = "1.0.0")]
-#[cfg_attr(not(test), rustc_diagnostic_item = "thread_local_macro")]
+#[stable(feature = "crablang1", since = "1.0.0")]
+#[cfg_attr(not(test), crablangc_diagnostic_item = "thread_local_macro")]
 #[allow_internal_unstable(thread_local_internals)]
 macro_rules! thread_local {
     // empty (base case for the recursion)
@@ -203,7 +203,7 @@ impl<T: 'static> LocalKey<T> {
         reason = "recently added to create a key",
         issue = "none"
     )]
-    #[rustc_const_unstable(feature = "thread_local_internals", issue = "none")]
+    #[crablangc_const_unstable(feature = "thread_local_internals", issue = "none")]
     pub const unsafe fn new(
         inner: unsafe fn(Option<&mut Option<T>>) -> Option<&'static T>,
     ) -> LocalKey<T> {
@@ -220,7 +220,7 @@ impl<T: 'static> LocalKey<T> {
     /// This function will `panic!()` if the key currently has its
     /// destructor running, and it **may** panic if the destructor has
     /// previously been run for this thread.
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn with<F, R>(&'static self, f: F) -> R
     where
         F: FnOnce(&T) -> R,

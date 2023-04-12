@@ -188,7 +188,7 @@ pub enum PathSet {
     /// set.
     ///
     /// NOTE: the paths within a set should always be aliases of one another.
-    /// For example, `src/librustdoc` and `src/tools/rustdoc` should be in the same set,
+    /// For example, `src/libcrablangdoc` and `src/tools/crablangdoc` should be in the same set,
     /// but `library/core` and `library/std` generally should not, unless there's no way (for that Step)
     /// to build them separately.
     Set(BTreeSet<TaskPath>),
@@ -643,12 +643,12 @@ impl<'a> Builder<'a> {
         match kind {
             Kind::Build => describe!(
                 compile::Std,
-                compile::Rustc,
+                compile::CrabLangc,
                 compile::Assemble,
                 compile::CodegenBackend,
                 compile::StartupObjects,
                 tool::BuildManifest,
-                tool::Rustbook,
+                tool::CrabLangbook,
                 tool::ErrorIndex,
                 tool::UnstableBookGen,
                 tool::Tidy,
@@ -657,18 +657,18 @@ impl<'a> Builder<'a> {
                 tool::Compiletest,
                 tool::RemoteTestServer,
                 tool::RemoteTestClient,
-                tool::RustInstaller,
+                tool::CrabLangInstaller,
                 tool::Cargo,
                 tool::Rls,
-                tool::RustAnalyzer,
-                tool::RustAnalyzerProcMacroSrv,
-                tool::RustDemangler,
-                tool::Rustdoc,
+                tool::CrabLangAnalyzer,
+                tool::CrabLangAnalyzerProcMacroSrv,
+                tool::CrabLangDemangler,
+                tool::CrabLangdoc,
                 tool::Clippy,
                 tool::CargoClippy,
                 llvm::Llvm,
                 llvm::Sanitizers,
-                tool::Rustfmt,
+                tool::CrabLangfmt,
                 tool::Miri,
                 tool::CargoMiri,
                 llvm::Lld,
@@ -676,16 +676,16 @@ impl<'a> Builder<'a> {
             ),
             Kind::Check | Kind::Clippy | Kind::Fix => describe!(
                 check::Std,
-                check::Rustc,
-                check::Rustdoc,
+                check::CrabLangc,
+                check::CrabLangdoc,
                 check::CodegenBackend,
                 check::Clippy,
                 check::Miri,
                 check::CargoMiri,
                 check::MiroptTestTools,
                 check::Rls,
-                check::RustAnalyzer,
-                check::Rustfmt,
+                check::CrabLangAnalyzer,
+                check::CrabLangfmt,
                 check::Bootstrap
             ),
             Kind::Test => describe!(
@@ -702,67 +702,67 @@ impl<'a> Builder<'a> {
                 test::Incremental,
                 test::Debuginfo,
                 test::UiFullDeps,
-                test::Rustdoc,
+                test::CrabLangdoc,
                 test::Pretty,
                 test::Crate,
-                test::CrateLibrustc,
-                test::CrateRustdoc,
-                test::CrateRustdocJsonTypes,
+                test::CrateLibcrablangc,
+                test::CrateCrabLangdoc,
+                test::CrateCrabLangdocJsonTypes,
                 test::CrateJsonDocLint,
                 test::Linkcheck,
                 test::TierCheck,
                 test::ReplacePlaceholderTest,
                 test::Cargotest,
                 test::Cargo,
-                test::RustAnalyzer,
+                test::CrabLangAnalyzer,
                 test::ErrorIndex,
                 test::Distcheck,
                 test::RunMakeFullDeps,
                 test::Nomicon,
                 test::Reference,
-                test::RustdocBook,
-                test::RustByExample,
+                test::CrabLangdocBook,
+                test::CrabLangByExample,
                 test::TheBook,
                 test::UnstableBook,
-                test::RustcBook,
+                test::CrabLangcBook,
                 test::LintDocs,
-                test::RustcGuide,
+                test::CrabLangcGuide,
                 test::EmbeddedBook,
                 test::EditionGuide,
-                test::Rustfmt,
+                test::CrabLangfmt,
                 test::Miri,
                 test::Clippy,
-                test::RustDemangler,
+                test::CrabLangDemangler,
                 test::CompiletestTest,
-                test::RustdocJSStd,
-                test::RustdocJSNotStd,
-                test::RustdocGUI,
-                test::RustdocTheme,
-                test::RustdocUi,
-                test::RustdocJson,
+                test::CrabLangdocJSStd,
+                test::CrabLangdocJSNotStd,
+                test::CrabLangdocGUI,
+                test::CrabLangdocTheme,
+                test::CrabLangdocUi,
+                test::CrabLangdocJson,
                 test::HtmlCheck,
-                test::RustInstaller,
+                test::CrabLangInstaller,
                 // Run bootstrap close to the end as it's unlikely to fail
                 test::Bootstrap,
                 // Run run-make last, since these won't pass without make on Windows
                 test::RunMake,
             ),
-            Kind::Bench => describe!(test::Crate, test::CrateLibrustc),
+            Kind::Bench => describe!(test::Crate, test::CrateLibcrablangc),
             Kind::Doc => describe!(
                 doc::UnstableBook,
                 doc::UnstableBookGen,
                 doc::TheBook,
                 doc::Standalone,
                 doc::Std,
-                doc::Rustc,
-                doc::Rustdoc,
-                doc::Rustfmt,
+                doc::CrabLangc,
+                doc::CrabLangdoc,
+                doc::CrabLangfmt,
                 doc::ErrorIndex,
                 doc::Nomicon,
                 doc::Reference,
-                doc::RustdocBook,
-                doc::RustByExample,
-                doc::RustcBook,
+                doc::CrabLangdocBook,
+                doc::CrabLangByExample,
+                doc::CrabLangcBook,
                 doc::Cargo,
                 doc::CargoBook,
                 doc::Clippy,
@@ -775,23 +775,23 @@ impl<'a> Builder<'a> {
             ),
             Kind::Dist => describe!(
                 dist::Docs,
-                dist::RustcDocs,
+                dist::CrabLangcDocs,
                 dist::JsonDocs,
                 dist::Mingw,
-                dist::Rustc,
+                dist::CrabLangc,
                 dist::Std,
-                dist::RustcDev,
+                dist::CrabLangcDev,
                 dist::Analysis,
                 dist::Src,
                 dist::Cargo,
                 dist::Rls,
-                dist::RustAnalyzer,
-                dist::Rustfmt,
-                dist::RustDemangler,
+                dist::CrabLangAnalyzer,
+                dist::CrabLangfmt,
+                dist::CrabLangDemangler,
                 dist::Clippy,
                 dist::Miri,
                 dist::LlvmTools,
-                dist::RustDev,
+                dist::CrabLangDev,
                 dist::Bootstrap,
                 dist::Extended,
                 // It seems that PlainSourceTarball somehow changes how some of the tools
@@ -806,14 +806,14 @@ impl<'a> Builder<'a> {
                 install::Docs,
                 install::Std,
                 install::Cargo,
-                install::RustAnalyzer,
-                install::Rustfmt,
-                install::RustDemangler,
+                install::CrabLangAnalyzer,
+                install::CrabLangfmt,
+                install::CrabLangDemangler,
                 install::Clippy,
                 install::Miri,
                 install::LlvmTools,
                 install::Src,
-                install::Rustc
+                install::CrabLangc
             ),
             Kind::Run => describe!(
                 run::ExpandYamlAnchors,
@@ -825,7 +825,7 @@ impl<'a> Builder<'a> {
                 run::GenerateCopyright,
             ),
             Kind::Setup => describe!(setup::Profile, setup::Hook, setup::Link, setup::Vscode),
-            Kind::Clean => describe!(clean::CleanAll, clean::Rustc, clean::Std),
+            Kind::Clean => describe!(clean::CleanAll, clean::CrabLangc, clean::Std),
             // special-cased in Build::build()
             Kind::Format => vec![],
         }
@@ -908,16 +908,16 @@ impl<'a> Builder<'a> {
         self.run_step_descriptions(&Builder::get_step_descriptions(Kind::Doc), paths);
     }
 
-    /// NOTE: keep this in sync with `rustdoc::clean::utils::doc_rust_lang_org_channel`, or tests will fail on beta/stable.
-    pub fn doc_rust_lang_org_channel(&self) -> String {
+    /// NOTE: keep this in sync with `crablangdoc::clean::utils::doc_crablang_lang_org_channel`, or tests will fail on beta/stable.
+    pub fn doc_crablang_lang_org_channel(&self) -> String {
         let channel = match &*self.config.channel {
             "stable" => &self.version,
             "beta" => "beta",
             "nightly" | "dev" => "nightly",
-            // custom build of rustdoc maybe? link to the latest stable docs just in case
+            // custom build of crablangdoc maybe? link to the latest stable docs just in case
             _ => "stable",
         };
-        "https://doc.rust-lang.org/".to_owned() + channel
+        "https://doc.crablang.org/".to_owned() + channel
     }
 
     fn run_step_descriptions(&self, v: &[StepDescription], paths: &[PathBuf]) {
@@ -982,12 +982,12 @@ impl<'a> Builder<'a> {
                 let sysroot = builder
                     .sysroot(self.compiler)
                     .join(lib)
-                    .join("rustlib")
+                    .join("crablanglib")
                     .join(self.target.triple)
                     .join("lib");
-                // Avoid deleting the rustlib/ directory we just copied
+                // Avoid deleting the crablanglib/ directory we just copied
                 // (in `impl Step for Sysroot`).
-                if !builder.download_rustc() {
+                if !builder.download_crablangc() {
                     let _ = fs::remove_dir_all(&sysroot);
                     t!(fs::create_dir_all(&sysroot));
                 }
@@ -1006,9 +1006,9 @@ impl<'a> Builder<'a> {
     ///
     /// For example this returns `<sysroot>/lib` on Unix and `<sysroot>/bin` on
     /// Windows.
-    pub fn rustc_libdir(&self, compiler: Compiler) -> PathBuf {
+    pub fn crablangc_libdir(&self, compiler: Compiler) -> PathBuf {
         if compiler.is_snapshot(self) {
-            self.rustc_snapshot_libdir()
+            self.crablangc_snapshot_libdir()
         } else {
             match self.config.libdir_relative() {
                 Some(relative_libdir) if compiler.stage >= 1 => {
@@ -1047,8 +1047,8 @@ impl<'a> Builder<'a> {
         }
     }
 
-    pub fn rustc_lib_paths(&self, compiler: Compiler) -> Vec<PathBuf> {
-        let mut dylib_dirs = vec![self.rustc_libdir(compiler)];
+    pub fn crablangc_lib_paths(&self, compiler: Compiler) -> Vec<PathBuf> {
+        let mut dylib_dirs = vec![self.crablangc_libdir(compiler)];
 
         // Ensure that the downloaded LLVM libraries can be found.
         if self.config.llvm_from_ci {
@@ -1061,7 +1061,7 @@ impl<'a> Builder<'a> {
 
     /// Adds the compiler's directory of dynamic libraries to `cmd`'s dynamic
     /// library lookup path.
-    pub fn add_rustc_lib_path(&self, compiler: Compiler, cmd: &mut Command) {
+    pub fn add_crablangc_lib_path(&self, compiler: Compiler, cmd: &mut Command) {
         // Windows doesn't need dylib path munging because the dlls for the
         // compiler live next to the compiler and the system will find them
         // automatically.
@@ -1069,15 +1069,15 @@ impl<'a> Builder<'a> {
             return;
         }
 
-        add_dylib_path(self.rustc_lib_paths(compiler), cmd);
+        add_dylib_path(self.crablangc_lib_paths(compiler), cmd);
     }
 
     /// Gets a path to the compiler specified.
-    pub fn rustc(&self, compiler: Compiler) -> PathBuf {
+    pub fn crablangc(&self, compiler: Compiler) -> PathBuf {
         if compiler.is_snapshot(self) {
-            self.initial_rustc.clone()
+            self.initial_crablangc.clone()
         } else {
-            self.sysroot(compiler).join("bin").join(exe("rustc", compiler.host))
+            self.sysroot(compiler).join("bin").join(exe("crablangc", compiler.host))
         }
     }
 
@@ -1090,22 +1090,22 @@ impl<'a> Builder<'a> {
             .map(|entry| entry.path())
     }
 
-    pub fn rustdoc(&self, compiler: Compiler) -> PathBuf {
-        self.ensure(tool::Rustdoc { compiler })
+    pub fn crablangdoc(&self, compiler: Compiler) -> PathBuf {
+        self.ensure(tool::CrabLangdoc { compiler })
     }
 
-    pub fn rustdoc_cmd(&self, compiler: Compiler) -> Command {
-        let mut cmd = Command::new(&self.bootstrap_out.join("rustdoc"));
-        cmd.env("RUSTC_STAGE", compiler.stage.to_string())
-            .env("RUSTC_SYSROOT", self.sysroot(compiler))
-            // Note that this is *not* the sysroot_libdir because rustdoc must be linked
-            // equivalently to rustc.
-            .env("RUSTDOC_LIBDIR", self.rustc_libdir(compiler))
+    pub fn crablangdoc_cmd(&self, compiler: Compiler) -> Command {
+        let mut cmd = Command::new(&self.bootstrap_out.join("crablangdoc"));
+        cmd.env("CRABLANGC_STAGE", compiler.stage.to_string())
+            .env("CRABLANGC_SYSROOT", self.sysroot(compiler))
+            // Note that this is *not* the sysroot_libdir because crablangdoc must be linked
+            // equivalently to crablangc.
+            .env("CRABLANGDOC_LIBDIR", self.crablangc_libdir(compiler))
             .env("CFG_RELEASE_CHANNEL", &self.config.channel)
-            .env("RUSTDOC_REAL", self.rustdoc(compiler))
-            .env("RUSTC_BOOTSTRAP", "1");
+            .env("CRABLANGDOC_REAL", self.crablangdoc(compiler))
+            .env("CRABLANGC_BOOTSTRAP", "1");
 
-        cmd.arg("-Wrustdoc::invalid_codeblock_attributes");
+        cmd.arg("-Wcrablangdoc::invalid_codeblock_attributes");
 
         if self.config.deny_warnings {
             cmd.arg("-Dwarnings");
@@ -1117,10 +1117,10 @@ impl<'a> Builder<'a> {
         cmd.env_remove("MFLAGS");
 
         if let Some(linker) = self.linker(compiler.host) {
-            cmd.env("RUSTDOC_LINKER", linker);
+            cmd.env("CRABLANGDOC_LINKER", linker);
         }
         if self.is_fuse_ld_lld(compiler.host) {
-            cmd.env("RUSTDOC_FUSE_LD_LLD", "1");
+            cmd.env("CRABLANGDOC_FUSE_LD_LLD", "1");
         }
         cmd
     }
@@ -1158,7 +1158,7 @@ impl<'a> Builder<'a> {
         // Found with `rg "init_env_logger\("`. If anyone uses `init_env_logger`
         // from out of tree it shouldn't matter, since x.py is only used for
         // building in-tree.
-        let color_logs = ["RUSTDOC_LOG_COLOR", "RUSTC_LOG_COLOR", "RUST_LOG_COLOR"];
+        let color_logs = ["CRABLANGDOC_LOG_COLOR", "CRABLANGC_LOG_COLOR", "CRABLANG_LOG_COLOR"];
         match self.build.config.color {
             Color::Always => {
                 cargo.arg("--color=always");
@@ -1176,12 +1176,12 @@ impl<'a> Builder<'a> {
         }
 
         if cmd != "install" {
-            cargo.arg("--target").arg(target.rustc_target_arg());
+            cargo.arg("--target").arg(target.crablangc_target_arg());
         } else {
             assert_eq!(target, compiler.host);
         }
 
-        if self.config.rust_optimize {
+        if self.config.crablang_optimize {
             // FIXME: cargo bench/install do not accept `--release`
             if cmd != "bench" && cmd != "install" {
                 cargo.arg("--release");
@@ -1199,7 +1199,7 @@ impl<'a> Builder<'a> {
     ///
     /// This will create a `Command` that represents a pending execution of
     /// Cargo. This cargo will be configured to use `compiler` as the actual
-    /// rustc compiler, its output will be scoped by `mode`'s output directory,
+    /// crablangc compiler, its output will be scoped by `mode`'s output directory,
     /// it will pass the `--target` flag for the specified `target`, and will be
     /// executing the Cargo command `cmd`.
     pub fn cargo(
@@ -1219,10 +1219,10 @@ impl<'a> Builder<'a> {
             self.clear_if_dirty(&out_dir, &backend);
         }
 
-        if cmd == "doc" || cmd == "rustdoc" {
+        if cmd == "doc" || cmd == "crablangdoc" {
             let my_out = match mode {
                 // This is the intended out directory for compiler documentation.
-                Mode::Rustc | Mode::ToolRustc => self.compiler_doc_out(target),
+                Mode::CrabLangc | Mode::ToolCrabLangc => self.compiler_doc_out(target),
                 Mode::Std => {
                     if self.config.cmd.json() {
                         out_dir.join(target.triple).join("json-doc")
@@ -1232,16 +1232,16 @@ impl<'a> Builder<'a> {
                 }
                 _ => panic!("doc mode {:?} not expected", mode),
             };
-            let rustdoc = self.rustdoc(compiler);
-            self.clear_if_dirty(&my_out, &rustdoc);
+            let crablangdoc = self.crablangdoc(compiler);
+            self.clear_if_dirty(&my_out, &crablangdoc);
         }
 
         let profile_var = |name: &str| {
-            let profile = if self.config.rust_optimize { "RELEASE" } else { "DEV" };
+            let profile = if self.config.crablang_optimize { "RELEASE" } else { "DEV" };
             format!("CARGO_PROFILE_{}_{}", profile, name)
         };
 
-        // See comment in rustc_llvm/build.rs for why this is necessary, largely llvm-config
+        // See comment in crablangc_llvm/build.rs for why this is necessary, largely llvm-config
         // needs to not accidentally link to libLLVM in stage0/lib.
         cargo.env("REAL_LIBRARY_PATH_VAR", &util::dylib_path_var());
         if let Some(e) = env::var_os(util::dylib_path_var()) {
@@ -1252,41 +1252,41 @@ impl<'a> Builder<'a> {
         // scripts can do less work (i.e. not building/requiring LLVM).
         if cmd == "check" || cmd == "clippy" || cmd == "fix" {
             // If we've not yet built LLVM, or it's stale, then bust
-            // the rustc_llvm cache. That will always work, even though it
+            // the crablangc_llvm cache. That will always work, even though it
             // may mean that on the next non-check build we'll need to rebuild
-            // rustc_llvm. But if LLVM is stale, that'll be a tiny amount
+            // crablangc_llvm. But if LLVM is stale, that'll be a tiny amount
             // of work comparatively, and we'd likely need to rebuild it anyway,
             // so that's okay.
             if crate::llvm::prebuilt_llvm_config(self, target).is_err() {
-                cargo.env("RUST_CHECK", "1");
+                cargo.env("CRABLANG_CHECK", "1");
             }
         }
 
         let stage = if compiler.stage == 0 && self.local_rebuild {
-            // Assume the local-rebuild rustc already has stage1 features.
+            // Assume the local-rebuild crablangc already has stage1 features.
             1
         } else {
             compiler.stage
         };
 
-        let mut rustflags = Rustflags::new(target);
+        let mut crablangflags = CrabLangflags::new(target);
         if stage != 0 {
             if let Ok(s) = env::var("CARGOFLAGS_NOT_BOOTSTRAP") {
                 cargo.args(s.split_whitespace());
             }
-            rustflags.env("RUSTFLAGS_NOT_BOOTSTRAP");
+            crablangflags.env("CRABLANGFLAGS_NOT_BOOTSTRAP");
         } else {
             if let Ok(s) = env::var("CARGOFLAGS_BOOTSTRAP") {
                 cargo.args(s.split_whitespace());
             }
-            rustflags.env("RUSTFLAGS_BOOTSTRAP");
+            crablangflags.env("CRABLANGFLAGS_BOOTSTRAP");
             if cmd == "clippy" {
                 // clippy overwrites sysroot if we pass it to cargo.
                 // Pass it directly to clippy instead.
-                // NOTE: this can't be fixed in clippy because we explicitly don't set `RUSTC`,
+                // NOTE: this can't be fixed in clippy because we explicitly don't set `CRABLANGC`,
                 // so it has no way of knowing the sysroot.
-                rustflags.arg("--sysroot");
-                rustflags.arg(
+                crablangflags.arg("--sysroot");
+                crablangflags.arg(
                     self.sysroot(compiler)
                         .as_os_str()
                         .to_str()
@@ -1295,7 +1295,7 @@ impl<'a> Builder<'a> {
                 // Only run clippy on a very limited subset of crates (in particular, not build scripts).
                 cargo.arg("-Zunstable-options");
                 // Explicitly does *not* set `--cfg=bootstrap`, since we're using a nightly clippy.
-                let host_version = Command::new("rustc").arg("--version").output().map_err(|_| ());
+                let host_version = Command::new("crablangc").arg("--version").output().map_err(|_| ());
                 let output = host_version.and_then(|output| {
                     if output.status.success() {
                         Ok(output)
@@ -1304,20 +1304,20 @@ impl<'a> Builder<'a> {
                     }
                 }).unwrap_or_else(|_| {
                     eprintln!(
-                        "error: `x.py clippy` requires a host `rustc` toolchain with the `clippy` component"
+                        "error: `x.py clippy` requires a host `crablangc` toolchain with the `clippy` component"
                     );
-                    eprintln!("help: try `rustup component add clippy`");
+                    eprintln!("help: try `crablangup component add clippy`");
                     crate::detail_exit(1);
                 });
                 if !t!(std::str::from_utf8(&output.stdout)).contains("nightly") {
-                    rustflags.arg("--cfg=bootstrap");
+                    crablangflags.arg("--cfg=bootstrap");
                 }
             } else {
-                rustflags.arg("--cfg=bootstrap");
+                crablangflags.arg("--cfg=bootstrap");
             }
         }
 
-        let use_new_symbol_mangling = match self.config.rust_new_symbol_mangling {
+        let use_new_symbol_mangling = match self.config.crablang_new_symbol_mangling {
             Some(setting) => {
                 // If an explicit setting is given, use that
                 setting
@@ -1337,15 +1337,15 @@ impl<'a> Builder<'a> {
         // sysroot. Passing this cfg enables raw-dylib support instead, which makes the native
         // library unnecessary. This can be removed when windows-rs enables raw-dylib
         // unconditionally.
-        if let Mode::Rustc | Mode::ToolRustc = mode {
-            rustflags.arg("--cfg=windows_raw_dylib");
+        if let Mode::CrabLangc | Mode::ToolCrabLangc = mode {
+            crablangflags.arg("--cfg=windows_raw_dylib");
         }
 
         if use_new_symbol_mangling {
-            rustflags.arg("-Csymbol-mangling-version=v0");
+            crablangflags.arg("-Csymbol-mangling-version=v0");
         } else {
-            rustflags.arg("-Csymbol-mangling-version=legacy");
-            rustflags.arg("-Zunstable-options");
+            crablangflags.arg("-Csymbol-mangling-version=legacy");
+            crablangflags.arg("-Zunstable-options");
         }
 
         // Enable cfg checking of cargo features for everything but std and also enable cfg
@@ -1362,12 +1362,12 @@ impl<'a> Builder<'a> {
             "-Zcheck-cfg=names,values,output"
         });
 
-        // Add extra cfg not defined in/by rustc
+        // Add extra cfg not defined in/by crablangc
         //
-        // Note: Altrough it would seems that "-Zunstable-options" to `rustflags` is useless as
+        // Note: Altrough it would seems that "-Zunstable-options" to `crablangflags` is useless as
         // cargo would implicitly add it, it was discover that sometimes bootstrap only use
-        // `rustflags` without `cargo` making it required.
-        rustflags.arg("-Zunstable-options");
+        // `crablangflags` without `cargo` making it required.
+        crablangflags.arg("-Zunstable-options");
         for (restricted_mode, name, values) in EXTRA_CHECK_CFGS {
             if *restricted_mode == None || *restricted_mode == Some(mode) {
                 // Creating a string of the values by concatenating each value:
@@ -1380,19 +1380,19 @@ impl<'a> Builder<'a> {
                         .collect::<String>(),
                     None => String::new(),
                 };
-                rustflags.arg(&format!("--check-cfg=values({name}{values})"));
+                crablangflags.arg(&format!("--check-cfg=values({name}{values})"));
             }
         }
 
-        // FIXME: It might be better to use the same value for both `RUSTFLAGS` and `RUSTDOCFLAGS`,
-        // but this breaks CI. At the very least, stage0 `rustdoc` needs `--cfg bootstrap`. See
+        // FIXME: It might be better to use the same value for both `CRABLANGFLAGS` and `CRABLANGDOCFLAGS`,
+        // but this breaks CI. At the very least, stage0 `crablangdoc` needs `--cfg bootstrap`. See
         // #71458.
-        let mut rustdocflags = rustflags.clone();
-        rustdocflags.propagate_cargo_env("RUSTDOCFLAGS");
+        let mut crablangdocflags = crablangflags.clone();
+        crablangdocflags.propagate_cargo_env("CRABLANGDOCFLAGS");
         if stage == 0 {
-            rustdocflags.env("RUSTDOCFLAGS_BOOTSTRAP");
+            crablangdocflags.env("CRABLANGDOCFLAGS_BOOTSTRAP");
         } else {
-            rustdocflags.env("RUSTDOCFLAGS_NOT_BOOTSTRAP");
+            crablangdocflags.env("CRABLANGDOCFLAGS_NOT_BOOTSTRAP");
         }
 
         if let Ok(s) = env::var("CARGOFLAGS") {
@@ -1401,87 +1401,87 @@ impl<'a> Builder<'a> {
 
         match mode {
             Mode::Std | Mode::ToolBootstrap | Mode::ToolStd => {}
-            Mode::Rustc | Mode::Codegen | Mode::ToolRustc => {
+            Mode::CrabLangc | Mode::Codegen | Mode::ToolCrabLangc => {
                 // Build proc macros both for the host and the target
                 if target != compiler.host && cmd != "check" {
                     cargo.arg("-Zdual-proc-macros");
-                    rustflags.arg("-Zdual-proc-macros");
+                    crablangflags.arg("-Zdual-proc-macros");
                 }
             }
         }
 
-        // This tells Cargo (and in turn, rustc) to output more complete
-        // dependency information.  Most importantly for rustbuild, this
+        // This tells Cargo (and in turn, crablangc) to output more complete
+        // dependency information.  Most importantly for crablangbuild, this
         // includes sysroot artifacts, like libstd, which means that we don't
-        // need to track those in rustbuild (an error prone process!). This
+        // need to track those in crablangbuild (an error prone process!). This
         // feature is currently unstable as there may be some bugs and such, but
-        // it represents a big improvement in rustbuild's reliability on
+        // it represents a big improvement in crablangbuild's reliability on
         // rebuilds, so we're using it here.
         //
         // For some additional context, see #63470 (the PR originally adding
         // this), as well as #63012 which is the tracking issue for this
-        // feature on the rustc side.
+        // feature on the crablangc side.
         cargo.arg("-Zbinary-dep-depinfo");
         let allow_features = match mode {
             Mode::ToolBootstrap | Mode::ToolStd => {
                 // Restrict the allowed features so we don't depend on nightly
                 // accidentally.
                 //
-                // binary-dep-depinfo is used by rustbuild itself for all
+                // binary-dep-depinfo is used by crablangbuild itself for all
                 // compilations.
                 //
                 // Lots of tools depend on proc_macro2 and proc-macro-error.
                 // Those have build scripts which assume nightly features are
-                // available if the `rustc` version is "nighty" or "dev". See
-                // bin/rustc.rs for why that is a problem. Instead of labeling
+                // available if the `crablangc` version is "nighty" or "dev". See
+                // bin/crablangc.rs for why that is a problem. Instead of labeling
                 // those features for each individual tool that needs them,
                 // just blanket allow them here.
                 //
                 // If this is ever removed, be sure to add something else in
                 // its place to keep the restrictions in place (or make a way
-                // to unset RUSTC_BOOTSTRAP).
+                // to unset CRABLANGC_BOOTSTRAP).
                 "binary-dep-depinfo,proc_macro_span,proc_macro_span_shrink,proc_macro_diagnostic"
                     .to_string()
             }
-            Mode::Std | Mode::Rustc | Mode::Codegen | Mode::ToolRustc => String::new(),
+            Mode::Std | Mode::CrabLangc | Mode::Codegen | Mode::ToolCrabLangc => String::new(),
         };
 
         cargo.arg("-j").arg(self.jobs().to_string());
 
-        // FIXME: Temporary fix for https://github.com/rust-lang/cargo/issues/3005
+        // FIXME: Temporary fix for https://github.com/crablang/cargo/issues/3005
         // Force cargo to output binaries with disambiguating hashes in the name
         let mut metadata = if compiler.stage == 0 {
             // Treat stage0 like a special channel, whether it's a normal prior-
-            // release rustc or a local rebuild with the same version, so we
+            // release crablangc or a local rebuild with the same version, so we
             // never mix these libraries by accident.
             "bootstrap".to_string()
         } else {
             self.config.channel.to_string()
         };
         // We want to make sure that none of the dependencies between
-        // std/test/rustc unify with one another. This is done for weird linkage
-        // reasons but the gist of the problem is that if librustc, libtest, and
+        // std/test/crablangc unify with one another. This is done for weird linkage
+        // reasons but the gist of the problem is that if libcrablangc, libtest, and
         // libstd all depend on libc from crates.io (which they actually do) we
         // want to make sure they all get distinct versions. Things get really
         // weird if we try to unify all these dependencies right now, namely
         // around how many times the library is linked in dynamic libraries and
-        // such. If rustc were a static executable or if we didn't ship dylibs
+        // such. If crablangc were a static executable or if we didn't ship dylibs
         // this wouldn't be a problem, but we do, so it is. This is in general
         // just here to make sure things build right. If you can remove this and
         // things still build right, please do!
         match mode {
             Mode::Std => metadata.push_str("std"),
-            // When we're building rustc tools, they're built with a search path
-            // that contains things built during the rustc build. For example,
-            // bitflags is built during the rustc build, and is a dependency of
-            // rustdoc as well. We're building rustdoc in a different target
+            // When we're building crablangc tools, they're built with a search path
+            // that contains things built during the crablangc build. For example,
+            // bitflags is built during the crablangc build, and is a dependency of
+            // crablangdoc as well. We're building crablangdoc in a different target
             // directory, though, which means that Cargo will rebuild the
-            // dependency. When we go on to build rustdoc, we'll look for
+            // dependency. When we go on to build crablangdoc, we'll look for
             // bitflags, and find two different copies: one built during the
-            // rustc step and one that we just built. This isn't always a
+            // crablangc step and one that we just built. This isn't always a
             // problem, somehow -- not really clear why -- but we know that this
             // fixes things.
-            Mode::ToolRustc => metadata.push_str("tool-rustc"),
+            Mode::ToolCrabLangc => metadata.push_str("tool-crablangc"),
             // Same for codegen backends.
             Mode::Codegen => metadata.push_str("codegen"),
             _ => {}
@@ -1489,12 +1489,12 @@ impl<'a> Builder<'a> {
         cargo.env("__CARGO_DEFAULT_LIB_METADATA", &metadata);
 
         if cmd == "clippy" {
-            rustflags.arg("-Zforce-unstable-if-unmarked");
+            crablangflags.arg("-Zforce-unstable-if-unmarked");
         }
 
-        rustflags.arg("-Zmacro-backtrace");
+        crablangflags.arg("-Zmacro-backtrace");
 
-        let want_rustdoc = self.doc_tests != DocTests::No;
+        let want_crablangdoc = self.doc_tests != DocTests::No;
 
         // We synthetically interpret a stage0 compiler used to build tools as a
         // "raw" compiler in that it's the exact snapshot we download. Normally
@@ -1505,11 +1505,11 @@ impl<'a> Builder<'a> {
         assert!(!use_snapshot || stage == 0 || self.local_rebuild);
 
         let maybe_sysroot = self.sysroot(compiler);
-        let sysroot = if use_snapshot { self.rustc_snapshot_sysroot() } else { &maybe_sysroot };
-        let libdir = self.rustc_libdir(compiler);
+        let sysroot = if use_snapshot { self.crablangc_snapshot_sysroot() } else { &maybe_sysroot };
+        let libdir = self.crablangc_libdir(compiler);
 
-        // Clear the output directory if the real rustc we're using has changed;
-        // Cargo cannot detect this as it thinks rustc is bootstrap/debug/rustc.
+        // Clear the output directory if the real crablangc we're using has changed;
+        // Cargo cannot detect this as it thinks crablangc is bootstrap/debug/crablangc.
         //
         // Avoid doing this during dry run as that usually means the relevant
         // compiler is not yet linked/copied properly.
@@ -1517,7 +1517,7 @@ impl<'a> Builder<'a> {
         // Only clear out the directory if we're compiling std; otherwise, we
         // should let Cargo take care of things for us (via depdep info)
         if !self.config.dry_run() && mode == Mode::Std && cmd == "build" {
-            self.clear_if_dirty(&out_dir, &self.rustc(compiler));
+            self.clear_if_dirty(&out_dir, &self.crablangc(compiler));
         }
 
         // Customize the compiler we're running. Specify the compiler to cargo
@@ -1525,28 +1525,28 @@ impl<'a> Builder<'a> {
         // how the actual compiler itself is called.
         //
         // These variables are primarily all read by
-        // src/bootstrap/bin/{rustc.rs,rustdoc.rs}
+        // src/bootstrap/bin/{crablangc.rs,crablangdoc.rs}
         cargo
-            .env("RUSTBUILD_NATIVE_DIR", self.native_dir(target))
-            .env("RUSTC_REAL", self.rustc(compiler))
-            .env("RUSTC_STAGE", stage.to_string())
-            .env("RUSTC_SYSROOT", &sysroot)
-            .env("RUSTC_LIBDIR", &libdir)
-            .env("RUSTDOC", self.bootstrap_out.join("rustdoc"))
+            .env("CRABLANGBUILD_NATIVE_DIR", self.native_dir(target))
+            .env("CRABLANGC_REAL", self.crablangc(compiler))
+            .env("CRABLANGC_STAGE", stage.to_string())
+            .env("CRABLANGC_SYSROOT", &sysroot)
+            .env("CRABLANGC_LIBDIR", &libdir)
+            .env("CRABLANGDOC", self.bootstrap_out.join("crablangdoc"))
             .env(
-                "RUSTDOC_REAL",
-                if cmd == "doc" || cmd == "rustdoc" || (cmd == "test" && want_rustdoc) {
-                    self.rustdoc(compiler)
+                "CRABLANGDOC_REAL",
+                if cmd == "doc" || cmd == "crablangdoc" || (cmd == "test" && want_crablangdoc) {
+                    self.crablangdoc(compiler)
                 } else {
-                    PathBuf::from("/path/to/nowhere/rustdoc/not/required")
+                    PathBuf::from("/path/to/nowhere/crablangdoc/not/required")
                 },
             )
-            .env("RUSTC_ERROR_METADATA_DST", self.extended_error_dir())
-            .env("RUSTC_BREAK_ON_ICE", "1");
+            .env("CRABLANGC_ERROR_METADATA_DST", self.extended_error_dir())
+            .env("CRABLANGC_BREAK_ON_ICE", "1");
         // Clippy support is a hack and uses the default `cargo-clippy` in path.
-        // Don't override RUSTC so that the `cargo-clippy` in path will be run.
+        // Don't override CRABLANGC so that the `cargo-clippy` in path will be run.
         if cmd != "clippy" {
-            cargo.env("RUSTC", self.bootstrap_out.join("rustc"));
+            cargo.env("CRABLANGC", self.bootstrap_out.join("crablangc"));
         }
 
         // Dealing with rpath here is a little special, so let's go into some
@@ -1555,7 +1555,7 @@ impl<'a> Builder<'a> {
         // dynamic libraries. We use this by default on Unix platforms to ensure
         // that our nightlies behave the same on Windows, that is they work out
         // of the box. This can be disabled, of course, but basically that's why
-        // we're gated on RUSTC_RPATH here.
+        // we're gated on CRABLANGC_RPATH here.
         //
         // Ok, so the astute might be wondering "why isn't `-C rpath` used
         // here?" and that is indeed a good question to ask. This codegen
@@ -1569,38 +1569,38 @@ impl<'a> Builder<'a> {
         // All that's a really long winded way of saying that if we use
         // `-Crpath` then the executables generated have the wrong rpath of
         // something like `$ORIGIN/deps` when in fact the way we distribute
-        // rustc requires the rpath to be `$ORIGIN/../lib`.
+        // crablangc requires the rpath to be `$ORIGIN/../lib`.
         //
         // So, all in all, to set up the correct rpath we pass the linker
         // argument manually via `-C link-args=-Wl,-rpath,...`. Plus isn't it
         // fun to pass a flag to a tool to pass a flag to pass a flag to a tool
         // to change a flag in a binary?
-        if self.config.rust_rpath && util::use_host_linker(target) {
+        if self.config.crablang_rpath && util::use_host_linker(target) {
             let rpath = if target.contains("apple") {
                 // Note that we need to take one extra step on macOS to also pass
                 // `-Wl,-instal_name,@rpath/...` to get things to work right. To
                 // do that we pass a weird flag to the compiler to get it to do
                 // so. Note that this is definitely a hack, and we should likely
                 // flesh out rpath support more fully in the future.
-                rustflags.arg("-Zosx-rpath-install-name");
+                crablangflags.arg("-Zosx-rpath-install-name");
                 Some("-Wl,-rpath,@loader_path/../lib")
             } else if !target.contains("windows") {
-                rustflags.arg("-Clink-args=-Wl,-z,origin");
+                crablangflags.arg("-Clink-args=-Wl,-z,origin");
                 Some("-Wl,-rpath,$ORIGIN/../lib")
             } else {
                 None
             };
             if let Some(rpath) = rpath {
-                rustflags.arg(&format!("-Clink-args={}", rpath));
+                crablangflags.arg(&format!("-Clink-args={}", rpath));
             }
         }
 
         if let Some(host_linker) = self.linker(compiler.host) {
-            cargo.env("RUSTC_HOST_LINKER", host_linker);
+            cargo.env("CRABLANGC_HOST_LINKER", host_linker);
         }
         if self.is_fuse_ld_lld(compiler.host) {
-            cargo.env("RUSTC_HOST_FUSE_LD_LLD", "1");
-            cargo.env("RUSTDOC_FUSE_LD_LLD", "1");
+            cargo.env("CRABLANGC_HOST_FUSE_LD_LLD", "1");
+            cargo.env("CRABLANGDOC_FUSE_LD_LLD", "1");
         }
 
         if let Some(target_linker) = self.linker(target) {
@@ -1608,55 +1608,55 @@ impl<'a> Builder<'a> {
             cargo.env(&format!("CARGO_TARGET_{}_LINKER", target), target_linker);
         }
         if self.is_fuse_ld_lld(target) {
-            rustflags.arg("-Clink-args=-fuse-ld=lld");
+            crablangflags.arg("-Clink-args=-fuse-ld=lld");
         }
         self.lld_flags(target).for_each(|flag| {
-            rustdocflags.arg(&flag);
+            crablangdocflags.arg(&flag);
         });
 
-        if !(["build", "check", "clippy", "fix", "rustc"].contains(&cmd)) && want_rustdoc {
-            cargo.env("RUSTDOC_LIBDIR", self.rustc_libdir(compiler));
+        if !(["build", "check", "clippy", "fix", "crablangc"].contains(&cmd)) && want_crablangdoc {
+            cargo.env("CRABLANGDOC_LIBDIR", self.crablangc_libdir(compiler));
         }
 
         let debuginfo_level = match mode {
-            Mode::Rustc | Mode::Codegen => self.config.rust_debuginfo_level_rustc,
-            Mode::Std => self.config.rust_debuginfo_level_std,
-            Mode::ToolBootstrap | Mode::ToolStd | Mode::ToolRustc => {
-                self.config.rust_debuginfo_level_tools
+            Mode::CrabLangc | Mode::Codegen => self.config.crablang_debuginfo_level_crablangc,
+            Mode::Std => self.config.crablang_debuginfo_level_std,
+            Mode::ToolBootstrap | Mode::ToolStd | Mode::ToolCrabLangc => {
+                self.config.crablang_debuginfo_level_tools
             }
         };
         cargo.env(profile_var("DEBUG"), debuginfo_level.to_string());
         cargo.env(
             profile_var("DEBUG_ASSERTIONS"),
             if mode == Mode::Std {
-                self.config.rust_debug_assertions_std.to_string()
+                self.config.crablang_debug_assertions_std.to_string()
             } else {
-                self.config.rust_debug_assertions.to_string()
+                self.config.crablang_debug_assertions.to_string()
             },
         );
         cargo.env(
             profile_var("OVERFLOW_CHECKS"),
             if mode == Mode::Std {
-                self.config.rust_overflow_checks_std.to_string()
+                self.config.crablang_overflow_checks_std.to_string()
             } else {
-                self.config.rust_overflow_checks.to_string()
+                self.config.crablang_overflow_checks.to_string()
             },
         );
 
         let split_debuginfo_is_stable = target.contains("linux")
             || target.contains("apple")
             || (target.contains("msvc")
-                && self.config.rust_split_debuginfo == SplitDebuginfo::Packed)
+                && self.config.crablang_split_debuginfo == SplitDebuginfo::Packed)
             || (target.contains("windows")
-                && self.config.rust_split_debuginfo == SplitDebuginfo::Off);
+                && self.config.crablang_split_debuginfo == SplitDebuginfo::Off);
 
         if !split_debuginfo_is_stable {
-            rustflags.arg("-Zunstable-options");
+            crablangflags.arg("-Zunstable-options");
         }
-        match self.config.rust_split_debuginfo {
-            SplitDebuginfo::Packed => rustflags.arg("-Csplit-debuginfo=packed"),
-            SplitDebuginfo::Unpacked => rustflags.arg("-Csplit-debuginfo=unpacked"),
-            SplitDebuginfo::Off => rustflags.arg("-Csplit-debuginfo=off"),
+        match self.config.crablang_split_debuginfo {
+            SplitDebuginfo::Packed => crablangflags.arg("-Csplit-debuginfo=packed"),
+            SplitDebuginfo::Unpacked => crablangflags.arg("-Csplit-debuginfo=unpacked"),
+            SplitDebuginfo::Off => crablangflags.arg("-Csplit-debuginfo=off"),
         };
 
         if self.config.cmd.bless() {
@@ -1665,33 +1665,33 @@ impl<'a> Builder<'a> {
         }
 
         if !mode.is_tool() {
-            cargo.env("RUSTC_FORCE_UNSTABLE", "1");
+            cargo.env("CRABLANGC_FORCE_UNSTABLE", "1");
         }
 
         if let Some(x) = self.crt_static(target) {
             if x {
-                rustflags.arg("-Ctarget-feature=+crt-static");
+                crablangflags.arg("-Ctarget-feature=+crt-static");
             } else {
-                rustflags.arg("-Ctarget-feature=-crt-static");
+                crablangflags.arg("-Ctarget-feature=-crt-static");
             }
         }
 
         if let Some(x) = self.crt_static(compiler.host) {
-            cargo.env("RUSTC_HOST_CRT_STATIC", x.to_string());
+            cargo.env("CRABLANGC_HOST_CRT_STATIC", x.to_string());
         }
 
-        if let Some(map_to) = self.build.debuginfo_map_to(GitRepo::Rustc) {
+        if let Some(map_to) = self.build.debuginfo_map_to(GitRepo::CrabLangc) {
             let map = format!("{}={}", self.build.src.display(), map_to);
-            cargo.env("RUSTC_DEBUGINFO_MAP", map);
+            cargo.env("CRABLANGC_DEBUGINFO_MAP", map);
 
-            // `rustc` needs to know the virtual `/rustc/$hash` we're mapping to,
+            // `crablangc` needs to know the virtual `/crablangc/$hash` we're mapping to,
             // in order to opportunistically reverse it later.
-            cargo.env("CFG_VIRTUAL_RUST_SOURCE_BASE_DIR", map_to);
+            cargo.env("CFG_VIRTUAL_CRABLANG_SOURCE_BASE_DIR", map_to);
         }
 
         // Enable usage of unstable features
-        cargo.env("RUSTC_BOOTSTRAP", "1");
-        self.add_rust_test_threads(&mut cargo);
+        cargo.env("CRABLANGC_BOOTSTRAP", "1");
+        self.add_crablang_test_threads(&mut cargo);
 
         // Almost all of the crates that we compile as part of the bootstrap may
         // have a build script, including the standard library. To compile a
@@ -1708,19 +1708,19 @@ impl<'a> Builder<'a> {
         // build scripts in that situation.
         if mode == Mode::Std {
             cargo
-                .env("RUSTC_SNAPSHOT", &self.initial_rustc)
-                .env("RUSTC_SNAPSHOT_LIBDIR", self.rustc_snapshot_libdir());
+                .env("CRABLANGC_SNAPSHOT", &self.initial_crablangc)
+                .env("CRABLANGC_SNAPSHOT_LIBDIR", self.crablangc_snapshot_libdir());
         } else {
             cargo
-                .env("RUSTC_SNAPSHOT", self.rustc(compiler))
-                .env("RUSTC_SNAPSHOT_LIBDIR", self.rustc_libdir(compiler));
+                .env("CRABLANGC_SNAPSHOT", self.crablangc(compiler))
+                .env("CRABLANGC_SNAPSHOT_LIBDIR", self.crablangc_libdir(compiler));
         }
 
         // Tools that use compiler libraries may inherit the `-lLLVM` link
         // requirement, but the `-L` library path is not propagated across
         // separate Cargo projects. We can add LLVM's library path to the
         // platform-specific environment variable as a workaround.
-        if mode == Mode::ToolRustc || mode == Mode::Codegen {
+        if mode == Mode::ToolCrabLangc || mode == Mode::Codegen {
             if let Some(llvm_config) = self.llvm_config(target) {
                 let llvm_libdir = output(Command::new(&llvm_config).arg("--libdir"));
                 add_link_lib_path(vec![llvm_libdir.trim().into()], &mut cargo);
@@ -1732,7 +1732,7 @@ impl<'a> Builder<'a> {
         // so we can't use it by default in general, but we can use it for tools
         // and our own internal libraries.
         if !mode.must_support_dlopen() && !target.triple.starts_with("powerpc-") {
-            cargo.env("RUSTC_TLS_MODEL_INITIAL_EXEC", "1");
+            cargo.env("CRABLANGC_TLS_MODEL_INITIAL_EXEC", "1");
         }
 
         if self.config.incremental {
@@ -1743,24 +1743,24 @@ impl<'a> Builder<'a> {
         }
 
         if let Some(ref on_fail) = self.config.on_fail {
-            cargo.env("RUSTC_ON_FAIL", on_fail);
+            cargo.env("CRABLANGC_ON_FAIL", on_fail);
         }
 
         if self.config.print_step_timings {
-            cargo.env("RUSTC_PRINT_STEP_TIMINGS", "1");
+            cargo.env("CRABLANGC_PRINT_STEP_TIMINGS", "1");
         }
 
         if self.config.print_step_rusage {
-            cargo.env("RUSTC_PRINT_STEP_RUSAGE", "1");
+            cargo.env("CRABLANGC_PRINT_STEP_RUSAGE", "1");
         }
 
         if self.config.backtrace_on_ice {
-            cargo.env("RUSTC_BACKTRACE_ON_ICE", "1");
+            cargo.env("CRABLANGC_BACKTRACE_ON_ICE", "1");
         }
 
-        cargo.env("RUSTC_VERBOSE", self.verbosity.to_string());
+        cargo.env("CRABLANGC_VERBOSE", self.verbosity.to_string());
 
-        // Downstream forks of the Rust compiler might want to use a custom libc to add support for
+        // Downstream forks of the CrabLang compiler might want to use a custom libc to add support for
         // targets that are not yet available upstream. Adding a patch to replace libc with a
         // custom one would cause compilation errors though, because Cargo would interpret the
         // custom libc as part of the workspace, and apply the check-cfg lints on it.
@@ -1771,34 +1771,34 @@ impl<'a> Builder<'a> {
 
         if source_type == SourceType::InTree {
             let mut lint_flags = Vec::new();
-            // When extending this list, add the new lints to the RUSTFLAGS of the
+            // When extending this list, add the new lints to the CRABLANGFLAGS of the
             // build_bootstrap function of src/bootstrap/bootstrap.py as well as
-            // some code doesn't go through this `rustc` wrapper.
-            lint_flags.push("-Wrust_2018_idioms");
+            // some code doesn't go through this `crablangc` wrapper.
+            lint_flags.push("-Wcrablang_2018_idioms");
             lint_flags.push("-Wunused_lifetimes");
             lint_flags.push("-Wsemicolon_in_expressions_from_macros");
 
             if self.config.deny_warnings {
                 lint_flags.push("-Dwarnings");
-                rustdocflags.arg("-Dwarnings");
+                crablangdocflags.arg("-Dwarnings");
             }
 
-            // This does not use RUSTFLAGS due to caching issues with Cargo.
+            // This does not use CRABLANGFLAGS due to caching issues with Cargo.
             // Clippy is treated as an "in tree" tool, but shares the same
             // cache as other "submodule" tools. With these options set in
-            // RUSTFLAGS, that causes *every* shared dependency to be rebuilt.
-            // By injecting this into the rustc wrapper, this circumvents
+            // CRABLANGFLAGS, that causes *every* shared dependency to be rebuilt.
+            // By injecting this into the crablangc wrapper, this circumvents
             // Cargo's fingerprint detection. This is fine because lint flags
             // are always ignored in dependencies. Eventually this should be
             // fixed via better support from Cargo.
-            cargo.env("RUSTC_LINT_FLAGS", lint_flags.join(" "));
+            cargo.env("CRABLANGC_LINT_FLAGS", lint_flags.join(" "));
 
-            rustdocflags.arg("-Wrustdoc::invalid_codeblock_attributes");
+            crablangdocflags.arg("-Wcrablangdoc::invalid_codeblock_attributes");
         }
 
-        if mode == Mode::Rustc {
-            rustflags.arg("-Zunstable-options");
-            rustflags.arg("-Wrustc::internal");
+        if mode == Mode::CrabLangc {
+            crablangflags.arg("-Zunstable-options");
+            crablangflags.arg("-Wcrablangc::internal");
         }
 
         // Throughout the build Cargo can execute a number of build scripts
@@ -1833,7 +1833,7 @@ impl<'a> Builder<'a> {
             let cc = ccacheify(&self.cc(target));
             cargo.env(format!("CC_{}", triple_underscored), &cc);
 
-            let cflags = self.cflags(target, GitRepo::Rustc, CLang::C).join(" ");
+            let cflags = self.cflags(target, GitRepo::CrabLangc, CLang::C).join(" ");
             cargo.env(format!("CFLAGS_{}", triple_underscored), &cflags);
 
             if let Some(ar) = self.ar(target) {
@@ -1845,16 +1845,16 @@ impl<'a> Builder<'a> {
 
             if let Ok(cxx) = self.cxx(target) {
                 let cxx = ccacheify(&cxx);
-                let cxxflags = self.cflags(target, GitRepo::Rustc, CLang::Cxx).join(" ");
+                let cxxflags = self.cflags(target, GitRepo::CrabLangc, CLang::Cxx).join(" ");
                 cargo
                     .env(format!("CXX_{}", triple_underscored), &cxx)
                     .env(format!("CXXFLAGS_{}", triple_underscored), cxxflags);
             }
         }
 
-        // If Control Flow Guard is enabled, pass the `control-flow-guard` flag to rustc
+        // If Control Flow Guard is enabled, pass the `control-flow-guard` flag to crablangc
         // when compiling the standard library, since this might be linked into the final outputs
-        // produced by rustc. Since this mitigation is only available on Windows, only enable it
+        // produced by crablangc. Since this mitigation is only available on Windows, only enable it
         // for the standard library in case the compiler is run on a non-Windows platform.
         // This is not needed for stage 0 artifacts because these will only be used for building
         // the stage 1 compiler.
@@ -1863,15 +1863,15 @@ impl<'a> Builder<'a> {
             && self.config.control_flow_guard
             && compiler.stage >= 1
         {
-            rustflags.arg("-Ccontrol-flow-guard");
+            crablangflags.arg("-Ccontrol-flow-guard");
         }
 
-        // For `cargo doc` invocations, make rustdoc print the Rust version into the docs
-        // This replaces spaces with newlines because RUSTDOCFLAGS does not
+        // For `cargo doc` invocations, make crablangdoc print the CrabLang version into the docs
+        // This replaces spaces with newlines because CRABLANGDOCFLAGS does not
         // support arguments with regular spaces. Hopefully someday Cargo will
         // have space support.
-        let rust_version = self.rust_version().replace(' ', "\n");
-        rustdocflags.arg("--crate-version").arg(&rust_version);
+        let crablang_version = self.crablang_version().replace(' ', "\n");
+        crablangdocflags.arg("--crate-version").arg(&crablang_version);
 
         // Environment variables *required* throughout the build
         //
@@ -1899,7 +1899,7 @@ impl<'a> Builder<'a> {
         // default via `-ldylib=winapi_foo`. That is, they're linked with the
         // `dylib` type with a `winapi_` prefix (so the winapi ones don't
         // conflict with the system MinGW ones). This consequently means that
-        // the binaries we ship of things like rustc_codegen_llvm (aka the rustc_codegen_llvm
+        // the binaries we ship of things like crablangc_codegen_llvm (aka the crablangc_codegen_llvm
         // DLL) when linked against *again*, for example with procedural macros
         // or plugins, will trigger the propagation logic of `-ldylib`, passing
         // `-lwinapi_foo` to the linker again. This isn't actually available in
@@ -1920,7 +1920,7 @@ impl<'a> Builder<'a> {
             cargo.arg("-v");
         }
 
-        match (mode, self.config.rust_codegen_units_std, self.config.rust_codegen_units) {
+        match (mode, self.config.crablang_codegen_units_std, self.config.crablang_codegen_units) {
             (Mode::Std, Some(n), _) | (_, _, Some(n)) => {
                 cargo.env(profile_var("CODEGEN_UNITS"), n.to_string());
             }
@@ -1937,22 +1937,22 @@ impl<'a> Builder<'a> {
         }
 
         // Try to use a sysroot-relative bindir, in case it was configured absolutely.
-        cargo.env("RUSTC_INSTALL_BINDIR", self.config.bindir_relative());
+        cargo.env("CRABLANGC_INSTALL_BINDIR", self.config.bindir_relative());
 
         self.ci_env.force_coloring_in_ci(&mut cargo);
 
-        // When we build Rust dylibs they're all intended for intermediate
+        // When we build CrabLang dylibs they're all intended for intermediate
         // usage, so make sure we pass the -Cprefer-dynamic flag instead of
         // linking all deps statically into the dylib.
-        if matches!(mode, Mode::Std | Mode::Rustc) {
-            rustflags.arg("-Cprefer-dynamic");
+        if matches!(mode, Mode::Std | Mode::CrabLangc) {
+            crablangflags.arg("-Cprefer-dynamic");
         }
 
         // When building incrementally we default to a lower ThinLTO import limit
         // (unless explicitly specified otherwise). This will produce a somewhat
         // slower code but give way better compile times.
         {
-            let limit = match self.config.rust_thin_lto_import_instr_limit {
+            let limit = match self.config.crablang_thin_lto_import_instr_limit {
                 Some(limit) => Some(limit),
                 None if self.config.incremental => Some(10),
                 _ => None,
@@ -1961,25 +1961,25 @@ impl<'a> Builder<'a> {
             if let Some(limit) = limit {
                 if stage == 0 || self.config.default_codegen_backend().unwrap_or_default() == "llvm"
                 {
-                    rustflags.arg(&format!("-Cllvm-args=-import-instr-limit={}", limit));
+                    crablangflags.arg(&format!("-Cllvm-args=-import-instr-limit={}", limit));
                 }
             }
         }
 
         if matches!(mode, Mode::Std) {
-            if let Some(mir_opt_level) = self.config.rust_validate_mir_opts {
-                rustflags.arg("-Zvalidate-mir");
-                rustflags.arg(&format!("-Zmir-opt-level={}", mir_opt_level));
+            if let Some(mir_opt_level) = self.config.crablang_validate_mir_opts {
+                crablangflags.arg("-Zvalidate-mir");
+                crablangflags.arg(&format!("-Zmir-opt-level={}", mir_opt_level));
             }
             // Always enable inlining MIR when building the standard library.
             // Without this flag, MIR inlining is disabled when incremental compilation is enabled.
             // That causes some mir-opt tests which inline functions from the standard library to
             // break when incremental compilation is enabled. So this overrides the "no inlining
             // during incremental builds" heuristic for the standard library.
-            rustflags.arg("-Zinline-mir");
+            crablangflags.arg("-Zinline-mir");
         }
 
-        Cargo { command: cargo, rustflags, rustdocflags, allow_features }
+        Cargo { command: cargo, crablangflags, crablangdocflags, allow_features }
     }
 
     /// Ensure that a given step is built, returning its output. This will
@@ -2112,25 +2112,25 @@ impl<'a> Builder<'a> {
 mod tests;
 
 #[derive(Debug, Clone)]
-struct Rustflags(String, TargetSelection);
+struct CrabLangflags(String, TargetSelection);
 
-impl Rustflags {
-    fn new(target: TargetSelection) -> Rustflags {
-        let mut ret = Rustflags(String::new(), target);
-        ret.propagate_cargo_env("RUSTFLAGS");
+impl CrabLangflags {
+    fn new(target: TargetSelection) -> CrabLangflags {
+        let mut ret = CrabLangflags(String::new(), target);
+        ret.propagate_cargo_env("CRABLANGFLAGS");
         ret
     }
 
     /// By default, cargo will pick up on various variables in the environment. However, bootstrap
-    /// reuses those variables to pass additional flags to rustdoc, so by default they get overridden.
+    /// reuses those variables to pass additional flags to crablangdoc, so by default they get overridden.
     /// Explicitly add back any previous value in the environment.
     ///
-    /// `prefix` is usually `RUSTFLAGS` or `RUSTDOCFLAGS`.
+    /// `prefix` is usually `CRABLANGFLAGS` or `CRABLANGDOCFLAGS`.
     fn propagate_cargo_env(&mut self, prefix: &str) {
-        // Inherit `RUSTFLAGS` by default ...
+        // Inherit `CRABLANGFLAGS` by default ...
         self.env(prefix);
 
-        // ... and also handle target-specific env RUSTFLAGS if they're configured.
+        // ... and also handle target-specific env CRABLANGFLAGS if they're configured.
         let target_specific = format!("CARGO_TARGET_{}_{}", crate::envify(&self.1.triple), prefix);
         self.env(&target_specific);
     }
@@ -2156,18 +2156,18 @@ impl Rustflags {
 #[derive(Debug)]
 pub struct Cargo {
     command: Command,
-    rustflags: Rustflags,
-    rustdocflags: Rustflags,
+    crablangflags: CrabLangflags,
+    crablangdocflags: CrabLangflags,
     allow_features: String,
 }
 
 impl Cargo {
-    pub fn rustdocflag(&mut self, arg: &str) -> &mut Cargo {
-        self.rustdocflags.arg(arg);
+    pub fn crablangdocflag(&mut self, arg: &str) -> &mut Cargo {
+        self.crablangdocflags.arg(arg);
         self
     }
-    pub fn rustflag(&mut self, arg: &str) -> &mut Cargo {
-        self.rustflags.arg(arg);
+    pub fn crablangflag(&mut self, arg: &str) -> &mut Cargo {
+        self.crablangflags.arg(arg);
         self
     }
 
@@ -2188,15 +2188,15 @@ impl Cargo {
     }
 
     pub fn env(&mut self, key: impl AsRef<OsStr>, value: impl AsRef<OsStr>) -> &mut Cargo {
-        // These are managed through rustflag/rustdocflag interfaces.
-        assert_ne!(key.as_ref(), "RUSTFLAGS");
-        assert_ne!(key.as_ref(), "RUSTDOCFLAGS");
+        // These are managed through crablangflag/crablangdocflag interfaces.
+        assert_ne!(key.as_ref(), "CRABLANGFLAGS");
+        assert_ne!(key.as_ref(), "CRABLANGDOCFLAGS");
         self.command.env(key.as_ref(), value.as_ref());
         self
     }
 
-    pub fn add_rustc_lib_path(&mut self, builder: &Builder<'_>, compiler: Compiler) {
-        builder.add_rustc_lib_path(compiler, &mut self.command);
+    pub fn add_crablangc_lib_path(&mut self, builder: &Builder<'_>, compiler: Compiler) {
+        builder.add_crablangc_lib_path(compiler, &mut self.command);
     }
 
     pub fn current_dir(&mut self, dir: &Path) -> &mut Cargo {
@@ -2219,18 +2219,18 @@ impl Cargo {
 
 impl From<Cargo> for Command {
     fn from(mut cargo: Cargo) -> Command {
-        let rustflags = &cargo.rustflags.0;
-        if !rustflags.is_empty() {
-            cargo.command.env("RUSTFLAGS", rustflags);
+        let crablangflags = &cargo.crablangflags.0;
+        if !crablangflags.is_empty() {
+            cargo.command.env("CRABLANGFLAGS", crablangflags);
         }
 
-        let rustdocflags = &cargo.rustdocflags.0;
-        if !rustdocflags.is_empty() {
-            cargo.command.env("RUSTDOCFLAGS", rustdocflags);
+        let crablangdocflags = &cargo.crablangdocflags.0;
+        if !crablangdocflags.is_empty() {
+            cargo.command.env("CRABLANGDOCFLAGS", crablangdocflags);
         }
 
         if !cargo.allow_features.is_empty() {
-            cargo.command.env("RUSTC_ALLOW_FEATURES", cargo.allow_features);
+            cargo.command.env("CRABLANGC_ALLOW_FEATURES", cargo.allow_features);
         }
 
         cargo.command

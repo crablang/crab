@@ -2,11 +2,11 @@ use clippy_utils::diagnostics::span_lint_and_sugg;
 use clippy_utils::ty::match_type;
 use clippy_utils::{is_lint_allowed, method_calls, paths};
 use if_chain::if_chain;
-use rustc_errors::Applicability;
-use rustc_hir as hir;
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_session::{declare_lint_pass, declare_tool_lint};
-use rustc_span::symbol::Symbol;
+use crablangc_errors::Applicability;
+use crablangc_hir as hir;
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_span::symbol::Symbol;
 
 declare_clippy_lint! {
     /// ### What it does
@@ -17,12 +17,12 @@ declare_clippy_lint! {
     /// `cx.outer_expn_data()` is faster and more concise.
     ///
     /// ### Example
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// expr.span.ctxt().outer().expn_data()
     /// ```
     ///
     /// Use instead:
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// expr.span.ctxt().outer_expn_data()
     /// ```
     pub OUTER_EXPN_EXPN_DATA,

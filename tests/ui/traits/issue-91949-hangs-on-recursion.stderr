@@ -28,4 +28,4 @@ LL | impl<T, I: Iterator<Item = T>> Iterator for IteratorOfWrapped<T, I> {
 
 error: aborting due to previous error; 1 warning emitted
 
-For more information about this error, try `rustc --explain E0275`.
+For more information about this error, try `crablangc --explain E0275`.

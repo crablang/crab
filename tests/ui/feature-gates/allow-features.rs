@@ -1,5 +1,5 @@
 // compile-flags: -Z allow_features=lang_items
-// Note: This test uses rustc internal flags because they will never stabilize.
+// Note: This test uses crablangc internal flags because they will never stabilize.
 
 #![feature(lang_items)]
 

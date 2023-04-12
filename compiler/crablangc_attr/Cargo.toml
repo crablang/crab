@@ -1,0 +1,18 @@
+[package]
+name = "crablangc_attr"
+version = "0.0.0"
+edition = "2021"
+
+[lib]
+
+[dependencies]
+crablangc_ast_pretty = { path = "../crablangc_ast_pretty" }
+crablangc_serialize = { path = "../crablangc_serialize" }
+crablangc_errors = { path = "../crablangc_errors" }
+crablangc_span = { path = "../crablangc_span" }
+crablangc_data_structures = { path = "../crablangc_data_structures" }
+crablangc_feature = { path = "../crablangc_feature" }
+crablangc_lexer = { path = "../crablangc_lexer" }
+crablangc_macros = { path = "../crablangc_macros" }
+crablangc_session = { path = "../crablangc_session" }
+crablangc_ast = { path = "../crablangc_ast" }

@@ -1,7 +1,7 @@
 //! Implementation of compiling various phases of the compiler and standard
 //! library.
 //!
-//! This module contains some of the real meat in the rustbuild build system
+//! This module contains some of the real meat in the crablangbuild build system
 //! which is where Cargo is used to compile the standard library, libtest, and
 //! the compiler. This module is also responsible for assembling the sysroot as it
 //! goes along from the output of the previous stage.
@@ -22,7 +22,7 @@ use crate::builder::crate_description;
 use crate::builder::Cargo;
 use crate::builder::{Builder, Kind, PathSet, RunConfig, ShouldRun, Step, TaskPath};
 use crate::cache::{Interned, INTERNER};
-use crate::config::{LlvmLibunwind, RustcLto, TargetSelection};
+use crate::config::{LlvmLibunwind, CrabLangcLto, TargetSelection};
 use crate::dist;
 use crate::llvm;
 use crate::tool::SourceType;
@@ -37,7 +37,7 @@ pub struct Std {
     pub compiler: Compiler,
     /// Whether to build only a subset of crates in the standard library.
     ///
-    /// This shouldn't be used from other steps; see the comment on [`Rustc`].
+    /// This shouldn't be used from other steps; see the comment on [`CrabLangc`].
     crates: Interned<Vec<String>>,
 }
 
@@ -57,7 +57,7 @@ impl Step for Std {
         let builder = run.builder;
         run.crate_or_deps("test")
             .path("library")
-            .lazy_default_condition(Box::new(|| !builder.download_rustc()))
+            .lazy_default_condition(Box::new(|| !builder.download_crablangc()))
     }
 
     fn make_run(run: RunConfig<'_>) {
@@ -87,7 +87,7 @@ impl Step for Std {
         // Don't recompile them.
         // NOTE: the ABI of the beta compiler is different from the ABI of the downloaded compiler,
         // so its artifacts can't be reused.
-        if builder.download_rustc() && compiler.stage != 0 {
+        if builder.download_crablangc() && compiler.stage != 0 {
             return;
         }
 
@@ -209,7 +209,7 @@ fn copy_third_party_objects(
     // FIXME: remove this in 2021
     if target == "x86_64-fortanix-unknown-sgx" {
         if env::var_os("X86_FORTANIX_SGX_LIBS").is_some() {
-            builder.info("Warning: X86_FORTANIX_SGX_LIBS environment variable is ignored, libunwind is now compiled as part of rustbuild");
+            builder.info("Warning: X86_FORTANIX_SGX_LIBS environment variable is ignored, libunwind is now compiled as part of crablangbuild");
         }
     }
 
@@ -247,10 +247,10 @@ fn copy_self_contained_objects(
 
     // Copies the libc and CRT objects.
     //
-    // rustc historically provides a more self-contained installation for musl targets
+    // crablangc historically provides a more self-contained installation for musl targets
     // not requiring the presence of a native musl toolchain. For example, it can fall back
     // to using gcc from a glibc-targeting toolchain for linking.
-    // To do that we have to distribute musl startup objects as a part of Rust toolchain
+    // To do that we have to distribute musl startup objects as a part of CrabLang toolchain
     // and link with them manually in the self-contained mode.
     if target.contains("musl") {
         let srcdir = builder.musl_libdir(target).unwrap_or_else(|| {
@@ -321,9 +321,9 @@ pub fn std_cargo(builder: &Builder<'_>, target: TargetSelection, stage: u32, car
     // an external LLVM is used we skip the LLVM submodule checkout).
     //
     // Note that this shouldn't affect the correctness of `compiler-builtins`,
-    // but only its speed. Some intrinsics in C haven't been translated to Rust
+    // but only its speed. Some intrinsics in C haven't been translated to CrabLang
     // yet but that's pretty rare. Other intrinsics have optimized
-    // implementations in C which have only had slower versions ported to Rust,
+    // implementations in C which have only had slower versions ported to CrabLang,
     // so we favor the C version where we can, but it's not critical.
     //
     // If `compiler-rt` is available ensure that the `c` feature of the
@@ -333,7 +333,7 @@ pub fn std_cargo(builder: &Builder<'_>, target: TargetSelection, stage: u32, car
     let compiler_builtins_c_feature = if compiler_builtins_root.exists() {
         // Note that `libprofiler_builtins/build.rs` also computes this so if
         // you're changing something here please also change that.
-        cargo.env("RUST_COMPILER_RT_ROOT", &compiler_builtins_root);
+        cargo.env("CRABLANG_COMPILER_RT_ROOT", &compiler_builtins_root);
         " compiler-builtins-c"
     } else {
         ""
@@ -380,19 +380,19 @@ pub fn std_cargo(builder: &Builder<'_>, target: TargetSelection, stage: u32, car
         if target.contains("musl") {
             if let Some(p) = builder.musl_libdir(target) {
                 let root = format!("native={}", p.to_str().unwrap());
-                cargo.rustflag("-L").rustflag(&root);
+                cargo.crablangflag("-L").crablangflag(&root);
             }
         }
 
         if target.ends_with("-wasi") {
             if let Some(p) = builder.wasi_root(target) {
                 let root = format!("native={}/lib/wasm32-wasi", p.to_str().unwrap());
-                cargo.rustflag("-L").rustflag(&root);
+                cargo.crablangflag("-L").crablangflag(&root);
             }
         }
     }
 
-    // By default, rustc uses `-Cembed-bitcode=yes`, and Cargo overrides that
+    // By default, crablangc uses `-Cembed-bitcode=yes`, and Cargo overrides that
     // with `-Cembed-bitcode=no` for non-LTO builds. However, libstd must be
     // built with bitcode so that the produced rlibs can be used for both LTO
     // builds (which use bitcode) and non-LTO builds (which use object code).
@@ -401,26 +401,26 @@ pub fn std_cargo(builder: &Builder<'_>, target: TargetSelection, stage: u32, car
     // But we don't bother for the stage 0 compiler because it's never used
     // with LTO.
     if stage >= 1 {
-        cargo.rustflag("-Cembed-bitcode=yes");
+        cargo.crablangflag("-Cembed-bitcode=yes");
     }
-    if builder.config.rust_lto == RustcLto::Off {
-        cargo.rustflag("-Clto=off");
+    if builder.config.crablang_lto == CrabLangcLto::Off {
+        cargo.crablangflag("-Clto=off");
     }
 
-    // By default, rustc does not include unwind tables unless they are required
+    // By default, crablangc does not include unwind tables unless they are required
     // for a particular target. They are not required by RISC-V targets, but
     // compiling the standard library with them means that users can get
     // backtraces without having to recompile the standard library themselves.
     //
-    // This choice was discussed in https://github.com/rust-lang/rust/pull/69890
+    // This choice was discussed in https://github.com/crablang/crablang/pull/69890
     if target.contains("riscv") {
-        cargo.rustflag("-Cforce-unwind-tables=yes");
+        cargo.crablangflag("-Cforce-unwind-tables=yes");
     }
 
     let html_root =
-        format!("-Zcrate-attr=doc(html_root_url=\"{}/\")", builder.doc_rust_lang_org_channel(),);
-    cargo.rustflag(&html_root);
-    cargo.rustdocflag(&html_root);
+        format!("-Zcrate-attr=doc(html_root_url=\"{}/\")", builder.doc_crablang_lang_org_channel(),);
+    cargo.crablangflag(&html_root);
+    cargo.crablangdocflag(&html_root);
 }
 
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
@@ -571,15 +571,15 @@ impl Step for StartupObjects {
             let src_file = &src_dir.join(file.to_string() + ".rs");
             let dst_file = &dst_dir.join(file.to_string() + ".o");
             if !up_to_date(src_file, dst_file) {
-                let mut cmd = Command::new(&builder.initial_rustc);
-                cmd.env("RUSTC_BOOTSTRAP", "1");
+                let mut cmd = Command::new(&builder.initial_crablangc);
+                cmd.env("CRABLANGC_BOOTSTRAP", "1");
                 if !builder.local_rebuild {
                     // a local_rebuild compiler already has stage1 features
                     cmd.arg("--cfg").arg("bootstrap");
                 }
                 builder.run(
                     cmd.arg("--target")
-                        .arg(target.rustc_target_arg())
+                        .arg(target.crablangc_target_arg())
                         .arg("--emit=obj")
                         .arg("-o")
                         .arg(dst_file)
@@ -597,32 +597,32 @@ impl Step for StartupObjects {
 }
 
 #[derive(Debug, PartialOrd, Ord, Copy, Clone, PartialEq, Eq, Hash)]
-pub struct Rustc {
+pub struct CrabLangc {
     pub target: TargetSelection,
     pub compiler: Compiler,
     /// Whether to build a subset of crates, rather than the whole compiler.
     ///
-    /// This should only be requested by the user, not used within rustbuild itself.
-    /// Using it within rustbuild can lead to confusing situation where lints are replayed
+    /// This should only be requested by the user, not used within crablangbuild itself.
+    /// Using it within crablangbuild can lead to confusing situation where lints are replayed
     /// in two different steps.
     crates: Interned<Vec<String>>,
 }
 
-impl Rustc {
+impl CrabLangc {
     pub fn new(compiler: Compiler, target: TargetSelection) -> Self {
         Self { target, compiler, crates: Default::default() }
     }
 }
 
-impl Step for Rustc {
+impl Step for CrabLangc {
     type Output = ();
     const ONLY_HOSTS: bool = true;
     const DEFAULT: bool = false;
 
     fn should_run(run: ShouldRun<'_>) -> ShouldRun<'_> {
-        let mut crates = run.builder.in_tree_crates("rustc-main", None);
+        let mut crates = run.builder.in_tree_crates("crablangc-main", None);
         for (i, krate) in crates.iter().enumerate() {
-            if krate.name == "rustc-main" {
+            if krate.name == "crablangc-main" {
                 crates.swap_remove(i);
                 break;
             }
@@ -632,7 +632,7 @@ impl Step for Rustc {
 
     fn make_run(run: RunConfig<'_>) {
         let crates = run.cargo_crates_in_set();
-        run.builder.ensure(Rustc {
+        run.builder.ensure(CrabLangc {
             compiler: run.builder.compiler(run.builder.top_stage, run.build_triple()),
             target: run.target,
             crates,
@@ -650,9 +650,9 @@ impl Step for Rustc {
 
         // NOTE: the ABI of the beta compiler is different from the ABI of the downloaded compiler,
         // so its artifacts can't be reused.
-        if builder.download_rustc() && compiler.stage != 0 {
+        if builder.download_crablangc() && compiler.stage != 0 {
             // Copy the existing artifacts instead of rebuilding them.
-            // NOTE: this path is only taken for tools linking to rustc-dev.
+            // NOTE: this path is only taken for tools linking to crablangc-dev.
             builder.ensure(Sysroot { compiler });
             return;
         }
@@ -660,24 +660,24 @@ impl Step for Rustc {
         builder.ensure(Std::new(compiler, target));
 
         if builder.config.keep_stage.contains(&compiler.stage) {
-            builder.info("Warning: Using a potentially old librustc. This may not behave well.");
+            builder.info("Warning: Using a potentially old libcrablangc. This may not behave well.");
             builder.info("Warning: Use `--keep-stage-std` if you want to rebuild the compiler when it changes");
-            builder.ensure(RustcLink::from_rustc(self, compiler));
+            builder.ensure(CrabLangcLink::from_crablangc(self, compiler));
             return;
         }
 
         let compiler_to_use = builder.compiler_for(compiler.stage, compiler.host, target);
         if compiler_to_use != compiler {
-            builder.ensure(Rustc::new(compiler_to_use, target));
+            builder.ensure(CrabLangc::new(compiler_to_use, target));
             let msg = if compiler_to_use.host == target {
                 format!(
-                    "Uplifting rustc (stage{} -> stage{})",
+                    "Uplifting crablangc (stage{} -> stage{})",
                     compiler_to_use.stage,
                     compiler.stage + 1
                 )
             } else {
                 format!(
-                    "Uplifting rustc (stage{}:{} -> stage{}:{})",
+                    "Uplifting crablangc (stage{}:{} -> stage{}:{})",
                     compiler_to_use.stage,
                     compiler_to_use.host,
                     compiler.stage + 1,
@@ -685,7 +685,7 @@ impl Step for Rustc {
                 )
             };
             builder.info(&msg);
-            builder.ensure(RustcLink::from_rustc(self, compiler_to_use));
+            builder.ensure(CrabLangcLink::from_crablangc(self, compiler_to_use));
             return;
         }
 
@@ -695,40 +695,40 @@ impl Step for Rustc {
             builder.config.build,
         ));
 
-        let mut cargo = builder.cargo(compiler, Mode::Rustc, SourceType::InTree, target, "build");
-        rustc_cargo(builder, &mut cargo, target);
+        let mut cargo = builder.cargo(compiler, Mode::CrabLangc, SourceType::InTree, target, "build");
+        crablangc_cargo(builder, &mut cargo, target);
 
-        if builder.config.rust_profile_use.is_some()
-            && builder.config.rust_profile_generate.is_some()
+        if builder.config.crablang_profile_use.is_some()
+            && builder.config.crablang_profile_generate.is_some()
         {
             panic!("Cannot use and generate PGO profiles at the same time");
         }
 
         // With LLD, we can use ICF (identical code folding) to reduce the executable size
-        // of librustc_driver/rustc and to improve i-cache utilization.
+        // of libcrablangc_driver/crablangc and to improve i-cache utilization.
         //
         // -Wl,[link options] doesn't work on MSVC. However, /OPT:ICF (technically /OPT:REF,ICF)
         // is already on by default in MSVC optimized builds, which is interpreted as --icf=all:
         // https://github.com/llvm/llvm-project/blob/3329cec2f79185bafd678f310fafadba2a8c76d2/lld/COFF/Driver.cpp#L1746
-        // https://github.com/rust-lang/rust/blob/f22819bcce4abaff7d1246a56eec493418f9f4ee/compiler/rustc_codegen_ssa/src/back/linker.rs#L827
+        // https://github.com/crablang/crablang/blob/f22819bcce4abaff7d1246a56eec493418f9f4ee/compiler/crablangc_codegen_ssa/src/back/linker.rs#L827
         if builder.config.use_lld && !compiler.host.contains("msvc") {
-            cargo.rustflag("-Clink-args=-Wl,--icf=all");
+            cargo.crablangflag("-Clink-args=-Wl,--icf=all");
         }
 
-        let is_collecting = if let Some(path) = &builder.config.rust_profile_generate {
+        let is_collecting = if let Some(path) = &builder.config.crablang_profile_generate {
             if compiler.stage == 1 {
-                cargo.rustflag(&format!("-Cprofile-generate={}", path));
+                cargo.crablangflag(&format!("-Cprofile-generate={}", path));
                 // Apparently necessary to avoid overflowing the counters during
                 // a Cargo build profile
-                cargo.rustflag("-Cllvm-args=-vp-counters-per-site=4");
+                cargo.crablangflag("-Cllvm-args=-vp-counters-per-site=4");
                 true
             } else {
                 false
             }
-        } else if let Some(path) = &builder.config.rust_profile_use {
+        } else if let Some(path) = &builder.config.crablang_profile_use {
             if compiler.stage == 1 {
-                cargo.rustflag(&format!("-Cprofile-use={}", path));
-                cargo.rustflag("-Cllvm-args=-pgo-warn-missing-function");
+                cargo.crablangflag(&format!("-Cprofile-use={}", path));
+                cargo.crablangflag("-Cllvm-args=-pgo-warn-missing-function");
                 true
             } else {
                 false
@@ -737,8 +737,8 @@ impl Step for Rustc {
             false
         };
         if is_collecting {
-            // Ensure paths to Rust sources are relative, not absolute.
-            cargo.rustflag(&format!(
+            // Ensure paths to CrabLang sources are relative, not absolute.
+            cargo.crablangflag(&format!(
                 "-Cllvm-args=-static-func-strip-dirname-prefix={}",
                 builder.config.src.components().count()
             ));
@@ -747,30 +747,30 @@ impl Step for Rustc {
         // We currently don't support cross-crate LTO in stage0. This also isn't hugely necessary
         // and may just be a time sink.
         if compiler.stage != 0 {
-            match builder.config.rust_lto {
-                RustcLto::Thin | RustcLto::Fat => {
+            match builder.config.crablang_lto {
+                CrabLangcLto::Thin | CrabLangcLto::Fat => {
                     // Since using LTO for optimizing dylibs is currently experimental,
                     // we need to pass -Zdylib-lto.
-                    cargo.rustflag("-Zdylib-lto");
+                    cargo.crablangflag("-Zdylib-lto");
                     // Cargo by default passes `-Cembed-bitcode=no` and doesn't pass `-Clto` when
                     // compiling dylibs (and their dependencies), even when LTO is enabled for the
                     // crate. Therefore, we need to override `-Clto` and `-Cembed-bitcode` here.
-                    let lto_type = match builder.config.rust_lto {
-                        RustcLto::Thin => "thin",
-                        RustcLto::Fat => "fat",
+                    let lto_type = match builder.config.crablang_lto {
+                        CrabLangcLto::Thin => "thin",
+                        CrabLangcLto::Fat => "fat",
                         _ => unreachable!(),
                     };
-                    cargo.rustflag(&format!("-Clto={}", lto_type));
-                    cargo.rustflag("-Cembed-bitcode=yes");
+                    cargo.crablangflag(&format!("-Clto={}", lto_type));
+                    cargo.crablangflag("-Cembed-bitcode=yes");
                 }
-                RustcLto::ThinLocal => { /* Do nothing, this is the default */ }
-                RustcLto::Off => {
-                    cargo.rustflag("-Clto=off");
+                CrabLangcLto::ThinLocal => { /* Do nothing, this is the default */ }
+                CrabLangcLto::Off => {
+                    cargo.crablangflag("-Clto=off");
                 }
             }
         } else {
-            if builder.config.rust_lto == RustcLto::Off {
-                cargo.rustflag("-Clto=off");
+            if builder.config.crablang_lto == CrabLangcLto::Off {
+                cargo.crablangflag("-Clto=off");
             }
         }
 
@@ -800,35 +800,35 @@ impl Step for Rustc {
             builder,
             cargo,
             vec![],
-            &librustc_stamp(builder, compiler, target),
+            &libcrablangc_stamp(builder, compiler, target),
             vec![],
             false,
-            true, // Only ship rustc_driver.so and .rmeta files, not all intermediate .rlib files.
+            true, // Only ship crablangc_driver.so and .rmeta files, not all intermediate .rlib files.
         );
 
-        builder.ensure(RustcLink::from_rustc(
+        builder.ensure(CrabLangcLink::from_crablangc(
             self,
             builder.compiler(compiler.stage, builder.config.build),
         ));
     }
 }
 
-pub fn rustc_cargo(builder: &Builder<'_>, cargo: &mut Cargo, target: TargetSelection) {
+pub fn crablangc_cargo(builder: &Builder<'_>, cargo: &mut Cargo, target: TargetSelection) {
     cargo
         .arg("--features")
-        .arg(builder.rustc_features(builder.kind))
+        .arg(builder.crablangc_features(builder.kind))
         .arg("--manifest-path")
-        .arg(builder.src.join("compiler/rustc/Cargo.toml"));
-    rustc_cargo_env(builder, cargo, target);
+        .arg(builder.src.join("compiler/crablangc/Cargo.toml"));
+    crablangc_cargo_env(builder, cargo, target);
 }
 
-pub fn rustc_cargo_env(builder: &Builder<'_>, cargo: &mut Cargo, target: TargetSelection) {
+pub fn crablangc_cargo_env(builder: &Builder<'_>, cargo: &mut Cargo, target: TargetSelection) {
     // Set some configuration variables picked up by build scripts and
     // the compiler alike
     cargo
-        .env("CFG_RELEASE", builder.rust_release())
+        .env("CFG_RELEASE", builder.crablang_release())
         .env("CFG_RELEASE_CHANNEL", &builder.config.channel)
-        .env("CFG_VERSION", builder.rust_version());
+        .env("CFG_VERSION", builder.crablang_version());
 
     if let Some(backend) = builder.config.default_codegen_backend() {
         cargo.env("CFG_DEFAULT_CODEGEN_BACKEND", backend);
@@ -839,10 +839,10 @@ pub fn rustc_cargo_env(builder: &Builder<'_>, cargo: &mut Cargo, target: TargetS
 
     cargo.env("CFG_LIBDIR_RELATIVE", libdir_relative);
 
-    if let Some(ref ver_date) = builder.rust_info().commit_date() {
+    if let Some(ref ver_date) = builder.crablang_info().commit_date() {
         cargo.env("CFG_VER_DATE", ver_date);
     }
-    if let Some(ref ver_hash) = builder.rust_info().sha() {
+    if let Some(ref ver_hash) = builder.crablang_info().sha() {
         cargo.env("CFG_VER_HASH", ver_hash);
     }
     if !builder.unstable_features() {
@@ -853,22 +853,22 @@ pub fn rustc_cargo_env(builder: &Builder<'_>, cargo: &mut Cargo, target: TargetS
     // specified one.
     if let Some(s) = target_config.and_then(|c| c.default_linker.as_ref()) {
         cargo.env("CFG_DEFAULT_LINKER", s);
-    } else if let Some(ref s) = builder.config.rustc_default_linker {
+    } else if let Some(ref s) = builder.config.crablangc_default_linker {
         cargo.env("CFG_DEFAULT_LINKER", s);
     }
 
-    if builder.config.rustc_parallel {
-        // keep in sync with `bootstrap/lib.rs:Build::rustc_features`
-        // `cfg` option for rustc, `features` option for cargo, for conditional compilation
-        cargo.rustflag("--cfg=parallel_compiler");
-        cargo.rustdocflag("--cfg=parallel_compiler");
+    if builder.config.crablangc_parallel {
+        // keep in sync with `bootstrap/lib.rs:Build::crablangc_features`
+        // `cfg` option for crablangc, `features` option for cargo, for conditional compilation
+        cargo.crablangflag("--cfg=parallel_compiler");
+        cargo.crablangdocflag("--cfg=parallel_compiler");
     }
-    if builder.config.rust_verify_llvm_ir {
-        cargo.env("RUSTC_VERIFY_LLVM_IR", "1");
+    if builder.config.crablang_verify_llvm_ir {
+        cargo.env("CRABLANGC_VERIFY_LLVM_IR", "1");
     }
 
     // Pass down configuration from the LLVM build into the build of
-    // rustc_llvm and rustc_codegen_llvm.
+    // crablangc_llvm and crablangc_codegen_llvm.
     //
     // Note that this is disabled if LLVM itself is disabled or we're in a check
     // build. If we are in a check build we still go ahead here presuming we've
@@ -878,8 +878,8 @@ pub fn rustc_cargo_env(builder: &Builder<'_>, cargo: &mut Cargo, target: TargetS
         && (builder.kind != Kind::Check
             || crate::llvm::prebuilt_llvm_config(builder, target).is_ok())
     {
-        if builder.is_rust_llvm(target) {
-            cargo.env("LLVM_RUSTLLVM", "1");
+        if builder.is_crablang_llvm(target) {
+            cargo.env("LLVM_CRABLANGLLVM", "1");
         }
         let llvm::LlvmResult { llvm_config, .. } = builder.ensure(llvm::Llvm { target });
         cargo.env("LLVM_CONFIG", &llvm_config);
@@ -887,7 +887,7 @@ pub fn rustc_cargo_env(builder: &Builder<'_>, cargo: &mut Cargo, target: TargetS
             cargo.env("CFG_LLVM_ROOT", s);
         }
 
-        // Some LLVM linker flags (-L and -l) may be needed to link `rustc_llvm`. Its build script
+        // Some LLVM linker flags (-L and -l) may be needed to link `crablangc_llvm`. Its build script
         // expects these to be passed via the `LLVM_LINKER_FLAGS` env variable, separated by
         // whitespace.
         //
@@ -895,7 +895,7 @@ pub fn rustc_cargo_env(builder: &Builder<'_>, cargo: &mut Cargo, target: TargetS
         // - on windows, when `clang-cl` is used with instrumentation, we need to manually add
         // clang's runtime library resource directory so that the profiler runtime library can be
         // found. This is to avoid the linker errors about undefined references to
-        // `__llvm_profile_instrument_memop` when linking `rustc_driver`.
+        // `__llvm_profile_instrument_memop` when linking `crablangc_driver`.
         let mut llvm_linker_flags = String::new();
         if builder.config.llvm_profile_generate && target.contains("msvc") {
             if let Some(ref clang_cl_path) = builder.config.llvm_clang_cl {
@@ -913,7 +913,7 @@ pub fn rustc_cargo_env(builder: &Builder<'_>, cargo: &mut Cargo, target: TargetS
             llvm_linker_flags.push_str(s);
         }
 
-        // Set the linker flags via the env var that `rustc_llvm`'s build script will read.
+        // Set the linker flags via the env var that `crablangc_llvm`'s build script will read.
         if !llvm_linker_flags.is_empty() {
             cargo.env("LLVM_LINKER_FLAGS", llvm_linker_flags);
         }
@@ -948,7 +948,7 @@ pub fn rustc_cargo_env(builder: &Builder<'_>, cargo: &mut Cargo, target: TargetS
 }
 
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
-struct RustcLink {
+struct CrabLangcLink {
     pub compiler: Compiler,
     pub target_compiler: Compiler,
     pub target: TargetSelection,
@@ -956,25 +956,25 @@ struct RustcLink {
     crates: Interned<Vec<String>>,
 }
 
-impl RustcLink {
-    fn from_rustc(rustc: Rustc, host_compiler: Compiler) -> Self {
+impl CrabLangcLink {
+    fn from_crablangc(crablangc: CrabLangc, host_compiler: Compiler) -> Self {
         Self {
             compiler: host_compiler,
-            target_compiler: rustc.compiler,
-            target: rustc.target,
-            crates: rustc.crates,
+            target_compiler: crablangc.compiler,
+            target: crablangc.target,
+            crates: crablangc.crates,
         }
     }
 }
 
-impl Step for RustcLink {
+impl Step for CrabLangcLink {
     type Output = ();
 
     fn should_run(run: ShouldRun<'_>) -> ShouldRun<'_> {
         run.never()
     }
 
-    /// Same as `std_link`, only for librustc
+    /// Same as `std_link`, only for libcrablangc
     fn run(self, builder: &Builder<'_>) {
         let compiler = self.compiler;
         let target_compiler = self.target_compiler;
@@ -983,7 +983,7 @@ impl Step for RustcLink {
             builder,
             &builder.sysroot_libdir(target_compiler, target),
             &builder.sysroot_libdir(target_compiler, compiler.host),
-            &librustc_stamp(builder, compiler, target),
+            &libcrablangc_stamp(builder, compiler, target),
         );
     }
 }
@@ -1006,12 +1006,12 @@ fn needs_codegen_config(run: &RunConfig<'_>) -> bool {
     needs_codegen_cfg
 }
 
-const CODEGEN_BACKEND_PREFIX: &str = "rustc_codegen_";
+const CODEGEN_BACKEND_PREFIX: &str = "crablangc_codegen_";
 
 fn is_codegen_cfg_needed(path: &TaskPath, run: &RunConfig<'_>) -> bool {
     if path.path.to_str().unwrap().contains(&CODEGEN_BACKEND_PREFIX) {
         let mut needs_codegen_backend_config = true;
-        for &backend in &run.builder.config.rust_codegen_backends {
+        for &backend in &run.builder.config.crablang_codegen_backends {
             if path
                 .path
                 .to_str()
@@ -1040,7 +1040,7 @@ impl Step for CodegenBackend {
     const DEFAULT: bool = true;
 
     fn should_run(run: ShouldRun<'_>) -> ShouldRun<'_> {
-        run.paths(&["compiler/rustc_codegen_cranelift", "compiler/rustc_codegen_gcc"])
+        run.paths(&["compiler/crablangc_codegen_cranelift", "compiler/crablangc_codegen_gcc"])
     }
 
     fn make_run(run: RunConfig<'_>) {
@@ -1048,9 +1048,9 @@ impl Step for CodegenBackend {
             return;
         }
 
-        for &backend in &run.builder.config.rust_codegen_backends {
+        for &backend in &run.builder.config.crablang_codegen_backends {
             if backend == "llvm" {
-                continue; // Already built as part of rustc
+                continue; // Already built as part of crablangc
             }
 
             run.builder.ensure(CodegenBackend {
@@ -1066,7 +1066,7 @@ impl Step for CodegenBackend {
         let target = self.target;
         let backend = self.backend;
 
-        builder.ensure(Rustc::new(compiler, target));
+        builder.ensure(CrabLangc::new(compiler, target));
 
         if builder.config.keep_stage.contains(&compiler.stage) {
             builder.info(
@@ -1089,8 +1089,8 @@ impl Step for CodegenBackend {
         let mut cargo = builder.cargo(compiler, Mode::Codegen, SourceType::InTree, target, "build");
         cargo
             .arg("--manifest-path")
-            .arg(builder.src.join(format!("compiler/rustc_codegen_{}/Cargo.toml", backend)));
-        rustc_cargo_env(builder, &mut cargo, target);
+            .arg(builder.src.join(format!("compiler/crablangc_codegen_{}/Cargo.toml", backend)));
+        crablangc_cargo_env(builder, &mut cargo, target);
 
         let tmp_stamp = out_dir.join(".tmp.stamp");
 
@@ -1109,7 +1109,7 @@ impl Step for CodegenBackend {
         }
         let mut files = files.into_iter().filter(|f| {
             let filename = f.file_name().unwrap().to_str().unwrap();
-            is_dylib(filename) && filename.contains("rustc_codegen_")
+            is_dylib(filename) && filename.contains("crablangc_codegen_")
         });
         let codegen_backend = match files.next() {
             Some(f) => f,
@@ -1143,7 +1143,7 @@ fn copy_codegen_backends_to_sysroot(
 
     // Note that this step is different than all the other `*Link` steps in
     // that it's not assembling a bunch of libraries but rather is primarily
-    // moving the codegen backend into place. The codegen backend of rustc is
+    // moving the codegen backend into place. The codegen backend of crablangc is
     // not linked into the main compiler by default but is rather dynamically
     // selected at runtime for inclusion.
     //
@@ -1156,21 +1156,21 @@ fn copy_codegen_backends_to_sysroot(
         return;
     }
 
-    for backend in builder.config.rust_codegen_backends.iter() {
+    for backend in builder.config.crablang_codegen_backends.iter() {
         if backend == "llvm" {
-            continue; // Already built as part of rustc
+            continue; // Already built as part of crablangc
         }
 
         let stamp = codegen_backend_stamp(builder, compiler, target, *backend);
         let dylib = t!(fs::read_to_string(&stamp));
         let file = Path::new(&dylib);
         let filename = file.file_name().unwrap().to_str().unwrap();
-        // change `librustc_codegen_cranelift-xxxxxx.so` to
-        // `librustc_codegen_cranelift-release.so`
+        // change `libcrablangc_codegen_cranelift-xxxxxx.so` to
+        // `libcrablangc_codegen_cranelift-release.so`
         let target_filename = {
             let dash = filename.find('-').unwrap();
             let dot = filename.find('.').unwrap();
-            format!("{}-{}{}", &filename[..dash], builder.rust_release(), &filename[dot..])
+            format!("{}-{}{}", &filename[..dash], builder.crablang_release(), &filename[dot..])
         };
         builder.copy(&file, &dst.join(target_filename));
     }
@@ -1182,17 +1182,17 @@ pub fn libstd_stamp(builder: &Builder<'_>, compiler: Compiler, target: TargetSel
     builder.cargo_out(compiler, Mode::Std, target).join(".libstd.stamp")
 }
 
-/// Cargo's output path for librustc in a given stage, compiled by a particular
+/// Cargo's output path for libcrablangc in a given stage, compiled by a particular
 /// compiler for the specified target.
-pub fn librustc_stamp(
+pub fn libcrablangc_stamp(
     builder: &Builder<'_>,
     compiler: Compiler,
     target: TargetSelection,
 ) -> PathBuf {
-    builder.cargo_out(compiler, Mode::Rustc, target).join(".librustc.stamp")
+    builder.cargo_out(compiler, Mode::CrabLangc, target).join(".libcrablangc.stamp")
 }
 
-/// Cargo's output path for librustc_codegen_llvm in a given stage, compiled by a particular
+/// Cargo's output path for libcrablangc_codegen_llvm in a given stage, compiled by a particular
 /// compiler for the specified target and backend.
 fn codegen_backend_stamp(
     builder: &Builder<'_>,
@@ -1202,7 +1202,7 @@ fn codegen_backend_stamp(
 ) -> PathBuf {
     builder
         .cargo_out(compiler, Mode::Codegen, target)
-        .join(format!(".librustc_codegen_{}.stamp", backend))
+        .join(format!(".libcrablangc_codegen_{}.stamp", backend))
 }
 
 pub fn compiler_file(
@@ -1213,7 +1213,7 @@ pub fn compiler_file(
     file: &str,
 ) -> PathBuf {
     let mut cmd = Command::new(compiler);
-    cmd.args(builder.cflags(target, GitRepo::Rustc, c));
+    cmd.args(builder.cflags(target, GitRepo::CrabLangc, c));
     cmd.arg(format!("-print-file-name={}", file));
     let out = output(&mut cmd);
     PathBuf::from(out.trim())
@@ -1244,8 +1244,8 @@ impl Step for Sysroot {
         let sysroot_dir = |stage| {
             if stage == 0 {
                 host_dir.join("stage0-sysroot")
-            } else if builder.download_rustc() && compiler.stage != builder.top_stage {
-                host_dir.join("ci-rustc-sysroot")
+            } else if builder.download_crablangc() && compiler.stage != builder.top_stage {
+                host_dir.join("ci-crablangc-sysroot")
             } else {
                 host_dir.join(format!("stage{}", stage))
             }
@@ -1256,61 +1256,61 @@ impl Step for Sysroot {
         t!(fs::create_dir_all(&sysroot));
 
         // If we're downloading a compiler from CI, we can use the same compiler for all stages other than 0.
-        if builder.download_rustc() && compiler.stage != 0 {
+        if builder.download_crablangc() && compiler.stage != 0 {
             assert_eq!(
                 builder.config.build, compiler.host,
-                "Cross-compiling is not yet supported with `download-rustc`",
+                "Cross-compiling is not yet supported with `download-crablangc`",
             );
 
-            // #102002, cleanup old toolchain folders when using download-rustc so people don't use them by accident.
+            // #102002, cleanup old toolchain folders when using download-crablangc so people don't use them by accident.
             for stage in 0..=2 {
                 if stage != compiler.stage {
                     let dir = sysroot_dir(stage);
-                    if !dir.ends_with("ci-rustc-sysroot") {
+                    if !dir.ends_with("ci-crablangc-sysroot") {
                         let _ = fs::remove_dir_all(dir);
                     }
                 }
             }
 
             // Copy the compiler into the correct sysroot.
-            let ci_rustc_dir =
-                builder.config.out.join(&*builder.config.build.triple).join("ci-rustc");
-            builder.cp_r(&ci_rustc_dir, &sysroot);
+            let ci_crablangc_dir =
+                builder.config.out.join(&*builder.config.build.triple).join("ci-crablangc");
+            builder.cp_r(&ci_crablangc_dir, &sysroot);
             return INTERNER.intern_path(sysroot);
         }
 
         // Symlink the source root into the same location inside the sysroot,
-        // where `rust-src` component would go (`$sysroot/lib/rustlib/src/rust`),
-        // so that any tools relying on `rust-src` also work for local builds,
-        // and also for translating the virtual `/rustc/$hash` back to the real
-        // directory (for running tests with `rust.remap-debuginfo = true`).
-        let sysroot_lib_rustlib_src = sysroot.join("lib/rustlib/src");
-        t!(fs::create_dir_all(&sysroot_lib_rustlib_src));
-        let sysroot_lib_rustlib_src_rust = sysroot_lib_rustlib_src.join("rust");
-        if let Err(e) = symlink_dir(&builder.config, &builder.src, &sysroot_lib_rustlib_src_rust) {
+        // where `crablang-src` component would go (`$sysroot/lib/crablanglib/src/crablang`),
+        // so that any tools relying on `crablang-src` also work for local builds,
+        // and also for translating the virtual `/crablangc/$hash` back to the real
+        // directory (for running tests with `crablang.remap-debuginfo = true`).
+        let sysroot_lib_crablanglib_src = sysroot.join("lib/crablanglib/src");
+        t!(fs::create_dir_all(&sysroot_lib_crablanglib_src));
+        let sysroot_lib_crablanglib_src_crablang = sysroot_lib_crablanglib_src.join("crablang");
+        if let Err(e) = symlink_dir(&builder.config, &builder.src, &sysroot_lib_crablanglib_src_crablang) {
             eprintln!(
                 "warning: creating symbolic link `{}` to `{}` failed with {}",
-                sysroot_lib_rustlib_src_rust.display(),
+                sysroot_lib_crablanglib_src_crablang.display(),
                 builder.src.display(),
                 e,
             );
-            if builder.config.rust_remap_debuginfo {
+            if builder.config.crablang_remap_debuginfo {
                 eprintln!(
                     "warning: some `tests/ui` tests will fail when lacking `{}`",
-                    sysroot_lib_rustlib_src_rust.display(),
+                    sysroot_lib_crablanglib_src_crablang.display(),
                 );
             }
         }
-        // Same for the rustc-src component.
-        let sysroot_lib_rustlib_rustcsrc = sysroot.join("lib/rustlib/rustc-src");
-        t!(fs::create_dir_all(&sysroot_lib_rustlib_rustcsrc));
-        let sysroot_lib_rustlib_rustcsrc_rust = sysroot_lib_rustlib_rustcsrc.join("rust");
+        // Same for the crablangc-src component.
+        let sysroot_lib_crablanglib_crablangcsrc = sysroot.join("lib/crablanglib/crablangc-src");
+        t!(fs::create_dir_all(&sysroot_lib_crablanglib_crablangcsrc));
+        let sysroot_lib_crablanglib_crablangcsrc_crablang = sysroot_lib_crablanglib_crablangcsrc.join("crablang");
         if let Err(e) =
-            symlink_dir(&builder.config, &builder.src, &sysroot_lib_rustlib_rustcsrc_rust)
+            symlink_dir(&builder.config, &builder.src, &sysroot_lib_crablanglib_crablangcsrc_crablang)
         {
             eprintln!(
                 "warning: creating symbolic link `{}` to `{}` failed with {}",
-                sysroot_lib_rustlib_rustcsrc_rust.display(),
+                sysroot_lib_crablanglib_crablangcsrc_crablang.display(),
                 builder.src.display(),
                 e,
             );
@@ -1334,7 +1334,7 @@ impl Step for Assemble {
     const ONLY_HOSTS: bool = true;
 
     fn should_run(run: ShouldRun<'_>) -> ShouldRun<'_> {
-        run.path("compiler/rustc").path("compiler")
+        run.path("compiler/crablangc").path("compiler")
     }
 
     fn make_run(run: RunConfig<'_>) {
@@ -1376,7 +1376,7 @@ impl Step for Assemble {
         let build_compiler = builder.compiler(target_compiler.stage - 1, builder.config.build);
 
         // If we're downloading a compiler from CI, we can use the same compiler for all stages other than 0.
-        if builder.download_rustc() {
+        if builder.download_crablangc() {
             builder.ensure(Sysroot { compiler: target_compiler });
             return target_compiler;
         }
@@ -1386,7 +1386,7 @@ impl Step for Assemble {
         // link to these. (FIXME: Is that correct? It seems to be correct most
         // of the time but I think we do link to these for stage2/bin compilers
         // when not performing a full bootstrap).
-        builder.ensure(Rustc::new(build_compiler, target_compiler.host));
+        builder.ensure(CrabLangc::new(build_compiler, target_compiler.host));
 
         // FIXME: For now patch over problems noted in #90244 by early returning here, even though
         // we've not properly assembled the target sysroot. A full fix is pending further investigation,
@@ -1395,9 +1395,9 @@ impl Step for Assemble {
             return target_compiler;
         }
 
-        for &backend in builder.config.rust_codegen_backends.iter() {
+        for &backend in builder.config.crablang_codegen_backends.iter() {
             if backend == "llvm" {
-                continue; // Already built as part of rustc
+                continue; // Already built as part of crablangc
             }
 
             builder.ensure(CodegenBackend {
@@ -1423,7 +1423,7 @@ impl Step for Assemble {
         builder.info(&msg);
 
         // Link in all dylibs to the libdir
-        let stamp = librustc_stamp(builder, build_compiler, target_compiler.host);
+        let stamp = libcrablangc_stamp(builder, build_compiler, target_compiler.host);
         let proc_macros = builder
             .read_stamp_file(&stamp)
             .into_iter()
@@ -1437,27 +1437,27 @@ impl Step for Assemble {
             .collect::<HashSet<_>>();
 
         let sysroot = builder.sysroot(target_compiler);
-        let rustc_libdir = builder.rustc_libdir(target_compiler);
-        t!(fs::create_dir_all(&rustc_libdir));
+        let crablangc_libdir = builder.crablangc_libdir(target_compiler);
+        t!(fs::create_dir_all(&crablangc_libdir));
         let src_libdir = builder.sysroot_libdir(build_compiler, host);
         for f in builder.read_dir(&src_libdir) {
             let filename = f.file_name().into_string().unwrap();
             if (is_dylib(&filename) || is_debug_info(&filename)) && !proc_macros.contains(&filename)
             {
-                builder.copy(&f.path(), &rustc_libdir.join(&filename));
+                builder.copy(&f.path(), &crablangc_libdir.join(&filename));
             }
         }
 
         copy_codegen_backends_to_sysroot(builder, build_compiler, target_compiler);
 
-        // We prepend this bin directory to the user PATH when linking Rust binaries. To
-        // avoid shadowing the system LLD we rename the LLD we provide to `rust-lld`.
+        // We prepend this bin directory to the user PATH when linking CrabLang binaries. To
+        // avoid shadowing the system LLD we rename the LLD we provide to `crablang-lld`.
         let libdir = builder.sysroot_libdir(target_compiler, target_compiler.host);
         let libdir_bin = libdir.parent().unwrap().join("bin");
         t!(fs::create_dir_all(&libdir_bin));
         if let Some(lld_install) = lld_install {
             let src_exe = exe("lld", target_compiler.host);
-            let dst_exe = exe("rust-lld", target_compiler.host);
+            let dst_exe = exe("crablang-lld", target_compiler.host);
             builder.copy(&lld_install.join("bin").join(&src_exe), &libdir_bin.join(&dst_exe));
             // for `-Z gcc-ld=lld`
             let gcc_ld_dir = libdir_bin.join("gcc-ld");
@@ -1471,7 +1471,7 @@ impl Step for Assemble {
             }
         }
 
-        if builder.config.rust_codegen_backends.contains(&INTERNER.intern_str("llvm")) {
+        if builder.config.crablang_codegen_backends.contains(&INTERNER.intern_str("llvm")) {
             let llvm::LlvmResult { llvm_config, .. } =
                 builder.ensure(llvm::Llvm { target: target_compiler.host });
             if !builder.config.dry_run() {
@@ -1480,7 +1480,7 @@ impl Step for Assemble {
 
                 // Since we've already built the LLVM tools, install them to the sysroot.
                 // This is the equivalent of installing the `llvm-tools-preview` component via
-                // rustup, and lets developers use a locally built toolchain to
+                // crablangup, and lets developers use a locally built toolchain to
                 // build projects that expect llvm tools to be present in the sysroot
                 // (e.g. the `bootimage` crate).
                 for tool in LLVM_TOOLS {
@@ -1496,23 +1496,23 @@ impl Step for Assemble {
         }
 
         // Ensure that `libLLVM.so` ends up in the newly build compiler directory,
-        // so that it can be found when the newly built `rustc` is run.
+        // so that it can be found when the newly built `crablangc` is run.
         dist::maybe_install_llvm_runtime(builder, target_compiler.host, &sysroot);
         dist::maybe_install_llvm_target(builder, target_compiler.host, &sysroot);
 
         // Link the compiler binary itself into place
-        let out_dir = builder.cargo_out(build_compiler, Mode::Rustc, host);
-        let rustc = out_dir.join(exe("rustc-main", host));
+        let out_dir = builder.cargo_out(build_compiler, Mode::CrabLangc, host);
+        let crablangc = out_dir.join(exe("crablangc-main", host));
         let bindir = sysroot.join("bin");
         t!(fs::create_dir_all(&bindir));
-        let compiler = builder.rustc(target_compiler);
-        builder.copy(&rustc, &compiler);
+        let compiler = builder.crablangc(target_compiler);
+        builder.copy(&crablangc, &compiler);
 
         target_compiler
     }
 }
 
-/// Link some files into a rustc sysroot.
+/// Link some files into a crablangc sysroot.
 ///
 /// For a particular stage this will link the file listed in `stamp` into the
 /// `sysroot_dst` provided.
@@ -1583,21 +1583,21 @@ pub fn run_cargo(
                 || is_debug_info(&filename)
                 || is_dylib(&filename)
             {
-                // Always keep native libraries, rust dylibs and debuginfo
+                // Always keep native libraries, crablang dylibs and debuginfo
                 keep = true;
             }
             if is_check && filename.ends_with(".rmeta") {
                 // During check builds we need to keep crate metadata
                 keep = true;
             } else if rlib_only_metadata {
-                if filename.contains("jemalloc_sys") || filename.contains("rustc_smir") {
-                    // jemalloc_sys and rustc_smir are not linked into librustc_driver.so,
+                if filename.contains("jemalloc_sys") || filename.contains("crablangc_smir") {
+                    // jemalloc_sys and crablangc_smir are not linked into libcrablangc_driver.so,
                     // so we need to distribute them as rlib to be able to use them.
                     keep |= filename.ends_with(".rlib");
                 } else {
-                    // Distribute the rest of the rustc crates as rmeta files only to reduce
+                    // Distribute the rest of the crablangc crates as rmeta files only to reduce
                     // the tarball sizes by about 50%. The object files are linked into
-                    // librustc_driver.so, so it is still possible to link against them.
+                    // libcrablangc_driver.so, so it is still possible to link against them.
                     keep |= filename.ends_with(".rmeta");
                 }
             } else {
@@ -1717,7 +1717,7 @@ pub fn stream_cargo(
     } else {
         String::from("json-render-diagnostics")
     };
-    if let Some(s) = &builder.config.rustc_error_format {
+    if let Some(s) = &builder.config.crablangc_error_format {
         message_format.push_str(",json-diagnostic-");
         message_format.push_str(s);
     }

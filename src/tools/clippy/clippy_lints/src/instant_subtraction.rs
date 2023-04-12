@@ -3,11 +3,11 @@ use clippy_utils::msrvs::{self, Msrv};
 use clippy_utils::source::snippet_with_context;
 use clippy_utils::sugg::Sugg;
 use clippy_utils::ty;
-use rustc_errors::Applicability;
-use rustc_hir::{BinOpKind, Expr, ExprKind};
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_session::{declare_tool_lint, impl_lint_pass};
-use rustc_span::{source_map::Spanned, sym};
+use crablangc_errors::Applicability;
+use crablangc_hir::{BinOpKind, Expr, ExprKind};
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_session::{declare_tool_lint, impl_lint_pass};
+use crablangc_span::{source_map::Spanned, sym};
 
 declare_clippy_lint! {
     /// ### What it does
@@ -20,13 +20,13 @@ declare_clippy_lint! {
     /// `prev_instant.elapsed()` also more clearly signals intention.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// use std::time::Instant;
     /// let prev_instant = Instant::now();
     /// let duration = Instant::now() - prev_instant;
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// use std::time::Instant;
     /// let prev_instant = Instant::now();
     /// let duration = prev_instant.elapsed();
@@ -46,13 +46,13 @@ declare_clippy_lint! {
     /// unintentional panics.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// # use std::time::{Instant, Duration};
     /// let time_passed = Instant::now() - Duration::from_secs(5);
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// # use std::time::{Instant, Duration};
     /// let time_passed = Instant::now().checked_sub(Duration::from_secs(5));
     /// ```
@@ -131,7 +131,7 @@ fn is_an_instant(cx: &LateContext<'_>, expr: &Expr<'_>) -> bool {
     let expr_ty = cx.typeck_results().expr_ty(expr);
 
     match expr_ty.kind() {
-        rustc_middle::ty::Adt(def, _) => clippy_utils::match_def_path(cx, def.did(), &clippy_utils::paths::INSTANT),
+        crablangc_middle::ty::Adt(def, _) => clippy_utils::match_def_path(cx, def.did(), &clippy_utils::paths::INSTANT),
         _ => false,
     }
 }

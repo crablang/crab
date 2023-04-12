@@ -2,15 +2,15 @@ use clippy_utils::source::snippet_with_applicability;
 use clippy_utils::ty::is_type_diagnostic_item;
 use clippy_utils::{get_parent_expr, path_to_local_id, usage};
 use if_chain::if_chain;
-use rustc_ast::ast;
-use rustc_errors::Applicability;
-use rustc_hir as hir;
-use rustc_hir::intravisit::{walk_expr, Visitor};
-use rustc_hir::{BorrowKind, Expr, ExprKind, HirId, Mutability, Pat};
-use rustc_lint::LateContext;
-use rustc_middle::hir::nested_filter;
-use rustc_middle::ty::{self, Ty};
-use rustc_span::symbol::sym;
+use crablangc_ast::ast;
+use crablangc_errors::Applicability;
+use crablangc_hir as hir;
+use crablangc_hir::intravisit::{walk_expr, Visitor};
+use crablangc_hir::{BorrowKind, Expr, ExprKind, HirId, Mutability, Pat};
+use crablangc_lint::LateContext;
+use crablangc_middle::hir::nested_filter;
+use crablangc_middle::ty::{self, Ty};
+use crablangc_span::symbol::sym;
 
 pub(super) fn derefs_to_slice<'tcx>(
     cx: &LateContext<'tcx>,

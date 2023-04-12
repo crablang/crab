@@ -2,24 +2,24 @@ use clippy_utils::diagnostics::span_lint_hir_and_then;
 use clippy_utils::source::snippet;
 use hir::def::{DefKind, Res};
 use if_chain::if_chain;
-use rustc_ast::ast;
-use rustc_data_structures::fx::{FxHashMap, FxHashSet};
-use rustc_errors::Applicability;
-use rustc_hir as hir;
-use rustc_lint::{LateContext, LateLintPass, LintContext};
-use rustc_session::{declare_tool_lint, impl_lint_pass};
-use rustc_span::{edition::Edition, sym, Span};
+use crablangc_ast::ast;
+use crablangc_data_structures::fx::{FxHashMap, FxHashSet};
+use crablangc_errors::Applicability;
+use crablangc_hir as hir;
+use crablangc_lint::{LateContext, LateLintPass, LintContext};
+use crablangc_session::{declare_tool_lint, impl_lint_pass};
+use crablangc_span::{edition::Edition, sym, Span};
 
 declare_clippy_lint! {
     /// ### What it does
     /// Checks for `#[macro_use] use...`.
     ///
     /// ### Why is this bad?
-    /// Since the Rust 2018 edition you can import
+    /// Since the CrabLang 2018 edition you can import
     /// macro's directly, this is considered idiomatic.
     ///
     /// ### Example
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// #[macro_use]
     /// use some_macro;
     /// ```
@@ -208,7 +208,7 @@ impl<'tcx> LateLintPass<'tcx> for MacroUseImports {
                     MACRO_USE_IMPORTS,
                     *hir_id,
                     *span,
-                    "`macro_use` attributes are no longer needed in the Rust 2018 edition",
+                    "`macro_use` attributes are no longer needed in the CrabLang 2018 edition",
                     |diag| {
                         diag.span_suggestion(
                             *span,

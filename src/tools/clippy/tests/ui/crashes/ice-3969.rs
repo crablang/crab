@@ -1,7 +1,7 @@
-// https://github.com/rust-lang/rust-clippy/issues/3969
+// https://github.com/crablang/crablang-clippy/issues/3969
 // used to crash: error: internal compiler error:
-// src/librustc_traits/normalize_erasing_regions.rs:43: could not fully normalize `<i32 as
-// std::iter::Iterator>::Item test from rustc ./ui/trivial-bounds/trivial-bounds-inconsistent.rs
+// src/libcrablangc_traits/normalize_erasing_regions.rs:43: could not fully normalize `<i32 as
+// std::iter::Iterator>::Item test from crablangc ./ui/trivial-bounds/trivial-bounds-inconsistent.rs
 
 // Check that tautalogically false bounds are accepted, and are used
 // in type inference.

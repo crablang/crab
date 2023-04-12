@@ -13,7 +13,7 @@
 //! combine pinned with non-pinned data; [see below](#projections-and-structural-pinning)
 //! for more details.
 //!
-//! By default, all types in Rust are movable. Rust allows passing all types by-value,
+//! By default, all types in CrabLang are movable. CrabLang allows passing all types by-value,
 //! and common smart-pointer types such as <code>[Box]\<T></code> and <code>[&mut] T</code> allow
 //! replacing and moving the values they contain: you can move out of a <code>[Box]\<T></code>,
 //! or you can use [`mem::swap`]. <code>[Pin]\<P></code> wraps a pointer type `P`, so
@@ -34,7 +34,7 @@
 //! }
 //! ```
 //!
-//! It is worth reiterating that <code>[Pin]\<P></code> does *not* change the fact that a Rust
+//! It is worth reiterating that <code>[Pin]\<P></code> does *not* change the fact that a CrabLang
 //! compiler considers all types movable. [`mem::swap`] remains callable for any `T`. Instead,
 //! <code>[Pin]\<P></code> prevents certain *values* (pointed to by pointers wrapped in
 //! <code>[Pin]\<P></code>) from being moved by making it impossible to call methods that require
@@ -70,7 +70,7 @@
 //! associated with <code>[Pin]\<P></code>, we discuss some examples for how it might be used.
 //! Feel free to [skip to where the theoretical discussion continues](#drop-guarantee).
 //!
-//! ```rust
+//! ```crablang
 //! use std::pin::Pin;
 //! use std::marker::PhantomPinned;
 //! use std::ptr::NonNull;
@@ -180,7 +180,7 @@
 //!
 //! For example, you could implement [`Drop`][Drop] as follows:
 //!
-//! ```rust,no_run
+//! ```crablang,no_run
 //! # use std::pin::Pin;
 //! # struct Type { }
 //! impl Drop for Type {
@@ -239,7 +239,7 @@
 //! Fields without structural pinning may have a projection method that turns
 //! <code>[Pin]<[&mut] Struct></code> into <code>[&mut] Field</code>:
 //!
-//! ```rust,no_run
+//! ```crablang,no_run
 //! # use std::pin::Pin;
 //! # type Field = i32;
 //! # struct Struct { field: Field }
@@ -263,7 +263,7 @@
 //! This allows writing a projection that creates a <code>[Pin]<[&mut] Field></code>, thus
 //! witnessing that the field is pinned:
 //!
-//! ```rust,no_run
+//! ```crablang,no_run
 //! # use std::pin::Pin;
 //! # type Field = i32;
 //! # struct Struct { field: Field }
@@ -399,7 +399,7 @@ use crate::ops::{CoerceUnsized, Deref, DerefMut, DispatchFromDyn, Receiver};
 //
 // Note: the `Clone` derive below causes unsoundness as it's possible to implement
 // `Clone` for mutable references.
-// See <https://internals.rust-lang.org/t/unsoundness-in-pin/11311> for more details.
+// See <https://internals.crablang.org/t/unsoundness-in-pin/11311> for more details.
 #[stable(feature = "pin", since = "1.33.0")]
 #[lang = "pin"]
 #[fundamental]
@@ -417,10 +417,10 @@ pub struct Pin<P> {
 }
 
 // The following implementations aren't derived in order to avoid soundness
-// issues. `&self.pointer` should not be accessible to untrusted trait
+// issues. `&self.pointer` should not be accessible to untcrablanged trait
 // implementations.
 //
-// See <https://internals.rust-lang.org/t/unsoundness-in-pin/11311/73> for more details.
+// See <https://internals.crablang.org/t/unsoundness-in-pin/11311/73> for more details.
 
 #[stable(feature = "pin_trait_impls", since = "1.41.0")]
 impl<P: Deref, Q: Deref> PartialEq<Pin<Q>> for Pin<P>
@@ -496,7 +496,7 @@ impl<P: Deref<Target: Unpin>> Pin<P> {
     /// let mut pinned: Pin<&mut u8> = Pin::new(&mut val);
     /// ```
     #[inline(always)]
-    #[rustc_const_unstable(feature = "const_pin", issue = "76654")]
+    #[crablangc_const_unstable(feature = "const_pin", issue = "76654")]
     #[stable(feature = "pin", since = "1.33.0")]
     pub const fn new(pointer: P) -> Pin<P> {
         // SAFETY: the value pointed to is `Unpin`, and so has no requirements
@@ -521,7 +521,7 @@ impl<P: Deref<Target: Unpin>> Pin<P> {
     /// assert_eq!(*r, 5);
     /// ```
     #[inline(always)]
-    #[rustc_const_unstable(feature = "const_pin", issue = "76654")]
+    #[crablangc_const_unstable(feature = "const_pin", issue = "76654")]
     #[stable(feature = "pin_into_inner", since = "1.39.0")]
     pub const fn into_inner(pin: Pin<P>) -> P {
         pin.pointer
@@ -647,7 +647,7 @@ impl<P: Deref> Pin<P> {
     /// [`mem::swap`]: crate::mem::swap
     #[lang = "new_unchecked"]
     #[inline(always)]
-    #[rustc_const_unstable(feature = "const_pin", issue = "76654")]
+    #[crablangc_const_unstable(feature = "const_pin", issue = "76654")]
     #[stable(feature = "pin", since = "1.33.0")]
     pub const unsafe fn new_unchecked(pointer: P) -> Pin<P> {
         Pin { pointer }
@@ -681,7 +681,7 @@ impl<P: Deref> Pin<P> {
     /// If the underlying data is [`Unpin`], [`Pin::into_inner`] should be used
     /// instead.
     #[inline(always)]
-    #[rustc_const_unstable(feature = "const_pin", issue = "76654")]
+    #[crablangc_const_unstable(feature = "const_pin", issue = "76654")]
     #[stable(feature = "pin_into_inner", since = "1.39.0")]
     pub const unsafe fn into_inner_unchecked(pin: Pin<P>) -> P {
         pin.pointer
@@ -799,7 +799,7 @@ impl<'a, T: ?Sized> Pin<&'a T> {
     /// ["pinning projections"]: self#projections-and-structural-pinning
     #[inline(always)]
     #[must_use]
-    #[rustc_const_unstable(feature = "const_pin", issue = "76654")]
+    #[crablangc_const_unstable(feature = "const_pin", issue = "76654")]
     #[stable(feature = "pin", since = "1.33.0")]
     pub const fn get_ref(self) -> &'a T {
         self.pointer
@@ -810,7 +810,7 @@ impl<'a, T: ?Sized> Pin<&'a mut T> {
     /// Converts this `Pin<&mut T>` into a `Pin<&T>` with the same lifetime.
     #[inline(always)]
     #[must_use = "`self` will be dropped if the result is not used"]
-    #[rustc_const_unstable(feature = "const_pin", issue = "76654")]
+    #[crablangc_const_unstable(feature = "const_pin", issue = "76654")]
     #[stable(feature = "pin", since = "1.33.0")]
     pub const fn into_ref(self) -> Pin<&'a T> {
         Pin { pointer: self.pointer }
@@ -828,7 +828,7 @@ impl<'a, T: ?Sized> Pin<&'a mut T> {
     #[inline(always)]
     #[must_use = "`self` will be dropped if the result is not used"]
     #[stable(feature = "pin", since = "1.33.0")]
-    #[rustc_const_unstable(feature = "const_pin", issue = "76654")]
+    #[crablangc_const_unstable(feature = "const_pin", issue = "76654")]
     pub const fn get_mut(self) -> &'a mut T
     where
         T: Unpin,
@@ -849,7 +849,7 @@ impl<'a, T: ?Sized> Pin<&'a mut T> {
     #[inline(always)]
     #[must_use = "`self` will be dropped if the result is not used"]
     #[stable(feature = "pin", since = "1.33.0")]
-    #[rustc_const_unstable(feature = "const_pin", issue = "76654")]
+    #[crablangc_const_unstable(feature = "const_pin", issue = "76654")]
     pub const unsafe fn get_unchecked_mut(self) -> &'a mut T {
         self.pointer
     }
@@ -892,7 +892,7 @@ impl<T: ?Sized> Pin<&'static T> {
     /// This is safe, because `T` is borrowed for the `'static` lifetime, which
     /// never ends.
     #[stable(feature = "pin_static_ref", since = "1.61.0")]
-    #[rustc_const_unstable(feature = "const_pin", issue = "76654")]
+    #[crablangc_const_unstable(feature = "const_pin", issue = "76654")]
     pub const fn static_ref(r: &'static T) -> Pin<&'static T> {
         // SAFETY: The 'static borrow guarantees the data will not be
         // moved/invalidated until it gets dropped (which is never).
@@ -945,7 +945,7 @@ impl<T: ?Sized> Pin<&'static mut T> {
     /// This is safe, because `T` is borrowed for the `'static` lifetime, which
     /// never ends.
     #[stable(feature = "pin_static_ref", since = "1.61.0")]
-    #[rustc_const_unstable(feature = "const_pin", issue = "76654")]
+    #[crablangc_const_unstable(feature = "const_pin", issue = "76654")]
     pub const fn static_mut(r: &'static mut T) -> Pin<&'static mut T> {
         // SAFETY: The 'static borrow guarantees the data will not be
         // moved/invalidated until it gets dropped (which is never).
@@ -1027,7 +1027,7 @@ impl<P, U> DispatchFromDyn<Pin<U>> for Pin<P> where P: DispatchFromDyn<U> {}
 ///
 /// ### Basic usage
 ///
-/// ```rust
+/// ```crablang
 /// # use core::marker::PhantomPinned as Foo;
 /// use core::pin::{pin, Pin};
 ///
@@ -1044,7 +1044,7 @@ impl<P, U> DispatchFromDyn<Pin<U>> for Pin<P> where P: DispatchFromDyn<U> {}
 ///
 /// ### Manually polling a `Future` (without `Unpin` bounds)
 ///
-/// ```rust
+/// ```crablang
 /// use std::{
 ///     future::Future,
 ///     pin::pin,
@@ -1082,7 +1082,7 @@ impl<P, U> DispatchFromDyn<Pin<U>> for Pin<P> where P: DispatchFromDyn<U> {}
 ///
 /// ### With `Generator`s
 ///
-/// ```rust
+/// ```crablang
 /// #![feature(generators, generator_trait)]
 /// use core::{
 ///     ops::{Generator, GeneratorState},
@@ -1125,7 +1125,7 @@ impl<P, U> DispatchFromDyn<Pin<U>> for Pin<P> where P: DispatchFromDyn<U> {}
 ///
 /// The following, for instance, fails to compile:
 ///
-/// ```rust,compile_fail
+/// ```crablang,compile_fail
 /// use core::pin::{pin, Pin};
 /// # use core::{marker::PhantomPinned as Foo, mem::drop as stuff};
 ///
@@ -1168,13 +1168,13 @@ impl<P, U> DispatchFromDyn<Pin<U>> for Pin<P> where P: DispatchFromDyn<U> {}
 ///
 /// [`Box::pin`]: ../../std/boxed/struct.Box.html#method.pin
 #[stable(feature = "pin_macro", since = "1.68.0")]
-#[rustc_macro_transparency = "semitransparent"]
+#[crablangc_macro_transparency = "semitransparent"]
 #[allow_internal_unstable(unsafe_pin_internals)]
 pub macro pin($value:expr $(,)?) {
     // This is `Pin::new_unchecked(&mut { $value })`, so, for starters, let's
     // review such a hypothetical macro (that any user-code could define):
     //
-    // ```rust
+    // ```crablang
     // macro_rules! pin {( $value:expr ) => (
     //     match &mut { $value } { at_value => unsafe { // Do not wrap `$value` in an `unsafe` block.
     //         $crate::pin::Pin::<&mut _>::new_unchecked(at_value)
@@ -1195,19 +1195,19 @@ pub macro pin($value:expr $(,)?) {
     //   - If the `pin!(value)` expression is _directly_ fed to a function call:
     //     `let poll = pin!(fut).poll(cx);`
     //   - If the `pin!(value)` expression is part of a scrutinee:
-    //     ```rust
+    //     ```crablang
     //     match pin!(fut) { pinned_fut => {
     //         pinned_fut.as_mut().poll(...);
     //         pinned_fut.as_mut().poll(...);
     //     }} // <- `fut` is dropped here.
     //     ```
     // Alas, it doesn't work for the more straight-forward use-case: `let` bindings.
-    // ```rust
+    // ```crablang
     // let pinned_fut = pin!(fut); // <- temporary value is freed at the end of this statement
     // pinned_fut.poll(...) // error[E0716]: temporary value dropped while borrowed
     //                      // note: consider using a `let` binding to create a longer lived value
     // ```
-    //   - Issues such as this one are the ones motivating https://github.com/rust-lang/rfcs/pull/66
+    //   - Issues such as this one are the ones motivating https://github.com/crablang/rfcs/pull/66
     //
     // This makes such a macro incredibly unergonomic in practice, and the reason most macros
     // out there had to take the path of being a statement/binding macro (_e.g._, `pin!(future);`)
@@ -1217,29 +1217,29 @@ pub macro pin($value:expr $(,)?) {
     // temporary is dropped at the end of its enclosing statement when it is part of the parameters
     // given to function call, which has precisely been the case with our `Pin::new_unchecked()`!
     // For instance,
-    // ```rust
+    // ```crablang
     // let p = Pin::new_unchecked(&mut <temporary>);
     // ```
     // becomes:
-    // ```rust
+    // ```crablang
     // let p = { let mut anon = <temporary>; &mut anon };
     // ```
     //
     // However, when using a literal braced struct to construct the value, references to temporaries
-    // can then be taken. This makes Rust change the lifespan of such temporaries so that they are,
+    // can then be taken. This makes CrabLang change the lifespan of such temporaries so that they are,
     // instead, dropped _at the end of the enscoping block_.
     // For instance,
-    // ```rust
+    // ```crablang
     // let p = Pin { pointer: &mut <temporary> };
     // ```
     // becomes:
-    // ```rust
+    // ```crablang
     // let mut anon = <temporary>;
     // let p = Pin { pointer: &mut anon };
     // ```
     // which is *exactly* what we want.
     //
-    // See https://doc.rust-lang.org/1.58.1/reference/destructors.html#temporary-lifetime-extension
+    // See https://doc.crablang.org/1.58.1/reference/destructors.html#temporary-lifetime-extension
     // for more info.
     $crate::pin::Pin::<&mut _> { pointer: &mut { $value } }
 }

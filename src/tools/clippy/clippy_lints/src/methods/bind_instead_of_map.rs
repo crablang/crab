@@ -3,12 +3,12 @@ use clippy_utils::diagnostics::{multispan_sugg_with_applicability, span_lint_and
 use clippy_utils::source::{snippet, snippet_with_context};
 use clippy_utils::{peel_blocks, visitors::find_all_ret_expressions};
 use if_chain::if_chain;
-use rustc_errors::Applicability;
-use rustc_hir as hir;
-use rustc_hir::def::{CtorKind, CtorOf, DefKind, Res};
-use rustc_hir::{LangItem, QPath};
-use rustc_lint::LateContext;
-use rustc_span::Span;
+use crablangc_errors::Applicability;
+use crablangc_hir as hir;
+use crablangc_hir::def::{CtorKind, CtorOf, DefKind, Res};
+use crablangc_hir::{LangItem, QPath};
+use crablangc_lint::LateContext;
+use crablangc_span::Span;
 
 pub(crate) struct OptionAndThenSome;
 

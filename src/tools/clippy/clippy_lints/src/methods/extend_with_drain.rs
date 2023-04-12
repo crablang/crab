@@ -2,10 +2,10 @@ use clippy_utils::diagnostics::span_lint_and_sugg;
 use clippy_utils::source::snippet_with_applicability;
 use clippy_utils::ty::{is_type_diagnostic_item, is_type_lang_item};
 use if_chain::if_chain;
-use rustc_errors::Applicability;
-use rustc_hir::{Expr, ExprKind, LangItem};
-use rustc_lint::LateContext;
-use rustc_span::symbol::sym;
+use crablangc_errors::Applicability;
+use crablangc_hir::{Expr, ExprKind, LangItem};
+use crablangc_lint::LateContext;
+use crablangc_span::symbol::sym;
 
 use super::EXTEND_WITH_DRAIN;
 

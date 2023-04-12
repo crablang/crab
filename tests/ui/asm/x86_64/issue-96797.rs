@@ -17,7 +17,7 @@ global_asm!("call_foobar: jmp {}", sym foobar);
 fn foobar() {}
 
 fn main() {
-    extern "Rust" {
+    extern "CrabLang" {
         fn call_foobar();
     }
     unsafe { call_foobar() };

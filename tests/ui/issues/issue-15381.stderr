@@ -8,4 +8,4 @@ LL |     for &[x,y,z] in values.chunks(3).filter(|&xs| xs.len() == 3) {
 
 error: aborting due to previous error
 
-For more information about this error, try `rustc --explain E0005`.
+For more information about this error, try `crablangc --explain E0005`.

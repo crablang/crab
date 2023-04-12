@@ -1,4 +1,4 @@
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 #![allow(dead_code)]
 
 trait Trait<'a, T> {

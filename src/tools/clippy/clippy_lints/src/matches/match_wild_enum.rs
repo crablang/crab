@@ -1,12 +1,12 @@
 use clippy_utils::diagnostics::span_lint_and_sugg;
 use clippy_utils::ty::is_type_diagnostic_item;
 use clippy_utils::{is_refutable, peel_hir_pat_refs, recurse_or_patterns};
-use rustc_errors::Applicability;
-use rustc_hir::def::{CtorKind, DefKind, Res};
-use rustc_hir::{Arm, Expr, PatKind, PathSegment, QPath, Ty, TyKind};
-use rustc_lint::LateContext;
-use rustc_middle::ty::{self, VariantDef};
-use rustc_span::sym;
+use crablangc_errors::Applicability;
+use crablangc_hir::def::{CtorKind, DefKind, Res};
+use crablangc_hir::{Arm, Expr, PatKind, PathSegment, QPath, Ty, TyKind};
+use crablangc_lint::LateContext;
+use crablangc_middle::ty::{self, VariantDef};
+use crablangc_span::sym;
 
 use super::{MATCH_WILDCARD_FOR_SINGLE_VARIANTS, WILDCARD_ENUM_MATCH_ARM};
 

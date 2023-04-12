@@ -1,8 +1,8 @@
 use clippy_utils::diagnostics::span_lint_and_help;
 use clippy_utils::ty::is_type_diagnostic_item;
-use rustc_hir::{CaptureBy, Closure, Expr, ExprKind, PatKind};
-use rustc_lint::LateContext;
-use rustc_span::sym;
+use crablangc_hir::{CaptureBy, Closure, Expr, ExprKind, PatKind};
+use crablangc_lint::LateContext;
+use crablangc_span::sym;
 
 use super::MAP_ERR_IGNORE;
 

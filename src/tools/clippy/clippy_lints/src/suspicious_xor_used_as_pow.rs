@@ -1,9 +1,9 @@
 use clippy_utils::{numeric_literal::NumericLiteral, source::snippet_with_context};
-use rustc_errors::Applicability;
-use rustc_hir::{BinOpKind, Expr, ExprKind};
-use rustc_lint::{LateContext, LateLintPass, LintContext};
-use rustc_middle::lint::in_external_macro;
-use rustc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_errors::Applicability;
+use crablangc_hir::{BinOpKind, Expr, ExprKind};
+use crablangc_lint::{LateContext, LateLintPass, LintContext};
+use crablangc_middle::lint::in_external_macro;
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
 
 declare_clippy_lint! {
     /// ### What it does
@@ -11,11 +11,11 @@ declare_clippy_lint! {
     /// ### Why is this bad?
     /// It's most probably a typo and may lead to unexpected behaviours.
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// let x = 3_i32 ^ 4_i32;
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// let x = 3_i32.pow(4);
     /// ```
     #[clippy::version = "1.67.0"]

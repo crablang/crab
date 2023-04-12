@@ -3,13 +3,13 @@ use clippy_utils::diagnostics::{span_lint, span_lint_and_then};
 use clippy_utils::expr_or_init;
 use clippy_utils::source::snippet;
 use clippy_utils::ty::{get_discriminant_value, is_isize_or_usize};
-use rustc_errors::{Applicability, SuggestionStyle};
-use rustc_hir::def::{DefKind, Res};
-use rustc_hir::{BinOpKind, Expr, ExprKind};
-use rustc_lint::LateContext;
-use rustc_middle::ty::{self, FloatTy, Ty};
-use rustc_span::Span;
-use rustc_target::abi::IntegerType;
+use crablangc_errors::{Applicability, SuggestionStyle};
+use crablangc_hir::def::{DefKind, Res};
+use crablangc_hir::{BinOpKind, Expr, ExprKind};
+use crablangc_lint::LateContext;
+use crablangc_middle::ty::{self, FloatTy, Ty};
+use crablangc_span::Span;
+use crablangc_target::abi::IntegerType;
 
 use super::{utils, CAST_ENUM_TRUNCATION, CAST_POSSIBLE_TRUNCATION};
 

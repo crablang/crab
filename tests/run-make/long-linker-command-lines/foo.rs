@@ -1,5 +1,5 @@
 // This is a test which attempts to blow out the system limit with how many
-// arguments can be passed to a process. This'll successively call rustc with
+// arguments can be passed to a process. This'll successively call crablangc with
 // larger and larger argument lists in an attempt to find one that's way too
 // big for the system at hand. This file itself is then used as a "linker" to
 // detect when the process creation succeeds.
@@ -55,7 +55,7 @@ fn main() {
         return
     }
 
-    let rustc = env::var_os("RUSTC").unwrap_or("rustc".into());
+    let crablangc = env::var_os("CRABLANGC").unwrap_or("crablangc".into());
     let me_as_linker = format!("linker={}", env::current_exe().unwrap().display());
     for i in (1..).map(|i| i * 100) {
         println!("attempt: {}", i);
@@ -63,7 +63,7 @@ fn main() {
         let mut expected_libs = write_test_case(&file, i);
 
         drop(fs::remove_file(&ok));
-        let output = Command::new(&rustc)
+        let output = Command::new(&crablangc)
             .arg(&file)
             .arg("-C").arg(&me_as_linker)
             .arg("--out-dir").arg(&tmpdir)

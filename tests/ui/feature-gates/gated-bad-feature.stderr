@@ -43,4 +43,4 @@ LL | #![feature(foo_bar_baz, foo(bar), foo = "baz", foo)]
 error: aborting due to 7 previous errors
 
 Some errors have detailed explanations: E0556, E0557, E0635.
-For more information about an error, try `rustc --explain E0556`.
+For more information about an error, try `crablangc --explain E0556`.

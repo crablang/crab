@@ -156,4 +156,4 @@ LL | pub const UNDERFLOW_ABS: *const u8 = unsafe { (usize::MAX as *const u8).off
 
 error: aborting due to 12 previous errors
 
-For more information about this error, try `rustc --explain E0080`.
+For more information about this error, try `crablangc --explain E0080`.

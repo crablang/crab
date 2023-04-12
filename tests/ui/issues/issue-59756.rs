@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 // ignore-test
 //
 // FIXME: Re-enable this test once we support choosing

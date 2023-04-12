@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 
 #![allow(clippy::no_effect, clippy::unnecessary_operation, dead_code)]
 #![warn(clippy::cast_lossless)]

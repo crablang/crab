@@ -6,7 +6,7 @@
 extern crate option_helpers;
 use option_helpers::IteratorFalsePositives;
 
-#[rustfmt::skip]
+#[crablangfmt::skip]
 fn skip_while_next() {
     let v = vec![3, 2, 1, 0, -1, -2, -3];
 

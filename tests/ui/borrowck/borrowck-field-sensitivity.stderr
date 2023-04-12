@@ -145,4 +145,4 @@ LL |     x.b = Box::new(1);
 error: aborting due to 14 previous errors
 
 Some errors have detailed explanations: E0381, E0382, E0499, E0505.
-For more information about an error, try `rustc --explain E0381`.
+For more information about an error, try `crablangc --explain E0381`.

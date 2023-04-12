@@ -1,11 +1,11 @@
 use clippy_utils::diagnostics::span_lint_and_help;
-use rustc_hir::{intravisit, Body, Expr, ExprKind, FnDecl, Let, LocalSource, Mutability, Pat, PatKind, Stmt, StmtKind};
-use rustc_lint::{LateContext, LateLintPass, LintContext};
-use rustc_middle::lint::in_external_macro;
-use rustc_middle::ty;
-use rustc_session::{declare_lint_pass, declare_tool_lint};
-use rustc_span::def_id::LocalDefId;
-use rustc_span::source_map::Span;
+use crablangc_hir::{intravisit, Body, Expr, ExprKind, FnDecl, Let, LocalSource, Mutability, Pat, PatKind, Stmt, StmtKind};
+use crablangc_lint::{LateContext, LateLintPass, LintContext};
+use crablangc_middle::lint::in_external_macro;
+use crablangc_middle::ty;
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_span::def_id::LocalDefId;
+use crablangc_span::source_map::Span;
 
 declare_clippy_lint! {
     /// ### What it does
@@ -38,7 +38,7 @@ declare_clippy_lint! {
     /// the matched expression is explicitly dereferenced with `*` and the `inner` variable
     /// is bound to a shared borrow via `ref inner`.
     ///
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// // Bad
     /// let value = &Some(Box::new(23));
     /// match value {
@@ -59,7 +59,7 @@ declare_clippy_lint! {
     /// borrow, while `b` is simply taken by value. This ensures that the loop body cannot
     /// accidentally modify the wrong part of the structure.
     ///
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// // Bad
     /// let mut values = vec![(2, 3), (3, 4)];
     /// for (a, b) in &mut values {

@@ -9,14 +9,14 @@ trait Sized { }
 // extern functions. `stdcall-unwind` functions MUST NOT have this attribute. We disable
 // optimizations above to prevent LLVM from inferring the attribute.
 
-// CHECK: @rust_item_that_cannot_unwind() unnamed_addr #0 {
+// CHECK: @crablang_item_that_cannot_unwind() unnamed_addr #0 {
 #[no_mangle]
-pub extern "stdcall" fn rust_item_that_cannot_unwind() {
+pub extern "stdcall" fn crablang_item_that_cannot_unwind() {
 }
 
-// CHECK: @rust_item_that_can_unwind() unnamed_addr #1 {
+// CHECK: @crablang_item_that_can_unwind() unnamed_addr #1 {
 #[no_mangle]
-pub extern "stdcall-unwind" fn rust_item_that_can_unwind() {
+pub extern "stdcall-unwind" fn crablang_item_that_can_unwind() {
 }
 
 // Now, make some assertions that the LLVM attributes for these functions are correct.  First, make

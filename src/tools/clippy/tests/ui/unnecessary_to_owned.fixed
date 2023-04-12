@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 
 #![allow(clippy::needless_borrow, clippy::ptr_arg)]
 #![warn(clippy::unnecessary_to_owned)]
@@ -225,7 +225,7 @@ fn _msrv_1_36() {
     let _ = &["x"][..].iter().copied();
 }
 
-// https://github.com/rust-lang/rust-clippy/issues/8507
+// https://github.com/crablang/crablang-clippy/issues/8507
 mod issue_8507 {
     #![allow(dead_code)]
 
@@ -273,7 +273,7 @@ mod issue_8507 {
     }
 }
 
-// https://github.com/rust-lang/rust-clippy/issues/8759
+// https://github.com/crablang/crablang-clippy/issues/8759
 mod issue_8759 {
     #![allow(dead_code)]
 

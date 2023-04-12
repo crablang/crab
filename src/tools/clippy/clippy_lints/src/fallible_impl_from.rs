@@ -3,11 +3,11 @@ use clippy_utils::macros::{is_panic, root_macro_call_first_node};
 use clippy_utils::method_chain_args;
 use clippy_utils::ty::is_type_diagnostic_item;
 use if_chain::if_chain;
-use rustc_hir as hir;
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_middle::ty;
-use rustc_session::{declare_lint_pass, declare_tool_lint};
-use rustc_span::{sym, Span};
+use crablangc_hir as hir;
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_middle::ty;
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_span::{sym, Span};
 
 declare_clippy_lint! {
     /// ### What it does
@@ -17,7 +17,7 @@ declare_clippy_lint! {
     /// `TryFrom` should be used if there's a possibility of failure.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// struct Foo(i32);
     ///
     /// impl From<String> for Foo {
@@ -28,7 +28,7 @@ declare_clippy_lint! {
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// struct Foo(i32);
     ///
     /// impl TryFrom<String> for Foo {
@@ -65,8 +65,8 @@ impl<'tcx> LateLintPass<'tcx> for FallibleImplFrom {
 }
 
 fn lint_impl_body(cx: &LateContext<'_>, impl_span: Span, impl_items: &[hir::ImplItemRef]) {
-    use rustc_hir::intravisit::{self, Visitor};
-    use rustc_hir::{Expr, ImplItemKind};
+    use crablangc_hir::intravisit::{self, Visitor};
+    use crablangc_hir::{Expr, ImplItemKind};
 
     struct FindPanicUnwrap<'a, 'tcx> {
         lcx: &'a LateContext<'tcx>,

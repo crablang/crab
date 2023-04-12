@@ -1,11 +1,11 @@
-//! Documentation generation for rustbuilder.
+//! Documentation generation for crablangbuilder.
 //!
 //! This module implements generation for all bits and pieces of documentation
-//! for the Rust project. This notably includes suites like the rust book, the
-//! nomicon, rust by example, standalone documentation, etc.
+//! for the CrabLang project. This notably includes suites like the crablang book, the
+//! nomicon, crablang by example, standalone documentation, etc.
 //!
-//! Everything here is basically just a shim around calling either `rustbook` or
-//! `rustdoc`.
+//! Everything here is basically just a shim around calling either `crablangbook` or
+//! `crablangdoc`.
 
 use std::ffi::OsStr;
 use std::fs;
@@ -58,7 +58,7 @@ macro_rules! book {
                     let path = Path::new(submodule_helper!( $path, submodule $( = $submodule )? ));
                     builder.update_submodule(&path);
                 )?
-                builder.ensure(RustbookSrc {
+                builder.ensure(CrabLangbookSrc {
                     target: self.target,
                     name: INTERNER.intern_str($book_name),
                     src: INTERNER.intern_path(builder.src.join($path)),
@@ -82,8 +82,8 @@ book!(
     EmbeddedBook, "src/doc/embedded-book", "embedded-book", submodule;
     Nomicon, "src/doc/nomicon", "nomicon", submodule;
     Reference, "src/doc/reference", "reference", submodule;
-    RustByExample, "src/doc/rust-by-example", "rust-by-example", submodule;
-    RustdocBook, "src/doc/rustdoc", "rustdoc";
+    CrabLangByExample, "src/doc/crablang-by-example", "crablang-by-example", submodule;
+    CrabLangdocBook, "src/doc/crablangdoc", "crablangdoc";
     StyleGuide, "src/doc/style-guide", "style-guide";
 );
 
@@ -116,7 +116,7 @@ impl Step for UnstableBook {
 
     fn run(self, builder: &Builder<'_>) {
         builder.ensure(UnstableBookGen { target: self.target });
-        builder.ensure(RustbookSrc {
+        builder.ensure(CrabLangbookSrc {
             target: self.target,
             name: INTERNER.intern_str("unstable-book"),
             src: INTERNER.intern_path(builder.md_doc_out(self.target).join("unstable-book")),
@@ -126,21 +126,21 @@ impl Step for UnstableBook {
 }
 
 #[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
-struct RustbookSrc<P: Step> {
+struct CrabLangbookSrc<P: Step> {
     target: TargetSelection,
     name: Interned<String>,
     src: Interned<PathBuf>,
     parent: Option<P>,
 }
 
-impl<P: Step> Step for RustbookSrc<P> {
+impl<P: Step> Step for CrabLangbookSrc<P> {
     type Output = ();
 
     fn should_run(run: ShouldRun<'_>) -> ShouldRun<'_> {
         run.never()
     }
 
-    /// Invoke `rustbook` for `target` for the doc book `name` from the `src` path.
+    /// Invoke `crablangbook` for `target` for the doc book `name` from the `src` path.
     ///
     /// This will not actually generate any documentation if the documentation has
     /// already been generated.
@@ -153,15 +153,15 @@ impl<P: Step> Step for RustbookSrc<P> {
 
         let out = out.join(name);
         let index = out.join("index.html");
-        let rustbook = builder.tool_exe(Tool::Rustbook);
-        let mut rustbook_cmd = builder.tool_cmd(Tool::Rustbook);
+        let crablangbook = builder.tool_exe(Tool::CrabLangbook);
+        let mut crablangbook_cmd = builder.tool_cmd(Tool::CrabLangbook);
 
-        if !builder.config.dry_run() && !(up_to_date(&src, &index) || up_to_date(&rustbook, &index))
+        if !builder.config.dry_run() && !(up_to_date(&src, &index) || up_to_date(&crablangbook, &index))
         {
-            builder.info(&format!("Rustbook ({}) - {}", target, name));
+            builder.info(&format!("CrabLangbook ({}) - {}", target, name));
             let _ = fs::remove_dir_all(&out);
 
-            builder.run(rustbook_cmd.arg("build").arg(&src).arg("-d").arg(out));
+            builder.run(crablangbook_cmd.arg("build").arg(&src).arg("-d").arg(out));
         }
 
         if self.parent.is_some() {
@@ -209,7 +209,7 @@ impl Step for TheBook {
         let target = self.target;
 
         // build book
-        builder.ensure(RustbookSrc {
+        builder.ensure(CrabLangbookSrc {
             target,
             name: INTERNER.intern_str("book"),
             src: INTERNER.intern_path(builder.src.join(&relative_path)),
@@ -218,7 +218,7 @@ impl Step for TheBook {
 
         // building older edition redirects
         for edition in &["first-edition", "second-edition", "2018-edition"] {
-            builder.ensure(RustbookSrc {
+            builder.ensure(CrabLangbookSrc {
                 target,
                 name: INTERNER.intern_string(format!("book/{}", edition)),
                 src: INTERNER.intern_path(builder.src.join(&relative_path).join(edition)),
@@ -238,12 +238,12 @@ impl Step for TheBook {
             let path = file.path();
             let path = path.to_str().unwrap();
 
-            invoke_rustdoc(builder, compiler, &shared_assets, target, path);
+            invoke_crablangdoc(builder, compiler, &shared_assets, target, path);
         }
     }
 }
 
-fn invoke_rustdoc(
+fn invoke_crablangdoc(
     builder: &Builder<'_>,
     compiler: Compiler,
     shared_assets: &SharedAssetsPaths,
@@ -257,7 +257,7 @@ fn invoke_rustdoc(
     let header = builder.src.join("src/doc/redirect.inc");
     let footer = builder.src.join("src/doc/footer.inc");
 
-    let mut cmd = builder.rustdoc_cmd(compiler);
+    let mut cmd = builder.crablangdoc_cmd(compiler);
 
     let out = out.join("book");
 
@@ -269,12 +269,12 @@ fn invoke_rustdoc(
         .arg(&header)
         .arg("--markdown-no-toc")
         .arg("--markdown-playground-url")
-        .arg("https://play.rust-lang.org/")
+        .arg("https://play.crablang.org/")
         .arg("-o")
         .arg(&out)
         .arg(&path)
         .arg("--markdown-css")
-        .arg("../rust.css");
+        .arg("../crablang.css");
 
     if !builder.config.docs_minification {
         cmd.arg("-Z").arg("unstable-options").arg("--disable-minification");
@@ -305,14 +305,14 @@ impl Step for Standalone {
         });
     }
 
-    /// Generates all standalone documentation as compiled by the rustdoc in `stage`
+    /// Generates all standalone documentation as compiled by the crablangdoc in `stage`
     /// for the `target` into `out`.
     ///
     /// This will list all of `src/doc` looking for markdown files and appropriately
     /// perform transformations like substituting `VERSION`, `SHORT_HASH`, and
     /// `STAMP` along with providing the various header/footer HTML we've customized.
     ///
-    /// In the end, this is just a glorified wrapper around rustdoc!
+    /// In the end, this is just a glorified wrapper around crablangdoc!
     fn run(self, builder: &Builder<'_>) {
         let target = self.target;
         let compiler = self.compiler;
@@ -335,18 +335,18 @@ impl Step for Standalone {
             }
 
             let html = out.join(filename).with_extension("html");
-            let rustdoc = builder.rustdoc(compiler);
+            let crablangdoc = builder.crablangdoc(compiler);
             if up_to_date(&path, &html)
                 && up_to_date(&footer, &html)
                 && up_to_date(&favicon, &html)
                 && up_to_date(&full_toc, &html)
                 && (builder.config.dry_run() || up_to_date(&version_info, &html))
-                && (builder.config.dry_run() || up_to_date(&rustdoc, &html))
+                && (builder.config.dry_run() || up_to_date(&crablangdoc, &html))
             {
                 continue;
             }
 
-            let mut cmd = builder.rustdoc_cmd(compiler);
+            let mut cmd = builder.crablangdoc_cmd(compiler);
             // Needed for --index-page flag
             cmd.arg("-Z").arg("unstable-options");
 
@@ -360,7 +360,7 @@ impl Step for Standalone {
                 .arg("--index-page")
                 .arg(&builder.src.join("src/doc/index.md"))
                 .arg("--markdown-playground-url")
-                .arg("https://play.rust-lang.org/")
+                .arg("https://play.crablang.org/")
                 .arg("-o")
                 .arg(&out)
                 .arg(&path);
@@ -370,9 +370,9 @@ impl Step for Standalone {
             }
 
             if filename == "not_found.md" {
-                cmd.arg("--markdown-css").arg("https://doc.rust-lang.org/rust.css");
+                cmd.arg("--markdown-css").arg("https://doc.crablang.org/crablang.css");
             } else {
-                cmd.arg("--markdown-css").arg("rust.css");
+                cmd.arg("--markdown-css").arg("crablang.css");
             }
             builder.run(&mut cmd);
         }
@@ -413,13 +413,13 @@ impl Step for SharedAssets {
         let version_info = out.join("version_info.html");
         if !builder.config.dry_run() && !up_to_date(&version_input, &version_info) {
             let info = t!(fs::read_to_string(&version_input))
-                .replace("VERSION", &builder.rust_release())
-                .replace("SHORT_HASH", builder.rust_info().sha_short().unwrap_or(""))
-                .replace("STAMP", builder.rust_info().sha().unwrap_or(""));
+                .replace("VERSION", &builder.crablang_release())
+                .replace("SHORT_HASH", builder.crablang_info().sha_short().unwrap_or(""))
+                .replace("STAMP", builder.crablang_info().sha().unwrap_or(""));
             t!(fs::write(&version_info, &info));
         }
 
-        builder.copy(&builder.src.join("src").join("doc").join("rust.css"), &out.join("rust.css"));
+        builder.copy(&builder.src.join("src").join("doc").join("crablang.css"), &out.join("crablang.css"));
 
         SharedAssetsPaths { version_info }
     }
@@ -475,7 +475,7 @@ impl Step for Std {
         let mut extra_args = match self.format {
             DocumentationFormat::HTML => vec![
                 OsStr::new("--markdown-css"),
-                OsStr::new("rust.css"),
+                OsStr::new("crablang.css"),
                 OsStr::new("--markdown-no-toc"),
                 OsStr::new("--index-page"),
                 &index_page,
@@ -528,12 +528,12 @@ impl Step for Std {
 }
 
 /// Name of the crates that are visible to consumers of the standard library.
-/// Documentation for internal crates is handled by the rustc step, so internal crates will show
+/// Documentation for internal crates is handled by the crablangc step, so internal crates will show
 /// up there.
 ///
 /// Order here is important!
-/// Crates need to be processed starting from the leaves, otherwise rustdoc will not
-/// create correct links between crates because rustdoc depends on the
+/// Crates need to be processed starting from the leaves, otherwise crablangdoc will not
+/// create correct links between crates because crablangdoc depends on the
 /// existence of the output directories to know if it should be a local
 /// or remote link.
 const STD_PUBLIC_CRATES: [&str; 5] = ["core", "alloc", "std", "proc_macro", "test"];
@@ -590,15 +590,15 @@ fn doc_std(
     // as a function parameter.
     let out_dir = target_dir.join(target.triple).join("doc");
 
-    let run_cargo_rustdoc_for = |package: &str| {
-        let mut cargo = builder.cargo(compiler, Mode::Std, SourceType::InTree, target, "rustdoc");
+    let run_cargo_crablangdoc_for = |package: &str| {
+        let mut cargo = builder.cargo(compiler, Mode::Std, SourceType::InTree, target, "crablangdoc");
         compile::std_cargo(builder, target, compiler.stage, &mut cargo);
         cargo
             .arg("--target-dir")
             .arg(&*target_dir.to_string_lossy())
             .arg("-p")
             .arg(package)
-            .arg("-Zskip-rustdoc-fingerprint")
+            .arg("-Zskip-crablangdoc-fingerprint")
             .arg("--")
             .arg("-Z")
             .arg("unstable-options")
@@ -612,7 +612,7 @@ fn doc_std(
     };
 
     for krate in STD_PUBLIC_CRATES {
-        run_cargo_rustdoc_for(krate);
+        run_cargo_crablangdoc_for(krate);
         if requested_crates.iter().any(|p| p == krate) {
             // No need to document more of the libraries if we have the one we want.
             break;
@@ -623,25 +623,25 @@ fn doc_std(
 }
 
 #[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
-pub struct Rustc {
+pub struct CrabLangc {
     pub stage: u32,
     pub target: TargetSelection,
 }
 
-impl Step for Rustc {
+impl Step for CrabLangc {
     type Output = ();
     const DEFAULT: bool = true;
     const ONLY_HOSTS: bool = true;
 
     fn should_run(run: ShouldRun<'_>) -> ShouldRun<'_> {
         let builder = run.builder;
-        run.crate_or_deps("rustc-main")
+        run.crate_or_deps("crablangc-main")
             .path("compiler")
             .default_condition(builder.config.compiler_docs)
     }
 
     fn make_run(run: RunConfig<'_>) {
-        run.builder.ensure(Rustc { stage: run.builder.top_stage, target: run.target });
+        run.builder.ensure(CrabLangc { stage: run.builder.top_stage, target: run.target });
     }
 
     /// Generates compiler documentation.
@@ -674,47 +674,47 @@ impl Step for Rustc {
 
         builder.info(&format!("Documenting stage{} compiler ({})", stage, target));
 
-        // This uses a shared directory so that librustdoc documentation gets
-        // correctly built and merged with the rustc documentation. This is
-        // needed because rustdoc is built in a different directory from
-        // rustc. rustdoc needs to be able to see everything, for example when
+        // This uses a shared directory so that libcrablangdoc documentation gets
+        // correctly built and merged with the crablangc documentation. This is
+        // needed because crablangdoc is built in a different directory from
+        // crablangc. crablangdoc needs to be able to see everything, for example when
         // merging the search index, or generating local (relative) links.
-        let out_dir = builder.stage_out(compiler, Mode::Rustc).join(target.triple).join("doc");
+        let out_dir = builder.stage_out(compiler, Mode::CrabLangc).join(target.triple).join("doc");
         t!(symlink_dir_force(&builder.config, &out, &out_dir));
         // Cargo puts proc macros in `target/doc` even if you pass `--target`
-        // explicitly (https://github.com/rust-lang/cargo/issues/7677).
-        let proc_macro_out_dir = builder.stage_out(compiler, Mode::Rustc).join("doc");
+        // explicitly (https://github.com/crablang/cargo/issues/7677).
+        let proc_macro_out_dir = builder.stage_out(compiler, Mode::CrabLangc).join("doc");
         t!(symlink_dir_force(&builder.config, &out, &proc_macro_out_dir));
 
         // Build cargo command.
-        let mut cargo = builder.cargo(compiler, Mode::Rustc, SourceType::InTree, target, "doc");
-        cargo.rustdocflag("--document-private-items");
+        let mut cargo = builder.cargo(compiler, Mode::CrabLangc, SourceType::InTree, target, "doc");
+        cargo.crablangdocflag("--document-private-items");
         // Since we always pass --document-private-items, there's no need to warn about linking to private items.
-        cargo.rustdocflag("-Arustdoc::private-intra-doc-links");
-        cargo.rustdocflag("--enable-index-page");
-        cargo.rustdocflag("-Zunstable-options");
-        cargo.rustdocflag("-Znormalize-docs");
-        cargo.rustdocflag("--show-type-layout");
-        cargo.rustdocflag("--generate-link-to-definition");
-        compile::rustc_cargo(builder, &mut cargo, target);
+        cargo.crablangdocflag("-Acrablangdoc::private-intra-doc-links");
+        cargo.crablangdocflag("--enable-index-page");
+        cargo.crablangdocflag("-Zunstable-options");
+        cargo.crablangdocflag("-Znormalize-docs");
+        cargo.crablangdocflag("--show-type-layout");
+        cargo.crablangdocflag("--generate-link-to-definition");
+        compile::crablangc_cargo(builder, &mut cargo, target);
         cargo.arg("-Zunstable-options");
-        cargo.arg("-Zskip-rustdoc-fingerprint");
+        cargo.arg("-Zskip-crablangdoc-fingerprint");
 
         // Only include compiler crates, no dependencies of those, such as `libc`.
-        // Do link to dependencies on `docs.rs` however using `rustdoc-map`.
+        // Do link to dependencies on `docs.rs` however using `crablangdoc-map`.
         cargo.arg("--no-deps");
-        cargo.arg("-Zrustdoc-map");
+        cargo.arg("-Zcrablangdoc-map");
 
-        // FIXME: `-Zrustdoc-map` does not yet correctly work for transitive dependencies,
+        // FIXME: `-Zcrablangdoc-map` does not yet correctly work for transitive dependencies,
         // once this is no longer an issue the special case for `ena` can be removed.
-        cargo.rustdocflag("--extern-html-root-url");
-        cargo.rustdocflag("ena=https://docs.rs/ena/latest/");
+        cargo.crablangdocflag("--extern-html-root-url");
+        cargo.crablangdocflag("ena=https://docs.rs/ena/latest/");
 
         let root_crates = if paths.is_empty() {
             vec![
-                INTERNER.intern_str("rustc_driver"),
-                INTERNER.intern_str("rustc_codegen_llvm"),
-                INTERNER.intern_str("rustc_codegen_ssa"),
+                INTERNER.intern_str("crablangc_driver"),
+                INTERNER.intern_str("crablangc_codegen_llvm"),
+                INTERNER.intern_str("crablangc_codegen_ssa"),
             ]
         } else {
             paths.into_iter().map(|p| builder.crate_paths[p]).collect()
@@ -726,7 +726,7 @@ impl Step for Rustc {
 
         let mut to_open = None;
         for krate in compiler_crates {
-            // Create all crate output directories first to make sure rustdoc uses
+            // Create all crate output directories first to make sure crablangdoc uses
             // relative links.
             // FIXME: Cargo should probably do this itself.
             t!(fs::create_dir_all(out_dir.join(krate)));
@@ -746,7 +746,7 @@ impl Step for Rustc {
 }
 
 macro_rules! tool_doc {
-    ($tool: ident, $should_run: literal, $path: literal, $(rustc_tool = $rustc_tool:literal, )? $(in_tree = $in_tree:literal, )? [$($krate: literal),+ $(,)?] $(,)?) => {
+    ($tool: ident, $should_run: literal, $path: literal, $(crablangc_tool = $crablangc_tool:literal, )? $(in_tree = $in_tree:literal, )? [$($krate: literal),+ $(,)?] $(,)?) => {
         #[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
         pub struct $tool {
             target: TargetSelection,
@@ -783,14 +783,14 @@ macro_rules! tool_doc {
                 let compiler = builder.compiler(stage, builder.config.build);
                 builder.ensure(compile::Std::new(compiler, target));
 
-                if true $(&& $rustc_tool)? {
-                    // Build rustc docs so that we generate relative links.
-                    builder.ensure(Rustc { stage, target });
+                if true $(&& $crablangc_tool)? {
+                    // Build crablangc docs so that we generate relative links.
+                    builder.ensure(CrabLangc { stage, target });
 
-                    // Rustdoc needs the rustc sysroot available to build.
-                    // FIXME: is there a way to only ensure `check::Rustc` here? Last time I tried it failed
+                    // CrabLangdoc needs the crablangc sysroot available to build.
+                    // FIXME: is there a way to only ensure `check::CrabLangc` here? Last time I tried it failed
                     // with strange errors, but only on a full bors test ...
-                    builder.ensure(compile::Rustc::new(compiler, target));
+                    builder.ensure(compile::CrabLangc::new(compiler, target));
                 }
 
                 let source_type = if true $(&& $in_tree)? {
@@ -808,11 +808,11 @@ macro_rules! tool_doc {
                     ),
                 );
 
-                // Symlink compiler docs to the output directory of rustdoc documentation.
+                // Symlink compiler docs to the output directory of crablangdoc documentation.
                 let out_dirs = [
-                    builder.stage_out(compiler, Mode::ToolRustc).join(target.triple).join("doc"),
+                    builder.stage_out(compiler, Mode::ToolCrabLangc).join(target.triple).join("doc"),
                     // Cargo uses a different directory for proc macros.
-                    builder.stage_out(compiler, Mode::ToolRustc).join("doc"),
+                    builder.stage_out(compiler, Mode::ToolCrabLangc).join("doc"),
                 ];
                 for out_dir in out_dirs {
                     t!(fs::create_dir_all(&out_dir));
@@ -823,7 +823,7 @@ macro_rules! tool_doc {
                 let mut cargo = prepare_tool_cargo(
                     builder,
                     compiler,
-                    Mode::ToolRustc,
+                    Mode::ToolCrabLangc,
                     target,
                     "doc",
                     $path,
@@ -831,30 +831,30 @@ macro_rules! tool_doc {
                     &[],
                 );
 
-                cargo.arg("-Zskip-rustdoc-fingerprint");
+                cargo.arg("-Zskip-crablangdoc-fingerprint");
                 // Only include compiler crates, no dependencies of those, such as `libc`.
                 cargo.arg("--no-deps");
                 $(
                     cargo.arg("-p").arg($krate);
                 )+
 
-                cargo.rustdocflag("--document-private-items");
-                cargo.rustdocflag("--enable-index-page");
-                cargo.rustdocflag("--show-type-layout");
-                cargo.rustdocflag("--generate-link-to-definition");
-                cargo.rustdocflag("-Zunstable-options");
+                cargo.crablangdocflag("--document-private-items");
+                cargo.crablangdocflag("--enable-index-page");
+                cargo.crablangdocflag("--show-type-layout");
+                cargo.crablangdocflag("--generate-link-to-definition");
+                cargo.crablangdocflag("-Zunstable-options");
                 builder.run(&mut cargo.into());
             }
         }
     }
 }
 
-tool_doc!(Rustdoc, "rustdoc-tool", "src/tools/rustdoc", ["rustdoc", "rustdoc-json-types"],);
+tool_doc!(CrabLangdoc, "crablangdoc-tool", "src/tools/crablangdoc", ["crablangdoc", "crablangdoc-json-types"],);
 tool_doc!(
-    Rustfmt,
-    "rustfmt-nightly",
-    "src/tools/rustfmt",
-    ["rustfmt-nightly", "rustfmt-config_proc_macro"],
+    CrabLangfmt,
+    "crablangfmt-nightly",
+    "src/tools/crablangfmt",
+    ["crablangfmt-nightly", "crablangfmt-config_proc_macro"],
 );
 tool_doc!(Clippy, "clippy", "src/tools/clippy", ["clippy_utils"]);
 tool_doc!(Miri, "miri", "src/tools/miri", ["miri"]);
@@ -862,7 +862,7 @@ tool_doc!(
     Cargo,
     "cargo",
     "src/tools/cargo",
-    rustc_tool = false,
+    crablangc_tool = false,
     in_tree = false,
     [
         "cargo",
@@ -973,44 +973,44 @@ fn symlink_dir_force(config: &Config, src: &Path, dst: &Path) -> io::Result<()> 
 }
 
 #[derive(Ord, PartialOrd, Debug, Copy, Clone, Hash, PartialEq, Eq)]
-pub struct RustcBook {
+pub struct CrabLangcBook {
     pub compiler: Compiler,
     pub target: TargetSelection,
     pub validate: bool,
 }
 
-impl Step for RustcBook {
+impl Step for CrabLangcBook {
     type Output = ();
     const DEFAULT: bool = true;
     const ONLY_HOSTS: bool = true;
 
     fn should_run(run: ShouldRun<'_>) -> ShouldRun<'_> {
         let builder = run.builder;
-        run.path("src/doc/rustc").default_condition(builder.config.docs)
+        run.path("src/doc/crablangc").default_condition(builder.config.docs)
     }
 
     fn make_run(run: RunConfig<'_>) {
-        run.builder.ensure(RustcBook {
+        run.builder.ensure(CrabLangcBook {
             compiler: run.builder.compiler(run.builder.top_stage, run.builder.config.build),
             target: run.target,
             validate: false,
         });
     }
 
-    /// Builds the rustc book.
+    /// Builds the crablangc book.
     ///
     /// The lints are auto-generated by a tool, and then merged into the book
     /// in the "md-doc" directory in the build output directory. Then
-    /// "rustbook" is used to convert it to HTML.
+    /// "crablangbook" is used to convert it to HTML.
     fn run(self, builder: &Builder<'_>) {
-        let out_base = builder.md_doc_out(self.target).join("rustc");
+        let out_base = builder.md_doc_out(self.target).join("crablangc");
         t!(fs::create_dir_all(&out_base));
         let out_listing = out_base.join("src/lints");
-        builder.cp_r(&builder.src.join("src/doc/rustc"), &out_base);
+        builder.cp_r(&builder.src.join("src/doc/crablangc"), &out_base);
         builder.info(&format!("Generating lint docs ({})", self.target));
 
-        let rustc = builder.rustc(self.compiler);
-        // The tool runs `rustc` for extracting output examples, so it needs a
+        let crablangc = builder.crablangc(self.compiler);
+        // The tool runs `crablangc` for extracting output examples, so it needs a
         // functional sysroot.
         builder.ensure(compile::Std::new(self.compiler, self.target));
         let mut cmd = builder.tool_cmd(Tool::LintDocs);
@@ -1018,9 +1018,9 @@ impl Step for RustcBook {
         cmd.arg(builder.src.join("compiler"));
         cmd.arg("--out");
         cmd.arg(&out_listing);
-        cmd.arg("--rustc");
-        cmd.arg(&rustc);
-        cmd.arg("--rustc-target").arg(&self.target.rustc_target_arg());
+        cmd.arg("--crablangc");
+        cmd.arg(&crablangc);
+        cmd.arg("--crablangc-target").arg(&self.target.crablangc_target_arg());
         if builder.is_verbose() {
             cmd.arg("--verbose");
         }
@@ -1030,17 +1030,17 @@ impl Step for RustcBook {
         // We need to validate nightly features, even on the stable channel.
         // Set this unconditionally as the stage0 compiler may be being used to
         // document.
-        cmd.env("RUSTC_BOOTSTRAP", "1");
+        cmd.env("CRABLANGC_BOOTSTRAP", "1");
 
         // If the lib directories are in an unusual location (changed in
         // config.toml), then this needs to explicitly update the dylib search
         // path.
-        builder.add_rustc_lib_path(self.compiler, &mut cmd);
+        builder.add_crablangc_lib_path(self.compiler, &mut cmd);
         builder.run(&mut cmd);
-        // Run rustbook/mdbook to generate the HTML pages.
-        builder.ensure(RustbookSrc {
+        // Run crablangbook/mdbook to generate the HTML pages.
+        builder.ensure(CrabLangbookSrc {
             target: self.target,
-            name: INTERNER.intern_str("rustc"),
+            name: INTERNER.intern_str("crablangc"),
             src: INTERNER.intern_path(out_base),
             parent: Some(self),
         });

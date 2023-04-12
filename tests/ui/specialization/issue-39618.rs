@@ -1,6 +1,6 @@
 // Regression test for #39618, shouldn't crash.
 // FIXME(JohnTitor): Centril pointed out this looks suspicions, we should revisit here.
-// More context: https://github.com/rust-lang/rust/pull/69192#discussion_r379846796
+// More context: https://github.com/crablang/crablang/pull/69192#discussion_r379846796
 
 // check-pass
 

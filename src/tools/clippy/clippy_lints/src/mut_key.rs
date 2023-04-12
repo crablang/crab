@@ -1,15 +1,15 @@
 use clippy_utils::diagnostics::span_lint;
 use clippy_utils::ty::is_interior_mut_ty;
 use clippy_utils::{def_path_def_ids, trait_ref_of_method};
-use rustc_data_structures::fx::FxHashSet;
-use rustc_hir as hir;
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_middle::query::Key;
-use rustc_middle::ty::{Adt, Ty};
-use rustc_session::{declare_tool_lint, impl_lint_pass};
-use rustc_span::def_id::LocalDefId;
-use rustc_span::source_map::Span;
-use rustc_span::symbol::sym;
+use crablangc_data_structures::fx::FxHashSet;
+use crablangc_hir as hir;
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_middle::query::Key;
+use crablangc_middle::ty::{Adt, Ty};
+use crablangc_session::{declare_tool_lint, impl_lint_pass};
+use crablangc_span::def_id::LocalDefId;
+use crablangc_span::source_map::Span;
+use crablangc_span::symbol::sym;
 use std::iter;
 
 declare_clippy_lint! {
@@ -44,10 +44,10 @@ declare_clippy_lint! {
     /// apply only to the **address** of the contained value.  Therefore, interior mutability
     /// behind raw pointers (e.g. in `HashSet<*mut Cell<usize>>`) can't impact the value of `Hash`
     /// or `Ord`, and therefore will not trigger this link.  For more info, see issue
-    /// [#6745](https://github.com/rust-lang/rust-clippy/issues/6745).
+    /// [#6745](https://github.com/crablang/crablang-clippy/issues/6745).
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// use std::cmp::{PartialEq, Eq};
     /// use std::collections::HashSet;
     /// use std::hash::{Hash, Hasher};

@@ -30,11 +30,11 @@ pub fn check_expect_on_macro() {
 
     // FIXME: Lint attributes currently don't work directly on macros, and
     // therefore also doesn't work for the new `expect` attribute. This bug
-    // is being tracked in rust#87391. The test will until then produce two
+    // is being tracked in crablang#87391. The test will until then produce two
     // warnings about the unused variable x.
     //
     // The expectation is still marked as fulfilled. I'm not totally why but
-    // my guess is that this will remain working when rust#87391 has been fixed.
+    // my guess is that this will remain working when crablang#87391 has been fixed.
 }
 
 fn main() {

@@ -10,11 +10,11 @@ pub const SMALLEST_POWER_OF_FIVE: i32 = -342;
 pub const LARGEST_POWER_OF_FIVE: i32 = 308;
 pub const N_POWERS_OF_FIVE: usize = (LARGEST_POWER_OF_FIVE - SMALLEST_POWER_OF_FIVE + 1) as usize;
 
-// Use static to avoid long compile times: Rust compiler errors
+// Use static to avoid long compile times: CrabLang compiler errors
 // can have the entire table compiled multiple times, and then
 // emit code multiple times, even if it's stripped out in
 // the final binary.
-#[rustfmt::skip]
+#[crablangfmt::skip]
 pub static POWER_OF_FIVE_128: [(u64, u64); N_POWERS_OF_FIVE] = [
     (0xeef453d6923bd65a, 0x113faa2906a13b3f), // 5^-342
     (0x9558b4661b6565f8, 0x4ac7ca59a424c507), // 5^-341

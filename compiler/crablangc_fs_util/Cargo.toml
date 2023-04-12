@@ -1,0 +1,4 @@
+[package]
+name = "crablangc_fs_util"
+version = "0.0.0"
+edition = "2021"

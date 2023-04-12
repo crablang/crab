@@ -42,4 +42,4 @@ LL |     Struct { a, .. } = Struct { a: 1, b: 2 };
 error: aborting due to 5 previous errors
 
 Some errors have detailed explanations: E0026, E0027.
-For more information about an error, try `rustc --explain E0026`.
+For more information about an error, try `crablangc --explain E0026`.

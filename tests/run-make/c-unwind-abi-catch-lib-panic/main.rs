@@ -1,6 +1,6 @@
 //! A test for calling `C-unwind` functions across foreign function boundaries.
 //!
-//! This test triggers a panic in a Rust library that our foreign function invokes. This shows
+//! This test triggers a panic in a CrabLang library that our foreign function invokes. This shows
 //! that we can unwind through the C code in that library, and catch the underlying panic.
 #![feature(c_unwind)]
 

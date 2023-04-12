@@ -4,7 +4,7 @@
 // incremental
 // compile-flags: -Z query-dep-graph
 
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 #![allow(dead_code)]
 #![allow(unused_imports)]
 
@@ -21,7 +21,7 @@ pub trait Bar: Sized {
 mod x {
     use {Foo, Bar};
 
-    #[rustc_if_this_changed]
+    #[crablangc_if_this_changed]
     impl Foo for u32 { }
 
     impl Bar for char { }
@@ -30,7 +30,7 @@ mod x {
 mod y {
     use {Foo, Bar};
 
-    #[rustc_then_this_would_need(typeck)] //~ ERROR OK
+    #[crablangc_then_this_would_need(typeck)] //~ ERROR OK
     pub fn with_char() {
         char::method('a');
     }
@@ -39,7 +39,7 @@ mod y {
 mod z {
     use y;
 
-    #[rustc_then_this_would_need(typeck)] //~ ERROR no path
+    #[crablangc_then_this_would_need(typeck)] //~ ERROR no path
     pub fn z() {
         y::with_char();
     }

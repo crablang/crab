@@ -163,4 +163,4 @@ LL | union Union<T: Copy> { f: T }
 error: aborting due to 13 previous errors
 
 Some errors have detailed explanations: E0366, E0367.
-For more information about an error, try `rustc --explain E0366`.
+For more information about an error, try `crablangc --explain E0366`.

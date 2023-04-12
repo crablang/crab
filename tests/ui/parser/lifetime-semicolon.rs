@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 #![allow(unused)]
 struct Foo<'a, 'b> {
     a: &'a &'b i32

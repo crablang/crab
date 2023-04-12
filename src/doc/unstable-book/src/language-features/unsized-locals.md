@@ -2,15 +2,15 @@
 
 The tracking issue for this feature is: [#48055]
 
-[#48055]: https://github.com/rust-lang/rust/issues/48055
+[#48055]: https://github.com/crablang/crablang/issues/48055
 
 ------------------------
 
 This implements [RFC1909]. When turned on, you can have unsized arguments and locals:
 
-[RFC1909]: https://github.com/rust-lang/rfcs/blob/master/text/1909-unsized-rvalues.md
+[RFC1909]: https://github.com/crablang/rfcs/blob/master/text/1909-unsized-rvalues.md
 
-```rust
+```crablang
 #![allow(incomplete_features)]
 #![feature(unsized_locals, unsized_fn_params)]
 
@@ -30,7 +30,7 @@ fn foo(_: dyn Any) {}
 
 The RFC still forbids the following unsized expressions:
 
-```rust,compile_fail
+```crablang,compile_fail
 #![feature(unsized_locals)]
 
 use std::any::Any;
@@ -85,7 +85,7 @@ fn main() {
 
 With this feature, you can have by-value `self` arguments without `Self: Sized` bounds.
 
-```rust
+```crablang
 #![feature(unsized_fn_params)]
 
 trait Foo {
@@ -102,7 +102,7 @@ fn main() {
 
 And `Foo` will also be object-safe.
 
-```rust
+```crablang
 #![feature(unsized_fn_params)]
 
 trait Foo {
@@ -124,7 +124,7 @@ One of the objectives of this feature is to allow `Box<dyn FnOnce>`.
 
 The RFC also describes an extension to the array literal syntax: `[e; dyn n]`. In the syntax, `n` isn't necessarily a constant expression. The array is dynamically allocated on the stack and has the type of `[T]`, instead of `[T; n]`.
 
-```rust,ignore (not-yet-implemented)
+```crablang,ignore (not-yet-implemented)
 #![feature(unsized_locals)]
 
 fn mergesort<T: Ord>(a: &mut [T]) {
@@ -139,7 +139,7 @@ fn main() {
 }
 ```
 
-VLAs are not implemented yet. The syntax isn't final, either. We may need an alternative syntax for Rust 2015 because, in Rust 2015, expressions like `[e; dyn(1)]` would be ambiguous. One possible alternative proposed in the RFC is `[e; n]`: if `n` captures one or more local variables, then it is considered as `[e; dyn n]`.
+VLAs are not implemented yet. The syntax isn't final, either. We may need an alternative syntax for CrabLang 2015 because, in CrabLang 2015, expressions like `[e; dyn(1)]` would be ambiguous. One possible alternative proposed in the RFC is `[e; n]`: if `n` captures one or more local variables, then it is considered as `[e; dyn n]`.
 
 ## Advisory on stack usage
 
@@ -150,7 +150,7 @@ It's advised not to casually use the `#![feature(unsized_locals)]` feature. Typi
 
 Another pitfall is repetitive allocation and temporaries. Currently the compiler simply extends the stack frame every time it encounters an unsized assignment. So for example, the code
 
-```rust
+```crablang
 #![feature(unsized_locals)]
 
 fn main() {
@@ -161,7 +161,7 @@ fn main() {
 
 and the code
 
-```rust
+```crablang
 #![feature(unsized_locals)]
 
 fn main() {

@@ -1,6 +1,6 @@
 # We document platform support for minimum glibc 2.17 and kernel 3.2.
 # CentOS 7 has headers for kernel 3.10, but that's fine as long as we don't
-# actually use newer APIs in rustc or std without a fallback. It's more
+# actually use newer APIs in crablangc or std without a fallback. It's more
 # important that we match glibc for ELF symbol versioning.
 FROM centos:7
 
@@ -35,11 +35,11 @@ RUN yum upgrade -y && \
       zlib-devel.x86_64 \
       && yum clean all
 
-RUN mkdir -p /rustroot/bin && ln -s /usr/bin/cmake3 /rustroot/bin/cmake
+RUN mkdir -p /crablangroot/bin && ln -s /usr/bin/cmake3 /crablangroot/bin/cmake
 
-ENV PATH=/rustroot/bin:$PATH
-ENV LD_LIBRARY_PATH=/rustroot/lib64:/rustroot/lib32:/rustroot/lib
-ENV PKG_CONFIG_PATH=/rustroot/lib/pkgconfig
+ENV PATH=/crablangroot/bin:$PATH
+ENV LD_LIBRARY_PATH=/crablangroot/lib64:/crablangroot/lib32:/crablangroot/lib
+ENV PKG_CONFIG_PATH=/crablangroot/lib/pkgconfig
 WORKDIR /tmp
 RUN mkdir /home/user
 COPY host-x86_64/dist-x86_64-linux/shared.sh /tmp/
@@ -59,14 +59,14 @@ RUN sh /scripts/sccache.sh
 
 ENV HOSTS=i686-unknown-linux-gnu
 
-ENV RUST_CONFIGURE_ARGS \
+ENV CRABLANG_CONFIGURE_ARGS \
       --enable-full-tools \
       --enable-sanitizers \
       --enable-profiler \
       --set target.i686-unknown-linux-gnu.linker=clang \
       --build=i686-unknown-linux-gnu \
       --set llvm.ninja=false \
-      --set rust.jemalloc
+      --set crablang.jemalloc
 ENV SCRIPT python3 ../x.py dist --build $HOSTS --host $HOSTS --target $HOSTS
 ENV CARGO_TARGET_I686_UNKNOWN_LINUX_GNU_LINKER=clang
 

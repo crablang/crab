@@ -1,6 +1,6 @@
 // Check that we enforce WF conditions also for return types in fn items.
 
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 #![allow(dead_code)]
 
 struct MustBeCopy<T:Copy> {

@@ -1,7 +1,7 @@
 # Docker images for CI
 
 This folder contains a bunch of docker images used by the continuous integration
-(CI) of Rust. An script is accompanied (`run.sh`) with these images to actually
+(CI) of CrabLang. An script is accompanied (`run.sh`) with these images to actually
 execute them. To test out an image execute:
 
 ```
@@ -16,7 +16,7 @@ for example:
 
 Images will output artifacts in an `obj` dir at the root of a repository.
 
-To match conditions in rusts CI, also set the environment variable `DEPLOY=1`, e.g.:
+To match conditions in crablangs CI, also set the environment variable `DEPLOY=1`, e.g.:
 ```
 DEPLOY=1 ./src/ci/docker/run.sh x86_64-gnu
 ```
@@ -44,8 +44,8 @@ a Docker image.
 
 1. Stop the virtual machine from the terminal with `docker-machine stop`
 
-2. If your Rust source is placed outside of `C:\Users\**`, e.g. if you place the
-    repository in the `E:\rust` folder, please add a shared folder from
+2. If your CrabLang source is placed outside of `C:\Users\**`, e.g. if you place the
+    repository in the `E:\crablang` folder, please add a shared folder from
     VirtualBox by:
 
     1. Select the "default" virtual machine inside VirtualBox, then click
@@ -53,8 +53,8 @@ a Docker image.
     2. Go to "Shared Folders", click "Add shared folder" (the folder icon with
         a plus sign), fill in the following information, then click "OK":
 
-        * Folder path: `E:\rust`
-        * Folder name: `e/rust`
+        * Folder path: `E:\crablang`
+        * Folder name: `e/crablang`
         * Read-only: ☐ *unchecked*
         * Auto-mount: ☑ *checked*
         * Make Permanent: ☑ *checked*
@@ -64,7 +64,7 @@ a Docker image.
 
     ```bat
     cd "C:\Program Files\Oracle\VirtualBox"
-    VBoxManage setextradata default VBoxInternal2/SharedFoldersEnableSymlinksCreate/e/rust 1
+    VBoxManage setextradata default VBoxInternal2/SharedFoldersEnableSymlinksCreate/e/crablang 1
     ::                                                                              ^~~~~~
     ::                                                                              folder name
     ```
@@ -212,7 +212,7 @@ For targets: `armv7-unknown-linux-gnueabihf`
       toolchains shipped with Ubuntu 15.10
 (+) These options have been selected to match the gcc flags we use to compile C
     libraries like jemalloc. See the mk/cfg/arm(v7)-uknown-linux-gnueabi{,hf}.mk
-    file in Rust's source code.
+    file in CrabLang's source code.
 
 ### `aarch64-linux-gnu.config`
 
@@ -220,7 +220,7 @@ For targets: `aarch64-unknown-linux-gnu`
 
 - Path and misc options > Prefix directory = /x-tools/${CT\_TARGET}
 - Path and misc options > Use a mirror = ENABLE
-- Path and misc options > Base URL = https://ci-mirrors.rust-lang.org/rustc
+- Path and misc options > Base URL = https://ci-mirrors.crablang.org/crablangc
 - Target options > Target Architecture = arm
 - Target options > Bitness = 64-bit
 - Operating System > Target OS = linux
@@ -256,7 +256,7 @@ For targets: `mips-unknown-linux-gnu`
 
 - Path and misc options > Prefix directory = /x-tools/${CT\_TARGET}
 - Path and misc options > Use a mirror = ENABLE
-- Path and misc options > Base URL = https://ci-mirrors.rust-lang.org/rustc
+- Path and misc options > Base URL = https://ci-mirrors.crablang.org/crablangc
 - Path and misc options > Patches origin = Bundled, then local
 - Path and misc options > Local patch directory = /tmp/patches
 - Target options > Target Architecture = mips
@@ -278,7 +278,7 @@ For targets: `mipsel-unknown-linux-gnu`
 
 - Path and misc options > Prefix directory = /x-tools/${CT\_TARGET}
 - Path and misc options > Use a mirror = ENABLE
-- Path and misc options > Base URL = https://ci-mirrors.rust-lang.org/rustc
+- Path and misc options > Base URL = https://ci-mirrors.crablang.org/crablangc
 - Path and misc options > Patches origin = Bundled, then local
 - Path and misc options > Local patch directory = /tmp/patches
 - Target options > Target Architecture = mips
@@ -300,7 +300,7 @@ For targets: `mips64-unknown-linux-gnuabi64`
 
 - Path and misc options > Prefix directory = /x-tools/${CT\_TARGET}
 - Path and misc options > Use a mirror = ENABLE
-- Path and misc options > Base URL = https://ci-mirrors.rust-lang.org/rustc
+- Path and misc options > Base URL = https://ci-mirrors.crablang.org/crablangc
 - Path and misc options > Patches origin = Bundled, then local
 - Path and misc options > Local patch directory = /tmp/patches
 - Target options > Target Architecture = mips
@@ -321,7 +321,7 @@ For targets: `mips64el-unknown-linux-gnuabi64`
 
 - Path and misc options > Prefix directory = /x-tools/${CT\_TARGET}
 - Path and misc options > Use a mirror = ENABLE
-- Path and misc options > Base URL = https://ci-mirrors.rust-lang.org/rustc
+- Path and misc options > Base URL = https://ci-mirrors.crablang.org/crablangc
 - Path and misc options > Patches origin = Bundled, then local
 - Path and misc options > Local patch directory = /tmp/patches
 - Target options > Target Architecture = mips
@@ -342,7 +342,7 @@ For targets: `powerpc-unknown-linux-gnu`
 
 - Path and misc options > Prefix directory = /x-tools/${CT\_TARGET}
 - Path and misc options > Use a mirror = ENABLE
-- Path and misc options > Base URL = https://ci-mirrors.rust-lang.org/rustc
+- Path and misc options > Base URL = https://ci-mirrors.crablang.org/crablangc
 - Target options > Target Architecture = powerpc
 - Target options > Emit assembly for CPU = powerpc -- pure 32-bit PowerPC
 - Operating System > Target OS = linux
@@ -358,7 +358,7 @@ For targets: `powerpc64-unknown-linux-gnu`
 
 - Path and misc options > Prefix directory = /x-tools/${CT\_TARGET}
 - Path and misc options > Use a mirror = ENABLE
-- Path and misc options > Base URL = https://ci-mirrors.rust-lang.org/rustc
+- Path and misc options > Base URL = https://ci-mirrors.crablang.org/crablangc
 - Target options > Target Architecture = powerpc
 - Target options > Bitness = 64-bit
 - Target options > Emit assembly for CPU = power4 -- (+)
@@ -378,7 +378,7 @@ For targets: `s390x-unknown-linux-gnu`
 
 - Path and misc options > Prefix directory = /x-tools/${CT\_TARGET}
 - Path and misc options > Use a mirror = ENABLE
-- Path and misc options > Base URL = https://ci-mirrors.rust-lang.org/rustc
+- Path and misc options > Base URL = https://ci-mirrors.crablang.org/crablangc
 - Target options > Target Architecture = s390
 - Target options > Bitness = 64-bit
 - Operating System > Target OS = linux

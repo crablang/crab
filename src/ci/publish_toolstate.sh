@@ -10,8 +10,8 @@ source "$(cd "$(dirname "$0")" && pwd)/shared.sh"
 
 export MESSAGE_FILE=$(mktemp -t msg.XXXXXX)
 
-git config --global user.email '7378925+rust-toolstate-update@users.noreply.github.com'
-git config --global user.name 'Rust Toolstate Update'
+git config --global user.email '7378925+crablang-toolstate-update@users.noreply.github.com'
+git config --global user.name 'CrabLang Toolstate Update'
 git config --global credential.helper store
 printf 'https://%s:x-oauth-basic@github.com\n' "$TOOLSTATE_REPO_ACCESS_TOKEN" \
     > "$HOME/.git-credentials"
@@ -20,7 +20,7 @@ git clone --depth=1 $TOOLSTATE_REPO
 GIT_COMMIT="$(git rev-parse HEAD)"
 GIT_COMMIT_MSG="$(git log --format=%s -n1 HEAD)"
 
-cd rust-toolstate
+cd crablang-toolstate
 FAILURE=1
 for RETRY_COUNT in 1 2 3 4 5; do
     # The purpose of this is to publish the new "current" toolstate in the toolstate repo.

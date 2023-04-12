@@ -165,4 +165,4 @@ LL |     let _: &dyn Sync = foo;
 
 error: aborting due to 15 previous errors
 
-For more information about this error, try `rustc --explain E0308`.
+For more information about this error, try `crablangc --explain E0308`.

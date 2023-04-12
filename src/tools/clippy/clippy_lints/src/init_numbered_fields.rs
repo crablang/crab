@@ -1,10 +1,10 @@
 use clippy_utils::diagnostics::span_lint_and_sugg;
 use clippy_utils::source::snippet_with_applicability;
-use rustc_errors::Applicability;
-use rustc_hir::def::{DefKind, Res};
-use rustc_hir::{Expr, ExprKind};
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_errors::Applicability;
+use crablangc_hir::def::{DefKind, Res};
+use crablangc_hir::{Expr, ExprKind};
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
 use std::borrow::Cow;
 use std::cmp::Reverse;
 use std::collections::BinaryHeap;
@@ -20,7 +20,7 @@ declare_clippy_lint! {
     /// benefit as opposed to tuple initializers
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// struct TupleStruct(u8, u16);
     ///
     /// let _ = TupleStruct {

@@ -205,7 +205,7 @@ fn main() {
             let x = &mut block;
             let p: &'a u8 = &*block.current;
             //~^ ERROR cannot borrow `*block.current` as immutable because it is also borrowed as mutable
-            // See issue rust#38899
+            // See issue crablang#38899
             drop(x);
         }
     }
@@ -220,7 +220,7 @@ fn main() {
             let x = &mut block;
             let p : *const u8 = &*(*block).current;
             //~^ ERROR cannot borrow `*block.current` as immutable because it is also borrowed as mutable
-            // See issue rust#38899
+            // See issue crablang#38899
             drop(x);
         }
     }

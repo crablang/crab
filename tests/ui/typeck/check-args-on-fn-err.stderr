@@ -6,4 +6,4 @@ LL |     unknown(1, |glyf| {
 
 error: aborting due to previous error
 
-For more information about this error, try `rustc --explain E0425`.
+For more information about this error, try `crablangc --explain E0425`.

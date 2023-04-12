@@ -1,6 +1,6 @@
 # `remap-cwd-prefix`
 
-The tracking issue for this feature is: [#87325](https://github.com/rust-lang/rust/issues/87325).
+The tracking issue for this feature is: [#87325](https://github.com/crablang/crablang/issues/87325).
 
 ------------------------
 
@@ -20,5 +20,5 @@ of build environment.
 ```sh
 # This would produce an absolute path to main.rs in build outputs of
 # "./main.rs".
-rustc -Z remap-cwd-prefix=. main.rs
+crablangc -Z remap-cwd-prefix=. main.rs
 ```

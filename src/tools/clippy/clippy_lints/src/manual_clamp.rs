@@ -10,15 +10,15 @@ use clippy_utils::{
     peel_blocks_with_stmt,
 };
 use itertools::Itertools;
-use rustc_errors::Applicability;
-use rustc_errors::Diagnostic;
-use rustc_hir::{
+use crablangc_errors::Applicability;
+use crablangc_errors::Diagnostic;
+use crablangc_hir::{
     def::Res, Arm, BinOpKind, Block, Expr, ExprKind, Guard, HirId, PatKind, PathSegment, PrimTy, QPath, StmtKind,
 };
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_middle::ty::Ty;
-use rustc_session::{declare_tool_lint, impl_lint_pass};
-use rustc_span::{symbol::sym, Span};
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_middle::ty::Ty;
+use crablangc_session::{declare_tool_lint, impl_lint_pass};
+use crablangc_span::{symbol::sym, Span};
 use std::ops::Deref;
 
 declare_clippy_lint! {
@@ -37,10 +37,10 @@ declare_clippy_lint! {
     /// introduce panicking where there wasn't any before.
     ///
     /// See also [the discussion in the
-    /// PR](https://github.com/rust-lang/rust-clippy/pull/9484#issuecomment-1278922613).
+    /// PR](https://github.com/crablang/crablang-clippy/pull/9484#issuecomment-1278922613).
     ///
     /// ### Examples
-    /// ```rust
+    /// ```crablang
     /// # let (input, min, max) = (0, -2, 1);
     /// if input > max {
     ///     max
@@ -52,13 +52,13 @@ declare_clippy_lint! {
     /// # ;
     /// ```
     ///
-    /// ```rust
+    /// ```crablang
     /// # let (input, min, max) = (0, -2, 1);
     /// input.max(min).min(max)
     /// # ;
     /// ```
     ///
-    /// ```rust
+    /// ```crablang
     /// # let (input, min, max) = (0, -2, 1);
     /// match input {
     ///     x if x > max => max,
@@ -68,14 +68,14 @@ declare_clippy_lint! {
     /// # ;
     /// ```
     ///
-    /// ```rust
+    /// ```crablang
     /// # let (input, min, max) = (0, -2, 1);
     /// let mut x = input;
     /// if x < min { x = min; }
     /// if x > max { x = max; }
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// # let (input, min, max) = (0, -2, 1);
     /// input.clamp(min, max)
     /// # ;
@@ -382,7 +382,7 @@ fn is_call_max_min_pattern<'tcx>(cx: &LateContext<'tcx>, expr: &'tcx Expr<'tcx>)
 /// # ;
 /// ```
 fn is_match_pattern<'tcx>(cx: &LateContext<'tcx>, expr: &'tcx Expr<'tcx>) -> Option<ClampSuggestion<'tcx>> {
-    if let ExprKind::Match(value, [first_arm, second_arm, last_arm], rustc_hir::MatchSource::Normal) = &expr.kind {
+    if let ExprKind::Match(value, [first_arm, second_arm, last_arm], crablangc_hir::MatchSource::Normal) = &expr.kind {
         // Find possible min/max branches
         let minmax_values = |a: &'tcx Arm<'tcx>| {
             if let PatKind::Binding(_, var_hir_id, _, None) = &a.pat.kind
@@ -581,7 +581,7 @@ impl<'tcx> BinaryOp<'tcx> {
 /// - Both binary statements must have a shared argument
 ///     - Which can appear on the left or right side of either statement
 ///     - The binary operators must define a finite range for the shared argument. To put this in
-///       the terms of Rust `std` library, the following ranges are acceptable
+///       the terms of CrabLang `std` library, the following ranges are acceptable
 ///         - `Range`
 ///         - `RangeInclusive`
 ///       And all other range types are not accepted. For the purposes of `clamp` it's irrelevant

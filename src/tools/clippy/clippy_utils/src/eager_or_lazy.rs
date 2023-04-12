@@ -11,12 +11,12 @@
 
 use crate::ty::{all_predicates_of, is_copy};
 use crate::visitors::is_const_evaluatable;
-use rustc_hir::def::{DefKind, Res};
-use rustc_hir::intravisit::{walk_expr, Visitor};
-use rustc_hir::{def_id::DefId, Block, Expr, ExprKind, QPath, UnOp};
-use rustc_lint::LateContext;
-use rustc_middle::ty::{self, PredicateKind};
-use rustc_span::{sym, Symbol};
+use crablangc_hir::def::{DefKind, Res};
+use crablangc_hir::intravisit::{walk_expr, Visitor};
+use crablangc_hir::{def_id::DefId, Block, Expr, ExprKind, QPath, UnOp};
+use crablangc_lint::LateContext;
+use crablangc_middle::ty::{self, PredicateKind};
+use crablangc_span::{sym, Symbol};
 use std::cmp;
 use std::ops;
 

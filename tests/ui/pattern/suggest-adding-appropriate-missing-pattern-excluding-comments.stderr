@@ -18,4 +18,4 @@ LL +         None => todo!()
 
 error: aborting due to previous error
 
-For more information about this error, try `rustc --explain E0004`.
+For more information about this error, try `crablangc --explain E0004`.

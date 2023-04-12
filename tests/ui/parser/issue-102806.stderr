@@ -47,4 +47,4 @@ LL |     let _ = V3 { z: 0.0, ... };
 
 error: aborting due to 5 previous errors
 
-For more information about this error, try `rustc --explain E0063`.
+For more information about this error, try `crablangc --explain E0063`.

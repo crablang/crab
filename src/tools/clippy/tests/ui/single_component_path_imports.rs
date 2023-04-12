@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 #![warn(clippy::single_component_path_imports)]
 #![allow(unused_imports)]
 

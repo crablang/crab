@@ -1,5 +1,5 @@
 // Regression test for #90400,
-// taken from https://github.com/rust-lang/rust/issues/90400#issuecomment-954927836
+// taken from https://github.com/crablang/crablang/issues/90400#issuecomment-954927836
 
 #![feature(type_alias_impl_trait)]
 

@@ -13,7 +13,7 @@ use crate::str;
 /// This type represents a borrowed reference to a nul-terminated
 /// array of bytes. It can be constructed safely from a <code>&[[u8]]</code>
 /// slice, or unsafely from a raw `*const c_char`. It can then be
-/// converted to a Rust <code>&[str]</code> by performing UTF-8 validation, or
+/// converted to a CrabLang <code>&[str]</code> by performing UTF-8 validation, or
 /// into an owned [`CString`].
 ///
 /// `&CStr` is to [`CString`] as <code>&[str]</code> is to [`String`]: the former
@@ -44,7 +44,7 @@ use crate::str;
 /// }
 /// ```
 ///
-/// Passing a Rust-originating C string:
+/// Passing a CrabLang-originating C string:
 ///
 /// ```ignore (extern-declaration)
 /// use std::ffi::{CString, CStr};
@@ -60,7 +60,7 @@ use crate::str;
 /// work(&s);
 /// ```
 ///
-/// Converting a foreign C string into a Rust `String`:
+/// Converting a foreign C string into a CrabLang `String`:
 ///
 /// ```ignore (extern-declaration)
 /// use std::ffi::CStr;
@@ -79,9 +79,9 @@ use crate::str;
 ///
 /// [str]: prim@str "str"
 #[derive(Hash)]
-#[cfg_attr(not(test), rustc_diagnostic_item = "CStr")]
+#[cfg_attr(not(test), crablangc_diagnostic_item = "CStr")]
 #[stable(feature = "core_c_str", since = "1.64.0")]
-#[rustc_has_incoherent_inherent_impls]
+#[crablangc_has_incoherent_inherent_impls]
 // FIXME:
 // `fn from` in `impl From<&CStr> for Box<CStr>` current implementation relies
 // on `CStr` being layout-compatible with `[u8]`.
@@ -255,8 +255,8 @@ impl CStr {
     /// [valid]: core::ptr#safety
     #[inline]
     #[must_use]
-    #[stable(feature = "rust1", since = "1.0.0")]
-    #[rustc_const_unstable(feature = "const_cstr_methods", issue = "101719")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    #[crablangc_const_unstable(feature = "const_cstr_methods", issue = "101719")]
     pub const unsafe fn from_ptr<'a>(ptr: *const c_char) -> &'a CStr {
         // SAFETY: The caller has provided a pointer that points to a valid C
         // string with a NUL terminator of size less than `isize::MAX`, whose
@@ -324,9 +324,9 @@ impl CStr {
     /// assert_eq!(c_str.to_str().unwrap(), "AAAAAAAA");
     /// ```
     ///
-    #[rustc_allow_const_fn_unstable(const_slice_index)]
+    #[crablangc_allow_const_fn_unstable(const_slice_index)]
     #[stable(feature = "cstr_from_bytes_until_nul", since = "1.69.0")]
-    #[rustc_const_stable(feature = "cstr_from_bytes_until_nul", since = "1.69.0")]
+    #[crablangc_const_stable(feature = "cstr_from_bytes_until_nul", since = "1.69.0")]
     pub const fn from_bytes_until_nul(bytes: &[u8]) -> Result<&CStr, FromBytesUntilNulError> {
         let nul_pos = memchr::memchr(0, bytes);
         match nul_pos {
@@ -376,7 +376,7 @@ impl CStr {
     /// assert!(cstr.is_err());
     /// ```
     #[stable(feature = "cstr_from_bytes", since = "1.10.0")]
-    #[rustc_const_unstable(feature = "const_cstr_methods", issue = "101719")]
+    #[crablangc_const_unstable(feature = "const_cstr_methods", issue = "101719")]
     pub const fn from_bytes_with_nul(bytes: &[u8]) -> Result<&Self, FromBytesWithNulError> {
         let nul_pos = memchr::memchr(0, bytes);
         match nul_pos {
@@ -413,8 +413,8 @@ impl CStr {
     #[inline]
     #[must_use]
     #[stable(feature = "cstr_from_bytes", since = "1.10.0")]
-    #[rustc_const_stable(feature = "const_cstr_unchecked", since = "1.59.0")]
-    #[rustc_allow_const_fn_unstable(const_eval_select)]
+    #[crablangc_const_stable(feature = "const_cstr_unchecked", since = "1.59.0")]
+    #[crablangc_allow_const_fn_unstable(const_eval_select)]
     pub const unsafe fn from_bytes_with_nul_unchecked(bytes: &[u8]) -> &CStr {
         #[inline]
         fn rt_impl(bytes: &[u8]) -> &CStr {
@@ -505,8 +505,8 @@ impl CStr {
     /// the lifetime of `ptr` and the `unsafe` block.
     #[inline]
     #[must_use]
-    #[stable(feature = "rust1", since = "1.0.0")]
-    #[rustc_const_stable(feature = "const_str_as_ptr", since = "1.32.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    #[crablangc_const_stable(feature = "const_str_as_ptr", since = "1.32.0")]
     pub const fn as_ptr(&self) -> *const c_char {
         self.inner.as_ptr()
     }
@@ -559,8 +559,8 @@ impl CStr {
     #[inline]
     #[must_use = "this returns the result of the operation, \
                   without modifying the original"]
-    #[stable(feature = "rust1", since = "1.0.0")]
-    #[rustc_const_unstable(feature = "const_cstr_methods", issue = "101719")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    #[crablangc_const_unstable(feature = "const_cstr_methods", issue = "101719")]
     pub const fn to_bytes(&self) -> &[u8] {
         let bytes = self.to_bytes_with_nul();
         // SAFETY: to_bytes_with_nul returns slice with length at least 1
@@ -587,8 +587,8 @@ impl CStr {
     #[inline]
     #[must_use = "this returns the result of the operation, \
                   without modifying the original"]
-    #[stable(feature = "rust1", since = "1.0.0")]
-    #[rustc_const_unstable(feature = "const_cstr_methods", issue = "101719")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    #[crablangc_const_unstable(feature = "const_cstr_methods", issue = "101719")]
     pub const fn to_bytes_with_nul(&self) -> &[u8] {
         // SAFETY: Transmuting a slice of `c_char`s to a slice of `u8`s
         // is safe on all supported targets.
@@ -612,7 +612,7 @@ impl CStr {
     /// assert_eq!(cstr.to_str(), Ok("foo"));
     /// ```
     #[stable(feature = "cstr_to_str", since = "1.4.0")]
-    #[rustc_const_unstable(feature = "const_cstr_methods", issue = "101719")]
+    #[crablangc_const_unstable(feature = "const_cstr_methods", issue = "101719")]
     pub const fn to_str(&self) -> Result<&str, str::Utf8Error> {
         // N.B., when `CStr` is changed to perform the length check in `.to_bytes()`
         // instead of in `from_ptr()`, it may be worth considering if this should
@@ -622,23 +622,23 @@ impl CStr {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl PartialEq for CStr {
     #[inline]
     fn eq(&self, other: &CStr) -> bool {
         self.to_bytes().eq(other.to_bytes())
     }
 }
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl Eq for CStr {}
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl PartialOrd for CStr {
     #[inline]
     fn partial_cmp(&self, other: &CStr) -> Option<Ordering> {
         self.to_bytes().partial_cmp(&other.to_bytes())
     }
 }
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl Ord for CStr {
     #[inline]
     fn cmp(&self, other: &CStr) -> Ordering {

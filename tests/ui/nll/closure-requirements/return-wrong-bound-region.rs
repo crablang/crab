@@ -4,9 +4,9 @@
 
 // compile-flags:-Zverbose
 
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 
-#[rustc_regions]
+#[crablangc_regions]
 fn test() {
     expect_sig(|a, b| b); // ought to return `a`
     //~^ ERROR

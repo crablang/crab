@@ -6,4 +6,4 @@ LL | fn main() { let c; c = Clam::A(c); match c { Clam::A::<isize>(_) => { } } }
 
 error: aborting due to previous error
 
-For more information about this error, try `rustc --explain E0308`.
+For more information about this error, try `crablangc --explain E0308`.

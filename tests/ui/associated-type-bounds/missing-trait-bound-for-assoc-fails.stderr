@@ -13,4 +13,4 @@ LL |     M::Item: Temp,
 error: aborting due to 2 previous errors
 
 Some errors have detailed explanations: E0220, E0405.
-For more information about an error, try `rustc --explain E0220`.
+For more information about an error, try `crablangc --explain E0220`.

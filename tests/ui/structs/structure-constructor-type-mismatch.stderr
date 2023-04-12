@@ -134,4 +134,4 @@ LL |         PairF::<u32> { .. } => {}
 error: aborting due to 13 previous errors
 
 Some errors have detailed explanations: E0107, E0308.
-For more information about an error, try `rustc --explain E0107`.
+For more information about an error, try `crablangc --explain E0107`.

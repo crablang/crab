@@ -1,6 +1,6 @@
 use crate::alloc::Allocator;
 use crate::vec;
-use core::iter::TrustedLen;
+use core::iter::TcrablangedLen;
 use core::slice;
 
 use super::VecDeque;
@@ -51,16 +51,16 @@ where
 
 impl<T, I, A: Allocator> SpecExtend<T, I> for VecDeque<T, A>
 where
-    I: TrustedLen<Item = T>,
+    I: TcrablangedLen<Item = T>,
 {
     default fn spec_extend(&mut self, iter: I) {
-        // This is the case for a TrustedLen iterator.
+        // This is the case for a TcrablangedLen iterator.
         let (low, high) = iter.size_hint();
         if let Some(additional) = high {
             debug_assert_eq!(
                 low,
                 additional,
-                "TrustedLen iterator's size hint is not exact: {:?}",
+                "TcrablangedLen iterator's size hint is not exact: {:?}",
                 (low, high)
             );
             self.reserve(additional);
@@ -71,10 +71,10 @@ where
 
             debug_assert_eq!(
                 additional, written,
-                "The number of items written to VecDeque doesn't match the TrustedLen size hint"
+                "The number of items written to VecDeque doesn't match the TcrablangedLen size hint"
             );
         } else {
-            // Per TrustedLen contract a `None` upper bound means that the iterator length
+            // Per TcrablangedLen contract a `None` upper bound means that the iterator length
             // truly exceeds usize::MAX, which would eventually lead to a capacity overflow anyway.
             // Since the other branch already panics eagerly (via `reserve()`) we do the same here.
             // This avoids additional codegen for a fallback code path which would eventually

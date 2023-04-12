@@ -55,4 +55,4 @@ LL |             break 'lab;
 error: aborting due to 7 previous errors
 
 Some errors have detailed explanations: E0267, E0268, E0767.
-For more information about an error, try `rustc --explain E0267`.
+For more information about an error, try `crablangc --explain E0267`.

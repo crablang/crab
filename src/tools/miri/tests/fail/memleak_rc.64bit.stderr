@@ -1,4 +1,4 @@
-The following memory was leaked: ALLOC (Rust heap, size: 32, align: 8) {
+The following memory was leaked: ALLOC (CrabLang heap, size: 32, align: 8) {
 $stripped$
 $stripped$
 }

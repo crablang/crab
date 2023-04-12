@@ -1,4 +1,4 @@
-// rust-lang/rust#60431: This is a scenario where to determine the size of
+// crablang/crablang#60431: This is a scenario where to determine the size of
 // `&Ref<Obstack>`, we need to know the concrete type of the last field in
 // `Ref<Obstack>` (i.e. its "struct tail"), and determining that concrete type
 // requires normalizing `Obstack::Dyn`.

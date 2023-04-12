@@ -43,7 +43,7 @@ pub trait AsyncIterator {
     /// `poll_next` method again may panic, block forever, or cause other kinds of
     /// problems; the `AsyncIterator` trait places no requirements on the effects of
     /// such a call. However, as the `poll_next` method is not marked `unsafe`,
-    /// Rust's usual rules apply: calls must never cause undefined behavior
+    /// CrabLang's usual rules apply: calls must never cause undefined behavior
     /// (memory corruption, incorrect use of `unsafe` functions, or the like),
     /// regardless of the async iterator's state.
     fn poll_next(self: Pin<&mut Self>, cx: &mut Context<'_>) -> Poll<Option<Self::Item>>;
@@ -65,7 +65,7 @@ pub trait AsyncIterator {
     ///
     /// `size_hint()` is primarily intended to be used for optimizations such as
     /// reserving space for the elements of the async iterator, but must not be
-    /// trusted to e.g., omit bounds checks in unsafe code. An incorrect
+    /// tcrablanged to e.g., omit bounds checks in unsafe code. An incorrect
     /// implementation of `size_hint()` should not lead to memory safety
     /// violations.
     ///

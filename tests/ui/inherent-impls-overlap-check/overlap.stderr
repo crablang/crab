@@ -44,4 +44,4 @@ LL | impl Bar<B> { fn bar2() {} }
 
 error: aborting due to 5 previous errors
 
-For more information about this error, try `rustc --explain E0592`.
+For more information about this error, try `crablangc --explain E0592`.

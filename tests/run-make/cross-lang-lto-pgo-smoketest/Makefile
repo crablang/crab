@@ -17,19 +17,19 @@ ifdef IS_MSVC
 COMMON_FLAGS+= -Cpanic=abort
 endif
 
-all: cpp-executable rust-executable
+all: cpp-executable crablang-executable
 
 cpp-executable:
-	$(RUSTC) -Clinker-plugin-lto=on \
+	$(CRABLANGC) -Clinker-plugin-lto=on \
 	         -Cprofile-generate="$(TMPDIR)"/cpp-profdata \
-	         -o "$(TMPDIR)"/librustlib-xlto.a \
+	         -o "$(TMPDIR)"/libcrablanglib-xlto.a \
 	         $(COMMON_FLAGS) \
-	         ./rustlib.rs
+	         ./crablanglib.rs
 	$(CLANG) -flto=thin \
 	         -fprofile-generate="$(TMPDIR)"/cpp-profdata \
 	         -fuse-ld=lld \
 	         -L "$(TMPDIR)" \
-	         -lrustlib-xlto \
+	         -lcrablanglib-xlto \
 	         -o "$(TMPDIR)"/cmain \
 	         -O3 \
 	         ./cmain.c
@@ -38,25 +38,25 @@ cpp-executable:
 	"$(LLVM_BIN_DIR)"/llvm-profdata merge \
 		-o "$(TMPDIR)"/cpp-profdata/merged.profdata \
 		"$(TMPDIR)"/cpp-profdata/default_*.profraw
-	$(RUSTC) -Clinker-plugin-lto=on \
+	$(CRABLANGC) -Clinker-plugin-lto=on \
 	         -Cprofile-use="$(TMPDIR)"/cpp-profdata/merged.profdata \
-	         -o "$(TMPDIR)"/librustlib-xlto.a \
+	         -o "$(TMPDIR)"/libcrablanglib-xlto.a \
 	         $(COMMON_FLAGS) \
-	         ./rustlib.rs
+	         ./crablanglib.rs
 	$(CLANG) -flto=thin \
 	         -fprofile-use="$(TMPDIR)"/cpp-profdata/merged.profdata \
 	         -fuse-ld=lld \
 	         -L "$(TMPDIR)" \
-	         -lrustlib-xlto \
+	         -lcrablanglib-xlto \
 	         -o "$(TMPDIR)"/cmain \
 	         -O3 \
 	         ./cmain.c
 
-rust-executable:
+crablang-executable:
 	exit
 	$(CLANG) ./clib.c -fprofile-generate="$(TMPDIR)"/rs-profdata -flto=thin -c -o $(TMPDIR)/clib.o -O3
 	(cd $(TMPDIR); $(AR) crus ./libxyz.a ./clib.o)
-	$(RUSTC) -Clinker-plugin-lto=on \
+	$(CRABLANGC) -Clinker-plugin-lto=on \
 	         -Cprofile-generate="$(TMPDIR)"/rs-profdata \
 	         -L$(TMPDIR) \
 	         $(COMMON_FLAGS) \
@@ -77,7 +77,7 @@ rust-executable:
 	         -O3
 	rm "$(TMPDIR)"/libxyz.a
 	(cd $(TMPDIR); $(AR) crus ./libxyz.a ./clib.o)
-	$(RUSTC) -Clinker-plugin-lto=on \
+	$(CRABLANGC) -Clinker-plugin-lto=on \
 	         -Cprofile-use="$(TMPDIR)"/rs-profdata/merged.profdata \
 	         -L$(TMPDIR) \
 	         $(COMMON_FLAGS) \

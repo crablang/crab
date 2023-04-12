@@ -101,8 +101,8 @@ use super::map::{map_try_reserve_error, RandomState};
 /// [`HashMap`]: crate::collections::HashMap
 /// [`RefCell`]: crate::cell::RefCell
 /// [`Cell`]: crate::cell::Cell
-#[cfg_attr(not(test), rustc_diagnostic_item = "HashSet")]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[cfg_attr(not(test), crablangc_diagnostic_item = "HashSet")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub struct HashSet<T, S = RandomState> {
     base: base::HashSet<T, S>,
 }
@@ -121,7 +121,7 @@ impl<T> HashSet<T, RandomState> {
     /// ```
     #[inline]
     #[must_use]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn new() -> HashSet<T, RandomState> {
         Default::default()
     }
@@ -141,7 +141,7 @@ impl<T> HashSet<T, RandomState> {
     /// ```
     #[inline]
     #[must_use]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn with_capacity(capacity: usize) -> HashSet<T, RandomState> {
         HashSet { base: base::HashSet::with_capacity_and_hasher(capacity, Default::default()) }
     }
@@ -158,7 +158,7 @@ impl<T, S> HashSet<T, S> {
     /// assert!(set.capacity() >= 100);
     /// ```
     #[inline]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn capacity(&self) -> usize {
         self.base.capacity()
     }
@@ -185,8 +185,8 @@ impl<T, S> HashSet<T, S> {
     /// In the current implementation, iterating over set takes O(capacity) time
     /// instead of O(len) because it internally visits empty buckets too.
     #[inline]
-    #[rustc_lint_query_instability]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[crablangc_lint_query_instability]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn iter(&self) -> Iter<'_, T> {
         Iter { base: self.base.iter() }
     }
@@ -204,7 +204,7 @@ impl<T, S> HashSet<T, S> {
     /// assert_eq!(v.len(), 1);
     /// ```
     #[inline]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn len(&self) -> usize {
         self.base.len()
     }
@@ -222,7 +222,7 @@ impl<T, S> HashSet<T, S> {
     /// assert!(!v.is_empty());
     /// ```
     #[inline]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn is_empty(&self) -> bool {
         self.base.is_empty()
     }
@@ -250,7 +250,7 @@ impl<T, S> HashSet<T, S> {
     /// assert!(set.is_empty());
     /// ```
     #[inline]
-    #[rustc_lint_query_instability]
+    #[crablangc_lint_query_instability]
     #[stable(feature = "drain", since = "1.6.0")]
     pub fn drain(&mut self) -> Drain<'_, T> {
         Drain { base: self.base.drain() }
@@ -289,7 +289,7 @@ impl<T, S> HashSet<T, S> {
     /// assert_eq!(odds, vec![1, 3, 5, 7]);
     /// ```
     #[inline]
-    #[rustc_lint_query_instability]
+    #[crablangc_lint_query_instability]
     #[unstable(feature = "hash_drain_filter", issue = "59618")]
     pub fn drain_filter<F>(&mut self, pred: F) -> DrainFilter<'_, T, F>
     where
@@ -317,7 +317,7 @@ impl<T, S> HashSet<T, S> {
     ///
     /// In the current implementation, this operation takes O(capacity) time
     /// instead of O(len) because it internally visits empty buckets too.
-    #[rustc_lint_query_instability]
+    #[crablangc_lint_query_instability]
     #[stable(feature = "retain_hash_collection", since = "1.18.0")]
     pub fn retain<F>(&mut self, f: F)
     where
@@ -339,7 +339,7 @@ impl<T, S> HashSet<T, S> {
     /// assert!(v.is_empty());
     /// ```
     #[inline]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn clear(&mut self) {
         self.base.clear()
     }
@@ -369,7 +369,7 @@ impl<T, S> HashSet<T, S> {
     /// ```
     #[inline]
     #[stable(feature = "hashmap_build_hasher", since = "1.7.0")]
-    #[rustc_const_unstable(feature = "const_collections_with_hasher", issue = "102575")]
+    #[crablangc_const_unstable(feature = "const_collections_with_hasher", issue = "102575")]
     pub const fn with_hasher(hasher: S) -> HashSet<T, S> {
         HashSet { base: base::HashSet::with_hasher(hasher) }
     }
@@ -448,7 +448,7 @@ where
     /// assert!(set.capacity() >= 10);
     /// ```
     #[inline]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn reserve(&mut self, additional: usize) {
         self.base.reserve(additional)
     }
@@ -495,7 +495,7 @@ where
     /// assert!(set.capacity() >= 2);
     /// ```
     #[inline]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn shrink_to_fit(&mut self) {
         self.base.shrink_to_fit()
     }
@@ -549,8 +549,8 @@ where
     /// assert_eq!(diff, [4].iter().collect());
     /// ```
     #[inline]
-    #[rustc_lint_query_instability]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[crablangc_lint_query_instability]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn difference<'a>(&'a self, other: &'a HashSet<T, S>) -> Difference<'a, T, S> {
         Difference { iter: self.iter(), other }
     }
@@ -577,8 +577,8 @@ where
     /// assert_eq!(diff1, [1, 4].iter().collect());
     /// ```
     #[inline]
-    #[rustc_lint_query_instability]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[crablangc_lint_query_instability]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn symmetric_difference<'a>(
         &'a self,
         other: &'a HashSet<T, S>,
@@ -611,8 +611,8 @@ where
     /// assert_eq!(intersection, [2, 3].iter().collect());
     /// ```
     #[inline]
-    #[rustc_lint_query_instability]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[crablangc_lint_query_instability]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn intersection<'a>(&'a self, other: &'a HashSet<T, S>) -> Intersection<'a, T, S> {
         if self.len() <= other.len() {
             Intersection { iter: self.iter(), other }
@@ -640,8 +640,8 @@ where
     /// assert_eq!(union, [1, 2, 3, 4].iter().collect());
     /// ```
     #[inline]
-    #[rustc_lint_query_instability]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[crablangc_lint_query_instability]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn union<'a>(&'a self, other: &'a HashSet<T, S>) -> Union<'a, T, S> {
         if self.len() >= other.len() {
             Union { iter: self.iter().chain(other.difference(self)) }
@@ -666,7 +666,7 @@ where
     /// assert_eq!(set.contains(&4), false);
     /// ```
     #[inline]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn contains<Q: ?Sized>(&self, value: &Q) -> bool
     where
         T: Borrow<Q>,
@@ -806,7 +806,7 @@ where
     /// b.insert(1);
     /// assert_eq!(a.is_disjoint(&b), false);
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn is_disjoint(&self, other: &HashSet<T, S>) -> bool {
         if self.len() <= other.len() {
             self.iter().all(|v| !other.contains(v))
@@ -832,7 +832,7 @@ where
     /// set.insert(4);
     /// assert_eq!(set.is_subset(&sup), false);
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn is_subset(&self, other: &HashSet<T, S>) -> bool {
         if self.len() <= other.len() { self.iter().all(|v| other.contains(v)) } else { false }
     }
@@ -858,7 +858,7 @@ where
     /// assert_eq!(set.is_superset(&sub), true);
     /// ```
     #[inline]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn is_superset(&self, other: &HashSet<T, S>) -> bool {
         other.is_subset(self)
     }
@@ -882,7 +882,7 @@ where
     /// assert_eq!(set.len(), 1);
     /// ```
     #[inline]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn insert(&mut self, value: T) -> bool {
         self.base.insert(value)
     }
@@ -927,7 +927,7 @@ where
     /// assert_eq!(set.remove(&2), false);
     /// ```
     #[inline]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn remove<Q: ?Sized>(&mut self, value: &Q) -> bool
     where
         T: Borrow<Q>,
@@ -962,7 +962,7 @@ where
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T, S> Clone for HashSet<T, S>
 where
     T: Clone,
@@ -979,7 +979,7 @@ where
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T, S> PartialEq for HashSet<T, S>
 where
     T: Eq + Hash,
@@ -994,7 +994,7 @@ where
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T, S> Eq for HashSet<T, S>
 where
     T: Eq + Hash,
@@ -1002,7 +1002,7 @@ where
 {
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T, S> fmt::Debug for HashSet<T, S>
 where
     T: fmt::Debug,
@@ -1012,7 +1012,7 @@ where
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T, S> FromIterator<T> for HashSet<T, S>
 where
     T: Eq + Hash,
@@ -1057,7 +1057,7 @@ where
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T, S> Extend<T> for HashSet<T, S>
 where
     T: Eq + Hash,
@@ -1101,7 +1101,7 @@ where
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T, S> Default for HashSet<T, S>
 where
     S: Default,
@@ -1113,7 +1113,7 @@ where
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T, S> BitOr<&HashSet<T, S>> for &HashSet<T, S>
 where
     T: Eq + Hash + Clone,
@@ -1146,7 +1146,7 @@ where
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T, S> BitAnd<&HashSet<T, S>> for &HashSet<T, S>
 where
     T: Eq + Hash + Clone,
@@ -1179,7 +1179,7 @@ where
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T, S> BitXor<&HashSet<T, S>> for &HashSet<T, S>
 where
     T: Eq + Hash + Clone,
@@ -1212,7 +1212,7 @@ where
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T, S> Sub<&HashSet<T, S>> for &HashSet<T, S>
 where
     T: Eq + Hash + Clone,
@@ -1261,7 +1261,7 @@ where
 ///
 /// let mut iter = a.iter();
 /// ```
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub struct Iter<'a, K: 'a> {
     base: base::Iter<'a, K>,
 }
@@ -1283,7 +1283,7 @@ pub struct Iter<'a, K: 'a> {
 ///
 /// let mut iter = a.into_iter();
 /// ```
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub struct IntoIter<K> {
     base: base::IntoIter<K>,
 }
@@ -1304,7 +1304,7 @@ pub struct IntoIter<K> {
 ///
 /// let mut drain = a.drain();
 /// ```
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub struct Drain<'a, K: 'a> {
     base: base::Drain<'a, K>,
 }
@@ -1353,7 +1353,7 @@ where
 /// ```
 #[must_use = "this returns the intersection as an iterator, \
               without modifying either input set"]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub struct Intersection<'a, T: 'a, S: 'a> {
     // iterator of the first set
     iter: Iter<'a, T>,
@@ -1380,7 +1380,7 @@ pub struct Intersection<'a, T: 'a, S: 'a> {
 /// ```
 #[must_use = "this returns the difference as an iterator, \
               without modifying either input set"]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub struct Difference<'a, T: 'a, S: 'a> {
     // iterator of the first set
     iter: Iter<'a, T>,
@@ -1407,7 +1407,7 @@ pub struct Difference<'a, T: 'a, S: 'a> {
 /// ```
 #[must_use = "this returns the difference as an iterator, \
               without modifying either input set"]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub struct SymmetricDifference<'a, T: 'a, S: 'a> {
     iter: Chain<Difference<'a, T, S>, Difference<'a, T, S>>,
 }
@@ -1431,24 +1431,24 @@ pub struct SymmetricDifference<'a, T: 'a, S: 'a> {
 /// ```
 #[must_use = "this returns the union as an iterator, \
               without modifying either input set"]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub struct Union<'a, T: 'a, S: 'a> {
     iter: Chain<Iter<'a, T>, Difference<'a, T, S>>,
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<'a, T, S> IntoIterator for &'a HashSet<T, S> {
     type Item = &'a T;
     type IntoIter = Iter<'a, T>;
 
     #[inline]
-    #[rustc_lint_query_instability]
+    #[crablangc_lint_query_instability]
     fn into_iter(self) -> Iter<'a, T> {
         self.iter()
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T, S> IntoIterator for HashSet<T, S> {
     type Item = T;
     type IntoIter = IntoIter<T>;
@@ -1474,20 +1474,20 @@ impl<T, S> IntoIterator for HashSet<T, S> {
     /// }
     /// ```
     #[inline]
-    #[rustc_lint_query_instability]
+    #[crablangc_lint_query_instability]
     fn into_iter(self) -> IntoIter<T> {
         IntoIter { base: self.base.into_iter() }
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<K> Clone for Iter<'_, K> {
     #[inline]
     fn clone(&self) -> Self {
         Iter { base: self.base.clone() }
     }
 }
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<'a, K> Iterator for Iter<'a, K> {
     type Item = &'a K;
 
@@ -1500,7 +1500,7 @@ impl<'a, K> Iterator for Iter<'a, K> {
         self.base.size_hint()
     }
 }
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<K> ExactSizeIterator for Iter<'_, K> {
     #[inline]
     fn len(&self) -> usize {
@@ -1517,7 +1517,7 @@ impl<K: fmt::Debug> fmt::Debug for Iter<'_, K> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<K> Iterator for IntoIter<K> {
     type Item = K;
 
@@ -1530,7 +1530,7 @@ impl<K> Iterator for IntoIter<K> {
         self.base.size_hint()
     }
 }
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<K> ExactSizeIterator for IntoIter<K> {
     #[inline]
     fn len(&self) -> usize {
@@ -1547,7 +1547,7 @@ impl<K: fmt::Debug> fmt::Debug for IntoIter<K> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<'a, K> Iterator for Drain<'a, K> {
     type Item = K;
 
@@ -1560,7 +1560,7 @@ impl<'a, K> Iterator for Drain<'a, K> {
         self.base.size_hint()
     }
 }
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<K> ExactSizeIterator for Drain<'_, K> {
     #[inline]
     fn len(&self) -> usize {
@@ -1607,7 +1607,7 @@ where
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T, S> Clone for Intersection<'_, T, S> {
     #[inline]
     fn clone(&self) -> Self {
@@ -1615,7 +1615,7 @@ impl<T, S> Clone for Intersection<'_, T, S> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<'a, T, S> Iterator for Intersection<'a, T, S>
 where
     T: Eq + Hash,
@@ -1659,7 +1659,7 @@ where
 {
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T, S> Clone for Difference<'_, T, S> {
     #[inline]
     fn clone(&self) -> Self {
@@ -1667,7 +1667,7 @@ impl<T, S> Clone for Difference<'_, T, S> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<'a, T, S> Iterator for Difference<'a, T, S>
 where
     T: Eq + Hash,
@@ -1711,7 +1711,7 @@ where
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T, S> Clone for SymmetricDifference<'_, T, S> {
     #[inline]
     fn clone(&self) -> Self {
@@ -1719,7 +1719,7 @@ impl<T, S> Clone for SymmetricDifference<'_, T, S> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<'a, T, S> Iterator for SymmetricDifference<'a, T, S>
 where
     T: Eq + Hash,
@@ -1756,7 +1756,7 @@ where
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T, S> Clone for Union<'_, T, S> {
     #[inline]
     fn clone(&self) -> Self {
@@ -1783,7 +1783,7 @@ where
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<'a, T, S> Iterator for Union<'a, T, S>
 where
     T: Eq + Hash,

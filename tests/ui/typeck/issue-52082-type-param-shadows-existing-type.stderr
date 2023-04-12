@@ -72,4 +72,4 @@ LL |         a.x == b.x && a.y == b.y
 
 error: aborting due to 8 previous errors
 
-For more information about this error, try `rustc --explain E0609`.
+For more information about this error, try `crablangc --explain E0609`.

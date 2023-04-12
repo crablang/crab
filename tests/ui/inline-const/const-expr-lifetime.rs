@@ -5,7 +5,7 @@
 
 use std::marker::PhantomData;
 
-// rust-lang/rust#78174: ICE: "cannot convert ReErased to a region vid"
+// crablang/crablang#78174: ICE: "cannot convert ReErased to a region vid"
 fn issue_78174() {
     let foo = const { "foo" };
     assert_eq!(foo, "foo");

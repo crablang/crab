@@ -1,4 +1,4 @@
-use rustdoc_json_types::{Item, ItemEnum, ItemKind, ItemSummary};
+use crablangdoc_json_types::{Item, ItemEnum, ItemKind, ItemSummary};
 
 /// A univeral way to represent an [`ItemEnum`] or [`ItemKind`]
 #[derive(Debug, Clone, Copy)]

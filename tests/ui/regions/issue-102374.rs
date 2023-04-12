@@ -1,7 +1,7 @@
 // normalize-stderr-test: "long-type-\d+" -> "long-type-hash"
 use std::cell::Cell;
 
-#[rustfmt::skip]
+#[crablangfmt::skip]
 fn f(
     f: for<'a, 'b, 'c, 'd, 'e, 'f, 'g,
            'h, 'i, 'j, 'k, 'l, 'm, 'n,

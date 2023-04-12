@@ -116,4 +116,4 @@ LL | fn borrow_mut_from_imm(foo: &mut Foo) {
 error: aborting due to 11 previous errors
 
 Some errors have detailed explanations: E0499, E0502, E0596.
-For more information about an error, try `rustc --explain E0499`.
+For more information about an error, try `crablangc --explain E0499`.

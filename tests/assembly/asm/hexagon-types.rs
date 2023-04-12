@@ -2,20 +2,20 @@
 // compile-flags: --target hexagon-unknown-linux-musl
 // needs-llvm-components: hexagon
 
-#![feature(no_core, lang_items, rustc_attrs, repr_simd, asm_experimental_arch)]
+#![feature(no_core, lang_items, crablangc_attrs, repr_simd, asm_experimental_arch)]
 #![crate_type = "rlib"]
 #![no_core]
 #![allow(asm_sub_register, non_camel_case_types)]
 
-#[rustc_builtin_macro]
+#[crablangc_builtin_macro]
 macro_rules! asm {
     () => {};
 }
-#[rustc_builtin_macro]
+#[crablangc_builtin_macro]
 macro_rules! concat {
     () => {};
 }
-#[rustc_builtin_macro]
+#[crablangc_builtin_macro]
 macro_rules! stringify {
     () => {};
 }
@@ -42,7 +42,7 @@ macro_rules! check {
         #[no_mangle]
         pub unsafe fn $func(x: $ty) -> $ty {
             // Hack to avoid function merging
-            extern "Rust" {
+            extern "CrabLang" {
                 fn dont_merge(s: &str);
             }
             dont_merge(stringify!($func));
@@ -59,7 +59,7 @@ macro_rules! check_reg {
         #[no_mangle]
         pub unsafe fn $func(x: $ty) -> $ty {
             // Hack to avoid function merging
-            extern "Rust" {
+            extern "CrabLang" {
                 fn dont_merge(s: &str);
             }
             dont_merge(stringify!($func));
@@ -78,7 +78,7 @@ macro_rules! check_reg {
 #[no_mangle]
 pub unsafe fn sym_static() {
     // Hack to avoid function merging
-    extern "Rust" {
+    extern "CrabLang" {
         fn dont_merge(s: &str);
     }
     dont_merge(stringify!($func));
@@ -93,7 +93,7 @@ pub unsafe fn sym_static() {
 #[no_mangle]
 pub unsafe fn sym_fn() {
     // Hack to avoid function merging
-    extern "Rust" {
+    extern "CrabLang" {
         fn dont_merge(s: &str);
     }
     dont_merge(stringify!($func));

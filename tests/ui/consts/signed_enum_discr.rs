@@ -1,6 +1,6 @@
 // run-pass
 
-// https://github.com/rust-lang/rust/issues/49181
+// https://github.com/crablang/crablang/issues/49181
 
 #[derive(Eq, PartialEq)]
 #[repr(i8)]

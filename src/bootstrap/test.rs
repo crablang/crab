@@ -148,9 +148,9 @@ impl Step for Linkcheck {
         let targets = &builder.targets;
 
         // if we have different hosts and targets, some things may be built for
-        // the host (e.g. rustc) and others for the target (e.g. std). The
+        // the host (e.g. crablangc) and others for the target (e.g. std). The
         // documentation built for each will contain broken links to
-        // docs built for the other platform (e.g. rustc linking to cargo)
+        // docs built for the other platform (e.g. crablangc linking to cargo)
         if (hosts != targets) && !hosts.is_empty() && !targets.is_empty() {
             panic!(
                 "Linkcheck currently does not support builds with different hosts and targets.
@@ -234,7 +234,7 @@ impl Step for HtmlCheck {
         }
         // Ensure that a few different kinds of documentation are available.
         builder.default_doc(&[]);
-        builder.ensure(crate::doc::Rustc { target: self.target, stage: builder.top_stage });
+        builder.ensure(crate::doc::CrabLangc { target: self.target, stage: builder.top_stage });
 
         try_run(builder, builder.tool_cmd(Tool::HtmlChecker).arg(builder.doc_out(self.target)));
     }
@@ -260,11 +260,11 @@ impl Step for Cargotest {
 
     /// Runs the `cargotest` tool as compiled in `stage` by the `host` compiler.
     ///
-    /// This tool in `src/tools` will check out a few Rust projects and run `cargo
+    /// This tool in `src/tools` will check out a few CrabLang projects and run `cargo
     /// test` to ensure that we don't regress the test suites there.
     fn run(self, builder: &Builder<'_>) {
         let compiler = builder.compiler(self.stage, self.host);
-        builder.ensure(compile::Rustc::new(compiler, compiler.host));
+        builder.ensure(compile::CrabLangc::new(compiler, compiler.host));
         let cargo = builder.ensure(tool::Cargo { compiler, target: compiler.host });
 
         // Note that this is a short, cryptic, and not scoped directory name. This
@@ -280,8 +280,8 @@ impl Step for Cargotest {
             cmd.arg(&cargo)
                 .arg(&out_dir)
                 .args(builder.config.cmd.test_args())
-                .env("RUSTC", builder.rustc(compiler))
-                .env("RUSTDOC", builder.rustdoc(compiler)),
+                .env("CRABLANGC", builder.crablangc(compiler))
+                .env("CRABLANGDOC", builder.crablangdoc(compiler)),
         );
     }
 }
@@ -304,7 +304,7 @@ impl Step for Cargo {
         run.builder.ensure(Cargo { stage: run.builder.top_stage, host: run.target });
     }
 
-    /// Runs `cargo test` for `cargo` packaged with Rust.
+    /// Runs `cargo test` for `cargo` packaged with CrabLang.
     fn run(self, builder: &Builder<'_>) {
         let compiler = builder.compiler(self.stage, self.host);
 
@@ -312,7 +312,7 @@ impl Step for Cargo {
         let mut cargo = tool::prepare_tool_cargo(
             builder,
             compiler,
-            Mode::ToolRustc,
+            Mode::ToolCrabLangc,
             self.host,
             "test",
             "src/tools/cargo",
@@ -339,36 +339,36 @@ impl Step for Cargo {
 }
 
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
-pub struct RustAnalyzer {
+pub struct CrabLangAnalyzer {
     stage: u32,
     host: TargetSelection,
 }
 
-impl Step for RustAnalyzer {
+impl Step for CrabLangAnalyzer {
     type Output = ();
     const ONLY_HOSTS: bool = true;
     const DEFAULT: bool = true;
 
     fn should_run(run: ShouldRun<'_>) -> ShouldRun<'_> {
-        run.path("src/tools/rust-analyzer")
+        run.path("src/tools/crablang-analyzer")
     }
 
     fn make_run(run: RunConfig<'_>) {
         run.builder.ensure(Self { stage: run.builder.top_stage, host: run.target });
     }
 
-    /// Runs `cargo test` for rust-analyzer
+    /// Runs `cargo test` for crablang-analyzer
     fn run(self, builder: &Builder<'_>) {
         let stage = self.stage;
         let host = self.host;
         let compiler = builder.compiler(stage, host);
 
-        builder.ensure(tool::RustAnalyzer { compiler, target: self.host }).expect("in-tree tool");
+        builder.ensure(tool::CrabLangAnalyzer { compiler, target: self.host }).expect("in-tree tool");
 
-        let workspace_path = "src/tools/rust-analyzer";
+        let workspace_path = "src/tools/crablang-analyzer";
         // until the whole RA test suite runs on `i686`, we only run
         // `proc-macro-srv` tests
-        let crate_path = "src/tools/rust-analyzer/crates/proc-macro-srv";
+        let crate_path = "src/tools/crablang-analyzer/crates/proc-macro-srv";
         let mut cargo = tool::prepare_tool_cargo(
             builder,
             compiler,
@@ -379,18 +379,18 @@ impl Step for RustAnalyzer {
             SourceType::InTree,
             &["sysroot-abi".to_owned()],
         );
-        cargo.allow_features(tool::RustAnalyzer::ALLOW_FEATURES);
+        cargo.allow_features(tool::CrabLangAnalyzer::ALLOW_FEATURES);
 
         let dir = builder.src.join(workspace_path);
-        // needed by rust-analyzer to find its own text fixtures, cf.
-        // https://github.com/rust-analyzer/expect-test/issues/33
+        // needed by crablang-analyzer to find its own text fixtures, cf.
+        // https://github.com/crablang-analyzer/expect-test/issues/33
         cargo.env("CARGO_WORKSPACE_DIR", &dir);
 
         // RA's test suite tries to write to the source directory, that can't
-        // work in Rust CI
+        // work in CrabLang CI
         cargo.env("SKIP_SLOW_TESTS", "1");
 
-        cargo.add_rustc_lib_path(builder, compiler);
+        cargo.add_crablangc_lib_path(builder, compiler);
         cargo.arg("--").args(builder.config.cmd.test_args());
 
         add_flags_and_try_run_tests(builder, &mut cargo.into());
@@ -398,40 +398,40 @@ impl Step for RustAnalyzer {
 }
 
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
-pub struct Rustfmt {
+pub struct CrabLangfmt {
     stage: u32,
     host: TargetSelection,
 }
 
-impl Step for Rustfmt {
+impl Step for CrabLangfmt {
     type Output = ();
     const ONLY_HOSTS: bool = true;
 
     fn should_run(run: ShouldRun<'_>) -> ShouldRun<'_> {
-        run.path("src/tools/rustfmt")
+        run.path("src/tools/crablangfmt")
     }
 
     fn make_run(run: RunConfig<'_>) {
-        run.builder.ensure(Rustfmt { stage: run.builder.top_stage, host: run.target });
+        run.builder.ensure(CrabLangfmt { stage: run.builder.top_stage, host: run.target });
     }
 
-    /// Runs `cargo test` for rustfmt.
+    /// Runs `cargo test` for crablangfmt.
     fn run(self, builder: &Builder<'_>) {
         let stage = self.stage;
         let host = self.host;
         let compiler = builder.compiler(stage, host);
 
         builder
-            .ensure(tool::Rustfmt { compiler, target: self.host, extra_features: Vec::new() })
+            .ensure(tool::CrabLangfmt { compiler, target: self.host, extra_features: Vec::new() })
             .expect("in-tree tool");
 
         let mut cargo = tool::prepare_tool_cargo(
             builder,
             compiler,
-            Mode::ToolRustc,
+            Mode::ToolCrabLangc,
             host,
             "test",
-            "src/tools/rustfmt",
+            "src/tools/crablangfmt",
             SourceType::InTree,
             &[],
         );
@@ -442,48 +442,48 @@ impl Step for Rustfmt {
 
         let dir = testdir(builder, compiler.host);
         t!(fs::create_dir_all(&dir));
-        cargo.env("RUSTFMT_TEST_DIR", dir);
+        cargo.env("CRABLANGFMT_TEST_DIR", dir);
 
-        cargo.add_rustc_lib_path(builder, compiler);
+        cargo.add_crablangc_lib_path(builder, compiler);
 
         add_flags_and_try_run_tests(builder, &mut cargo.into());
     }
 }
 
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
-pub struct RustDemangler {
+pub struct CrabLangDemangler {
     stage: u32,
     host: TargetSelection,
 }
 
-impl Step for RustDemangler {
+impl Step for CrabLangDemangler {
     type Output = ();
     const ONLY_HOSTS: bool = true;
 
     fn should_run(run: ShouldRun<'_>) -> ShouldRun<'_> {
-        run.path("src/tools/rust-demangler")
+        run.path("src/tools/crablang-demangler")
     }
 
     fn make_run(run: RunConfig<'_>) {
-        run.builder.ensure(RustDemangler { stage: run.builder.top_stage, host: run.target });
+        run.builder.ensure(CrabLangDemangler { stage: run.builder.top_stage, host: run.target });
     }
 
-    /// Runs `cargo test` for rust-demangler.
+    /// Runs `cargo test` for crablang-demangler.
     fn run(self, builder: &Builder<'_>) {
         let stage = self.stage;
         let host = self.host;
         let compiler = builder.compiler(stage, host);
 
-        let rust_demangler = builder
-            .ensure(tool::RustDemangler { compiler, target: self.host, extra_features: Vec::new() })
+        let crablang_demangler = builder
+            .ensure(tool::CrabLangDemangler { compiler, target: self.host, extra_features: Vec::new() })
             .expect("in-tree tool");
         let mut cargo = tool::prepare_tool_cargo(
             builder,
             compiler,
-            Mode::ToolRustc,
+            Mode::ToolCrabLangc,
             host,
             "test",
-            "src/tools/rust-demangler",
+            "src/tools/crablang-demangler",
             SourceType::InTree,
             &[],
         );
@@ -491,11 +491,11 @@ impl Step for RustDemangler {
         let dir = testdir(builder, compiler.host);
         t!(fs::create_dir_all(&dir));
 
-        cargo.env("RUST_DEMANGLER_DRIVER_PATH", rust_demangler);
+        cargo.env("CRABLANG_DEMANGLER_DRIVER_PATH", crablang_demangler);
 
         cargo.arg("--").args(builder.config.cmd.test_args());
 
-        cargo.add_rustc_lib_path(builder, compiler);
+        cargo.add_crablangc_lib_path(builder, compiler);
 
         add_flags_and_try_run_tests(builder, &mut cargo.into());
     }
@@ -520,16 +520,16 @@ impl Miri {
         let mut cargo = tool::prepare_tool_cargo(
             builder,
             compiler,
-            Mode::ToolRustc,
+            Mode::ToolCrabLangc,
             compiler.host,
             "run",
             "src/tools/miri/cargo-miri",
             SourceType::InTree,
             &[],
         );
-        cargo.add_rustc_lib_path(builder, compiler);
+        cargo.add_crablangc_lib_path(builder, compiler);
         cargo.arg("--").arg("miri").arg("setup");
-        cargo.arg("--target").arg(target.rustc_target_arg());
+        cargo.arg("--target").arg(target.crablangc_target_arg());
 
         // Tell `cargo miri setup` where to find the sources.
         cargo.env("MIRI_LIB_SRC", builder.src.join("library"));
@@ -538,7 +538,7 @@ impl Miri {
         // Tell it where to put the sysroot.
         cargo.env("MIRI_SYSROOT", &miri_sysroot);
         // Debug things.
-        cargo.env("RUST_BACKTRACE", "1");
+        cargo.env("CRABLANG_BACKTRACE", "1");
 
         let mut cargo = Command::from(cargo);
         builder.run(&mut cargo);
@@ -611,14 +611,14 @@ impl Step for Miri {
         let mut cargo = tool::prepare_tool_cargo(
             builder,
             compiler,
-            Mode::ToolRustc,
+            Mode::ToolCrabLangc,
             host,
             "test",
             "src/tools/miri",
             SourceType::InTree,
             &[],
         );
-        cargo.add_rustc_lib_path(builder, compiler);
+        cargo.add_crablangc_lib_path(builder, compiler);
 
         if !builder.fail_fast {
             cargo.arg("--no-fail-fast");
@@ -634,7 +634,7 @@ impl Step for Miri {
         }
 
         // Set the target.
-        cargo.env("MIRI_TEST_TARGET", target.rustc_target_arg());
+        cargo.env("MIRI_TEST_TARGET", target.crablangc_target_arg());
         // Forward test filters.
         cargo.arg("--").args(builder.config.cmd.test_args());
 
@@ -647,19 +647,19 @@ impl Step for Miri {
         let mut cargo = tool::prepare_tool_cargo(
             builder,
             compiler,
-            Mode::ToolRustc,
+            Mode::ToolCrabLangc,
             host,
             "run",
             "src/tools/miri/cargo-miri",
             SourceType::Submodule,
             &[],
         );
-        cargo.add_rustc_lib_path(builder, compiler);
+        cargo.add_crablangc_lib_path(builder, compiler);
         cargo.arg("--").arg("miri").arg("test");
         cargo
             .arg("--manifest-path")
             .arg(builder.src.join("src/tools/miri/test-cargo-miri/Cargo.toml"));
-        cargo.arg("--target").arg(target.rustc_target_arg());
+        cargo.arg("--target").arg(target.crablangc_target_arg());
         cargo.arg("--tests"); // don't run doctests, they are too confused by the staging
         cargo.arg("--").args(builder.config.cmd.test_args());
 
@@ -668,7 +668,7 @@ impl Step for Miri {
         cargo.env("MIRI_HOST_SYSROOT", sysroot);
         cargo.env("MIRI", &miri);
         // Debug things.
-        cargo.env("RUST_BACKTRACE", "1");
+        cargo.env("CRABLANG_BACKTRACE", "1");
 
         let mut cargo = Command::from(cargo);
         builder.run(&mut cargo);
@@ -746,7 +746,7 @@ impl Step for Clippy {
         let mut cargo = tool::prepare_tool_cargo(
             builder,
             compiler,
-            Mode::ToolRustc,
+            Mode::ToolCrabLangc,
             host,
             "test",
             "src/tools/clippy",
@@ -758,14 +758,14 @@ impl Step for Clippy {
             cargo.arg("--no-fail-fast");
         }
 
-        cargo.env("RUSTC_TEST_SUITE", builder.rustc(compiler));
-        cargo.env("RUSTC_LIB_PATH", builder.rustc_libdir(compiler));
-        let host_libs = builder.stage_out(compiler, Mode::ToolRustc).join(builder.cargo_dir());
+        cargo.env("CRABLANGC_TEST_SUITE", builder.crablangc(compiler));
+        cargo.env("CRABLANGC_LIB_PATH", builder.crablangc_libdir(compiler));
+        let host_libs = builder.stage_out(compiler, Mode::ToolCrabLangc).join(builder.cargo_dir());
         cargo.env("HOST_LIBS", host_libs);
 
         cargo.arg("--").args(builder.config.cmd.test_args());
 
-        cargo.add_rustc_lib_path(builder, compiler);
+        cargo.add_crablangc_lib_path(builder, compiler);
 
         if builder.try_run(&mut cargo.into()) {
             // The tests succeeded; nothing to do.
@@ -776,11 +776,11 @@ impl Step for Clippy {
             crate::detail_exit(1);
         }
 
-        let mut cargo = builder.cargo(compiler, Mode::ToolRustc, SourceType::InTree, host, "run");
+        let mut cargo = builder.cargo(compiler, Mode::ToolCrabLangc, SourceType::InTree, host, "run");
         cargo.arg("-p").arg("clippy_dev");
         // clippy_dev gets confused if it can't find `clippy/Cargo.toml`
         cargo.current_dir(&builder.src.join("src").join("tools").join("clippy"));
-        if builder.config.rust_optimize {
+        if builder.config.crablang_optimize {
             cargo.env("PROFILE", "release");
         } else {
             cargo.env("PROFILE", "debug");
@@ -792,51 +792,51 @@ impl Step for Clippy {
 }
 
 fn path_for_cargo(builder: &Builder<'_>, compiler: Compiler) -> OsString {
-    // Configure PATH to find the right rustc. NB. we have to use PATH
-    // and not RUSTC because the Cargo test suite has tests that will
-    // fail if rustc is not spelled `rustc`.
+    // Configure PATH to find the right crablangc. NB. we have to use PATH
+    // and not CRABLANGC because the Cargo test suite has tests that will
+    // fail if crablangc is not spelled `crablangc`.
     let path = builder.sysroot(compiler).join("bin");
     let old_path = env::var_os("PATH").unwrap_or_default();
     env::join_paths(iter::once(path).chain(env::split_paths(&old_path))).expect("")
 }
 
 #[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
-pub struct RustdocTheme {
+pub struct CrabLangdocTheme {
     pub compiler: Compiler,
 }
 
-impl Step for RustdocTheme {
+impl Step for CrabLangdocTheme {
     type Output = ();
     const DEFAULT: bool = true;
     const ONLY_HOSTS: bool = true;
 
     fn should_run(run: ShouldRun<'_>) -> ShouldRun<'_> {
-        run.path("src/tools/rustdoc-themes")
+        run.path("src/tools/crablangdoc-themes")
     }
 
     fn make_run(run: RunConfig<'_>) {
         let compiler = run.builder.compiler(run.builder.top_stage, run.target);
 
-        run.builder.ensure(RustdocTheme { compiler });
+        run.builder.ensure(CrabLangdocTheme { compiler });
     }
 
     fn run(self, builder: &Builder<'_>) {
-        let rustdoc = builder.bootstrap_out.join("rustdoc");
-        let mut cmd = builder.tool_cmd(Tool::RustdocTheme);
-        cmd.arg(rustdoc.to_str().unwrap())
-            .arg(builder.src.join("src/librustdoc/html/static/css/themes").to_str().unwrap())
-            .env("RUSTC_STAGE", self.compiler.stage.to_string())
-            .env("RUSTC_SYSROOT", builder.sysroot(self.compiler))
-            .env("RUSTDOC_LIBDIR", builder.sysroot_libdir(self.compiler, self.compiler.host))
+        let crablangdoc = builder.bootstrap_out.join("crablangdoc");
+        let mut cmd = builder.tool_cmd(Tool::CrabLangdocTheme);
+        cmd.arg(crablangdoc.to_str().unwrap())
+            .arg(builder.src.join("src/libcrablangdoc/html/static/css/themes").to_str().unwrap())
+            .env("CRABLANGC_STAGE", self.compiler.stage.to_string())
+            .env("CRABLANGC_SYSROOT", builder.sysroot(self.compiler))
+            .env("CRABLANGDOC_LIBDIR", builder.sysroot_libdir(self.compiler, self.compiler.host))
             .env("CFG_RELEASE_CHANNEL", &builder.config.channel)
-            .env("RUSTDOC_REAL", builder.rustdoc(self.compiler))
-            .env("RUSTC_BOOTSTRAP", "1");
+            .env("CRABLANGDOC_REAL", builder.crablangdoc(self.compiler))
+            .env("CRABLANGC_BOOTSTRAP", "1");
         if let Some(linker) = builder.linker(self.compiler.host) {
-            cmd.env("RUSTDOC_LINKER", linker);
+            cmd.env("CRABLANGDOC_LINKER", linker);
         }
         if builder.is_fuse_ld_lld(self.compiler.host) {
             cmd.env(
-                "RUSTDOC_LLD_NO_THREADS",
+                "CRABLANGDOC_LLD_NO_THREADS",
                 util::lld_flag_no_threads(self.compiler.host.contains("windows")),
             );
         }
@@ -845,28 +845,28 @@ impl Step for RustdocTheme {
 }
 
 #[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
-pub struct RustdocJSStd {
+pub struct CrabLangdocJSStd {
     pub target: TargetSelection,
 }
 
-impl Step for RustdocJSStd {
+impl Step for CrabLangdocJSStd {
     type Output = ();
     const DEFAULT: bool = true;
     const ONLY_HOSTS: bool = true;
 
     fn should_run(run: ShouldRun<'_>) -> ShouldRun<'_> {
-        run.suite_path("tests/rustdoc-js-std")
+        run.suite_path("tests/crablangdoc-js-std")
     }
 
     fn make_run(run: RunConfig<'_>) {
-        run.builder.ensure(RustdocJSStd { target: run.target });
+        run.builder.ensure(CrabLangdocJSStd { target: run.target });
     }
 
     fn run(self, builder: &Builder<'_>) {
         if let Some(ref nodejs) = builder.config.nodejs {
             let mut command = Command::new(nodejs);
             command
-                .arg(builder.src.join("src/tools/rustdoc-js/tester.js"))
+                .arg(builder.src.join("src/tools/crablangdoc-js/tester.js"))
                 .arg("--crate-name")
                 .arg("std")
                 .arg("--resource-suffix")
@@ -874,14 +874,14 @@ impl Step for RustdocJSStd {
                 .arg("--doc-folder")
                 .arg(builder.doc_out(self.target))
                 .arg("--test-folder")
-                .arg(builder.src.join("tests/rustdoc-js-std"));
+                .arg(builder.src.join("tests/crablangdoc-js-std"));
             for path in &builder.paths {
                 if let Some(p) =
-                    util::is_valid_test_suite_arg(path, "tests/rustdoc-js-std", builder)
+                    util::is_valid_test_suite_arg(path, "tests/crablangdoc-js-std", builder)
                 {
                     if !p.ends_with(".js") {
                         eprintln!("A non-js file was given: `{}`", path.display());
-                        panic!("Cannot run rustdoc-js-std tests");
+                        panic!("Cannot run crablangdoc-js-std tests");
                     }
                     command.arg("--test-file").arg(path);
                 }
@@ -893,29 +893,29 @@ impl Step for RustdocJSStd {
             });
             builder.run(&mut command);
         } else {
-            builder.info("No nodejs found, skipping \"tests/rustdoc-js-std\" tests");
+            builder.info("No nodejs found, skipping \"tests/crablangdoc-js-std\" tests");
         }
     }
 }
 
 #[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
-pub struct RustdocJSNotStd {
+pub struct CrabLangdocJSNotStd {
     pub target: TargetSelection,
     pub compiler: Compiler,
 }
 
-impl Step for RustdocJSNotStd {
+impl Step for CrabLangdocJSNotStd {
     type Output = ();
     const DEFAULT: bool = true;
     const ONLY_HOSTS: bool = true;
 
     fn should_run(run: ShouldRun<'_>) -> ShouldRun<'_> {
-        run.suite_path("tests/rustdoc-js")
+        run.suite_path("tests/crablangdoc-js")
     }
 
     fn make_run(run: RunConfig<'_>) {
         let compiler = run.builder.compiler(run.builder.top_stage, run.build_triple());
-        run.builder.ensure(RustdocJSNotStd { target: run.target, compiler });
+        run.builder.ensure(CrabLangdocJSNotStd { target: run.target, compiler });
     }
 
     fn run(self, builder: &Builder<'_>) {
@@ -924,12 +924,12 @@ impl Step for RustdocJSNotStd {
                 compiler: self.compiler,
                 target: self.target,
                 mode: "js-doc-test",
-                suite: "rustdoc-js",
-                path: "tests/rustdoc-js",
+                suite: "crablangdoc-js",
+                path: "tests/crablangdoc-js",
                 compare_mode: None,
             });
         } else {
-            builder.info("No nodejs found, skipping \"tests/rustdoc-js\" tests");
+            builder.info("No nodejs found, skipping \"tests/crablangdoc-js\" tests");
         }
     }
 }
@@ -978,19 +978,19 @@ fn compare_browser_ui_test_version(installed_version: &str, src: &Path) {
 }
 
 #[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
-pub struct RustdocGUI {
+pub struct CrabLangdocGUI {
     pub target: TargetSelection,
     pub compiler: Compiler,
 }
 
-impl Step for RustdocGUI {
+impl Step for CrabLangdocGUI {
     type Output = ();
     const DEFAULT: bool = true;
     const ONLY_HOSTS: bool = true;
 
     fn should_run(run: ShouldRun<'_>) -> ShouldRun<'_> {
         let builder = run.builder;
-        let run = run.suite_path("tests/rustdoc-gui");
+        let run = run.suite_path("tests/crablangdoc-gui");
         run.lazy_default_condition(Box::new(move || {
             builder.config.nodejs.is_some()
                 && builder
@@ -1004,7 +1004,7 @@ impl Step for RustdocGUI {
 
     fn make_run(run: RunConfig<'_>) {
         let compiler = run.builder.compiler(run.builder.top_stage, run.build_triple());
-        run.builder.ensure(RustdocGUI { target: run.target, compiler });
+        run.builder.ensure(CrabLangdocGUI { target: run.target, compiler });
     }
 
     fn run(self, builder: &Builder<'_>) {
@@ -1023,24 +1023,24 @@ impl Step for RustdocGUI {
             }
             None => {
                 eprintln!(
-                    "error: rustdoc-gui test suite cannot be run because npm `browser-ui-test` \
+                    "error: crablangdoc-gui test suite cannot be run because npm `browser-ui-test` \
                      dependency is missing",
                 );
                 eprintln!(
                     "If you want to install the `{0}` dependency, run `npm install {0}`",
                     "browser-ui-test",
                 );
-                panic!("Cannot run rustdoc-gui tests");
+                panic!("Cannot run crablangdoc-gui tests");
             }
         }
 
-        let out_dir = builder.test_out(self.target).join("rustdoc-gui");
+        let out_dir = builder.test_out(self.target).join("crablangdoc-gui");
 
         // We remove existing folder to be sure there won't be artifacts remaining.
-        builder.clear_if_dirty(&out_dir, &builder.rustdoc(self.compiler));
+        builder.clear_if_dirty(&out_dir, &builder.crablangdoc(self.compiler));
 
-        let src_path = builder.build.src.join("tests/rustdoc-gui/src");
-        // We generate docs for the libraries present in the rustdoc-gui's src folder.
+        let src_path = builder.build.src.join("tests/crablangdoc-gui/src");
+        // We generate docs for the libraries present in the crablangdoc-gui's src folder.
         for entry in src_path.read_dir().expect("read_dir call failed") {
             if let Ok(entry) = entry {
                 let path = entry.path();
@@ -1054,16 +1054,16 @@ impl Step for RustdocGUI {
                     .arg("doc")
                     .arg("--target-dir")
                     .arg(&out_dir)
-                    .env("RUSTC_BOOTSTRAP", "1")
-                    .env("RUSTDOC", builder.rustdoc(self.compiler))
-                    .env("RUSTC", builder.rustc(self.compiler))
+                    .env("CRABLANGC_BOOTSTRAP", "1")
+                    .env("CRABLANGDOC", builder.crablangdoc(self.compiler))
+                    .env("CRABLANGC", builder.crablangc(self.compiler))
                     .current_dir(path);
                 // FIXME: implement a `// compile-flags` command or similar
                 //        instead of hard-coding this test
                 if entry.file_name() == "link_to_definition" {
-                    cargo.env("RUSTDOCFLAGS", "-Zunstable-options --generate-link-to-definition");
+                    cargo.env("CRABLANGDOCFLAGS", "-Zunstable-options --generate-link-to-definition");
                 } else if entry.file_name() == "scrape_examples" {
-                    cargo.arg("-Zrustdoc-scrape-examples");
+                    cargo.arg("-Zcrablangdoc-scrape-examples");
                 }
                 builder.run(&mut cargo);
             }
@@ -1072,18 +1072,18 @@ impl Step for RustdocGUI {
         // We now run GUI tests.
         let mut command = Command::new(&nodejs);
         command
-            .arg(builder.build.src.join("src/tools/rustdoc-gui/tester.js"))
+            .arg(builder.build.src.join("src/tools/crablangdoc-gui/tester.js"))
             .arg("--jobs")
             .arg(&builder.jobs().to_string())
             .arg("--doc-folder")
             .arg(out_dir.join("doc"))
             .arg("--tests-folder")
-            .arg(builder.build.src.join("tests/rustdoc-gui"));
+            .arg(builder.build.src.join("tests/crablangdoc-gui"));
         for path in &builder.paths {
-            if let Some(p) = util::is_valid_test_suite_arg(path, "tests/rustdoc-gui", builder) {
+            if let Some(p) = util::is_valid_test_suite_arg(path, "tests/crablangdoc-gui", builder) {
                 if !p.ends_with(".goml") {
                     eprintln!("A non-goml file was given: `{}`", path.display());
-                    panic!("Cannot run rustdoc-gui tests");
+                    panic!("Cannot run crablangdoc-gui tests");
                 }
                 if let Some(name) = path.file_name().and_then(|f| f.to_str()) {
                     command.arg("--file").arg(name);
@@ -1132,15 +1132,15 @@ impl Step for Tidy {
 
         if builder.config.channel == "dev" || builder.config.channel == "nightly" {
             builder.info("fmt check");
-            if builder.initial_rustfmt().is_none() {
-                let inferred_rustfmt_dir = builder.initial_rustc.parent().unwrap();
+            if builder.initial_crablangfmt().is_none() {
+                let inferred_crablangfmt_dir = builder.initial_crablangc.parent().unwrap();
                 eprintln!(
                     "\
-error: no `rustfmt` binary found in {PATH}
-info: `rust.channel` is currently set to \"{CHAN}\"
-help: if you are testing a beta branch, set `rust.channel` to \"beta\" in the `config.toml` file
+error: no `crablangfmt` binary found in {PATH}
+info: `crablang.channel` is currently set to \"{CHAN}\"
+help: if you are testing a beta branch, set `crablang.channel` to \"beta\" in the `config.toml` file
 help: to skip test's attempt to check tidiness, pass `--exclude src/tools/tidy` to `x.py test`",
-                    PATH = inferred_rustfmt_dir.display(),
+                    PATH = inferred_crablangfmt_dir.display(),
                     CHAN = builder.config.channel,
                 );
                 crate::detail_exit(1);
@@ -1357,10 +1357,10 @@ default_test_with_compare_mode!(Debuginfo {
 
 host_test!(UiFullDeps { path: "tests/ui-fulldeps", mode: "ui", suite: "ui-fulldeps" });
 
-host_test!(Rustdoc { path: "tests/rustdoc", mode: "rustdoc", suite: "rustdoc" });
-host_test!(RustdocUi { path: "tests/rustdoc-ui", mode: "ui", suite: "rustdoc-ui" });
+host_test!(CrabLangdoc { path: "tests/crablangdoc", mode: "crablangdoc", suite: "crablangdoc" });
+host_test!(CrabLangdocUi { path: "tests/crablangdoc-ui", mode: "ui", suite: "crablangdoc-ui" });
 
-host_test!(RustdocJson { path: "tests/rustdoc-json", mode: "rustdoc-json", suite: "rustdoc-json" });
+host_test!(CrabLangdocJson { path: "tests/crablangdoc-json", mode: "crablangdoc-json", suite: "crablangdoc-json" });
 
 host_test!(Pretty { path: "tests/pretty", mode: "pretty", suite: "pretty" });
 
@@ -1426,14 +1426,14 @@ note: if you're sure you want to do this, please open an issue as to why. In the
         }
 
         if suite.ends_with("fulldeps") {
-            builder.ensure(compile::Rustc::new(compiler, target));
+            builder.ensure(compile::CrabLangc::new(compiler, target));
         }
 
         builder.ensure(compile::Std::new(compiler, target));
         // ensure that `libproc_macro` is available on the host.
         builder.ensure(compile::Std::new(compiler, compiler.host));
 
-        // Also provide `rust_test_helpers` for the host.
+        // Also provide `crablang_test_helpers` for the host.
         builder.ensure(TestHelpers { target: compiler.host });
 
         // As well as the target, except for plain wasm32, which can't build it
@@ -1448,23 +1448,23 @@ note: if you're sure you want to do this, please open an issue as to why. In the
         // compiletest currently has... a lot of arguments, so let's just pass all
         // of them!
 
-        cmd.arg("--compile-lib-path").arg(builder.rustc_libdir(compiler));
+        cmd.arg("--compile-lib-path").arg(builder.crablangc_libdir(compiler));
         cmd.arg("--run-lib-path").arg(builder.sysroot_libdir(compiler, target));
-        cmd.arg("--rustc-path").arg(builder.rustc(compiler));
+        cmd.arg("--crablangc-path").arg(builder.crablangc(compiler));
 
-        let is_rustdoc = suite.ends_with("rustdoc-ui") || suite.ends_with("rustdoc-js");
+        let is_crablangdoc = suite.ends_with("crablangdoc-ui") || suite.ends_with("crablangdoc-js");
 
-        // Avoid depending on rustdoc when we don't need it.
-        if mode == "rustdoc"
+        // Avoid depending on crablangdoc when we don't need it.
+        if mode == "crablangdoc"
             || mode == "run-make"
-            || (mode == "ui" && is_rustdoc)
+            || (mode == "ui" && is_crablangdoc)
             || mode == "js-doc-test"
-            || mode == "rustdoc-json"
+            || mode == "crablangdoc-json"
         {
-            cmd.arg("--rustdoc-path").arg(builder.rustdoc(compiler));
+            cmd.arg("--crablangdoc-path").arg(builder.crablangdoc(compiler));
         }
 
-        if mode == "rustdoc-json" {
+        if mode == "crablangdoc-json" {
             // Use the beta compiler for jsondocck
             let json_compiler = compiler.with_stage(0);
             cmd.arg("--jsondocck-path")
@@ -1474,14 +1474,14 @@ note: if you're sure you want to do this, please open an issue as to why. In the
         }
 
         if mode == "run-make" {
-            let rust_demangler = builder
-                .ensure(tool::RustDemangler {
+            let crablang_demangler = builder
+                .ensure(tool::CrabLangDemangler {
                     compiler,
                     target: compiler.host,
                     extra_features: Vec::new(),
                 })
                 .expect("in-tree tool");
-            cmd.arg("--rust-demangler-path").arg(rust_demangler);
+            cmd.arg("--crablang-demangler-path").arg(crablang_demangler);
         }
 
         cmd.arg("--src-base").arg(builder.src.join("tests").join(suite));
@@ -1490,7 +1490,7 @@ note: if you're sure you want to do this, please open an issue as to why. In the
         cmd.arg("--stage-id").arg(format!("stage{}-{}", compiler.stage, target));
         cmd.arg("--suite").arg(suite);
         cmd.arg("--mode").arg(mode);
-        cmd.arg("--target").arg(target.rustc_target_arg());
+        cmd.arg("--target").arg(target.crablangc_target_arg());
         cmd.arg("--host").arg(&*compiler.host.triple);
         cmd.arg("--llvm-filecheck").arg(builder.llvm_filecheck(builder.config.build));
 
@@ -1523,16 +1523,16 @@ note: if you're sure you want to do this, please open an issue as to why. In the
         if let Some(ref npm) = builder.config.npm {
             cmd.arg("--npm").arg(npm);
         }
-        if builder.config.rust_optimize_tests {
+        if builder.config.crablang_optimize_tests {
             cmd.arg("--optimize-tests");
         }
         if builder.config.cmd.only_modified() {
             cmd.arg("--only-modified");
         }
 
-        let mut flags = if is_rustdoc { Vec::new() } else { vec!["-Crpath".to_string()] };
-        flags.push(format!("-Cdebuginfo={}", builder.config.rust_debuginfo_level_tests));
-        flags.extend(builder.config.cmd.rustc_args().iter().map(|s| s.to_string()));
+        let mut flags = if is_crablangdoc { Vec::new() } else { vec!["-Crpath".to_string()] };
+        flags.push(format!("-Cdebuginfo={}", builder.config.crablang_debuginfo_level_tests));
+        flags.extend(builder.config.cmd.crablangc_args().iter().map(|s| s.to_string()));
 
         if let Some(linker) = builder.linker(target) {
             cmd.arg("--linker").arg(linker);
@@ -1542,14 +1542,14 @@ note: if you're sure you want to do this, please open an issue as to why. In the
         hostflags.push(format!("-Lnative={}", builder.test_helpers_out(compiler.host).display()));
         hostflags.extend(builder.lld_flags(compiler.host));
         for flag in hostflags {
-            cmd.arg("--host-rustcflags").arg(flag);
+            cmd.arg("--host-crablangcflags").arg(flag);
         }
 
         let mut targetflags = flags;
         targetflags.push(format!("-Lnative={}", builder.test_helpers_out(target).display()));
         targetflags.extend(builder.lld_flags(target));
         for flag in targetflags {
-            cmd.arg("--target-rustcflags").arg(flag);
+            cmd.arg("--target-crablangcflags").arg(flag);
         }
 
         cmd.arg("--python").arg(builder.python());
@@ -1637,7 +1637,7 @@ note: if you're sure you want to do this, please open an issue as to why. In the
                     .arg(llvm_components.trim());
                 llvm_components_passed = true;
             }
-            if !builder.is_rust_llvm(target) {
+            if !builder.is_crablang_llvm(target) {
                 cmd.arg("--system-llvm");
             }
 
@@ -1686,9 +1686,9 @@ note: if you're sure you want to do this, please open an issue as to why. In the
                 .arg("--cxx")
                 .arg(builder.cxx(target).unwrap())
                 .arg("--cflags")
-                .arg(builder.cflags(target, GitRepo::Rustc, CLang::C).join(" "))
+                .arg(builder.cflags(target, GitRepo::CrabLangc, CLang::C).join(" "))
                 .arg("--cxxflags")
-                .arg(builder.cflags(target, GitRepo::Rustc, CLang::Cxx).join(" "));
+                .arg(builder.cflags(target, GitRepo::CrabLangc, CLang::Cxx).join(" "));
             copts_passed = true;
             if let Some(ar) = builder.ar(target) {
                 cmd.arg("--ar").arg(ar);
@@ -1725,22 +1725,22 @@ note: if you're sure you want to do this, please open an issue as to why. In the
                 }
             }
         }
-        cmd.env("RUSTC_BOOTSTRAP", "1");
-        // Override the rustc version used in symbol hashes to reduce the amount of normalization
+        cmd.env("CRABLANGC_BOOTSTRAP", "1");
+        // Override the crablangc version used in symbol hashes to reduce the amount of normalization
         // needed when diffing test output.
-        cmd.env("RUSTC_FORCE_RUSTC_VERSION", "compiletest");
-        cmd.env("DOC_RUST_LANG_ORG_CHANNEL", builder.doc_rust_lang_org_channel());
-        builder.add_rust_test_threads(&mut cmd);
+        cmd.env("CRABLANGC_FORCE_CRABLANGC_VERSION", "compiletest");
+        cmd.env("DOC_CRABLANG_LANG_ORG_CHANNEL", builder.doc_crablang_lang_org_channel());
+        builder.add_crablang_test_threads(&mut cmd);
 
         if builder.config.sanitizers_enabled(target) {
-            cmd.env("RUSTC_SANITIZER_SUPPORT", "1");
+            cmd.env("CRABLANGC_SANITIZER_SUPPORT", "1");
         }
 
         if builder.config.profiler_enabled(target) {
-            cmd.env("RUSTC_PROFILER_SUPPORT", "1");
+            cmd.env("CRABLANGC_PROFILER_SUPPORT", "1");
         }
 
-        cmd.env("RUST_TEST_TMPDIR", builder.tempdir());
+        cmd.env("CRABLANG_TEST_TMPDIR", builder.tempdir());
 
         cmd.arg("--adb-path").arg("adb");
         cmd.arg("--adb-test-dir").arg(ADB_TEST_DIR);
@@ -1752,16 +1752,16 @@ note: if you're sure you want to do this, please open an issue as to why. In the
             cmd.arg("--android-cross-path").arg("");
         }
 
-        if builder.config.cmd.rustfix_coverage() {
-            cmd.arg("--rustfix-coverage");
+        if builder.config.cmd.crablangfix_coverage() {
+            cmd.arg("--crablangfix-coverage");
         }
 
         cmd.env("BOOTSTRAP_CARGO", &builder.initial_cargo);
 
         cmd.arg("--channel").arg(&builder.config.channel);
 
-        if let Some(commit) = builder.config.download_rustc_commit() {
-            cmd.env("FAKE_DOWNLOAD_RUSTC_PREFIX", format!("/rustc/{commit}"));
+        if let Some(commit) = builder.config.download_crablangc_commit() {
+            cmd.env("FAKE_DOWNLOAD_CRABLANGC_PREFIX", format!("/crablangc/{commit}"));
         }
 
         builder.ci_env.force_coloring_in_ci(&mut cmd);
@@ -1803,7 +1803,7 @@ impl Step for BookTest {
 
     /// Runs the documentation tests for a book in `src/doc`.
     ///
-    /// This uses the `rustdoc` that sits next to `compiler`.
+    /// This uses the `crablangdoc` that sits next to `compiler`.
     fn run(self, builder: &Builder<'_>) {
         // External docs are different from local because:
         // - Some books need pre-processing by mdbook before being tested.
@@ -1811,9 +1811,9 @@ impl Step for BookTest {
         // - They are only tested on the "checktools" builders.
         //
         // The local docs are tested by default, and we don't want to pay the
-        // cost of building mdbook, so they use `rustdoc --test` directly.
+        // cost of building mdbook, so they use `crablangdoc --test` directly.
         // Also, the unstable book is special because SUMMARY.md is generated,
-        // so it is easier to just run `rustdoc` on its files.
+        // so it is easier to just run `crablangdoc` on its files.
         if self.is_ext_doc {
             self.run_ext_doc(builder);
         } else {
@@ -1823,30 +1823,30 @@ impl Step for BookTest {
 }
 
 impl BookTest {
-    /// This runs the equivalent of `mdbook test` (via the rustbook wrapper)
-    /// which in turn runs `rustdoc --test` on each file in the book.
+    /// This runs the equivalent of `mdbook test` (via the crablangbook wrapper)
+    /// which in turn runs `crablangdoc --test` on each file in the book.
     fn run_ext_doc(self, builder: &Builder<'_>) {
         let compiler = self.compiler;
 
         builder.ensure(compile::Std::new(compiler, compiler.host));
 
-        // mdbook just executes a binary named "rustdoc", so we need to update
-        // PATH so that it points to our rustdoc.
-        let mut rustdoc_path = builder.rustdoc(compiler);
-        rustdoc_path.pop();
+        // mdbook just executes a binary named "crablangdoc", so we need to update
+        // PATH so that it points to our crablangdoc.
+        let mut crablangdoc_path = builder.crablangdoc(compiler);
+        crablangdoc_path.pop();
         let old_path = env::var_os("PATH").unwrap_or_default();
-        let new_path = env::join_paths(iter::once(rustdoc_path).chain(env::split_paths(&old_path)))
-            .expect("could not add rustdoc to PATH");
+        let new_path = env::join_paths(iter::once(crablangdoc_path).chain(env::split_paths(&old_path)))
+            .expect("could not add crablangdoc to PATH");
 
-        let mut rustbook_cmd = builder.tool_cmd(Tool::Rustbook);
+        let mut crablangbook_cmd = builder.tool_cmd(Tool::CrabLangbook);
         let path = builder.src.join(&self.path);
         // Books often have feature-gated example text.
-        rustbook_cmd.env("RUSTC_BOOTSTRAP", "1");
-        rustbook_cmd.env("PATH", new_path).arg("test").arg(path);
-        builder.add_rust_test_threads(&mut rustbook_cmd);
-        builder.info(&format!("Testing rustbook {}", self.path.display()));
+        crablangbook_cmd.env("CRABLANGC_BOOTSTRAP", "1");
+        crablangbook_cmd.env("PATH", new_path).arg("test").arg(path);
+        builder.add_crablang_test_threads(&mut crablangbook_cmd);
+        builder.info(&format!("Testing crablangbook {}", self.path.display()));
         let _time = util::timeit(&builder);
-        let toolstate = if try_run(builder, &mut rustbook_cmd) {
+        let toolstate = if try_run(builder, &mut crablangbook_cmd) {
             ToolState::TestPass
         } else {
             ToolState::TestFail
@@ -1854,7 +1854,7 @@ impl BookTest {
         builder.save_toolstate(self.name, toolstate);
     }
 
-    /// This runs `rustdoc --test` on all `.md` files in the path.
+    /// This runs `crablangdoc --test` on all `.md` files in the path.
     fn run_local_doc(self, builder: &Builder<'_>) {
         let compiler = self.compiler;
 
@@ -1925,9 +1925,9 @@ macro_rules! test_book {
 test_book!(
     Nomicon, "src/doc/nomicon", "nomicon", default=false;
     Reference, "src/doc/reference", "reference", default=false;
-    RustdocBook, "src/doc/rustdoc", "rustdoc", default=true;
-    RustcBook, "src/doc/rustc", "rustc", default=true;
-    RustByExample, "src/doc/rust-by-example", "rust-by-example", default=false;
+    CrabLangdocBook, "src/doc/crablangdoc", "crablangdoc", default=true;
+    CrabLangcBook, "src/doc/crablangc", "crablangc", default=true;
+    CrabLangByExample, "src/doc/crablang-by-example", "crablang-by-example", default=false;
     EmbeddedBook, "src/doc/embedded-book", "embedded-book", default=false;
     TheBook, "src/doc/book", "book", default=false;
     UnstableBook, "src/doc/unstable-book", "unstable-book", default=true;
@@ -1949,9 +1949,9 @@ impl Step for ErrorIndex {
     }
 
     fn make_run(run: RunConfig<'_>) {
-        // error_index_generator depends on librustdoc. Use the compiler that
-        // is normally used to build rustdoc for other tests (like compiletest
-        // tests in tests/rustdoc) so that it shares the same artifacts.
+        // error_index_generator depends on libcrablangdoc. Use the compiler that
+        // is normally used to build crablangdoc for other tests (like compiletest
+        // tests in tests/crablangdoc) so that it shares the same artifacts.
         let compiler = run.builder.compiler(run.builder.top_stage, run.builder.config.build);
         run.builder.ensure(ErrorIndex { compiler });
     }
@@ -1961,7 +1961,7 @@ impl Step for ErrorIndex {
     ///
     /// The `error_index_generator` tool lives in `src/tools` and is used to
     /// generate a markdown file from the error indexes of the code base which is
-    /// then passed to `rustdoc --test`.
+    /// then passed to `crablangdoc --test`.
     fn run(self, builder: &Builder<'_>) {
         let compiler = self.compiler;
 
@@ -1990,14 +1990,14 @@ fn markdown_test(builder: &Builder<'_>, compiler: Compiler, markdown: &Path) -> 
     }
 
     builder.info(&format!("doc tests for: {}", markdown.display()));
-    let mut cmd = builder.rustdoc_cmd(compiler);
-    builder.add_rust_test_threads(&mut cmd);
+    let mut cmd = builder.crablangdoc_cmd(compiler);
+    builder.add_crablang_test_threads(&mut cmd);
     // allow for unstable options such as new editions
     cmd.arg("-Z");
     cmd.arg("unstable-options");
     cmd.arg("--test");
     cmd.arg(markdown);
-    cmd.env("RUSTC_BOOTSTRAP", "1");
+    cmd.env("CRABLANGC_BOOTSTRAP", "1");
 
     let test_args = builder.config.cmd.test_args().join(" ");
     cmd.arg("--test-args").arg(test_args);
@@ -2010,51 +2010,51 @@ fn markdown_test(builder: &Builder<'_>, compiler: Compiler, markdown: &Path) -> 
 }
 
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
-pub struct RustcGuide;
+pub struct CrabLangcGuide;
 
-impl Step for RustcGuide {
+impl Step for CrabLangcGuide {
     type Output = ();
     const DEFAULT: bool = false;
     const ONLY_HOSTS: bool = true;
 
     fn should_run(run: ShouldRun<'_>) -> ShouldRun<'_> {
-        run.path("src/doc/rustc-dev-guide")
+        run.path("src/doc/crablangc-dev-guide")
     }
 
     fn make_run(run: RunConfig<'_>) {
-        run.builder.ensure(RustcGuide);
+        run.builder.ensure(CrabLangcGuide);
     }
 
     fn run(self, builder: &Builder<'_>) {
-        let relative_path = Path::new("src").join("doc").join("rustc-dev-guide");
+        let relative_path = Path::new("src").join("doc").join("crablangc-dev-guide");
         builder.update_submodule(&relative_path);
 
         let src = builder.src.join(relative_path);
-        let mut rustbook_cmd = builder.tool_cmd(Tool::Rustbook);
-        let toolstate = if try_run(builder, rustbook_cmd.arg("linkcheck").arg(&src)) {
+        let mut crablangbook_cmd = builder.tool_cmd(Tool::CrabLangbook);
+        let toolstate = if try_run(builder, crablangbook_cmd.arg("linkcheck").arg(&src)) {
             ToolState::TestPass
         } else {
             ToolState::TestFail
         };
-        builder.save_toolstate("rustc-dev-guide", toolstate);
+        builder.save_toolstate("crablangc-dev-guide", toolstate);
     }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
-pub struct CrateLibrustc {
+pub struct CrateLibcrablangc {
     compiler: Compiler,
     target: TargetSelection,
     test_kind: TestKind,
     crates: Vec<Interned<String>>,
 }
 
-impl Step for CrateLibrustc {
+impl Step for CrateLibcrablangc {
     type Output = ();
     const DEFAULT: bool = true;
     const ONLY_HOSTS: bool = true;
 
     fn should_run(run: ShouldRun<'_>) -> ShouldRun<'_> {
-        run.crate_or_deps("rustc-main")
+        run.crate_or_deps("crablangc-main")
     }
 
     fn make_run(run: RunConfig<'_>) {
@@ -2068,14 +2068,14 @@ impl Step for CrateLibrustc {
             .collect();
         let test_kind = builder.kind.into();
 
-        builder.ensure(CrateLibrustc { compiler, target: run.target, test_kind, crates });
+        builder.ensure(CrateLibcrablangc { compiler, target: run.target, test_kind, crates });
     }
 
     fn run(self, builder: &Builder<'_>) {
         builder.ensure(Crate {
             compiler: self.compiler,
             target: self.target,
-            mode: Mode::Rustc,
+            mode: Mode::CrabLangc,
             test_kind: self.test_kind,
             crates: self.crates,
         });
@@ -2142,8 +2142,8 @@ impl Step for Crate {
             Mode::Std => {
                 compile::std_cargo(builder, target, compiler.stage, &mut cargo);
             }
-            Mode::Rustc => {
-                compile::rustc_cargo(builder, &mut cargo, target);
+            Mode::CrabLangc => {
+                compile::crablangc_cargo(builder, &mut cargo, target);
             }
             _ => panic!("can only test libraries"),
         };
@@ -2215,20 +2215,20 @@ impl Step for Crate {
     }
 }
 
-/// Rustdoc is special in various ways, which is why this step is different from `Crate`.
+/// CrabLangdoc is special in various ways, which is why this step is different from `Crate`.
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
-pub struct CrateRustdoc {
+pub struct CrateCrabLangdoc {
     host: TargetSelection,
     test_kind: TestKind,
 }
 
-impl Step for CrateRustdoc {
+impl Step for CrateCrabLangdoc {
     type Output = ();
     const DEFAULT: bool = true;
     const ONLY_HOSTS: bool = true;
 
     fn should_run(run: ShouldRun<'_>) -> ShouldRun<'_> {
-        run.paths(&["src/librustdoc", "src/tools/rustdoc"])
+        run.paths(&["src/libcrablangdoc", "src/tools/crablangdoc"])
     }
 
     fn make_run(run: RunConfig<'_>) {
@@ -2236,31 +2236,31 @@ impl Step for CrateRustdoc {
 
         let test_kind = builder.kind.into();
 
-        builder.ensure(CrateRustdoc { host: run.target, test_kind });
+        builder.ensure(CrateCrabLangdoc { host: run.target, test_kind });
     }
 
     fn run(self, builder: &Builder<'_>) {
         let test_kind = self.test_kind;
         let target = self.host;
 
-        let compiler = if builder.download_rustc() {
+        let compiler = if builder.download_crablangc() {
             builder.compiler(builder.top_stage, target)
         } else {
             // Use the previous stage compiler to reuse the artifacts that are
-            // created when running compiletest for tests/rustdoc. If this used
-            // `compiler`, then it would cause rustdoc to be built *again*, which
+            // created when running compiletest for tests/crablangdoc. If this used
+            // `compiler`, then it would cause crablangdoc to be built *again*, which
             // isn't really necessary.
             builder.compiler_for(builder.top_stage, target, target)
         };
-        builder.ensure(compile::Rustc::new(compiler, target));
+        builder.ensure(compile::CrabLangc::new(compiler, target));
 
         let mut cargo = tool::prepare_tool_cargo(
             builder,
             compiler,
-            Mode::ToolRustc,
+            Mode::ToolCrabLangc,
             target,
             test_kind.subcommand(),
-            "src/tools/rustdoc",
+            "src/tools/crablangdoc",
             SourceType::InTree,
             &[],
         );
@@ -2277,7 +2277,7 @@ impl Step for CrateRustdoc {
             DocTests::Yes => {}
         }
 
-        cargo.arg("-p").arg("rustdoc:0.0.0");
+        cargo.arg("-p").arg("crablangdoc:0.0.0");
 
         cargo.arg("--");
         cargo.args(&builder.config.cmd.test_args());
@@ -2286,34 +2286,34 @@ impl Step for CrateRustdoc {
             cargo.arg("'-Ctarget-feature=-crt-static'");
         }
 
-        // This is needed for running doctests on librustdoc. This is a bit of
+        // This is needed for running doctests on libcrablangdoc. This is a bit of
         // an unfortunate interaction with how bootstrap works and how cargo
         // sets up the dylib path, and the fact that the doctest (in
-        // html/markdown.rs) links to rustc-private libs. For stage1, the
+        // html/markdown.rs) links to crablangc-private libs. For stage1, the
         // compiler host dylibs (in stage1/lib) are not the same as the target
-        // dylibs (in stage1/lib/rustlib/...). This is different from a normal
-        // rust distribution where they are the same.
+        // dylibs (in stage1/lib/crablanglib/...). This is different from a normal
+        // crablang distribution where they are the same.
         //
         // On the cargo side, normal tests use `target_process` which handles
-        // setting up the dylib for a *target* (stage1/lib/rustlib/... in this
-        // case). However, for doctests it uses `rustdoc_process` which only
+        // setting up the dylib for a *target* (stage1/lib/crablanglib/... in this
+        // case). However, for doctests it uses `crablangdoc_process` which only
         // sets up the dylib path for the *host* (stage1/lib), which is the
         // wrong directory.
         //
         // Recall that we special-cased `compiler_for(top_stage)` above, so we always use stage1.
         //
         // It should be considered to just stop running doctests on
-        // librustdoc. There is only one test, and it doesn't look too
+        // libcrablangdoc. There is only one test, and it doesn't look too
         // important. There might be other ways to avoid this, but it seems
         // pretty convoluted.
         //
-        // See also https://github.com/rust-lang/rust/issues/13983 where the
-        // host vs target dylibs for rustdoc are consistently tricky to deal
+        // See also https://github.com/crablang/crablang/issues/13983 where the
+        // host vs target dylibs for crablangdoc are consistently tricky to deal
         // with.
         //
-        // Note that this set the host libdir for `download_rustc`, which uses a normal rust distribution.
-        let libdir = if builder.download_rustc() {
-            builder.rustc_libdir(compiler)
+        // Note that this set the host libdir for `download_crablangc`, which uses a normal crablang distribution.
+        let libdir = if builder.download_crablangc() {
+            builder.crablangc_libdir(compiler)
         } else {
             builder.sysroot_libdir(compiler, target).to_path_buf()
         };
@@ -2326,7 +2326,7 @@ impl Step for CrateRustdoc {
         }
 
         builder.info(&format!(
-            "{} rustdoc stage{} ({} -> {})",
+            "{} crablangdoc stage{} ({} -> {})",
             test_kind, compiler.stage, &compiler.host, target
         ));
         let _time = util::timeit(&builder);
@@ -2336,18 +2336,18 @@ impl Step for CrateRustdoc {
 }
 
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
-pub struct CrateRustdocJsonTypes {
+pub struct CrateCrabLangdocJsonTypes {
     host: TargetSelection,
     test_kind: TestKind,
 }
 
-impl Step for CrateRustdocJsonTypes {
+impl Step for CrateCrabLangdocJsonTypes {
     type Output = ();
     const DEFAULT: bool = true;
     const ONLY_HOSTS: bool = true;
 
     fn should_run(run: ShouldRun<'_>) -> ShouldRun<'_> {
-        run.path("src/rustdoc-json-types")
+        run.path("src/crablangdoc-json-types")
     }
 
     fn make_run(run: RunConfig<'_>) {
@@ -2355,7 +2355,7 @@ impl Step for CrateRustdocJsonTypes {
 
         let test_kind = builder.kind.into();
 
-        builder.ensure(CrateRustdocJsonTypes { host: run.target, test_kind });
+        builder.ensure(CrateCrabLangdocJsonTypes { host: run.target, test_kind });
     }
 
     fn run(self, builder: &Builder<'_>) {
@@ -2363,19 +2363,19 @@ impl Step for CrateRustdocJsonTypes {
         let target = self.host;
 
         // Use the previous stage compiler to reuse the artifacts that are
-        // created when running compiletest for tests/rustdoc. If this used
-        // `compiler`, then it would cause rustdoc to be built *again*, which
+        // created when running compiletest for tests/crablangdoc. If this used
+        // `compiler`, then it would cause crablangdoc to be built *again*, which
         // isn't really necessary.
         let compiler = builder.compiler_for(builder.top_stage, target, target);
-        builder.ensure(compile::Rustc::new(compiler, target));
+        builder.ensure(compile::CrabLangc::new(compiler, target));
 
         let mut cargo = tool::prepare_tool_cargo(
             builder,
             compiler,
-            Mode::ToolRustc,
+            Mode::ToolCrabLangc,
             target,
             test_kind.subcommand(),
-            "src/rustdoc-json-types",
+            "src/crablangdoc-json-types",
             SourceType::InTree,
             &[],
         );
@@ -2383,7 +2383,7 @@ impl Step for CrateRustdocJsonTypes {
             cargo.arg("--no-fail-fast");
         }
 
-        cargo.arg("-p").arg("rustdoc-json-types");
+        cargo.arg("-p").arg("crablangdoc-json-types");
 
         cargo.arg("--");
         cargo.args(&builder.config.cmd.test_args());
@@ -2393,7 +2393,7 @@ impl Step for CrateRustdocJsonTypes {
         }
 
         builder.info(&format!(
-            "{} rustdoc-json-types stage{} ({} -> {})",
+            "{} crablangdoc-json-types stage{} ({} -> {})",
             test_kind, compiler.stage, &compiler.host, target
         ));
         let _time = util::timeit(&builder);
@@ -2498,8 +2498,8 @@ impl Step for Distcheck {
             Command::new(util::make(&builder.config.build.triple)).arg("check").current_dir(&dir),
         );
 
-        // Now make sure that rust-src has all of libstd's dependencies
-        builder.info("Distcheck rust-src");
+        // Now make sure that crablang-src has all of libstd's dependencies
+        builder.info("Distcheck crablang-src");
         let dir = builder.tempdir().join("distcheck-src");
         let _ = fs::remove_dir_all(&dir);
         t!(fs::create_dir_all(&dir));
@@ -2511,7 +2511,7 @@ impl Step for Distcheck {
             .current_dir(&dir);
         builder.run(&mut cmd);
 
-        let toml = dir.join("rust-src/lib/rustlib/src/rust/library/std/Cargo.toml");
+        let toml = dir.join("crablang-src/lib/crablanglib/src/crablang/library/std/Cargo.toml");
         builder.run(
             Command::new(&builder.initial_cargo)
                 .arg("generate-lockfile")
@@ -2539,16 +2539,16 @@ impl Step for Bootstrap {
         let mut cmd = Command::new(&builder.initial_cargo);
         cmd.arg("test")
             .current_dir(builder.src.join("src/bootstrap"))
-            .env("RUSTFLAGS", "-Cdebuginfo=2")
+            .env("CRABLANGFLAGS", "-Cdebuginfo=2")
             .env("CARGO_TARGET_DIR", builder.out.join("bootstrap"))
-            .env("RUSTC_BOOTSTRAP", "1")
-            .env("RUSTDOC", builder.rustdoc(builder.compiler(0, builder.build.build)))
-            .env("RUSTC", &builder.initial_rustc);
-        if let Some(flags) = option_env!("RUSTFLAGS") {
-            // Use the same rustc flags for testing as for "normal" compilation,
+            .env("CRABLANGC_BOOTSTRAP", "1")
+            .env("CRABLANGDOC", builder.crablangdoc(builder.compiler(0, builder.build.build)))
+            .env("CRABLANGC", &builder.initial_crablangc);
+        if let Some(flags) = option_env!("CRABLANGFLAGS") {
+            // Use the same crablangc flags for testing as for "normal" compilation,
             // so that Cargo doesn’t recompile the entire dependency graph every time:
-            // https://github.com/rust-lang/rust/issues/49215
-            cmd.env("RUSTFLAGS", flags);
+            // https://github.com/crablang/crablang/issues/49215
+            cmd.env("CRABLANGFLAGS", flags);
         }
         if !builder.fail_fast {
             cmd.arg("--no-fail-fast");
@@ -2564,7 +2564,7 @@ impl Step for Bootstrap {
         }
 
         cmd.arg("--").args(&builder.config.cmd.test_args());
-        // rustbuild tests are racy on directory creation so just run them one at a time.
+        // crablangbuild tests are racy on directory creation so just run them one at a time.
         // Since there's not many this shouldn't be a problem.
         cmd.arg("--test-threads=1");
         add_flags_and_try_run_tests(builder, &mut cmd);
@@ -2599,7 +2599,7 @@ impl Step for TierCheck {
         run.builder.ensure(TierCheck { compiler });
     }
 
-    /// Tests the Platform Support page in the rustc book.
+    /// Tests the Platform Support page in the crablangc book.
     fn run(self, builder: &Builder<'_>) {
         builder.ensure(compile::Std::new(self.compiler, self.compiler.host));
         let mut cargo = tool::prepare_tool_cargo(
@@ -2612,8 +2612,8 @@ impl Step for TierCheck {
             SourceType::InTree,
             &[],
         );
-        cargo.arg(builder.src.join("src/doc/rustc/src/platform-support.md"));
-        cargo.arg(&builder.rustc(self.compiler));
+        cargo.arg(builder.src.join("src/doc/crablangc/src/platform-support.md"));
+        cargo.arg(&builder.crablangc(self.compiler));
         if builder.is_verbose() {
             cargo.arg("--verbose");
         }
@@ -2682,10 +2682,10 @@ impl Step for LintDocs {
         });
     }
 
-    /// Tests that the lint examples in the rustc book generate the correct
+    /// Tests that the lint examples in the crablangc book generate the correct
     /// lints and have the expected format.
     fn run(self, builder: &Builder<'_>) {
-        builder.ensure(crate::doc::RustcBook {
+        builder.ensure(crate::doc::CrabLangcBook {
             compiler: self.compiler,
             target: self.target,
             validate: true,
@@ -2694,16 +2694,16 @@ impl Step for LintDocs {
 }
 
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
-pub struct RustInstaller;
+pub struct CrabLangInstaller;
 
-impl Step for RustInstaller {
+impl Step for CrabLangInstaller {
     type Output = ();
     const ONLY_HOSTS: bool = true;
     const DEFAULT: bool = true;
 
     /// Ensure the version placeholder replacement tool builds
     fn run(self, builder: &Builder<'_>) {
-        builder.info("test rust-installer");
+        builder.info("test crablang-installer");
 
         let bootstrap_host = builder.config.build;
         let compiler = builder.compiler(0, bootstrap_host);
@@ -2713,34 +2713,34 @@ impl Step for RustInstaller {
             Mode::ToolBootstrap,
             bootstrap_host,
             "test",
-            "src/tools/rust-installer",
+            "src/tools/crablang-installer",
             SourceType::InTree,
             &[],
         );
         try_run(builder, &mut cargo.into());
 
         // We currently don't support running the test.sh script outside linux(?) environments.
-        // Eventually this should likely migrate to #[test]s in rust-installer proper rather than a
+        // Eventually this should likely migrate to #[test]s in crablang-installer proper rather than a
         // set of scripts, which will likely allow dropping this if.
         if bootstrap_host != "x86_64-unknown-linux-gnu" {
             return;
         }
 
         let mut cmd =
-            std::process::Command::new(builder.src.join("src/tools/rust-installer/test.sh"));
-        let tmpdir = testdir(builder, compiler.host).join("rust-installer");
+            std::process::Command::new(builder.src.join("src/tools/crablang-installer/test.sh"));
+        let tmpdir = testdir(builder, compiler.host).join("crablang-installer");
         let _ = std::fs::remove_dir_all(&tmpdir);
         let _ = std::fs::create_dir_all(&tmpdir);
         cmd.current_dir(&tmpdir);
         cmd.env("CARGO_TARGET_DIR", tmpdir.join("cargo-target"));
         cmd.env("CARGO", &builder.initial_cargo);
-        cmd.env("RUSTC", &builder.initial_rustc);
+        cmd.env("CRABLANGC", &builder.initial_crablangc);
         cmd.env("TMP_DIR", &tmpdir);
         try_run(builder, &mut cmd);
     }
 
     fn should_run(run: ShouldRun<'_>) -> ShouldRun<'_> {
-        run.path("src/tools/rust-installer")
+        run.path("src/tools/crablang-installer")
     }
 
     fn make_run(run: RunConfig<'_>) {
@@ -2757,14 +2757,14 @@ impl Step for TestHelpers {
     type Output = ();
 
     fn should_run(run: ShouldRun<'_>) -> ShouldRun<'_> {
-        run.path("tests/auxiliary/rust_test_helpers.c")
+        run.path("tests/auxiliary/crablang_test_helpers.c")
     }
 
     fn make_run(run: RunConfig<'_>) {
         run.builder.ensure(TestHelpers { target: run.target })
     }
 
-    /// Compiles the `rust_test_helpers.c` library which we used in various
+    /// Compiles the `crablang_test_helpers.c` library which we used in various
     /// `run-pass` tests for ABI testing.
     fn run(self, builder: &Builder<'_>) {
         if builder.config.dry_run() {
@@ -2779,8 +2779,8 @@ impl Step for TestHelpers {
             self.target
         };
         let dst = builder.test_helpers_out(target);
-        let src = builder.src.join("tests/auxiliary/rust_test_helpers.c");
-        if up_to_date(&src, &dst.join("librust_test_helpers.a")) {
+        let src = builder.src.join("tests/auxiliary/crablang_test_helpers.c");
+        if up_to_date(&src, &dst.join("libcrablang_test_helpers.a")) {
             return;
         }
 
@@ -2808,7 +2808,7 @@ impl Step for TestHelpers {
             .opt_level(0)
             .warnings(false)
             .debug(false)
-            .file(builder.src.join("tests/auxiliary/rust_test_helpers.c"))
-            .compile("rust_test_helpers");
+            .file(builder.src.join("tests/auxiliary/crablang_test_helpers.c"))
+            .compile("crablang_test_helpers");
     }
 }

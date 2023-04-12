@@ -1,5 +1,5 @@
-// run-rustfix
-// https://github.com/rust-lang/rust/issues/82081
+// run-crablangfix
+// https://github.com/crablang/crablang/issues/82081
 
 use std::collections::HashMap;
 

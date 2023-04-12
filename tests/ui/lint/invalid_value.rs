@@ -1,7 +1,7 @@
 // This test checks that calling `mem::{uninitialized,zeroed}` with certain types results
 // in a lint.
 
-#![feature(never_type, rustc_attrs)]
+#![feature(never_type, crablangc_attrs)]
 #![allow(deprecated)]
 #![deny(invalid_value)]
 
@@ -17,8 +17,8 @@ struct RefPair((&'static i32, i32));
 struct Wrap<T> { wrapped: T }
 enum WrapEnum<T> { Wrapped(T) }
 
-#[rustc_layout_scalar_valid_range_start(0)]
-#[rustc_layout_scalar_valid_range_end(128)]
+#[crablangc_layout_scalar_valid_range_start(0)]
+#[crablangc_layout_scalar_valid_range_end(128)]
 #[repr(transparent)]
 pub(crate) struct NonBig(u64);
 
@@ -44,8 +44,8 @@ enum TwoUninhabited {
     B(Void),
 }
 
-#[rustc_layout_scalar_valid_range_start(254)]
-#[rustc_layout_scalar_valid_range_end(1)]
+#[crablangc_layout_scalar_valid_range_start(254)]
+#[crablangc_layout_scalar_valid_range_end(1)]
 pub(crate) struct WrapAroundRange(u8);
 
 #[allow(unused)]
@@ -138,12 +138,12 @@ fn main() {
         let _val: WrapAroundRange = mem::zeroed();
         let _val: WrapAroundRange = mem::uninitialized(); //~ ERROR: does not permit being left uninitialized
 
-        // Things where 0 is okay due to rustc implementation details,
+        // Things where 0 is okay due to crablangc implementation details,
         // but that are not guaranteed to keep working.
         let _val: Result<i32, i32> = mem::zeroed();
         let _val: Result<i32, i32> = mem::uninitialized(); //~ ERROR: does not permit being left uninitialized
 
-        // Some things that happen to be UB-free due to rustc implementation details,
+        // Some things that happen to be UB-free due to crablangc implementation details,
         // but are not guaranteed to keep working.
         let _val: OneFruit = mem::zeroed();
         let _val: OneFruit = mem::uninitialized();

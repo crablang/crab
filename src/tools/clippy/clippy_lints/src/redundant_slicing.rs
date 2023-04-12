@@ -3,13 +3,13 @@ use clippy_utils::get_parent_expr;
 use clippy_utils::source::snippet_with_context;
 use clippy_utils::ty::{is_type_lang_item, peel_mid_ty_refs};
 use if_chain::if_chain;
-use rustc_ast::util::parser::PREC_PREFIX;
-use rustc_errors::Applicability;
-use rustc_hir::{BorrowKind, Expr, ExprKind, LangItem, Mutability};
-use rustc_lint::{LateContext, LateLintPass, Lint};
-use rustc_middle::ty::adjustment::{Adjust, AutoBorrow, AutoBorrowMutability};
-use rustc_middle::ty::subst::GenericArg;
-use rustc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_ast::util::parser::PREC_PREFIX;
+use crablangc_errors::Applicability;
+use crablangc_hir::{BorrowKind, Expr, ExprKind, LangItem, Mutability};
+use crablangc_lint::{LateContext, LateLintPass, Lint};
+use crablangc_middle::ty::adjustment::{Adjust, AutoBorrow, AutoBorrowMutability};
+use crablangc_middle::ty::subst::GenericArg;
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
 
 declare_clippy_lint! {
     /// ### What it does
@@ -51,12 +51,12 @@ declare_clippy_lint! {
     /// Some people may prefer to dereference rather than slice.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// let vec = vec![1, 2, 3];
     /// let slice = &vec[..];
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// let vec = vec![1, 2, 3];
     /// let slice = &*vec;
     /// ```

@@ -27,36 +27,36 @@ except ImportError:
     pass
 
 # List of people to ping when the status of a tool or a book changed.
-# These should be collaborators of the rust-lang/rust repository (with at least
+# These should be collaborators of the crablang/crablang repository (with at least
 # read privileges on it). CI will fail otherwise.
 MAINTAINERS = {
     'book': {'carols10cents'},
     'nomicon': {'frewsxcv', 'Gankra', 'JohnTitor'},
     'reference': {'Havvy', 'matthewjasper', 'ehuss'},
-    'rust-by-example': {'marioidival'},
+    'crablang-by-example': {'marioidival'},
     'embedded-book': {'adamgreig', 'andre-richter', 'jamesmunns', 'therealprof'},
     'edition-guide': {'ehuss'},
-    'rustc-dev-guide': {'spastorino', 'amanjeev', 'JohnTitor'},
+    'crablangc-dev-guide': {'spastorino', 'amanjeev', 'JohnTitor'},
 }
 
 LABELS = {
     'book': ['C-bug'],
     'nomicon': ['C-bug'],
     'reference': ['C-bug'],
-    'rust-by-example': ['C-bug'],
+    'crablang-by-example': ['C-bug'],
     'embedded-book': ['C-bug'],
     'edition-guide': ['C-bug'],
-    'rustc-dev-guide': ['C-bug'],
+    'crablangc-dev-guide': ['C-bug'],
 }
 
 REPOS = {
-    'book': 'https://github.com/rust-lang/book',
-    'nomicon': 'https://github.com/rust-lang/nomicon',
-    'reference': 'https://github.com/rust-lang/reference',
-    'rust-by-example': 'https://github.com/rust-lang/rust-by-example',
-    'embedded-book': 'https://github.com/rust-embedded/book',
-    'edition-guide': 'https://github.com/rust-lang/edition-guide',
-    'rustc-dev-guide': 'https://github.com/rust-lang/rustc-dev-guide',
+    'book': 'https://github.com/crablang/book',
+    'nomicon': 'https://github.com/crablang/nomicon',
+    'reference': 'https://github.com/crablang/reference',
+    'crablang-by-example': 'https://github.com/crablang/crablang-by-example',
+    'embedded-book': 'https://github.com/crablang-embedded/book',
+    'edition-guide': 'https://github.com/crablang/edition-guide',
+    'crablangc-dev-guide': 'https://github.com/crablang/crablangc-dev-guide',
 }
 
 def load_json_from_response(resp):
@@ -156,7 +156,7 @@ def update_latest(
             for os in ['windows', 'linux']
         }
 
-        slug = 'rust-lang/rust'
+        slug = 'crablang/crablang'
         message = textwrap.dedent('''\
             📣 Toolstate changed by {}!
 
@@ -249,8 +249,8 @@ try:
     if relevant_pr_match:
         number = relevant_pr_match.group(1)
         relevant_pr_user = relevant_pr_match.group(2)
-        relevant_pr_number = 'rust-lang/rust#' + number
-        relevant_pr_url = 'https://github.com/rust-lang/rust/pull/' + number
+        relevant_pr_number = 'crablang/crablang#' + number
+        relevant_pr_url = 'https://github.com/crablang/crablang/pull/' + number
         pr_reviewer = relevant_pr_match.group(3)
     else:
         number = '-1'

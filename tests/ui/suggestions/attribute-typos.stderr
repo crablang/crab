@@ -1,14 +1,14 @@
-error: attributes starting with `rustc` are reserved for use by the `rustc` compiler
+error: attributes starting with `crablangc` are reserved for use by the `crablangc` compiler
   --> $DIR/attribute-typos.rs:7:3
    |
-LL | #[rustc_err]
+LL | #[crablangc_err]
    |   ^^^^^^^^^
 
-error: cannot find attribute `rustc_err` in this scope
+error: cannot find attribute `crablangc_err` in this scope
   --> $DIR/attribute-typos.rs:7:3
    |
-LL | #[rustc_err]
-   |   ^^^^^^^^^ help: a built-in attribute with a similar name exists: `rustc_error`
+LL | #[crablangc_err]
+   |   ^^^^^^^^^ help: a built-in attribute with a similar name exists: `crablangc_error`
 
 error: cannot find attribute `tests` in this scope
   --> $DIR/attribute-typos.rs:4:3

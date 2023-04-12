@@ -4,7 +4,7 @@ error[E0658]: dereferencing raw mutable pointers in constants is unstable
 LL | const VALUE: u8 = unsafe { *REG_ADDR };
    |                            ^^^^^^^^^
    |
-   = note: see issue #57349 <https://github.com/rust-lang/rust/issues/57349> for more information
+   = note: see issue #57349 <https://github.com/crablang/crablang/issues/57349> for more information
    = help: add `#![feature(const_mut_refs)]` to the crate attributes to enable
 
 error[E0658]: dereferencing raw mutable pointers in constant functions is unstable
@@ -13,7 +13,7 @@ error[E0658]: dereferencing raw mutable pointers in constant functions is unstab
 LL |     match *INFALLIBLE {}
    |           ^^^^^^^^^^^
    |
-   = note: see issue #57349 <https://github.com/rust-lang/rust/issues/57349> for more information
+   = note: see issue #57349 <https://github.com/crablang/crablang/issues/57349> for more information
    = help: add `#![feature(const_mut_refs)]` to the crate attributes to enable
 
 error[E0658]: dereferencing raw mutable pointers in constants is unstable
@@ -22,9 +22,9 @@ error[E0658]: dereferencing raw mutable pointers in constants is unstable
 LL |     const BAD: () = unsafe { match *INFALLIBLE {} };
    |                                    ^^^^^^^^^^^
    |
-   = note: see issue #57349 <https://github.com/rust-lang/rust/issues/57349> for more information
+   = note: see issue #57349 <https://github.com/crablang/crablang/issues/57349> for more information
    = help: add `#![feature(const_mut_refs)]` to the crate attributes to enable
 
 error: aborting due to 3 previous errors
 
-For more information about this error, try `rustc --explain E0658`.
+For more information about this error, try `crablangc --explain E0658`.

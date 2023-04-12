@@ -5,9 +5,9 @@ use std::collections::hash_map::Entry;
 use log::trace;
 use rand::Rng;
 
-use rustc_data_structures::fx::{FxHashMap, FxHashSet};
-use rustc_span::Span;
-use rustc_target::abi::{HasDataLayout, Size};
+use crablangc_data_structures::fx::{FxHashMap, FxHashSet};
+use crablangc_span::Span;
+use crablangc_target::abi::{HasDataLayout, Size};
 
 use crate::*;
 

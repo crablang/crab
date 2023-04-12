@@ -3,7 +3,7 @@
 // This test is checking our logic for structural match checking by enumerating
 // the different kinds of const expressions. This test is collecting cases where
 // we have accepted the const expression as a pattern in the past but we want
-// to begin warning the user that a future version of Rust may start rejecting
+// to begin warning the user that a future version of CrabLang may start rejecting
 // such const expressions.
 
 // The specific corner cases we are exploring here are instances where the

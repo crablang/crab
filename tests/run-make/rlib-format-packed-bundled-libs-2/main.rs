@@ -1,5 +1,5 @@
-extern crate rust_dep;
+extern crate crablang_dep;
 
 pub fn main() {
-    rust_dep::rust_dep();
+    crablang_dep::crablang_dep();
 }

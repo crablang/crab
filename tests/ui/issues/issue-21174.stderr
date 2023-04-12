@@ -9,4 +9,4 @@ LL |     let new: T::B = unsafe { std::mem::transmute(value) };
 
 error: aborting due to previous error
 
-For more information about this error, try `rustc --explain E0512`.
+For more information about this error, try `crablangc --explain E0512`.

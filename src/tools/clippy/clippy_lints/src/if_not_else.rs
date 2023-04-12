@@ -3,9 +3,9 @@
 
 use clippy_utils::diagnostics::span_lint_and_help;
 use clippy_utils::is_else_clause;
-use rustc_hir::{BinOpKind, Expr, ExprKind, UnOp};
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_hir::{BinOpKind, Expr, ExprKind, UnOp};
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
 
 declare_clippy_lint! {
     /// ### What it does
@@ -16,7 +16,7 @@ declare_clippy_lint! {
     /// Negations reduce the readability of statements.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// # let v: Vec<usize> = vec![];
     /// # fn a() {}
     /// # fn b() {}
@@ -29,7 +29,7 @@ declare_clippy_lint! {
     ///
     /// Could be written:
     ///
-    /// ```rust
+    /// ```crablang
     /// # let v: Vec<usize> = vec![];
     /// # fn a() {}
     /// # fn b() {}

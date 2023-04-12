@@ -5,12 +5,12 @@ use clippy_utils::ty::is_type_diagnostic_item;
 use clippy_utils::usage::contains_return_break_continue_macro;
 use clippy_utils::{is_res_lang_ctor, path_to_local_id, sugg};
 use if_chain::if_chain;
-use rustc_errors::Applicability;
-use rustc_hir::def::{DefKind, Res};
-use rustc_hir::LangItem::{OptionNone, ResultErr};
-use rustc_hir::{Arm, Expr, PatKind};
-use rustc_lint::LateContext;
-use rustc_span::sym;
+use crablangc_errors::Applicability;
+use crablangc_hir::def::{DefKind, Res};
+use crablangc_hir::LangItem::{OptionNone, ResultErr};
+use crablangc_hir::{Arm, Expr, PatKind};
+use crablangc_lint::LateContext;
+use crablangc_span::sym;
 
 use super::MANUAL_UNWRAP_OR;
 

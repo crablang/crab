@@ -34,5 +34,5 @@ ENV \
 
 ENV HOSTS=x86_64-unknown-illumos
 
-ENV RUST_CONFIGURE_ARGS --enable-extended --disable-docs
+ENV CRABLANG_CONFIGURE_ARGS --enable-extended --disable-docs
 ENV SCRIPT python3 ../x.py dist --host $HOSTS --target $HOSTS

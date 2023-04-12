@@ -20,4 +20,4 @@ LL |     = [0; (i8::MAX + 1u8) as usize];
 error: aborting due to 2 previous errors
 
 Some errors have detailed explanations: E0277, E0308.
-For more information about an error, try `rustc --explain E0277`.
+For more information about an error, try `crablangc --explain E0277`.

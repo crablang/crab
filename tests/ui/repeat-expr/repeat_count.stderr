@@ -66,4 +66,4 @@ LL |     let f = [0; 4usize];
 error: aborting due to 9 previous errors
 
 Some errors have detailed explanations: E0308, E0435.
-For more information about an error, try `rustc --explain E0308`.
+For more information about an error, try `crablangc --explain E0308`.

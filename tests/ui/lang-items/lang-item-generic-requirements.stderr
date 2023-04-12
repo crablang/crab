@@ -52,4 +52,4 @@ LL | fn start(_: *const u8, _: isize, _: *const *const u8) -> isize {
 
 error: aborting due to 6 previous errors
 
-For more information about this error, try `rustc --explain E0718`.
+For more information about this error, try `crablangc --explain E0718`.

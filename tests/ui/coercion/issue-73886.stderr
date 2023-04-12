@@ -14,4 +14,4 @@ LL |     let _ = 7u32 as Option<_>;
 
 error: aborting due to 2 previous errors
 
-For more information about this error, try `rustc --explain E0605`.
+For more information about this error, try `crablangc --explain E0605`.

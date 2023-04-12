@@ -8,7 +8,7 @@ LL |     data: [u8],
    |     ^^^^^^^^^^
    |
    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
-   = note: for more information, see issue #107457 <https://github.com/rust-lang/rust/issues/107457>
+   = note: for more information, see issue #107457 <https://github.com/crablang/crablang/issues/107457>
    = help: consider implementing the trait by hand, or remove the `packed` attribute
    = note: `#[warn(byte_slice_in_packed_struct_with_derive)]` on by default
    = note: this warning originates in the derive macro `Debug` (in Nightly builds, run with -Z macro-backtrace for more info)
@@ -23,7 +23,7 @@ LL |     data: str,
    |     ^^^^^^^^^
    |
    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
-   = note: for more information, see issue #107457 <https://github.com/rust-lang/rust/issues/107457>
+   = note: for more information, see issue #107457 <https://github.com/crablang/crablang/issues/107457>
    = help: consider implementing the trait by hand, or remove the `packed` attribute
    = note: this warning originates in the derive macro `Debug` (in Nightly builds, run with -Z macro-backtrace for more info)
 
@@ -40,7 +40,7 @@ LL | struct X(Y);
 
 error: aborting due to previous error; 2 warnings emitted
 
-For more information about this error, try `rustc --explain E0507`.
+For more information about this error, try `crablangc --explain E0507`.
 Future incompatibility report: Future breakage diagnostic:
 warning: byte slice in a packed struct that derives a built-in trait
   --> $DIR/deriving-with-repr-packed.rs:31:5
@@ -52,7 +52,7 @@ LL |     data: [u8],
    |     ^^^^^^^^^^
    |
    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
-   = note: for more information, see issue #107457 <https://github.com/rust-lang/rust/issues/107457>
+   = note: for more information, see issue #107457 <https://github.com/crablang/crablang/issues/107457>
    = help: consider implementing the trait by hand, or remove the `packed` attribute
    = note: `#[warn(byte_slice_in_packed_struct_with_derive)]` on by default
    = note: this warning originates in the derive macro `Debug` (in Nightly builds, run with -Z macro-backtrace for more info)
@@ -68,7 +68,7 @@ LL |     data: str,
    |     ^^^^^^^^^
    |
    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
-   = note: for more information, see issue #107457 <https://github.com/rust-lang/rust/issues/107457>
+   = note: for more information, see issue #107457 <https://github.com/crablang/crablang/issues/107457>
    = help: consider implementing the trait by hand, or remove the `packed` attribute
    = note: `#[warn(byte_slice_in_packed_struct_with_derive)]` on by default
    = note: this warning originates in the derive macro `Debug` (in Nightly builds, run with -Z macro-backtrace for more info)

@@ -1,6 +1,6 @@
 //! Test casts for alignment issues
 
-#![feature(rustc_private)]
+#![feature(crablangc_private)]
 #![feature(core_intrinsics)]
 extern crate libc;
 
@@ -30,10 +30,10 @@ fn main() {
     // cast to less-strictly-aligned type
     (&1u16 as *const u16) as *const u8;
     (&mut 1u16 as *mut u16) as *mut u8;
-    // For c_void, we should trust the user. See #2677
+    // For c_void, we should tcrablang the user. See #2677
     (&1u32 as *const u32 as *const std::os::raw::c_void) as *const u32;
     (&1u32 as *const u32 as *const libc::c_void) as *const u32;
-    // For ZST, we should trust the user. See #4256
+    // For ZST, we should tcrablang the user. See #4256
     (&1u32 as *const u32 as *const ()) as *const u32;
 
     // Issue #2881

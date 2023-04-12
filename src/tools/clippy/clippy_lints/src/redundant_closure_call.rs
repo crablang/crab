@@ -1,17 +1,17 @@
 use clippy_utils::diagnostics::{span_lint, span_lint_and_then};
 use clippy_utils::sugg::Sugg;
 use if_chain::if_chain;
-use rustc_ast::ast;
-use rustc_ast::visit as ast_visit;
-use rustc_ast::visit::Visitor as AstVisitor;
-use rustc_errors::Applicability;
-use rustc_hir as hir;
-use rustc_hir::intravisit as hir_visit;
-use rustc_hir::intravisit::Visitor as HirVisitor;
-use rustc_lint::{EarlyContext, EarlyLintPass, LateContext, LateLintPass, LintContext};
-use rustc_middle::hir::nested_filter;
-use rustc_middle::lint::in_external_macro;
-use rustc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_ast::ast;
+use crablangc_ast::visit as ast_visit;
+use crablangc_ast::visit::Visitor as AstVisitor;
+use crablangc_errors::Applicability;
+use crablangc_hir as hir;
+use crablangc_hir::intravisit as hir_visit;
+use crablangc_hir::intravisit::Visitor as HirVisitor;
+use crablangc_lint::{EarlyContext, EarlyLintPass, LateContext, LateLintPass, LintContext};
+use crablangc_middle::hir::nested_filter;
+use crablangc_middle::lint::in_external_macro;
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
 
 declare_clippy_lint! {
     /// ### What it does
@@ -23,12 +23,12 @@ declare_clippy_lint! {
     /// complexity.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// let a = (|| 42)();
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// let a = 42;
     /// ```
     #[clippy::version = "pre 1.29.0"]

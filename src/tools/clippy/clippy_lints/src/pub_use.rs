@@ -1,7 +1,7 @@
 use clippy_utils::diagnostics::span_lint_and_help;
-use rustc_ast::ast::{Item, ItemKind, VisibilityKind};
-use rustc_lint::{EarlyContext, EarlyLintPass};
-use rustc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_ast::ast::{Item, ItemKind, VisibilityKind};
+use crablangc_lint::{EarlyContext, EarlyLintPass};
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
 
 declare_clippy_lint! {
     /// ### What it does
@@ -14,7 +14,7 @@ declare_clippy_lint! {
     /// unintentional exports or to encourage placing exported items directly in public modules
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// pub mod outer {
     ///     mod inner {
     ///         pub struct Test {}
@@ -25,7 +25,7 @@ declare_clippy_lint! {
     /// use outer::Test;
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// pub mod outer {
     ///     pub struct Test {}
     /// }

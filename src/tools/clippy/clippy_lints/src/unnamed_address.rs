@@ -1,10 +1,10 @@
 use clippy_utils::diagnostics::{span_lint, span_lint_and_help};
 use clippy_utils::{match_def_path, paths};
 use if_chain::if_chain;
-use rustc_hir::{BinOpKind, Expr, ExprKind};
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_middle::ty;
-use rustc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_hir::{BinOpKind, Expr, ExprKind};
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_middle::ty;
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
 
 declare_clippy_lint! {
     /// ### What it does
@@ -16,7 +16,7 @@ declare_clippy_lint! {
     /// the same address after being merged together.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// type F = fn();
     /// fn a() {}
     /// let f: F = a;
@@ -41,7 +41,7 @@ declare_clippy_lint! {
     /// together.
     ///
     /// ### Example
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// let a: Rc<dyn Trait> = ...
     /// let b: Rc<dyn Trait> = ...
     /// if Rc::ptr_eq(&a, &b) {

@@ -5,12 +5,12 @@ use clippy_utils::{
     get_enclosing_block, is_integer_literal, is_path_diagnostic_item, path_to_local, path_to_local_id, SpanlessEq,
 };
 use if_chain::if_chain;
-use rustc_errors::Applicability;
-use rustc_hir::intravisit::{walk_block, walk_expr, walk_stmt, Visitor};
-use rustc_hir::{BindingAnnotation, Block, Expr, ExprKind, HirId, PatKind, QPath, Stmt, StmtKind};
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_session::{declare_lint_pass, declare_tool_lint};
-use rustc_span::symbol::sym;
+use crablangc_errors::Applicability;
+use crablangc_hir::intravisit::{walk_block, walk_expr, walk_stmt, Visitor};
+use crablangc_hir::{BindingAnnotation, Block, Expr, ExprKind, HirId, PatKind, QPath, Stmt, StmtKind};
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_span::symbol::sym;
 
 declare_clippy_lint! {
     /// ### What it does
@@ -21,7 +21,7 @@ declare_clippy_lint! {
     /// `vec![0; len]`.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// # use core::iter::repeat;
     /// # let len = 4;
     /// let mut vec1 = Vec::with_capacity(len);
@@ -35,7 +35,7 @@ declare_clippy_lint! {
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// # let len = 4;
     /// let mut vec1 = vec![0; len];
     /// let mut vec2 = vec![0; len];

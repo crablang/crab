@@ -10,17 +10,17 @@ use std::thread;
 use log::info;
 
 use crate::borrow_tracker::RetagFields;
-use rustc_data_structures::fx::FxHashSet;
-use rustc_hir::def::Namespace;
-use rustc_hir::def_id::DefId;
-use rustc_middle::ty::{
+use crablangc_data_structures::fx::FxHashSet;
+use crablangc_hir::def::Namespace;
+use crablangc_hir::def_id::DefId;
+use crablangc_middle::ty::{
     self,
     layout::{LayoutCx, LayoutOf},
     TyCtxt,
 };
-use rustc_target::spec::abi::Abi;
+use crablangc_target::spec::abi::Abi;
 
-use rustc_session::config::EntryFnType;
+use crablangc_session::config::EntryFnType;
 
 use crate::shims::tls;
 use crate::*;
@@ -260,7 +260,7 @@ pub fn create_ecx<'mir, 'tcx: 'mir>(
     let layout_cx = LayoutCx { tcx, param_env };
     let mut ecx = InterpCx::new(
         tcx,
-        rustc_span::source_map::DUMMY_SP,
+        crablangc_span::source_map::DUMMY_SP,
         param_env,
         MiriMachine::new(config, layout_cx),
     );
@@ -371,13 +371,13 @@ pub fn create_ecx<'mir, 'tcx: 'mir>(
             let main_ptr = ecx.create_fn_alloc_ptr(FnVal::Instance(entry_instance));
 
             // Inlining of `DEFAULT` from
-            // https://github.com/rust-lang/rust/blob/master/compiler/rustc_session/src/config/sigpipe.rs.
+            // https://github.com/crablang/crablang/blob/master/compiler/crablangc_session/src/config/sigpipe.rs.
             // Alaways using DEFAULT is okay since we don't support signals in Miri anyway.
             let sigpipe = 2;
 
             ecx.call_function(
                 start_instance,
-                Abi::Rust,
+                Abi::CrabLang,
                 &[
                     Scalar::from_pointer(main_ptr, &ecx).into(),
                     argc.into(),
@@ -391,7 +391,7 @@ pub fn create_ecx<'mir, 'tcx: 'mir>(
         EntryFnType::Start => {
             ecx.call_function(
                 entry_instance,
-                Abi::Rust,
+                Abi::CrabLang,
                 &[argc.into(), argv],
                 Some(&ret_place.into()),
                 StackPopCleanup::Root { cleanup: true },
@@ -437,11 +437,11 @@ pub fn eval_entry<'tcx>(
     };
 
     // Machine cleanup. Only do this if all threads have terminated; threads that are still running
-    // might cause Stacked Borrows errors (https://github.com/rust-lang/miri/issues/2396).
+    // might cause Stacked Borrows errors (https://github.com/crablang/miri/issues/2396).
     if ecx.have_all_terminated() {
         // Even if all threads have terminated, we have to beware of data races since some threads
-        // might not have joined the main thread (https://github.com/rust-lang/miri/issues/2020,
-        // https://github.com/rust-lang/miri/issues/2508).
+        // might not have joined the main thread (https://github.com/crablang/miri/issues/2020,
+        // https://github.com/crablang/miri/issues/2508).
         ecx.allow_data_races_all_threads_done();
         EnvVars::cleanup(&mut ecx).expect("error during env var cleanup");
     }

@@ -6,4 +6,4 @@ LL | fn in_adt_in_return() -> Vec<impl Debug> { panic!() }
 
 error: aborting due to previous error
 
-For more information about this error, try `rustc --explain E0282`.
+For more information about this error, try `crablangc --explain E0282`.

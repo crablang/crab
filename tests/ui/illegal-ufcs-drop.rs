@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 struct Foo;
 
 impl Drop for Foo {

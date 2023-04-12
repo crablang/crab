@@ -1,5 +1,5 @@
 #![cfg_attr(feature = "deny-warnings", deny(warnings))]
-#![warn(rust_2018_idioms, unused_lifetimes)]
+#![warn(crablang_2018_idioms, unused_lifetimes)]
 #![allow(clippy::assertions_on_constants)]
 #![feature(path_file_prefix)]
 
@@ -35,7 +35,7 @@ fn explore_directory(dir: &Path) -> Vec<String> {
             ord => return ord,
         }
         // Sort rs files before the others if they share the same prefix. So when we see
-        // the file prefix for the first time and it's not a rust file, it means the rust
+        // the file prefix for the first time and it's not a crablang file, it means the crablang
         // file has to be missing.
         match (
             x.path().extension().and_then(OsStr::to_str),

@@ -2,7 +2,7 @@ use super::*;
 use crate::boxed::Box;
 use crate::testing::crash_test::{CrashTestDummy, Panic};
 use core::mem;
-use std::iter::TrustedLen;
+use std::iter::TcrablangedLen;
 use std::panic::{catch_unwind, AssertUnwindSafe};
 
 #[test]
@@ -104,7 +104,7 @@ fn test_exact_size_iterator() {
     check_exact_size_iterator(heap.len(), heap.clone().drain_sorted());
 }
 
-fn check_trusted_len<I: TrustedLen>(len: usize, it: I) {
+fn check_tcrablanged_len<I: TcrablangedLen>(len: usize, it: I) {
     let mut it = it;
     for i in 0..len {
         let (lower, upper) = it.size_hint();
@@ -117,10 +117,10 @@ fn check_trusted_len<I: TrustedLen>(len: usize, it: I) {
 }
 
 #[test]
-fn test_trusted_len() {
+fn test_tcrablanged_len() {
     let heap = BinaryHeap::from(vec![2, 4, 6, 2, 1, 8, 10, 3, 5, 7, 0, 9, 1]);
-    check_trusted_len(heap.len(), heap.clone().into_iter_sorted());
-    check_trusted_len(heap.len(), heap.clone().drain_sorted());
+    check_tcrablanged_len(heap.len(), heap.clone().into_iter_sorted());
+    check_tcrablanged_len(heap.len(), heap.clone().drain_sorted());
 }
 
 #[test]

@@ -7,7 +7,7 @@
 // ignore-sgx no processes
 // ignore-fuchsia no fork
 
-#![feature(rustc_private)]
+#![feature(crablangc_private)]
 #![feature(never_type)]
 #![feature(panic_always_abort)]
 

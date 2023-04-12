@@ -1,4 +1,4 @@
-use core::iter::{FusedIterator, TrustedLen, TrustedRandomAccess, TrustedRandomAccessNoCoerce};
+use core::iter::{FusedIterator, TcrablangedLen, TcrablangedRandomAccess, TcrablangedRandomAccessNoCoerce};
 use core::num::NonZeroUsize;
 use core::ops::Try;
 use core::{fmt, mem, slice};
@@ -9,7 +9,7 @@ use core::{fmt, mem, slice};
 /// documentation for more.
 ///
 /// [`iter`]: super::VecDeque::iter
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub struct Iter<'a, T: 'a> {
     i1: slice::Iter<'a, T>,
     i2: slice::Iter<'a, T>,
@@ -29,14 +29,14 @@ impl<T: fmt::Debug> fmt::Debug for Iter<'_, T> {
 }
 
 // FIXME(#26925) Remove in favor of `#[derive(Clone)]`
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T> Clone for Iter<'_, T> {
     fn clone(&self) -> Self {
         Iter { i1: self.i1.clone(), i2: self.i2.clone() }
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<'a, T> Iterator for Iter<'a, T> {
     type Item = &'a T;
 
@@ -97,7 +97,7 @@ impl<'a, T> Iterator for Iter<'a, T> {
 
     #[inline]
     unsafe fn __iterator_get_unchecked(&mut self, idx: usize) -> Self::Item {
-        // Safety: The TrustedRandomAccess contract requires that callers only pass an index
+        // Safety: The TcrablangedRandomAccess contract requires that callers only pass an index
         // that is in bounds.
         unsafe {
             let i1_len = self.i1.len();
@@ -110,7 +110,7 @@ impl<'a, T> Iterator for Iter<'a, T> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<'a, T> DoubleEndedIterator for Iter<'a, T> {
     #[inline]
     fn next_back(&mut self) -> Option<&'a T> {
@@ -156,7 +156,7 @@ impl<'a, T> DoubleEndedIterator for Iter<'a, T> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T> ExactSizeIterator for Iter<'_, T> {
     fn len(&self) -> usize {
         self.i1.len() + self.i2.len()
@@ -170,15 +170,15 @@ impl<T> ExactSizeIterator for Iter<'_, T> {
 #[stable(feature = "fused", since = "1.26.0")]
 impl<T> FusedIterator for Iter<'_, T> {}
 
-#[unstable(feature = "trusted_len", issue = "37572")]
-unsafe impl<T> TrustedLen for Iter<'_, T> {}
+#[unstable(feature = "tcrablanged_len", issue = "37572")]
+unsafe impl<T> TcrablangedLen for Iter<'_, T> {}
 
 #[doc(hidden)]
-#[unstable(feature = "trusted_random_access", issue = "none")]
-unsafe impl<T> TrustedRandomAccess for Iter<'_, T> {}
+#[unstable(feature = "tcrablanged_random_access", issue = "none")]
+unsafe impl<T> TcrablangedRandomAccess for Iter<'_, T> {}
 
 #[doc(hidden)]
-#[unstable(feature = "trusted_random_access", issue = "none")]
-unsafe impl<T> TrustedRandomAccessNoCoerce for Iter<'_, T> {
+#[unstable(feature = "tcrablanged_random_access", issue = "none")]
+unsafe impl<T> TcrablangedRandomAccessNoCoerce for Iter<'_, T> {
     const MAY_HAVE_SIDE_EFFECT: bool = false;
 }

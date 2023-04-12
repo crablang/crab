@@ -1,34 +1,34 @@
 [submodule "src/doc/nomicon"]
 	path = src/doc/nomicon
-	url = https://github.com/rust-lang/nomicon.git
+	url = https://github.com/crablang/nomicon.git
 [submodule "src/tools/cargo"]
 	path = src/tools/cargo
-	url = https://github.com/rust-lang/cargo.git
+	url = https://github.com/crablang/cargo.git
 [submodule "src/doc/reference"]
 	path = src/doc/reference
-	url = https://github.com/rust-lang/reference.git
+	url = https://github.com/crablang/reference.git
 [submodule "src/doc/book"]
 	path = src/doc/book
-	url = https://github.com/rust-lang/book.git
-[submodule "src/doc/rust-by-example"]
-	path = src/doc/rust-by-example
-	url = https://github.com/rust-lang/rust-by-example.git
+	url = https://github.com/crablang/book.git
+[submodule "src/doc/crablang-by-example"]
+	path = src/doc/crablang-by-example
+	url = https://github.com/crablang/crablang-by-example.git
 [submodule "library/stdarch"]
 	path = library/stdarch
-	url = https://github.com/rust-lang/stdarch.git
-[submodule "src/doc/rustc-dev-guide"]
-	path = src/doc/rustc-dev-guide
-	url = https://github.com/rust-lang/rustc-dev-guide.git
+	url = https://github.com/crablang/stdarch.git
+[submodule "src/doc/crablangc-dev-guide"]
+	path = src/doc/crablangc-dev-guide
+	url = https://github.com/crablang/crablangc-dev-guide.git
 [submodule "src/doc/edition-guide"]
 	path = src/doc/edition-guide
-	url = https://github.com/rust-lang/edition-guide.git
+	url = https://github.com/crablang/edition-guide.git
 [submodule "src/llvm-project"]
 	path = src/llvm-project
-	url = https://github.com/rust-lang/llvm-project.git
-	branch = rustc/16.0-2023-04-05
+	url = https://github.com/crablang/llvm-project.git
+	branch = crablangc/16.0-2023-04-05
 [submodule "src/doc/embedded-book"]
 	path = src/doc/embedded-book
-	url = https://github.com/rust-embedded/book.git
+	url = https://github.com/crablang-embedded/book.git
 [submodule "library/backtrace"]
 	path = library/backtrace
-	url = https://github.com/rust-lang/backtrace-rs.git
+	url = https://github.com/crablang/backtrace-rs.git

@@ -11,7 +11,7 @@ LL |     fn f1(mut arg: u8);
    |           ^^^^^^^ help: remove `mut` from the parameter: `arg`
    |
    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
-   = note: for more information, see issue #35203 <https://github.com/rust-lang/rust/issues/35203>
+   = note: for more information, see issue #35203 <https://github.com/crablang/crablang/issues/35203>
 note: the lint level is defined here
   --> $DIR/no-patterns-in-args-2.rs:1:9
    |
@@ -20,4 +20,4 @@ LL | #![deny(patterns_in_fns_without_body)]
 
 error: aborting due to 2 previous errors
 
-For more information about this error, try `rustc --explain E0642`.
+For more information about this error, try `crablangc --explain E0642`.

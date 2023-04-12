@@ -3,7 +3,7 @@
 #![allow(unused_imports)]
 #![allow(stable_features)]
 
-// A reduced version of the rustbook ice. The problem this encountered
+// A reduced version of the crablangbook ice. The problem this encountered
 // had to do with codegen ignoring binders.
 
 // pretty-expanded FIXME #23616

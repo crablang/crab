@@ -1,6 +1,6 @@
 // run-pass
 #![feature(test)]
-#![allow(unused_mut)] // under NLL we get warning about `x` below: rust-lang/rust#54499
+#![allow(unused_mut)] // under NLL we get warning about `x` below: crablang/crablang#54499
 
 // This test is bogus (i.e., should be check-fail) during the period
 // where #54986 is implemented and #54987 is *not* implemented. For

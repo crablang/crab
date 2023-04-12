@@ -4,7 +4,7 @@ error: malformed `cfg_attr` attribute input
 LL | #[cfg_attr]
    | ^^^^^^^^^^^ help: missing condition and attribute: `#[cfg_attr(condition, attribute, other_attribute, ...)]`
    |
-   = note: for more information, visit <https://doc.rust-lang.org/reference/conditional-compilation.html#the-cfg_attr-attribute>
+   = note: for more information, visit <https://doc.crablang.org/reference/conditional-compilation.html#the-cfg_attr-attribute>
 
 error: malformed `cfg_attr` attribute input
   --> $DIR/malformed-special-attrs.rs:4:1
@@ -12,7 +12,7 @@ error: malformed `cfg_attr` attribute input
 LL | #[cfg_attr = ""]
    | ^^^^^^^^^^^^^^^^ help: missing condition and attribute: `#[cfg_attr(condition, attribute, other_attribute, ...)]`
    |
-   = note: for more information, visit <https://doc.rust-lang.org/reference/conditional-compilation.html#the-cfg_attr-attribute>
+   = note: for more information, visit <https://doc.crablang.org/reference/conditional-compilation.html#the-cfg_attr-attribute>
 
 error: malformed `derive` attribute input
   --> $DIR/malformed-special-attrs.rs:7:1

@@ -34,4 +34,4 @@ LL |         Enum::A(_) if let Some(()) = { let y = &mut x; *y = Enum::B(false);
 
 error: aborting due to 4 previous errors
 
-For more information about this error, try `rustc --explain E0510`.
+For more information about this error, try `crablangc --explain E0510`.

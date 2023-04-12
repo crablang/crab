@@ -4,19 +4,19 @@
 // ignore-wasm32-bare no libc to test ffi with
 // pretty-expanded FIXME #23616
 
-#![feature(rustc_private)]
+#![feature(crablangc_private)]
 
-mod rustrt {
+mod crablangrt {
     extern crate libc;
 
-    #[link(name = "rust_test_helpers", kind = "static")]
+    #[link(name = "crablang_test_helpers", kind = "static")]
     extern "C" {
-        pub fn rust_get_test_int() -> libc::intptr_t;
+        pub fn crablang_get_test_int() -> libc::intptr_t;
     }
 }
 
 pub fn main() {
     unsafe {
-        rustrt::rust_get_test_int();
+        crablangrt::crablang_get_test_int();
     }
 }

@@ -3,19 +3,19 @@
 #![cfg_attr(unstable, feature(unstable))] // The feature from the ./auxiliary/staged-api.rs file.
 #![feature(const_trait_impl)]
 #![feature(staged_api)]
-#![stable(feature = "rust1", since = "1.0.0")]
+#![stable(feature = "crablang1", since = "1.0.0")]
 
 // aux-build: staged-api.rs
 extern crate staged_api;
 
 use staged_api::*;
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub struct Foo;
 
-#[stable(feature = "rust1", since = "1.0.0")]
-#[cfg_attr(unstable, rustc_const_unstable(feature = "foo", issue = "none"))]
-#[cfg_attr(stable, rustc_const_stable(feature = "foo", since = "1.0.0"))]
+#[stable(feature = "crablang1", since = "1.0.0")]
+#[cfg_attr(unstable, crablangc_const_unstable(feature = "foo", issue = "none"))]
+#[cfg_attr(stable, crablangc_const_stable(feature = "foo", since = "1.0.0"))]
 impl const MyTrait for Foo {
     //[stable]~^ ERROR trait implementations cannot be const stable yet
     fn func() {}
@@ -37,8 +37,8 @@ const fn const_context() {
     // ^ fails, because the `foo` feature is not active
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
-#[cfg_attr(unstable, rustc_const_unstable(feature = "foo", issue = "none"))]
+#[stable(feature = "crablang1", since = "1.0.0")]
+#[cfg_attr(unstable, crablangc_const_unstable(feature = "foo", issue = "none"))]
 pub const fn const_context_not_const_stable() {
     //[stable]~^ ERROR function has missing const stability attribute
     Unstable::func();
@@ -49,8 +49,8 @@ pub const fn const_context_not_const_stable() {
     // ^ fails, because the `foo` feature is not active
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
-#[rustc_const_stable(feature = "cheese", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
+#[crablangc_const_stable(feature = "cheese", since = "1.0.0")]
 const fn stable_const_context() {
     Unstable::func();
     //[unstable]~^ ERROR not yet stable as a const fn

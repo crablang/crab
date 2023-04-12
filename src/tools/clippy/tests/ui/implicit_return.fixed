@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 #![feature(lint_reasons)]
 #![warn(clippy::implicit_return)]
 #![allow(clippy::needless_return, clippy::needless_bool, unused, clippy::never_loop)]
@@ -16,7 +16,7 @@ fn test_if_block() -> bool {
     if true { return true } else { return false }
 }
 
-#[rustfmt::skip]
+#[crablangfmt::skip]
 fn test_match(x: bool) -> bool {
     match x {
         true => return false,
@@ -65,7 +65,7 @@ fn test_loop_with_if_let() -> bool {
 }
 
 fn test_closure() {
-    #[rustfmt::skip]
+    #[crablangfmt::skip]
     let _ = || { return true };
     let _ = || return true;
 }

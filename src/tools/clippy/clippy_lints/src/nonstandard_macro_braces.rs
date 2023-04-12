@@ -6,14 +6,14 @@ use std::{
 use clippy_utils::diagnostics::span_lint_and_sugg;
 use clippy_utils::source::snippet_opt;
 use if_chain::if_chain;
-use rustc_ast::ast;
-use rustc_data_structures::fx::{FxHashMap, FxHashSet};
-use rustc_errors::Applicability;
-use rustc_hir::def_id::DefId;
-use rustc_lint::{EarlyContext, EarlyLintPass};
-use rustc_session::{declare_tool_lint, impl_lint_pass};
-use rustc_span::hygiene::{ExpnKind, MacroKind};
-use rustc_span::Span;
+use crablangc_ast::ast;
+use crablangc_data_structures::fx::{FxHashMap, FxHashSet};
+use crablangc_errors::Applicability;
+use crablangc_hir::def_id::DefId;
+use crablangc_lint::{EarlyContext, EarlyLintPass};
+use crablangc_session::{declare_tool_lint, impl_lint_pass};
+use crablangc_span::hygiene::{ExpnKind, MacroKind};
+use crablangc_span::Span;
 use serde::{de, Deserialize};
 
 declare_clippy_lint! {
@@ -25,11 +25,11 @@ declare_clippy_lint! {
     /// doesn't give you a semicolon in item position, which can be unexpected.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// vec!{1, 2, 3};
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// vec![1, 2, 3];
     /// ```
     #[clippy::version = "1.55.0"]
@@ -106,7 +106,7 @@ fn is_offending_macro<'a>(cx: &EarlyContext<'_>, span: Span, mac_braces: &'a Mac
         if let Some(braces) = mac_braces.macro_braces.get(name);
         if let Some(snip) = snippet_opt(cx, span_call_site);
         // we must check only invocation sites
-        // https://github.com/rust-lang/rust-clippy/issues/7422
+        // https://github.com/crablang/crablang-clippy/issues/7422
         if snip.starts_with(&format!("{name}!"));
         if unnested_or_local();
         // make formatting consistent

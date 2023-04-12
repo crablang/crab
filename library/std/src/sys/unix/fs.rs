@@ -100,7 +100,7 @@ pub struct File(FileDesc);
 // FIXME: This should be available on Linux with all `target_env`.
 // But currently only glibc exposes `statx` fn and structs.
 // We don't want to import unverified raw C structs here directly.
-// https://github.com/rust-lang/rust/pull/67774
+// https://github.com/crablang/crablang/pull/67774
 macro_rules! cfg_has_statx {
     ({ $($then_tt:tt)* } else { $($else_tt:tt)* }) => {
         cfg_if::cfg_if! {
@@ -192,7 +192,7 @@ cfg_has_statx! {{
             // block the syscall.
             // Availability is checked by performing a call which expects `EFAULT`
             // if the syscall is usable.
-            // See: https://github.com/rust-lang/rust/issues/65662
+            // See: https://github.com/crablang/crablang/issues/65662
             // FIXME this can probably just do the call if `EPERM` was received, but
             // previous iteration of the code checked it for all errors and for now
             // this is retained.
@@ -638,7 +638,7 @@ impl Iterator for ReadDir {
                 // readdir_r() is. However, readdir_r() cannot correctly handle platforms
                 // with unlimited or variable NAME_MAX. Many modern platforms guarantee
                 // thread safety for readdir() as long an individual DIR* is not accessed
-                // concurrently, which is sufficient for Rust.
+                // concurrently, which is sufficient for CrabLang.
                 super::os::set_errno(0);
                 let entry_ptr = readdir64(self.inner.dirp.0);
                 if entry_ptr.is_null() {
@@ -672,7 +672,7 @@ impl Iterator for ReadDir {
                 // allocation, which is not necessarily the case here.
                 //
                 // Absent any other way to obtain a pointer to `(*entry_ptr).d_name`
-                // legally in Rust analogously to how it would be done in C, we instead
+                // legally in CrabLang analogously to how it would be done in C, we instead
                 // need to make our own non-libc allocation that conforms to the weird
                 // imaginary definition of dirent64, and use that for a field offset
                 // computation.

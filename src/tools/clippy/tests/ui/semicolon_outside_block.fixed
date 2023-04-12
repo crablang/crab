@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 #![allow(
     unused,
     clippy::unused_unit,
@@ -27,7 +27,7 @@ fn unit_fn_block() {
     ()
 }
 
-#[rustfmt::skip]
+#[crablangfmt::skip]
 fn main() {
     { unit_fn_block() }
     unsafe { unit_fn_block() }

@@ -75,22 +75,22 @@
 // 63 |   Unordered   |   Unordered   |       >       |    -?    |
 // 64 |   Unordered   |   Unordered   |   Unordered   |    +     |
 
-#![feature(decl_macro, rustc_attrs)]
+#![feature(decl_macro, crablangc_attrs)]
 
 struct Right;
 // struct Wrong; // not defined
 
-#[rustc_macro_transparency = "transparent"]
+#[crablangc_macro_transparency = "transparent"]
 macro include() {
-    #[rustc_macro_transparency = "transparent"]
+    #[crablangc_macro_transparency = "transparent"]
     macro gen_outer() {
         macro m() { Wrong }
     }
-    #[rustc_macro_transparency = "transparent"]
+    #[crablangc_macro_transparency = "transparent"]
     macro gen_inner() {
         macro m() { Right }
     }
-    #[rustc_macro_transparency = "transparent"]
+    #[crablangc_macro_transparency = "transparent"]
     macro gen_invoc() {
         m!()
     }
@@ -98,7 +98,7 @@ macro include() {
     fn check1() {
         macro m() {}
         {
-            #[rustc_macro_transparency = "transparent"]
+            #[crablangc_macro_transparency = "transparent"]
             macro gen_gen_inner_invoc() {
                 gen_inner!();
                 m!(); //~ ERROR `m` is ambiguous
@@ -110,7 +110,7 @@ macro include() {
     fn check5() {
         macro m() { Wrong }
         {
-            #[rustc_macro_transparency = "transparent"]
+            #[crablangc_macro_transparency = "transparent"]
             macro gen_inner_invoc() {
                 macro m() { Right }
                 m!(); // OK
@@ -122,7 +122,7 @@ macro include() {
     fn check9() {
         macro m() { Wrong }
         {
-            #[rustc_macro_transparency = "transparent"]
+            #[crablangc_macro_transparency = "transparent"]
             macro gen_inner_gen_invoc() {
                 macro m() { Right }
                 gen_invoc!(); // OK
@@ -143,7 +143,7 @@ macro include() {
         macro m() {}
         {
             gen_inner!();
-            #[rustc_macro_transparency = "transparent"]
+            #[crablangc_macro_transparency = "transparent"]
             macro gen_invoc() { m!() } //~ ERROR `m` is ambiguous
             gen_invoc!();
         }
@@ -184,7 +184,7 @@ macro include() {
     fn check52() {
         gen_outer!();
         {
-            #[rustc_macro_transparency = "transparent"]
+            #[crablangc_macro_transparency = "transparent"]
             macro gen_gen_inner_invoc() {
                 gen_inner!();
                 m!(); //~ ERROR `m` is ambiguous
@@ -196,7 +196,7 @@ macro include() {
     fn check56() {
         gen_outer!();
         {
-            #[rustc_macro_transparency = "transparent"]
+            #[crablangc_macro_transparency = "transparent"]
             macro gen_inner_invoc() {
                 macro m() { Right }
                 m!(); // OK
@@ -216,7 +216,7 @@ macro include() {
     fn check60() {
         gen_outer!();
         {
-            #[rustc_macro_transparency = "transparent"]
+            #[crablangc_macro_transparency = "transparent"]
             macro gen_inner_gen_invoc() {
                 macro m() { Right }
                 gen_invoc!(); // OK
@@ -229,7 +229,7 @@ macro include() {
         gen_outer!();
         {
             gen_inner!();
-            #[rustc_macro_transparency = "transparent"]
+            #[crablangc_macro_transparency = "transparent"]
             macro gen_invoc() { m!() } //~ ERROR `m` is ambiguous
             gen_invoc!();
         }

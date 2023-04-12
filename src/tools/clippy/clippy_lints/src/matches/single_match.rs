@@ -3,15 +3,15 @@ use clippy_utils::source::{expr_block, snippet};
 use clippy_utils::ty::{implements_trait, is_type_diagnostic_item, peel_mid_ty_refs};
 use clippy_utils::{is_lint_allowed, is_unit_expr, is_wild, peel_blocks, peel_hir_pat_refs, peel_n_hir_expr_refs};
 use core::cmp::max;
-use rustc_errors::Applicability;
-use rustc_hir::{Arm, BindingAnnotation, Block, Expr, ExprKind, Pat, PatKind};
-use rustc_lint::LateContext;
-use rustc_middle::ty::{self, Ty};
-use rustc_span::sym;
+use crablangc_errors::Applicability;
+use crablangc_hir::{Arm, BindingAnnotation, Block, Expr, ExprKind, Pat, PatKind};
+use crablangc_lint::LateContext;
+use crablangc_middle::ty::{self, Ty};
+use crablangc_span::sym;
 
 use super::{MATCH_BOOL, SINGLE_MATCH, SINGLE_MATCH_ELSE};
 
-#[rustfmt::skip]
+#[crablangfmt::skip]
 pub(crate) fn check(cx: &LateContext<'_>, ex: &Expr<'_>, arms: &[Arm<'_>], expr: &Expr<'_>) {
     if arms.len() == 2 && arms[0].guard.is_none() && arms[1].guard.is_none() {
         if expr.span.from_expansion() {

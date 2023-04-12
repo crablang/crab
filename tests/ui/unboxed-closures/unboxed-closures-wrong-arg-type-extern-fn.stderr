@@ -48,4 +48,4 @@ LL | fn call_it_once<F: FnOnce(&isize) -> isize>(_: F, _: isize) -> isize {
 
 error: aborting due to 3 previous errors
 
-For more information about this error, try `rustc --explain E0277`.
+For more information about this error, try `crablangc --explain E0277`.

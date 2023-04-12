@@ -7,7 +7,7 @@
     clippy::needless_pass_by_value
 )]
 
-#[rustfmt::skip]
+#[crablangfmt::skip]
 fn main() {
     const Z: u32 = 0;
     let u: u32 = 42;

@@ -5,7 +5,7 @@ struct Foo<'s> { //~ ERROR: parameter `'s` is never used
     //~^ ERROR: generic `Self` types are currently not permitted in anonymous constants
 }
 
-// The below is taken from https://github.com/rust-lang/rust/issues/66152#issuecomment-550275017
+// The below is taken from https://github.com/crablang/crablang/issues/66152#issuecomment-550275017
 // as the root cause seems the same.
 
 const fn foo<T>() -> usize {

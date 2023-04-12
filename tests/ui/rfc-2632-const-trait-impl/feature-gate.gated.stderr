@@ -1,4 +1,4 @@
-error: fatal error triggered by #[rustc_error]
+error: fatal error triggered by #[crablangc_error]
   --> $DIR/feature-gate.rs:14:1
    |
 LL | fn main() {}

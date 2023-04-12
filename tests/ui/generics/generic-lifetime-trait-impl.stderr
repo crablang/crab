@@ -9,4 +9,4 @@ LL |     fn bar<T: Bar<'a>>(self) -> &'a str { panic!() }
 
 error: aborting due to previous error
 
-For more information about this error, try `rustc --explain E0195`.
+For more information about this error, try `crablangc --explain E0195`.

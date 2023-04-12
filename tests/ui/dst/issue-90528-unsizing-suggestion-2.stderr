@@ -91,4 +91,4 @@ LL |     wants_read(&*x[..]);
 
 error: aborting due to 5 previous errors
 
-For more information about this error, try `rustc --explain E0277`.
+For more information about this error, try `crablangc --explain E0277`.

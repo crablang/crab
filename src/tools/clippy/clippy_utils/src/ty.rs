@@ -1,31 +1,31 @@
-//! Util methods for [`rustc_middle::ty`]
+//! Util methods for [`crablangc_middle::ty`]
 
 #![allow(clippy::module_name_repetitions)]
 
 use core::ops::ControlFlow;
-use rustc_ast::ast::Mutability;
-use rustc_data_structures::fx::{FxHashMap, FxHashSet};
-use rustc_hir as hir;
-use rustc_hir::def::{CtorKind, CtorOf, DefKind, Res};
-use rustc_hir::def_id::DefId;
-use rustc_hir::{Expr, FnDecl, LangItem, TyKind, Unsafety};
-use rustc_infer::infer::{
+use crablangc_ast::ast::Mutability;
+use crablangc_data_structures::fx::{FxHashMap, FxHashSet};
+use crablangc_hir as hir;
+use crablangc_hir::def::{CtorKind, CtorOf, DefKind, Res};
+use crablangc_hir::def_id::DefId;
+use crablangc_hir::{Expr, FnDecl, LangItem, TyKind, Unsafety};
+use crablangc_infer::infer::{
     type_variable::{TypeVariableOrigin, TypeVariableOriginKind},
     TyCtxtInferExt,
 };
-use rustc_lint::LateContext;
-use rustc_middle::mir::interpret::{ConstValue, Scalar};
-use rustc_middle::ty::{
+use crablangc_lint::LateContext;
+use crablangc_middle::mir::interpret::{ConstValue, Scalar};
+use crablangc_middle::ty::{
     self, layout::ValidityRequirement, AdtDef, AliasTy, AssocKind, Binder, BoundRegion, FnSig, IntTy, List, ParamEnv,
     Predicate, PredicateKind, Region, RegionKind, SubstsRef, Ty, TyCtxt, TypeSuperVisitable, TypeVisitable,
     TypeVisitableExt, TypeVisitor, UintTy, VariantDef, VariantDiscr,
 };
-use rustc_middle::ty::{GenericArg, GenericArgKind};
-use rustc_span::symbol::Ident;
-use rustc_span::{sym, Span, Symbol, DUMMY_SP};
-use rustc_target::abi::{Size, VariantIdx};
-use rustc_trait_selection::infer::InferCtxtExt;
-use rustc_trait_selection::traits::query::normalize::QueryNormalizeExt;
+use crablangc_middle::ty::{GenericArg, GenericArgKind};
+use crablangc_span::symbol::Ident;
+use crablangc_span::{sym, Span, Symbol, DUMMY_SP};
+use crablangc_target::abi::{Size, VariantIdx};
+use crablangc_trait_selection::infer::InferCtxtExt;
+use crablangc_trait_selection::traits::query::normalize::QueryNormalizeExt;
 use std::iter;
 
 use crate::{match_def_path, path_res, paths};
@@ -143,9 +143,9 @@ pub fn get_iterator_item_ty<'tcx>(cx: &LateContext<'tcx>, ty: Ty<'tcx>) -> Optio
 /// implements a trait marked with a diagnostic item use [`implements_trait`].
 ///
 /// For a further exploitation what diagnostic items are see [diagnostic items] in
-/// rustc-dev-guide.
+/// crablangc-dev-guide.
 ///
-/// [Diagnostic Items]: https://rustc-dev-guide.rust-lang.org/diagnostics/diagnostic-items.html
+/// [Diagnostic Items]: https://crablangc-dev-guide.crablang.org/diagnostics/diagnostic-items.html
 pub fn get_type_diagnostic_name(cx: &LateContext<'_>, ty: Ty<'_>) -> Option<Symbol> {
     match ty.kind() {
         ty::Adt(adt, _) => cx.tcx.get_diagnostic_name(adt.did()),
@@ -201,7 +201,7 @@ pub fn has_iter_method(cx: &LateContext<'_>, probably_ref_ty: Ty<'_>) -> Option<
 /// * [`get_trait_def_id`](super::get_trait_def_id) to get a trait [`DefId`].
 /// * [Common tools for writing lints] for an example how to use this function and other options.
 ///
-/// [Common tools for writing lints]: https://github.com/rust-lang/rust-clippy/blob/master/book/src/development/common_tools_writing_lints.md#checking-if-a-type-implements-a-specific-trait
+/// [Common tools for writing lints]: https://github.com/crablang/crablang-clippy/blob/master/book/src/development/common_tools_writing_lints.md#checking-if-a-type-implements-a-specific-trait
 pub fn implements_trait<'tcx>(
     cx: &LateContext<'tcx>,
     ty: Ty<'tcx>,
@@ -290,7 +290,7 @@ pub fn is_must_use_ty<'tcx>(cx: &LateContext<'tcx>, ty: Ty<'tcx>) -> bool {
     }
 }
 
-// FIXME: Per https://doc.rust-lang.org/nightly/nightly-rustc/rustc_trait_selection/infer/at/struct.At.html#method.normalize
+// FIXME: Per https://doc.crablang.org/nightly/nightly-crablangc/crablangc_trait_selection/infer/at/struct.At.html#method.normalize
 // this function can be removed once the `normalize` method does not panic when normalization does
 // not succeed
 /// Checks if `Ty` is normalizable. This function is useful
@@ -311,7 +311,7 @@ fn is_normalizable_helper<'tcx>(
     // prevent recursive loops, false-negative is better than endless loop leading to stack overflow
     cache.insert(ty, false);
     let infcx = cx.tcx.infer_ctxt().build();
-    let cause = rustc_middle::traits::ObligationCause::dummy();
+    let cause = crablangc_middle::traits::ObligationCause::dummy();
     let result = if infcx.at(&cause, param_env).query_normalize(ty).is_ok() {
         match ty.kind() {
             ty::Adt(def, substs) => def.variants().iter().all(|variant| {
@@ -368,13 +368,13 @@ pub fn is_type_ref_to_diagnostic_item(cx: &LateContext<'_>, ty: Ty<'_>, diag_ite
 /// trait marked with a diagnostic item use [`implements_trait`].
 ///
 /// For a further exploitation what diagnostic items are see [diagnostic items] in
-/// rustc-dev-guide.
+/// crablangc-dev-guide.
 ///
 /// ---
 ///
 /// If you change the signature, remember to update the internal lint `MatchTypeOnDiagItem`
 ///
-/// [Diagnostic Items]: https://rustc-dev-guide.rust-lang.org/diagnostics/diagnostic-items.html
+/// [Diagnostic Items]: https://crablangc-dev-guide.crablang.org/diagnostics/diagnostic-items.html
 pub fn is_type_diagnostic_item(cx: &LateContext<'_>, ty: Ty<'_>, diag_item: Symbol) -> bool {
     match ty.kind() {
         ty::Adt(adt, _) => cx.tcx.is_diagnostic_item(diag_item, adt.did()),
@@ -953,7 +953,7 @@ pub fn ty_is_fn_once_param<'tcx>(tcx: TyCtxt<'_>, ty: Ty<'tcx>, predicates: &'tc
 /// Comes up with an "at least" guesstimate for the type's size, not taking into
 /// account the layout of type parameters.
 pub fn approx_ty_size<'tcx>(cx: &LateContext<'tcx>, ty: Ty<'tcx>) -> u64 {
-    use rustc_middle::ty::layout::LayoutOf;
+    use crablangc_middle::ty::layout::LayoutOf;
     if !is_normalizable(cx, cx.param_env, ty) {
         return 0;
     }

@@ -1,4 +1,4 @@
-// https://internals.rust-lang.org/t/18227
+// https://internals.crablang.org/t/18227
 
 fn main() {
     prinltn!(); //~ ERROR cannot find macro `prinltn` in this scope

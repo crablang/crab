@@ -1,7 +1,7 @@
 //! The `Box<T>` type for heap allocation.
 //!
 //! [`Box<T>`], casually referred to as a 'box', provides the simplest form of
-//! heap allocation in Rust. Boxes provide ownership for this allocation, and
+//! heap allocation in CrabLang. Boxes provide ownership for this allocation, and
 //! drop their contents when they go out of scope. Boxes also ensure that they
 //! never allocate more than `isize::MAX` bytes.
 //!
@@ -72,8 +72,8 @@
 //! So long as `T: Sized`, a `Box<T>` is guaranteed to be represented
 //! as a single pointer and is also ABI-compatible with C pointers
 //! (i.e. the C type `T*`). This means that if you have extern "C"
-//! Rust functions that will be called from C, you can define those
-//! Rust functions using `Box<T>` types, and use `T*` as corresponding
+//! CrabLang functions that will be called from C, you can define those
+//! CrabLang functions using `Box<T>` types, and use `T*` as corresponding
 //! type on the C side. As an example, consider this C header which
 //! declares functions that create and destroy some kind of `Foo`
 //! value:
@@ -88,10 +88,10 @@
 //! void foo_delete(struct Foo*);
 //! ```
 //!
-//! These two functions might be implemented in Rust as follows. Here, the
+//! These two functions might be implemented in CrabLang as follows. Here, the
 //! `struct Foo*` type from C is translated to `Box<Foo>`, which captures
 //! the ownership constraints. Note also that the nullable argument to
-//! `foo_delete` is represented in Rust as `Option<Box<Foo>>`, since `Box<Foo>`
+//! `foo_delete` is represented in CrabLang as `Option<Box<Foo>>`, since `Box<Foo>`
 //! cannot be null.
 //!
 //! ```
@@ -117,10 +117,10 @@
 //!
 //! **Important.** At least at present, you should avoid using
 //! `Box<T>` types for functions that are defined in C but invoked
-//! from Rust. In those cases, you should directly mirror the C types
+//! from CrabLang. In those cases, you should directly mirror the C types
 //! as closely as possible. Using types like `Box<T>` where the C
 //! definition is just using `T*` can lead to undefined behavior, as
-//! described in [rust-lang/unsafe-code-guidelines#198][ucg#198].
+//! described in [crablang/unsafe-code-guidelines#198][ucg#198].
 //!
 //! # Considerations for unsafe code
 //!
@@ -132,11 +132,11 @@
 //! asserts uniqueness over its content. Using raw pointers derived from a box
 //! after that box has been mutated through, moved or borrowed as `&mut T`
 //! is not allowed. For more guidance on working with box from unsafe code, see
-//! [rust-lang/unsafe-code-guidelines#326][ucg#326].
+//! [crablang/unsafe-code-guidelines#326][ucg#326].
 //!
 //!
-//! [ucg#198]: https://github.com/rust-lang/unsafe-code-guidelines/issues/198
-//! [ucg#326]: https://github.com/rust-lang/unsafe-code-guidelines/issues/326
+//! [ucg#198]: https://github.com/crablang/unsafe-code-guidelines/issues/198
+//! [ucg#326]: https://github.com/crablang/unsafe-code-guidelines/issues/326
 //! [dereferencing]: core::ops::Deref
 //! [`Box::<T>::from_raw(value)`]: Box::from_raw
 //! [`Global`]: crate::alloc::Global
@@ -144,7 +144,7 @@
 //! [`Layout::for_value(&*value)`]: crate::alloc::Layout::for_value
 //! [valid]: ptr#safety
 
-#![stable(feature = "rust1", since = "1.0.0")]
+#![stable(feature = "crablang1", since = "1.0.0")]
 
 use core::any::Any;
 use core::async_iter::AsyncIterator;
@@ -191,7 +191,7 @@ mod thin;
 /// See the [module-level documentation](../../std/boxed/index.html) for more.
 #[lang = "owned_box"]
 #[fundamental]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 // The declaration of the `Box` struct must be kept in sync with the
 // `alloc::alloc::box_free` function or ICEs will happen. See the comment
 // on `box_free` for more details.
@@ -212,11 +212,11 @@ impl<T> Box<T> {
     /// ```
     #[cfg(all(not(no_global_oom_handling)))]
     #[inline(always)]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[must_use]
-    #[rustc_diagnostic_item = "box_new"]
+    #[crablangc_diagnostic_item = "box_new"]
     pub fn new(x: T) -> Self {
-        #[rustc_box]
+        #[crablangc_box]
         Box::new(x)
     }
 
@@ -579,7 +579,7 @@ impl<T, A: Allocator> Box<T, A> {
     ///
     /// This conversion does not allocate on the heap and happens in place.
     #[unstable(feature = "box_into_boxed_slice", issue = "71582")]
-    #[rustc_const_unstable(feature = "const_box", issue = "92521")]
+    #[crablangc_const_unstable(feature = "const_box", issue = "92521")]
     pub const fn into_boxed_slice(boxed: Self) -> Box<[T], A> {
         let (raw, alloc) = Box::into_raw_with_allocator(boxed);
         unsafe { Box::from_raw_in(raw as *mut [T; 1], alloc) }
@@ -812,7 +812,7 @@ impl<T, A: Allocator> Box<mem::MaybeUninit<T>, A> {
     /// assert_eq!(*five, 5)
     /// ```
     #[unstable(feature = "new_uninit", issue = "63291")]
-    #[rustc_const_unstable(feature = "const_box", issue = "92521")]
+    #[crablangc_const_unstable(feature = "const_box", issue = "92521")]
     #[inline]
     pub const unsafe fn assume_init(self) -> Box<T, A> {
         let (raw, alloc) = Box::into_raw_with_allocator(self);
@@ -847,7 +847,7 @@ impl<T, A: Allocator> Box<mem::MaybeUninit<T>, A> {
     /// }
     /// ```
     #[unstable(feature = "new_uninit", issue = "63291")]
-    #[rustc_const_unstable(feature = "const_box", issue = "92521")]
+    #[crablangc_const_unstable(feature = "const_box", issue = "92521")]
     #[inline]
     pub const fn write(mut boxed: Self, value: T) -> Box<T, A> {
         unsafe {
@@ -995,7 +995,7 @@ impl<T: ?Sized, A: Allocator> Box<T, A> {
     /// [memory layout]: self#memory-layout
     /// [`Layout`]: crate::Layout
     #[unstable(feature = "allocator_api", issue = "32838")]
-    #[rustc_const_unstable(feature = "const_box", issue = "92521")]
+    #[crablangc_const_unstable(feature = "const_box", issue = "92521")]
     #[inline]
     pub const unsafe fn from_raw_in(raw: *mut T, alloc: A) -> Self {
         Box(unsafe { Unique::new_unchecked(raw) }, alloc)
@@ -1093,7 +1093,7 @@ impl<T: ?Sized, A: Allocator> Box<T, A> {
     ///
     /// [memory layout]: self#memory-layout
     #[unstable(feature = "allocator_api", issue = "32838")]
-    #[rustc_const_unstable(feature = "const_box", issue = "92521")]
+    #[crablangc_const_unstable(feature = "const_box", issue = "92521")]
     #[inline]
     pub const fn into_raw_with_allocator(b: Self) -> (*mut T, A) {
         let (leaked, alloc) = Box::into_unique(b);
@@ -1105,7 +1105,7 @@ impl<T: ?Sized, A: Allocator> Box<T, A> {
         issue = "none",
         reason = "use `Box::leak(b).into()` or `Unique::from(Box::leak(b))` instead"
     )]
-    #[rustc_const_unstable(feature = "const_box", issue = "92521")]
+    #[crablangc_const_unstable(feature = "const_box", issue = "92521")]
     #[inline]
     #[doc(hidden)]
     pub const fn into_unique(b: Self) -> (Unique<T>, A) {
@@ -1124,7 +1124,7 @@ impl<T: ?Sized, A: Allocator> Box<T, A> {
     /// to call it as `Box::allocator(&b)` instead of `b.allocator()`. This
     /// is so that there is no conflict with a method on the inner type.
     #[unstable(feature = "allocator_api", issue = "32838")]
-    #[rustc_const_unstable(feature = "const_box", issue = "92521")]
+    #[crablangc_const_unstable(feature = "const_box", issue = "92521")]
     #[inline]
     pub const fn allocator(b: &Self) -> &A {
         &b.1
@@ -1166,7 +1166,7 @@ impl<T: ?Sized, A: Allocator> Box<T, A> {
     /// assert_eq!(*static_ref, [4, 2, 3]);
     /// ```
     #[stable(feature = "box_leak", since = "1.26.0")]
-    #[rustc_const_unstable(feature = "const_box", issue = "92521")]
+    #[crablangc_const_unstable(feature = "const_box", issue = "92521")]
     #[inline]
     pub const fn leak<'a>(b: Self) -> &'a mut T
     where
@@ -1206,7 +1206,7 @@ impl<T: ?Sized, A: Allocator> Box<T, A> {
     /// let bar = Pin::from(foo);
     /// ```
     #[stable(feature = "box_into_pin", since = "1.63.0")]
-    #[rustc_const_unstable(feature = "const_box", issue = "92521")]
+    #[crablangc_const_unstable(feature = "const_box", issue = "92521")]
     pub const fn into_pin(boxed: Self) -> Pin<Self>
     where
         A: 'static,
@@ -1218,7 +1218,7 @@ impl<T: ?Sized, A: Allocator> Box<T, A> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 unsafe impl<#[may_dangle] T: ?Sized, A: Allocator> Drop for Box<T, A> {
     fn drop(&mut self) {
         // FIXME: Do nothing, drop is currently performed by compiler.
@@ -1226,7 +1226,7 @@ unsafe impl<#[may_dangle] T: ?Sized, A: Allocator> Drop for Box<T, A> {
 }
 
 #[cfg(not(no_global_oom_handling))]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: Default> Default for Box<T> {
     /// Creates a `Box<T>`, with the `Default` value for T.
     #[inline]
@@ -1236,8 +1236,8 @@ impl<T: Default> Default for Box<T> {
 }
 
 #[cfg(not(no_global_oom_handling))]
-#[stable(feature = "rust1", since = "1.0.0")]
-#[rustc_const_unstable(feature = "const_default_impls", issue = "87864")]
+#[stable(feature = "crablang1", since = "1.0.0")]
+#[crablangc_const_unstable(feature = "const_default_impls", issue = "87864")]
 impl<T> const Default for Box<[T]> {
     #[inline]
     fn default() -> Self {
@@ -1248,7 +1248,7 @@ impl<T> const Default for Box<[T]> {
 
 #[cfg(not(no_global_oom_handling))]
 #[stable(feature = "default_box_extra", since = "1.17.0")]
-#[rustc_const_unstable(feature = "const_default_impls", issue = "87864")]
+#[crablangc_const_unstable(feature = "const_default_impls", issue = "87864")]
 impl const Default for Box<str> {
     #[inline]
     fn default() -> Self {
@@ -1262,7 +1262,7 @@ impl const Default for Box<str> {
 }
 
 #[cfg(not(no_global_oom_handling))]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: Clone, A: Allocator + Clone> Clone for Box<T, A> {
     /// Returns a new box with a `clone()` of this box's contents.
     ///
@@ -1321,7 +1321,7 @@ impl Clone for Box<str> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: ?Sized + PartialEq, A: Allocator> PartialEq for Box<T, A> {
     #[inline]
     fn eq(&self, other: &Self) -> bool {
@@ -1332,7 +1332,7 @@ impl<T: ?Sized + PartialEq, A: Allocator> PartialEq for Box<T, A> {
         PartialEq::ne(&**self, &**other)
     }
 }
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: ?Sized + PartialOrd, A: Allocator> PartialOrd for Box<T, A> {
     #[inline]
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
@@ -1355,17 +1355,17 @@ impl<T: ?Sized + PartialOrd, A: Allocator> PartialOrd for Box<T, A> {
         PartialOrd::gt(&**self, &**other)
     }
 }
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: ?Sized + Ord, A: Allocator> Ord for Box<T, A> {
     #[inline]
     fn cmp(&self, other: &Self) -> Ordering {
         Ord::cmp(&**self, &**other)
     }
 }
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: ?Sized + Eq, A: Allocator> Eq for Box<T, A> {}
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: ?Sized + Hash, A: Allocator> Hash for Box<T, A> {
     fn hash<H: Hasher>(&self, state: &mut H) {
         (**self).hash(state);
@@ -1434,7 +1434,7 @@ impl<T> From<T> for Box<T> {
     ///
     /// # Examples
     ///
-    /// ```rust
+    /// ```crablang
     /// let x = 5;
     /// let boxed = Box::new(5);
     ///
@@ -1446,7 +1446,7 @@ impl<T> From<T> for Box<T> {
 }
 
 #[stable(feature = "pin", since = "1.33.0")]
-#[rustc_const_unstable(feature = "const_box", issue = "92521")]
+#[crablangc_const_unstable(feature = "const_box", issue = "92521")]
 impl<T: ?Sized, A: Allocator> const From<Box<T, A>> for Pin<Box<T, A>>
 where
     A: 'static,
@@ -1476,7 +1476,7 @@ impl<T: Copy> From<&[T]> for Box<[T]> {
     /// and performs a copy of `slice` and its contents.
     ///
     /// # Examples
-    /// ```rust
+    /// ```crablang
     /// // create a &[u8] which will be used to create a Box<[u8]>
     /// let slice: &[u8] = &[104, 101, 108, 108, 111];
     /// let boxed_slice: Box<[u8]> = Box::from(slice);
@@ -1521,7 +1521,7 @@ impl From<&str> for Box<str> {
     ///
     /// # Examples
     ///
-    /// ```rust
+    /// ```crablang
     /// let boxed: Box<str> = Box::from("hello");
     /// println!("{boxed}");
     /// ```
@@ -1543,7 +1543,7 @@ impl From<Cow<'_, str>> for Box<str> {
     ///
     /// # Examples
     ///
-    /// ```rust
+    /// ```crablang
     /// use std::borrow::Cow;
     ///
     /// let unboxed = Cow::Borrowed("hello");
@@ -1551,7 +1551,7 @@ impl From<Cow<'_, str>> for Box<str> {
     /// println!("{boxed}");
     /// ```
     ///
-    /// ```rust
+    /// ```crablang
     /// # use std::borrow::Cow;
     /// let unboxed = Cow::Owned("hello".to_string());
     /// let boxed: Box<str> = Box::from(unboxed);
@@ -1573,7 +1573,7 @@ impl<A: Allocator> From<Box<str, A>> for Box<[u8], A> {
     /// This conversion does not allocate on the heap and happens in place.
     ///
     /// # Examples
-    /// ```rust
+    /// ```crablang
     /// // create a Box<str> which will be used to create a Box<[u8]>
     /// let boxed: Box<str> = Box::from("hello");
     /// let boxed_str: Box<[u8]> = Box::from(boxed);
@@ -1600,7 +1600,7 @@ impl<T, const N: usize> From<[T; N]> for Box<[T]> {
     ///
     /// # Examples
     ///
-    /// ```rust
+    /// ```crablang
     /// let boxed: Box<[u8]> = Box::from([4, 2]);
     /// println!("{boxed:?}");
     /// ```
@@ -1699,7 +1699,7 @@ impl<A: Allocator> Box<dyn Any, A> {
     /// print_if_string(Box::new(0i8));
     /// ```
     #[inline]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn downcast<T: Any>(self) -> Result<Box<T, A>, Self> {
         if self.is::<T>() { unsafe { Ok(self.downcast_unchecked::<T>()) } } else { Err(self) }
     }
@@ -1758,7 +1758,7 @@ impl<A: Allocator> Box<dyn Any + Send, A> {
     /// print_if_string(Box::new(0i8));
     /// ```
     #[inline]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn downcast<T: Any>(self) -> Result<Box<T, A>, Self> {
         if self.is::<T>() { unsafe { Ok(self.downcast_unchecked::<T>()) } } else { Err(self) }
     }
@@ -1858,21 +1858,21 @@ impl<A: Allocator> Box<dyn Any + Send + Sync, A> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: fmt::Display + ?Sized, A: Allocator> fmt::Display for Box<T, A> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         fmt::Display::fmt(&**self, f)
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: fmt::Debug + ?Sized, A: Allocator> fmt::Debug for Box<T, A> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         fmt::Debug::fmt(&**self, f)
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: ?Sized, A: Allocator> fmt::Pointer for Box<T, A> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         // It's not possible to extract the inner Uniq directly from the Box,
@@ -1882,8 +1882,8 @@ impl<T: ?Sized, A: Allocator> fmt::Pointer for Box<T, A> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
-#[rustc_const_unstable(feature = "const_box", issue = "92521")]
+#[stable(feature = "crablang1", since = "1.0.0")]
+#[crablangc_const_unstable(feature = "const_box", issue = "92521")]
 impl<T: ?Sized, A: Allocator> const Deref for Box<T, A> {
     type Target = T;
 
@@ -1892,8 +1892,8 @@ impl<T: ?Sized, A: Allocator> const Deref for Box<T, A> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
-#[rustc_const_unstable(feature = "const_box", issue = "92521")]
+#[stable(feature = "crablang1", since = "1.0.0")]
+#[crablangc_const_unstable(feature = "const_box", issue = "92521")]
 impl<T: ?Sized, A: Allocator> const DerefMut for Box<T, A> {
     fn deref_mut(&mut self) -> &mut T {
         &mut **self
@@ -1903,7 +1903,7 @@ impl<T: ?Sized, A: Allocator> const DerefMut for Box<T, A> {
 #[unstable(feature = "receiver_trait", issue = "none")]
 impl<T: ?Sized, A: Allocator> Receiver for Box<T, A> {}
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<I: Iterator + ?Sized, A: Allocator> Iterator for Box<I, A> {
     type Item = I::Item;
     fn next(&mut self) -> Option<I::Item> {
@@ -1939,14 +1939,14 @@ impl<I: Iterator + ?Sized, A: Allocator> BoxIter for Box<I, A> {
 
 /// Specialization for sized `I`s that uses `I`s implementation of `last()`
 /// instead of the default.
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<I: Iterator, A: Allocator> BoxIter for Box<I, A> {
     fn last(self) -> Option<I::Item> {
         (*self).last()
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<I: DoubleEndedIterator + ?Sized, A: Allocator> DoubleEndedIterator for Box<I, A> {
     fn next_back(&mut self) -> Option<I::Item> {
         (**self).next_back()
@@ -1955,7 +1955,7 @@ impl<I: DoubleEndedIterator + ?Sized, A: Allocator> DoubleEndedIterator for Box<
         (**self).nth_back(n)
     }
 }
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<I: ExactSizeIterator + ?Sized, A: Allocator> ExactSizeIterator for Box<I, A> {
     fn len(&self) -> usize {
         (**self).len()
@@ -1972,21 +1972,21 @@ impl<I: FusedIterator + ?Sized, A: Allocator> FusedIterator for Box<I, A> {}
 impl<Args: Tuple, F: FnOnce<Args> + ?Sized, A: Allocator> FnOnce<Args> for Box<F, A> {
     type Output = <F as FnOnce<Args>>::Output;
 
-    extern "rust-call" fn call_once(self, args: Args) -> Self::Output {
+    extern "crablang-call" fn call_once(self, args: Args) -> Self::Output {
         <F as FnOnce<Args>>::call_once(*self, args)
     }
 }
 
 #[stable(feature = "boxed_closure_impls", since = "1.35.0")]
 impl<Args: Tuple, F: FnMut<Args> + ?Sized, A: Allocator> FnMut<Args> for Box<F, A> {
-    extern "rust-call" fn call_mut(&mut self, args: Args) -> Self::Output {
+    extern "crablang-call" fn call_mut(&mut self, args: Args) -> Self::Output {
         <F as FnMut<Args>>::call_mut(self, args)
     }
 }
 
 #[stable(feature = "boxed_closure_impls", since = "1.35.0")]
 impl<Args: Tuple, F: Fn<Args> + ?Sized, A: Allocator> Fn<Args> for Box<F, A> {
-    extern "rust-call" fn call(&self, args: Args) -> Self::Output {
+    extern "crablang-call" fn call(&self, args: Args) -> Self::Output {
         <F as Fn<Args>>::call(self, args)
     }
 }
@@ -2129,7 +2129,7 @@ impl<S: ?Sized + AsyncIterator + Unpin> AsyncIterator for Box<S> {
 impl dyn Error {
     #[inline]
     #[stable(feature = "error_downcast", since = "1.3.0")]
-    #[rustc_allow_incoherent_impl]
+    #[crablangc_allow_incoherent_impl]
     /// Attempts to downcast the box to a concrete type.
     pub fn downcast<T: Error + 'static>(self: Box<Self>) -> Result<Box<T>, Box<dyn Error>> {
         if self.is::<T>() {
@@ -2146,7 +2146,7 @@ impl dyn Error {
 impl dyn Error + Send {
     #[inline]
     #[stable(feature = "error_downcast", since = "1.3.0")]
-    #[rustc_allow_incoherent_impl]
+    #[crablangc_allow_incoherent_impl]
     /// Attempts to downcast the box to a concrete type.
     pub fn downcast<T: Error + 'static>(self: Box<Self>) -> Result<Box<T>, Box<dyn Error + Send>> {
         let err: Box<dyn Error> = self;
@@ -2160,7 +2160,7 @@ impl dyn Error + Send {
 impl dyn Error + Send + Sync {
     #[inline]
     #[stable(feature = "error_downcast", since = "1.3.0")]
-    #[rustc_allow_incoherent_impl]
+    #[crablangc_allow_incoherent_impl]
     /// Attempts to downcast the box to a concrete type.
     pub fn downcast<T: Error + 'static>(self: Box<Self>) -> Result<Box<T>, Box<Self>> {
         let err: Box<dyn Error> = self;
@@ -2172,7 +2172,7 @@ impl dyn Error + Send + Sync {
 }
 
 #[cfg(not(no_global_oom_handling))]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<'a, E: Error + 'a> From<E> for Box<dyn Error + 'a> {
     /// Converts a type of [`Error`] into a box of dyn [`Error`].
     ///
@@ -2205,7 +2205,7 @@ impl<'a, E: Error + 'a> From<E> for Box<dyn Error + 'a> {
 }
 
 #[cfg(not(no_global_oom_handling))]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<'a, E: Error + Send + Sync + 'a> From<E> for Box<dyn Error + Send + Sync + 'a> {
     /// Converts a type of [`Error`] + [`Send`] + [`Sync`] into a box of
     /// dyn [`Error`] + [`Send`] + [`Sync`].
@@ -2244,7 +2244,7 @@ impl<'a, E: Error + Send + Sync + 'a> From<E> for Box<dyn Error + Send + Sync + 
 }
 
 #[cfg(not(no_global_oom_handling))]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl From<String> for Box<dyn Error + Send + Sync> {
     /// Converts a [`String`] into a box of dyn [`Error`] + [`Send`] + [`Sync`].
     ///
@@ -2310,7 +2310,7 @@ impl From<String> for Box<dyn Error> {
 }
 
 #[cfg(not(no_global_oom_handling))]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<'a> From<&str> for Box<dyn Error + Send + Sync + 'a> {
     /// Converts a [`str`] into a box of dyn [`Error`] + [`Send`] + [`Sync`].
     ///

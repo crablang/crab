@@ -9,4 +9,4 @@ LL | const fn my_const_fn(val: u8) -> u8 {
 
 error: aborting due to previous error
 
-For more information about this error, try `rustc --explain E0446`.
+For more information about this error, try `crablangc --explain E0446`.

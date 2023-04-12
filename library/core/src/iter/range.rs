@@ -4,17 +4,17 @@ use crate::num::NonZeroUsize;
 use crate::ops::{self, Try};
 
 use super::{
-    FusedIterator, TrustedLen, TrustedRandomAccess, TrustedRandomAccessNoCoerce, TrustedStep,
+    FusedIterator, TcrablangedLen, TcrablangedRandomAccess, TcrablangedRandomAccessNoCoerce, TcrablangedStep,
 };
 
 // Safety: All invariants are upheld.
-macro_rules! unsafe_impl_trusted_step {
+macro_rules! unsafe_impl_tcrablanged_step {
     ($($type:ty)*) => {$(
-        #[unstable(feature = "trusted_step", issue = "85731")]
-        unsafe impl TrustedStep for $type {}
+        #[unstable(feature = "tcrablanged_step", issue = "85731")]
+        unsafe impl TcrablangedStep for $type {}
     )*};
 }
-unsafe_impl_trusted_step![char i8 i16 i32 i64 i128 isize u8 u16 u32 u64 u128 usize];
+unsafe_impl_tcrablanged_step![char i8 i16 i32 i64 i128 isize u8 u16 u32 u64 u128 usize];
 
 /// Objects that have a notion of *successor* and *predecessor* operations.
 ///
@@ -199,7 +199,7 @@ macro_rules! step_identical_methods {
 
         #[inline]
         #[allow(arithmetic_overflow)]
-        #[rustc_inherit_overflow_checks]
+        #[crablangc_inherit_overflow_checks]
         fn forward(start: Self, n: usize) -> Self {
             // In debug builds, trigger a panic on overflow.
             // This should optimize completely out in release builds.
@@ -212,7 +212,7 @@ macro_rules! step_identical_methods {
 
         #[inline]
         #[allow(arithmetic_overflow)]
-        #[rustc_inherit_overflow_checks]
+        #[crablangc_inherit_overflow_checks]
         fn backward(start: Self, n: usize) -> Self {
             // In debug builds, trigger a panic on overflow.
             // This should optimize completely out in release builds.
@@ -486,22 +486,22 @@ impl Step for char {
 
 macro_rules! range_exact_iter_impl {
     ($($t:ty)*) => ($(
-        #[stable(feature = "rust1", since = "1.0.0")]
+        #[stable(feature = "crablang1", since = "1.0.0")]
         impl ExactSizeIterator for ops::Range<$t> { }
     )*)
 }
 
 /// Safety: This macro must only be used on types that are `Copy` and result in ranges
 /// which have an exact `size_hint()` where the upper bound must not be `None`.
-macro_rules! unsafe_range_trusted_random_access_impl {
+macro_rules! unsafe_range_tcrablanged_random_access_impl {
     ($($t:ty)*) => ($(
         #[doc(hidden)]
-        #[unstable(feature = "trusted_random_access", issue = "none")]
-        unsafe impl TrustedRandomAccess for ops::Range<$t> {}
+        #[unstable(feature = "tcrablanged_random_access", issue = "none")]
+        unsafe impl TcrablangedRandomAccess for ops::Range<$t> {}
 
         #[doc(hidden)]
-        #[unstable(feature = "trusted_random_access", issue = "none")]
-        unsafe impl TrustedRandomAccessNoCoerce for ops::Range<$t> {
+        #[unstable(feature = "tcrablanged_random_access", issue = "none")]
+        unsafe impl TcrablangedRandomAccessNoCoerce for ops::Range<$t> {
             const MAY_HAVE_SIDE_EFFECT: bool = false;
         }
     )*)
@@ -615,7 +615,7 @@ impl<A: Step> RangeIteratorImpl for ops::Range<A> {
     }
 }
 
-impl<T: TrustedStep> RangeIteratorImpl for ops::Range<T> {
+impl<T: TcrablangedStep> RangeIteratorImpl for ops::Range<T> {
     #[inline]
     fn spec_next(&mut self) -> Option<T> {
         if self.start < self.end {
@@ -702,7 +702,7 @@ impl<T: TrustedStep> RangeIteratorImpl for ops::Range<T> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<A: Step> Iterator for ops::Range<A> {
     type Item = A;
 
@@ -754,11 +754,11 @@ impl<A: Step> Iterator for ops::Range<A> {
     #[inline]
     unsafe fn __iterator_get_unchecked(&mut self, idx: usize) -> Self::Item
     where
-        Self: TrustedRandomAccessNoCoerce,
+        Self: TcrablangedRandomAccessNoCoerce,
     {
-        // SAFETY: The TrustedRandomAccess contract requires that callers only pass an index
+        // SAFETY: The TcrablangedRandomAccess contract requires that callers only pass an index
         // that is in bounds.
-        // Additionally Self: TrustedRandomAccess is only implemented for Copy types
+        // Additionally Self: TcrablangedRandomAccess is only implemented for Copy types
         // which means even repeated reads of the same index would be safe.
         unsafe { Step::forward_unchecked(self.start.clone(), idx) }
     }
@@ -777,25 +777,25 @@ range_exact_iter_impl! {
     isize i8 i16
 
     // These are incorrect per the reasoning above,
-    // but removing them would be a breaking change as they were stabilized in Rust 1.0.0.
+    // but removing them would be a breaking change as they were stabilized in CrabLang 1.0.0.
     // So e.g. `(0..66_000_u32).len()` for example will compile without error or warnings
     // on 16-bit platforms, but continue to give a wrong result.
     u32
     i32
 }
 
-unsafe_range_trusted_random_access_impl! {
+unsafe_range_tcrablanged_random_access_impl! {
     usize u8 u16
     isize i8 i16
 }
 
 #[cfg(target_pointer_width = "32")]
-unsafe_range_trusted_random_access_impl! {
+unsafe_range_tcrablanged_random_access_impl! {
     u32 i32
 }
 
 #[cfg(target_pointer_width = "64")]
-unsafe_range_trusted_random_access_impl! {
+unsafe_range_tcrablanged_random_access_impl! {
     u32 i32
     u64 i64
 }
@@ -805,14 +805,14 @@ range_incl_exact_iter_impl! {
     i8
 
     // These are incorrect per the reasoning above,
-    // but removing them would be a breaking change as they were stabilized in Rust 1.26.0.
+    // but removing them would be a breaking change as they were stabilized in CrabLang 1.26.0.
     // So e.g. `(0..=u16::MAX).len()` for example will compile without error or warnings
     // on 16-bit platforms, but continue to give a wrong result.
     u16
     i16
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<A: Step> DoubleEndedIterator for ops::Range<A> {
     #[inline]
     fn next_back(&mut self) -> Option<A> {
@@ -839,8 +839,8 @@ impl<A: Step> DoubleEndedIterator for ops::Range<A> {
 // >     get to `b`
 // > * `steps_between(&a, &b) == None` if `a > b`
 //
-// The first invariant is what is generally required for `TrustedLen` to be
-// sound. The note addendum satisfies an additional `TrustedLen` invariant.
+// The first invariant is what is generally required for `TcrablangedLen` to be
+// sound. The note addendum satisfies an additional `TcrablangedLen` invariant.
 //
 // > The upper bound must only be `None` if the actual iterator length is larger
 // > than `usize::MAX`
@@ -849,13 +849,13 @@ impl<A: Step> DoubleEndedIterator for ops::Range<A> {
 // implementation is correct; regardless it is explicitly stated. If `a < b`
 // then `(0, Some(0))` is returned by `ops::Range<A: Step>::size_hint`. As such
 // the second invariant is upheld.
-#[unstable(feature = "trusted_len", issue = "37572")]
-unsafe impl<A: TrustedStep> TrustedLen for ops::Range<A> {}
+#[unstable(feature = "tcrablanged_len", issue = "37572")]
+unsafe impl<A: TcrablangedStep> TcrablangedLen for ops::Range<A> {}
 
 #[stable(feature = "fused", since = "1.26.0")]
 impl<A: Step> FusedIterator for ops::Range<A> {}
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<A: Step> Iterator for ops::RangeFrom<A> {
     type Item = A;
 
@@ -879,8 +879,8 @@ impl<A: Step> Iterator for ops::RangeFrom<A> {
 }
 
 // Safety: See above implementation for `ops::Range<A>`
-#[unstable(feature = "trusted_len", issue = "37572")]
-unsafe impl<A: TrustedStep> TrustedLen for ops::RangeFrom<A> {}
+#[unstable(feature = "tcrablanged_len", issue = "37572")]
+unsafe impl<A: TcrablangedStep> TcrablangedLen for ops::RangeFrom<A> {}
 
 #[stable(feature = "fused", since = "1.26.0")]
 impl<A: Step> FusedIterator for ops::RangeFrom<A> {}
@@ -999,7 +999,7 @@ impl<A: Step> RangeInclusiveIteratorImpl for ops::RangeInclusive<A> {
     }
 }
 
-impl<T: TrustedStep> RangeInclusiveIteratorImpl for ops::RangeInclusive<T> {
+impl<T: TcrablangedStep> RangeInclusiveIteratorImpl for ops::RangeInclusive<T> {
     #[inline]
     fn spec_next(&mut self) -> Option<T> {
         if self.is_empty() {
@@ -1222,8 +1222,8 @@ impl<A: Step> DoubleEndedIterator for ops::RangeInclusive<A> {
 }
 
 // Safety: See above implementation for `ops::Range<A>`
-#[unstable(feature = "trusted_len", issue = "37572")]
-unsafe impl<A: TrustedStep> TrustedLen for ops::RangeInclusive<A> {}
+#[unstable(feature = "tcrablanged_len", issue = "37572")]
+unsafe impl<A: TcrablangedStep> TcrablangedLen for ops::RangeInclusive<A> {}
 
 #[stable(feature = "fused", since = "1.26.0")]
 impl<A: Step> FusedIterator for ops::RangeInclusive<A> {}

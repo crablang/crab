@@ -5,7 +5,7 @@ LL |     #[inline]
    |     ^^^^^^^^^
    |
    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
-   = note: see issue #65833 <https://github.com/rust-lang/rust/issues/65833> for more information
+   = note: see issue #65833 <https://github.com/crablang/crablang/issues/65833> for more information
 note: the lint level is defined here
   --> $DIR/inline-trait-and-foreign-items.rs:4:9
    |
@@ -27,7 +27,7 @@ LL |     #[inline]
    |     ^^^^^^^^^
    |
    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
-   = note: see issue #65833 <https://github.com/rust-lang/rust/issues/65833> for more information
+   = note: see issue #65833 <https://github.com/crablang/crablang/issues/65833> for more information
 
 error[E0518]: attribute should be applied to function or closure
   --> $DIR/inline-trait-and-foreign-items.rs:22:5
@@ -71,4 +71,4 @@ LL |     type U = impl Trait;
 
 error: aborting due to 6 previous errors; 2 warnings emitted
 
-For more information about this error, try `rustc --explain E0518`.
+For more information about this error, try `crablangc --explain E0518`.

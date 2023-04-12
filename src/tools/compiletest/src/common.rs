@@ -57,8 +57,8 @@ string_enum! {
         Pretty => "pretty",
         DebugInfo => "debuginfo",
         Codegen => "codegen",
-        Rustdoc => "rustdoc",
-        RustdocJson => "rustdoc-json",
+        CrabLangdoc => "crablangdoc",
+        CrabLangdocJson => "crablangdoc-json",
         CodegenUnits => "codegen-units",
         Incremental => "incremental",
         RunMake => "run-make",
@@ -136,14 +136,14 @@ pub struct Config {
     /// The library paths required for running compiled programs.
     pub run_lib_path: PathBuf,
 
-    /// The rustc executable.
-    pub rustc_path: PathBuf,
+    /// The crablangc executable.
+    pub crablangc_path: PathBuf,
 
-    /// The rustdoc executable.
-    pub rustdoc_path: Option<PathBuf>,
+    /// The crablangdoc executable.
+    pub crablangdoc_path: Option<PathBuf>,
 
-    /// The rust-demangler executable.
-    pub rust_demangler_path: Option<PathBuf>,
+    /// The crablang-demangler executable.
+    pub crablang_demangler_path: Option<PathBuf>,
 
     /// The Python executable to use for LLDB and htmldocck.
     pub python: String,
@@ -220,10 +220,10 @@ pub struct Config {
     pub runtool: Option<String>,
 
     /// Flags to pass to the compiler when building for the host
-    pub host_rustcflags: Vec<String>,
+    pub host_crablangcflags: Vec<String>,
 
     /// Flags to pass to the compiler when building for the target
-    pub target_rustcflags: Vec<String>,
+    pub target_crablangcflags: Vec<String>,
 
     /// Whether tests should be optimized by default. Individual test-suites and test files may
     /// override this setting.
@@ -247,14 +247,14 @@ pub struct Config {
     /// Version of GDB, encoded as ((major * 1000) + minor) * 1000 + patch
     pub gdb_version: Option<u32>,
 
-    /// Whether GDB has native rust support
-    pub gdb_native_rust: bool,
+    /// Whether GDB has native crablang support
+    pub gdb_native_crablang: bool,
 
     /// Version of LLDB
     pub lldb_version: Option<u32>,
 
-    /// Whether LLDB has native rust support
-    pub lldb_native_rust: bool,
+    /// Whether LLDB has native crablang support
+    pub lldb_native_crablang: bool,
 
     /// Version of LLVM
     pub llvm_version: Option<u32>,
@@ -293,17 +293,17 @@ pub struct Config {
     pub compare_mode: Option<CompareMode>,
 
     /// If true, this will generate a coverage file with UI test files that run `MachineApplicable`
-    /// diagnostics but are missing `run-rustfix` annotations. The generated coverage file is
-    /// created in `/<build_base>/rustfix_missing_coverage.txt`
-    pub rustfix_coverage: bool,
+    /// diagnostics but are missing `run-crablangfix` annotations. The generated coverage file is
+    /// created in `/<build_base>/crablangfix_missing_coverage.txt`
+    pub crablangfix_coverage: bool,
 
-    /// whether to run `tidy` when a rustdoc test fails
+    /// whether to run `tidy` when a crablangdoc test fails
     pub has_tidy: bool,
 
-    /// The current Rust channel
+    /// The current CrabLang channel
     pub channel: String,
 
-    /// The default Rust edition
+    /// The default CrabLang edition
     pub edition: Option<String>,
 
     // Configuration for various run-make tests frobbing things like C compilers
@@ -318,7 +318,7 @@ pub struct Config {
 
     /// Path to a NodeJS executable. Used for JS doctests, emscripten and WASM tests
     pub nodejs: Option<String>,
-    /// Path to a npm executable. Used for rustdoc GUI tests
+    /// Path to a npm executable. Used for crablangdoc GUI tests
     pub npm: Option<String>,
 
     /// Whether to rerun tests even if the inputs are unchanged.
@@ -423,7 +423,7 @@ impl TargetCfgs {
             // Needed only for one cycle, remove during the bootstrap bump.
             Self::collect_all_slow(config)
         } else {
-            serde_json::from_str(&rustc_output(
+            serde_json::from_str(&crablangc_output(
                 config,
                 &["--print=all-target-specs-json", "-Zunstable-options"],
             ))
@@ -474,8 +474,8 @@ impl TargetCfgs {
     // Needed only for one cycle, remove during the bootstrap bump.
     fn collect_all_slow(config: &Config) -> HashMap<String, TargetCfg> {
         let mut result = HashMap::new();
-        for target in rustc_output(config, &["--print=target-list"]).trim().lines() {
-            let json = rustc_output(
+        for target in crablangc_output(config, &["--print=target-list"]).trim().lines() {
+            let json = crablangc_output(
                 config,
                 &["--print=target-spec-json", "-Zunstable-options", "--target", target],
             );
@@ -528,11 +528,11 @@ pub enum Endian {
     Big,
 }
 
-fn rustc_output(config: &Config, args: &[&str]) -> String {
-    let mut command = Command::new(&config.rustc_path);
+fn crablangc_output(config: &Config, args: &[&str]) -> String {
+    let mut command = Command::new(&config.crablangc_path);
     add_dylib_path(&mut command, iter::once(&config.compile_lib_path));
-    command.args(&config.target_rustcflags).args(args);
-    command.env("RUSTC_BOOTSTRAP", "1");
+    command.args(&config.target_crablangcflags).args(args);
+    command.env("CRABLANGC_BOOTSTRAP", "1");
 
     let output = match command.output() {
         Ok(output) => output,

@@ -1,5 +1,5 @@
 // Check that niche selection prefers zero.
-// See https://github.com/rust-lang/rust/pull/87794
+// See https://github.com/crablang/crablang/pull/87794
 // run-pass
 #[repr(u8)]
 pub enum Size {

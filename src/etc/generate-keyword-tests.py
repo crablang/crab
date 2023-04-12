@@ -4,7 +4,7 @@
 This script takes a list of keywords and generates a testcase, that checks
 if using the keyword as identifier fails, for every keyword. The generate
 test files are set read-only.
-Test for https://github.com/rust-lang/rust/issues/2275
+Test for https://github.com/crablang/crablang/issues/2275
 
 sample usage: src/etc/generate-keyword-tests.py as break
 """

@@ -15,7 +15,7 @@ pub fn box_uninitialized() -> Box<MaybeUninit<usize>> {
     Box::new(MaybeUninit::uninit())
 }
 
-// https://github.com/rust-lang/rust/issues/58201
+// https://github.com/crablang/crablang/issues/58201
 #[no_mangle]
 pub fn box_uninitialized2() -> Box<MaybeUninit<[usize; 1024 * 1024]>> {
     // CHECK-LABEL: @box_uninitialized2
@@ -26,8 +26,8 @@ pub fn box_uninitialized2() -> Box<MaybeUninit<[usize; 1024 * 1024]>> {
     Box::new(MaybeUninit::uninit())
 }
 
-// Hide the `allocalign` attribute in the declaration of __rust_alloc
+// Hide the `allocalign` attribute in the declaration of __crablang_alloc
 // from the CHECK-NOT above, and also verify the attributes got set reasonably.
-// CHECK: declare noalias noundef ptr @__rust_alloc(i{{[0-9]+}} noundef, i{{[0-9]+}} allocalign noundef) unnamed_addr [[RUST_ALLOC_ATTRS:#[0-9]+]]
+// CHECK: declare noalias noundef ptr @__crablang_alloc(i{{[0-9]+}} noundef, i{{[0-9]+}} allocalign noundef) unnamed_addr [[CRABLANG_ALLOC_ATTRS:#[0-9]+]]
 
-// CHECK-DAG: attributes [[RUST_ALLOC_ATTRS]] = { {{.*}} allockind("alloc,uninitialized,aligned") allocsize(0) uwtable "alloc-family"="__rust_alloc" {{.*}} }
+// CHECK-DAG: attributes [[CRABLANG_ALLOC_ATTRS]] = { {{.*}} allockind("alloc,uninitialized,aligned") allocsize(0) uwtable "alloc-family"="__crablang_alloc" {{.*}} }

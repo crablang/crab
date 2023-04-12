@@ -16,7 +16,7 @@
 -         _2 = transmute::<usize, &Never>(const 1_usize) -> [return: bb1, unwind unreachable]; // scope 0 at $DIR/lower_intrinsics.rs:+1:21: +1:48
 -                                          // mir::Constant
 -                                          // + span: $DIR/lower_intrinsics.rs:58:21: 58:40
--                                          // + literal: Const { ty: unsafe extern "rust-intrinsic" fn(usize) -> &Never {transmute::<usize, &Never>}, val: Value(<ZST>) }
+-                                          // + literal: Const { ty: unsafe extern "crablang-intrinsic" fn(usize) -> &Never {transmute::<usize, &Never>}, val: Value(<ZST>) }
 +         _2 = const 1_usize as &Never (Transmute); // scope 0 at $DIR/lower_intrinsics.rs:+1:21: +1:48
 +         goto -> bb1;                     // scope 0 at $DIR/lower_intrinsics.rs:+1:21: +1:48
       }

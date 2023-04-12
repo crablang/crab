@@ -3,10 +3,10 @@ use clippy_utils::get_enclosing_block;
 use clippy_utils::source::snippet;
 use clippy_utils::ty::{implements_trait, is_copy};
 use if_chain::if_chain;
-use rustc_errors::Applicability;
-use rustc_hir::{def::Res, def_id::DefId, BinOpKind, BorrowKind, Expr, ExprKind, GenericArg, ItemKind, QPath, TyKind};
-use rustc_lint::LateContext;
-use rustc_middle::ty::{self, Ty};
+use crablangc_errors::Applicability;
+use crablangc_hir::{def::Res, def_id::DefId, BinOpKind, BorrowKind, Expr, ExprKind, GenericArg, ItemKind, QPath, TyKind};
+use crablangc_lint::LateContext;
+use crablangc_middle::ty::{self, Ty};
 
 use super::OP_REF;
 
@@ -177,7 +177,7 @@ fn in_impl<'tcx>(
     cx: &LateContext<'tcx>,
     e: &'tcx Expr<'_>,
     bin_op: DefId,
-) -> Option<(&'tcx rustc_hir::Ty<'tcx>, &'tcx rustc_hir::Ty<'tcx>)> {
+) -> Option<(&'tcx crablangc_hir::Ty<'tcx>, &'tcx crablangc_hir::Ty<'tcx>)> {
     if_chain! {
         if let Some(block) = get_enclosing_block(cx, e.hir_id);
         if let Some(impl_def_id) = cx.tcx.impl_of_method(block.hir_id.owner.to_def_id());
@@ -199,7 +199,7 @@ fn in_impl<'tcx>(
     }
 }
 
-fn are_equal(cx: &LateContext<'_>, middle_ty: Ty<'_>, hir_ty: &rustc_hir::Ty<'_>) -> bool {
+fn are_equal(cx: &LateContext<'_>, middle_ty: Ty<'_>, hir_ty: &crablangc_hir::Ty<'_>) -> bool {
     if_chain! {
         if let ty::Adt(adt_def, _) = middle_ty.kind();
         if let Some(local_did) = adt_def.did().as_local();

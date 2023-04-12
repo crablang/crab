@@ -1,0 +1,25 @@
+name: crablangdoc check
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+
+jobs:
+  crablangdoc_check:
+    runs-on: ubuntu-latest
+    name: crablangdoc check
+    steps:
+    - name: checkout
+      uses: actions/checkout@v3
+
+    - name: install crablangup
+      run: |
+        curl --proto '=https' --tlsv1.2 -sSf https://sh.crablangup.rs > crablangup-init.sh
+        sh crablangup-init.sh -y --default-toolchain none
+        crablangup target add x86_64-unknown-linux-gnu
+
+    - name: document crablangfmt
+      env:
+        CRABLANGDOCFLAGS: --document-private-items --enable-index-page --show-type-layout --generate-link-to-definition -Zunstable-options -Dwarnings
+      run: cargo doc -Zskip-crablangdoc-fingerprint --no-deps -p crablangfmt-nightly -p crablangfmt-config_proc_macro

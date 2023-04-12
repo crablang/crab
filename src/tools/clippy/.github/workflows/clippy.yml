@@ -21,7 +21,7 @@ on:
     - '**.txt'
 
 env:
-  RUST_BACKTRACE: 1
+  CRABLANG_BACKTRACE: 1
   CARGO_TARGET_DIR: '${{ github.workspace }}/target'
   NO_FMT_TEST: 1
   CARGO_INCREMENTAL: 0
@@ -34,7 +34,7 @@ jobs:
 
     steps:
     # Setup
-    - uses: rust-lang/simpleinfra/github-actions/cancel-outdated-builds@master
+    - uses: crablang/simpleinfra/github-actions/cancel-outdated-builds@master
       with:
         github_token: "${{ secrets.github_token }}"
 
@@ -42,12 +42,12 @@ jobs:
       uses: actions/checkout@v3.0.2
 
     - name: Install toolchain
-      run: rustup show active-toolchain
+      run: crablangup show active-toolchain
 
     # Run
     - name: Set LD_LIBRARY_PATH (Linux)
       run: |
-        SYSROOT=$(rustc --print sysroot)
+        SYSROOT=$(crablangc --print sysroot)
         echo "LD_LIBRARY_PATH=${SYSROOT}/lib${LD_LIBRARY_PATH+:${LD_LIBRARY_PATH}}" >> $GITHUB_ENV
 
     - name: Build
@@ -64,9 +64,9 @@ jobs:
       run: cargo test --features deny-warnings,internal
       working-directory: clippy_utils
 
-    - name: Test rustc_tools_util
+    - name: Test crablangc_tools_util
       run: cargo test --features deny-warnings
-      working-directory: rustc_tools_util
+      working-directory: crablangc_tools_util
 
     - name: Test clippy_dev
       run: cargo test --features deny-warnings

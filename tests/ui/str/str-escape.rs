@@ -26,6 +26,6 @@ fn main() {
     b";
     //~^^ WARNING whitespace symbol '\u{c}' is not skipped
     // '\x0c' is ASCII whitespace, but it may not need skipped
-    // discussion: https://github.com/rust-lang/rust/pull/108403
+    // discussion: https://github.com/crablang/crablang/pull/108403
     assert_eq!(s, "a\x0cb");
 }

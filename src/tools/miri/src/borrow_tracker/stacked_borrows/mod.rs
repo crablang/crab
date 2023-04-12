@@ -1,4 +1,4 @@
-//! Implements "Stacked Borrows".  See <https://github.com/rust-lang/unsafe-code-guidelines/blob/master/wip/stacked-borrows.md>
+//! Implements "Stacked Borrows".  See <https://github.com/crablang/unsafe-code-guidelines/blob/master/wip/stacked-borrows.md>
 //! for further information.
 
 pub mod diagnostics;
@@ -9,14 +9,14 @@ use log::trace;
 use std::cmp;
 use std::fmt::Write;
 
-use rustc_data_structures::fx::FxHashSet;
-use rustc_middle::mir::{Mutability, RetagKind};
-use rustc_middle::ty::{
+use crablangc_data_structures::fx::FxHashSet;
+use crablangc_middle::mir::{Mutability, RetagKind};
+use crablangc_middle::ty::{
     self,
     layout::{HasParamEnv, LayoutOf},
     Ty,
 };
-use rustc_target::abi::{Abi, Size};
+use crablangc_target::abi::{Abi, Size};
 
 use crate::borrow_tracker::{
     stacked_borrows::diagnostics::{AllocHistory, DiagnosticCx, DiagnosticCxBuilder, TagHistory},
@@ -117,7 +117,7 @@ impl NewPermission {
                     // we have to keep alive.
                     nonfreeze_access: None,
                     // We do not protect inside UnsafeCell.
-                    // This fixes https://github.com/rust-lang/rust/issues/55005.
+                    // This fixes https://github.com/crablang/crablang/issues/55005.
                 }
             }
             ty::RawPtr(ty::TypeAndMut { mutbl: Mutability::Not, .. }) => {
@@ -839,7 +839,7 @@ trait EvalContextPrivExt<'mir: 'ecx, 'tcx: 'mir, 'ecx>: crate::MiriInterpCxExt<'
         let size = this.size_and_align_of_mplace(&place)?.map(|(size, _)| size);
         // FIXME: If we cannot determine the size (because the unsized tail is an `extern type`),
         // bail out -- we cannot reasonably figure out which memory range to reborrow.
-        // See https://github.com/rust-lang/unsafe-code-guidelines/issues/276.
+        // See https://github.com/crablang/unsafe-code-guidelines/issues/276.
         let size = match size {
             Some(size) => size,
             None => return Ok(val.clone()),
@@ -995,7 +995,7 @@ pub trait EvalContextExt<'mir, 'tcx: 'mir>: crate::MiriInterpCxExt<'mir, 'tcx> {
     /// it does not alias with anything.
     ///
     /// This is a HACK because there is nothing in MIR that would make the retag
-    /// explicit. Also see <https://github.com/rust-lang/rust/issues/71117>.
+    /// explicit. Also see <https://github.com/crablang/crablang/issues/71117>.
     fn sb_retag_return_place(&mut self) -> InterpResult<'tcx> {
         let this = self.eval_context_mut();
         let return_place = &this.frame().return_place;

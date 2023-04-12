@@ -663,7 +663,7 @@ fn recursive_rmdir_toctou() {
     //
     // Scenario:
     // The attacker wants to get directory contents deleted, to which they do not have access.
-    // They have a way to get a privileged Rust binary call `std::fs::remove_dir_all()` on a
+    // They have a way to get a privileged CrabLang binary call `std::fs::remove_dir_all()` on a
     // directory they control, e.g. in their home directory.
     //
     // The POC sets up the `attack_dest/attack_file` which the attacker wants to have deleted.
@@ -1538,7 +1538,7 @@ fn create_dir_long_paths() {
 }
 
 /// Ensure ReadDir works on large directories.
-/// Regression test for https://github.com/rust-lang/rust/issues/93384.
+/// Regression test for https://github.com/crablang/crablang/issues/93384.
 #[test]
 fn read_large_dir() {
     let tmpdir = tmpdir();
@@ -1571,7 +1571,7 @@ fn hiberfil_sys() {
 }
 
 /// Test that two different ways of obtaining the FileType give the same result.
-/// Cf. https://github.com/rust-lang/rust/issues/104900
+/// Cf. https://github.com/crablang/crablang/issues/104900
 #[test]
 fn test_eq_direntry_metadata() {
     let tmpdir = tmpdir();
@@ -1586,7 +1586,7 @@ fn test_eq_direntry_metadata() {
     }
 }
 
-/// Regression test for https://github.com/rust-lang/rust/issues/50619.
+/// Regression test for https://github.com/crablang/crablang/issues/50619.
 #[test]
 #[cfg(target_os = "linux")]
 fn test_read_dir_infinite_loop() {

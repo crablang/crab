@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 #![warn(clippy::option_map_unit_fn)]
 #![allow(unused)]
 #![allow(clippy::uninlined_format_args, clippy::unnecessary_wraps)]
@@ -28,7 +28,7 @@ impl HasOption {
         value + 1
     }
 }
-#[rustfmt::skip]
+#[crablangfmt::skip]
 fn option_map_unit_fn() {
     let x = HasOption { field: Some(10) };
 

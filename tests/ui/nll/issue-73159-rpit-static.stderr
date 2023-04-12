@@ -10,4 +10,4 @@ LL |         self.0.iter().copied()
 
 error: aborting due to previous error
 
-For more information about this error, try `rustc --explain E0700`.
+For more information about this error, try `crablangc --explain E0700`.

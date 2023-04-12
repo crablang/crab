@@ -15,7 +15,7 @@
 // compile-flags:-Zverbose
 
 #![allow(warnings)]
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 
 use std::cell::Cell;
 
@@ -37,7 +37,7 @@ where
 {
 }
 
-#[rustc_regions]
+#[crablangc_regions]
 fn no_relationships_late<'a, 'b, T>(cell: Cell<&'a ()>, t: T)
 where
     T: Anything<'b>,
@@ -47,7 +47,7 @@ where
     //~| ERROR
 }
 
-#[rustc_regions]
+#[crablangc_regions]
 fn no_relationships_early<'a, 'b, T>(cell: Cell<&'a ()>, t: T)
 where
     T: Anything<'b>,
@@ -58,7 +58,7 @@ where
     //~| ERROR
 }
 
-#[rustc_regions]
+#[crablangc_regions]
 fn projection_outlives<'a, 'b, T>(cell: Cell<&'a ()>, t: T)
 where
     T: Anything<'b>,
@@ -70,7 +70,7 @@ where
     with_signature(cell, t, |cell, t| require(cell, t));
 }
 
-#[rustc_regions]
+#[crablangc_regions]
 fn elements_outlive<'a, 'b, T>(cell: Cell<&'a ()>, t: T)
 where
     T: Anything<'b>,

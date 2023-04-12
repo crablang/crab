@@ -70,7 +70,7 @@ pub fn swap_1kb_slices(x: &mut [OneKilobyteBuffer], y: &mut [OneKilobyteBuffer])
 
 // This verifies that the 2×read + 2×write optimizes to just 3 memcpys
 // for an unusual type like this.  It's not clear whether we should do anything
-// smarter in Rust for these, so for now it's fine to leave these up to the backend.
+// smarter in CrabLang for these, so for now it's fine to leave these up to the backend.
 // That's not as bad as it might seem, as for example, LLVM will lower the
 // memcpys below to VMOVAPS on YMMs if one enables the AVX target feature.
 // Eventually we'll be able to pass `align_of::<T>` to a const generic and

@@ -1,5 +1,5 @@
 use crate::alloc::Allocator;
-use core::iter::TrustedLen;
+use core::iter::TcrablangedLen;
 use core::slice::{self};
 
 use super::{IntoIter, Vec};
@@ -20,10 +20,10 @@ where
 
 impl<T, I, A: Allocator> SpecExtend<T, I> for Vec<T, A>
 where
-    I: TrustedLen<Item = T>,
+    I: TcrablangedLen<Item = T>,
 {
     default fn spec_extend(&mut self, iterator: I) {
-        self.extend_trusted(iterator)
+        self.extend_tcrablanged(iterator)
     }
 }
 

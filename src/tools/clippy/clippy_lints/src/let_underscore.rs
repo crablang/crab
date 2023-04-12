@@ -1,11 +1,11 @@
 use clippy_utils::diagnostics::span_lint_and_help;
 use clippy_utils::ty::{implements_trait, is_must_use_ty, match_type};
 use clippy_utils::{is_must_use_func_call, paths};
-use rustc_hir::{Local, PatKind};
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_middle::lint::in_external_macro;
-use rustc_middle::ty::subst::GenericArgKind;
-use rustc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_hir::{Local, PatKind};
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_middle::lint::in_external_macro;
+use crablangc_middle::ty::subst::GenericArgKind;
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
 
 declare_clippy_lint! {
     /// ### What it does
@@ -16,7 +16,7 @@ declare_clippy_lint! {
     /// expr
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// fn f() -> Result<u32, u32> {
     ///     Ok(0)
     /// }
@@ -34,8 +34,8 @@ declare_clippy_lint! {
 declare_clippy_lint! {
     /// ### What it does
     /// Checks for `let _ = sync_lock`. This supports `mutex` and `rwlock` in
-    /// `parking_lot`. For `std` locks see the `rustc` lint
-    /// [`let_underscore_lock`](https://doc.rust-lang.org/nightly/rustc/lints/listing/deny-by-default.html#let-underscore-lock)
+    /// `parking_lot`. For `std` locks see the `crablangc` lint
+    /// [`let_underscore_lock`](https://doc.crablang.org/nightly/crablangc/lints/listing/deny-by-default.html#let-underscore-lock)
     ///
     /// ### Why is this bad?
     /// This statement immediately drops the lock instead of
@@ -45,12 +45,12 @@ declare_clippy_lint! {
     /// `std::mem::drop` conveys your intention better and is less error-prone.
     ///
     /// ### Example
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// let _ = mutex.lock();
     /// ```
     ///
     /// Use instead:
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// let _lock = mutex.lock();
     /// ```
     #[clippy::version = "1.43.0"]
@@ -68,7 +68,7 @@ declare_clippy_lint! {
     /// and ignore the resulting value.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// async fn foo() -> Result<(), ()> {
     ///     Ok(())
     /// }
@@ -76,7 +76,7 @@ declare_clippy_lint! {
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// # async fn context() {
     /// async fn foo() -> Result<(), ()> {
     ///     Ok(())
@@ -106,14 +106,14 @@ declare_clippy_lint! {
     /// lints.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// fn foo() -> Result<u32, ()> {
     ///     Ok(123)
     /// }
     /// let _ = foo();
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// fn foo() -> Result<u32, ()> {
     ///     Ok(123)
     /// }

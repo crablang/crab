@@ -1,11 +1,11 @@
 use clippy_utils::diagnostics::span_lint_and_help;
-use rustc_hir::intravisit::{walk_expr, walk_fn, FnKind, Visitor};
-use rustc_hir::{Body, Expr, ExprKind, FnDecl, YieldSource};
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_middle::hir::nested_filter;
-use rustc_session::{declare_lint_pass, declare_tool_lint};
-use rustc_span::def_id::LocalDefId;
-use rustc_span::Span;
+use crablangc_hir::intravisit::{walk_expr, walk_fn, FnKind, Visitor};
+use crablangc_hir::{Body, Expr, ExprKind, FnDecl, YieldSource};
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_middle::hir::nested_filter;
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_span::def_id::LocalDefId;
+use crablangc_span::Span;
 
 declare_clippy_lint! {
     /// ### What it does
@@ -17,7 +17,7 @@ declare_clippy_lint! {
     /// causes runtime overhead and hassle for the caller.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// async fn get_random_number() -> i64 {
     ///     4 // Chosen by fair dice roll. Guaranteed to be random.
     /// }
@@ -25,7 +25,7 @@ declare_clippy_lint! {
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// fn get_random_number_improved() -> i64 {
     ///     4 // Chosen by fair dice roll. Guaranteed to be random.
     /// }

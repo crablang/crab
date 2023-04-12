@@ -1,0 +1,8 @@
+[package]
+name = "crablangc_parse_format"
+version = "0.0.0"
+edition = "2021"
+
+[dependencies]
+crablangc_lexer = { path = "../crablangc_lexer" }
+crablangc_data_structures = { path = "../crablangc_data_structures" }

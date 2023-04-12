@@ -39,7 +39,7 @@
 //   several (unofficial) articles documenting the details. [1]
 // - `parking_lot` has been using this API for years (on Windows versions
 //   before Windows 8). [2] Many big projects extensively use parking_lot,
-//   such as servo and the Rust compiler itself.
+//   such as servo and the CrabLang compiler itself.
 // - It is the underlying API used by Windows SRW locks and Windows critical
 //   sections. [3] [4]
 // - The source code of the implementations of Wine, ReactOs, and Windows XP

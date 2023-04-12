@@ -3,5 +3,5 @@
 // pp-exact:dollar-crate.pp
 
 fn main() {
-    println!("rust");
+    println!("crablang");
 }

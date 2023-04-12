@@ -2,12 +2,12 @@ use clippy_utils::diagnostics::span_lint_and_sugg;
 use clippy_utils::is_lint_allowed;
 use clippy_utils::macros::span_is_local;
 use clippy_utils::source::snippet;
-use rustc_ast::ast::LitKind;
-use rustc_errors::Applicability;
-use rustc_hir::{Expr, ExprKind, HirId};
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_session::{declare_lint_pass, declare_tool_lint};
-use rustc_span::source_map::Span;
+use crablangc_ast::ast::LitKind;
+use crablangc_errors::Applicability;
+use crablangc_hir::{Expr, ExprKind, HirId};
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_span::source_map::Span;
 use unicode_normalization::UnicodeNormalization;
 
 declare_clippy_lint! {
@@ -39,12 +39,12 @@ declare_clippy_lint! {
     /// requirements, activating this lint could be useful.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// let x = String::from("€");
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// let x = String::from("\u{20ac}");
     /// ```
     #[clippy::version = "pre 1.29.0"]

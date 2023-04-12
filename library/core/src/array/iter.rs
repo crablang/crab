@@ -3,7 +3,7 @@
 use crate::num::NonZeroUsize;
 use crate::{
     fmt,
-    iter::{self, ExactSizeIterator, FusedIterator, TrustedLen},
+    iter::{self, ExactSizeIterator, FusedIterator, TcrablangedLen},
     mem::{self, MaybeUninit},
     ops::{IndexRange, Range},
     ptr,
@@ -11,7 +11,7 @@ use crate::{
 
 /// A by-value [array] iterator.
 #[stable(feature = "array_value_iter", since = "1.51.0")]
-#[rustc_insignificant_dtor]
+#[crablangc_insignificant_dtor]
 pub struct IntoIter<T, const N: usize> {
     /// This is the array we are iterating over.
     ///
@@ -36,7 +36,7 @@ pub struct IntoIter<T, const N: usize> {
     alive: IndexRange,
 }
 
-// Note: the `#[rustc_skip_array_during_method_dispatch]` on `trait IntoIterator`
+// Note: the `#[crablangc_skip_array_during_method_dispatch]` on `trait IntoIterator`
 // hides this implementation from explicit `.into_iter()` calls on editions < 2021,
 // so those calls will still resolve to the slice implementation, by reference.
 #[stable(feature = "array_into_iter_impl", since = "1.53.0")]
@@ -143,7 +143,7 @@ impl<T, const N: usize> IntoIter<T, N> {
     /// assert_eq!(r.collect::<Vec<_>>(), vec![10, 11, 12, 13, 14, 15]);
     /// ```
     #[unstable(feature = "array_into_iter_constructors", issue = "91583")]
-    #[rustc_const_unstable(feature = "const_array_into_iter_constructors", issue = "91583")]
+    #[crablangc_const_unstable(feature = "const_array_into_iter_constructors", issue = "91583")]
     pub const unsafe fn new_unchecked(
         buffer: [MaybeUninit<T>; N],
         initialized: Range<usize>,
@@ -206,7 +206,7 @@ impl<T, const N: usize> IntoIter<T, N> {
     /// assert_eq!(get_bytes(false).collect::<Vec<_>>(), vec![]);
     /// ```
     #[unstable(feature = "array_into_iter_constructors", issue = "91583")]
-    #[rustc_const_unstable(feature = "const_array_into_iter_constructors", issue = "91583")]
+    #[crablangc_const_unstable(feature = "const_array_into_iter_constructors", issue = "91583")]
     pub const fn empty() -> Self {
         let buffer = MaybeUninit::uninit_array();
         let initialized = 0..0;
@@ -378,7 +378,7 @@ impl<T, const N: usize> FusedIterator for IntoIter<T, N> {}
 // This range is decremented in length in either `next` or `next_back`. It is
 // always decremented by 1 in those methods, but only if `Some(_)` is returned.
 #[stable(feature = "array_value_iter_impls", since = "1.40.0")]
-unsafe impl<T, const N: usize> TrustedLen for IntoIter<T, N> {}
+unsafe impl<T, const N: usize> TcrablangedLen for IntoIter<T, N> {}
 
 #[stable(feature = "array_value_iter_impls", since = "1.40.0")]
 impl<T: Clone, const N: usize> Clone for IntoIter<T, N> {

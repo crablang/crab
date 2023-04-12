@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 
 #![warn(clippy::all)]
 #![warn(clippy::redundant_pattern_matching)]
@@ -65,7 +65,7 @@ fn foo() {}
 fn bar() {}
 
 // Methods that are unstable const should not be suggested within a const context, see issue #5697.
-// However, in Rust 1.48.0 the methods `is_some` and `is_none` of `Option` were stabilized as const,
+// However, in CrabLang 1.48.0 the methods `is_some` and `is_none` of `Option` were stabilized as const,
 // so the following should be linted.
 const fn issue6067() {
     if Some(42).is_some() {}

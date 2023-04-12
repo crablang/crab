@@ -1,9 +1,9 @@
 PRINT-ATTR INPUT (DISPLAY): impl Foo <
 [u8 ;
 {
-    #! [rustc_dummy(cursed_inner)] #! [allow(unused)] struct Inner
-    { field : [u8 ; { #! [rustc_dummy(another_cursed_inner)] 1 }] } 0
-}] > { #! [rustc_dummy(evaluated_attr)] fn bar() {} }
+    #! [crablangc_dummy(cursed_inner)] #! [allow(unused)] struct Inner
+    { field : [u8 ; { #! [crablangc_dummy(another_cursed_inner)] 1 }] } 0
+}] > { #! [crablangc_dummy(evaluated_attr)] fn bar() {} }
 PRINT-ATTR INPUT (DEBUG): TokenStream [
     Ident {
         ident: "impl",
@@ -47,7 +47,7 @@ PRINT-ATTR INPUT (DEBUG): TokenStream [
                         delimiter: Bracket,
                         stream: TokenStream [
                             Ident {
-                                ident: "rustc_dummy",
+                                ident: "crablangc_dummy",
                                 span: $DIR/cfg-eval-inner.rs:19:29: 19:40 (#0),
                             },
                             Group {
@@ -142,7 +142,7 @@ PRINT-ATTR INPUT (DEBUG): TokenStream [
                                                 delimiter: Bracket,
                                                 stream: TokenStream [
                                                     Ident {
-                                                        ident: "rustc_dummy",
+                                                        ident: "crablangc_dummy",
                                                         span: $DIR/cfg-eval-inner.rs:23:37: 23:48 (#0),
                                                     },
                                                     Group {
@@ -207,7 +207,7 @@ PRINT-ATTR INPUT (DEBUG): TokenStream [
                 delimiter: Bracket,
                 stream: TokenStream [
                     Ident {
-                        ident: "rustc_dummy",
+                        ident: "crablangc_dummy",
                         span: $DIR/cfg-eval-inner.rs:32:29: 32:40 (#0),
                     },
                     Group {

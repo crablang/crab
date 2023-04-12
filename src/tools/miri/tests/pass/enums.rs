@@ -21,7 +21,7 @@ fn test(me: MyEnum) {
 }
 
 fn discriminant_overflow() {
-    // Tests for https://github.com/rust-lang/rust/issues/62138.
+    // Tests for https://github.com/crablang/crablang/issues/62138.
     #[repr(u8)]
     #[allow(dead_code)]
     enum WithWraparoundInvalidValues {
@@ -61,7 +61,7 @@ fn more_discriminant_overflow() {
     // from the `bool` field of `V1`), overflowing for variants with large enough
     // indices (`V3` and `V4`), causing them to be interpreted as other variants.
     #[allow(dead_code)]
-    #[rustfmt::skip] // rustfmt prefers every variant on its own line
+    #[crablangfmt::skip] // crablangfmt prefers every variant on its own line
     pub enum E2<X> {
         V1 { f: bool },
 

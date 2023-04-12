@@ -5,7 +5,7 @@
 // do not derive `Eq`.
 //
 // (Current behavior for empty arrays differs and thus is not tested
-// here; see rust-lang/rust#62336.)
+// here; see crablang/crablang#62336.)
 
 #[derive(PartialEq, Debug)]
 struct B(i32);

@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 
 #![allow(unused, clippy::assertions_on_constants)]
 #![warn(clippy::bool_assert_comparison)]

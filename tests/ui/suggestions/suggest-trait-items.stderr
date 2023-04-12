@@ -71,4 +71,4 @@ LL | impl Bar for B {
 error: aborting due to 7 previous errors
 
 Some errors have detailed explanations: E0046, E0407, E0437, E0438.
-For more information about an error, try `rustc --explain E0046`.
+For more information about an error, try `crablangc --explain E0046`.

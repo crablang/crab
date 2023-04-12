@@ -11,11 +11,11 @@ extern crate std;
 extern crate test_macros;
 
 /// 1
-#[rustfmt::attr2]
+#[crablangfmt::attr2]
 #[doc = "3"]
 #[print_attr(nodebug)]
 #[doc = "4"]
-#[rustfmt::attr5]
+#[crablangfmt::attr5]
 /// 6
 #[print_attr(nodebug)]
 struct S;

@@ -1,9 +1,9 @@
 use clippy_utils::consts::{constant, Constant};
 use clippy_utils::diagnostics::span_lint;
 use clippy_utils::is_trait_method;
-use rustc_hir as hir;
-use rustc_lint::LateContext;
-use rustc_span::sym;
+use crablangc_hir as hir;
+use crablangc_lint::LateContext;
+use crablangc_span::sym;
 
 use super::ITERATOR_STEP_BY_ZERO;
 

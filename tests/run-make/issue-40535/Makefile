@@ -5,9 +5,9 @@ include ../tools.mk
 # * `bar` declares and depends on `extern crate baz`
 # * All crates built in metadata-only mode (`cargo check`)
 all:
-	# cc https://github.com/rust-lang/rust/issues/40623
-	$(RUSTC) baz.rs --emit=metadata
-	$(RUSTC) bar.rs --emit=metadata --extern baz=$(TMPDIR)/libbaz.rmeta
-	$(RUSTC) foo.rs --emit=metadata --extern bar=$(TMPDIR)/libbar.rmeta 2>&1 | \
+	# cc https://github.com/crablang/crablang/issues/40623
+	$(CRABLANGC) baz.rs --emit=metadata
+	$(CRABLANGC) bar.rs --emit=metadata --extern baz=$(TMPDIR)/libbaz.rmeta
+	$(CRABLANGC) foo.rs --emit=metadata --extern bar=$(TMPDIR)/libbar.rmeta 2>&1 | \
 		$(CGREP) -v "unexpectedly panicked"
 	# ^ Succeeds if it doesn't find the ICE message

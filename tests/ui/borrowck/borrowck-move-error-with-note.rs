@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 #![allow(unused)]
 enum Foo {
     Foo1(Box<u32>, Box<u32>),

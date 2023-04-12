@@ -8,12 +8,12 @@ use std::fmt;
 use rand::rngs::StdRng;
 use rand::SeedableRng;
 
-use rustc_ast::ast::Mutability;
-use rustc_const_eval::const_eval::CheckAlignment;
-use rustc_data_structures::fx::{FxHashMap, FxHashSet};
+use crablangc_ast::ast::Mutability;
+use crablangc_const_eval::const_eval::CheckAlignment;
+use crablangc_data_structures::fx::{FxHashMap, FxHashSet};
 #[allow(unused)]
-use rustc_data_structures::static_assert_size;
-use rustc_middle::{
+use crablangc_data_structures::static_assert_size;
+use crablangc_middle::{
     mir,
     ty::{
         self,
@@ -21,10 +21,10 @@ use rustc_middle::{
         Instance, Ty, TyCtxt, TypeAndMut,
     },
 };
-use rustc_span::def_id::{CrateNum, DefId};
-use rustc_span::Symbol;
-use rustc_target::abi::{Align, Size};
-use rustc_target::spec::abi::Abi;
+use crablangc_span::def_id::{CrateNum, DefId};
+use crablangc_span::Symbol;
+use crablangc_target::abi::{Align, Size};
+use crablangc_target::spec::abi::Abi;
 
 use crate::{
     concurrency::{data_race, weak_memory},
@@ -81,8 +81,8 @@ impl VisitTags for FrameExtra<'_> {
 /// Extra memory kinds
 #[derive(Debug, Copy, Clone, PartialEq, Eq)]
 pub enum MiriMemoryKind {
-    /// `__rust_alloc` memory.
-    Rust,
+    /// `__crablang_alloc` memory.
+    CrabLang,
     /// `miri_alloc` memory.
     Miri,
     /// `malloc` memory.
@@ -118,7 +118,7 @@ impl MayLeak for MiriMemoryKind {
     fn may_leak(self) -> bool {
         use self::MiriMemoryKind::*;
         match self {
-            Rust | Miri | C | WinHeap | Runtime => false,
+            CrabLang | Miri | C | WinHeap | Runtime => false,
             Machine | Global | ExternStatic | Tls => true,
         }
     }
@@ -128,7 +128,7 @@ impl fmt::Display for MiriMemoryKind {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         use self::MiriMemoryKind::*;
         match self {
-            Rust => write!(f, "Rust heap"),
+            CrabLang => write!(f, "CrabLang heap"),
             Miri => write!(f, "Miri bare-metal heap"),
             C => write!(f, "C heap"),
             WinHeap => write!(f, "Windows heap"),
@@ -420,7 +420,7 @@ pub struct MiriMachine<'mir, 'tcx> {
     /// instead (default behavior)
     pub(crate) panic_on_unsupported: bool,
 
-    /// Equivalent setting as RUST_BACKTRACE on encountering an error.
+    /// Equivalent setting as CRABLANG_BACKTRACE on encountering an error.
     pub(crate) backtrace_style: BacktraceStyle,
 
     /// Crates which are considered local for the purposes of error reporting.
@@ -684,7 +684,7 @@ impl<'mir, 'tcx> MiriMachine<'mir, 'tcx> {
 
 impl VisitTags for MiriMachine<'_, '_> {
     fn visit_tags(&self, visit: &mut dyn FnMut(BorTag)) {
-        #[rustfmt::skip]
+        #[crablangfmt::skip]
         let MiriMachine {
             threads,
             tls,
@@ -748,7 +748,7 @@ impl VisitTags for MiriMachine<'_, '_> {
     }
 }
 
-/// A rustc InterpCx for Miri.
+/// A crablangc InterpCx for Miri.
 pub type MiriInterpCx<'mir, 'tcx> = InterpCx<'mir, 'tcx, MiriMachine<'mir, 'tcx>>;
 
 /// A little trait that's useful to be inherited by extension traits.

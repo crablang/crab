@@ -3,12 +3,12 @@ use clippy_utils::is_integer_literal;
 use clippy_utils::sugg::Sugg;
 use clippy_utils::ty::{is_type_diagnostic_item, is_type_lang_item};
 use if_chain::if_chain;
-use rustc_errors::Applicability;
-use rustc_hir::{def, Expr, ExprKind, LangItem, PrimTy, QPath, TyKind};
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_middle::ty::Ty;
-use rustc_session::{declare_lint_pass, declare_tool_lint};
-use rustc_span::symbol::sym;
+use crablangc_errors::Applicability;
+use crablangc_hir::{def, Expr, ExprKind, LangItem, PrimTy, QPath, TyKind};
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_middle::ty::Ty;
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_span::symbol::sym;
 
 declare_clippy_lint! {
     /// ### What it does

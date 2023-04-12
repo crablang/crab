@@ -1,6 +1,6 @@
 #![warn(clippy::suspicious_unary_op_formatting)]
 
-#[rustfmt::skip]
+#[crablangfmt::skip]
 fn main() {
     // weird binary operator formatting:
     let a = 42;

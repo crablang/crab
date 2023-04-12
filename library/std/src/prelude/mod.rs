@@ -1,20 +1,20 @@
-//! # The Rust Prelude
+//! # The CrabLang Prelude
 //!
-//! Rust comes with a variety of things in its standard library. However, if
+//! CrabLang comes with a variety of things in its standard library. However, if
 //! you had to manually import every single thing that you used, it would be
 //! very verbose. But importing a lot of things that a program never uses isn't
 //! good either. A balance needs to be struck.
 //!
-//! The *prelude* is the list of things that Rust automatically imports into
-//! every Rust program. It's kept as small as possible, and is focused on
-//! things, particularly traits, which are used in almost every single Rust
+//! The *prelude* is the list of things that CrabLang automatically imports into
+//! every CrabLang program. It's kept as small as possible, and is focused on
+//! things, particularly traits, which are used in almost every single CrabLang
 //! program.
 //!
 //! # Other preludes
 //!
 //! Preludes can be seen as a pattern to make using multiple types more
 //! convenient. As such, you'll find other preludes in the standard library,
-//! such as [`std::io::prelude`]. Various libraries in the Rust ecosystem may
+//! such as [`std::io::prelude`]. Various libraries in the CrabLang ecosystem may
 //! also define their own preludes.
 //!
 //! [`std::io::prelude`]: crate::io::prelude
@@ -25,9 +25,9 @@
 //!
 //! # Prelude contents
 //!
-//! The first version of the prelude is used in Rust 2015 and Rust 2018,
+//! The first version of the prelude is used in CrabLang 2015 and CrabLang 2018,
 //! and lives in [`std::prelude::v1`].
-//! [`std::prelude::rust_2015`] and [`std::prelude::rust_2018`] re-export this prelude.
+//! [`std::prelude::crablang_2015`] and [`std::prelude::crablang_2018`] re-export this prelude.
 //! It re-exports the following:
 //!
 //! * <code>[std::marker]::{[Copy], [Send], [Sized], [Sync], [Unpin]}</code>,
@@ -60,7 +60,7 @@
 //! * <code>[std::string]::{[String], [ToString]}</code>, heap-allocated strings.
 //! * <code>[std::vec]::[Vec]</code>, a growable, heap-allocated vector.
 //!
-//! The prelude used in Rust 2021, [`std::prelude::rust_2021`], includes all of the above,
+//! The prelude used in CrabLang 2021, [`std::prelude::crablang_2021`], includes all of the above,
 //! and in addition re-exports:
 //!
 //! * <code>[std::convert]::{[TryFrom], [TryInto]}</code>,
@@ -79,9 +79,9 @@
 //! [std::ops]: crate::ops
 //! [std::option]: crate::option
 //! [`std::prelude::v1`]: v1
-//! [`std::prelude::rust_2015`]: rust_2015
-//! [`std::prelude::rust_2018`]: rust_2018
-//! [`std::prelude::rust_2021`]: rust_2021
+//! [`std::prelude::crablang_2015`]: crablang_2015
+//! [`std::prelude::crablang_2018`]: crablang_2018
+//! [`std::prelude::crablang_2021`]: crablang_2021
 //! [std::result]: crate::result
 //! [std::slice]: crate::slice
 //! [std::string]: crate::string
@@ -95,54 +95,54 @@
 //! [book-enums]: ../../book/ch06-01-defining-an-enum.html
 //! [book-iter]: ../../book/ch13-02-iterators.html
 
-#![stable(feature = "rust1", since = "1.0.0")]
+#![stable(feature = "crablang1", since = "1.0.0")]
 
 pub mod v1;
 
-/// The 2015 version of the prelude of The Rust Standard Library.
+/// The 2015 version of the prelude of The CrabLang Standard Library.
 ///
 /// See the [module-level documentation](self) for more.
 #[stable(feature = "prelude_2015", since = "1.55.0")]
-pub mod rust_2015 {
+pub mod crablang_2015 {
     #[stable(feature = "prelude_2015", since = "1.55.0")]
     #[doc(no_inline)]
     pub use super::v1::*;
 }
 
-/// The 2018 version of the prelude of The Rust Standard Library.
+/// The 2018 version of the prelude of The CrabLang Standard Library.
 ///
 /// See the [module-level documentation](self) for more.
 #[stable(feature = "prelude_2018", since = "1.55.0")]
-pub mod rust_2018 {
+pub mod crablang_2018 {
     #[stable(feature = "prelude_2018", since = "1.55.0")]
     #[doc(no_inline)]
     pub use super::v1::*;
 }
 
-/// The 2021 version of the prelude of The Rust Standard Library.
+/// The 2021 version of the prelude of The CrabLang Standard Library.
 ///
 /// See the [module-level documentation](self) for more.
 #[stable(feature = "prelude_2021", since = "1.55.0")]
-pub mod rust_2021 {
+pub mod crablang_2021 {
     #[stable(feature = "prelude_2021", since = "1.55.0")]
     #[doc(no_inline)]
     pub use super::v1::*;
 
     #[stable(feature = "prelude_2021", since = "1.55.0")]
     #[doc(no_inline)]
-    pub use core::prelude::rust_2021::*;
+    pub use core::prelude::crablang_2021::*;
 }
 
-/// The 2024 version of the prelude of The Rust Standard Library.
+/// The 2024 version of the prelude of The CrabLang Standard Library.
 ///
 /// See the [module-level documentation](self) for more.
 #[unstable(feature = "prelude_2024", issue = "none")]
-pub mod rust_2024 {
+pub mod crablang_2024 {
     #[unstable(feature = "prelude_2024", issue = "none")]
     #[doc(no_inline)]
     pub use super::v1::*;
 
     #[unstable(feature = "prelude_2024", issue = "none")]
     #[doc(no_inline)]
-    pub use core::prelude::rust_2024::*;
+    pub use core::prelude::crablang_2024::*;
 }

@@ -9,4 +9,4 @@ LL | impl <T11, U11> From<(U11,)> for (T11,) {
 
 error: aborting due to previous error
 
-For more information about this error, try `rustc --explain E0119`.
+For more information about this error, try `crablangc --explain E0119`.

@@ -29,7 +29,7 @@ fn main() {
             let mut out = Vec::with_capacity(1024);
 
             unsafe {
-                extern "Rust" {
+                extern "CrabLang" {
                     fn miri_host_to_target_path(
                         path: *const c_char,
                         out: *mut c_char,
@@ -76,11 +76,11 @@ mod test {
     fn exported_symbol() {
         extern crate cargo_miri_test;
         extern crate exported_symbol;
-        extern crate issue_rust_86261;
+        extern crate issue_crablang_86261;
         // Test calling exported symbols in (transitive) dependencies.
         // Repeat calls to make sure the `Instance` cache is not broken.
         for _ in 0..3 {
-            extern "Rust" {
+            extern "CrabLang" {
                 fn exported_symbol() -> i32;
                 fn assoc_fn_as_exported_symbol() -> i32;
                 fn make_true() -> bool;

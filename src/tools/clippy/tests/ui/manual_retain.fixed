@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 #![warn(clippy::manual_retain)]
 #![allow(unused, clippy::redundant_clone)]
 use std::collections::BTreeMap;
@@ -25,7 +25,7 @@ fn main() {
 fn binary_heap_retain() {
     // NOTE: Do not lint now, because binary_heap_retain is nighyly API.
     // And we need to add a test case for msrv if we update this implmention.
-    // https://github.com/rust-lang/rust/issues/71503
+    // https://github.com/crablang/crablang/issues/71503
     let mut heap = BinaryHeap::from([1, 2, 3]);
     heap = heap.into_iter().filter(|x| x % 2 == 0).collect();
     heap = heap.iter().filter(|&x| x % 2 == 0).copied().collect();

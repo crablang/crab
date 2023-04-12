@@ -1,4 +1,4 @@
-// https://github.com/rust-lang/rust/issues/69228
+// https://github.com/crablang/crablang/issues/69228
 // Used to give bogus suggestion about T not being Sized.
 
 use std::mem::size_of;

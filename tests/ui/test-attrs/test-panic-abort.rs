@@ -3,7 +3,7 @@
 // run-flags: --test-threads=1
 // run-fail
 // check-run-results
-// exec-env:RUST_BACKTRACE=0
+// exec-env:CRABLANG_BACKTRACE=0
 // normalize-stdout-test "finished in \d+\.\d+s" -> "finished in $$TIME"
 
 // ignore-wasm no panic or subprocess support
@@ -42,7 +42,7 @@ fn it_exits() {
 #[test]
 fn no_residual_environment() {
     for (key, _) in env::vars() {
-        // Look for keys like __RUST_TEST_INVOKE.
+        // Look for keys like __CRABLANG_TEST_INVOKE.
         if key.contains("TEST_INVOKE") {
             panic!("shouldn't have '{}' in environment", key);
         }

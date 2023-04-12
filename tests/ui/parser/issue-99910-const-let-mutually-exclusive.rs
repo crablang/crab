@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 
 fn main() {
     const let _FOO: i32 = 123;

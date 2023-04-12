@@ -4,12 +4,12 @@ use clippy_utils::sugg::deref_closure_args;
 use clippy_utils::ty::is_type_lang_item;
 use clippy_utils::{is_trait_method, strip_pat_refs};
 use if_chain::if_chain;
-use rustc_errors::Applicability;
-use rustc_hir as hir;
-use rustc_hir::PatKind;
-use rustc_lint::LateContext;
-use rustc_span::source_map::Span;
-use rustc_span::symbol::sym;
+use crablangc_errors::Applicability;
+use crablangc_hir as hir;
+use crablangc_hir::PatKind;
+use crablangc_lint::LateContext;
+use crablangc_span::source_map::Span;
+use crablangc_span::symbol::sym;
 
 use super::SEARCH_IS_SOME;
 

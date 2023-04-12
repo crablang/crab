@@ -6,9 +6,9 @@ use std::sync::{Arc, Barrier, Condvar, Mutex, Once, RwLock};
 use std::thread;
 use std::time::{Duration, Instant};
 
-// Check if Rust barriers are working.
+// Check if CrabLang barriers are working.
 
-/// This test is taken from the Rust documentation.
+/// This test is taken from the CrabLang documentation.
 fn check_barriers() {
     let mut handles = Vec::with_capacity(10);
     let barrier = Arc::new(Barrier::new(10));
@@ -28,9 +28,9 @@ fn check_barriers() {
     }
 }
 
-// Check if Rust conditional variables are working.
+// Check if CrabLang conditional variables are working.
 
-/// The test taken from the Rust documentation.
+/// The test taken from the CrabLang documentation.
 fn check_conditional_variables_notify_one() {
     let pair = Arc::new((Mutex::new(false), Condvar::new()));
     let pair2 = pair.clone();
@@ -155,7 +155,7 @@ fn check_rwlock_read_no_deadlock() {
     handle.join().unwrap();
 }
 
-// Check if Rust once statics are working.
+// Check if CrabLang once statics are working.
 
 static mut VAL: usize = 0;
 static INIT: Once = Once::new();
@@ -179,7 +179,7 @@ fn expensive_computation() -> usize {
     i
 }
 
-/// The test taken from the Rust documentation.
+/// The test taken from the CrabLang documentation.
 fn check_once() {
     let handles: Vec<_> = (0..10)
         .map(|_| {

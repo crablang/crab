@@ -14,4 +14,4 @@ LL |     let one_item_please: i32 = [1, 2, 3][*i];
 
 error: aborting due to previous error
 
-For more information about this error, try `rustc --explain E0277`.
+For more information about this error, try `crablangc --explain E0277`.

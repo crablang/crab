@@ -1,9 +1,9 @@
 Installing clippy via crates.io is deprecated. Please use the following:
 
 ```terminal
-rustup component add clippy
+crablangup component add clippy
 ```
 
-on a Rust version 1.29 or later. You may need to run `rustup self update` if it complains about a missing clippy binary.
+on a CrabLang version 1.29 or later. You may need to run `crablangup self update` if it complains about a missing clippy binary.
 
-See [the homepage](https://github.com/rust-lang/rust-clippy/#clippy) for more information
+See [the homepage](https://github.com/crablang/crablang-clippy/#clippy) for more information

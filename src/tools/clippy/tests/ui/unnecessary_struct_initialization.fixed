@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 
 #![allow(unused)]
 #![warn(clippy::unnecessary_struct_initialization)]

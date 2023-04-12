@@ -16,7 +16,7 @@ fn sanity_check_size<T: Copy>(one: T) {
 }
 
 fn main() {
-    // This can fail if rustc and LLVM disagree on the size of a type.
+    // This can fail if crablangc and LLVM disagree on the size of a type.
     // In this case, `Option<Packed<(&(), u32)>>` was erroneously not
     // marked as packed despite needing alignment `1` and containing
     // its `&()` discriminant, which has alignment larger than `1`.

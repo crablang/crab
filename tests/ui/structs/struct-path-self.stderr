@@ -77,4 +77,4 @@ LL +         let z = Self {};
 error: aborting due to 6 previous errors
 
 Some errors have detailed explanations: E0071, E0109.
-For more information about an error, try `rustc --explain E0071`.
+For more information about an error, try `crablangc --explain E0071`.

@@ -2,16 +2,16 @@
 // compile-flags: --target msp430-none-elf
 // needs-llvm-components: msp430
 
-#![feature(no_core, lang_items, rustc_attrs, asm_experimental_arch, asm_const)]
+#![feature(no_core, lang_items, crablangc_attrs, asm_experimental_arch, asm_const)]
 #![crate_type = "rlib"]
 #![no_core]
 #![allow(non_camel_case_types)]
 
-#[rustc_builtin_macro]
+#[crablangc_builtin_macro]
 macro_rules! asm {
     () => {};
 }
-#[rustc_builtin_macro]
+#[crablangc_builtin_macro]
 macro_rules! concat {
     () => {};
 }

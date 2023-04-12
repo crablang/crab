@@ -18,9 +18,9 @@ use fortanix_sgx_abi::*;
 /// Non-exhaustive list of specific requirements for reading and writing:
 /// * **Type is `Copy`** (and therefore also not `Drop`). Copies will be
 ///   created when copying from/to userspace. Destructors will not be called.
-/// * **No references or Rust-style owned pointers** (`Vec`, `Arc`, etc.). When
+/// * **No references or CrabLang-style owned pointers** (`Vec`, `Arc`, etc.). When
 ///   reading from userspace, references into enclave memory must not be
-///   created. Also, only enclave memory is considered managed by the Rust
+///   created. Also, only enclave memory is considered managed by the CrabLang
 ///   compiler's static analysis. When reading from userspace, there can be no
 ///   guarantee that the value correctly adheres to the expectations of the
 ///   type. When writing to userspace, memory addresses of data in enclave
@@ -337,7 +337,7 @@ unsafe fn copy_quadwords(src: *const u8, dst: *mut u8, len: usize) {
 
 /// Copies `len` bytes of data from enclave pointer `src` to userspace `dst`
 ///
-/// This function mitigates stale data vulnerabilities by ensuring all writes to untrusted memory are either:
+/// This function mitigates stale data vulnerabilities by ensuring all writes to untcrablanged memory are either:
 ///  - preceded by the VERW instruction and followed by the MFENCE; LFENCE instruction sequence
 ///  - or are in multiples of 8 bytes, aligned to an 8-byte boundary
 ///
@@ -421,7 +421,7 @@ pub(crate) unsafe fn copy_to_userspace(src: *const u8, dst: *mut u8, len: usize)
 
 /// Copies `len` bytes of data from userspace pointer `src` to enclave pointer `dst`
 ///
-/// This function mitigates AEPIC leak vulnerabilities by ensuring all reads from untrusted memory are 8-byte aligned
+/// This function mitigates AEPIC leak vulnerabilities by ensuring all reads from untcrablanged memory are 8-byte aligned
 ///
 /// # Panics
 /// This function panics if:

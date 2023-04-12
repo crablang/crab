@@ -451,10 +451,10 @@ fn refcell_replace_borrows() {
 
 #[test]
 fn refcell_format() {
-    let name = RefCell::new("rust");
+    let name = RefCell::new("crablang");
     let what = RefCell::new("rocks");
     let msg = format!("{name} {}", &*what.borrow(), name = &*name.borrow());
-    assert_eq!(msg, "rust rocks".to_string());
+    assert_eq!(msg, "crablang rocks".to_string());
 }
 
 #[allow(dead_code)]

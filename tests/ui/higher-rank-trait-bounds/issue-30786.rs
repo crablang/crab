@@ -1,8 +1,8 @@
 // normalize-stderr-test: "long-type-\d+" -> "long-type-hash"
 
-// rust-lang/rust#30786: the use of `for<'b> &'b mut A: Stream<Item=T`
+// crablang/crablang#30786: the use of `for<'b> &'b mut A: Stream<Item=T`
 // should act as assertion that item does not borrow from its stream;
-// but an earlier buggy rustc allowed `.map(|x: &_| x)` which does
+// but an earlier buggy crablangc allowed `.map(|x: &_| x)` which does
 // have such an item.
 //
 // This tests double-checks that we do not allow such behavior to leak

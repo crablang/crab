@@ -2545,7 +2545,7 @@ macro_rules! empty_max_mut {
     };
 }
 
-#[cfg(not(miri))] // Comparing usize::MAX many elements takes forever in Miri (and in rustc without optimizations)
+#[cfg(not(miri))] // Comparing usize::MAX many elements takes forever in Miri (and in crablangc without optimizations)
 take_tests! {
     slice: &[(); usize::MAX], method: take,
     (take_in_bounds_max_range_to, (..usize::MAX), Some(EMPTY_MAX), &[(); 0]),
@@ -2553,7 +2553,7 @@ take_tests! {
     (take_in_bounds_max_range_from, (usize::MAX..), Some(&[] as _), EMPTY_MAX),
 }
 
-#[cfg(not(miri))] // Comparing usize::MAX many elements takes forever in Miri (and in rustc without optimizations)
+#[cfg(not(miri))] // Comparing usize::MAX many elements takes forever in Miri (and in crablangc without optimizations)
 take_tests! {
     slice: &mut [(); usize::MAX], method: take_mut,
     (take_mut_in_bounds_max_range_to, (..usize::MAX), Some(empty_max_mut!()), &mut [(); 0]),

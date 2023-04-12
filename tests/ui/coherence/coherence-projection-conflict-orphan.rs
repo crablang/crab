@@ -1,4 +1,4 @@
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 
 // Here we expect a coherence conflict because, even though `i32` does
 // not implement `Iterator`, we cannot rely on that negative reasoning

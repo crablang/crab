@@ -1,6 +1,6 @@
 // edition:2021
 
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 
 // `u8` aligned at a byte and are unaffected by repr(packed).
 // Therefore we can precisely (and safely) capture references to both the fields.
@@ -10,9 +10,9 @@ fn test_alignment_not_affected() {
 
     let mut foo = Foo { x: 0, y: 0 };
 
-    let mut c = #[rustc_capture_analysis]
+    let mut c = #[crablangc_capture_analysis]
     //~^ ERROR: attributes on expressions are experimental
-    //~| NOTE: see issue #15701 <https://github.com/rust-lang/rust/issues/15701>
+    //~| NOTE: see issue #15701 <https://github.com/crablang/crablang/issues/15701>
     || {
     //~^ ERROR: First Pass analysis includes:
     //~| ERROR: Min Capture analysis includes:
@@ -41,9 +41,9 @@ fn test_alignment_affected() {
 
     let mut foo = Foo { x: String::new(), y: 0 };
 
-    let mut c = #[rustc_capture_analysis]
+    let mut c = #[crablangc_capture_analysis]
     //~^ ERROR: attributes on expressions are experimental
-    //~| NOTE: see issue #15701 <https://github.com/rust-lang/rust/issues/15701>
+    //~| NOTE: see issue #15701 <https://github.com/crablang/crablang/issues/15701>
     || {
     //~^ ERROR: First Pass analysis includes:
     //~| ERROR: Min Capture analysis includes:
@@ -76,9 +76,9 @@ fn test_truncation_when_ref_and_move() {
 
     let mut foo = Foo { x: String::new() };
 
-    let c = #[rustc_capture_analysis]
+    let c = #[crablangc_capture_analysis]
     //~^ ERROR: attributes on expressions are experimental
-    //~| NOTE: see issue #15701 <https://github.com/rust-lang/rust/issues/15701>
+    //~| NOTE: see issue #15701 <https://github.com/crablang/crablang/issues/15701>
     || {
     //~^ ERROR: First Pass analysis includes:
     //~| ERROR: Min Capture analysis includes:

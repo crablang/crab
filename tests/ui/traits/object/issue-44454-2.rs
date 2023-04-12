@@ -1,4 +1,4 @@
-// Taken from https://github.com/rust-lang/rust/issues/44454#issuecomment-1175925928
+// Taken from https://github.com/crablang/crablang/issues/44454#issuecomment-1175925928
 
 trait Trait<ARG: 'static>: 'static {
     type Assoc: AsRef<str>;

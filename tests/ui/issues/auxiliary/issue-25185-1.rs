@@ -2,7 +2,7 @@
 
 #![crate_type = "rlib"]
 
-#[link(name = "rust_test_helpers", kind = "static")]
+#[link(name = "crablang_test_helpers", kind = "static")]
 extern "C" {
-    pub fn rust_dbg_extern_identity_u32(u: u32) -> u32;
+    pub fn crablang_dbg_extern_identity_u32(u: u32) -> u32;
 }

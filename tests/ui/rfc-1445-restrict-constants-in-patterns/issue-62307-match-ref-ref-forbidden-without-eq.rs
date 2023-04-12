@@ -18,7 +18,7 @@ struct B(i32);
 
 // Overriding `PartialEq` to use this strange notion of "equality" exposes
 // whether `match` is using structural-equality or method-dispatch
-// under the hood, which is the antithesis of rust-lang/rfcs#1445
+// under the hood, which is the antithesis of crablang/rfcs#1445
 impl PartialEq for B {
     fn eq(&self, other: &B) -> bool { std::cmp::min(self.0, other.0) == 0 }
 }

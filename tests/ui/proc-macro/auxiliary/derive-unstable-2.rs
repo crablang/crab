@@ -11,7 +11,7 @@ use proc_macro::TokenStream;
 pub fn derive(_input: TokenStream) -> TokenStream {
 
     "
-        #[rustc_foo]
+        #[crablangc_foo]
         fn foo() {}
     ".parse().unwrap()
 }

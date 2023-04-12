@@ -7,6 +7,6 @@
     "target-c-int-width": "32",
     "os": "ericos",
     "linker-flavor": "ld.lld",
-    "linker": "rust-lld",
+    "linker": "crablang-lld",
     "executables": true
 }

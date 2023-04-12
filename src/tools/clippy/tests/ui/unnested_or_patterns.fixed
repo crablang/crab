@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 
 #![feature(box_patterns)]
 #![warn(clippy::unnested_or_patterns)]

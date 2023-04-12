@@ -1,10 +1,10 @@
 use clippy_utils::consts::{constant, Constant};
 use clippy_utils::diagnostics::span_lint_and_help;
 use clippy_utils::macros::{find_assert_args, root_macro_call_first_node, PanicExpn};
-use rustc_hir::Expr;
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_session::{declare_lint_pass, declare_tool_lint};
-use rustc_span::sym;
+use crablangc_hir::Expr;
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_span::sym;
 
 declare_clippy_lint! {
     /// ### What it does
@@ -15,7 +15,7 @@ declare_clippy_lint! {
     /// `panic!()` or `unreachable!()`
     ///
     /// ### Example
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// assert!(false)
     /// assert!(true)
     /// const B: bool = false;

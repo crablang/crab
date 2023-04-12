@@ -3,7 +3,7 @@
 
 // Ensure assert macro does not ignore trailing garbage.
 //
-// See https://github.com/rust-lang/rust/issues/60024 for details.
+// See https://github.com/crablang/crablang/issues/60024 for details.
 
 fn main() {
     assert!(true some extra junk, "whatever");

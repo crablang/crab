@@ -1,12 +1,12 @@
 #![cfg_attr(feature = "deny-warnings", deny(warnings))]
-#![warn(rust_2018_idioms, unused_lifetimes)]
+#![warn(crablang_2018_idioms, unused_lifetimes)]
 
 use std::path::PathBuf;
 use std::process::Command;
 
 #[test]
 fn fmt() {
-    if option_env!("RUSTC_TEST_SUITE").is_some() || option_env!("NO_FMT_TEST").is_some() {
+    if option_env!("CRABLANGC_TEST_SUITE").is_some() || option_env!("NO_FMT_TEST").is_some() {
         return;
     }
 

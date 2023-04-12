@@ -70,7 +70,7 @@ pub unsafe fn find_eh_action(lsda: *const u8, context: &EHContext<'_>) -> Result
 
     let ttype_encoding = reader.read::<u8>();
     if ttype_encoding != DW_EH_PE_omit {
-        // Rust doesn't analyze exception types, so we don't care about the type table
+        // CrabLang doesn't analyze exception types, so we don't care about the type table
         reader.read_uleb128();
     }
 
@@ -132,7 +132,7 @@ unsafe fn interpret_cs_action(
 ) -> EHAction {
     if cs_action_entry == 0 {
         // If cs_action_entry is 0 then this is a cleanup (Drop::drop). We run these
-        // for both Rust panics and foreign exceptions.
+        // for both CrabLang panics and foreign exceptions.
         EHAction::Cleanup(lpad)
     } else {
         // If lpad != 0 and cs_action_entry != 0, we have to check ttype_index.
@@ -143,7 +143,7 @@ unsafe fn interpret_cs_action(
         if ttype_index == 0 {
             EHAction::Cleanup(lpad)
         } else {
-            // Stop unwinding Rust panics at catch_unwind.
+            // Stop unwinding CrabLang panics at catch_unwind.
             EHAction::Catch(lpad)
         }
     }

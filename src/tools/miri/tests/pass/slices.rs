@@ -195,7 +195,7 @@ fn uninit_slice() {
     assert_eq!(values.iter().map(|x| **x).collect::<Vec<_>>(), vec![1, 2, 3])
 }
 
-/// Regression tests for slice methods in the Rust core library where raw pointers are obtained
+/// Regression tests for slice methods in the CrabLang core library where raw pointers are obtained
 /// from mutable references.
 fn test_for_invalidated_pointers() {
     let mut buffer = [0usize; 64];

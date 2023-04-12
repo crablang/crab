@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 
 #![allow(unused, clippy::suspicious_map, clippy::iter_count)]
 

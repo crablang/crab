@@ -1,10 +1,10 @@
 //! lint when items are used after statements
 
 use clippy_utils::diagnostics::span_lint;
-use rustc_ast::ast::{Block, ItemKind, StmtKind};
-use rustc_lint::{EarlyContext, EarlyLintPass, LintContext};
-use rustc_middle::lint::in_external_macro;
-use rustc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_ast::ast::{Block, ItemKind, StmtKind};
+use crablangc_lint::{EarlyContext, EarlyLintPass, LintContext};
+use crablangc_middle::lint::in_external_macro;
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
 
 declare_clippy_lint! {
     /// ### What it does
@@ -16,7 +16,7 @@ declare_clippy_lint! {
     /// it's hard to figure out which item is meant in a statement.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// fn foo() {
     ///     println!("cake");
     /// }
@@ -31,7 +31,7 @@ declare_clippy_lint! {
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// fn foo() {
     ///     println!("cake");
     /// }

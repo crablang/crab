@@ -1,18 +1,18 @@
 // build-fail
 // compile-flags:-Zpolymorphize=on
-#![feature(stmt_expr_attributes, rustc_attrs)]
+#![feature(stmt_expr_attributes, crablangc_attrs)]
 
 // This test checks that the polymorphization analysis correctly detects unused type
 // parameters in closures.
 
 // Function doesn't have any generic parameters to be unused.
-#[rustc_polymorphize_error]
+#[crablangc_polymorphize_error]
 pub fn no_parameters() {
     let _ = || {};
 }
 
 // Function has an unused generic parameter in parent and closure.
-#[rustc_polymorphize_error]
+#[crablangc_polymorphize_error]
 pub fn unused<T>() -> u32 {
     //~^ ERROR item has unused generic parameters
 
@@ -22,7 +22,7 @@ pub fn unused<T>() -> u32 {
 }
 
 // Function has an unused generic parameter in closure, but not in parent.
-#[rustc_polymorphize_error]
+#[crablangc_polymorphize_error]
 pub fn used_parent<T: Default>() -> u32 {
     let _: T = Default::default();
     let add_one = |x: u32| x + 1;
@@ -31,7 +31,7 @@ pub fn used_parent<T: Default>() -> u32 {
 }
 
 // Function uses generic parameter in value of a binding in closure.
-#[rustc_polymorphize_error]
+#[crablangc_polymorphize_error]
 pub fn used_binding_value<T: Default>() -> T {
     let x = || {
         let y: T = Default::default();
@@ -42,7 +42,7 @@ pub fn used_binding_value<T: Default>() -> T {
 }
 
 // Function uses generic parameter in generic of a binding in closure.
-#[rustc_polymorphize_error]
+#[crablangc_polymorphize_error]
 pub fn used_binding_generic<T>() -> Option<T> {
     let x = || {
         let y: Option<T> = None;
@@ -53,14 +53,14 @@ pub fn used_binding_generic<T>() -> Option<T> {
 }
 
 // Function and closure uses generic parameter in argument.
-#[rustc_polymorphize_error]
+#[crablangc_polymorphize_error]
 pub fn used_argument<T>(t: T) -> u32 {
     let x = |_: T| 3;
     x(t)
 }
 
 // Closure uses generic parameter in argument.
-#[rustc_polymorphize_error]
+#[crablangc_polymorphize_error]
 pub fn used_argument_closure<T: Default>() -> u32 {
     let t: T = Default::default();
 
@@ -69,7 +69,7 @@ pub fn used_argument_closure<T: Default>() -> u32 {
 }
 
 // Closure uses generic parameter as upvar.
-#[rustc_polymorphize_error]
+#[crablangc_polymorphize_error]
 pub fn used_upvar<T: Default>() -> T {
     let x: T = Default::default();
 
@@ -78,7 +78,7 @@ pub fn used_upvar<T: Default>() -> T {
 }
 
 // Closure uses generic parameter in substitutions to another function.
-#[rustc_polymorphize_error]
+#[crablangc_polymorphize_error]
 pub fn used_substs<T>() -> u32 {
     let x = || unused::<T>();
     x()
@@ -88,7 +88,7 @@ struct Foo<F>(F);
 
 impl<F: Default> Foo<F> {
     // Function has an unused generic parameter from impl and fn.
-    #[rustc_polymorphize_error]
+    #[crablangc_polymorphize_error]
     pub fn unused_all<G: Default>() -> u32 {
         //~^ ERROR item has unused generic parameters
         let add_one = |x: u32| x + 1;
@@ -97,7 +97,7 @@ impl<F: Default> Foo<F> {
     }
 
     // Function uses generic parameter from impl and fn in closure.
-    #[rustc_polymorphize_error]
+    #[crablangc_polymorphize_error]
     pub fn used_both<G: Default>() -> u32 {
         let add_one = |x: u32| {
             let _: F = Default::default();
@@ -109,7 +109,7 @@ impl<F: Default> Foo<F> {
     }
 
     // Function uses generic parameter from fn in closure.
-    #[rustc_polymorphize_error]
+    #[crablangc_polymorphize_error]
     pub fn used_fn<G: Default>() -> u32 {
         //~^ ERROR item has unused generic parameters
         let add_one = |x: u32| {
@@ -122,7 +122,7 @@ impl<F: Default> Foo<F> {
     }
 
     // Function uses generic parameter from impl in closure.
-    #[rustc_polymorphize_error]
+    #[crablangc_polymorphize_error]
     pub fn used_impl<G: Default>() -> u32 {
         //~^ ERROR item has unused generic parameters
         let add_one = |x: u32| {
@@ -135,7 +135,7 @@ impl<F: Default> Foo<F> {
     }
 
     // Closure uses generic parameter in substitutions to another function.
-    #[rustc_polymorphize_error]
+    #[crablangc_polymorphize_error]
     pub fn used_substs() -> u32 {
         let x = || unused::<F>();
         x()

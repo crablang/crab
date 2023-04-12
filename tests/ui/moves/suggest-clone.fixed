@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 
 #[derive(Clone)]
 struct Foo;

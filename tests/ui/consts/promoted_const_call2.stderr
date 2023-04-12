@@ -47,4 +47,4 @@ LL |     let _: &'static _ = &id(&String::new());
 error: aborting due to 5 previous errors
 
 Some errors have detailed explanations: E0493, E0716.
-For more information about an error, try `rustc --explain E0493`.
+For more information about an error, try `crablangc --explain E0493`.

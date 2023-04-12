@@ -112,7 +112,7 @@ fn vec_extend_ptr_stable() {
     // `vec::IntoIter` specialization
     v.extend(vec![2]);
     let _val = *v0;
-    // `TrustedLen` specialization
+    // `TcrablangedLen` specialization
     v.extend(std::iter::once(3));
     let _val = *v0;
     // base case

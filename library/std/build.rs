@@ -4,11 +4,11 @@ fn main() {
     println!("cargo:rerun-if-changed=build.rs");
     let target = env::var("TARGET").expect("TARGET was not set");
     if target.contains("freebsd") {
-        if env::var("RUST_STD_FREEBSD_12_ABI").is_ok() {
-            println!("cargo:rustc-cfg=freebsd12");
-        } else if env::var("RUST_STD_FREEBSD_13_ABI").is_ok() {
-            println!("cargo:rustc-cfg=freebsd12");
-            println!("cargo:rustc-cfg=freebsd13");
+        if env::var("CRABLANG_STD_FREEBSD_12_ABI").is_ok() {
+            println!("cargo:crablangc-cfg=freebsd12");
+        } else if env::var("CRABLANG_STD_FREEBSD_13_ABI").is_ok() {
+            println!("cargo:crablangc-cfg=freebsd12");
+            println!("cargo:crablangc-cfg=freebsd13");
         }
     } else if target.contains("linux")
         || target.contains("netbsd")
@@ -49,8 +49,8 @@ fn main() {
         // - uefi (x86_64-unknown-uefi, i686-unknown-uefi)
         // - JSON targets
         // - Any new targets that have not been explicitly added above.
-        println!("cargo:rustc-cfg=feature=\"restricted-std\"");
+        println!("cargo:crablangc-cfg=feature=\"restricted-std\"");
     }
-    println!("cargo:rustc-env=STD_ENV_ARCH={}", env::var("CARGO_CFG_TARGET_ARCH").unwrap());
-    println!("cargo:rustc-cfg=backtrace_in_libstd");
+    println!("cargo:crablangc-env=STD_ENV_ARCH={}", env::var("CARGO_CFG_TARGET_ARCH").unwrap());
+    println!("cargo:crablangc-cfg=backtrace_in_libstd");
 }

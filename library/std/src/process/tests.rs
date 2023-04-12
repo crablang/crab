@@ -552,14 +552,14 @@ fn run_bat_script() {
 
     crate::fs::write(&script_path, "@echo Hello, %~1!").unwrap();
     let output = Command::new(&script_path)
-        .arg("fellow Rustaceans")
+        .arg("fellow CrabLangaceans")
         .stdout(crate::process::Stdio::piped())
         .spawn()
         .unwrap()
         .wait_with_output()
         .unwrap();
     assert!(output.status.success());
-    assert_eq!(String::from_utf8_lossy(&output.stdout).trim(), "Hello, fellow Rustaceans!");
+    assert_eq!(String::from_utf8_lossy(&output.stdout).trim(), "Hello, fellow CrabLangaceans!");
 }
 
 // See issue #95178
@@ -573,12 +573,12 @@ fn run_canonical_bat_script() {
 
     // Try using a canonical path
     let output = Command::new(&script_path.canonicalize().unwrap())
-        .arg("fellow Rustaceans")
+        .arg("fellow CrabLangaceans")
         .stdout(crate::process::Stdio::piped())
         .spawn()
         .unwrap()
         .wait_with_output()
         .unwrap();
     assert!(output.status.success());
-    assert_eq!(String::from_utf8_lossy(&output.stdout).trim(), "Hello, fellow Rustaceans!");
+    assert_eq!(String::from_utf8_lossy(&output.stdout).trim(), "Hello, fellow CrabLangaceans!");
 }

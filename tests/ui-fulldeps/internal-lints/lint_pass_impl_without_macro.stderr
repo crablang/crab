@@ -8,7 +8,7 @@ LL | impl LintPass for Foo {
 note: the lint level is defined here
   --> $DIR/lint_pass_impl_without_macro.rs:4:9
    |
-LL | #![deny(rustc::lint_pass_impl_without_macro)]
+LL | #![deny(crablangc::lint_pass_impl_without_macro)]
    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 error: implementing `LintPass` by hand

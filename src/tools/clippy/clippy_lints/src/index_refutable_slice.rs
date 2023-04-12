@@ -5,15 +5,15 @@ use clippy_utils::msrvs::{self, Msrv};
 use clippy_utils::ty::is_copy;
 use clippy_utils::{is_expn_of, is_lint_allowed, path_to_local};
 use if_chain::if_chain;
-use rustc_data_structures::fx::{FxHashSet, FxIndexMap};
-use rustc_errors::Applicability;
-use rustc_hir as hir;
-use rustc_hir::intravisit::{self, Visitor};
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_middle::hir::nested_filter;
-use rustc_middle::ty;
-use rustc_session::{declare_tool_lint, impl_lint_pass};
-use rustc_span::{symbol::Ident, Span};
+use crablangc_data_structures::fx::{FxHashSet, FxIndexMap};
+use crablangc_errors::Applicability;
+use crablangc_hir as hir;
+use crablangc_hir::intravisit::{self, Visitor};
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_middle::hir::nested_filter;
+use crablangc_middle::ty;
+use crablangc_session::{declare_tool_lint, impl_lint_pass};
+use crablangc_span::{symbol::Ident, Span};
 
 declare_clippy_lint! {
     /// ### What it does
@@ -30,7 +30,7 @@ declare_clippy_lint! {
     /// patterns.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// let slice: Option<&[u32]> = Some(&[1, 2, 3]);
     ///
     /// if let Some(slice) = slice {
@@ -38,7 +38,7 @@ declare_clippy_lint! {
     /// }
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// let slice: Option<&[u32]> = Some(&[1, 2, 3]);
     ///
     /// if let Some(&[first, ..]) = slice {

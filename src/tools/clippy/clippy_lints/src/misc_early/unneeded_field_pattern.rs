@@ -1,7 +1,7 @@
 use clippy_utils::diagnostics::{span_lint, span_lint_and_help};
 use clippy_utils::source::snippet_opt;
-use rustc_ast::ast::{Pat, PatKind};
-use rustc_lint::EarlyContext;
+use crablangc_ast::ast::{Pat, PatKind};
+use crablangc_lint::EarlyContext;
 
 use super::UNNEEDED_FIELD_PATTERN;
 

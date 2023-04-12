@@ -1,4 +1,4 @@
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 
 #[no_mangle]
 extern "C" fn foo() -> i32 {
@@ -10,7 +10,7 @@ fn bar() -> i32 {
     -2
 }
 
-#[rustc_std_internal_symbol]
+#[crablangc_std_internal_symbol]
 fn baz() -> i32 {
     -3
 }
@@ -38,7 +38,7 @@ fn main() {
         // Test that the cache is not broken with ("free", None).
         unsafe { free(std::ptr::null_mut()) }
 
-        extern "Rust" {
+        extern "CrabLang" {
             fn bar() -> i32;
             fn baz() -> i32;
             fn qux() -> i32;
@@ -50,7 +50,7 @@ fn main() {
 
         #[allow(clashing_extern_declarations)]
         {
-            extern "Rust" {
+            extern "CrabLang" {
                 fn foo() -> i32;
             }
 

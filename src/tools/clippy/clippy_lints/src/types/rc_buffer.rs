@@ -1,10 +1,10 @@
 use clippy_utils::diagnostics::span_lint_and_sugg;
 use clippy_utils::source::snippet_with_applicability;
 use clippy_utils::{path_def_id, qpath_generic_tys};
-use rustc_errors::Applicability;
-use rustc_hir::{self as hir, def_id::DefId, QPath, TyKind};
-use rustc_lint::LateContext;
-use rustc_span::symbol::sym;
+use crablangc_errors::Applicability;
+use crablangc_hir::{self as hir, def_id::DefId, QPath, TyKind};
+use crablangc_lint::LateContext;
+use crablangc_span::symbol::sym;
 
 use super::RC_BUFFER;
 

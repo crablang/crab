@@ -1,7 +1,7 @@
 //! Checks that a list of items is in alphabetical order
 //!
 //! To use, use the following annotation in the code:
-//! ```rust
+//! ```crablang
 //! // tidy-alphabetical-start
 //! fn aaa() {}
 //! fn eee() {}

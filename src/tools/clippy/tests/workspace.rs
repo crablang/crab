@@ -2,13 +2,13 @@
 
 use std::path::PathBuf;
 use std::process::Command;
-use test_utils::{CARGO_CLIPPY_PATH, IS_RUSTC_TEST_SUITE};
+use test_utils::{CARGO_CLIPPY_PATH, IS_CRABLANGC_TEST_SUITE};
 
 mod test_utils;
 
 #[test]
 fn test_no_deps_ignores_path_deps_in_workspaces() {
-    if IS_RUSTC_TEST_SUITE {
+    if IS_CRABLANGC_TEST_SUITE {
         return;
     }
     let root = PathBuf::from(env!("CARGO_MANIFEST_DIR"));

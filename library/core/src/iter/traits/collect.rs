@@ -92,8 +92,8 @@
 ///
 /// assert_eq!(c.0, vec![0, 1, 2, 3, 4]);
 /// ```
-#[stable(feature = "rust1", since = "1.0.0")]
-#[rustc_on_unimplemented(
+#[stable(feature = "crablang1", since = "1.0.0")]
+#[crablangc_on_unimplemented(
     on(
         _Self = "[{A}]",
         message = "a slice of type `{Self}` cannot be built since `{Self}` has no definite size",
@@ -118,7 +118,7 @@
                over elements of type `{A}`",
     label = "value of type `{Self}` cannot be built from `std::iter::Iterator<Item={A}>`"
 )]
-#[rustc_diagnostic_item = "FromIterator"]
+#[crablangc_diagnostic_item = "FromIterator"]
 pub trait FromIterator<A>: Sized {
     /// Creates a value from an iterator.
     ///
@@ -137,7 +137,7 @@ pub trait FromIterator<A>: Sized {
     ///
     /// assert_eq!(v, vec![5, 5, 5, 5, 5]);
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     fn from_iter<T: IntoIterator<Item = A>>(iter: T) -> Self;
 }
 
@@ -148,7 +148,7 @@ pub trait FromIterator<A>: Sized {
 /// collection of some kind.
 ///
 /// One benefit of implementing `IntoIterator` is that your type will [work
-/// with Rust's `for` loop syntax](crate::iter#for-loops-and-intoiterator).
+/// with CrabLang's `for` loop syntax](crate::iter#for-loops-and-intoiterator).
 ///
 /// See also: [`FromIterator`].
 ///
@@ -213,7 +213,7 @@ pub trait FromIterator<A>: Sized {
 /// iterator. Additional bounds can be specified by restricting on
 /// `Item`:
 ///
-/// ```rust
+/// ```crablang
 /// fn collect_as_strings<T>(collection: T) -> Vec<String>
 /// where
 ///     T: IntoIterator,
@@ -225,17 +225,17 @@ pub trait FromIterator<A>: Sized {
 ///         .collect()
 /// }
 /// ```
-#[rustc_diagnostic_item = "IntoIterator"]
-#[rustc_skip_array_during_method_dispatch]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[crablangc_diagnostic_item = "IntoIterator"]
+#[crablangc_skip_array_during_method_dispatch]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[const_trait]
 pub trait IntoIterator {
     /// The type of the elements being iterated over.
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     type Item;
 
     /// Which kind of iterator are we turning this into?
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     type IntoIter: Iterator<Item = Self::Item>;
 
     /// Creates an iterator from a value.
@@ -258,12 +258,12 @@ pub trait IntoIterator {
     /// assert_eq!(None, iter.next());
     /// ```
     #[lang = "into_iter"]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     fn into_iter(self) -> Self::IntoIter;
 }
 
-#[rustc_const_unstable(feature = "const_intoiterator_identity", issue = "90603")]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[crablangc_const_unstable(feature = "const_intoiterator_identity", issue = "90603")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<I: Iterator> const IntoIterator for I {
     type Item = I::Item;
     type IntoIter = I;
@@ -343,7 +343,7 @@ impl<I: Iterator> const IntoIterator for I {
 /// // we've added these elements onto the end
 /// assert_eq!("MyCollection([5, 6, 7, 1, 2, 3])", format!("{c:?}"));
 /// ```
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub trait Extend<A> {
     /// Extends a collection with the contents of an iterator.
     ///
@@ -364,7 +364,7 @@ pub trait Extend<A> {
     ///
     /// assert_eq!("abcdef", &message);
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     fn extend<T: IntoIterator<Item = A>>(&mut self, iter: T);
 
     /// Extends a collection with exactly one element.

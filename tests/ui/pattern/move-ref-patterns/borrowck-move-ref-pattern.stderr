@@ -215,4 +215,4 @@ LL |         let (ref mut _x0, _, _x2) = tup;
 error: aborting due to 18 previous errors
 
 Some errors have detailed explanations: E0382, E0384, E0499, E0502, E0505, E0594.
-For more information about an error, try `rustc --explain E0382`.
+For more information about an error, try `crablangc --explain E0382`.

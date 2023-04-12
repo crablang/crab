@@ -3,11 +3,11 @@ use clippy_utils::source::{indent_of, reindent_multiline, snippet_opt};
 use clippy_utils::ty::is_type_diagnostic_item;
 use clippy_utils::{is_res_lang_ctor, path_res, path_to_local_id};
 use if_chain::if_chain;
-use rustc_errors::Applicability;
-use rustc_hir::LangItem::{ResultErr, ResultOk};
-use rustc_hir::{Expr, ExprKind, PatKind};
-use rustc_lint::LateContext;
-use rustc_span::symbol::sym;
+use crablangc_errors::Applicability;
+use crablangc_hir::LangItem::{ResultErr, ResultOk};
+use crablangc_hir::{Expr, ExprKind, PatKind};
+use crablangc_lint::LateContext;
+use crablangc_span::symbol::sym;
 
 use super::MANUAL_OK_OR;
 

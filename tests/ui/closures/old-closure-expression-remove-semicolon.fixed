@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 
 fn foo() -> i32 {
     0

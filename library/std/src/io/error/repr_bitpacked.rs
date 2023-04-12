@@ -3,7 +3,7 @@
 //!
 //! (Note that `bitpacked` vs `unpacked` here has no relationship to
 //! `#[repr(packed)]`, it just refers to attempting to use any available bits in
-//! a more clever manner than `rustc`'s default layout algorithm would).
+//! a more clever manner than `crablangc`'s default layout algorithm would).
 //!
 //! Conceptually, it stores the same data as the "unpacked" equivalent we use on
 //! other targets. Specifically, you can imagine it as an optimized version of
@@ -404,7 +404,7 @@ static_assert!(@usize_eq: TAG_SIMPLE_MESSAGE, 0);
 //
 // We'd check against `io::Error`, but *technically* it's allowed to vary,
 // as it's not `#[repr(transparent)]`/`#[repr(C)]`. We could add that, but
-// the `#[repr()]` would show up in rustdoc, which might be seen as a stable
+// the `#[repr()]` would show up in crablangdoc, which might be seen as a stable
 // commitment.
 static_assert!(@usize_eq: size_of::<Repr>(), 8);
 static_assert!(@usize_eq: size_of::<Option<Repr>>(), 8);

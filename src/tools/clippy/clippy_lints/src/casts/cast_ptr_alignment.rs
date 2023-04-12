@@ -1,10 +1,10 @@
 use clippy_utils::diagnostics::span_lint;
 use clippy_utils::ty::is_c_void;
 use clippy_utils::{get_parent_expr, is_hir_ty_cfg_dependant, match_any_def_paths, paths};
-use rustc_hir::{Expr, ExprKind, GenericArg};
-use rustc_lint::LateContext;
-use rustc_middle::ty::layout::LayoutOf;
-use rustc_middle::ty::{self, Ty};
+use crablangc_hir::{Expr, ExprKind, GenericArg};
+use crablangc_lint::LateContext;
+use crablangc_middle::ty::layout::LayoutOf;
+use crablangc_middle::ty::{self, Ty};
 
 use super::CAST_PTR_ALIGNMENT;
 
@@ -38,7 +38,7 @@ fn lint_cast_ptr_alignment<'tcx>(cx: &LateContext<'tcx>, expr: &Expr<'_>, cast_f
         && let Ok(from_layout) = cx.layout_of(from_ptr_ty.ty)
         && let Ok(to_layout) = cx.layout_of(to_ptr_ty.ty)
         && from_layout.align.abi < to_layout.align.abi
-        // with c_void, we inherently need to trust the user
+        // with c_void, we inherently need to tcrablang the user
         && !is_c_void(cx, from_ptr_ty.ty)
         // when casting from a ZST, we don't know enough to properly lint
         && !from_layout.is_zst()

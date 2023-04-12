@@ -3,7 +3,7 @@
 
 // aux-build:key-value-expansion.rs
 
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 
 extern crate key_value_expansion;
 
@@ -11,7 +11,7 @@ extern crate key_value_expansion;
 
 macro_rules! bug {
     ($expr:expr) => {
-        #[rustc_dummy = $expr] // Any key-value attribute, not necessarily `doc`
+        #[crablangc_dummy = $expr] // Any key-value attribute, not necessarily `doc`
         struct S;
     };
 }

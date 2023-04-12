@@ -2,10 +2,10 @@ use super::EXPLICIT_INTO_ITER_LOOP;
 use clippy_utils::diagnostics::span_lint_and_sugg;
 use clippy_utils::is_trait_method;
 use clippy_utils::source::snippet_with_applicability;
-use rustc_errors::Applicability;
-use rustc_hir::Expr;
-use rustc_lint::LateContext;
-use rustc_span::symbol::sym;
+use crablangc_errors::Applicability;
+use crablangc_hir::Expr;
+use crablangc_lint::LateContext;
+use crablangc_span::symbol::sym;
 
 pub(super) fn check(cx: &LateContext<'_>, self_arg: &Expr<'_>, call_expr: &Expr<'_>) {
     let self_ty = cx.typeck_results().expr_ty(self_arg);

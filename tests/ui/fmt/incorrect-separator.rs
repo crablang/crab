@@ -1,5 +1,5 @@
 // Allows to track issue #75492:
-// https://github.com/rust-lang/rust/issues/75492
+// https://github.com/crablang/crablang/issues/75492
 
 use std::iter;
 

@@ -1,11 +1,11 @@
 use super::MISSING_SPIN_LOOP;
 use clippy_utils::diagnostics::span_lint_and_sugg;
 use clippy_utils::is_no_std_crate;
-use rustc_errors::Applicability;
-use rustc_hir::{Block, Expr, ExprKind};
-use rustc_lint::LateContext;
-use rustc_middle::ty;
-use rustc_span::sym;
+use crablangc_errors::Applicability;
+use crablangc_hir::{Block, Expr, ExprKind};
+use crablangc_lint::LateContext;
+use crablangc_middle::ty;
+use crablangc_span::sym;
 
 fn unpack_cond<'tcx>(cond: &'tcx Expr<'tcx>) -> &'tcx Expr<'tcx> {
     match &cond.kind {

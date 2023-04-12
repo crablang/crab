@@ -3,12 +3,12 @@
 macro_rules! forward_ref_unop {
     (impl const $imp:ident, $method:ident for $t:ty) => {
         forward_ref_unop!(impl const $imp, $method for $t,
-                #[stable(feature = "rust1", since = "1.0.0")]);
+                #[stable(feature = "crablang1", since = "1.0.0")]);
     };
-    // Equivalent to the non-const version, with the addition of `rustc_const_unstable`
+    // Equivalent to the non-const version, with the addition of `crablangc_const_unstable`
     (impl const $imp:ident, $method:ident for $t:ty, #[$attr:meta]) => {
         #[$attr]
-        #[rustc_const_unstable(feature = "const_ops", issue = "90080")]
+        #[crablangc_const_unstable(feature = "const_ops", issue = "90080")]
         impl const $imp for &$t {
             type Output = <$t as $imp>::Output;
 
@@ -36,12 +36,12 @@ macro_rules! forward_ref_unop {
 macro_rules! forward_ref_binop {
     (impl const $imp:ident, $method:ident for $t:ty, $u:ty) => {
         forward_ref_binop!(impl const $imp, $method for $t, $u,
-                #[stable(feature = "rust1", since = "1.0.0")]);
+                #[stable(feature = "crablang1", since = "1.0.0")]);
     };
-    // Equivalent to the non-const version, with the addition of `rustc_const_unstable`
+    // Equivalent to the non-const version, with the addition of `crablangc_const_unstable`
     (impl const $imp:ident, $method:ident for $t:ty, $u:ty, #[$attr:meta]) => {
         #[$attr]
-        #[rustc_const_unstable(feature = "const_ops", issue = "90080")]
+        #[crablangc_const_unstable(feature = "const_ops", issue = "90080")]
         impl<'a> const $imp<$u> for &'a $t {
             type Output = <$t as $imp<$u>>::Output;
 
@@ -52,7 +52,7 @@ macro_rules! forward_ref_binop {
         }
 
         #[$attr]
-        #[rustc_const_unstable(feature = "const_ops", issue = "90080")]
+        #[crablangc_const_unstable(feature = "const_ops", issue = "90080")]
         impl const $imp<&$u> for $t {
             type Output = <$t as $imp<$u>>::Output;
 
@@ -63,7 +63,7 @@ macro_rules! forward_ref_binop {
         }
 
         #[$attr]
-        #[rustc_const_unstable(feature = "const_ops", issue = "90080")]
+        #[crablangc_const_unstable(feature = "const_ops", issue = "90080")]
         impl const $imp<&$u> for &$t {
             type Output = <$t as $imp<$u>>::Output;
 
@@ -117,10 +117,10 @@ macro_rules! forward_ref_op_assign {
         forward_ref_op_assign!(impl const $imp, $method for $t, $u,
                 #[stable(feature = "op_assign_builtins_by_ref", since = "1.22.0")]);
     };
-    // Equivalent to the non-const version, with the addition of `rustc_const_unstable`
+    // Equivalent to the non-const version, with the addition of `crablangc_const_unstable`
     (impl const $imp:ident, $method:ident for $t:ty, $u:ty, #[$attr:meta]) => {
         #[$attr]
-        #[rustc_const_unstable(feature = "const_ops", issue = "90080")]
+        #[crablangc_const_unstable(feature = "const_ops", issue = "90080")]
         impl const $imp<&$u> for $t {
             #[inline]
             fn $method(&mut self, other: &$u) {
@@ -153,14 +153,14 @@ macro_rules! impl_fn_for_zst {
 
             impl $( <$( $lifetime ),+> )? Fn<($( $ArgTy, )*)> for $Name {
                 #[inline]
-                extern "rust-call" fn call(&self, ($( $arg, )*): ($( $ArgTy, )*)) -> $ReturnTy {
+                extern "crablang-call" fn call(&self, ($( $arg, )*): ($( $ArgTy, )*)) -> $ReturnTy {
                     $body
                 }
             }
 
             impl $( <$( $lifetime ),+> )? FnMut<($( $ArgTy, )*)> for $Name {
                 #[inline]
-                extern "rust-call" fn call_mut(
+                extern "crablang-call" fn call_mut(
                     &mut self,
                     ($( $arg, )*): ($( $ArgTy, )*)
                 ) -> $ReturnTy {
@@ -172,7 +172,7 @@ macro_rules! impl_fn_for_zst {
                 type Output = $ReturnTy;
 
                 #[inline]
-                extern "rust-call" fn call_once(self, ($( $arg, )*): ($( $ArgTy, )*)) -> $ReturnTy {
+                extern "crablang-call" fn call_once(self, ($( $arg, )*): ($( $ArgTy, )*)) -> $ReturnTy {
                     Fn::call(&self, ($( $arg, )*))
                 }
             }

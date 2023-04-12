@@ -4,7 +4,7 @@
 
 #![crate_type = "lib"]
 
-extern "Rust" {
+extern "CrabLang" {
     fn f(x: [u8; 1024]);
 }
 

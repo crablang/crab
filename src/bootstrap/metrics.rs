@@ -150,7 +150,7 @@ impl BuildMetrics {
                 .map(|test| JsonNode::Test { name: test.name, outcome: test.outcome }),
         );
 
-        JsonNode::RustbuildStep {
+        JsonNode::CrabLangbuildStep {
             type_: step.type_,
             debug_repr: step.debug_repr,
 
@@ -212,7 +212,7 @@ struct JsonInvocation {
 #[derive(Serialize, Deserialize)]
 #[serde(tag = "kind", rename_all = "snake_case")]
 enum JsonNode {
-    RustbuildStep {
+    CrabLangbuildStep {
         #[serde(rename = "type")]
         type_: String,
         debug_repr: String,

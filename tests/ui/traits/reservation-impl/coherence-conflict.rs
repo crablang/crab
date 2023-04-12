@@ -1,10 +1,10 @@
 // check that reservation impls are accounted for in negative reasoning.
 // revisions: old next
 //[next] compile-flags: -Ztrait-solver=next
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 
 trait MyTrait {}
-#[rustc_reservation_impl="this impl is reserved"]
+#[crablangc_reservation_impl="this impl is reserved"]
 impl MyTrait for () {}
 
 trait OtherTrait {}

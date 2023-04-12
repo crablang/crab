@@ -4,7 +4,7 @@
 //!
 //! [`std::slice`]: ../../std/slice/index.html
 
-#![stable(feature = "rust1", since = "1.0.0")]
+#![stable(feature = "crablang1", since = "1.0.0")]
 
 use crate::cmp::Ordering::{self, Greater, Less};
 use crate::fmt;
@@ -26,7 +26,7 @@ use crate::slice;
     issue = "none",
     reason = "exposed from core to be reused in std; use the memchr crate"
 )]
-/// Pure rust memchr implementation, taken from rust-memchr
+/// Pure crablang memchr implementation, taken from crablang-memchr
 pub mod memchr;
 
 #[unstable(
@@ -44,11 +44,11 @@ mod raw;
 mod rotate;
 mod specialize;
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub use iter::{Chunks, ChunksMut, Windows};
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub use iter::{Iter, IterMut};
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub use iter::{RSplitN, RSplitNMut, Split, SplitMut, SplitN, SplitNMut};
 
 #[stable(feature = "slice_rsplit", since = "1.27.0")]
@@ -72,7 +72,7 @@ pub use iter::{GroupBy, GroupByMut};
 #[stable(feature = "split_inclusive", since = "1.51.0")]
 pub use iter::{SplitInclusive, SplitInclusiveMut};
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub use raw::{from_raw_parts, from_raw_parts_mut};
 
 #[stable(feature = "from_ref", since = "1.28.0")]
@@ -128,9 +128,9 @@ impl<T> [T] {
     /// assert_eq!(a.len(), 3);
     /// ```
     #[lang = "slice_len_fn"]
-    #[stable(feature = "rust1", since = "1.0.0")]
-    #[rustc_const_stable(feature = "const_slice_len", since = "1.39.0")]
-    #[rustc_allow_const_fn_unstable(ptr_metadata)]
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    #[crablangc_const_stable(feature = "const_slice_len", since = "1.39.0")]
+    #[crablangc_allow_const_fn_unstable(ptr_metadata)]
     #[inline]
     #[must_use]
     pub const fn len(&self) -> usize {
@@ -145,8 +145,8 @@ impl<T> [T] {
     /// let a = [1, 2, 3];
     /// assert!(!a.is_empty());
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
-    #[rustc_const_stable(feature = "const_slice_is_empty", since = "1.39.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    #[crablangc_const_stable(feature = "const_slice_is_empty", since = "1.39.0")]
     #[inline]
     #[must_use]
     pub const fn is_empty(&self) -> bool {
@@ -164,8 +164,8 @@ impl<T> [T] {
     /// let w: &[i32] = &[];
     /// assert_eq!(None, w.first());
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
-    #[rustc_const_stable(feature = "const_slice_first_last_not_mut", since = "1.56.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    #[crablangc_const_stable(feature = "const_slice_first_last_not_mut", since = "1.56.0")]
     #[inline]
     #[must_use]
     pub const fn first(&self) -> Option<&T> {
@@ -184,8 +184,8 @@ impl<T> [T] {
     /// }
     /// assert_eq!(x, &[5, 1, 2]);
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
-    #[rustc_const_unstable(feature = "const_slice_first_last", issue = "83570")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    #[crablangc_const_unstable(feature = "const_slice_first_last", issue = "83570")]
     #[inline]
     #[must_use]
     pub const fn first_mut(&mut self) -> Option<&mut T> {
@@ -205,7 +205,7 @@ impl<T> [T] {
     /// }
     /// ```
     #[stable(feature = "slice_splits", since = "1.5.0")]
-    #[rustc_const_stable(feature = "const_slice_first_last_not_mut", since = "1.56.0")]
+    #[crablangc_const_stable(feature = "const_slice_first_last_not_mut", since = "1.56.0")]
     #[inline]
     #[must_use]
     pub const fn split_first(&self) -> Option<(&T, &[T])> {
@@ -227,7 +227,7 @@ impl<T> [T] {
     /// assert_eq!(x, &[3, 4, 5]);
     /// ```
     #[stable(feature = "slice_splits", since = "1.5.0")]
-    #[rustc_const_unstable(feature = "const_slice_first_last", issue = "83570")]
+    #[crablangc_const_unstable(feature = "const_slice_first_last", issue = "83570")]
     #[inline]
     #[must_use]
     pub const fn split_first_mut(&mut self) -> Option<(&mut T, &mut [T])> {
@@ -247,7 +247,7 @@ impl<T> [T] {
     /// }
     /// ```
     #[stable(feature = "slice_splits", since = "1.5.0")]
-    #[rustc_const_stable(feature = "const_slice_first_last_not_mut", since = "1.56.0")]
+    #[crablangc_const_stable(feature = "const_slice_first_last_not_mut", since = "1.56.0")]
     #[inline]
     #[must_use]
     pub const fn split_last(&self) -> Option<(&T, &[T])> {
@@ -269,7 +269,7 @@ impl<T> [T] {
     /// assert_eq!(x, &[4, 5, 3]);
     /// ```
     #[stable(feature = "slice_splits", since = "1.5.0")]
-    #[rustc_const_unstable(feature = "const_slice_first_last", issue = "83570")]
+    #[crablangc_const_unstable(feature = "const_slice_first_last", issue = "83570")]
     #[inline]
     #[must_use]
     pub const fn split_last_mut(&mut self) -> Option<(&mut T, &mut [T])> {
@@ -287,8 +287,8 @@ impl<T> [T] {
     /// let w: &[i32] = &[];
     /// assert_eq!(None, w.last());
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
-    #[rustc_const_stable(feature = "const_slice_first_last_not_mut", since = "1.56.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    #[crablangc_const_stable(feature = "const_slice_first_last_not_mut", since = "1.56.0")]
     #[inline]
     #[must_use]
     pub const fn last(&self) -> Option<&T> {
@@ -307,8 +307,8 @@ impl<T> [T] {
     /// }
     /// assert_eq!(x, &[0, 1, 10]);
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
-    #[rustc_const_unstable(feature = "const_slice_first_last", issue = "83570")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    #[crablangc_const_unstable(feature = "const_slice_first_last", issue = "83570")]
     #[inline]
     #[must_use]
     pub const fn last_mut(&mut self) -> Option<&mut T> {
@@ -332,8 +332,8 @@ impl<T> [T] {
     /// assert_eq!(None, v.get(3));
     /// assert_eq!(None, v.get(0..4));
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
-    #[rustc_const_unstable(feature = "const_slice_index", issue = "none")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    #[crablangc_const_unstable(feature = "const_slice_index", issue = "none")]
     #[inline]
     #[must_use]
     pub const fn get<I>(&self, index: I) -> Option<&I::Output>
@@ -358,8 +358,8 @@ impl<T> [T] {
     /// }
     /// assert_eq!(x, &[0, 42, 2]);
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
-    #[rustc_const_unstable(feature = "const_slice_index", issue = "none")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    #[crablangc_const_unstable(feature = "const_slice_index", issue = "none")]
     #[inline]
     #[must_use]
     pub const fn get_mut<I>(&mut self, index: I) -> Option<&mut I::Output>
@@ -380,7 +380,7 @@ impl<T> [T] {
     /// even if the resulting reference is not used.
     ///
     /// [`get`]: slice::get
-    /// [undefined behavior]: https://doc.rust-lang.org/reference/behavior-considered-undefined.html
+    /// [undefined behavior]: https://doc.crablang.org/reference/behavior-considered-undefined.html
     ///
     /// # Examples
     ///
@@ -391,8 +391,8 @@ impl<T> [T] {
     ///     assert_eq!(x.get_unchecked(1), &2);
     /// }
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
-    #[rustc_const_unstable(feature = "const_slice_index", issue = "none")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    #[crablangc_const_unstable(feature = "const_slice_index", issue = "none")]
     #[inline]
     #[must_use]
     pub const unsafe fn get_unchecked<I>(&self, index: I) -> &I::Output
@@ -416,7 +416,7 @@ impl<T> [T] {
     /// even if the resulting reference is not used.
     ///
     /// [`get_mut`]: slice::get_mut
-    /// [undefined behavior]: https://doc.rust-lang.org/reference/behavior-considered-undefined.html
+    /// [undefined behavior]: https://doc.crablang.org/reference/behavior-considered-undefined.html
     ///
     /// # Examples
     ///
@@ -429,8 +429,8 @@ impl<T> [T] {
     /// }
     /// assert_eq!(x, &[1, 13, 4]);
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
-    #[rustc_const_unstable(feature = "const_slice_index", issue = "none")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    #[crablangc_const_unstable(feature = "const_slice_index", issue = "none")]
     #[inline]
     #[must_use]
     pub const unsafe fn get_unchecked_mut<I>(&mut self, index: I) -> &mut I::Output
@@ -469,8 +469,8 @@ impl<T> [T] {
     /// ```
     ///
     /// [`as_mut_ptr`]: slice::as_mut_ptr
-    #[stable(feature = "rust1", since = "1.0.0")]
-    #[rustc_const_stable(feature = "const_slice_as_ptr", since = "1.32.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    #[crablangc_const_stable(feature = "const_slice_as_ptr", since = "1.32.0")]
     #[inline(always)]
     #[must_use]
     pub const fn as_ptr(&self) -> *const T {
@@ -498,9 +498,9 @@ impl<T> [T] {
     /// }
     /// assert_eq!(x, &[3, 4, 6]);
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
-    #[rustc_const_stable(feature = "const_ptr_offset", since = "1.61.0")]
-    #[rustc_allow_const_fn_unstable(const_mut_refs)]
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    #[crablangc_const_stable(feature = "const_ptr_offset", since = "1.61.0")]
+    #[crablangc_allow_const_fn_unstable(const_mut_refs)]
     #[inline(always)]
     #[must_use]
     pub const fn as_mut_ptr(&mut self) -> *mut T {
@@ -536,7 +536,7 @@ impl<T> [T] {
     ///
     /// [`as_ptr`]: slice::as_ptr
     #[stable(feature = "slice_ptr_range", since = "1.48.0")]
-    #[rustc_const_stable(feature = "const_ptr_offset", since = "1.61.0")]
+    #[crablangc_const_stable(feature = "const_ptr_offset", since = "1.61.0")]
     #[inline]
     #[must_use]
     pub const fn as_ptr_range(&self) -> Range<*const T> {
@@ -548,9 +548,9 @@ impl<T> [T] {
         //
         //   - The size of the slice is never larger than isize::MAX bytes, as
         //     noted here:
-        //       - https://github.com/rust-lang/unsafe-code-guidelines/issues/102#issuecomment-473340447
-        //       - https://doc.rust-lang.org/reference/behavior-considered-undefined.html
-        //       - https://doc.rust-lang.org/core/slice/fn.from_raw_parts.html#safety
+        //       - https://github.com/crablang/unsafe-code-guidelines/issues/102#issuecomment-473340447
+        //       - https://doc.crablang.org/reference/behavior-considered-undefined.html
+        //       - https://doc.crablang.org/core/slice/fn.from_raw_parts.html#safety
         //     (This doesn't seem normative yet, but the very same assumption is
         //     made in many places, including the Index implementation of slices.)
         //
@@ -579,8 +579,8 @@ impl<T> [T] {
     ///
     /// [`as_mut_ptr`]: slice::as_mut_ptr
     #[stable(feature = "slice_ptr_range", since = "1.48.0")]
-    #[rustc_const_stable(feature = "const_ptr_offset", since = "1.61.0")]
-    #[rustc_allow_const_fn_unstable(const_mut_refs)]
+    #[crablangc_const_stable(feature = "const_ptr_offset", since = "1.61.0")]
+    #[crablangc_allow_const_fn_unstable(const_mut_refs)]
     #[inline]
     #[must_use]
     pub const fn as_mut_ptr_range(&mut self) -> Range<*mut T> {
@@ -608,12 +608,12 @@ impl<T> [T] {
     /// v.swap(2, 4);
     /// assert!(v == ["a", "b", "e", "d", "c"]);
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
-    #[rustc_const_unstable(feature = "const_swap", issue = "83163")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    #[crablangc_const_unstable(feature = "const_swap", issue = "83163")]
     #[inline]
     #[track_caller]
     pub const fn swap(&mut self, a: usize, b: usize) {
-        // FIXME: use swap_unchecked here (https://github.com/rust-lang/rust/pull/88540#issuecomment-944344343)
+        // FIXME: use swap_unchecked here (https://github.com/crablang/crablang/pull/88540#issuecomment-944344343)
         // Can't take two mutable loans from one vector, so instead use raw pointers.
         let pa = ptr::addr_of_mut!(self[a]);
         let pb = ptr::addr_of_mut!(self[b]);
@@ -652,9 +652,9 @@ impl<T> [T] {
     /// ```
     ///
     /// [`swap`]: slice::swap
-    /// [undefined behavior]: https://doc.rust-lang.org/reference/behavior-considered-undefined.html
+    /// [undefined behavior]: https://doc.crablang.org/reference/behavior-considered-undefined.html
     #[unstable(feature = "slice_swap_unchecked", issue = "88539")]
-    #[rustc_const_unstable(feature = "const_swap", issue = "83163")]
+    #[crablangc_const_unstable(feature = "const_swap", issue = "83163")]
     pub const unsafe fn swap_unchecked(&mut self, a: usize, b: usize) {
         let this = self;
         let ptr = this.as_mut_ptr();
@@ -677,8 +677,8 @@ impl<T> [T] {
     /// v.reverse();
     /// assert!(v == [3, 2, 1]);
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
-    #[rustc_const_unstable(feature = "const_reverse", issue = "100784")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    #[crablangc_const_unstable(feature = "const_reverse", issue = "100784")]
     #[inline]
     pub const fn reverse(&mut self) {
         let half_len = self.len() / 2;
@@ -736,7 +736,7 @@ impl<T> [T] {
     /// assert_eq!(iterator.next(), Some(&4));
     /// assert_eq!(iterator.next(), None);
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     pub fn iter(&self) -> Iter<'_, T> {
         Iter::new(self)
@@ -755,7 +755,7 @@ impl<T> [T] {
     /// }
     /// assert_eq!(x, &[3, 4, 6]);
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     pub fn iter_mut(&mut self) -> IterMut<'_, T> {
         IterMut::new(self)
@@ -803,7 +803,7 @@ impl<T> [T] {
     /// }
     /// assert_eq!(array, ['s', 't', ' ', '2', '0', '1', '5', 'u', 'R']);
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     #[track_caller]
     pub fn windows(&self, size: usize) -> Windows<'_, T> {
@@ -838,7 +838,7 @@ impl<T> [T] {
     ///
     /// [`chunks_exact`]: slice::chunks_exact
     /// [`rchunks`]: slice::rchunks
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     #[track_caller]
     pub fn chunks(&self, chunk_size: usize) -> Chunks<'_, T> {
@@ -877,7 +877,7 @@ impl<T> [T] {
     ///
     /// [`chunks_exact_mut`]: slice::chunks_exact_mut
     /// [`rchunks_mut`]: slice::rchunks_mut
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     #[track_caller]
     pub fn chunks_mut(&mut self, chunk_size: usize) -> ChunksMut<'_, T> {
@@ -1595,8 +1595,8 @@ impl<T> [T] {
     ///     assert_eq!(right, []);
     /// }
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
-    #[rustc_const_unstable(feature = "const_slice_split_at_not_mut", issue = "101158")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    #[crablangc_const_unstable(feature = "const_slice_split_at_not_mut", issue = "101158")]
     #[inline]
     #[track_caller]
     #[must_use]
@@ -1628,11 +1628,11 @@ impl<T> [T] {
     /// right[1] = 4;
     /// assert_eq!(v, [1, 2, 3, 4, 5, 6]);
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     #[track_caller]
     #[must_use]
-    #[rustc_const_unstable(feature = "const_slice_split_at_mut", issue = "101804")]
+    #[crablangc_const_unstable(feature = "const_slice_split_at_mut", issue = "101804")]
     pub const fn split_at_mut(&mut self, mid: usize) -> (&mut [T], &mut [T]) {
         assert!(mid <= self.len());
         // SAFETY: `[ptr; mid]` and `[mid; len]` are inside `self`, which
@@ -1655,7 +1655,7 @@ impl<T> [T] {
     /// `0 <= mid <= self.len()`.
     ///
     /// [`split_at`]: slice::split_at
-    /// [undefined behavior]: https://doc.rust-lang.org/reference/behavior-considered-undefined.html
+    /// [undefined behavior]: https://doc.crablang.org/reference/behavior-considered-undefined.html
     ///
     /// # Examples
     ///
@@ -1683,7 +1683,7 @@ impl<T> [T] {
     /// }
     /// ```
     #[unstable(feature = "slice_split_at_unchecked", reason = "new API", issue = "76014")]
-    #[rustc_const_unstable(feature = "slice_split_at_unchecked", issue = "76014")]
+    #[crablangc_const_unstable(feature = "slice_split_at_unchecked", issue = "76014")]
     #[inline]
     #[must_use]
     pub const unsafe fn split_at_unchecked(&self, mid: usize) -> (&[T], &[T]) {
@@ -1719,7 +1719,7 @@ impl<T> [T] {
     /// `0 <= mid <= self.len()`.
     ///
     /// [`split_at_mut`]: slice::split_at_mut
-    /// [undefined behavior]: https://doc.rust-lang.org/reference/behavior-considered-undefined.html
+    /// [undefined behavior]: https://doc.crablang.org/reference/behavior-considered-undefined.html
     ///
     /// # Examples
     ///
@@ -1738,7 +1738,7 @@ impl<T> [T] {
     /// assert_eq!(v, [1, 2, 3, 4, 5, 6]);
     /// ```
     #[unstable(feature = "slice_split_at_unchecked", reason = "new API", issue = "76014")]
-    #[rustc_const_unstable(feature = "const_slice_split_at_mut", issue = "101804")]
+    #[crablangc_const_unstable(feature = "const_slice_split_at_mut", issue = "101804")]
     #[inline]
     #[must_use]
     pub const unsafe fn split_at_mut_unchecked(&mut self, mid: usize) -> (&mut [T], &mut [T]) {
@@ -1956,7 +1956,7 @@ impl<T> [T] {
     /// assert_eq!(iter.next().unwrap(), &[20]);
     /// assert!(iter.next().is_none());
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     pub fn split<F>(&self, pred: F) -> Split<'_, T, F>
     where
@@ -1978,7 +1978,7 @@ impl<T> [T] {
     /// }
     /// assert_eq!(v, [1, 40, 30, 1, 60, 1]);
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     pub fn split_mut<F>(&mut self, pred: F) -> SplitMut<'_, T, F>
     where
@@ -2128,7 +2128,7 @@ impl<T> [T] {
     ///     println!("{group:?}");
     /// }
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     pub fn splitn<F>(&self, n: usize, pred: F) -> SplitN<'_, T, F>
     where
@@ -2154,7 +2154,7 @@ impl<T> [T] {
     /// }
     /// assert_eq!(v, [1, 40, 30, 1, 60, 50]);
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     pub fn splitn_mut<F>(&mut self, n: usize, pred: F) -> SplitNMut<'_, T, F>
     where
@@ -2183,7 +2183,7 @@ impl<T> [T] {
     ///     println!("{group:?}");
     /// }
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     pub fn rsplitn<F>(&self, n: usize, pred: F) -> RSplitN<'_, T, F>
     where
@@ -2210,7 +2210,7 @@ impl<T> [T] {
     /// }
     /// assert_eq!(s, [1, 40, 30, 20, 60, 1]);
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     pub fn rsplitn_mut<F>(&mut self, n: usize, pred: F) -> RSplitNMut<'_, T, F>
     where
@@ -2244,7 +2244,7 @@ impl<T> [T] {
     /// assert!(v.iter().any(|e| e == "hello")); // search with `&str`
     /// assert!(!v.iter().any(|e| e == "hi"));
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     #[must_use]
     pub fn contains(&self, x: &T) -> bool
@@ -2274,7 +2274,7 @@ impl<T> [T] {
     /// let v: &[u8] = &[];
     /// assert!(v.starts_with(&[]));
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[must_use]
     pub fn starts_with(&self, needle: &[T]) -> bool
     where
@@ -2304,7 +2304,7 @@ impl<T> [T] {
     /// let v: &[u8] = &[];
     /// assert!(v.ends_with(&[]));
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[must_use]
     pub fn ends_with(&self, needle: &[T]) -> bool
     where
@@ -2393,7 +2393,7 @@ impl<T> [T] {
     /// If the value is found then [`Result::Ok`] is returned, containing the
     /// index of the matching element. If there are multiple matches, then any
     /// one of the matches could be returned. The index is chosen
-    /// deterministically, but is subject to change in future versions of Rust.
+    /// deterministically, but is subject to change in future versions of CrabLang.
     /// If the value is not found then [`Result::Err`] is returned, containing
     /// the index where a matching element could be inserted while maintaining
     /// sorted order.
@@ -2453,7 +2453,7 @@ impl<T> [T] {
     /// s.insert(idx, num);
     /// assert_eq!(s, [0, 1, 1, 1, 1, 2, 3, 5, 8, 13, 21, 34, 42, 55]);
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn binary_search(&self, x: &T) -> Result<usize, usize>
     where
         T: Ord,
@@ -2473,7 +2473,7 @@ impl<T> [T] {
     /// If the value is found then [`Result::Ok`] is returned, containing the
     /// index of the matching element. If there are multiple matches, then any
     /// one of the matches could be returned. The index is chosen
-    /// deterministically, but is subject to change in future versions of Rust.
+    /// deterministically, but is subject to change in future versions of CrabLang.
     /// If the value is not found then [`Result::Err`] is returned, containing
     /// the index where a matching element could be inserted while maintaining
     /// sorted order.
@@ -2503,7 +2503,7 @@ impl<T> [T] {
     /// let r = s.binary_search_by(|probe| probe.cmp(&seek));
     /// assert!(match r { Ok(1..=4) => true, _ => false, });
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     pub fn binary_search_by<'a, F>(&'a self, mut f: F) -> Result<usize, usize>
     where
@@ -2527,7 +2527,7 @@ impl<T> [T] {
 
             // The reason why we use if/else control flow rather than match
             // is because match reorders comparison operations, which is perf sensitive.
-            // This is x86 asm for u8: https://rust.godbolt.org/z/8Y8Pra.
+            // This is x86 asm for u8: https://crablang.godbolt.org/z/8Y8Pra.
             if cmp == Less {
                 left = mid + 1;
             } else if cmp == Greater {
@@ -2557,7 +2557,7 @@ impl<T> [T] {
     /// If the value is found then [`Result::Ok`] is returned, containing the
     /// index of the matching element. If there are multiple matches, then any
     /// one of the matches could be returned. The index is chosen
-    /// deterministically, but is subject to change in future versions of Rust.
+    /// deterministically, but is subject to change in future versions of CrabLang.
     /// If the value is not found then [`Result::Err`] is returned, containing
     /// the index where a matching element could be inserted while maintaining
     /// sorted order.
@@ -2587,11 +2587,11 @@ impl<T> [T] {
     /// let r = s.binary_search_by_key(&1, |&(a, b)| b);
     /// assert!(match r { Ok(1..=4) => true, _ => false, });
     /// ```
-    // Lint rustdoc::broken_intra_doc_links is allowed as `slice::sort_by_key` is
+    // Lint crablangdoc::broken_intra_doc_links is allowed as `slice::sort_by_key` is
     // in crate `alloc`, and as such doesn't exists yet when building `core`: #74481.
     // This breaks links when slice is displayed in core, but changing it to use relative links
     // would break when the item is re-exported. So allow the core links to be broken for now.
-    #[allow(rustdoc::broken_intra_doc_links)]
+    #[allow(crablangdoc::broken_intra_doc_links)]
     #[stable(feature = "slice_binary_search_by_key", since = "1.10.0")]
     #[inline]
     pub fn binary_search_by_key<'a, B, F>(&'a self, b: &B, mut f: F) -> Result<usize, usize>
@@ -3235,7 +3235,7 @@ impl<T> [T] {
     /// assert_eq!(dst, [3, 4]);
     /// ```
     ///
-    /// Rust enforces that there can only be one mutable reference with no
+    /// CrabLang enforces that there can only be one mutable reference with no
     /// immutable references to a particular piece of data in a particular
     /// scope. Because of this, attempting to use `clone_from_slice` on a
     /// single slice will result in a compile failure:
@@ -3298,7 +3298,7 @@ impl<T> [T] {
     /// assert_eq!(dst, [3, 4]);
     /// ```
     ///
-    /// Rust enforces that there can only be one mutable reference with no
+    /// CrabLang enforces that there can only be one mutable reference with no
     /// immutable references to a particular piece of data in a particular
     /// scope. Because of this, attempting to use `copy_from_slice` on a
     /// single slice will result in a compile failure:
@@ -3422,7 +3422,7 @@ impl<T> [T] {
     /// assert_eq!(slice2, [1, 2, 0, 0]);
     /// ```
     ///
-    /// Rust enforces that there can only be one mutable reference to a
+    /// CrabLang enforces that there can only be one mutable reference to a
     /// particular piece of data in a particular scope. Because of this,
     /// attempting to use `swap_with_slice` on a single slice will result in
     /// a compile failure:
@@ -4174,7 +4174,7 @@ impl<T> [T] {
     /// ```
     ///
     /// [`get_many_mut`]: slice::get_many_mut
-    /// [undefined behavior]: https://doc.rust-lang.org/reference/behavior-considered-undefined.html
+    /// [undefined behavior]: https://doc.crablang.org/reference/behavior-considered-undefined.html
     #[unstable(feature = "get_many_mut", issue = "104642")]
     #[inline]
     pub unsafe fn get_many_unchecked_mut<const N: usize>(
@@ -4403,8 +4403,8 @@ where
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
-#[rustc_const_unstable(feature = "const_default_impls", issue = "87864")]
+#[stable(feature = "crablang1", since = "1.0.0")]
+#[crablangc_const_unstable(feature = "const_default_impls", issue = "87864")]
 impl<T> const Default for &[T] {
     /// Creates an empty slice.
     fn default() -> Self {
@@ -4413,7 +4413,7 @@ impl<T> const Default for &[T] {
 }
 
 #[stable(feature = "mut_slice_default", since = "1.5.0")]
-#[rustc_const_unstable(feature = "const_default_impls", issue = "87864")]
+#[crablangc_const_unstable(feature = "const_default_impls", issue = "87864")]
 impl<T> const Default for &mut [T] {
     /// Creates a mutable empty slice.
     fn default() -> Self {

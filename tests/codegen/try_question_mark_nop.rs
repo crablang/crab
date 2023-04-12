@@ -6,7 +6,7 @@
 #![feature(try_blocks)]
 
 // These are now NOPs in LLVM 15, presumably thanks to nikic's change mentioned in
-// <https://github.com/rust-lang/rust/issues/85133#issuecomment-1072168354>.
+// <https://github.com/crablang/crablang/issues/85133#issuecomment-1072168354>.
 // Unfortunately, as of 2022-08-17 they're not yet nops for `u64`s nor `Option`.
 
 use std::ops::ControlFlow::{self, Continue, Break};

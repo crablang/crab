@@ -1,8 +1,8 @@
-// run-rustfix
+// run-crablangfix
 
 #[allow(unused)]
 use std::fmt::Debug;
-// Rustfix should add this, or use `std::fmt::Debug` instead.
+// CrabLangfix should add this, or use `std::fmt::Debug` instead.
 
 #[allow(dead_code)]
 fn test_impl(t: impl Sized + std::fmt::Debug) {

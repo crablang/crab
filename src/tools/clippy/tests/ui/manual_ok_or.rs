@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 #![warn(clippy::manual_ok_or)]
 #![allow(clippy::or_fun_call)]
 #![allow(clippy::disallowed_names)]
@@ -18,7 +18,7 @@ fn main() {
     None::<i32>.map_or(Err("error"), |v| Ok(v));
 
     // multiline case
-    #[rustfmt::skip]
+    #[crablangfmt::skip]
     foo.map_or(Err::<i32, &str>(
         &format!(
             "{}{}{}{}{}{}{}",

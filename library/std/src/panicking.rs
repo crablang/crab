@@ -43,30 +43,30 @@ use realstd::io::set_output_capture;
 // hook up these functions, but it is not this day!
 #[allow(improper_ctypes)]
 extern "C" {
-    fn __rust_panic_cleanup(payload: *mut u8) -> *mut (dyn Any + Send + 'static);
+    fn __crablang_panic_cleanup(payload: *mut u8) -> *mut (dyn Any + Send + 'static);
 }
 
-extern "Rust" {
+extern "CrabLang" {
     /// `BoxMeUp` lazily performs allocation only when needed (this avoids
     /// allocations when using the "abort" panic runtime).
-    fn __rust_start_panic(payload: &mut dyn BoxMeUp) -> u32;
+    fn __crablang_start_panic(payload: &mut dyn BoxMeUp) -> u32;
 }
 
-/// This function is called by the panic runtime if FFI code catches a Rust
+/// This function is called by the panic runtime if FFI code catches a CrabLang
 /// panic but doesn't rethrow it. We don't support this case since it messes
 /// with our panic count.
 #[cfg(not(test))]
-#[rustc_std_internal_symbol]
-extern "C" fn __rust_drop_panic() -> ! {
-    rtabort!("Rust panics must be rethrown");
+#[crablangc_std_internal_symbol]
+extern "C" fn __crablang_drop_panic() -> ! {
+    rtabort!("CrabLang panics must be rethrown");
 }
 
 /// This function is called by the panic runtime if it catches an exception
-/// object which does not correspond to a Rust panic.
+/// object which does not correspond to a CrabLang panic.
 #[cfg(not(test))]
-#[rustc_std_internal_symbol]
-extern "C" fn __rust_foreign_exception() -> ! {
-    rtabort!("Rust cannot catch foreign exceptions");
+#[crablangc_std_internal_symbol]
+extern "C" fn __crablang_foreign_exception() -> ! {
+    rtabort!("CrabLang cannot catch foreign exceptions");
 }
 
 enum Hook {
@@ -272,7 +272,7 @@ fn default_hook(info: &PanicInfo<'_>) {
                 if FIRST_PANIC.swap(false, Ordering::SeqCst) {
                     let _ = writeln!(
                         err,
-                        "note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace"
+                        "note: run with `CRABLANG_BACKTRACE=1` environment variable to display a backtrace"
                     );
                 }
             }
@@ -460,10 +460,10 @@ pub unsafe fn r#try<R, F: FnOnce() -> R>(f: F) -> Result<R, Box<dyn Any + Send>>
     #[cold]
     unsafe fn cleanup(payload: *mut u8) -> Box<dyn Any + Send + 'static> {
         // SAFETY: The whole unsafe block hinges on a correct implementation of
-        // the panic handler `__rust_panic_cleanup`. As such we can only
+        // the panic handler `__crablang_panic_cleanup`. As such we can only
         // assume it returns the correct thing for `Box::from_raw` to work
         // without undefined behavior.
-        let obj = unsafe { Box::from_raw(__rust_panic_cleanup(payload)) };
+        let obj = unsafe { Box::from_raw(__crablang_panic_cleanup(payload)) };
         panic_count::decrease();
         obj
     }
@@ -493,7 +493,7 @@ pub unsafe fn r#try<R, F: FnOnce() -> R>(f: F) -> Result<R, Box<dyn Any + Send>>
     // SAFETY:
     // data must be non-NUL, correctly aligned, and a pointer to a `Data<F, R>`
     // Since this uses `cleanup` it also hinges on a correct implementation of
-    // `__rustc_panic_cleanup`.
+    // `__crablangc_panic_cleanup`.
     //
     // This function cannot be marked as `unsafe` because `intrinsics::r#try`
     // expects normal function pointers.
@@ -501,7 +501,7 @@ pub unsafe fn r#try<R, F: FnOnce() -> R>(f: F) -> Result<R, Box<dyn Any + Send>>
     fn do_catch<F: FnOnce() -> R, R>(data: *mut u8, payload: *mut u8) {
         // SAFETY: this is the responsibility of the caller, see above.
         //
-        // When `__rustc_panic_cleaner` is correctly implemented we can rely
+        // When `__crablangc_panic_cleaner` is correctly implemented we can rely
         // on `obj` being the correct thing to pass to `data.p` (after wrapping
         // in `ManuallyDrop`).
         unsafe {
@@ -574,11 +574,11 @@ pub fn begin_panic_handler(info: &PanicInfo<'_>) -> ! {
 
     let loc = info.location().unwrap(); // The current implementation always returns Some
     let msg = info.message().unwrap(); // The current implementation always returns Some
-    crate::sys_common::backtrace::__rust_end_short_backtrace(move || {
+    crate::sys_common::backtrace::__crablang_end_short_backtrace(move || {
         if let Some(msg) = msg.as_str() {
-            rust_panic_with_hook(&mut StrPanicPayload(msg), info.message(), loc, info.can_unwind());
+            crablang_panic_with_hook(&mut StrPanicPayload(msg), info.message(), loc, info.can_unwind());
         } else {
-            rust_panic_with_hook(
+            crablang_panic_with_hook(
                 &mut PanicPayload::new(msg),
                 info.message(),
                 loc,
@@ -599,15 +599,15 @@ pub fn begin_panic_handler(info: &PanicInfo<'_>) -> ! {
 #[cfg_attr(not(feature = "panic_immediate_abort"), inline(never), cold)]
 #[cfg_attr(feature = "panic_immediate_abort", inline)]
 #[track_caller]
-#[rustc_do_not_const_check] // hooked by const-eval
+#[crablangc_do_not_const_check] // hooked by const-eval
 pub const fn begin_panic<M: Any + Send>(msg: M) -> ! {
     if cfg!(feature = "panic_immediate_abort") {
         intrinsics::abort()
     }
 
     let loc = Location::caller();
-    return crate::sys_common::backtrace::__rust_end_short_backtrace(move || {
-        rust_panic_with_hook(&mut PanicPayload::new(msg), None, loc, true)
+    return crate::sys_common::backtrace::__crablang_end_short_backtrace(move || {
+        crablang_panic_with_hook(&mut PanicPayload::new(msg), None, loc, true)
     });
 
     struct PanicPayload<A> {
@@ -648,7 +648,7 @@ pub const fn begin_panic<M: Any + Send>(msg: M) -> ! {
 /// Executes the primary logic for a panic, including checking for recursive
 /// panics, panic hooks, and finally dispatching to the panic runtime to either
 /// abort or unwind.
-fn rust_panic_with_hook(
+fn crablang_panic_with_hook(
     payload: &mut dyn BoxMeUp,
     message: Option<&fmt::Arguments<'_>>,
     location: &Location<'_>,
@@ -709,12 +709,12 @@ fn rust_panic_with_hook(
         crate::sys::abort_internal();
     }
 
-    rust_panic(payload)
+    crablang_panic(payload)
 }
 
 /// This is the entry point for `resume_unwind`.
 /// It just forwards the payload to the panic runtime.
-pub fn rust_panic_without_hook(payload: Box<dyn Any + Send>) -> ! {
+pub fn crablang_panic_without_hook(payload: Box<dyn Any + Send>) -> ! {
     panic_count::increase();
 
     struct RewrapBox(Box<dyn Any + Send>);
@@ -729,14 +729,14 @@ pub fn rust_panic_without_hook(payload: Box<dyn Any + Send>) -> ! {
         }
     }
 
-    rust_panic(&mut RewrapBox(payload))
+    crablang_panic(&mut RewrapBox(payload))
 }
 
-/// An unmangled function (through `rustc_std_internal_symbol`) on which to slap
+/// An unmangled function (through `crablangc_std_internal_symbol`) on which to slap
 /// yer breakpoints.
 #[inline(never)]
-#[cfg_attr(not(test), rustc_std_internal_symbol)]
-fn rust_panic(msg: &mut dyn BoxMeUp) -> ! {
-    let code = unsafe { __rust_start_panic(msg) };
+#[cfg_attr(not(test), crablangc_std_internal_symbol)]
+fn crablang_panic(msg: &mut dyn BoxMeUp) -> ! {
+    let code = unsafe { __crablang_start_panic(msg) };
     rtabort!("failed to initiate panic, error {code}")
 }

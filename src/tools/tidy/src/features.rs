@@ -9,7 +9,7 @@
 //! * All unstable lang features have tests to ensure they are actually unstable.
 //! * Language features in a group are sorted by feature name.
 
-use crate::walk::{filter_dirs, filter_not_rust, walk, walk_many};
+use crate::walk::{filter_dirs, filter_not_crablang, walk, walk_many};
 use std::collections::hash_map::{Entry, HashMap};
 use std::ffi::OsStr;
 use std::fmt;
@@ -99,12 +99,12 @@ pub fn check(
         &[
             &tests_path.join("ui"),
             &tests_path.join("ui-fulldeps"),
-            &tests_path.join("rustdoc-ui"),
-            &tests_path.join("rustdoc"),
+            &tests_path.join("crablangdoc-ui"),
+            &tests_path.join("crablangdoc"),
         ],
         |path, _is_dir| {
             filter_dirs(path)
-                || filter_not_rust(path)
+                || filter_not_crablang(path)
                 || path.file_name() == Some(OsStr::new("features.rs"))
                 || path.file_name() == Some(OsStr::new("diagnostic_list.rs"))
         },
@@ -286,10 +286,10 @@ pub fn collect_lang_features(base_compiler_path: &Path, bad: &mut bool) -> Featu
 }
 
 fn collect_lang_features_in(features: &mut Features, base: &Path, file: &str, bad: &mut bool) {
-    let path = base.join("rustc_feature").join("src").join(file);
+    let path = base.join("crablangc_feature").join("src").join(file);
     let contents = t!(fs::read_to_string(&path));
 
-    // We allow rustc-internal features to omit a tracking issue.
+    // We allow crablangc-internal features to omit a tracking issue.
     // To make tidy accept omitting a tracking issue, group the list of features
     // without one inside `// no-tracking-issue` and `// no-tracking-issue-end`.
     let mut next_feature_omits_tracking_issue = false;
@@ -491,7 +491,7 @@ fn map_lib_features(
             }
 
             // This is an early exit -- all the attributes we're concerned with must contain this:
-            // * rustc_const_unstable(
+            // * crablangc_const_unstable(
             // * unstable(
             // * stable(
             if !contents.contains("stable(") {
@@ -545,7 +545,7 @@ fn map_lib_features(
                     }
                 }
                 becoming_feature = None;
-                if line.contains("rustc_const_unstable(") {
+                if line.contains("crablangc_const_unstable(") {
                     // `const fn` features are handled specially.
                     let feature_name = match find_attr_val(line, "feature").or_else(|| {
                         iter_lines.peek().and_then(|next| find_attr_val(next.1, "feature"))

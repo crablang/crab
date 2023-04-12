@@ -2,9 +2,9 @@
 //!
 //! Overview of check:
 //!
-//! 1. We create a list of error codes used by the compiler. Error codes are extracted from `compiler/rustc_error_codes/src/error_codes.rs`.
+//! 1. We create a list of error codes used by the compiler. Error codes are extracted from `compiler/crablangc_error_codes/src/error_codes.rs`.
 //!
-//! 2. We check that the error code has a long-form explanation in `compiler/rustc_error_codes/src/error_codes/`.
+//! 2. We check that the error code has a long-form explanation in `compiler/crablangc_error_codes/src/error_codes/`.
 //!   - The explanation is expected to contain a `doctest` that fails with the correct error code. (`EXEMPT_FROM_DOCTEST` *currently* bypasses this check)
 //!   - Note that other stylistic conventions for markdown files are checked in the `style.rs` tidy check.
 //!
@@ -22,8 +22,8 @@ use regex::Regex;
 
 use crate::walk::{filter_dirs, walk, walk_many};
 
-const ERROR_CODES_PATH: &str = "compiler/rustc_error_codes/src/error_codes.rs";
-const ERROR_DOCS_PATH: &str = "compiler/rustc_error_codes/src/error_codes/";
+const ERROR_CODES_PATH: &str = "compiler/crablangc_error_codes/src/error_codes.rs";
+const ERROR_DOCS_PATH: &str = "compiler/crablangc_error_codes/src/error_codes/";
 const ERROR_TESTS_PATH: &str = "tests/ui/error-codes/";
 
 // Error codes that (for some reason) can't have a doctest in their explanation. Error codes are still expected to provide a code example, even if untested.
@@ -103,7 +103,7 @@ fn extract_error_codes(root_path: &Path, errors: &mut Vec<String>) -> Vec<String
             if expected_filename != split_line.unwrap().1 {
                 errors.push(format!(
                     "Error code `{}` expected to reference docs with `{}` but instead found `{}` in \
-                    `compiler/rustc_error_codes/src/error_codes.rs`",
+                    `compiler/crablangc_error_codes/src/error_codes.rs`",
                     err_code,
                     expected_filename,
                     split_line.unwrap().1,
@@ -214,7 +214,7 @@ fn check_explanation_has_doctest(explanation: &str, err_code: &str) -> (bool, bo
         if line.starts_with("```") {
             found_code_example = true;
 
-            // Check for the `rustdoc` doctest headers.
+            // Check for the `crablangdoc` doctest headers.
             if line.contains("compile_fail") && line.contains(err_code) {
                 found_proper_doctest = true;
             }
@@ -341,7 +341,7 @@ fn check_error_codes_used(
 
                     if !error_codes.contains(&error_code) {
                         // This error code isn't properly defined, we must error.
-                        errors.push(format!("Error code `{}` is used in the compiler but not defined and documented in `compiler/rustc_error_codes/src/error_codes.rs`.", error_code));
+                        errors.push(format!("Error code `{}` is used in the compiler but not defined and documented in `compiler/crablangc_error_codes/src/error_codes.rs`.", error_code));
                         continue;
                     }
 

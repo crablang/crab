@@ -32,4 +32,4 @@ LL | async fn i(mut x: impl Iterator<Item = &'_ ()>) -> Option<&'_ ()> { x.next(
 
 error: aborting due to 3 previous errors
 
-For more information about this error, try `rustc --explain E0106`.
+For more information about this error, try `crablangc --explain E0106`.

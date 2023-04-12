@@ -119,8 +119,8 @@ fn optgroups() -> getopts::Options {
             "Show execution time of each test.
 
             Threshold values for colorized output can be configured via
-            `RUST_TEST_TIME_UNIT`, `RUST_TEST_TIME_INTEGRATION` and
-            `RUST_TEST_TIME_DOCTEST` environment variables.
+            `CRABLANG_TEST_TIME_UNIT`, `CRABLANG_TEST_TIME_INTEGRATION` and
+            `CRABLANG_TEST_TIME_DOCTEST` environment variables.
 
             Expected format of environment variable is `VARIABLE=WARN_TIME,CRITICAL_TIME`.
             Durations must be specified in milliseconds, e.g. `500,2000` means that the warn time
@@ -134,8 +134,8 @@ fn optgroups() -> getopts::Options {
             "Treat excess of the test execution time limit as error.
 
             Threshold values for this option can be configured via
-            `RUST_TEST_TIME_UNIT`, `RUST_TEST_TIME_INTEGRATION` and
-            `RUST_TEST_TIME_DOCTEST` environment variables.
+            `CRABLANG_TEST_TIME_UNIT`, `CRABLANG_TEST_TIME_INTEGRATION` and
+            `CRABLANG_TEST_TIME_DOCTEST` environment variables.
 
             Expected format of environment variable is `VARIABLE=WARN_TIME,CRITICAL_TIME`.
 
@@ -162,17 +162,17 @@ tests whose names contain the filter are run. Multiple filter strings may
 be passed, which will run all tests matching any of the filters.
 
 By default, all tests are run in parallel. This can be altered with the
---test-threads flag or the RUST_TEST_THREADS environment variable when running
+--test-threads flag or the CRABLANG_TEST_THREADS environment variable when running
 tests (set it to 1).
 
 By default, the tests are run in alphabetical order. Use --shuffle or set
-RUST_TEST_SHUFFLE to run the tests in random order. Pass the generated
-"shuffle seed" to --shuffle-seed (or set RUST_TEST_SHUFFLE_SEED) to run the
+CRABLANG_TEST_SHUFFLE to run the tests in random order. Pass the generated
+"shuffle seed" to --shuffle-seed (or set CRABLANG_TEST_SHUFFLE_SEED) to run the
 tests in the same order again. Note that --shuffle and --shuffle-seed do not
 affect whether the tests are run in parallel.
 
 All tests have their standard output and standard error captured by default.
-This can be overridden with the --nocapture flag or setting RUST_TEST_NOCAPTURE
+This can be overridden with the --nocapture flag or setting CRABLANG_TEST_NOCAPTURE
 environment variable to a value other than "0". Logging is not captured by default.
 
 Test Attributes:
@@ -306,13 +306,13 @@ fn parse_opts_impl(matches: getopts::Matches) -> OptRes {
     Ok(test_opts)
 }
 
-// FIXME: Copied from librustc_ast until linkage errors are resolved. Issue #47566
+// FIXME: Copied from libcrablangc_ast until linkage errors are resolved. Issue #47566
 fn is_nightly() -> bool {
     // Whether this is a feature-staged build, i.e., on the beta or stable channel
     let disable_unstable_features =
         option_env!("CFG_DISABLE_UNSTABLE_FEATURES").map(|s| s != "0").unwrap_or(false);
     // Whether we should enable unstable features for bootstrapping
-    let bootstrap = env::var("RUSTC_BOOTSTRAP").is_ok();
+    let bootstrap = env::var("CRABLANGC_BOOTSTRAP").is_ok();
 
     bootstrap || !disable_unstable_features
 }
@@ -339,7 +339,7 @@ fn get_time_options(
 fn get_shuffle(matches: &getopts::Matches, allow_unstable: bool) -> OptPartRes<bool> {
     let mut shuffle = unstable_optflag!(matches, allow_unstable, "shuffle");
     if !shuffle && allow_unstable {
-        shuffle = match env::var("RUST_TEST_SHUFFLE") {
+        shuffle = match env::var("CRABLANG_TEST_SHUFFLE") {
             Ok(val) => &val != "0",
             Err(_) => false,
         };
@@ -363,10 +363,10 @@ fn get_shuffle_seed(matches: &getopts::Matches, allow_unstable: bool) -> OptPart
     };
 
     if shuffle_seed.is_none() && allow_unstable {
-        shuffle_seed = match env::var("RUST_TEST_SHUFFLE_SEED") {
+        shuffle_seed = match env::var("CRABLANG_TEST_SHUFFLE_SEED") {
             Ok(val) => match val.parse::<u64>() {
                 Ok(n) => Some(n),
-                Err(_) => panic!("RUST_TEST_SHUFFLE_SEED is `{val}`, should be a number."),
+                Err(_) => panic!("CRABLANG_TEST_SHUFFLE_SEED is `{val}`, should be a number."),
             },
             Err(_) => None,
         };
@@ -445,7 +445,7 @@ fn get_color_config(matches: &getopts::Matches) -> OptPartRes<ColorConfig> {
 fn get_nocapture(matches: &getopts::Matches) -> OptPartRes<bool> {
     let mut nocapture = matches.opt_present("nocapture");
     if !nocapture {
-        nocapture = match env::var("RUST_TEST_NOCAPTURE") {
+        nocapture = match env::var("CRABLANG_TEST_NOCAPTURE") {
             Ok(val) => &val != "0",
             Err(_) => false,
         };

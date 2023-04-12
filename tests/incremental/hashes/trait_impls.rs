@@ -13,7 +13,7 @@
 // [cfail3]compile-flags: -Zincremental-ignore-spans
 
 #![allow(warnings)]
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 #![feature(specialization)]
 #![crate_type="rlib"]
 
@@ -32,24 +32,24 @@ impl ChangeMethodNameTrait for Foo {
 }
 
 #[cfg(not(any(cfail1,cfail4)))]
-#[rustc_clean(except="hir_owner,hir_owner_nodes,associated_item_def_ids", cfg="cfail2")]
-#[rustc_clean(cfg="cfail3")]
-#[rustc_clean(except="hir_owner,hir_owner_nodes,associated_item_def_ids", cfg="cfail5")]
-#[rustc_clean(cfg="cfail6")]
+#[crablangc_clean(except="hir_owner,hir_owner_nodes,associated_item_def_ids", cfg="cfail2")]
+#[crablangc_clean(cfg="cfail3")]
+#[crablangc_clean(except="hir_owner,hir_owner_nodes,associated_item_def_ids", cfg="cfail5")]
+#[crablangc_clean(cfg="cfail6")]
 pub trait ChangeMethodNameTrait {
-    #[rustc_clean(cfg="cfail3")]
-    #[rustc_clean(cfg="cfail6")]
+    #[crablangc_clean(cfg="cfail3")]
+    #[crablangc_clean(cfg="cfail6")]
     fn method_name2();
 }
 
 #[cfg(not(any(cfail1,cfail4)))]
-#[rustc_clean(except="hir_owner,hir_owner_nodes,associated_item_def_ids", cfg="cfail2")]
-#[rustc_clean(cfg="cfail3")]
-#[rustc_clean(except="hir_owner,hir_owner_nodes,associated_item_def_ids", cfg="cfail5")]
-#[rustc_clean(cfg="cfail6")]
+#[crablangc_clean(except="hir_owner,hir_owner_nodes,associated_item_def_ids", cfg="cfail2")]
+#[crablangc_clean(cfg="cfail3")]
+#[crablangc_clean(except="hir_owner,hir_owner_nodes,associated_item_def_ids", cfg="cfail5")]
+#[crablangc_clean(cfg="cfail6")]
 impl ChangeMethodNameTrait for Foo {
-    #[rustc_clean(cfg="cfail3")]
-    #[rustc_clean(cfg="cfail6")]
+    #[crablangc_clean(cfg="cfail3")]
+    #[crablangc_clean(cfg="cfail6")]
     fn method_name2() { }
 }
 
@@ -73,15 +73,15 @@ impl ChangeMethodBodyTrait for Foo {
 }
 
 #[cfg(not(any(cfail1,cfail4)))]
-#[rustc_clean(cfg="cfail2")]
-#[rustc_clean(cfg="cfail3")]
-#[rustc_clean(cfg="cfail5")]
-#[rustc_clean(cfg="cfail6")]
+#[crablangc_clean(cfg="cfail2")]
+#[crablangc_clean(cfg="cfail3")]
+#[crablangc_clean(cfg="cfail5")]
+#[crablangc_clean(cfg="cfail6")]
 impl ChangeMethodBodyTrait for Foo {
-    #[rustc_clean(except="hir_owner_nodes,typeck", cfg="cfail2")]
-    #[rustc_clean(cfg="cfail3")]
-    #[rustc_clean(except="hir_owner_nodes,typeck", cfg="cfail5")]
-    #[rustc_clean(cfg="cfail6")]
+    #[crablangc_clean(except="hir_owner_nodes,typeck", cfg="cfail2")]
+    #[crablangc_clean(cfg="cfail3")]
+    #[crablangc_clean(except="hir_owner_nodes,typeck", cfg="cfail5")]
+    #[crablangc_clean(cfg="cfail6")]
     fn method_name() {
         ()
     }
@@ -108,15 +108,15 @@ impl ChangeMethodBodyTraitInlined for Foo {
 }
 
 #[cfg(not(any(cfail1,cfail4)))]
-#[rustc_clean(cfg="cfail2")]
-#[rustc_clean(cfg="cfail3")]
-#[rustc_clean(cfg="cfail5")]
-#[rustc_clean(cfg="cfail6")]
+#[crablangc_clean(cfg="cfail2")]
+#[crablangc_clean(cfg="cfail3")]
+#[crablangc_clean(cfg="cfail5")]
+#[crablangc_clean(cfg="cfail6")]
 impl ChangeMethodBodyTraitInlined for Foo {
-    #[rustc_clean(except="hir_owner_nodes,typeck,optimized_mir", cfg="cfail2")]
-    #[rustc_clean(cfg="cfail3")]
-    #[rustc_clean(except="hir_owner_nodes,typeck,optimized_mir", cfg="cfail5")]
-    #[rustc_clean(cfg="cfail6")]
+    #[crablangc_clean(except="hir_owner_nodes,typeck,optimized_mir", cfg="cfail2")]
+    #[crablangc_clean(cfg="cfail3")]
+    #[crablangc_clean(except="hir_owner_nodes,typeck,optimized_mir", cfg="cfail5")]
+    #[crablangc_clean(cfg="cfail6")]
     #[inline]
     fn method_name() {
         panic!()
@@ -141,21 +141,21 @@ pub trait ChangeMethodSelfnessTrait {
 }
 
 #[cfg(not(any(cfail1,cfail4)))]
-#[rustc_clean(except="hir_owner,hir_owner_nodes", cfg="cfail2")]
-#[rustc_clean(cfg="cfail3")]
-#[rustc_clean(except="hir_owner,hir_owner_nodes", cfg="cfail5")]
-#[rustc_clean(cfg="cfail6")]
+#[crablangc_clean(except="hir_owner,hir_owner_nodes", cfg="cfail2")]
+#[crablangc_clean(cfg="cfail3")]
+#[crablangc_clean(except="hir_owner,hir_owner_nodes", cfg="cfail5")]
+#[crablangc_clean(cfg="cfail6")]
 impl ChangeMethodSelfnessTrait for Foo {
-    #[rustc_clean(
+    #[crablangc_clean(
         except="hir_owner,hir_owner_nodes,associated_item,generics_of,fn_sig,typeck,optimized_mir",
         cfg="cfail2",
     )]
-    #[rustc_clean(cfg="cfail3")]
-    #[rustc_clean(
+    #[crablangc_clean(cfg="cfail3")]
+    #[crablangc_clean(
         except="hir_owner,hir_owner_nodes,associated_item,generics_of,fn_sig,typeck,optimized_mir",
         cfg="cfail5",
     )]
-    #[rustc_clean(cfg="cfail6")]
+    #[crablangc_clean(cfg="cfail6")]
     fn method_name(&self) {
         ()
     }
@@ -179,21 +179,21 @@ pub trait RemoveMethodSelfnessTrait {
 }
 
 #[cfg(not(any(cfail1,cfail4)))]
-#[rustc_clean(except="hir_owner,hir_owner_nodes", cfg="cfail2")]
-#[rustc_clean(cfg="cfail3")]
-#[rustc_clean(except="hir_owner,hir_owner_nodes", cfg="cfail5")]
-#[rustc_clean(cfg="cfail6")]
+#[crablangc_clean(except="hir_owner,hir_owner_nodes", cfg="cfail2")]
+#[crablangc_clean(cfg="cfail3")]
+#[crablangc_clean(except="hir_owner,hir_owner_nodes", cfg="cfail5")]
+#[crablangc_clean(cfg="cfail6")]
 impl RemoveMethodSelfnessTrait for Foo {
-    #[rustc_clean(
+    #[crablangc_clean(
         except="hir_owner,hir_owner_nodes,associated_item,generics_of,fn_sig,typeck,optimized_mir",
         cfg="cfail2",
     )]
-    #[rustc_clean(cfg="cfail3")]
-    #[rustc_clean(
+    #[crablangc_clean(cfg="cfail3")]
+    #[crablangc_clean(
         except="hir_owner,hir_owner_nodes,associated_item,generics_of,fn_sig,typeck,optimized_mir",
         cfg="cfail5",
     )]
-    #[rustc_clean(cfg="cfail6")]
+    #[crablangc_clean(cfg="cfail6")]
     fn method_name() {}
 }
 
@@ -219,15 +219,15 @@ pub trait ChangeMethodSelfmutnessTrait {
 }
 
 #[cfg(not(any(cfail1,cfail4)))]
-#[rustc_clean(cfg="cfail2")]
-#[rustc_clean(cfg="cfail3")]
-#[rustc_clean(cfg="cfail5")]
-#[rustc_clean(cfg="cfail6")]
+#[crablangc_clean(cfg="cfail2")]
+#[crablangc_clean(cfg="cfail3")]
+#[crablangc_clean(cfg="cfail5")]
+#[crablangc_clean(cfg="cfail6")]
 impl ChangeMethodSelfmutnessTrait for Foo {
-    #[rustc_clean(except="hir_owner,hir_owner_nodes,fn_sig,typeck,optimized_mir", cfg="cfail2")]
-    #[rustc_clean(cfg="cfail3")]
-    #[rustc_clean(except="hir_owner,hir_owner_nodes,fn_sig,typeck,optimized_mir", cfg="cfail5")]
-    #[rustc_clean(cfg="cfail6")]
+    #[crablangc_clean(except="hir_owner,hir_owner_nodes,fn_sig,typeck,optimized_mir", cfg="cfail2")]
+    #[crablangc_clean(cfg="cfail3")]
+    #[crablangc_clean(except="hir_owner,hir_owner_nodes,fn_sig,typeck,optimized_mir", cfg="cfail5")]
+    #[crablangc_clean(cfg="cfail6")]
     fn method_name(&mut self) {}
 }
 
@@ -249,10 +249,10 @@ pub trait ChangeItemKindTrait {
 }
 
 #[cfg(not(any(cfail1,cfail4)))]
-#[rustc_clean(except="hir_owner,hir_owner_nodes,associated_item_def_ids", cfg="cfail2")]
-#[rustc_clean(cfg="cfail3")]
-#[rustc_clean(except="hir_owner,hir_owner_nodes,associated_item_def_ids", cfg="cfail5")]
-#[rustc_clean(cfg="cfail6")]
+#[crablangc_clean(except="hir_owner,hir_owner_nodes,associated_item_def_ids", cfg="cfail2")]
+#[crablangc_clean(cfg="cfail3")]
+#[crablangc_clean(except="hir_owner,hir_owner_nodes,associated_item_def_ids", cfg="cfail5")]
+#[crablangc_clean(cfg="cfail6")]
 impl ChangeItemKindTrait for Foo {
     type name = ();
 }
@@ -277,10 +277,10 @@ pub trait RemoveItemTrait {
 }
 
 #[cfg(not(any(cfail1,cfail4)))]
-#[rustc_clean(except="hir_owner,hir_owner_nodes,associated_item_def_ids", cfg="cfail2")]
-#[rustc_clean(cfg="cfail3")]
-#[rustc_clean(except="hir_owner,hir_owner_nodes,associated_item_def_ids", cfg="cfail5")]
-#[rustc_clean(cfg="cfail6")]
+#[crablangc_clean(except="hir_owner,hir_owner_nodes,associated_item_def_ids", cfg="cfail2")]
+#[crablangc_clean(cfg="cfail3")]
+#[crablangc_clean(except="hir_owner,hir_owner_nodes,associated_item_def_ids", cfg="cfail5")]
+#[crablangc_clean(cfg="cfail6")]
 impl RemoveItemTrait for Foo {
     type TypeName = ();
 }
@@ -304,10 +304,10 @@ pub trait AddItemTrait {
 }
 
 #[cfg(not(any(cfail1,cfail4)))]
-#[rustc_clean(except="hir_owner,hir_owner_nodes,associated_item_def_ids", cfg="cfail2")]
-#[rustc_clean(cfg="cfail3")]
-#[rustc_clean(except="hir_owner,hir_owner_nodes,associated_item_def_ids", cfg="cfail5")]
-#[rustc_clean(cfg="cfail6")]
+#[crablangc_clean(except="hir_owner,hir_owner_nodes,associated_item_def_ids", cfg="cfail2")]
+#[crablangc_clean(cfg="cfail3")]
+#[crablangc_clean(except="hir_owner,hir_owner_nodes,associated_item_def_ids", cfg="cfail5")]
+#[crablangc_clean(cfg="cfail6")]
 impl AddItemTrait for Foo {
     type TypeName = ();
     fn method_name() { }
@@ -330,23 +330,23 @@ impl ChangeHasValueTrait for Foo {
 }
 
 #[cfg(not(any(cfail1,cfail4)))]
-#[rustc_clean(except="hir_owner_nodes", cfg="cfail2")]
-#[rustc_clean(cfg="cfail3")]
-#[rustc_clean(except="hir_owner_nodes", cfg="cfail5")]
-#[rustc_clean(cfg="cfail6")]
+#[crablangc_clean(except="hir_owner_nodes", cfg="cfail2")]
+#[crablangc_clean(cfg="cfail3")]
+#[crablangc_clean(except="hir_owner_nodes", cfg="cfail5")]
+#[crablangc_clean(cfg="cfail6")]
 pub trait ChangeHasValueTrait {
-    #[rustc_clean(except="hir_owner,hir_owner_nodes", cfg="cfail2")]
-    #[rustc_clean(cfg="cfail3")]
-    #[rustc_clean(except="hir_owner,hir_owner_nodes", cfg="cfail5")]
-    #[rustc_clean(cfg="cfail6")]
+    #[crablangc_clean(except="hir_owner,hir_owner_nodes", cfg="cfail2")]
+    #[crablangc_clean(cfg="cfail3")]
+    #[crablangc_clean(except="hir_owner,hir_owner_nodes", cfg="cfail5")]
+    #[crablangc_clean(cfg="cfail6")]
     fn method_name() { }
 }
 
 #[cfg(not(any(cfail1,cfail4)))]
-#[rustc_clean(cfg="cfail2")]
-#[rustc_clean(cfg="cfail3")]
-#[rustc_clean(cfg="cfail5")]
-#[rustc_clean(cfg="cfail6")]
+#[crablangc_clean(cfg="cfail2")]
+#[crablangc_clean(cfg="cfail3")]
+#[crablangc_clean(cfg="cfail5")]
+#[crablangc_clean(cfg="cfail6")]
 impl ChangeHasValueTrait for Foo {
     fn method_name() { }
 }
@@ -367,15 +367,15 @@ impl AddDefaultTrait for Foo {
 }
 
 #[cfg(not(any(cfail1,cfail4)))]
-#[rustc_clean(cfg="cfail2")]
-#[rustc_clean(cfg="cfail3")]
-#[rustc_clean(cfg="cfail5")]
-#[rustc_clean(cfg="cfail6")]
+#[crablangc_clean(cfg="cfail2")]
+#[crablangc_clean(cfg="cfail3")]
+#[crablangc_clean(cfg="cfail5")]
+#[crablangc_clean(cfg="cfail6")]
 impl AddDefaultTrait for Foo {
-    #[rustc_clean(except="hir_owner,hir_owner_nodes", cfg="cfail2")]
-    #[rustc_clean(cfg="cfail3")]
-    #[rustc_clean(except="hir_owner,hir_owner_nodes", cfg="cfail5")]
-    #[rustc_clean(cfg="cfail6")]
+    #[crablangc_clean(except="hir_owner,hir_owner_nodes", cfg="cfail2")]
+    #[crablangc_clean(cfg="cfail3")]
+    #[crablangc_clean(except="hir_owner,hir_owner_nodes", cfg="cfail5")]
+    #[crablangc_clean(cfg="cfail6")]
     default fn method_name() { }
 }
 
@@ -401,15 +401,15 @@ pub trait AddArgumentTrait {
 }
 
 #[cfg(not(any(cfail1,cfail4)))]
-#[rustc_clean(cfg="cfail2")]
-#[rustc_clean(cfg="cfail3")]
-#[rustc_clean(cfg="cfail5")]
-#[rustc_clean(cfg="cfail6")]
+#[crablangc_clean(cfg="cfail2")]
+#[crablangc_clean(cfg="cfail3")]
+#[crablangc_clean(cfg="cfail5")]
+#[crablangc_clean(cfg="cfail6")]
 impl AddArgumentTrait for Foo {
-    #[rustc_clean(except="hir_owner,hir_owner_nodes,fn_sig,typeck,optimized_mir", cfg="cfail2")]
-    #[rustc_clean(cfg="cfail3")]
-    #[rustc_clean(except="hir_owner,hir_owner_nodes,fn_sig,typeck,optimized_mir", cfg="cfail5")]
-    #[rustc_clean(cfg="cfail6")]
+    #[crablangc_clean(except="hir_owner,hir_owner_nodes,fn_sig,typeck,optimized_mir", cfg="cfail2")]
+    #[crablangc_clean(cfg="cfail3")]
+    #[crablangc_clean(except="hir_owner,hir_owner_nodes,fn_sig,typeck,optimized_mir", cfg="cfail5")]
+    #[crablangc_clean(cfg="cfail6")]
     fn method_name(&self, _x: u32) { }
 }
 
@@ -435,15 +435,15 @@ pub trait ChangeArgumentTypeTrait {
 }
 
 #[cfg(not(any(cfail1,cfail4)))]
-#[rustc_clean(cfg="cfail2")]
-#[rustc_clean(cfg="cfail3")]
-#[rustc_clean(cfg="cfail5")]
-#[rustc_clean(cfg="cfail6")]
+#[crablangc_clean(cfg="cfail2")]
+#[crablangc_clean(cfg="cfail3")]
+#[crablangc_clean(cfg="cfail5")]
+#[crablangc_clean(cfg="cfail6")]
 impl ChangeArgumentTypeTrait for Foo {
-    #[rustc_clean(except="hir_owner,hir_owner_nodes,fn_sig,typeck,optimized_mir", cfg="cfail2")]
-    #[rustc_clean(cfg="cfail3")]
-    #[rustc_clean(except="hir_owner,hir_owner_nodes,fn_sig,typeck,optimized_mir", cfg="cfail5")]
-    #[rustc_clean(cfg="cfail6")]
+    #[crablangc_clean(except="hir_owner,hir_owner_nodes,fn_sig,typeck,optimized_mir", cfg="cfail2")]
+    #[crablangc_clean(cfg="cfail3")]
+    #[crablangc_clean(except="hir_owner,hir_owner_nodes,fn_sig,typeck,optimized_mir", cfg="cfail5")]
+    #[crablangc_clean(cfg="cfail6")]
     fn method_name(&self, _x: char) { }
 }
 
@@ -462,21 +462,21 @@ impl AddTypeParameterToImpl<u32> for Bar<u32> {
 }
 
 #[cfg(not(any(cfail1,cfail4)))]
-#[rustc_clean(except="hir_owner,hir_owner_nodes,generics_of,impl_trait_ref", cfg="cfail2")]
-#[rustc_clean(cfg="cfail3")]
-#[rustc_clean(except="hir_owner,hir_owner_nodes,generics_of,impl_trait_ref", cfg="cfail5")]
-#[rustc_clean(cfg="cfail6")]
+#[crablangc_clean(except="hir_owner,hir_owner_nodes,generics_of,impl_trait_ref", cfg="cfail2")]
+#[crablangc_clean(cfg="cfail3")]
+#[crablangc_clean(except="hir_owner,hir_owner_nodes,generics_of,impl_trait_ref", cfg="cfail5")]
+#[crablangc_clean(cfg="cfail6")]
 impl<TTT> AddTypeParameterToImpl<TTT> for Bar<TTT> {
-    #[rustc_clean(
+    #[crablangc_clean(
         except="hir_owner,hir_owner_nodes,generics_of,fn_sig,type_of,typeck,optimized_mir",
         cfg="cfail2",
     )]
-    #[rustc_clean(cfg="cfail3")]
-    #[rustc_clean(
+    #[crablangc_clean(cfg="cfail3")]
+    #[crablangc_clean(
         except="hir_owner,hir_owner_nodes,generics_of,fn_sig,type_of,typeck,optimized_mir",
         cfg="cfail5",
     )]
-    #[rustc_clean(cfg="cfail6")]
+    #[crablangc_clean(cfg="cfail6")]
     fn id(t: TTT) -> TTT { t }
 }
 
@@ -493,15 +493,15 @@ impl ChangeSelfTypeOfImpl for u32 {
 }
 
 #[cfg(not(any(cfail1,cfail4)))]
-#[rustc_clean(except="hir_owner,hir_owner_nodes,impl_trait_ref", cfg="cfail2")]
-#[rustc_clean(cfg="cfail3")]
-#[rustc_clean(except="hir_owner,hir_owner_nodes,impl_trait_ref", cfg="cfail5")]
-#[rustc_clean(cfg="cfail6")]
+#[crablangc_clean(except="hir_owner,hir_owner_nodes,impl_trait_ref", cfg="cfail2")]
+#[crablangc_clean(cfg="cfail3")]
+#[crablangc_clean(except="hir_owner,hir_owner_nodes,impl_trait_ref", cfg="cfail5")]
+#[crablangc_clean(cfg="cfail6")]
 impl ChangeSelfTypeOfImpl for u64 {
-    #[rustc_clean(except="fn_sig,typeck,optimized_mir", cfg="cfail2")]
-    #[rustc_clean(cfg="cfail3")]
-    #[rustc_clean(except="fn_sig,typeck,optimized_mir", cfg="cfail5")]
-    #[rustc_clean(cfg="cfail6")]
+    #[crablangc_clean(except="fn_sig,typeck,optimized_mir", cfg="cfail2")]
+    #[crablangc_clean(cfg="cfail3")]
+    #[crablangc_clean(except="fn_sig,typeck,optimized_mir", cfg="cfail5")]
+    #[crablangc_clean(cfg="cfail6")]
     fn id(self) -> Self { self }
 }
 
@@ -518,15 +518,15 @@ impl<T> AddLifetimeBoundToImplParameter for T {
 }
 
 #[cfg(not(any(cfail1,cfail4)))]
-#[rustc_clean(except="hir_owner,hir_owner_nodes", cfg="cfail2")]
-#[rustc_clean(cfg="cfail3")]
-#[rustc_clean(except="hir_owner,hir_owner_nodes", cfg="cfail5")]
-#[rustc_clean(cfg="cfail6")]
+#[crablangc_clean(except="hir_owner,hir_owner_nodes", cfg="cfail2")]
+#[crablangc_clean(cfg="cfail3")]
+#[crablangc_clean(except="hir_owner,hir_owner_nodes", cfg="cfail5")]
+#[crablangc_clean(cfg="cfail6")]
 impl<T: 'static> AddLifetimeBoundToImplParameter for T {
-    #[rustc_clean(cfg="cfail2")]
-    #[rustc_clean(cfg="cfail3")]
-    #[rustc_clean(cfg="cfail5")]
-    #[rustc_clean(cfg="cfail6")]
+    #[crablangc_clean(cfg="cfail2")]
+    #[crablangc_clean(cfg="cfail3")]
+    #[crablangc_clean(cfg="cfail5")]
+    #[crablangc_clean(cfg="cfail6")]
     fn id(self) -> Self { self }
 }
 
@@ -543,15 +543,15 @@ impl<T> AddTraitBoundToImplParameter for T {
 }
 
 #[cfg(not(any(cfail1,cfail4)))]
-#[rustc_clean(except="hir_owner,hir_owner_nodes", cfg="cfail2")]
-#[rustc_clean(cfg="cfail3")]
-#[rustc_clean(except="hir_owner,hir_owner_nodes", cfg="cfail5")]
-#[rustc_clean(cfg="cfail6")]
+#[crablangc_clean(except="hir_owner,hir_owner_nodes", cfg="cfail2")]
+#[crablangc_clean(cfg="cfail3")]
+#[crablangc_clean(except="hir_owner,hir_owner_nodes", cfg="cfail5")]
+#[crablangc_clean(cfg="cfail6")]
 impl<T: Clone> AddTraitBoundToImplParameter for T {
-    #[rustc_clean(cfg="cfail2")]
-    #[rustc_clean(cfg="cfail3")]
-    #[rustc_clean(cfg="cfail5")]
-    #[rustc_clean(cfg="cfail6")]
+    #[crablangc_clean(cfg="cfail2")]
+    #[crablangc_clean(cfg="cfail3")]
+    #[crablangc_clean(cfg="cfail5")]
+    #[crablangc_clean(cfg="cfail6")]
     fn id(self) -> Self { self }
 }
 
@@ -573,15 +573,15 @@ impl AddNoMangleToMethod for Foo {
 }
 
 #[cfg(not(any(cfail1,cfail4)))]
-#[rustc_clean(cfg="cfail2")]
-#[rustc_clean(cfg="cfail3")]
-#[rustc_clean(cfg="cfail5")]
-#[rustc_clean(cfg="cfail6")]
+#[crablangc_clean(cfg="cfail2")]
+#[crablangc_clean(cfg="cfail3")]
+#[crablangc_clean(cfg="cfail5")]
+#[crablangc_clean(cfg="cfail6")]
 impl AddNoMangleToMethod for Foo {
-    #[rustc_clean(cfg="cfail2")]
-    #[rustc_clean(cfg="cfail3")]
-    #[rustc_clean(cfg="cfail5")]
-    #[rustc_clean(cfg="cfail6")]
+    #[crablangc_clean(cfg="cfail2")]
+    #[crablangc_clean(cfg="cfail3")]
+    #[crablangc_clean(cfg="cfail5")]
+    #[crablangc_clean(cfg="cfail6")]
     #[no_mangle]
     fn add_no_mangle_to_method(&self) { }
 }
@@ -603,15 +603,15 @@ impl MakeMethodInline for Foo {
 }
 
 #[cfg(not(any(cfail1,cfail4)))]
-#[rustc_clean(cfg="cfail2")]
-#[rustc_clean(cfg="cfail3")]
-#[rustc_clean(cfg="cfail5")]
-#[rustc_clean(cfg="cfail6")]
+#[crablangc_clean(cfg="cfail2")]
+#[crablangc_clean(cfg="cfail3")]
+#[crablangc_clean(cfg="cfail5")]
+#[crablangc_clean(cfg="cfail6")]
 impl MakeMethodInline for Foo {
-    #[rustc_clean(cfg="cfail2")]
-    #[rustc_clean(cfg="cfail3")]
-    #[rustc_clean(cfg="cfail5")]
-    #[rustc_clean(cfg="cfail6")]
+    #[crablangc_clean(cfg="cfail2")]
+    #[crablangc_clean(cfg="cfail3")]
+    #[crablangc_clean(cfg="cfail5")]
+    #[crablangc_clean(cfg="cfail6")]
     #[inline]
     fn make_method_inline(&self) -> u8 { 0 }
 }

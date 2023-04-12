@@ -1,7 +1,7 @@
 use clippy_utils::diagnostics::span_lint_and_help;
-use rustc_hir::{self as hir, def_id::DefId};
-use rustc_lint::LateContext;
-use rustc_span::symbol::sym;
+use crablangc_hir::{self as hir, def_id::DefId};
+use crablangc_lint::LateContext;
+use crablangc_span::symbol::sym;
 
 use super::LINKEDLIST;
 

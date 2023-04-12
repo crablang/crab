@@ -1,4 +1,4 @@
-//! This is a reproducer for the ICE 6793: https://github.com/rust-lang/rust-clippy/issues/6793.
+//! This is a reproducer for the ICE 6793: https://github.com/crablang/crablang-clippy/issues/6793.
 //! The ICE is caused by using `TyCtxt::type_of(assoc_type_id)`, which is the same as the ICE 6792.
 
 trait Trait {

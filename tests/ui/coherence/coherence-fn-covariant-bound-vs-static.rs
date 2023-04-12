@@ -21,6 +21,6 @@ impl<'a> Trait for fn(fn(&'a ())) {}
 // here. This is because the new leak-check proposed in [MCP 295] does not
 // "error" when these two types are equated.
 //
-// [MCP 295]: https://github.com/rust-lang/compiler-team/issues/295
+// [MCP 295]: https://github.com/crablang/compiler-team/issues/295
 
 fn main() {}

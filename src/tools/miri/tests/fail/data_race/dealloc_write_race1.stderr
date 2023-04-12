@@ -1,7 +1,7 @@
 error: Undefined Behavior: Data race detected between (1) Write on thread `<unnamed>` and (2) Deallocate on thread `<unnamed>` at ALLOC. (2) just happened here
   --> $DIR/dealloc_write_race1.rs:LL:CC
    |
-LL | /             __rust_dealloc(
+LL | /             __crablang_dealloc(
 LL | |
 LL | |                 ptr.0 as *mut _,
 LL | |                 std::mem::size_of::<usize>(),
@@ -15,7 +15,7 @@ help: and (1) occurred earlier here
 LL |             *ptr.0 = 2;
    |             ^^^^^^^^^^
    = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior
-   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information
+   = help: see https://doc.crablang.org/nightly/reference/behavior-considered-undefined.html for further information
    = note: BACKTRACE (of the first span):
    = note: inside closure at $DIR/dealloc_write_race1.rs:LL:CC
 

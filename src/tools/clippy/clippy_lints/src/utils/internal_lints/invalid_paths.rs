@@ -2,14 +2,14 @@ use clippy_utils::consts::{constant_simple, Constant};
 use clippy_utils::def_path_res;
 use clippy_utils::diagnostics::span_lint;
 use if_chain::if_chain;
-use rustc_hir as hir;
-use rustc_hir::def::DefKind;
-use rustc_hir::Item;
-use rustc_hir_analysis::hir_ty_to_ty;
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_middle::ty::{self, fast_reject::SimplifiedType, FloatTy};
-use rustc_session::{declare_lint_pass, declare_tool_lint};
-use rustc_span::symbol::Symbol;
+use crablangc_hir as hir;
+use crablangc_hir::def::DefKind;
+use crablangc_hir::Item;
+use crablangc_hir_analysis::hir_ty_to_ty;
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_middle::ty::{self, fast_reject::SimplifiedType, FloatTy};
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_span::symbol::Symbol;
 
 declare_clippy_lint! {
     /// ### What it does

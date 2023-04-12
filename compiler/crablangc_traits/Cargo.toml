@@ -1,0 +1,20 @@
+[package]
+name = "crablangc_traits"
+version = "0.0.0"
+edition = "2021"
+
+[dependencies]
+tracing = "0.1"
+crablangc_middle = { path = "../crablangc_middle" }
+crablangc_data_structures = { path = "../crablangc_data_structures" }
+crablangc_hir = { path = "../crablangc_hir" }
+crablangc_index = { path = "../crablangc_index" }
+crablangc_ast = { path = "../crablangc_ast" }
+crablangc_span = { path = "../crablangc_span" }
+crablangc_target = { path = "../crablangc_target" }
+chalk-ir = "0.87.0"
+chalk-engine = "0.87.0"
+chalk-solve = "0.87.0"
+smallvec = { version = "1.8.1", features = ["union", "may_dangle"] }
+crablangc_infer = { path = "../crablangc_infer" }
+crablangc_trait_selection = { path = "../crablangc_trait_selection" }

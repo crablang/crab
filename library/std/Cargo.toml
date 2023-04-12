@@ -2,8 +2,8 @@
 name = "std"
 version = "0.0.0"
 license = "MIT OR Apache-2.0"
-repository = "https://github.com/rust-lang/rust.git"
-description = "The Rust Standard Library"
+repository = "https://github.com/crablang/crablang.git"
+description = "The CrabLang Standard Library"
 edition = "2021"
 
 [lib]
@@ -11,20 +11,20 @@ crate-type = ["dylib", "rlib"]
 
 [dependencies]
 alloc = { path = "../alloc" }
-cfg-if = { version = "1.0", features = ['rustc-dep-of-std'] }
+cfg-if = { version = "1.0", features = ['crablangc-dep-of-std'] }
 panic_unwind = { path = "../panic_unwind", optional = true }
 panic_abort = { path = "../panic_abort" }
 core = { path = "../core" }
-libc = { version = "0.2.140", default-features = false, features = ['rustc-dep-of-std'] }
+libc = { version = "0.2.140", default-features = false, features = ['crablangc-dep-of-std'] }
 compiler_builtins = { version = "0.1.91" }
 profiler_builtins = { path = "../profiler_builtins", optional = true }
 unwind = { path = "../unwind" }
-hashbrown = { version = "0.12", default-features = false, features = ['rustc-dep-of-std'] }
-std_detect = { path = "../stdarch/crates/std_detect", default-features = false, features = ['rustc-dep-of-std'] }
+hashbrown = { version = "0.12", default-features = false, features = ['crablangc-dep-of-std'] }
+std_detect = { path = "../stdarch/crates/std_detect", default-features = false, features = ['crablangc-dep-of-std'] }
 
 # Dependencies of the `backtrace` crate
 addr2line = { version = "0.17.0", optional = true, default-features = false }
-rustc-demangle = { version = "0.1.21", features = ['rustc-dep-of-std'] }
+crablangc-demangle = { version = "0.1.21", features = ['crablangc-dep-of-std'] }
 miniz_oxide = { version = "0.5.0", optional = true, default-features = false }
 [dependencies.object]
 version = "0.29.0"
@@ -37,23 +37,23 @@ rand = { version = "0.8.5", default-features = false, features = ["alloc"] }
 rand_xorshift = "0.3.0"
 
 [target.'cfg(any(all(target_family = "wasm", not(target_os = "emscripten")), all(target_vendor = "fortanix", target_env = "sgx")))'.dependencies]
-dlmalloc = { version = "0.2.3", features = ['rustc-dep-of-std'] }
+dlmalloc = { version = "0.2.3", features = ['crablangc-dep-of-std'] }
 
 [target.x86_64-fortanix-unknown-sgx.dependencies]
-fortanix-sgx-abi = { version = "0.5.0", features = ['rustc-dep-of-std'] }
+fortanix-sgx-abi = { version = "0.5.0", features = ['crablangc-dep-of-std'] }
 
 [target.'cfg(target_os = "hermit")'.dependencies]
-hermit-abi = { version = "0.3.0", features = ['rustc-dep-of-std'] }
+hermit-abi = { version = "0.3.0", features = ['crablangc-dep-of-std'] }
 
 [target.wasm32-wasi.dependencies]
-wasi = { version = "0.11.0", features = ['rustc-dep-of-std'], default-features = false }
+wasi = { version = "0.11.0", features = ['crablangc-dep-of-std'], default-features = false }
 
 [features]
 backtrace = [
   "gimli-symbolize",
-  'addr2line/rustc-dep-of-std',
-  'object/rustc-dep-of-std',
-  'miniz_oxide/rustc-dep-of-std',
+  'addr2line/crablangc-dep-of-std',
+  'object/crablangc-dep-of-std',
+  'miniz_oxide/crablangc-dep-of-std',
 ]
 gimli-symbolize = []
 
@@ -70,7 +70,7 @@ system-llvm-libunwind = ["unwind/system-llvm-libunwind"]
 panic_immediate_abort = ["core/panic_immediate_abort"]
 
 # Enable std_detect default features for stdarch/crates/std_detect:
-# https://github.com/rust-lang/stdarch/blob/master/crates/std_detect/Cargo.toml
+# https://github.com/crablang/stdarch/blob/master/crates/std_detect/Cargo.toml
 std_detect_file_io = ["std_detect/std_detect_file_io"]
 std_detect_dlsym_getauxval = ["std_detect/std_detect_dlsym_getauxval"]
 std_detect_env_override = ["std_detect/std_detect_env_override"]

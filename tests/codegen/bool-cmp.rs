@@ -1,5 +1,5 @@
 // This is a test for optimal Ord trait implementation for bool.
-// See <https://github.com/rust-lang/rust/issues/66780> for more info.
+// See <https://github.com/crablang/crablang/issues/66780> for more info.
 
 // compile-flags: -C opt-level=3
 

@@ -6,6 +6,6 @@ include ../tools.mk
 # only-linux
 
 all:
-	$(RUSTC) -Zexport-executable-symbols  main.rs --target $(TARGET) --crate-type=bin
+	$(CRABLANGC) -Zexport-executable-symbols  main.rs --target $(TARGET) --crate-type=bin
 	nm $(TMPDIR)/main | $(CGREP) exported_symbol
 

@@ -1,5 +1,5 @@
 use crate::intrinsics::{assert_unsafe_precondition, unchecked_add, unchecked_sub};
-use crate::iter::{FusedIterator, TrustedLen};
+use crate::iter::{FusedIterator, TcrablangedLen};
 use crate::num::NonZeroUsize;
 
 /// Like a `Range<usize>`, but with a safety invariant that `start <= end`.
@@ -165,6 +165,6 @@ impl ExactSizeIterator for IndexRange {
 }
 
 // SAFETY: Because we only deal in `usize`, our `len` is always perfect.
-unsafe impl TrustedLen for IndexRange {}
+unsafe impl TcrablangedLen for IndexRange {}
 
 impl FusedIterator for IndexRange {}

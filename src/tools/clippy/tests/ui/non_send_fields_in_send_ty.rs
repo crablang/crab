@@ -7,7 +7,7 @@ use std::ptr::NonNull;
 use std::rc::Rc;
 use std::sync::{Arc, Mutex, MutexGuard};
 
-// disrustor / RUSTSEC-2020-0150
+// discrablangor / CRABLANGSEC-2020-0150
 pub struct RingBuffer<T> {
     data: Vec<UnsafeCell<T>>,
     capacity: usize,
@@ -16,7 +16,7 @@ pub struct RingBuffer<T> {
 
 unsafe impl<T> Send for RingBuffer<T> {}
 
-// noise_search / RUSTSEC-2020-0141
+// noise_search / CRABLANGSEC-2020-0141
 pub struct MvccRwLock<T> {
     raw: *const T,
     lock: Mutex<Box<T>>,
@@ -24,7 +24,7 @@ pub struct MvccRwLock<T> {
 
 unsafe impl<T> Send for MvccRwLock<T> {}
 
-// async-coap / RUSTSEC-2020-0124
+// async-coap / CRABLANGSEC-2020-0124
 pub struct ArcGuard<RC, T> {
     inner: T,
     head: Arc<RC>,
@@ -32,7 +32,7 @@ pub struct ArcGuard<RC, T> {
 
 unsafe impl<RC, T: Send> Send for ArcGuard<RC, T> {}
 
-// rusb / RUSTSEC-2020-0098
+// rusb / CRABLANGSEC-2020-0098
 extern "C" {
     type libusb_device_handle;
 }

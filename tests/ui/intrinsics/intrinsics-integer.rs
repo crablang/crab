@@ -1,27 +1,27 @@
 // run-pass
 
 #![feature(intrinsics)]
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 
-mod rusti {
-    extern "rust-intrinsic" {
-        #[rustc_safe_intrinsic]
+mod crablangi {
+    extern "crablang-intrinsic" {
+        #[crablangc_safe_intrinsic]
         pub fn ctpop<T>(x: T) -> T;
-        #[rustc_safe_intrinsic]
+        #[crablangc_safe_intrinsic]
         pub fn ctlz<T>(x: T) -> T;
         pub fn ctlz_nonzero<T>(x: T) -> T;
-        #[rustc_safe_intrinsic]
+        #[crablangc_safe_intrinsic]
         pub fn cttz<T>(x: T) -> T;
         pub fn cttz_nonzero<T>(x: T) -> T;
-        #[rustc_safe_intrinsic]
+        #[crablangc_safe_intrinsic]
         pub fn bswap<T>(x: T) -> T;
-        #[rustc_safe_intrinsic]
+        #[crablangc_safe_intrinsic]
         pub fn bitreverse<T>(x: T) -> T;
     }
 }
 
 pub fn main() {
-    use rusti::*;
+    use crablangi::*;
 
     assert_eq!(ctpop(0u8), 0); assert_eq!(ctpop(0i8), 0);
     assert_eq!(ctpop(0u16), 0); assert_eq!(ctpop(0i16), 0);

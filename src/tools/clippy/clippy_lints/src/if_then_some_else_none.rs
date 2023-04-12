@@ -4,12 +4,12 @@ use clippy_utils::msrvs::{self, Msrv};
 use clippy_utils::source::snippet_with_context;
 use clippy_utils::sugg::Sugg;
 use clippy_utils::{contains_return, higher, is_else_clause, is_res_lang_ctor, path_res, peel_blocks};
-use rustc_errors::Applicability;
-use rustc_hir::LangItem::{OptionNone, OptionSome};
-use rustc_hir::{Expr, ExprKind, Stmt, StmtKind};
-use rustc_lint::{LateContext, LateLintPass, LintContext};
-use rustc_middle::lint::in_external_macro;
-use rustc_session::{declare_tool_lint, impl_lint_pass};
+use crablangc_errors::Applicability;
+use crablangc_hir::LangItem::{OptionNone, OptionSome};
+use crablangc_hir::{Expr, ExprKind, Stmt, StmtKind};
+use crablangc_lint::{LateContext, LateLintPass, LintContext};
+use crablangc_middle::lint::in_external_macro;
+use crablangc_session::{declare_tool_lint, impl_lint_pass};
 
 declare_clippy_lint! {
     /// ### What it does
@@ -21,7 +21,7 @@ declare_clippy_lint! {
     /// in comparison to `bool::then`.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// # let v = vec![0];
     /// let a = if v.is_empty() {
     ///     println!("true!");
@@ -33,7 +33,7 @@ declare_clippy_lint! {
     ///
     /// Could be written:
     ///
-    /// ```rust
+    /// ```crablang
     /// # let v = vec![0];
     /// let a = v.is_empty().then(|| {
     ///     println!("true!");

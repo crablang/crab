@@ -5,7 +5,7 @@ LL | #![deny(must_not_suspend)]
    | ^^^^^^^^^^^^^^^^^^^^^^^^^^
    |
    = note: the `must_not_suspend` lint is unstable
-   = note: see issue #83310 <https://github.com/rust-lang/rust/issues/83310> for more information
+   = note: see issue #83310 <https://github.com/crablang/crablang/issues/83310> for more information
    = help: add `#![feature(must_not_suspend)]` to the crate attributes to enable
    = note: `#[warn(unknown_lints)]` on by default
 
@@ -16,7 +16,7 @@ LL | #![deny(must_not_suspend)]
    | ^^^^^^^^^^^^^^^^^^^^^^^^^^
    |
    = note: the `must_not_suspend` lint is unstable
-   = note: see issue #83310 <https://github.com/rust-lang/rust/issues/83310> for more information
+   = note: see issue #83310 <https://github.com/crablang/crablang/issues/83310> for more information
    = help: add `#![feature(must_not_suspend)]` to the crate attributes to enable
 
 warning: unknown lint: `must_not_suspend`
@@ -26,7 +26,7 @@ LL | #![deny(must_not_suspend)]
    | ^^^^^^^^^^^^^^^^^^^^^^^^^^
    |
    = note: the `must_not_suspend` lint is unstable
-   = note: see issue #83310 <https://github.com/rust-lang/rust/issues/83310> for more information
+   = note: see issue #83310 <https://github.com/crablang/crablang/issues/83310> for more information
    = help: add `#![feature(must_not_suspend)]` to the crate attributes to enable
 
 warning: 3 warnings emitted

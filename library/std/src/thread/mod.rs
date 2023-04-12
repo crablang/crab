@@ -2,21 +2,21 @@
 //!
 //! ## The threading model
 //!
-//! An executing Rust program consists of a collection of native OS threads,
+//! An executing CrabLang program consists of a collection of native OS threads,
 //! each with their own stack and local state. Threads can be named, and
 //! provide some built-in support for low-level synchronization.
 //!
 //! Communication between threads can be done through
-//! [channels], Rust's message-passing types, along with [other forms of thread
+//! [channels], CrabLang's message-passing types, along with [other forms of thread
 //! synchronization](../../std/sync/index.html) and shared-memory data
 //! structures. In particular, types that are guaranteed to be
 //! threadsafe are easily shared between threads using the
 //! atomically-reference-counted container, [`Arc`].
 //!
-//! Fatal logic errors in Rust cause *thread panic*, during which
+//! Fatal logic errors in CrabLang cause *thread panic*, during which
 //! a thread will unwind the stack, running destructors and freeing
 //! owned resources. While not meant as a 'try/catch' mechanism, panics
-//! in Rust can nonetheless be caught (unless compiling with `panic=abort`) with
+//! in CrabLang can nonetheless be caught (unless compiling with `panic=abort`) with
 //! [`catch_unwind`](../../std/panic/fn.catch_unwind.html) and recovered
 //! from, or alternatively be resumed with
 //! [`resume_unwind`](../../std/panic/fn.resume_unwind.html). If the panic
@@ -25,7 +25,7 @@
 //! without the panic being caught, the application will exit with a
 //! non-zero exit code.
 //!
-//! When the main thread of a Rust program terminates, the entire program shuts
+//! When the main thread of a CrabLang program terminates, the entire program shuts
 //! down, even if other threads are still running. However, this module provides
 //! convenient facilities for automatically waiting for the termination of a
 //! thread (i.e., join).
@@ -34,7 +34,7 @@
 //!
 //! A new thread can be spawned using the [`thread::spawn`][`spawn`] function:
 //!
-//! ```rust
+//! ```crablang
 //! use std::thread;
 //!
 //! thread::spawn(move || {
@@ -51,7 +51,7 @@
 //! a `join` method that allows the caller to wait for the completion of the
 //! spawned thread:
 //!
-//! ```rust
+//! ```crablang
 //! use std::thread;
 //!
 //! let thread_join_handle = thread::spawn(move || {
@@ -74,7 +74,7 @@
 //! A new thread can be configured before it is spawned via the [`Builder`] type,
 //! which currently allows you to set the name and stack size for the thread:
 //!
-//! ```rust
+//! ```crablang
 //! # #![allow(unused_must_use)]
 //! use std::thread;
 //!
@@ -97,7 +97,7 @@
 //!
 //! ## Thread-local storage
 //!
-//! This module also provides an implementation of thread-local storage for Rust
+//! This module also provides an implementation of thread-local storage for CrabLang
 //! programs. Thread-local storage is a method of storing data into a global
 //! variable that each thread in the program will have its own copy of.
 //! Threads do not share this data, so accesses do not need to be synchronized.
@@ -130,10 +130,10 @@
 //! There are two ways to manually specify the stack size for spawned threads:
 //!
 //! * Build the thread with [`Builder`] and pass the desired stack size to [`Builder::stack_size`].
-//! * Set the `RUST_MIN_STACK` environment variable to an integer representing the desired stack
+//! * Set the `CRABLANG_MIN_STACK` environment variable to an integer representing the desired stack
 //!   size (in bytes). Note that setting [`Builder::stack_size`] will override this.
 //!
-//! Note that the stack size of the main thread is *not* determined by Rust.
+//! Note that the stack size of the main thread is *not* determined by CrabLang.
 //!
 //! [channels]: crate::sync::mpsc
 //! [`join`]: JoinHandle::join
@@ -149,7 +149,7 @@
 //! [`with`]: LocalKey::with
 //! [`thread_local!`]: crate::thread_local
 
-#![stable(feature = "rust1", since = "1.0.0")]
+#![stable(feature = "crablang1", since = "1.0.0")]
 #![deny(unsafe_op_in_unsafe_fn)]
 // Under `test`, `__FastLocalKeyInner` seems unused.
 #![cfg_attr(test, allow(dead_code))]
@@ -192,7 +192,7 @@ pub use scoped::{scope, Scope, ScopedJoinHandle};
 #[macro_use]
 mod local;
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub use self::local::{AccessError, LocalKey};
 
 // Provide the type used by the thread_local! macro to access TLS keys. This
@@ -254,7 +254,7 @@ pub use crate::sys::common::thread_local::Key as __LocalKeyInner;
 /// [naming-threads]: ./index.html#naming-threads
 /// [stack-size]: ./index.html#stack-size
 #[must_use = "must eventually spawn the thread"]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[derive(Debug)]
 pub struct Builder {
     // A name for the thread-to-be, for identification in panic messages
@@ -282,7 +282,7 @@ impl Builder {
     ///
     /// handler.join().unwrap();
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn new() -> Builder {
         Builder { name: None, stack_size: None }
     }
@@ -311,7 +311,7 @@ impl Builder {
     /// ```
     ///
     /// [naming-threads]: ./index.html#naming-threads
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn name(mut self, name: String) -> Builder {
         self.name = Some(name);
         self
@@ -334,7 +334,7 @@ impl Builder {
     /// ```
     ///
     /// [stack-size]: ./index.html#stack-size
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn stack_size(mut self, size: usize) -> Builder {
         self.stack_size = Some(size);
         self
@@ -375,7 +375,7 @@ impl Builder {
     ///
     /// handler.join().unwrap();
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn spawn<F, T>(self, f: F) -> io::Result<JoinHandle<T>>
     where
         F: FnOnce() -> T,
@@ -484,7 +484,7 @@ impl Builder {
         crate::io::set_output_capture(output_capture.clone());
 
         // Pass `f` in `MaybeUninit` because actually that closure might *run longer than the lifetime of `F`*.
-        // See <https://github.com/rust-lang/rust/issues/101983> for more details.
+        // See <https://github.com/crablang/crablang/issues/101983> for more details.
         // To prevent leaks we use a wrapper that drops its contents.
         #[repr(transparent)]
         struct MaybeDangling<T>(mem::MaybeUninit<T>);
@@ -522,7 +522,7 @@ impl Builder {
             // are properly set and protected from each other.
             thread_info::set(unsafe { imp::guard::current() }, their_thread);
             let try_result = panic::catch_unwind(panic::AssertUnwindSafe(|| {
-                crate::sys_common::backtrace::__rust_begin_short_backtrace(f)
+                crate::sys_common::backtrace::__crablang_begin_short_backtrace(f)
             }));
             // SAFETY: `their_packet` as been built just above and moved by the
             // closure (it is an Arc<...>) and `my_packet` will be stored in the
@@ -672,7 +672,7 @@ impl Builder {
 /// [`channels`]: crate::sync::mpsc
 /// [`join`]: JoinHandle::join
 /// [`Err`]: crate::result::Result::Err
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub fn spawn<F, T>(f: F) -> JoinHandle<T>
 where
     F: FnOnce() -> T,
@@ -702,7 +702,7 @@ where
 /// handler.join().unwrap();
 /// ```
 #[must_use]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub fn current() -> Thread {
     thread_info::current_thread().expect(
         "use of std::thread::current() is not possible \
@@ -742,7 +742,7 @@ pub fn current() -> Thread {
 /// [`join`]: JoinHandle::join
 /// [`Condvar`]: crate::sync::Condvar
 /// [`Mutex`]: crate::sync::Mutex
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub fn yield_now() {
     imp::Thread::yield_now()
 }
@@ -791,7 +791,7 @@ pub fn yield_now() {
 /// [Mutex]: crate::sync::Mutex
 #[inline]
 #[must_use]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub fn panicking() -> bool {
     panicking::panicking()
 }
@@ -820,7 +820,7 @@ pub fn panicking() -> bool {
 /// // Let's sleep for 2 seconds:
 /// thread::sleep_ms(2000);
 /// ```
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[deprecated(since = "1.6.0", note = "replaced by `std::thread::sleep`")]
 pub fn sleep_ms(ms: u32) {
     sleep(Duration::from_millis(ms as u64))
@@ -966,7 +966,7 @@ impl Drop for PanicGuard {
 ///
 /// [`unpark`]: Thread::unpark
 /// [`thread::park_timeout`]: park_timeout
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub fn park() {
     let guard = PanicGuard;
     // SAFETY: park_timeout is called on the parker owned by this thread.
@@ -989,7 +989,7 @@ pub fn park() {
 /// amount of time waited to be precisely `ms` long.
 ///
 /// See the [park documentation][`park`] for more detail.
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[deprecated(since = "1.6.0", note = "replaced by `std::thread::park_timeout`")]
 pub fn park_timeout_ms(ms: u32) {
     park_timeout(Duration::from_millis(ms as u64))
@@ -1015,7 +1015,7 @@ pub fn park_timeout_ms(ms: u32) {
 ///
 /// Waiting for the complete expiration of the timeout:
 ///
-/// ```rust,no_run
+/// ```crablang,no_run
 /// use std::thread::park_timeout;
 /// use std::time::{Instant, Duration};
 ///
@@ -1053,7 +1053,7 @@ pub fn park_timeout(dur: Duration) {
 /// A `ThreadId` is an opaque object that uniquely identifies each thread
 /// created during the lifetime of a process. `ThreadId`s are guaranteed not to
 /// be reused, even when a thread terminates. `ThreadId`s are under the control
-/// of Rust's standard library and there may not be any relationship between
+/// of CrabLang's standard library and there may not be any relationship between
 /// `ThreadId` and the underlying platform's notion of a thread identifier --
 /// the two concepts cannot, therefore, be used interchangeably. A `ThreadId`
 /// can be retrieved from the [`id`] method on a [`Thread`].
@@ -1128,7 +1128,7 @@ impl ThreadId {
     /// opaque ID, but is guaranteed to be unique for each thread. The returned
     /// value is entirely opaque -- only equality testing is stable. Note that
     /// it is not guaranteed which values new threads will return, and this may
-    /// change across Rust versions.
+    /// change across CrabLang versions.
     #[must_use]
     #[unstable(feature = "thread_id_value", issue = "67939")]
     pub fn as_u64(&self) -> NonZeroU64 {
@@ -1154,7 +1154,7 @@ impl Inner {
 }
 
 #[derive(Clone)]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 /// A handle to a thread.
 ///
 /// Threads are represented via the `Thread` type, which you can get in one of
@@ -1228,7 +1228,7 @@ impl Thread {
     ///
     /// parked_thread.join().unwrap();
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     pub fn unpark(&self) {
         self.inner.as_ref().parker().unpark();
@@ -1291,7 +1291,7 @@ impl Thread {
     /// ```
     ///
     /// [naming-threads]: ./index.html#naming-threads
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[must_use]
     pub fn name(&self) -> Option<&str> {
         self.cname().map(|s| unsafe { str::from_utf8_unchecked(s.to_bytes()) })
@@ -1302,7 +1302,7 @@ impl Thread {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl fmt::Debug for Thread {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_struct("Thread")
@@ -1358,7 +1358,7 @@ impl fmt::Debug for Thread {
 ///
 /// [`Result`]: crate::result::Result
 /// [`std::panic::resume_unwind`]: crate::panic::resume_unwind
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub type Result<T> = crate::result::Result<T, Box<dyn Any + Send + 'static>>;
 
 // This packet is used to communicate the return value between the spawned
@@ -1488,7 +1488,7 @@ impl<'scope, T> JoinInner<'scope, T> {
 ///
 /// [`thread::Builder::spawn`]: Builder::spawn
 /// [`thread::spawn`]: spawn
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub struct JoinHandle<T>(JoinInner<'static, T>);
 
 #[stable(feature = "joinhandle_impl_send_sync", since = "1.29.0")]
@@ -1513,7 +1513,7 @@ impl<T> JoinHandle<T> {
     /// let thread = join_handle.thread();
     /// println!("thread id: {:?}", thread.id());
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[must_use]
     pub fn thread(&self) -> &Thread {
         &self.0.thread
@@ -1526,7 +1526,7 @@ impl<T> JoinHandle<T> {
     /// In terms of [atomic memory orderings],  the completion of the associated
     /// thread synchronizes with this function returning. In other words, all
     /// operations performed by that thread [happen
-    /// before](https://doc.rust-lang.org/nomicon/atomics.html#data-accesses) all
+    /// before](https://doc.crablang.org/nomicon/atomics.html#data-accesses) all
     /// operations that happen after `join` returns.
     ///
     /// If the associated thread panics, [`Err`] is returned with the parameter given
@@ -1552,7 +1552,7 @@ impl<T> JoinHandle<T> {
     /// }).unwrap();
     /// join_handle.join().expect("Couldn't join on the associated thread");
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn join(self) -> Result<T> {
         self.0.join()
     }

@@ -1,9 +1,9 @@
 use clippy_utils::diagnostics::span_lint_and_help;
-use rustc_ast::ast::{Crate, Inline, Item, ItemKind, ModKind};
-use rustc_errors::MultiSpan;
-use rustc_lint::{EarlyContext, EarlyLintPass, Level, LintContext};
-use rustc_session::{declare_tool_lint, impl_lint_pass};
-use rustc_span::{FileName, Span};
+use crablangc_ast::ast::{Crate, Inline, Item, ItemKind, ModKind};
+use crablangc_errors::MultiSpan;
+use crablangc_lint::{EarlyContext, EarlyLintPass, Level, LintContext};
+use crablangc_session::{declare_tool_lint, impl_lint_pass};
+use crablangc_span::{FileName, Span};
 use std::collections::BTreeMap;
 use std::path::PathBuf;
 
@@ -17,12 +17,12 @@ declare_clippy_lint! {
     /// module tree.
     ///
     /// ### Example
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// // lib.rs
     /// mod a;
     /// mod b;
     /// ```
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// // a.rs
     /// #[path = "./b.rs"]
     /// mod b;
@@ -30,12 +30,12 @@ declare_clippy_lint! {
     ///
     /// Use instead:
     ///
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// // lib.rs
     /// mod a;
     /// mod b;
     /// ```
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// // a.rs
     /// use crate::b;
     /// ```

@@ -1,5 +1,5 @@
 // This previously caused an ICE at:
-// librustc/traits/structural_impls.rs:180: impossible case reached
+// libcrablangc/traits/structural_impls.rs:180: impossible case reached
 
 #![no_main]
 

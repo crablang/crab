@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 
 // The `try_into` suggestion doesn't include this, but we do suggest it after applying it
 use std::convert::TryInto;

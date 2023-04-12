@@ -1,6 +1,6 @@
-#![feature(rustc_private)]
+#![feature(crablangc_private)]
 
-//! This program implements a rustc driver that retrieves MIR bodies with
+//! This program implements a crablangc driver that retrieves MIR bodies with
 //! borrowck information. This cannot be done in a straightforward way because
 //! `get_body_with_borrowck_facts`–the function for retrieving a MIR body with
 //! borrowck facts–can panic if the body is stolen before it is invoked.
@@ -11,35 +11,35 @@
 //! `optimized_mir` and pulls out the MIR bodies with the borrowck information
 //! from the thread local storage.
 
-extern crate rustc_borrowck;
-extern crate rustc_driver;
-extern crate rustc_hir;
-extern crate rustc_interface;
-extern crate rustc_middle;
-extern crate rustc_session;
+extern crate crablangc_borrowck;
+extern crate crablangc_driver;
+extern crate crablangc_hir;
+extern crate crablangc_interface;
+extern crate crablangc_middle;
+extern crate crablangc_session;
 
-use rustc_borrowck::consumers::BodyWithBorrowckFacts;
-use rustc_driver::Compilation;
-use rustc_hir::def_id::LocalDefId;
-use rustc_hir::def::DefKind;
-use rustc_interface::interface::Compiler;
-use rustc_interface::{Config, Queries};
-use rustc_middle::ty::query::query_values::mir_borrowck;
-use rustc_middle::ty::query::{ExternProviders, Providers};
-use rustc_middle::ty::{self, TyCtxt};
-use rustc_session::Session;
+use crablangc_borrowck::consumers::BodyWithBorrowckFacts;
+use crablangc_driver::Compilation;
+use crablangc_hir::def_id::LocalDefId;
+use crablangc_hir::def::DefKind;
+use crablangc_interface::interface::Compiler;
+use crablangc_interface::{Config, Queries};
+use crablangc_middle::ty::query::query_values::mir_borrowck;
+use crablangc_middle::ty::query::{ExternProviders, Providers};
+use crablangc_middle::ty::{self, TyCtxt};
+use crablangc_session::Session;
 use std::cell::RefCell;
 use std::collections::HashMap;
 use std::thread_local;
 
 fn main() {
-    let exit_code = rustc_driver::catch_with_exit_code(move || {
-        let mut rustc_args: Vec<_> = std::env::args().collect();
+    let exit_code = crablangc_driver::catch_with_exit_code(move || {
+        let mut crablangc_args: Vec<_> = std::env::args().collect();
         // We must pass -Zpolonius so that the borrowck information is computed.
-        rustc_args.push("-Zpolonius".to_owned());
+        crablangc_args.push("-Zpolonius".to_owned());
         let mut callbacks = CompilerCalls::default();
-        // Call the Rust compiler with our callbacks.
-        rustc_driver::RunCompiler::new(&rustc_args, &mut callbacks).run()
+        // Call the CrabLang compiler with our callbacks.
+        crablangc_driver::RunCompiler::new(&crablangc_args, &mut callbacks).run()
     });
     std::process::exit(exit_code);
 }
@@ -47,7 +47,7 @@ fn main() {
 #[derive(Default)]
 pub struct CompilerCalls;
 
-impl rustc_driver::Callbacks for CompilerCalls {
+impl crablangc_driver::Callbacks for CompilerCalls {
     // In this callback we override the mir_borrowck query.
     fn config(&mut self, config: &mut Config) {
         assert!(config.override_queries.is_none());
@@ -77,8 +77,8 @@ impl rustc_driver::Callbacks for CompilerCalls {
             for id in crate_items.trait_items() {
                 if matches!(tcx.def_kind(id.owner_id), DefKind::AssocFn) {
                     let trait_item = hir.trait_item(id);
-                    if let rustc_hir::TraitItemKind::Fn(_, trait_fn) = &trait_item.kind {
-                        if let rustc_hir::TraitFn::Provided(_) = trait_fn {
+                    if let crablangc_hir::TraitItemKind::Fn(_, trait_fn) = &trait_item.kind {
+                        if let crablangc_hir::TraitFn::Provided(_) = trait_fn {
                             bodies.push(trait_item.owner_id);
                         }
                     }
@@ -127,7 +127,7 @@ thread_local! {
 }
 
 fn mir_borrowck<'tcx>(tcx: TyCtxt<'tcx>, def_id: LocalDefId) -> mir_borrowck<'tcx> {
-    let body_with_facts = rustc_borrowck::consumers::get_body_with_borrowck_facts(
+    let body_with_facts = crablangc_borrowck::consumers::get_body_with_borrowck_facts(
         tcx,
         ty::WithOptConstParam::unknown(def_id),
     );
@@ -139,7 +139,7 @@ fn mir_borrowck<'tcx>(tcx: TyCtxt<'tcx>, def_id: LocalDefId) -> mir_borrowck<'tc
         assert!(map.insert(def_id, body_with_facts).is_none());
     });
     let mut providers = Providers::default();
-    rustc_borrowck::provide(&mut providers);
+    crablangc_borrowck::provide(&mut providers);
     let original_mir_borrowck = providers.mir_borrowck;
     original_mir_borrowck(tcx, def_id)
 }

@@ -8,4 +8,4 @@ LL |     a: u8 /// document
 
 error: aborting due to previous error
 
-For more information about this error, try `rustc --explain E0585`.
+For more information about this error, try `crablangc --explain E0585`.

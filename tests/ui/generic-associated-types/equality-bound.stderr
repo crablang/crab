@@ -4,7 +4,7 @@ error: equality constraints are not yet supported in `where` clauses
 LL | fn sum<I: Iterator<Item = ()>>(i: I) -> i32 where I::Item = i32 {
    |                                                   ^^^^^^^^^^^^^ not supported
    |
-   = note: see issue #20041 <https://github.com/rust-lang/rust/issues/20041> for more information
+   = note: see issue #20041 <https://github.com/crablang/crablang/issues/20041> for more information
 help: if `Iterator::Item` is an associated type you're trying to set, use the associated type binding syntax
    |
 LL - fn sum<I: Iterator<Item = ()>>(i: I) -> i32 where I::Item = i32 {
@@ -17,7 +17,7 @@ error: equality constraints are not yet supported in `where` clauses
 LL | fn sum2<I: Iterator>(i: I) -> i32 where I::Item = i32 {
    |                                         ^^^^^^^^^^^^^ not supported
    |
-   = note: see issue #20041 <https://github.com/rust-lang/rust/issues/20041> for more information
+   = note: see issue #20041 <https://github.com/crablang/crablang/issues/20041> for more information
 help: if `Iterator::Item` is an associated type you're trying to set, use the associated type binding syntax
    |
 LL - fn sum2<I: Iterator>(i: I) -> i32 where I::Item = i32 {
@@ -30,7 +30,7 @@ error: equality constraints are not yet supported in `where` clauses
 LL | fn sum3<J: Iterator>(i: J) -> i32 where I::Item = i32 {
    |                                         ^^^^^^^^^^^^^ not supported
    |
-   = note: see issue #20041 <https://github.com/rust-lang/rust/issues/20041> for more information
+   = note: see issue #20041 <https://github.com/crablang/crablang/issues/20041> for more information
 
 error[E0433]: failed to resolve: use of undeclared type `I`
   --> $DIR/equality-bound.rs:9:41
@@ -40,4 +40,4 @@ LL | fn sum3<J: Iterator>(i: J) -> i32 where I::Item = i32 {
 
 error: aborting due to 4 previous errors
 
-For more information about this error, try `rustc --explain E0433`.
+For more information about this error, try `crablangc --explain E0433`.

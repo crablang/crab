@@ -94,4 +94,4 @@ LL |     let _: i32 = f2(2i32).try_into().unwrap();
 error: aborting due to 8 previous errors
 
 Some errors have detailed explanations: E0277, E0308.
-For more information about an error, try `rustc --explain E0277`.
+For more information about an error, try `crablangc --explain E0277`.

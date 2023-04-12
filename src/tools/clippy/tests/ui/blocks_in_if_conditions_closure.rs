@@ -52,7 +52,7 @@ fn function_with_empty_closure() {
     if closure(|| {}) {}
 }
 
-#[rustfmt::skip]
+#[crablangfmt::skip]
 fn main() {
     let mut range = 0..10;
     range.all(|i| {i < 10} );

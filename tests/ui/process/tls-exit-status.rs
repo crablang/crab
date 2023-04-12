@@ -1,6 +1,6 @@
 // run-fail
 // error-pattern:nonzero
-// exec-env:RUST_NEWRT=1
+// exec-env:CRABLANG_NEWRT=1
 // ignore-emscripten no processes
 
 use std::env;

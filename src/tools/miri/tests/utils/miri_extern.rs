@@ -19,7 +19,7 @@ pub struct MiriFrame {
 }
 
 #[cfg(miri)]
-extern "Rust" {
+extern "CrabLang" {
     /// Miri-provided extern function to mark the block `ptr` points to as a "root"
     /// for some static memory. This memory and everything reachable by it is not
     /// considered leaking even if it still exists when the program terminates.

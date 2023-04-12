@@ -6,12 +6,12 @@ use clippy_utils::{
     eq_expr_value, get_parent_expr_for_hir, get_parent_node, higher, is_else_clause, is_res_lang_ctor, over, path_res,
     peel_blocks_with_stmt,
 };
-use rustc_errors::Applicability;
-use rustc_hir::LangItem::OptionNone;
-use rustc_hir::{Arm, BindingAnnotation, ByRef, Expr, ExprKind, FnRetTy, Guard, Node, Pat, PatKind, Path, QPath};
-use rustc_hir_analysis::hir_ty_to_ty;
-use rustc_lint::LateContext;
-use rustc_span::sym;
+use crablangc_errors::Applicability;
+use crablangc_hir::LangItem::OptionNone;
+use crablangc_hir::{Arm, BindingAnnotation, ByRef, Expr, ExprKind, FnRetTy, Guard, Node, Pat, PatKind, Path, QPath};
+use crablangc_hir_analysis::hir_ty_to_ty;
+use crablangc_lint::LateContext;
+use crablangc_span::sym;
 
 pub(crate) fn check_match(cx: &LateContext<'_>, ex: &Expr<'_>, arms: &[Arm<'_>], expr: &Expr<'_>) {
     if arms.len() > 1 && expr_ty_matches_p_ty(cx, ex, expr) && check_all_arms(cx, ex, arms) {
@@ -30,7 +30,7 @@ pub(crate) fn check_match(cx: &LateContext<'_>, ex: &Expr<'_>, arms: &[Arm<'_>],
 
 /// Check for nop `if let` expression that assembled as unnecessary match
 ///
-/// ```rust,ignore
+/// ```crablang,ignore
 /// if let Some(a) = option {
 ///     Some(a)
 /// } else {
@@ -38,7 +38,7 @@ pub(crate) fn check_match(cx: &LateContext<'_>, ex: &Expr<'_>, arms: &[Arm<'_>],
 /// }
 /// ```
 /// OR
-/// ```rust,ignore
+/// ```crablang,ignore
 /// if let SomeEnum::A = some_enum {
 ///     SomeEnum::A
 /// } else if let SomeEnum::B = some_enum {

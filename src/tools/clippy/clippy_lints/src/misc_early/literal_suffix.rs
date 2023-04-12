@@ -1,7 +1,7 @@
 use clippy_utils::diagnostics::span_lint_and_sugg;
-use rustc_errors::Applicability;
-use rustc_lint::EarlyContext;
-use rustc_span::Span;
+use crablangc_errors::Applicability;
+use crablangc_lint::EarlyContext;
+use crablangc_span::Span;
 
 use super::{SEPARATED_LITERAL_SUFFIX, UNSEPARATED_LITERAL_SUFFIX};
 

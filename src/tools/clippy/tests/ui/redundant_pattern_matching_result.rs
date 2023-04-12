@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 #![warn(clippy::all)]
 #![warn(clippy::redundant_pattern_matching)]
 #![allow(deprecated, unused_must_use)]
@@ -104,7 +104,7 @@ fn issue6065() {
 }
 
 // Methods that are unstable const should not be suggested within a const context, see issue #5697.
-// However, in Rust 1.48.0 the methods `is_ok` and `is_err` of `Result` were stabilized as const,
+// However, in CrabLang 1.48.0 the methods `is_ok` and `is_err` of `Result` were stabilized as const,
 // so the following should be linted.
 const fn issue6067() {
     if let Ok(_) = Ok::<i32, i32>(42) {}

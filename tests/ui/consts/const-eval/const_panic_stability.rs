@@ -7,7 +7,7 @@
 #![feature(staged_api)]
 
 #[stable(feature = "foo", since = "1.0.0")]
-#[rustc_const_stable(feature = "foo", since = "1.0.0")]
+#[crablangc_const_stable(feature = "foo", since = "1.0.0")]
 const fn foo() {
     assert!(false);
     assert!(false, "foo");

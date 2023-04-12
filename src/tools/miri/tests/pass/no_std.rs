@@ -3,7 +3,7 @@
 
 // Plumbing to let us use `writeln!` to host stdout:
 
-extern "Rust" {
+extern "CrabLang" {
     fn miri_write_to_stdout(bytes: &[u8]);
 }
 

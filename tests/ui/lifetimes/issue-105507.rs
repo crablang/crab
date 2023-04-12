@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 //
 #![allow(warnings)]
 struct Wrapper<'a, T: ?Sized>(&'a T);

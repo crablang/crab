@@ -69,7 +69,7 @@ pub fn check_ge_direct(a: TwoTuple, b: TwoTuple) -> bool {
 // `<` seems to be getting lucky right now, so test that doesn't regress.
 //
 // The others, however, aren't managing to optimize away the extra `select`s yet.
-// See <https://github.com/rust-lang/rust/issues/106107> for more about this.
+// See <https://github.com/crablang/crablang/issues/106107> for more about this.
 //
 
 // CHECK-LABEL: @check_lt_via_cmp

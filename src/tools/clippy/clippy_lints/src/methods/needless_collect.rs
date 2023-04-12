@@ -8,17 +8,17 @@ use clippy_utils::{
     can_move_expr_to_closure, get_enclosing_block, get_parent_node, is_trait_method, path_to_local, path_to_local_id,
     CaptureKind,
 };
-use rustc_data_structures::fx::FxHashMap;
-use rustc_errors::{Applicability, MultiSpan};
-use rustc_hir::intravisit::{walk_block, walk_expr, Visitor};
-use rustc_hir::{
+use crablangc_data_structures::fx::FxHashMap;
+use crablangc_errors::{Applicability, MultiSpan};
+use crablangc_hir::intravisit::{walk_block, walk_expr, Visitor};
+use crablangc_hir::{
     BindingAnnotation, Block, Expr, ExprKind, HirId, HirIdSet, Local, Mutability, Node, PatKind, Stmt, StmtKind,
 };
-use rustc_lint::LateContext;
-use rustc_middle::hir::nested_filter;
-use rustc_middle::ty::{self, AssocKind, EarlyBinder, GenericArg, GenericArgKind, Ty};
-use rustc_span::symbol::Ident;
-use rustc_span::{sym, Span, Symbol};
+use crablangc_lint::LateContext;
+use crablangc_middle::hir::nested_filter;
+use crablangc_middle::ty::{self, AssocKind, EarlyBinder, GenericArg, GenericArgKind, Ty};
+use crablangc_span::symbol::Ident;
+use crablangc_span::{sym, Span, Symbol};
 
 const NEEDLESS_COLLECT_MSG: &str = "avoid using `collect()` when not needed";
 

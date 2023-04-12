@@ -1,5 +1,5 @@
 // Test that `Box<T>` is treated specially by borrow checking. This is the case
-// because NLL reverted the deicision in rust-lang/rfcs#130.
+// because NLL reverted the deicision in crablang/rfcs#130.
 
 // run-pass
 

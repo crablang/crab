@@ -7,13 +7,13 @@ use clippy_utils::visitors::{for_each_expr_with_closures, Descend};
 use clippy_utils::{is_diag_item_method, match_def_path, path_to_local_id, paths};
 use core::ops::ControlFlow;
 use if_chain::if_chain;
-use rustc_errors::Applicability;
-use rustc_hir::{
+use crablangc_errors::Applicability;
+use crablangc_hir::{
     BindingAnnotation, Expr, ExprKind, HirId, LangItem, Local, MatchSource, Node, Pat, PatKind, QPath, Stmt, StmtKind,
 };
-use rustc_lint::LateContext;
-use rustc_middle::ty;
-use rustc_span::{sym, Span, Symbol, SyntaxContext};
+use crablangc_lint::LateContext;
+use crablangc_middle::ty;
+use crablangc_span::{sym, Span, Symbol, SyntaxContext};
 
 use super::{MANUAL_SPLIT_ONCE, NEEDLESS_SPLITN};
 

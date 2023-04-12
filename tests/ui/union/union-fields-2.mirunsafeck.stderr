@@ -81,4 +81,4 @@ LL |     let U { a, .. } = u;
 error: aborting due to 13 previous errors
 
 Some errors have detailed explanations: E0026, E0436, E0560, E0784.
-For more information about an error, try `rustc --explain E0026`.
+For more information about an error, try `crablangc --explain E0026`.

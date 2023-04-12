@@ -75,4 +75,4 @@ LL |     fn foo<const M: &u8>(&self) {}
 
 error: aborting due to 10 previous errors
 
-For more information about this error, try `rustc --explain E0637`.
+For more information about this error, try `crablangc --explain E0637`.

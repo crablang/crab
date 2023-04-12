@@ -7,7 +7,7 @@
 //! given allocation is destroyed, the value stored in that allocation (often
 //! referred to as "inner value") is also dropped.
 //!
-//! Shared references in Rust disallow mutation by default, and [`Rc`]
+//! Shared references in CrabLang disallow mutation by default, and [`Rc`]
 //! is no exception: you cannot generally obtain a mutable reference to
 //! something inside an [`Rc`]. If you need mutability, put a [`Cell`]
 //! or [`RefCell`] inside the [`Rc`]; see [an example of mutability
@@ -15,7 +15,7 @@
 //!
 //! [`Rc`] uses non-atomic reference counting. This means that overhead is very
 //! low, but an [`Rc`] cannot be sent between threads, and consequently [`Rc`]
-//! does not implement [`Send`][send]. As a result, the Rust compiler
+//! does not implement [`Send`][send]. As a result, the CrabLang compiler
 //! will check *at compile time* that you are not sending [`Rc`]s between
 //! threads. If you need multi-threaded, atomic reference counting, use
 //! [`sync::Arc`][arc].
@@ -147,14 +147,14 @@
 //! a memory leak. In order to get around this, we can use [`Weak`]
 //! pointers.
 //!
-//! Rust actually makes it somewhat difficult to produce this loop in the first
+//! CrabLang actually makes it somewhat difficult to produce this loop in the first
 //! place. In order to end up with two values that point at each other, one of
 //! them needs to be mutable. This is difficult because [`Rc`] enforces
 //! memory safety by only giving out shared references to the value it wraps,
 //! and these don't allow direct mutation. We need to wrap the part of the
 //! value we wish to mutate in a [`RefCell`], which provides *interior
 //! mutability*: a method to achieve mutability through a shared reference.
-//! [`RefCell`] enforces Rust's borrowing rules at runtime.
+//! [`RefCell`] enforces CrabLang's borrowing rules at runtime.
 //!
 //! ```
 //! use std::rc::Rc;
@@ -238,9 +238,9 @@
 //! [downgrade]: Rc::downgrade
 //! [upgrade]: Weak::upgrade
 //! [mutability]: core::cell#introducing-mutability-inside-of-something-immutable
-//! [fully qualified syntax]: https://doc.rust-lang.org/book/ch19-03-advanced-traits.html#fully-qualified-syntax-for-disambiguation-calling-methods-with-the-same-name
+//! [fully qualified syntax]: https://doc.crablang.org/book/ch19-03-advanced-traits.html#fully-qualified-syntax-for-disambiguation-calling-methods-with-the-same-name
 
-#![stable(feature = "rust1", since = "1.0.0")]
+#![stable(feature = "crablang1", since = "1.0.0")]
 
 #[cfg(not(test))]
 use crate::boxed::Box;
@@ -312,15 +312,15 @@ fn rcbox_layout_for_value_layout(layout: Layout) -> Layout {
 /// `value.get_mut()`. This avoids conflicts with methods of the inner type `T`.
 ///
 /// [get_mut]: Rc::get_mut
-#[cfg_attr(not(test), rustc_diagnostic_item = "Rc")]
-#[stable(feature = "rust1", since = "1.0.0")]
-#[rustc_insignificant_dtor]
+#[cfg_attr(not(test), crablangc_diagnostic_item = "Rc")]
+#[stable(feature = "crablang1", since = "1.0.0")]
+#[crablangc_insignificant_dtor]
 pub struct Rc<T: ?Sized> {
     ptr: NonNull<RcBox<T>>,
     phantom: PhantomData<RcBox<T>>,
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: ?Sized> !marker::Send for Rc<T> {}
 
 // Note that this negative impl isn't strictly necessary for correctness,
@@ -328,7 +328,7 @@ impl<T: ?Sized> !marker::Send for Rc<T> {}
 // However, given how important `Rc`'s `!Sync`-ness is,
 // having an explicit negative impl is nice for documentation purposes
 // and results in nicer error messages.
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: ?Sized> !marker::Sync for Rc<T> {}
 
 #[stable(feature = "catch_unwind", since = "1.9.0")]
@@ -370,7 +370,7 @@ impl<T> Rc<T> {
     /// let five = Rc::new(5);
     /// ```
     #[cfg(not(no_global_oom_handling))]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn new(value: T) -> Rc<T> {
         // There is an implicit weak pointer owned by all the strong
         // pointers, which ensures that the weak destructor never frees
@@ -695,7 +695,7 @@ impl<T> Rc<T> {
     /// This is equivalent to `Rc::try_unwrap(this).ok()`. (Note that these are not equivalent for
     /// [`Arc`](crate::sync::Arc), due to race conditions that do not apply to `Rc`.)
     #[inline]
-    #[stable(feature = "rc_into_inner", since = "CURRENT_RUSTC_VERSION")]
+    #[stable(feature = "rc_into_inner", since = "CURRENT_CRABLANGC_VERSION")]
     pub fn into_inner(this: Self) -> Option<T> {
         Rc::try_unwrap(this).ok()
     }
@@ -1563,7 +1563,7 @@ impl<T: Copy> RcFromSlice<T> for Rc<[T]> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: ?Sized> Deref for Rc<T> {
     type Target = T;
 
@@ -1576,7 +1576,7 @@ impl<T: ?Sized> Deref for Rc<T> {
 #[unstable(feature = "receiver_trait", issue = "none")]
 impl<T: ?Sized> Receiver for Rc<T> {}
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 unsafe impl<#[may_dangle] T: ?Sized> Drop for Rc<T> {
     /// Drops the `Rc`.
     ///
@@ -1622,7 +1622,7 @@ unsafe impl<#[may_dangle] T: ?Sized> Drop for Rc<T> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: ?Sized> Clone for Rc<T> {
     /// Makes a clone of the `Rc` pointer.
     ///
@@ -1648,7 +1648,7 @@ impl<T: ?Sized> Clone for Rc<T> {
 }
 
 #[cfg(not(no_global_oom_handling))]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: Default> Default for Rc<T> {
     /// Creates a new `Rc<T>`, with the `Default` value for `T`.
     ///
@@ -1666,13 +1666,13 @@ impl<T: Default> Default for Rc<T> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 trait RcEqIdent<T: ?Sized + PartialEq> {
     fn eq(&self, other: &Rc<T>) -> bool;
     fn ne(&self, other: &Rc<T>) -> bool;
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: ?Sized + PartialEq> RcEqIdent<T> for Rc<T> {
     #[inline]
     default fn eq(&self, other: &Rc<T>) -> bool {
@@ -1686,7 +1686,7 @@ impl<T: ?Sized + PartialEq> RcEqIdent<T> for Rc<T> {
 }
 
 // Hack to allow specializing on `Eq` even though `Eq` has a method.
-#[rustc_unsafe_specialization_marker]
+#[crablangc_unsafe_specialization_marker]
 pub(crate) trait MarkerEq: PartialEq<Self> {}
 
 impl<T: Eq> MarkerEq for T {}
@@ -1698,7 +1698,7 @@ impl<T: Eq> MarkerEq for T {}
 /// the same value, than two `&T`s.
 ///
 /// We can only do this when `T: Eq` as a `PartialEq` might be deliberately irreflexive.
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: ?Sized + MarkerEq> RcEqIdent<T> for Rc<T> {
     #[inline]
     fn eq(&self, other: &Rc<T>) -> bool {
@@ -1711,7 +1711,7 @@ impl<T: ?Sized + MarkerEq> RcEqIdent<T> for Rc<T> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: ?Sized + PartialEq> PartialEq for Rc<T> {
     /// Equality for two `Rc`s.
     ///
@@ -1759,10 +1759,10 @@ impl<T: ?Sized + PartialEq> PartialEq for Rc<T> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: ?Sized + Eq> Eq for Rc<T> {}
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: ?Sized + PartialOrd> PartialOrd for Rc<T> {
     /// Partial comparison for two `Rc`s.
     ///
@@ -1856,7 +1856,7 @@ impl<T: ?Sized + PartialOrd> PartialOrd for Rc<T> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: ?Sized + Ord> Ord for Rc<T> {
     /// Comparison for two `Rc`s.
     ///
@@ -1878,28 +1878,28 @@ impl<T: ?Sized + Ord> Ord for Rc<T> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: ?Sized + Hash> Hash for Rc<T> {
     fn hash<H: Hasher>(&self, state: &mut H) {
         (**self).hash(state);
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: ?Sized + fmt::Display> fmt::Display for Rc<T> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         fmt::Display::fmt(&**self, f)
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: ?Sized + fmt::Debug> fmt::Debug for Rc<T> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         fmt::Debug::fmt(&**self, f)
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: ?Sized> fmt::Pointer for Rc<T> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         fmt::Pointer::fmt(&(&**self as *const T), f)
@@ -1915,7 +1915,7 @@ impl<T> From<T> for Rc<T> {
     /// from the stack into it.
     ///
     /// # Example
-    /// ```rust
+    /// ```crablang
     /// # use std::rc::Rc;
     /// let x = 5;
     /// let rc = Rc::new(5);
@@ -2038,7 +2038,7 @@ where
     ///
     /// # Example
     ///
-    /// ```rust
+    /// ```crablang
     /// # use std::rc::Rc;
     /// # use std::borrow::Cow;
     /// let cow: Cow<str> = Cow::Borrowed("eggplant");
@@ -2098,7 +2098,7 @@ impl<T> iter::FromIterator<T> for Rc<[T]> {
     /// In the general case, collecting into `Rc<[T]>` is done by first
     /// collecting into a `Vec<T>`. That is, when writing the following:
     ///
-    /// ```rust
+    /// ```crablang
     /// # use std::rc::Rc;
     /// let evens: Rc<[u8]> = (0..10).filter(|&x| x % 2 == 0).collect();
     /// # assert_eq!(&*evens, &[0, 2, 4, 6, 8]);
@@ -2106,7 +2106,7 @@ impl<T> iter::FromIterator<T> for Rc<[T]> {
     ///
     /// this behaves as if we wrote:
     ///
-    /// ```rust
+    /// ```crablang
     /// # use std::rc::Rc;
     /// let evens: Rc<[u8]> = (0..10).filter(|&x| x % 2 == 0)
     ///     .collect::<Vec<_>>() // The first set of allocations happens here.
@@ -2119,10 +2119,10 @@ impl<T> iter::FromIterator<T> for Rc<[T]> {
     ///
     /// ## Iterators of known length
     ///
-    /// When your `Iterator` implements `TrustedLen` and is of an exact size,
+    /// When your `Iterator` implements `TcrablangedLen` and is of an exact size,
     /// a single allocation will be made for the `Rc<[T]>`. For example:
     ///
-    /// ```rust
+    /// ```crablang
     /// # use std::rc::Rc;
     /// let evens: Rc<[u8]> = (0..10).collect(); // Just a single allocation happens here.
     /// # assert_eq!(&*evens, &*(0..10).collect::<Vec<_>>());
@@ -2146,15 +2146,15 @@ impl<T, I: Iterator<Item = T>> ToRcSlice<T> for I {
 }
 
 #[cfg(not(no_global_oom_handling))]
-impl<T, I: iter::TrustedLen<Item = T>> ToRcSlice<T> for I {
+impl<T, I: iter::TcrablangedLen<Item = T>> ToRcSlice<T> for I {
     fn to_rc_slice(self) -> Rc<[T]> {
-        // This is the case for a `TrustedLen` iterator.
+        // This is the case for a `TcrablangedLen` iterator.
         let (low, high) = self.size_hint();
         if let Some(high) = high {
             debug_assert_eq!(
                 low,
                 high,
-                "TrustedLen iterator's size hint is not exact: {:?}",
+                "TcrablangedLen iterator's size hint is not exact: {:?}",
                 (low, high)
             );
 
@@ -2163,7 +2163,7 @@ impl<T, I: iter::TrustedLen<Item = T>> ToRcSlice<T> for I {
                 Rc::from_iter_exact(self, low)
             }
         } else {
-            // TrustedLen contract guarantees that `upper_bound == None` implies an iterator
+            // TcrablangedLen contract guarantees that `upper_bound == None` implies an iterator
             // length exceeding `usize::MAX`.
             // The default implementation would collect into a vec which would panic.
             // Thus we panic here immediately without invoking `Vec` code.
@@ -2229,7 +2229,7 @@ impl<T> Weak<T> {
     /// assert!(empty.upgrade().is_none());
     /// ```
     #[stable(feature = "downgraded_weak", since = "1.10.0")]
-    #[rustc_const_unstable(feature = "const_weak_new", issue = "95091", reason = "recently added")]
+    #[crablangc_const_unstable(feature = "const_weak_new", issue = "95091", reason = "recently added")]
     #[must_use]
     pub const fn new() -> Weak<T> {
         Weak { ptr: unsafe { NonNull::new_unchecked(ptr::invalid_mut::<RcBox<T>>(usize::MAX)) } }
@@ -2612,7 +2612,7 @@ impl<T> Default for Weak<T> {
 // what happens -- no real program should ever experience this.
 //
 // This should have negligible overhead since you don't actually need to
-// clone these much in Rust thanks to ownership and move-semantics.
+// clone these much in CrabLang thanks to ownership and move-semantics.
 
 #[doc(hidden)]
 trait RcInnerPtr {
@@ -2710,7 +2710,7 @@ impl<'a> RcInnerPtr for WeakInner<'a> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: ?Sized> borrow::Borrow<T> for Rc<T> {
     fn borrow(&self) -> &T {
         &**self

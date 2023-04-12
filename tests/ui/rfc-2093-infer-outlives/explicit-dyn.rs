@@ -1,10 +1,10 @@
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 
 trait Trait<'x, T> where T: 'x {
 }
 
-#[rustc_outlives]
-struct Foo<'a, A> //~ ERROR rustc_outlives
+#[crablangc_outlives]
+struct Foo<'a, A> //~ ERROR crablangc_outlives
 {
     foo: Box<dyn Trait<'a, A>>
 }

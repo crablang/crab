@@ -10,7 +10,7 @@
 //! [`Vec`]: crate::vec::Vec
 //! [`VecDeque`]: super::vec_deque::VecDeque
 
-#![stable(feature = "rust1", since = "1.0.0")]
+#![stable(feature = "crablang1", since = "1.0.0")]
 
 use core::cmp::Ordering;
 use core::fmt;
@@ -44,9 +44,9 @@ mod tests;
 ///
 /// [`Vec`]: crate::vec::Vec
 /// [`VecDeque`]: super::vec_deque::VecDeque
-#[stable(feature = "rust1", since = "1.0.0")]
-#[cfg_attr(not(test), rustc_diagnostic_item = "LinkedList")]
-#[rustc_insignificant_dtor]
+#[stable(feature = "crablang1", since = "1.0.0")]
+#[cfg_attr(not(test), crablangc_diagnostic_item = "LinkedList")]
+#[crablangc_insignificant_dtor]
 pub struct LinkedList<T> {
     head: Option<NonNull<Node<T>>>,
     tail: Option<NonNull<Node<T>>>,
@@ -65,7 +65,7 @@ struct Node<T> {
 /// This `struct` is created by [`LinkedList::iter()`]. See its
 /// documentation for more.
 #[must_use = "iterators are lazy and do nothing unless consumed"]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub struct Iter<'a, T: 'a> {
     head: Option<NonNull<Node<T>>>,
     tail: Option<NonNull<Node<T>>>,
@@ -89,7 +89,7 @@ impl<T: fmt::Debug> fmt::Debug for Iter<'_, T> {
 }
 
 // FIXME(#26925) Remove in favor of `#[derive(Clone)]`
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T> Clone for Iter<'_, T> {
     fn clone(&self) -> Self {
         Iter { ..*self }
@@ -101,7 +101,7 @@ impl<T> Clone for Iter<'_, T> {
 /// This `struct` is created by [`LinkedList::iter_mut()`]. See its
 /// documentation for more.
 #[must_use = "iterators are lazy and do nothing unless consumed"]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub struct IterMut<'a, T: 'a> {
     head: Option<NonNull<Node<T>>>,
     tail: Option<NonNull<Node<T>>>,
@@ -132,7 +132,7 @@ impl<T: fmt::Debug> fmt::Debug for IterMut<'_, T> {
 /// [`into_iter`]: LinkedList::into_iter
 /// [`IntoIterator`]: core::iter::IntoIterator
 #[derive(Clone)]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub struct IntoIter<T> {
     list: LinkedList<T>,
 }
@@ -397,7 +397,7 @@ impl<T> LinkedList<T> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T> Default for LinkedList<T> {
     /// Creates an empty `LinkedList<T>`.
     #[inline]
@@ -417,8 +417,8 @@ impl<T> LinkedList<T> {
     /// let list: LinkedList<u32> = LinkedList::new();
     /// ```
     #[inline]
-    #[rustc_const_stable(feature = "const_linked_list_new", since = "1.39.0")]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[crablangc_const_stable(feature = "const_linked_list_new", since = "1.39.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[must_use]
     pub const fn new() -> Self {
         LinkedList { head: None, tail: None, len: 0, marker: PhantomData }
@@ -453,7 +453,7 @@ impl<T> LinkedList<T> {
     ///
     /// assert!(list2.is_empty());
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn append(&mut self, other: &mut Self) {
         match self.tail {
             None => mem::swap(self, other),
@@ -493,7 +493,7 @@ impl<T> LinkedList<T> {
     /// assert_eq!(iter.next(), None);
     /// ```
     #[inline]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn iter(&self) -> Iter<'_, T> {
         Iter { head: self.head, tail: self.tail, len: self.len, marker: PhantomData }
     }
@@ -522,7 +522,7 @@ impl<T> LinkedList<T> {
     /// assert_eq!(iter.next(), None);
     /// ```
     #[inline]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn iter_mut(&mut self) -> IterMut<'_, T> {
         IterMut { head: self.head, tail: self.tail, len: self.len, marker: PhantomData }
     }
@@ -584,7 +584,7 @@ impl<T> LinkedList<T> {
     /// ```
     #[inline]
     #[must_use]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn is_empty(&self) -> bool {
         self.head.is_none()
     }
@@ -611,7 +611,7 @@ impl<T> LinkedList<T> {
     /// ```
     #[inline]
     #[must_use]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn len(&self) -> usize {
         self.len
     }
@@ -637,7 +637,7 @@ impl<T> LinkedList<T> {
     /// assert_eq!(dl.front(), None);
     /// ```
     #[inline]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn clear(&mut self) {
         *self = Self::new();
     }
@@ -687,7 +687,7 @@ impl<T> LinkedList<T> {
     /// ```
     #[inline]
     #[must_use]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn front(&self) -> Option<&T> {
         unsafe { self.head.as_ref().map(|node| &node.as_ref().element) }
     }
@@ -716,7 +716,7 @@ impl<T> LinkedList<T> {
     /// ```
     #[inline]
     #[must_use]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn front_mut(&mut self) -> Option<&mut T> {
         unsafe { self.head.as_mut().map(|node| &mut node.as_mut().element) }
     }
@@ -739,7 +739,7 @@ impl<T> LinkedList<T> {
     /// ```
     #[inline]
     #[must_use]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn back(&self) -> Option<&T> {
         unsafe { self.tail.as_ref().map(|node| &node.as_ref().element) }
     }
@@ -767,7 +767,7 @@ impl<T> LinkedList<T> {
     /// assert_eq!(dl.back(), Some(&5));
     /// ```
     #[inline]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn back_mut(&mut self) -> Option<&mut T> {
         unsafe { self.tail.as_mut().map(|node| &mut node.as_mut().element) }
     }
@@ -789,7 +789,7 @@ impl<T> LinkedList<T> {
     /// dl.push_front(1);
     /// assert_eq!(dl.front().unwrap(), &1);
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn push_front(&mut self, elt: T) {
         self.push_front_node(Box::new(Node::new(elt)));
     }
@@ -813,7 +813,7 @@ impl<T> LinkedList<T> {
     /// assert_eq!(d.pop_front(), Some(1));
     /// assert_eq!(d.pop_front(), None);
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn pop_front(&mut self) -> Option<T> {
         self.pop_front_node().map(Node::into_element)
     }
@@ -832,7 +832,7 @@ impl<T> LinkedList<T> {
     /// d.push_back(3);
     /// assert_eq!(3, *d.back().unwrap());
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn push_back(&mut self, elt: T) {
         self.push_back_node(Box::new(Node::new(elt)));
     }
@@ -853,7 +853,7 @@ impl<T> LinkedList<T> {
     /// d.push_back(3);
     /// assert_eq!(d.pop_back(), Some(3));
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn pop_back(&mut self) -> Option<T> {
         self.pop_back_node().map(Node::into_element)
     }
@@ -883,7 +883,7 @@ impl<T> LinkedList<T> {
     /// assert_eq!(split.pop_front(), Some(1));
     /// assert_eq!(split.pop_front(), None);
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn split_off(&mut self, at: usize) -> LinkedList<T> {
         let len = self.len();
         assert!(at <= len, "Cannot split off at a nonexistent index");
@@ -1000,7 +1000,7 @@ impl<T> LinkedList<T> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 unsafe impl<#[may_dangle] T> Drop for LinkedList<T> {
     fn drop(&mut self) {
         struct DropGuard<'a, T>(&'a mut LinkedList<T>);
@@ -1021,7 +1021,7 @@ unsafe impl<#[may_dangle] T> Drop for LinkedList<T> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<'a, T> Iterator for Iter<'a, T> {
     type Item = &'a T;
 
@@ -1051,7 +1051,7 @@ impl<'a, T> Iterator for Iter<'a, T> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<'a, T> DoubleEndedIterator for Iter<'a, T> {
     #[inline]
     fn next_back(&mut self) -> Option<&'a T> {
@@ -1069,13 +1069,13 @@ impl<'a, T> DoubleEndedIterator for Iter<'a, T> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T> ExactSizeIterator for Iter<'_, T> {}
 
 #[stable(feature = "fused", since = "1.26.0")]
 impl<T> FusedIterator for Iter<'_, T> {}
 
-#[stable(feature = "default_iters", since = "CURRENT_RUSTC_VERSION")]
+#[stable(feature = "default_iters", since = "CURRENT_CRABLANGC_VERSION")]
 impl<T> Default for Iter<'_, T> {
     /// Creates an empty `linked_list::Iter`.
     ///
@@ -1089,7 +1089,7 @@ impl<T> Default for Iter<'_, T> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<'a, T> Iterator for IterMut<'a, T> {
     type Item = &'a mut T;
 
@@ -1119,7 +1119,7 @@ impl<'a, T> Iterator for IterMut<'a, T> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<'a, T> DoubleEndedIterator for IterMut<'a, T> {
     #[inline]
     fn next_back(&mut self) -> Option<&'a mut T> {
@@ -1137,13 +1137,13 @@ impl<'a, T> DoubleEndedIterator for IterMut<'a, T> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T> ExactSizeIterator for IterMut<'_, T> {}
 
 #[stable(feature = "fused", since = "1.26.0")]
 impl<T> FusedIterator for IterMut<'_, T> {}
 
-#[stable(feature = "default_iters", since = "CURRENT_RUSTC_VERSION")]
+#[stable(feature = "default_iters", since = "CURRENT_CRABLANGC_VERSION")]
 impl<T> Default for IterMut<'_, T> {
     fn default() -> Self {
         IterMut { head: None, tail: None, len: 0, marker: Default::default() }
@@ -1800,7 +1800,7 @@ where
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T> Iterator for IntoIter<T> {
     type Item = T;
 
@@ -1815,7 +1815,7 @@ impl<T> Iterator for IntoIter<T> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T> DoubleEndedIterator for IntoIter<T> {
     #[inline]
     fn next_back(&mut self) -> Option<T> {
@@ -1823,13 +1823,13 @@ impl<T> DoubleEndedIterator for IntoIter<T> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T> ExactSizeIterator for IntoIter<T> {}
 
 #[stable(feature = "fused", since = "1.26.0")]
 impl<T> FusedIterator for IntoIter<T> {}
 
-#[stable(feature = "default_iters", since = "CURRENT_RUSTC_VERSION")]
+#[stable(feature = "default_iters", since = "CURRENT_CRABLANGC_VERSION")]
 impl<T> Default for IntoIter<T> {
     /// Creates an empty `linked_list::IntoIter`.
     ///
@@ -1843,7 +1843,7 @@ impl<T> Default for IntoIter<T> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T> FromIterator<T> for LinkedList<T> {
     fn from_iter<I: IntoIterator<Item = T>>(iter: I) -> Self {
         let mut list = Self::new();
@@ -1852,7 +1852,7 @@ impl<T> FromIterator<T> for LinkedList<T> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T> IntoIterator for LinkedList<T> {
     type Item = T;
     type IntoIter = IntoIter<T>;
@@ -1864,7 +1864,7 @@ impl<T> IntoIterator for LinkedList<T> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<'a, T> IntoIterator for &'a LinkedList<T> {
     type Item = &'a T;
     type IntoIter = Iter<'a, T>;
@@ -1874,7 +1874,7 @@ impl<'a, T> IntoIterator for &'a LinkedList<T> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<'a, T> IntoIterator for &'a mut LinkedList<T> {
     type Item = &'a mut T;
     type IntoIter = IterMut<'a, T>;
@@ -1884,7 +1884,7 @@ impl<'a, T> IntoIterator for &'a mut LinkedList<T> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T> Extend<T> for LinkedList<T> {
     fn extend<I: IntoIterator<Item = T>>(&mut self, iter: I) {
         <Self as SpecExtend<I>>::spec_extend(self, iter);
@@ -1920,7 +1920,7 @@ impl<'a, T: 'a + Copy> Extend<&'a T> for LinkedList<T> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: PartialEq> PartialEq for LinkedList<T> {
     fn eq(&self, other: &Self) -> bool {
         self.len() == other.len() && self.iter().eq(other)
@@ -1931,17 +1931,17 @@ impl<T: PartialEq> PartialEq for LinkedList<T> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: Eq> Eq for LinkedList<T> {}
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: PartialOrd> PartialOrd for LinkedList<T> {
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
         self.iter().partial_cmp(other)
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: Ord> Ord for LinkedList<T> {
     #[inline]
     fn cmp(&self, other: &Self) -> Ordering {
@@ -1949,7 +1949,7 @@ impl<T: Ord> Ord for LinkedList<T> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: Clone> Clone for LinkedList<T> {
     fn clone(&self) -> Self {
         self.iter().cloned().collect()
@@ -1969,14 +1969,14 @@ impl<T: Clone> Clone for LinkedList<T> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: fmt::Debug> fmt::Debug for LinkedList<T> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_list().entries(self).finish()
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: Hash> Hash for LinkedList<T> {
     fn hash<H: Hasher>(&self, state: &mut H) {
         state.write_length_prefix(self.len());
@@ -2016,22 +2016,22 @@ fn assert_covariance() {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 unsafe impl<T: Send> Send for LinkedList<T> {}
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 unsafe impl<T: Sync> Sync for LinkedList<T> {}
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 unsafe impl<T: Sync> Send for Iter<'_, T> {}
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 unsafe impl<T: Sync> Sync for Iter<'_, T> {}
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 unsafe impl<T: Send> Send for IterMut<'_, T> {}
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 unsafe impl<T: Sync> Sync for IterMut<'_, T> {}
 
 #[unstable(feature = "linked_list_cursors", issue = "58533")]

@@ -1,11 +1,11 @@
 use clippy_utils::diagnostics::span_lint;
 use clippy_utils::{match_function_call, paths};
-use rustc_ast::{BorrowKind, LitKind};
-use rustc_hir::{Expr, ExprKind};
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_session::{declare_lint_pass, declare_tool_lint};
-use rustc_span::source_map::Spanned;
-use rustc_span::Span;
+use crablangc_ast::{BorrowKind, LitKind};
+use crablangc_hir::{Expr, ExprKind};
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_span::source_map::Spanned;
+use crablangc_span::Span;
 
 declare_clippy_lint! {
     /// ### What it does
@@ -15,7 +15,7 @@ declare_clippy_lint! {
     /// Creating such a `str` would result in undefined behavior
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// # #[allow(unused)]
     /// unsafe {
     ///     std::str::from_utf8_unchecked(b"cl\x82ippy");

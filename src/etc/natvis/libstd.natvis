@@ -9,7 +9,7 @@
       hashbrown::map::HashMap<K, V, S>                is implemented in terms of...
       hashbrown::raw::RawTable<(K, V)>
 
-    Ideally, we'd teach rustc to scan dependencies/crates for .natvis files so
+    Ideally, we'd teach crablangc to scan dependencies/crates for .natvis files so
     the bulk of this could live alongside the hashbrown crate implementation,
     and std would just forward using e.g. <ExpandedItem>base</ExpandedItem>.
 
@@ -18,11 +18,11 @@
     look/feel at the std type level *anyways*...
 
     References:
-      https://github.com/rust-lang/rust/blob/master/src/libstd/collections/hash/map.rs
-      https://github.com/rust-lang/rust/blob/master/src/libstd/collections/hash/set.rs
-      https://github.com/rust-lang/hashbrown/blob/master/src/map.rs
-      https://github.com/rust-lang/hashbrown/blob/master/src/set.rs
-      https://github.com/rust-lang/hashbrown/blob/master/src/raw/mod.rs
+      https://github.com/crablang/crablang/blob/master/src/libstd/collections/hash/map.rs
+      https://github.com/crablang/crablang/blob/master/src/libstd/collections/hash/set.rs
+      https://github.com/crablang/hashbrown/blob/master/src/map.rs
+      https://github.com/crablang/hashbrown/blob/master/src/set.rs
+      https://github.com/crablang/hashbrown/blob/master/src/raw/mod.rs
   -->
 
   <Type Name="std::collections::hash::map::HashMap&lt;*,*,*&gt;">

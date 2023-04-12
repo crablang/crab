@@ -15,6 +15,6 @@ fn strlen(str: String) -> usize {
 }
 
 pub fn main() {
-    let len = strlen("Rust".to_string());
+    let len = strlen("CrabLang".to_string());
     assert_eq!(len, 4);
 }

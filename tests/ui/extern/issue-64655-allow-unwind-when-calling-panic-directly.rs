@@ -2,12 +2,12 @@
 // needs-unwind
 // ignore-emscripten no threads support
 
-// rust-lang/rust#64655: with panic=unwind, a panic from a subroutine
+// crablang/crablang#64655: with panic=unwind, a panic from a subroutine
 // should still run destructors as it unwinds the stack. However,
 // bugs with how the nounwind LLVM attribute was applied led to this
 // simple case being mishandled *if* you had fat LTO turned on.
 
-// Unlike issue-64655-extern-rust-must-allow-unwind.rs, the issue
+// Unlike issue-64655-extern-crablang-must-allow-unwind.rs, the issue
 // embodied in this test cropped up regardless of optimization level.
 // Therefore it seemed worthy of being enshrined as a dedicated unit
 // test.

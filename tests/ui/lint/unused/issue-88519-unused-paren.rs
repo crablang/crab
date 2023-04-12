@@ -1,6 +1,6 @@
 // check-pass
 // Make sure unused parens lint doesn't emit a false positive.
-// See https://github.com/rust-lang/rust/issues/88519
+// See https://github.com/crablang/crablang/issues/88519
 #![deny(unused_parens)]
 #![feature(type_ascription)]
 

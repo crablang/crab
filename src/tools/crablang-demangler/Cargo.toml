@@ -1,0 +1,16 @@
+[package]
+name = "crablang-demangler"
+version = "0.0.1"
+edition = "2021"
+
+[dependencies]
+regex = "1.0"
+crablangc-demangle = "0.1.17"
+
+[lib]
+name = "crablang_demangler"
+doctest = false
+
+[[bin]]
+name = "crablang-demangler"
+test = false

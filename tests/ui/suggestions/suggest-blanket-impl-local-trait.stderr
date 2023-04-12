@@ -97,4 +97,4 @@ LL | impl<T, E, U: GenericTrait<T>> GenericTraitTwo<E> for U {}
 
 error: aborting due to 7 previous errors
 
-For more information about this error, try `rustc --explain E0782`.
+For more information about this error, try `crablangc --explain E0782`.

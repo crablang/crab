@@ -7,24 +7,24 @@ include ../tools.mk
 # The test case makes sure that the compiler produces the expected
 # error message but does not ICE immediately after.
 #
-# See https://github.com/rust-lang/rust/issues/83045
+# See https://github.com/crablang/crablang/issues/83045
 
 # This is a platform-independent issue, no need to waste time testing
 # everywhere.
 # only-x86_64
 # only-linux
 
-# NOTE: We use BARE_RUSTC below so that the compiler can't find liba.rlib
-#       If we used RUSTC the additional '-L TMPDIR' option would allow rustc to
+# NOTE: We use BARE_CRABLANGC below so that the compiler can't find liba.rlib
+#       If we used CRABLANGC the additional '-L TMPDIR' option would allow crablangc to
 #       actually find the crate.
 #
 #       We check that we get the expected error message
 #       But that we do not get an ICE
 
 all:
-	$(RUSTC) --crate-name=a --crate-type=rlib a.rs --verbose
-	$(RUSTC) --crate-name=b --crate-type=rlib --extern a=$(TMPDIR)/liba.rlib b.rs --verbose
-	$(BARE_RUSTC) --out-dir $(TMPDIR) \
+	$(CRABLANGC) --crate-name=a --crate-type=rlib a.rs --verbose
+	$(CRABLANGC) --crate-name=b --crate-type=rlib --extern a=$(TMPDIR)/liba.rlib b.rs --verbose
+	$(BARE_CRABLANGC) --out-dir $(TMPDIR) \
 	              --extern b=$(TMPDIR)/libb.rlib \
 				  --crate-type=rlib \
 				  --edition=2018 \

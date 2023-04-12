@@ -23,7 +23,7 @@
 //! "external character sequence" => str from any float
 //! "integer format"              => {i,u}{8,16,32,64,128}
 //!
-//! None of these tests are against Rust's own implementation. They are only tests against the
+//! None of these tests are against CrabLang's own implementation. They are only tests against the
 //! standard. That is why they accept wildly diverse inputs or may seem to duplicate other tests.
 //! Please consider this carefully when adding, removing, or reorganizing these tests. They are
 //! here so that it is clear what tests are required by the standard and what can be changed.

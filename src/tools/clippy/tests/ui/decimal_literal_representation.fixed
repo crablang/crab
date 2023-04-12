@@ -1,8 +1,8 @@
-// run-rustfix
+// run-crablangfix
 
 #[warn(clippy::decimal_literal_representation)]
 #[allow(unused_variables)]
-#[rustfmt::skip]
+#[crablangfmt::skip]
 fn main() {
     let good = (       // Hex:
         127,           // 0x7F

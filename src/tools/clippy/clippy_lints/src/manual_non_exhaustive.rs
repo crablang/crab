@@ -2,15 +2,15 @@ use clippy_utils::diagnostics::{span_lint_and_then, span_lint_hir_and_then};
 use clippy_utils::is_doc_hidden;
 use clippy_utils::msrvs::{self, Msrv};
 use clippy_utils::source::snippet_opt;
-use rustc_ast::ast::{self, VisibilityKind};
-use rustc_data_structures::fx::FxHashSet;
-use rustc_errors::Applicability;
-use rustc_hir::def::{CtorKind, CtorOf, DefKind, Res};
-use rustc_hir::{self as hir, Expr, ExprKind, QPath};
-use rustc_lint::{EarlyContext, EarlyLintPass, LateContext, LateLintPass, LintContext};
-use rustc_session::{declare_tool_lint, impl_lint_pass};
-use rustc_span::def_id::{DefId, LocalDefId};
-use rustc_span::{sym, Span};
+use crablangc_ast::ast::{self, VisibilityKind};
+use crablangc_data_structures::fx::FxHashSet;
+use crablangc_errors::Applicability;
+use crablangc_hir::def::{CtorKind, CtorOf, DefKind, Res};
+use crablangc_hir::{self as hir, Expr, ExprKind, QPath};
+use crablangc_lint::{EarlyContext, EarlyLintPass, LateContext, LateLintPass, LintContext};
+use crablangc_session::{declare_tool_lint, impl_lint_pass};
+use crablangc_span::def_id::{DefId, LocalDefId};
+use crablangc_span::{sym, Span};
 
 declare_clippy_lint! {
     /// ### What it does
@@ -21,7 +21,7 @@ declare_clippy_lint! {
     /// and allows possible optimizations when applied to enums.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// struct S {
     ///     pub a: i32,
     ///     pub b: i32,
@@ -38,7 +38,7 @@ declare_clippy_lint! {
     /// struct T(pub i32, pub i32, ());
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// #[non_exhaustive]
     /// struct S {
     ///     pub a: i32,

@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 #![warn(clippy::single_char_add_str)]
 
 macro_rules! get_string {

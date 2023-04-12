@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 #![allow(unused_assignments, unused_mut, clippy::assign_op_pattern)]
 #![warn(clippy::implicit_saturating_sub)]
 

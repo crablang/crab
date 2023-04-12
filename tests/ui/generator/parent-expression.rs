@@ -2,7 +2,7 @@
 // [drop_tracking] compile-flags: -Zdrop-tracking
 // [drop_tracking_mir] compile-flags: -Zdrop-tracking-mir
 
-#![feature(generators, negative_impls, rustc_attrs)]
+#![feature(generators, negative_impls, crablangc_attrs)]
 
 macro_rules! type_combinations {
     (
@@ -67,7 +67,7 @@ fn main() {
         // NOT OK (we need to agree with MIR borrowck)
         insignificant_dtor => {
             #[derive(Default)]
-            #[rustc_insignificant_dtor]
+            #[crablangc_insignificant_dtor]
             pub struct Client;
             impl Drop for Client {
                 fn drop(&mut self) {}

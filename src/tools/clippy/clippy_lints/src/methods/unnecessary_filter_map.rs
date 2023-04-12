@@ -5,11 +5,11 @@ use clippy_utils::usage::mutated_variables;
 use clippy_utils::visitors::{for_each_expr, Descend};
 use clippy_utils::{is_res_lang_ctor, is_trait_method, path_res, path_to_local_id};
 use core::ops::ControlFlow;
-use rustc_hir as hir;
-use rustc_hir::LangItem::{OptionNone, OptionSome};
-use rustc_lint::LateContext;
-use rustc_middle::ty;
-use rustc_span::sym;
+use crablangc_hir as hir;
+use crablangc_hir::LangItem::{OptionNone, OptionSome};
+use crablangc_lint::LateContext;
+use crablangc_middle::ty;
+use crablangc_span::sym;
 
 use super::UNNECESSARY_FILTER_MAP;
 use super::UNNECESSARY_FIND_MAP;

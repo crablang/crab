@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 
 #![warn(clippy::manual_range_contains)]
 #![allow(unused)]

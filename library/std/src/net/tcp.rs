@@ -46,7 +46,7 @@ use crate::time::Duration;
 ///     Ok(())
 /// } // the stream is closed here
 /// ```
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub struct TcpStream(net_imp::TcpStream);
 
 /// A TCP socket server, listening for connections.
@@ -82,7 +82,7 @@ pub struct TcpStream(net_imp::TcpStream);
 ///     Ok(())
 /// }
 /// ```
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub struct TcpListener(net_imp::TcpListener);
 
 /// An iterator that infinitely [`accept`]s connections on a [`TcpListener`].
@@ -92,7 +92,7 @@ pub struct TcpListener(net_imp::TcpListener);
 ///
 /// [`accept`]: TcpListener::accept
 #[must_use = "iterators are lazy and do nothing unless consumed"]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[derive(Debug)]
 pub struct Incoming<'a> {
     listener: &'a TcpListener,
@@ -152,7 +152,7 @@ impl TcpStream {
     ///     println!("Couldn't connect to server...");
     /// }
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn connect<A: ToSocketAddrs>(addr: A) -> io::Result<TcpStream> {
         super::each_addr(addr, net_imp::TcpStream::connect).map(TcpStream)
     }
@@ -185,7 +185,7 @@ impl TcpStream {
     /// assert_eq!(stream.peer_addr().unwrap(),
     ///            SocketAddr::V4(SocketAddrV4::new(Ipv4Addr::new(127, 0, 0, 1), 8080)));
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn peer_addr(&self) -> io::Result<SocketAddr> {
         self.0.peer_addr()
     }
@@ -202,7 +202,7 @@ impl TcpStream {
     /// assert_eq!(stream.local_addr().unwrap().ip(),
     ///            IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1)));
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn local_addr(&self) -> io::Result<SocketAddr> {
         self.0.socket_addr()
     }
@@ -229,7 +229,7 @@ impl TcpStream {
     ///                        .expect("Couldn't connect to the server...");
     /// stream.shutdown(Shutdown::Both).expect("shutdown call failed");
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn shutdown(&self, how: Shutdown) -> io::Result<()> {
         self.0.shutdown(how)
     }
@@ -250,7 +250,7 @@ impl TcpStream {
     ///                        .expect("Couldn't connect to the server...");
     /// let stream_clone = stream.try_clone().expect("clone failed...");
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn try_clone(&self) -> io::Result<TcpStream> {
         self.0.duplicate().map(TcpStream)
     }
@@ -613,7 +613,7 @@ impl TcpStream {
 // `AsSocket`/`From<OwnedSocket>`/`Into<OwnedSocket>` and
 // `AsRawSocket`/`IntoRawSocket`/`FromRawSocket` on Windows.
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl Read for TcpStream {
     fn read(&mut self, buf: &mut [u8]) -> io::Result<usize> {
         self.0.read(buf)
@@ -632,7 +632,7 @@ impl Read for TcpStream {
         self.0.is_read_vectored()
     }
 }
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl Write for TcpStream {
     fn write(&mut self, buf: &[u8]) -> io::Result<usize> {
         self.0.write(buf)
@@ -651,7 +651,7 @@ impl Write for TcpStream {
         Ok(())
     }
 }
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl Read for &TcpStream {
     fn read(&mut self, buf: &mut [u8]) -> io::Result<usize> {
         self.0.read(buf)
@@ -670,7 +670,7 @@ impl Read for &TcpStream {
         self.0.is_read_vectored()
     }
 }
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl Write for &TcpStream {
     fn write(&mut self, buf: &[u8]) -> io::Result<usize> {
         self.0.write(buf)
@@ -708,7 +708,7 @@ impl IntoInner<net_imp::TcpStream> for TcpStream {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl fmt::Debug for TcpStream {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         self.0.fmt(f)
@@ -755,7 +755,7 @@ impl TcpListener {
     /// ];
     /// let listener = TcpListener::bind(&addrs[..]).unwrap();
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn bind<A: ToSocketAddrs>(addr: A) -> io::Result<TcpListener> {
         super::each_addr(addr, net_imp::TcpListener::bind).map(TcpListener)
     }
@@ -771,7 +771,7 @@ impl TcpListener {
     /// assert_eq!(listener.local_addr().unwrap(),
     ///            SocketAddr::V4(SocketAddrV4::new(Ipv4Addr::new(127, 0, 0, 1), 8080)));
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn local_addr(&self) -> io::Result<SocketAddr> {
         self.0.socket_addr()
     }
@@ -790,7 +790,7 @@ impl TcpListener {
     /// let listener = TcpListener::bind("127.0.0.1:8080").unwrap();
     /// let listener_clone = listener.try_clone().unwrap();
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn try_clone(&self) -> io::Result<TcpListener> {
         self.0.duplicate().map(TcpListener)
     }
@@ -812,7 +812,7 @@ impl TcpListener {
     ///     Err(e) => println!("couldn't get client: {e:?}"),
     /// }
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn accept(&self) -> io::Result<(TcpStream, SocketAddr)> {
         // On WASM, `TcpStream` is uninhabited (as it's unsupported) and so
         // the `a` variable here is technically unused.
@@ -850,7 +850,7 @@ impl TcpListener {
     ///     Ok(())
     /// }
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn incoming(&self) -> Incoming<'_> {
         Incoming { listener: self }
     }
@@ -1010,7 +1010,7 @@ impl TcpListener {
 // `AsSocket`/`From<OwnedSocket>`/`Into<OwnedSocket>` and
 // `AsRawSocket`/`IntoRawSocket`/`FromRawSocket` on Windows.
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<'a> Iterator for Incoming<'a> {
     type Item = io::Result<TcpStream>;
     fn next(&mut self) -> Option<io::Result<TcpStream>> {
@@ -1050,7 +1050,7 @@ impl IntoInner<net_imp::TcpListener> for TcpListener {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl fmt::Debug for TcpListener {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         self.0.fmt(f)

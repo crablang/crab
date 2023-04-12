@@ -3,7 +3,7 @@
 // ignore-wasm32-bare no libc
 // ignore-sgx no libc
 
-#![feature(rustc_private)]
+#![feature(crablangc_private)]
 
 extern crate libc;
 

@@ -5,14 +5,14 @@ use clippy_utils::source::walk_span_to_context;
 use clippy_utils::visitors::{for_each_expr_with_closures, Descend};
 use clippy_utils::{get_parent_node, is_lint_allowed};
 use hir::HirId;
-use rustc_data_structures::sync::Lrc;
-use rustc_hir as hir;
-use rustc_hir::{Block, BlockCheckMode, ItemKind, Node, UnsafeSource};
-use rustc_lexer::{tokenize, TokenKind};
-use rustc_lint::{LateContext, LateLintPass, LintContext};
-use rustc_middle::lint::in_external_macro;
-use rustc_session::{declare_lint_pass, declare_tool_lint};
-use rustc_span::{BytePos, Pos, Span, SyntaxContext};
+use crablangc_data_structures::sync::Lrc;
+use crablangc_hir as hir;
+use crablangc_hir::{Block, BlockCheckMode, ItemKind, Node, UnsafeSource};
+use crablangc_lexer::{tokenize, TokenKind};
+use crablangc_lint::{LateContext, LateLintPass, LintContext};
+use crablangc_middle::lint::in_external_macro;
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_span::{BytePos, Pos, Span, SyntaxContext};
 
 declare_clippy_lint! {
     /// ### What it does
@@ -44,14 +44,14 @@ declare_clippy_lint! {
     /// and bugs.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// use std::ptr::NonNull;
     /// let a = &mut 42;
     ///
     /// let ptr = unsafe { NonNull::new_unchecked(a) };
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// use std::ptr::NonNull;
     /// let a = &mut 42;
     ///
@@ -72,7 +72,7 @@ declare_clippy_lint! {
     /// describe safety invariants.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// use std::ptr::NonNull;
     /// let a = &mut 42;
     ///
@@ -80,7 +80,7 @@ declare_clippy_lint! {
     /// let ptr = NonNull::new(a).unwrap();
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// use std::ptr::NonNull;
     /// let a = &mut 42;
     ///

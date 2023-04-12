@@ -36,4 +36,4 @@ LL | fn h<'a>(a: &'a bool, b: bool, c: &'a S<'a>, d: &'a i32) -> &'a i32 {
 
 error: aborting due to 3 previous errors
 
-For more information about this error, try `rustc --explain E0106`.
+For more information about this error, try `crablangc --explain E0106`.

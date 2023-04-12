@@ -15,7 +15,7 @@
 // }
 // ```
 //
-// Since Rust doesn't actually have dependent types and polymorphic recursion,
+// Since CrabLang doesn't actually have dependent types and polymorphic recursion,
 // we make do with lots of unsafety.
 
 // A major goal of this module is to avoid complexity by treating the tree as a generic (if
@@ -527,7 +527,7 @@ impl<'a, K, V, Type> NodeRef<marker::ValMut<'a>, K, V, Type> {
         let leaf = Self::as_leaf_ptr(&mut self);
         let keys = unsafe { ptr::addr_of!((*leaf).keys) };
         let vals = unsafe { ptr::addr_of_mut!((*leaf).vals) };
-        // We must coerce to unsized array pointers because of Rust issue #74679.
+        // We must coerce to unsized array pointers because of CrabLang issue #74679.
         let keys: *const [_] = keys;
         let vals: *mut [_] = vals;
         let key = unsafe { (&*keys.get_unchecked(idx)).assume_init_ref() };
@@ -875,7 +875,7 @@ pub enum LeftOrRight<T> {
 /// the keys, values and edges to the right of the split point become the right child.
 fn splitpoint(edge_idx: usize) -> (usize, LeftOrRight<usize>) {
     debug_assert!(edge_idx <= CAPACITY);
-    // Rust issue #74834 tries to explain these symmetric rules.
+    // CrabLang issue #74834 tries to explain these symmetric rules.
     match edge_idx {
         0..EDGE_IDX_LEFT_OF_CENTER => (KV_IDX_CENTER - 1, LeftOrRight::Left(edge_idx)),
         EDGE_IDX_LEFT_OF_CENTER => (KV_IDX_CENTER, LeftOrRight::Left(edge_idx)),
@@ -1071,7 +1071,7 @@ impl<BorrowType: marker::BorrowType, K, V>
         // values that we must not invalidate. There's no worry accessing the
         // height field because that value is copied. Beware that, once the
         // node pointer is dereferenced, we access the edges array with a
-        // reference (Rust issue #73987) and invalidate any other references
+        // reference (CrabLang issue #73987) and invalidate any other references
         // to or inside the array, should any be around.
         let parent_ptr = NodeRef::as_internal_ptr(&self.node);
         let node = unsafe { (*parent_ptr).edges.get_unchecked(self.idx).assume_init_read() };

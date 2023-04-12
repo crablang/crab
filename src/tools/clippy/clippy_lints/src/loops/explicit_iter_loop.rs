@@ -3,11 +3,11 @@ use clippy_utils::diagnostics::span_lint_and_sugg;
 use clippy_utils::is_trait_method;
 use clippy_utils::source::snippet_with_applicability;
 use clippy_utils::ty::is_type_diagnostic_item;
-use rustc_errors::Applicability;
-use rustc_hir::{Expr, Mutability};
-use rustc_lint::LateContext;
-use rustc_middle::ty::{self, Ty};
-use rustc_span::sym;
+use crablangc_errors::Applicability;
+use crablangc_hir::{Expr, Mutability};
+use crablangc_lint::LateContext;
+use crablangc_middle::ty::{self, Ty};
+use crablangc_span::sym;
 
 pub(super) fn check(cx: &LateContext<'_>, self_arg: &Expr<'_>, arg: &Expr<'_>, method_name: &str) {
     let should_lint = match method_name {
@@ -48,7 +48,7 @@ pub(super) fn check(cx: &LateContext<'_>, self_arg: &Expr<'_>, arg: &Expr<'_>, m
 
 /// Returns `true` if the type of expr is one that provides `IntoIterator` impls
 /// for `&T` and `&mut T`, such as `Vec`.
-#[rustfmt::skip]
+#[crablangfmt::skip]
 fn is_ref_iterable_type(cx: &LateContext<'_>, e: &Expr<'_>) -> bool {
     // no walk_ptrs_ty: calling iter() on a reference can make sense because it
     // will allow further borrows afterwards
@@ -65,7 +65,7 @@ fn is_ref_iterable_type(cx: &LateContext<'_>, e: &Expr<'_>) -> bool {
 }
 
 fn is_iterable_array<'tcx>(ty: Ty<'tcx>, cx: &LateContext<'tcx>) -> bool {
-    // IntoIterator is currently only implemented for array sizes <= 32 in rustc
+    // IntoIterator is currently only implemented for array sizes <= 32 in crablangc
     match ty.kind() {
         ty::Array(_, n) => n
             .try_eval_target_usize(cx.tcx, cx.param_env)

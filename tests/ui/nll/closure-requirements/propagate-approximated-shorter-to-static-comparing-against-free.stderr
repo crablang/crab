@@ -6,7 +6,7 @@ LL |     foo(cell, |cell_a, cell_x| {
    |
    = note: defining type: case1::{closure#0} with closure substs [
                i32,
-               for<Region(BrAnon(None))> extern "rust-call" fn((std::cell::Cell<&'_#1r u32>, std::cell::Cell<&ReLateBound(DebruijnIndex(0), BoundRegion { var: 0, kind: BrAnon(None) }) u32>)),
+               for<Region(BrAnon(None))> extern "crablang-call" fn((std::cell::Cell<&'_#1r u32>, std::cell::Cell<&ReLateBound(DebruijnIndex(0), BoundRegion { var: 0, kind: BrAnon(None) }) u32>)),
                (),
            ]
 
@@ -36,7 +36,7 @@ LL |     foo(cell, |cell_a, cell_x| {
    |
    = note: defining type: case2::{closure#0} with closure substs [
                i32,
-               for<Region(BrAnon(None))> extern "rust-call" fn((std::cell::Cell<&'_#1r u32>, std::cell::Cell<&ReLateBound(DebruijnIndex(0), BoundRegion { var: 0, kind: BrAnon(None) }) u32>)),
+               for<Region(BrAnon(None))> extern "crablang-call" fn((std::cell::Cell<&'_#1r u32>, std::cell::Cell<&ReLateBound(DebruijnIndex(0), BoundRegion { var: 0, kind: BrAnon(None) }) u32>)),
                (),
            ]
    = note: number of external vids: 2
@@ -68,4 +68,4 @@ LL |   }
 error: aborting due to 2 previous errors
 
 Some errors have detailed explanations: E0521, E0597.
-For more information about an error, try `rustc --explain E0521`.
+For more information about an error, try `crablangc --explain E0521`.

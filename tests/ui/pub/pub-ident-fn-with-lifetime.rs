@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 
 pub   foo<'a>(_s: &'a usize) -> bool { true }
 //~^ ERROR missing `fn` for function definition

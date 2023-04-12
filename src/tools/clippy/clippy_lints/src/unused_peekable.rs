@@ -1,13 +1,13 @@
 use clippy_utils::diagnostics::span_lint_and_help;
 use clippy_utils::ty::{match_type, peel_mid_ty_refs_is_mutable};
 use clippy_utils::{fn_def_id, is_trait_method, path_to_local_id, paths, peel_ref_operators};
-use rustc_ast::Mutability;
-use rustc_hir::intravisit::{walk_expr, Visitor};
-use rustc_hir::{Block, Expr, ExprKind, HirId, Local, Node, PatKind, PathSegment, StmtKind};
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_middle::hir::nested_filter::OnlyBodies;
-use rustc_session::{declare_lint_pass, declare_tool_lint};
-use rustc_span::sym;
+use crablangc_ast::Mutability;
+use crablangc_hir::intravisit::{walk_expr, Visitor};
+use crablangc_hir::{Block, Expr, ExprKind, HirId, Local, Node, PatKind, PathSegment, StmtKind};
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_middle::hir::nested_filter::OnlyBodies;
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_span::sym;
 
 declare_clippy_lint! {
     /// ### What it does
@@ -18,7 +18,7 @@ declare_clippy_lint! {
     /// or just a leftover after a refactor.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// let collection = vec![1, 2, 3];
     /// let iter = collection.iter().peekable();
     ///
@@ -28,7 +28,7 @@ declare_clippy_lint! {
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// let collection = vec![1, 2, 3];
     /// let iter = collection.iter();
     ///

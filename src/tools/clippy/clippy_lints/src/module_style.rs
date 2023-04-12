@@ -1,8 +1,8 @@
-use rustc_ast::ast;
-use rustc_data_structures::fx::{FxHashMap, FxHashSet};
-use rustc_lint::{EarlyContext, EarlyLintPass, Level, LintContext};
-use rustc_session::{declare_tool_lint, impl_lint_pass};
-use rustc_span::{FileName, SourceFile, Span, SyntaxContext};
+use crablangc_ast::ast;
+use crablangc_data_structures::fx::{FxHashMap, FxHashSet};
+use crablangc_lint::{EarlyContext, EarlyLintPass, Level, LintContext};
+use crablangc_session::{declare_tool_lint, impl_lint_pass};
+use crablangc_span::{FileName, SourceFile, Span, SyntaxContext};
 use std::ffi::OsStr;
 use std::path::{Component, Path};
 

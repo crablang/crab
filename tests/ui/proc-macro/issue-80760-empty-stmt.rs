@@ -15,8 +15,8 @@ macro_rules! empty_stmt {
         // Currently, all attributes are ignored
         // on an empty statement
         #[print_attr]
-        #[rustc_dummy(first)]
-        #[rustc_dummy(second)]
+        #[crablangc_dummy(first)]
+        #[crablangc_dummy(second)]
         $s
     }
 }

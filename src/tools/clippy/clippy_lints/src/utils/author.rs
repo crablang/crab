@@ -1,17 +1,17 @@
-//! A group of attributes that can be attached to Rust code in order
+//! A group of attributes that can be attached to CrabLang code in order
 //! to generate a clippy lint detecting said code automatically.
 
 use clippy_utils::{get_attr, higher};
-use rustc_ast::ast::{LitFloatType, LitKind};
-use rustc_ast::LitIntType;
-use rustc_data_structures::fx::FxHashMap;
-use rustc_hir as hir;
-use rustc_hir::{
+use crablangc_ast::ast::{LitFloatType, LitKind};
+use crablangc_ast::LitIntType;
+use crablangc_data_structures::fx::FxHashMap;
+use crablangc_hir as hir;
+use crablangc_hir::{
     ArrayLen, BindingAnnotation, Closure, ExprKind, FnRetTy, HirId, Lit, PatKind, QPath, StmtKind, TyKind,
 };
-use rustc_lint::{LateContext, LateLintPass, LintContext};
-use rustc_session::{declare_lint_pass, declare_tool_lint};
-use rustc_span::symbol::{Ident, Symbol};
+use crablangc_lint::{LateContext, LateLintPass, LintContext};
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_span::symbol::{Ident, Symbol};
 use std::cell::Cell;
 use std::fmt::{Display, Formatter, Write as _};
 
@@ -20,7 +20,7 @@ declare_clippy_lint! {
     /// Generates clippy code that detects the offending pattern
     ///
     /// ### Example
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// // ./tests/ui/my_lint.rs
     /// fn foo() {
     ///     // detect the following pattern
@@ -36,7 +36,7 @@ declare_clippy_lint! {
     /// Running `TESTNAME=ui/my_lint cargo uitest` will produce
     /// a `./tests/ui/new_lint.stdout` file with the generated code:
     ///
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// // ./tests/ui/new_lint.stdout
     /// if ExprKind::If(ref cond, ref then, None) = item.kind
     ///     && let ExprKind::Binary(BinOp::Eq, ref left, ref right) = cond.kind

@@ -2,9 +2,9 @@
 // normalize-stderr-test "\[&usize; \d+\]" -> "[&usize; usize::MAX]"
 // error-pattern: too big for the current architecture
 
-// FIXME https://github.com/rust-lang/rust/issues/59774
+// FIXME https://github.com/crablang/crablang/issues/59774
 // normalize-stderr-test "thread.*panicked.*Metadata module not compiled.*\n" -> ""
-// normalize-stderr-test "note:.*RUST_BACKTRACE=1.*\n" -> ""
+// normalize-stderr-test "note:.*CRABLANG_BACKTRACE=1.*\n" -> ""
 
 #[cfg(target_pointer_width = "64")]
 fn main() {

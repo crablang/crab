@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 #![warn(clippy::identity_op)]
 #![allow(unused)]
 #![allow(
@@ -36,7 +36,7 @@ impl core::ops::Mul<Meter> for u8 {
     }
 }
 
-#[rustfmt::skip]
+#[crablangfmt::skip]
 fn main() {
     let x = 0;
 

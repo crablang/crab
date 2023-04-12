@@ -5,10 +5,10 @@
 
 extern crate anonexternmod;
 
-use anonexternmod::rust_get_test_int;
+use anonexternmod::crablang_get_test_int;
 
 pub fn main() {
     unsafe {
-        rust_get_test_int();
+        crablang_get_test_int();
     }
 }

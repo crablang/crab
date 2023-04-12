@@ -23,4 +23,4 @@ LL | const C2: &'static mut usize = unsafe { &mut S };
 error: aborting due to 3 previous errors
 
 Some errors have detailed explanations: E0013, E0764.
-For more information about an error, try `rustc --explain E0013`.
+For more information about an error, try `crablangc --explain E0013`.

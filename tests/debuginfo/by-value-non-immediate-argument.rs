@@ -32,7 +32,7 @@
 // gdb-command:continue
 
 // gdb-command:print x
-// gdbg-check:$7 = {{RUST$ENUM$DISR = Case1, x = 0, y = 8970181431921507452}, {RUST$ENUM$DISR = Case1, [...]}}
+// gdbg-check:$7 = {{CRABLANG$ENUM$DISR = Case1, x = 0, y = 8970181431921507452}, {CRABLANG$ENUM$DISR = Case1, [...]}}
 // gdbr-check:$7 = by_value_non_immediate_argument::Enum::Case1{x: 0, y: 8970181431921507452}
 // gdb-command:continue
 

@@ -1,8 +1,8 @@
-// run-rustfix
+// run-crablangfix
 
-// See https://github.com/rust-lang/rust/issues/87955
+// See https://github.com/crablang/crablang/issues/87955
 
-#![deny(rust_2021_incompatible_closure_captures)]
+#![deny(crablang_2021_incompatible_closure_captures)]
 //~^ NOTE: the lint level is defined here
 
 

@@ -4,16 +4,16 @@ use clippy_utils::source::snippet_opt;
 use clippy_utils::ty::{has_drop, is_copy, is_type_diagnostic_item, is_type_lang_item, walk_ptrs_ty_depth};
 use clippy_utils::{fn_has_unsatisfiable_preds, match_def_path, paths};
 use if_chain::if_chain;
-use rustc_errors::Applicability;
-use rustc_hir::intravisit::FnKind;
-use rustc_hir::{def_id, Body, FnDecl, LangItem};
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_middle::mir;
-use rustc_middle::ty::{self, Ty};
-use rustc_session::{declare_lint_pass, declare_tool_lint};
-use rustc_span::def_id::LocalDefId;
-use rustc_span::source_map::{BytePos, Span};
-use rustc_span::sym;
+use crablangc_errors::Applicability;
+use crablangc_hir::intravisit::FnKind;
+use crablangc_hir::{def_id, Body, FnDecl, LangItem};
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_middle::mir;
+use crablangc_middle::ty::{self, Ty};
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_span::def_id::LocalDefId;
+use crablangc_span::source_map::{BytePos, Span};
+use crablangc_span::sym;
 
 macro_rules! unwrap_or_continue {
     ($x:expr) => {
@@ -37,7 +37,7 @@ declare_clippy_lint! {
     /// False-negatives: analysis performed by this lint is conservative and limited.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// # use std::path::Path;
     /// # #[derive(Clone)]
     /// # struct Foo;
@@ -320,7 +320,7 @@ fn base_local_and_movability<'tcx>(
     mir: &mir::Body<'tcx>,
     place: mir::Place<'tcx>,
 ) -> (mir::Local, CannotMoveOut) {
-    use rustc_middle::mir::PlaceRef;
+    use crablangc_middle::mir::PlaceRef;
 
     // Dereference. You cannot move things out from a borrowed value.
     let mut deref = false;

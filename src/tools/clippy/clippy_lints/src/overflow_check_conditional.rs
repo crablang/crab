@@ -1,9 +1,9 @@
 use clippy_utils::diagnostics::span_lint;
 use clippy_utils::SpanlessEq;
 use if_chain::if_chain;
-use rustc_hir::{BinOpKind, Expr, ExprKind, QPath};
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_hir::{BinOpKind, Expr, ExprKind, QPath};
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
 
 declare_clippy_lint! {
     /// ### What it does
@@ -11,10 +11,10 @@ declare_clippy_lint! {
     ///
     /// ### Why is this bad?
     /// Most classic C underflow/overflow checks will fail in
-    /// Rust. Users can use functions like `overflowing_*` and `wrapping_*` instead.
+    /// CrabLang. Users can use functions like `overflowing_*` and `wrapping_*` instead.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// # let a = 1;
     /// # let b = 2;
     /// a + b < a;
@@ -27,8 +27,8 @@ declare_clippy_lint! {
 
 declare_lint_pass!(OverflowCheckConditional => [OVERFLOW_CHECK_CONDITIONAL]);
 
-const OVERFLOW_MSG: &str = "you are trying to use classic C overflow conditions that will fail in Rust";
-const UNDERFLOW_MSG: &str = "you are trying to use classic C underflow conditions that will fail in Rust";
+const OVERFLOW_MSG: &str = "you are trying to use classic C overflow conditions that will fail in CrabLang";
+const UNDERFLOW_MSG: &str = "you are trying to use classic C underflow conditions that will fail in CrabLang";
 
 impl<'tcx> LateLintPass<'tcx> for OverflowCheckConditional {
     // a + b < a, a > a + b, a < a - b, a - b > a

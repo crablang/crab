@@ -6,4 +6,4 @@ LL |     let f = Foo::Variant(42);
 
 error: aborting due to previous error
 
-For more information about this error, try `rustc --explain E0533`.
+For more information about this error, try `crablangc --explain E0533`.

@@ -1,6 +1,6 @@
 #![feature(lazy_cell)]
 #![cfg_attr(feature = "deny-warnings", deny(warnings))]
-#![warn(rust_2018_idioms, unused_lifetimes)]
+#![warn(crablang_2018_idioms, unused_lifetimes)]
 
 use std::ffi::OsStr;
 use std::path::PathBuf;
@@ -64,8 +64,8 @@ impl Message {
 
 #[test]
 fn lint_message_convention() {
-    // disable the test inside the rustc test suite
-    if option_env!("RUSTC_TEST_SUITE").is_some() {
+    // disable the test inside the crablangc test suite
+    if option_env!("CRABLANGC_TEST_SUITE").is_some() {
         return;
     }
 
@@ -109,8 +109,8 @@ fn lint_message_convention() {
     eprintln!(
         "\n\n\nLint message should not start with a capital letter and should not have punctuation at the end of the message unless multiple sentences are needed."
     );
-    eprintln!("Check out the rustc-dev-guide for more information:");
-    eprintln!("https://rustc-dev-guide.rust-lang.org/diagnostics.html#diagnostic-structure\n\n\n");
+    eprintln!("Check out the crablangc-dev-guide for more information:");
+    eprintln!("https://crablangc-dev-guide.crablang.org/diagnostics.html#diagnostic-structure\n\n\n");
 
     assert!(bad_tests.is_empty());
 }

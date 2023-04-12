@@ -62,9 +62,9 @@ macro_rules! wrap_bitshift {
 
 /// SAFETY: This macro must only be used to impl Div or Rem and given the matching intrinsic.
 /// It guards against LLVM's UB conditions for integer div or rem using masks and selects,
-/// thus guaranteeing a Rust value returns instead.
+/// thus guaranteeing a CrabLang value returns instead.
 ///
-/// |                  | LLVM | Rust
+/// |                  | LLVM | CrabLang
 /// | :--------------: | :--- | :----------
 /// | N {/,%} 0        | UB   | panic!()
 /// | <$int>::MIN / -1 | UB   | <$int>::MIN

@@ -14,7 +14,7 @@ the same parameters.
 Applying the `#[ffi_pure]` attribute to a function that violates these
 requirements is undefined behavior.
 
-This attribute enables Rust to perform common optimizations, like sub-expression
+This attribute enables CrabLang to perform common optimizations, like sub-expression
 elimination and loop optimizations. Some common examples of pure functions are
 `strlen` or `memcmp`.
 
@@ -40,9 +40,9 @@ state.
 A `#[ffi_pure]` function must not diverge, neither via a side effect (e.g. a
 call to `abort`) nor by infinite loops.
 
-When translating C headers to Rust FFI, it is worth verifying for which targets
+When translating C headers to CrabLang FFI, it is worth verifying for which targets
 the `pure` attribute is enabled in those headers, and using the appropriate
-`cfg` macros in the Rust side to match those definitions. While the semantics of
+`cfg` macros in the CrabLang side to match those definitions. While the semantics of
 `pure` are implemented identically by many C and C++ compilers, e.g., clang,
 [GCC], [ARM C/C++ compiler], [IBM ILE C/C++], etc. they are not necessarily
 implemented in this way on all of them. It is therefore also worth verifying
@@ -50,7 +50,7 @@ that the semantics of the C toolchain used to compile the binary being linked
 against are compatible with those of the `#[ffi_pure]`.
 
 
-[#58329]: https://github.com/rust-lang/rust/issues/58329
+[#58329]: https://github.com/crablang/crablang/issues/58329
 [ARM C/C++ compiler]: http://infocenter.arm.com/help/index.jsp?topic=/com.arm.doc.dui0491c/Cacigdac.html
 [GCC]: https://gcc.gnu.org/onlinedocs/gcc/Common-Function-Attributes.html#index-pure-function-attribute
 [IBM ILE C/C++]: https://www.ibm.com/support/knowledgecenter/fr/ssw_ibm_i_71/rzarg/fn_attrib_pure.htm

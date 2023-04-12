@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 #![allow(unused)]
 #![warn(clippy::allow_attributes)]
 #![feature(lint_reasons)]

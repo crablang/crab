@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 
 trait Trait {}
 impl Trait for () {}

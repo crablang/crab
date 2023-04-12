@@ -1,0 +1,30 @@
+[package]
+name = "crablangc_borrowck"
+version = "0.0.0"
+edition = "2021"
+
+[lib]
+
+[dependencies]
+either = "1.5.0"
+itertools = "0.10.1"
+tracing = "0.1"
+polonius-engine = "0.13.0"
+smallvec = { version = "1.8.1", features = ["union", "may_dangle"] }
+crablangc_data_structures = { path = "../crablangc_data_structures" }
+crablangc_errors = { path = "../crablangc_errors" }
+crablangc_graphviz = { path = "../crablangc_graphviz" }
+crablangc_hir = { path = "../crablangc_hir" }
+crablangc_index = { path = "../crablangc_index" }
+crablangc_infer = { path = "../crablangc_infer" }
+crablangc_lexer = { path = "../crablangc_lexer" }
+crablangc_macros = { path = "../crablangc_macros" }
+crablangc_middle = { path = "../crablangc_middle" }
+crablangc_const_eval = { path = "../crablangc_const_eval" }
+crablangc_mir_dataflow = { path = "../crablangc_mir_dataflow" }
+crablangc_serialize = { path = "../crablangc_serialize" }
+crablangc_session = { path = "../crablangc_session" }
+crablangc_target = { path = "../crablangc_target" }
+crablangc_trait_selection = { path = "../crablangc_trait_selection" }
+crablangc_traits = { path = "../crablangc_traits" }
+crablangc_span = { path = "../crablangc_span" }

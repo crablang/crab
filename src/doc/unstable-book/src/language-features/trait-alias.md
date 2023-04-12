@@ -2,7 +2,7 @@
 
 The tracking issue for this feature is: [#41517]
 
-[#41517]: https://github.com/rust-lang/rust/issues/41517
+[#41517]: https://github.com/crablang/crablang/issues/41517
 
 ------------------------
 
@@ -11,7 +11,7 @@ to be created for one or more traits (currently just a single regular trait plus
 any number of auto-traits), and used wherever traits would normally be used as
 either bounds or trait objects.
 
-```rust
+```crablang
 #![feature(trait_alias)]
 
 trait Foo = std::fmt::Debug + Send;

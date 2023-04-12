@@ -17,4 +17,4 @@ LL |     b: &'a isize,
 
 error: aborting due to 2 previous errors
 
-For more information about this error, try `rustc --explain E0261`.
+For more information about this error, try `crablangc --explain E0261`.

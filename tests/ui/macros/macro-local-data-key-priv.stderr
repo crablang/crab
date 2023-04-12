@@ -13,4 +13,4 @@ LL |     thread_local!(static baz: f64 = 0.0);
 
 error: aborting due to previous error
 
-For more information about this error, try `rustc --explain E0603`.
+For more information about this error, try `crablangc --explain E0603`.

@@ -1,7 +1,7 @@
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 
-#[rustc_outlives]
-enum Foo<'a, T> { //~ ERROR rustc_outlives
+#[crablangc_outlives]
+enum Foo<'a, T> { //~ ERROR crablangc_outlives
 
     One(Bar<'a, T>)
 }

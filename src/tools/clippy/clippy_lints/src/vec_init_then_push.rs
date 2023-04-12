@@ -4,15 +4,15 @@ use clippy_utils::source::snippet;
 use clippy_utils::visitors::for_each_local_use_after_expr;
 use clippy_utils::{get_parent_expr, path_to_local_id};
 use core::ops::ControlFlow;
-use rustc_errors::Applicability;
-use rustc_hir::def::Res;
-use rustc_hir::{
+use crablangc_errors::Applicability;
+use crablangc_hir::def::Res;
+use crablangc_hir::{
     BindingAnnotation, Block, Expr, ExprKind, HirId, Local, Mutability, PatKind, QPath, Stmt, StmtKind, UnOp,
 };
-use rustc_lint::{LateContext, LateLintPass, LintContext};
-use rustc_middle::lint::in_external_macro;
-use rustc_session::{declare_tool_lint, impl_lint_pass};
-use rustc_span::{Span, Symbol};
+use crablangc_lint::{LateContext, LateLintPass, LintContext};
+use crablangc_middle::lint::in_external_macro;
+use crablangc_session::{declare_tool_lint, impl_lint_pass};
+use crablangc_span::{Span, Symbol};
 
 declare_clippy_lint! {
     /// ### What it does
@@ -30,12 +30,12 @@ declare_clippy_lint! {
     /// multiple `push` calls.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// let mut v = Vec::new();
     /// v.push(0);
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// let v = vec![0];
     /// ```
     #[clippy::version = "1.51.0"]

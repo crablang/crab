@@ -61,4 +61,4 @@ LL | fn needs_generator(_: impl Generator<A, Yield = B, Return = C>) {}
 error: aborting due to 3 previous errors
 
 Some errors have detailed explanations: E0271, E0277.
-For more information about an error, try `rustc --explain E0271`.
+For more information about an error, try `crablangc --explain E0271`.

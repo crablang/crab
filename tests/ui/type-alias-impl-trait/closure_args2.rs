@@ -3,7 +3,7 @@
 #![feature(type_alias_impl_trait)]
 
 trait Foo {
-    // This was reachable in https://github.com/rust-lang/rust/issues/100800
+    // This was reachable in https://github.com/crablang/crablang/issues/100800
     fn foo(&self) { unreachable!() }
 }
 impl<T> Foo for T {}

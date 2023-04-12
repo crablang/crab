@@ -1,9 +1,9 @@
 [workspace]
 members = [
-  "compiler/rustc",
+  "compiler/crablangc",
   "library/std",
   "library/test",
-  "src/rustdoc-json-types",
+  "src/crablangdoc-json-types",
   "src/tools/build_helper",
   "src/tools/cargotest",
   "src/tools/clippy",
@@ -13,27 +13,27 @@ members = [
   "src/tools/linkchecker",
   "src/tools/lint-docs",
   "src/tools/miropt-test-tools",
-  "src/tools/rustbook",
+  "src/tools/crablangbook",
   "src/tools/unstable-book-gen",
   "src/tools/tidy",
   "src/tools/tier-check",
   "src/tools/build-manifest",
   "src/tools/remote-test-client",
   "src/tools/remote-test-server",
-  "src/tools/rust-installer",
-  "src/tools/rust-demangler",
+  "src/tools/crablang-installer",
+  "src/tools/crablang-demangler",
   "src/tools/cargo",
   "src/tools/cargo/crates/credential/cargo-credential-1password",
   "src/tools/cargo/crates/credential/cargo-credential-macos-keychain",
   "src/tools/cargo/crates/credential/cargo-credential-wincred",
   "src/tools/cargo/crates/mdman",
   # "src/tools/cargo/crates/resolver-tests",
-  "src/tools/rustdoc",
+  "src/tools/crablangdoc",
   "src/tools/rls",
-  "src/tools/rustfmt",
+  "src/tools/crablangfmt",
   "src/tools/miri",
   "src/tools/miri/cargo-miri",
-  "src/tools/rustdoc-themes",
+  "src/tools/crablangdoc-themes",
   "src/tools/unicode-table-generator",
   "src/tools/expand-yaml-anchors",
   "src/tools/jsondocck",
@@ -48,10 +48,10 @@ members = [
 
 exclude = [
   "build",
-  "compiler/rustc_codegen_cranelift",
-  "compiler/rustc_codegen_gcc",
+  "compiler/crablangc_codegen_cranelift",
+  "compiler/crablangc_codegen_gcc",
   "src/bootstrap",
-  "tests/rustdoc-gui",
+  "tests/crablangdoc-gui",
   # HACK(eddyb) This hardcodes the fact that our CI uses `/checkout/obj`.
   "obj",
   # The `x` binary is a thin wrapper that calls `x.py`, which initializes
@@ -85,9 +85,9 @@ overflow-checks = false
 # per-crate configuration isn't specifiable in the environment.
 codegen-units = 10000
 
-[profile.release.package.rustc-rayon-core]
-# The rustc fork of Rayon has deadlock detection code which intermittently
-# causes overflows in the CI (see https://github.com/rust-lang/rust/issues/90227)
+[profile.release.package.crablangc-rayon-core]
+# The crablangc fork of Rayon has deadlock detection code which intermittently
+# causes overflows in the CI (see https://github.com/crablang/crablang/issues/90227)
 # so we turn overflow checks off for now.
 # FIXME: This workaround should be removed once #90227 is fixed.
 overflow-checks = false
@@ -105,15 +105,15 @@ miniz_oxide.debug = 0
 object.debug = 0
 
 [patch.crates-io]
-# See comments in `src/tools/rustc-workspace-hack/README.md` for what's going on
+# See comments in `src/tools/crablangc-workspace-hack/README.md` for what's going on
 # here
-rustc-workspace-hack = { path = 'src/tools/rustc-workspace-hack' }
+crablangc-workspace-hack = { path = 'src/tools/crablangc-workspace-hack' }
 
-# See comments in `library/rustc-std-workspace-core/README.md` for what's going on
+# See comments in `library/crablangc-std-workspace-core/README.md` for what's going on
 # here
-rustc-std-workspace-core = { path = 'library/rustc-std-workspace-core' }
-rustc-std-workspace-alloc = { path = 'library/rustc-std-workspace-alloc' }
-rustc-std-workspace-std = { path = 'library/rustc-std-workspace-std' }
+crablangc-std-workspace-core = { path = 'library/crablangc-std-workspace-core' }
+crablangc-std-workspace-alloc = { path = 'library/crablangc-std-workspace-alloc' }
+crablangc-std-workspace-std = { path = 'library/crablangc-std-workspace-std' }
 
-[patch."https://github.com/rust-lang/rust-clippy"]
+[patch."https://github.com/crablang/crablang-clippy"]
 clippy_lints = { path = "src/tools/clippy/clippy_lints" }

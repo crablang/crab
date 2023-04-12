@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 #![warn(clippy::manual_ok_or)]
 #![allow(clippy::or_fun_call)]
 #![allow(clippy::disallowed_names)]
@@ -18,7 +18,7 @@ fn main() {
     None::<i32>.ok_or("error");
 
     // multiline case
-    #[rustfmt::skip]
+    #[crablangfmt::skip]
     foo.ok_or(&format!(
         "{}{}{}{}{}{}{}",
         "Alice", "Bob", "Sarah", "Marc", "Sandra", "Eric", "Jenifer"));

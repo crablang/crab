@@ -10,11 +10,11 @@ You may need following tooltips to catch up with common operations.
   - [Checking if a type defines a specific method](#checking-if-a-type-defines-a-specific-method)
   - [Dealing with macros](#dealing-with-macros-and-expansions)
 
-Useful Rustc dev guide links:
-- [Stages of compilation](https://rustc-dev-guide.rust-lang.org/compiler-src.html#the-main-stages-of-compilation)
-- [Diagnostic items](https://rustc-dev-guide.rust-lang.org/diagnostics/diagnostic-items.html)
-- [Type checking](https://rustc-dev-guide.rust-lang.org/type-checking.html)
-- [Ty module](https://rustc-dev-guide.rust-lang.org/ty.html)
+Useful CrabLangc dev guide links:
+- [Stages of compilation](https://crablangc-dev-guide.crablang.org/compiler-src.html#the-main-stages-of-compilation)
+- [Diagnostic items](https://crablangc-dev-guide.crablang.org/diagnostics/diagnostic-items.html)
+- [Type checking](https://crablangc-dev-guide.crablang.org/type-checking.html)
+- [Ty module](https://crablangc-dev-guide.crablang.org/ty.html)
 
 ## Retrieving the type of an expression
 
@@ -31,7 +31,7 @@ This operation is performed using the [`expr_ty()`][expr_ty] method from the
 structure [`Ty`][Ty].
 
 Example of use:
-```rust
+```crablang
 impl LateLintPass<'_> for MyStructLint {
     fn check_expr(&mut self, cx: &LateContext<'_>, expr: &Expr<'_>) {
         // Get type of `expr`
@@ -62,7 +62,7 @@ Two noticeable items here:
 Starting with an `expr`, you can check whether it is calling a specific method
 `some_method`:
 
-```rust
+```crablang
 impl<'tcx> LateLintPass<'tcx> for MyStructLint {
     fn check_expr(&mut self, cx: &LateContext<'tcx>, expr: &'tcx hir::Expr<'_>) {
         // Check our expr is calling a method
@@ -84,11 +84,11 @@ There are three ways to check if an expression type is a specific type we want
 to check for. All of these methods only check for the base type, generic
 arguments have to be checked separately.
 
-```rust
+```crablang
 use clippy_utils::ty::{is_type_diagnostic_item, is_type_lang_item};
 use clippy_utils::{paths, match_def_path};
-use rustc_span::symbol::sym;
-use rustc_hir::LangItem;
+use crablangc_span::symbol::sym;
+use crablangc_hir::LangItem;
 
 impl LateLintPass<'_> for MyStructLint {
     fn check_expr(&mut self, cx: &LateContext<'_>, expr: &Expr<'_>) {
@@ -122,10 +122,10 @@ Prefer using diagnostic items and lang items where possible.
 There are three ways to do this, depending on if the target trait has a
 diagnostic item, lang item or neither.
 
-```rust
+```crablang
 use clippy_utils::ty::implements_trait;
 use clippy_utils::is_trait_method;
-use rustc_span::symbol::sym;
+use crablangc_span::symbol::sym;
 
 impl LateLintPass<'_> for MyStructLint {
     fn check_expr(&mut self, cx: &LateContext<'_>, expr: &Expr<'_>) {
@@ -151,14 +151,14 @@ impl LateLintPass<'_> for MyStructLint {
 > Prefer using diagnostic and lang items, if the target trait has one.
 
 We access lang items through the type context `tcx`. `tcx` is of type
-[`TyCtxt`][TyCtxt] and is defined in the `rustc_middle` crate. A list of defined
+[`TyCtxt`][TyCtxt] and is defined in the `crablangc_middle` crate. A list of defined
 paths for Clippy can be found in [paths.rs][paths]
 
 ## Checking if a type defines a specific method
 
 To check if our type defines a method called `some_method`:
 
-```rust
+```crablang
 use clippy_utils::ty::is_type_diagnostic_item;
 use clippy_utils::return_ty;
 
@@ -192,7 +192,7 @@ functions to deal with macros:
 - `span.from_expansion()`: detects if a span is from macro expansion or
   desugaring. Checking this is a common first step in a lint.
 
-   ```rust
+   ```crablang
    if expr.span.from_expansion() {
        // just forget it
        return;
@@ -203,11 +203,11 @@ functions to deal with macros:
   if so, which macro call expanded it. It is sometimes useful to check if the
   context of two spans are equal.
 
-  ```rust
+  ```crablang
   // expands to `1 + 0`, but don't lint
   1 + mac!()
   ```
-  ```rust
+  ```crablang
   if left.span.ctxt() != right.span.ctxt() {
       // the coder most likely cannot modify this expression
       return;
@@ -226,8 +226,8 @@ functions to deal with macros:
   You may want to use it for example to not start linting in macros from other
   crates
 
-  ```rust
-  use rustc_middle::lint::in_external_macro;
+  ```crablang
+  use crablangc_middle::lint::in_external_macro;
 
   use a_crate_with_macros::foo;
 
@@ -246,7 +246,7 @@ functions to deal with macros:
   `macro_rules!` with `a == $b`, `$b` is expanded to some expression with a
   different context from `a`.
 
-   ```rust
+   ```crablang
    macro_rules! m {
        ($a:expr, $b:expr) => {
            if $a.is_some() {
@@ -264,11 +264,11 @@ functions to deal with macros:
    assert_eq!(x_is_some_span.ctxt(), x_unwrap_span.ctxt());
    ```
 
-[Ty]: https://doc.rust-lang.org/nightly/nightly-rustc/rustc_middle/ty/struct.Ty.html
-[TyKind]: https://doc.rust-lang.org/nightly/nightly-rustc/rustc_middle/ty/enum.TyKind.html
-[TypeckResults]: https://doc.rust-lang.org/nightly/nightly-rustc/rustc_middle/ty/struct.TypeckResults.html
-[expr_ty]: https://doc.rust-lang.org/nightly/nightly-rustc/rustc_middle/ty/struct.TypeckResults.html#method.expr_ty
-[LateContext]: https://doc.rust-lang.org/nightly/nightly-rustc/rustc_lint/struct.LateContext.html
-[TyCtxt]: https://doc.rust-lang.org/nightly/nightly-rustc/rustc_middle/ty/context/struct.TyCtxt.html
-[pat_ty]: https://doc.rust-lang.org/nightly/nightly-rustc/rustc_middle/ty/context/struct.TypeckResults.html#method.pat_ty
-[paths]: https://doc.rust-lang.org/nightly/nightly-rustc/clippy_utils/paths/index.html
+[Ty]: https://doc.crablang.org/nightly/nightly-crablangc/crablangc_middle/ty/struct.Ty.html
+[TyKind]: https://doc.crablang.org/nightly/nightly-crablangc/crablangc_middle/ty/enum.TyKind.html
+[TypeckResults]: https://doc.crablang.org/nightly/nightly-crablangc/crablangc_middle/ty/struct.TypeckResults.html
+[expr_ty]: https://doc.crablang.org/nightly/nightly-crablangc/crablangc_middle/ty/struct.TypeckResults.html#method.expr_ty
+[LateContext]: https://doc.crablang.org/nightly/nightly-crablangc/crablangc_lint/struct.LateContext.html
+[TyCtxt]: https://doc.crablang.org/nightly/nightly-crablangc/crablangc_middle/ty/context/struct.TyCtxt.html
+[pat_ty]: https://doc.crablang.org/nightly/nightly-crablangc/crablangc_middle/ty/context/struct.TypeckResults.html#method.pat_ty
+[paths]: https://doc.crablang.org/nightly/nightly-crablangc/clippy_utils/paths/index.html

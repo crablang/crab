@@ -2,6 +2,6 @@
 include ../tools.mk
 
 all:
-	echo 'fn main(){}' | $(RUSTC) -Z no-link -
-	$(RUSTC) -Z link-only $(TMPDIR)/rust_out.rlink
-	$(call RUN,rust_out)
+	echo 'fn main(){}' | $(CRABLANGC) -Z no-link -
+	$(CRABLANGC) -Z link-only $(TMPDIR)/crablang_out.rlink
+	$(call RUN,crablang_out)

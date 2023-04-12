@@ -38,12 +38,12 @@
 //! The `Backtrace::capture` function might not actually capture a backtrace by
 //! default. Its behavior is governed by two environment variables:
 //!
-//! * `RUST_LIB_BACKTRACE` - if this is set to `0` then `Backtrace::capture`
+//! * `CRABLANG_LIB_BACKTRACE` - if this is set to `0` then `Backtrace::capture`
 //!   will never capture a backtrace. Any other value set will enable
 //!   `Backtrace::capture`.
 //!
-//! * `RUST_BACKTRACE` - if `RUST_LIB_BACKTRACE` is not set, then this variable
-//!   is consulted with the same rules of `RUST_LIB_BACKTRACE`.
+//! * `CRABLANG_BACKTRACE` - if `CRABLANG_LIB_BACKTRACE` is not set, then this variable
+//!   is consulted with the same rules of `CRABLANG_LIB_BACKTRACE`.
 //!
 //! * If neither of the above env vars are set, then `Backtrace::capture` will
 //!   be disabled.
@@ -55,7 +55,7 @@
 //! Note that the `Backtrace::force_capture` function can be used to ignore
 //! these environment variables. Also note that the state of environment
 //! variables is cached once the first backtrace is created, so altering
-//! `RUST_LIB_BACKTRACE` or `RUST_BACKTRACE` at runtime might not actually change
+//! `CRABLANG_LIB_BACKTRACE` or `CRABLANG_BACKTRACE` at runtime might not actually change
 //! how backtraces are captured.
 
 #![stable(feature = "backtrace", since = "1.65.0")]
@@ -121,7 +121,7 @@ pub enum BacktraceStatus {
     #[stable(feature = "backtrace", since = "1.65.0")]
     Unsupported,
     /// Capturing a backtrace has been disabled through either the
-    /// `RUST_LIB_BACKTRACE` or `RUST_BACKTRACE` environment variables.
+    /// `CRABLANG_LIB_BACKTRACE` or `CRABLANG_BACKTRACE` environment variables.
     #[stable(feature = "backtrace", since = "1.65.0")]
     Disabled,
     /// A backtrace has been captured and the `Backtrace` should print
@@ -211,10 +211,10 @@ impl fmt::Debug for BacktraceFrame {
 
 impl fmt::Debug for BacktraceSymbol {
     fn fmt(&self, fmt: &mut fmt::Formatter<'_>) -> fmt::Result {
-        // FIXME: improve formatting: https://github.com/rust-lang/rust/issues/65280
+        // FIXME: improve formatting: https://github.com/crablang/crablang/issues/65280
         // FIXME: Also, include column numbers into the debug format as Display already has them.
         // Until there are stable per-frame accessors, the format shouldn't be changed:
-        // https://github.com/rust-lang/rust/issues/65280#issuecomment-638966585
+        // https://github.com/crablang/crablang/issues/65280#issuecomment-638966585
         write!(fmt, "{{ ")?;
 
         if let Some(fn_name) = self.name.as_ref().map(|b| backtrace_rs::SymbolName::new(b)) {
@@ -262,9 +262,9 @@ impl Backtrace {
             1 => return false,
             _ => return true,
         }
-        let enabled = match env::var("RUST_LIB_BACKTRACE") {
+        let enabled = match env::var("CRABLANG_LIB_BACKTRACE") {
             Ok(s) => s != "0",
-            Err(_) => match env::var("RUST_BACKTRACE") {
+            Err(_) => match env::var("CRABLANG_BACKTRACE") {
                 Ok(s) => s != "0",
                 Err(_) => false,
             },
@@ -279,8 +279,8 @@ impl Backtrace {
     /// execution, returning a `Backtrace` type which can be later used to print
     /// the entire stack trace or render it to a string.
     ///
-    /// This function will be a noop if the `RUST_BACKTRACE` or
-    /// `RUST_LIB_BACKTRACE` backtrace variables are both not set. If either
+    /// This function will be a noop if the `CRABLANG_BACKTRACE` or
+    /// `CRABLANG_LIB_BACKTRACE` backtrace variables are both not set. If either
     /// environment variable is set and enabled then this function will actually
     /// capture a backtrace. Capturing a backtrace can be both memory intensive
     /// and slow, so these environment variables allow liberally using
@@ -302,7 +302,7 @@ impl Backtrace {
     /// configuration.
     ///
     /// This function behaves the same as `capture` except that it ignores the
-    /// values of the `RUST_BACKTRACE` and `RUST_LIB_BACKTRACE` environment
+    /// values of the `CRABLANG_BACKTRACE` and `CRABLANG_LIB_BACKTRACE` environment
     /// variables, always capturing a backtrace.
     ///
     /// Note that capturing a backtrace can be an expensive operation on some
@@ -317,7 +317,7 @@ impl Backtrace {
     /// Forcibly captures a disabled backtrace, regardless of environment
     /// variable configuration.
     #[stable(feature = "backtrace", since = "1.65.0")]
-    #[rustc_const_stable(feature = "backtrace", since = "1.65.0")]
+    #[crablangc_const_stable(feature = "backtrace", since = "1.65.0")]
     pub const fn disabled() -> Backtrace {
         Backtrace { inner: Inner::Disabled }
     }

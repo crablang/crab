@@ -2,7 +2,7 @@
 // build-pass
 
 // This test makes sure that the tag is not grown for `repr(C)` or `repr(u8)`
-// variants (see https://github.com/rust-lang/rust/issues/50098 for the original bug).
+// variants (see https://github.com/crablang/crablang/issues/50098 for the original bug).
 
 #![allow(dead_code)]
 

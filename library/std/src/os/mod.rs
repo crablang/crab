@@ -7,8 +7,8 @@ pub mod raw;
 
 // The code below could be written clearer using `cfg_if!`. However, the items below are
 // publicly exported by `std` and external tools can have trouble analysing them because of the use
-// of a macro that is not vendored by Rust and included in the toolchain.
-// See https://github.com/rust-analyzer/rust-analyzer/issues/6038.
+// of a macro that is not vendored by CrabLang and included in the toolchain.
+// See https://github.com/crablang-analyzer/crablang-analyzer/issues/6038.
 
 // On certain platforms right now the "main modules" modules that are
 // documented don't compile (missing things in `libc` which is empty),

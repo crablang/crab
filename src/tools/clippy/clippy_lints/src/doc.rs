@@ -11,26 +11,26 @@ use pulldown_cmark::Event::{
 };
 use pulldown_cmark::Tag::{CodeBlock, Heading, Item, Link, Paragraph};
 use pulldown_cmark::{BrokenLink, CodeBlockKind, CowStr, Options};
-use rustc_ast::ast::{Async, AttrKind, Attribute, Fn, FnRetTy, ItemKind};
-use rustc_ast::token::CommentKind;
-use rustc_data_structures::fx::FxHashSet;
-use rustc_data_structures::sync::Lrc;
-use rustc_errors::emitter::EmitterWriter;
-use rustc_errors::{Applicability, Handler, SuggestionStyle, TerminalUrl};
-use rustc_hir as hir;
-use rustc_hir::intravisit::{self, Visitor};
-use rustc_hir::{AnonConst, Expr};
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_middle::hir::nested_filter;
-use rustc_middle::lint::in_external_macro;
-use rustc_middle::ty;
-use rustc_parse::maybe_new_parser_from_source_str;
-use rustc_parse::parser::ForceCollect;
-use rustc_session::parse::ParseSess;
-use rustc_session::{declare_tool_lint, impl_lint_pass};
-use rustc_span::edition::Edition;
-use rustc_span::source_map::{BytePos, FilePathMapping, SourceMap, Span};
-use rustc_span::{sym, FileName, Pos};
+use crablangc_ast::ast::{Async, AttrKind, Attribute, Fn, FnRetTy, ItemKind};
+use crablangc_ast::token::CommentKind;
+use crablangc_data_structures::fx::FxHashSet;
+use crablangc_data_structures::sync::Lrc;
+use crablangc_errors::emitter::EmitterWriter;
+use crablangc_errors::{Applicability, Handler, SuggestionStyle, TerminalUrl};
+use crablangc_hir as hir;
+use crablangc_hir::intravisit::{self, Visitor};
+use crablangc_hir::{AnonConst, Expr};
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_middle::hir::nested_filter;
+use crablangc_middle::lint::in_external_macro;
+use crablangc_middle::ty;
+use crablangc_parse::maybe_new_parser_from_source_str;
+use crablangc_parse::parser::ForceCollect;
+use crablangc_session::parse::ParseSess;
+use crablangc_session::{declare_tool_lint, impl_lint_pass};
+use crablangc_span::edition::Edition;
+use crablangc_span::source_map::{BytePos, FilePathMapping, SourceMap, Span};
+use crablangc_span::{sym, FileName, Pos};
 use std::io;
 use std::ops::Range;
 use std::thread;
@@ -42,7 +42,7 @@ declare_clippy_lint! {
     /// outside ticks in documentation.
     ///
     /// ### Why is this bad?
-    /// *Rustdoc* supports markdown formatting, `_`, `::` and
+    /// *CrabLangdoc* supports markdown formatting, `_`, `::` and
     /// camel-case probably indicates some code which should be included between
     /// ticks. `_` can also be used for emphasis in markdown, this lint tries to
     /// consider that.
@@ -58,14 +58,14 @@ declare_clippy_lint! {
     /// would fail.
     ///
     /// ### Examples
-    /// ```rust
+    /// ```crablang
     /// /// Do something with the foo_bar parameter. See also
     /// /// that::other::module::foo.
     /// // ^ `foo_bar` and `that::other::module::foo` should be ticked.
     /// fn doit(foo_bar: usize) {}
     /// ```
     ///
-    /// ```rust
+    /// ```crablang
     /// // Link text with `[]` brackets should be written as following:
     /// /// Consume the array and return the inner
     /// /// [`SmallVec<[T; INLINE_CAPACITY]>`][SmallVec].
@@ -88,7 +88,7 @@ declare_clippy_lint! {
     /// preconditions, so that users can be sure they are using them safely.
     ///
     /// ### Examples
-    /// ```rust
+    /// ```crablang
     ///# type Universe = ();
     /// /// This function should really be documented
     /// pub unsafe fn start_apocalypse(u: &mut Universe) {
@@ -98,7 +98,7 @@ declare_clippy_lint! {
     ///
     /// At least write a line about safety:
     ///
-    /// ```rust
+    /// ```crablang
     ///# type Universe = ();
     /// /// # Safety
     /// ///
@@ -126,7 +126,7 @@ declare_clippy_lint! {
     /// Since the following function returns a `Result` it has an `# Errors` section in
     /// its doc comment:
     ///
-    /// ```rust
+    /// ```crablang
     ///# use std::io;
     /// /// # Errors
     /// ///
@@ -155,7 +155,7 @@ declare_clippy_lint! {
     /// Since the following function may panic it has a `# Panics` section in
     /// its doc comment:
     ///
-    /// ```rust
+    /// ```crablang
     /// /// # Panics
     /// ///
     /// /// Will panic if y is 0
@@ -182,7 +182,7 @@ declare_clippy_lint! {
     /// if the `fn main()` is left implicit.
     ///
     /// ### Examples
-    /// ```rust
+    /// ```crablang
     /// /// An example of a doctest with a `main()` function
     /// ///
     /// /// # Examples
@@ -210,12 +210,12 @@ declare_clippy_lint! {
     /// It is likely a typo when defining an intra-doc link
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// /// See also: ['foo']
     /// fn bar() {}
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// /// See also: [`foo`]
     /// fn bar() {}
     /// ```
@@ -235,7 +235,7 @@ declare_clippy_lint! {
     /// need to describe safety preconditions that users are required to uphold.
     ///
     /// ### Examples
-    /// ```rust
+    /// ```crablang
     ///# type Universe = ();
     /// /// # Safety
     /// ///
@@ -248,7 +248,7 @@ declare_clippy_lint! {
     /// The function is safe, so there shouldn't be any preconditions
     /// that have to be explained for safety reasons.
     ///
-    /// ```rust
+    /// ```crablang
     ///# type Universe = ();
     /// /// This function should really be documented
     /// pub fn start_apocalypse(u: &mut Universe) {
@@ -447,8 +447,8 @@ fn lint_for_missing_headers(
 
 /// Cleanup documentation decoration.
 ///
-/// We can't use `rustc_ast::attr::AttributeMethods::with_desugared_doc` or
-/// `rustc_ast::parse::lexer::comments::strip_doc_comment_decoration` because we
+/// We can't use `crablangc_ast::attr::AttributeMethods::with_desugared_doc` or
+/// `crablangc_ast::parse::lexer::comments::strip_doc_comment_decoration` because we
 /// need to keep track of
 /// the spans but this function is inspired from the later.
 #[expect(clippy::cast_possible_truncation)]
@@ -557,7 +557,7 @@ fn check_attrs(cx: &LateContext<'_>, valid_idents: &FxHashSet<String>, attrs: &[
     Some(check_doc(cx, valid_idents, events, &spans))
 }
 
-const RUST_CODE: &[&str] = &["rust", "no_run", "should_panic", "compile_fail"];
+const CRABLANG_CODE: &[&str] = &["crablang", "no_run", "should_panic", "compile_fail"];
 
 fn check_doc<'a, Events: Iterator<Item = (pulldown_cmark::Event<'a>, Range<usize>)>>(
     cx: &LateContext<'_>,
@@ -570,7 +570,7 @@ fn check_doc<'a, Events: Iterator<Item = (pulldown_cmark::Event<'a>, Range<usize
     let mut in_code = false;
     let mut in_link = None;
     let mut in_heading = false;
-    let mut is_rust = false;
+    let mut is_crablang = false;
     let mut edition = None;
     let mut ticks_unbalanced = false;
     let mut text_to_check: Vec<(CowStr<'_>, Span)> = Vec::new();
@@ -582,21 +582,21 @@ fn check_doc<'a, Events: Iterator<Item = (pulldown_cmark::Event<'a>, Range<usize
                 if let CodeBlockKind::Fenced(lang) = kind {
                     for item in lang.split(',') {
                         if item == "ignore" {
-                            is_rust = false;
+                            is_crablang = false;
                             break;
                         }
                         if let Some(stripped) = item.strip_prefix("edition") {
-                            is_rust = true;
+                            is_crablang = true;
                             edition = stripped.parse::<Edition>().ok();
-                        } else if item.is_empty() || RUST_CODE.contains(&item) {
-                            is_rust = true;
+                        } else if item.is_empty() || CRABLANG_CODE.contains(&item) {
+                            is_crablang = true;
                         }
                     }
                 }
             },
             End(CodeBlock(_)) => {
                 in_code = false;
-                is_rust = false;
+                is_crablang = false;
             },
             Start(Link(_, url, _)) => in_link = Some(url),
             End(Link(..)) => in_link = None,
@@ -648,7 +648,7 @@ fn check_doc<'a, Events: Iterator<Item = (pulldown_cmark::Event<'a>, Range<usize
                 headers.errors |= in_heading && trimmed_text == "Errors";
                 headers.panics |= in_heading && trimmed_text == "Panics";
                 if in_code {
-                    if is_rust {
+                    if is_crablang {
                         let edition = edition.unwrap_or_else(|| cx.tcx.sess.edition());
                         check_code(cx, &text, edition, span);
                     }
@@ -701,13 +701,13 @@ fn get_current_span(spans: &[(usize, Span)], idx: usize) -> (usize, Span) {
 
 fn check_code(cx: &LateContext<'_>, text: &str, edition: Edition, span: Span) {
     fn has_needless_main(code: String, edition: Edition) -> bool {
-        rustc_driver::catch_fatal_errors(|| {
-            rustc_span::create_session_globals_then(edition, || {
+        crablangc_driver::catch_fatal_errors(|| {
+            crablangc_span::create_session_globals_then(edition, || {
                 let filename = FileName::anon_source_code(&code);
 
                 let sm = Lrc::new(SourceMap::new(FilePathMapping::empty()));
                 let fallback_bundle =
-                    rustc_errors::fallback_fluent_bundle(rustc_driver::DEFAULT_LOCALE_RESOURCES.to_vec(), false);
+                    crablangc_errors::fallback_fluent_bundle(crablangc_driver::DEFAULT_LOCALE_RESOURCES.to_vec(), false);
                 let emitter = EmitterWriter::new(
                     Box::new(io::sink()),
                     None,

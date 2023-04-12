@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 #![warn(clippy::stable_sort_primitive)]
 
 fn main() {

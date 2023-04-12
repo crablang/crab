@@ -11,7 +11,7 @@ LL |     foo::<A, B, dyn Trait<A = A, B = B>>(x)
    = note: expected type parameter `B`
               found type parameter `A`
    = note: a type parameter was expected, but a different one was found; you might be missing a type parameter or trait bound
-   = note: for more information, visit https://doc.rust-lang.org/book/ch10-02-traits.html#traits-as-parameters
+   = note: for more information, visit https://doc.crablang.org/book/ch10-02-traits.html#traits-as-parameters
 note: required by a bound in `foo`
   --> $DIR/enforce-supertrait-projection.rs:15:8
    |
@@ -23,4 +23,4 @@ LL |     T: Trait<B = B>,
 
 error: aborting due to previous error
 
-For more information about this error, try `rustc --explain E0271`.
+For more information about this error, try `crablangc --explain E0271`.

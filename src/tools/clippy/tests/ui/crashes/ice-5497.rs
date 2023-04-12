@@ -1,4 +1,4 @@
-// reduced from rustc issue-69020-assoc-const-arith-overflow.rs
+// reduced from crablangc issue-69020-assoc-const-arith-overflow.rs
 pub fn main() {}
 
 pub trait Foo {

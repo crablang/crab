@@ -4,5 +4,5 @@ include ../tools.mk
 # the string constant we would expect to see.
 
 all:
-	$(RUSTC) -o $(TMPDIR)/input.hir -Z unpretty=hir-tree input.rs
-	$(CGREP) '"Hello, Rustaceans!\n"' < $(TMPDIR)/input.hir
+	$(CRABLANGC) -o $(TMPDIR)/input.hir -Z unpretty=hir-tree input.rs
+	$(CGREP) '"Hello, CrabLangaceans!\n"' < $(TMPDIR)/input.hir

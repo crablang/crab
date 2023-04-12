@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 #![warn(clippy::seek_from_current)]
 
 use std::fs::File;

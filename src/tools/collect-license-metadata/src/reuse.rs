@@ -37,7 +37,7 @@ fn obtain_spdx_document(reuse_exe: &Path) -> Result<String, Error> {
 
     if !output.status.success() {
         eprintln!();
-        eprintln!("Note that Rust requires some REUSE features that might not be present in the");
+        eprintln!("Note that CrabLang requires some REUSE features that might not be present in the");
         eprintln!("release you're using. Make sure your REUSE release includes these PRs:");
         eprintln!();
         eprintln!(" - https://github.com/fsfe/reuse-tool/pull/623");

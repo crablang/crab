@@ -11,4 +11,4 @@ LL |     x: <I as Foo<&isize>>::A)
 
 error: aborting due to previous error
 
-For more information about this error, try `rustc --explain E0212`.
+For more information about this error, try `crablangc --explain E0212`.

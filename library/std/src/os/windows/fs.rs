@@ -2,7 +2,7 @@
 //!
 //! [`std::fs`]: crate::fs
 
-#![stable(feature = "rust1", since = "1.0.0")]
+#![stable(feature = "crablang1", since = "1.0.0")]
 
 use crate::fs::{self, Metadata, OpenOptions};
 use crate::io;
@@ -153,7 +153,7 @@ pub trait OpenOptionsExt {
     /// `attributes` and `security_qos_flags` to set the `dwFlagsAndAttributes`
     /// for [`CreateFile`]).
     ///
-    /// Custom flags can only set flags, not remove flags set by Rust's options.
+    /// Custom flags can only set flags, not remove flags set by CrabLang's options.
     /// This option overwrites any previously set custom flags.
     ///
     /// # Examples
@@ -226,7 +226,7 @@ pub trait OpenOptionsExt {
     /// act on behalf of a client process (security impersonation level).
     ///
     /// When `security_qos_flags` is not set, a malicious program can gain the
-    /// elevated privileges of a privileged Rust process when it allows opening
+    /// elevated privileges of a privileged CrabLang process when it allows opening
     /// user-specified paths, by tricking it into opening a named pipe. So
     /// arguably `security_qos_flags` should also be set when opening arbitrary
     /// paths. However the bits can then conflict with other flags, specifically

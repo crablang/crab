@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 
 #![warn(clippy::all, clippy::pedantic)]
 #![allow(clippy::let_underscore_untyped)]
@@ -52,7 +52,7 @@ fn issue8734() {
 }
 
 #[allow(clippy::bind_instead_of_map)] // map + flatten will be suggested to `and_then`, but afterwards `map` is suggested again
-#[rustfmt::skip] // whitespace is important for this one
+#[crablangfmt::skip] // whitespace is important for this one
 fn issue8878() {
     std::collections::HashMap::<u32, u32>::new()
         .get(&0)

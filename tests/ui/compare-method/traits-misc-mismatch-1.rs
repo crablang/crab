@@ -1,5 +1,5 @@
 //
-// Make sure rustc checks the type parameter bounds in implementations of traits,
+// Make sure crablangc checks the type parameter bounds in implementations of traits,
 // see #2687
 
 use std::marker;

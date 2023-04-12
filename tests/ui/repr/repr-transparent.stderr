@@ -87,4 +87,4 @@ LL |     s: i32
 error: aborting due to 11 previous errors
 
 Some errors have detailed explanations: E0084, E0690, E0691, E0731.
-For more information about an error, try `rustc --explain E0084`.
+For more information about an error, try `crablangc --explain E0084`.

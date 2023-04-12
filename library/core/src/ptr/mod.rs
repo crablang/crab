@@ -18,7 +18,7 @@
 //! * A [null] pointer is *never* valid, not even for accesses of [size zero][zst].
 //! * For a pointer to be valid, it is necessary, but not always sufficient, that the pointer
 //!   be *dereferenceable*: the memory range of the given size starting at the pointer must all be
-//!   within the bounds of a single allocated object. Note that in Rust,
+//!   within the bounds of a single allocated object. Note that in CrabLang,
 //!   every (stack-allocated) variable is considered a separate allocated object.
 //! * Even for operations of [size zero][zst], the pointer must not be pointing to deallocated
 //!   memory, i.e., deallocation makes pointers invalid even for zero-sized operations. However,
@@ -73,7 +73,7 @@
 //! [Strict Provenance][] is an experimental set of APIs that help tools that try
 //! to validate the memory-safety of your program's execution. Notably this includes [Miri][]
 //! and [CHERI][], which can detect when you access out of bounds memory or otherwise violate
-//! Rust's memory model.
+//! CrabLang's memory model.
 //!
 //! Provenance must exist in some form for any programming
 //! language compiled for modern computer architectures, but specifying a model for provenance
@@ -155,12 +155,12 @@
 //! integers is very useful, so what can we do?
 //!
 //! Also did you know WASM is actually a "Harvard Architecture"? As in function pointers are
-//! handled completely differently from data pointers? And we kind of just shipped Rust on WASM
+//! handled completely differently from data pointers? And we kind of just shipped CrabLang on WASM
 //! without really addressing the fact that we let you freely convert between function pointers
 //! and data pointers, because it mostly Just Works? Let's just put that on the "pointer casts
 //! are dubious" pile.
 //!
-//! Strict Provenance attempts to square these circles by decoupling Rust's traditional conflation
+//! Strict Provenance attempts to square these circles by decoupling CrabLang's traditional conflation
 //! of pointers and `usize` (and `isize`), and defining a pointer to semantically contain the
 //! following information:
 //!
@@ -296,7 +296,7 @@
 //! * Compare arbitrary pointers by address. Addresses *are* just integers and so there is
 //!   always a coherent answer, even if the pointers are invalid or from different
 //!   address-spaces/provenances. Of course, comparing addresses from different address-spaces
-//!   is generally going to be *meaningless*, but so is comparing Kilograms to Meters, and Rust
+//!   is generally going to be *meaningless*, but so is comparing Kilograms to Meters, and CrabLang
 //!   doesn't prevent that either. Similarly, if you get "lucky" and notice that a pointer
 //!   one-past-the-end is the "same" address as the start of an unrelated allocation, anything
 //!   you do with that fact is *probably* going to be gibberish. The scope of that gibberish
@@ -317,7 +317,7 @@
 //! **This section is *non-normative* and is part of the [Strict Provenance] experiment.**
 //!
 //! As discussed above, pointer-usize-pointer roundtrips are not possible under [Strict Provenance].
-//! However, there exists legacy Rust code that is full of such roundtrips, and legacy platform APIs
+//! However, there exists legacy CrabLang code that is full of such roundtrips, and legacy platform APIs
 //! regularly assume that `usize` can capture all the information that makes up a pointer. There
 //! also might be code that cannot be ported to Strict Provenance (which is something we would [like
 //! to hear about][Strict Provenance]).
@@ -329,7 +329,7 @@
 //! This fallback plan is provided by the [`expose_addr`] and [`from_exposed_addr`] methods (which
 //! are equivalent to `as` casts between pointers and integers). [`expose_addr`] is a lot like
 //! [`addr`], but additionally adds the provenance of the pointer to a global list of 'exposed'
-//! provenances. (This list is purely conceptual, it exists for the purpose of specifying Rust but
+//! provenances. (This list is purely conceptual, it exists for the purpose of specifying CrabLang but
 //! is not materialized in actual executions, except in tools like [Miri].) [`from_exposed_addr`]
 //! can be used to construct a pointer with one of these previously 'exposed' provenances.
 //! [`from_exposed_addr`] takes only `addr: usize` as arguments, so unlike in [`with_addr`] there is
@@ -343,13 +343,13 @@
 //!
 //! Using [`expose_addr`] or [`from_exposed_addr`] (or the equivalent `as` casts) means that code is
 //! *not* following Strict Provenance rules. The goal of the Strict Provenance experiment is to
-//! determine whether it is possible to use Rust without [`expose_addr`] and [`from_exposed_addr`].
+//! determine whether it is possible to use CrabLang without [`expose_addr`] and [`from_exposed_addr`].
 //! If this is successful, it would be a major win for avoiding specification complexity and to
 //! facilitate adoption of tools like [CHERI] and [Miri] that can be a big help in increasing the
-//! confidence in (unsafe) Rust code.
+//! confidence in (unsafe) CrabLang code.
 //!
 //! [aliasing]: ../../nomicon/aliasing.html
-//! [book]: ../../book/ch19-01-unsafe-rust.html#dereferencing-a-raw-pointer
+//! [book]: ../../book/ch19-01-unsafe-crablang.html#dereferencing-a-raw-pointer
 //! [ub]: ../../reference/behavior-considered-undefined.html
 //! [zst]: ../../nomicon/exotic-sizes.html#zero-sized-types-zsts
 //! [atomic operations]: crate::sync::atomic
@@ -361,12 +361,12 @@
 //! [`ptr::invalid`]: core::ptr::invalid
 //! [`expose_addr`]: pointer::expose_addr
 //! [`from_exposed_addr`]: from_exposed_addr
-//! [Miri]: https://github.com/rust-lang/miri
+//! [Miri]: https://github.com/crablang/miri
 //! [CHERI]: https://www.cl.cam.ac.uk/research/security/ctsrd/cheri/
-//! [Strict Provenance]: https://github.com/rust-lang/rust/issues/95228
-//! [Stacked Borrows]: https://plv.mpi-sws.org/rustbelt/stacked-borrows/
+//! [Strict Provenance]: https://github.com/crablang/crablang/issues/95228
+//! [Stacked Borrows]: https://plv.mpi-sws.org/crablangbelt/stacked-borrows/
 
-#![stable(feature = "rust1", since = "1.0.0")]
+#![stable(feature = "crablang1", since = "1.0.0")]
 
 use crate::cmp::Ordering;
 use crate::fmt;
@@ -381,15 +381,15 @@ mod alignment;
 #[unstable(feature = "ptr_alignment_type", issue = "102070")]
 pub use alignment::Alignment;
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[doc(inline)]
 pub use crate::intrinsics::copy_nonoverlapping;
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[doc(inline)]
 pub use crate::intrinsics::copy;
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[doc(inline)]
 pub use crate::intrinsics::write_bytes;
 
@@ -507,11 +507,11 @@ pub unsafe fn drop_in_place<T: ?Sized>(to_drop: *mut T) {
 /// ```
 #[inline(always)]
 #[must_use]
-#[stable(feature = "rust1", since = "1.0.0")]
-#[rustc_promotable]
-#[rustc_const_stable(feature = "const_ptr_null", since = "1.24.0")]
-#[rustc_allow_const_fn_unstable(ptr_metadata)]
-#[rustc_diagnostic_item = "ptr_null"]
+#[stable(feature = "crablang1", since = "1.0.0")]
+#[crablangc_promotable]
+#[crablangc_const_stable(feature = "const_ptr_null", since = "1.24.0")]
+#[crablangc_allow_const_fn_unstable(ptr_metadata)]
+#[crablangc_diagnostic_item = "ptr_null"]
 pub const fn null<T: ?Sized + Thin>() -> *const T {
     from_raw_parts(invalid(0), ())
 }
@@ -528,11 +528,11 @@ pub const fn null<T: ?Sized + Thin>() -> *const T {
 /// ```
 #[inline(always)]
 #[must_use]
-#[stable(feature = "rust1", since = "1.0.0")]
-#[rustc_promotable]
-#[rustc_const_stable(feature = "const_ptr_null", since = "1.24.0")]
-#[rustc_allow_const_fn_unstable(ptr_metadata)]
-#[rustc_diagnostic_item = "ptr_null_mut"]
+#[stable(feature = "crablang1", since = "1.0.0")]
+#[crablangc_promotable]
+#[crablangc_const_stable(feature = "const_ptr_null", since = "1.24.0")]
+#[crablangc_allow_const_fn_unstable(ptr_metadata)]
+#[crablangc_diagnostic_item = "ptr_null_mut"]
 pub const fn null_mut<T: ?Sized + Thin>() -> *mut T {
     from_raw_parts_mut(invalid_mut(0), ())
 }
@@ -557,7 +557,7 @@ pub const fn null_mut<T: ?Sized + Thin>() -> *mut T {
 /// see the [module documentation][crate::ptr] for details.
 #[inline(always)]
 #[must_use]
-#[rustc_const_stable(feature = "stable_things_using_strict_provenance", since = "1.61.0")]
+#[crablangc_const_stable(feature = "stable_things_using_strict_provenance", since = "1.61.0")]
 #[unstable(feature = "strict_provenance", issue = "95228")]
 pub const fn invalid<T>(addr: usize) -> *const T {
     // FIXME(strict_provenance_magic): I am magic and should be a compiler intrinsic.
@@ -588,7 +588,7 @@ pub const fn invalid<T>(addr: usize) -> *const T {
 /// see the [module documentation][crate::ptr] for details.
 #[inline(always)]
 #[must_use]
-#[rustc_const_stable(feature = "stable_things_using_strict_provenance", since = "1.61.0")]
+#[crablangc_const_stable(feature = "stable_things_using_strict_provenance", since = "1.61.0")]
 #[unstable(feature = "strict_provenance", issue = "95228")]
 pub const fn invalid_mut<T>(addr: usize) -> *mut T {
     // FIXME(strict_provenance_magic): I am magic and should be a compiler intrinsic.
@@ -603,7 +603,7 @@ pub const fn invalid_mut<T>(addr: usize) -> *mut T {
 ///
 /// This is equivalent to `addr as *const T`. The provenance of the returned pointer is that of *any*
 /// pointer that was previously exposed by passing it to [`expose_addr`][pointer::expose_addr],
-/// or a `ptr as usize` cast. In addition, memory which is outside the control of the Rust abstract
+/// or a `ptr as usize` cast. In addition, memory which is outside the control of the CrabLang abstract
 /// machine (MMIO registers, for example) is always considered to be exposed, so long as this memory
 /// is disjoint from memory that will be used by the abstract machine such as the stack, heap,
 /// and statics.
@@ -623,7 +623,7 @@ pub const fn invalid_mut<T>(addr: usize) -> *mut T {
 ///
 /// Using this method means that code is *not* following strict provenance rules. "Guessing" a
 /// suitable provenance complicates specification and reasoning and may not be supported by
-/// tools that help you to stay conformant with the Rust memory model, so it is recommended to
+/// tools that help you to stay conformant with the CrabLang memory model, so it is recommended to
 /// use [`with_addr`][pointer::with_addr] wherever possible.
 ///
 /// On most platforms this will produce a value with the same bytes as the address. Platforms
@@ -661,7 +661,7 @@ where
 ///
 /// Using this method means that code is *not* following strict provenance rules. "Guessing" a
 /// suitable provenance complicates specification and reasoning and may not be supported by
-/// tools that help you to stay conformant with the Rust memory model, so it is recommended to
+/// tools that help you to stay conformant with the CrabLang memory model, so it is recommended to
 /// use [`with_addr`][pointer::with_addr] wherever possible.
 ///
 /// On most platforms this will produce a value with the same bytes as the address. Platforms
@@ -717,7 +717,7 @@ pub const fn from_mut<T: ?Sized>(r: &mut T) -> *mut T {
 ///
 /// # Examples
 ///
-/// ```rust
+/// ```crablang
 /// use std::ptr;
 ///
 /// // create a slice pointer when starting out with a pointer to the first element
@@ -728,8 +728,8 @@ pub const fn from_mut<T: ?Sized>(r: &mut T) -> *mut T {
 /// ```
 #[inline]
 #[stable(feature = "slice_from_raw_parts", since = "1.42.0")]
-#[rustc_const_stable(feature = "const_slice_from_raw_parts", since = "1.64.0")]
-#[rustc_allow_const_fn_unstable(ptr_metadata)]
+#[crablangc_const_stable(feature = "const_slice_from_raw_parts", since = "1.64.0")]
+#[crablangc_allow_const_fn_unstable(ptr_metadata)]
 pub const fn slice_from_raw_parts<T>(data: *const T, len: usize) -> *const [T] {
     from_raw_parts(data.cast(), len)
 }
@@ -746,7 +746,7 @@ pub const fn slice_from_raw_parts<T>(data: *const T, len: usize) -> *const [T] {
 ///
 /// # Examples
 ///
-/// ```rust
+/// ```crablang
 /// use std::ptr;
 ///
 /// let x = &mut [5, 6, 7];
@@ -761,7 +761,7 @@ pub const fn slice_from_raw_parts<T>(data: *const T, len: usize) -> *const [T] {
 /// ```
 #[inline]
 #[stable(feature = "slice_from_raw_parts", since = "1.42.0")]
-#[rustc_const_unstable(feature = "const_slice_from_raw_parts_mut", issue = "67456")]
+#[crablangc_const_unstable(feature = "const_slice_from_raw_parts_mut", issue = "67456")]
 pub const fn slice_from_raw_parts_mut<T>(data: *mut T, len: usize) -> *mut [T] {
     from_raw_parts_mut(data.cast(), len)
 }
@@ -836,8 +836,8 @@ pub const fn slice_from_raw_parts_mut<T>(data: *mut T, len: usize) -> *mut [T] {
 /// }
 /// ```
 #[inline]
-#[stable(feature = "rust1", since = "1.0.0")]
-#[rustc_const_unstable(feature = "const_swap", issue = "83163")]
+#[stable(feature = "crablang1", since = "1.0.0")]
+#[crablangc_const_unstable(feature = "const_swap", issue = "83163")]
 pub const unsafe fn swap<T>(x: *mut T, y: *mut T) {
     // Give ourselves some scratch space to work with.
     // We do not have to worry about drops: `MaybeUninit` does nothing when dropped.
@@ -898,7 +898,7 @@ pub const unsafe fn swap<T>(x: *mut T, y: *mut T) {
 /// ```
 #[inline]
 #[stable(feature = "swap_nonoverlapping", since = "1.27.0")]
-#[rustc_const_unstable(feature = "const_swap", issue = "83163")]
+#[crablangc_const_unstable(feature = "const_swap", issue = "83163")]
 pub const unsafe fn swap_nonoverlapping<T>(x: *mut T, y: *mut T, count: usize) {
     #[allow(unused)]
     macro_rules! attempt_swap_as_chunks {
@@ -952,7 +952,7 @@ pub const unsafe fn swap_nonoverlapping<T>(x: *mut T, y: *mut T, count: usize) {
 /// LLVM can vectorize this (at least it can for the power-of-two-sized types
 /// `swap_nonoverlapping` tries to use) so no need to manually SIMD it.
 #[inline]
-#[rustc_const_unstable(feature = "const_swap", issue = "83163")]
+#[crablangc_const_unstable(feature = "const_swap", issue = "83163")]
 const unsafe fn swap_nonoverlapping_simple_untyped<T>(x: *mut T, y: *mut T, count: usize) {
     let x = x.cast::<MaybeUninit<T>>();
     let y = y.cast::<MaybeUninit<T>>();
@@ -996,20 +996,20 @@ const unsafe fn swap_nonoverlapping_simple_untyped<T>(x: *mut T, y: *mut T, coun
 /// ```
 /// use std::ptr;
 ///
-/// let mut rust = vec!['b', 'u', 's', 't'];
+/// let mut crablang = vec!['b', 'u', 's', 't'];
 ///
 /// // `mem::replace` would have the same effect without requiring the unsafe
 /// // block.
 /// let b = unsafe {
-///     ptr::replace(&mut rust[0], 'r')
+///     ptr::replace(&mut crablang[0], 'r')
 /// };
 ///
 /// assert_eq!(b, 'b');
-/// assert_eq!(rust, &['r', 'u', 's', 't']);
+/// assert_eq!(crablang, &['r', 'u', 's', 't']);
 /// ```
 #[inline]
-#[stable(feature = "rust1", since = "1.0.0")]
-#[rustc_const_unstable(feature = "const_replace", issue = "83164")]
+#[stable(feature = "crablang1", since = "1.0.0")]
+#[crablangc_const_unstable(feature = "const_replace", issue = "83164")]
 pub const unsafe fn replace<T>(dst: *mut T, mut src: T) -> T {
     // SAFETY: the caller must guarantee that `dst` is valid to be
     // cast to a mutable reference (valid for writes, aligned, initialized),
@@ -1131,8 +1131,8 @@ pub const unsafe fn replace<T>(dst: *mut T, mut src: T) -> T {
 ///
 /// [valid]: self#safety
 #[inline]
-#[stable(feature = "rust1", since = "1.0.0")]
-#[rustc_const_unstable(feature = "const_ptr_read", issue = "80377")]
+#[stable(feature = "crablang1", since = "1.0.0")]
+#[crablangc_const_unstable(feature = "const_ptr_read", issue = "80377")]
 #[cfg_attr(miri, track_caller)] // even without panics, this helps for Miri backtraces
 pub const unsafe fn read<T>(src: *const T) -> T {
     // It would be semantically correct to implement this via `copy_nonoverlapping`
@@ -1172,8 +1172,8 @@ pub const unsafe fn read<T>(src: *const T) -> T {
         {
             // We are calling the intrinsics directly to avoid function calls in the
             // generated code as `intrinsics::copy_nonoverlapping` is a wrapper function.
-            extern "rust-intrinsic" {
-                #[rustc_const_stable(feature = "const_intrinsic_copy", since = "1.63.0")]
+            extern "crablang-intrinsic" {
+                #[crablangc_const_stable(feature = "const_intrinsic_copy", since = "1.63.0")]
                 fn copy_nonoverlapping<T>(src: *const T, dst: *mut T, count: usize);
             }
 
@@ -1267,7 +1267,7 @@ pub const unsafe fn read<T>(src: *const T) -> T {
 /// ```
 #[inline]
 #[stable(feature = "ptr_unaligned", since = "1.17.0")]
-#[rustc_const_unstable(feature = "const_ptr_read", issue = "80377")]
+#[crablangc_const_unstable(feature = "const_ptr_read", issue = "80377")]
 #[cfg_attr(miri, track_caller)] // even without panics, this helps for Miri backtraces
 pub const unsafe fn read_unaligned<T>(src: *const T) -> T {
     let mut tmp = MaybeUninit::<T>::uninit();
@@ -1363,14 +1363,14 @@ pub const unsafe fn read_unaligned<T>(src: *const T) -> T {
 /// assert_eq!(bar, "foo");
 /// ```
 #[inline]
-#[stable(feature = "rust1", since = "1.0.0")]
-#[rustc_const_unstable(feature = "const_ptr_write", issue = "86302")]
+#[stable(feature = "crablang1", since = "1.0.0")]
+#[crablangc_const_unstable(feature = "const_ptr_write", issue = "86302")]
 #[cfg_attr(miri, track_caller)] // even without panics, this helps for Miri backtraces
 pub const unsafe fn write<T>(dst: *mut T, src: T) {
     // We are calling the intrinsics directly to avoid function calls in the generated code
     // as `intrinsics::copy_nonoverlapping` is a wrapper function.
-    extern "rust-intrinsic" {
-        #[rustc_const_stable(feature = "const_intrinsic_copy", since = "1.63.0")]
+    extern "crablang-intrinsic" {
+        #[crablangc_const_stable(feature = "const_intrinsic_copy", since = "1.63.0")]
         fn copy_nonoverlapping<T>(src: *const T, dst: *mut T, count: usize);
     }
 
@@ -1466,7 +1466,7 @@ pub const unsafe fn write<T>(dst: *mut T, src: T) {
 /// ```
 #[inline]
 #[stable(feature = "ptr_unaligned", since = "1.17.0")]
-#[rustc_const_unstable(feature = "const_ptr_write", issue = "86302")]
+#[crablangc_const_unstable(feature = "const_ptr_write", issue = "86302")]
 #[cfg_attr(miri, track_caller)] // even without panics, this helps for Miri backtraces
 pub const unsafe fn write_unaligned<T>(dst: *mut T, src: T) {
     // SAFETY: the caller must guarantee that `dst` is valid for writes.
@@ -1488,7 +1488,7 @@ pub const unsafe fn write_unaligned<T>(dst: *mut T, src: T) {
 ///
 /// # Notes
 ///
-/// Rust does not currently have a rigorously and formally defined memory model,
+/// CrabLang does not currently have a rigorously and formally defined memory model,
 /// so the precise semantics of what "volatile" means here is subject to change
 /// over time. That being said, the semantics will almost always end up pretty
 /// similar to [C11's definition of volatile][c11].
@@ -1569,7 +1569,7 @@ pub unsafe fn read_volatile<T>(src: *const T) -> T {
 ///
 /// # Notes
 ///
-/// Rust does not currently have a rigorously and formally defined memory model,
+/// CrabLang does not currently have a rigorously and formally defined memory model,
 /// so the precise semantics of what "volatile" means here is subject to change
 /// over time. That being said, the semantics will almost always end up pretty
 /// similar to [C11's definition of volatile][c11].
@@ -2002,12 +2002,12 @@ mod old_fn_ptr_impl {
 
     macro_rules! fnptr_impls_args {
         ($($Arg: ident),+) => {
-            fnptr_impls_safety_abi! { extern "Rust" fn($($Arg),+) -> Ret, $($Arg),+ }
+            fnptr_impls_safety_abi! { extern "CrabLang" fn($($Arg),+) -> Ret, $($Arg),+ }
             fnptr_impls_safety_abi! { extern "C" fn($($Arg),+) -> Ret, $($Arg),+ }
             fnptr_impls_safety_abi! { extern "C" fn($($Arg),+ , ...) -> Ret, $($Arg),+ }
         fnptr_impls_safety_abi! { @c_unwind extern "C-unwind" fn($($Arg),+) -> Ret, $($Arg),+ }
         fnptr_impls_safety_abi! { @c_unwind extern "C-unwind" fn($($Arg),+ , ...) -> Ret, $($Arg),+ }
-            fnptr_impls_safety_abi! { unsafe extern "Rust" fn($($Arg),+) -> Ret, $($Arg),+ }
+            fnptr_impls_safety_abi! { unsafe extern "CrabLang" fn($($Arg),+) -> Ret, $($Arg),+ }
             fnptr_impls_safety_abi! { unsafe extern "C" fn($($Arg),+) -> Ret, $($Arg),+ }
             fnptr_impls_safety_abi! { unsafe extern "C" fn($($Arg),+ , ...) -> Ret, $($Arg),+ }
         fnptr_impls_safety_abi! { @c_unwind unsafe extern "C-unwind" fn($($Arg),+) -> Ret, $($Arg),+ }
@@ -2015,10 +2015,10 @@ mod old_fn_ptr_impl {
         };
         () => {
             // No variadic functions with 0 parameters
-            fnptr_impls_safety_abi! { extern "Rust" fn() -> Ret, }
+            fnptr_impls_safety_abi! { extern "CrabLang" fn() -> Ret, }
             fnptr_impls_safety_abi! { extern "C" fn() -> Ret, }
         fnptr_impls_safety_abi! { @c_unwind extern "C-unwind" fn() -> Ret, }
-            fnptr_impls_safety_abi! { unsafe extern "Rust" fn() -> Ret, }
+            fnptr_impls_safety_abi! { unsafe extern "CrabLang" fn() -> Ret, }
             fnptr_impls_safety_abi! { unsafe extern "C" fn() -> Ret, }
         fnptr_impls_safety_abi! { @c_unwind unsafe extern "C-unwind" fn() -> Ret, }
         };
@@ -2124,7 +2124,7 @@ mod new_fn_ptr_impl {
 /// Doing that with `addr_of` would not make much sense since one could only
 /// read the data, and that would be Undefined Behavior.
 #[stable(feature = "raw_ref_macros", since = "1.51.0")]
-#[rustc_macro_transparency = "semitransparent"]
+#[crablangc_macro_transparency = "semitransparent"]
 #[allow_internal_unstable(raw_ref_op)]
 pub macro addr_of($place:expr) {
     &raw const $place
@@ -2165,7 +2165,7 @@ pub macro addr_of($place:expr) {
 ///
 /// **Creating a pointer to uninitialized data:**
 ///
-/// ```rust
+/// ```crablang
 /// use std::{ptr, mem::MaybeUninit};
 ///
 /// struct Demo {
@@ -2180,7 +2180,7 @@ pub macro addr_of($place:expr) {
 /// let init = unsafe { uninit.assume_init() };
 /// ```
 #[stable(feature = "raw_ref_macros", since = "1.51.0")]
-#[rustc_macro_transparency = "semitransparent"]
+#[crablangc_macro_transparency = "semitransparent"]
 #[allow_internal_unstable(raw_ref_op)]
 pub macro addr_of_mut($place:expr) {
     &raw mut $place

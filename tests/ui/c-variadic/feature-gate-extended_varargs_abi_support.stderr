@@ -4,7 +4,7 @@ error[E0658]: using calling conventions other than `C` or `cdecl` for varargs fu
 LL | fn efiapi(f: extern "efiapi" fn(usize, ...)) {
    |              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
    |
-   = note: see issue #100189 <https://github.com/rust-lang/rust/issues/100189> for more information
+   = note: see issue #100189 <https://github.com/crablang/crablang/issues/100189> for more information
    = help: add `#![feature(extended_varargs_abi_support)]` to the crate attributes to enable
 
 error[E0045]: C-variadic function must have a compatible calling convention, like `C` or `cdecl`
@@ -19,7 +19,7 @@ error[E0658]: using calling conventions other than `C` or `cdecl` for varargs fu
 LL | fn sysv(f: extern "sysv64" fn(usize, ...)) {
    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
    |
-   = note: see issue #100189 <https://github.com/rust-lang/rust/issues/100189> for more information
+   = note: see issue #100189 <https://github.com/crablang/crablang/issues/100189> for more information
    = help: add `#![feature(extended_varargs_abi_support)]` to the crate attributes to enable
 
 error[E0045]: C-variadic function must have a compatible calling convention, like `C` or `cdecl`
@@ -34,7 +34,7 @@ error[E0658]: using calling conventions other than `C` or `cdecl` for varargs fu
 LL | fn win(f: extern "win64" fn(usize, ...)) {
    |           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
    |
-   = note: see issue #100189 <https://github.com/rust-lang/rust/issues/100189> for more information
+   = note: see issue #100189 <https://github.com/crablang/crablang/issues/100189> for more information
    = help: add `#![feature(extended_varargs_abi_support)]` to the crate attributes to enable
 
 error[E0045]: C-variadic function must have a compatible calling convention, like `C` or `cdecl`
@@ -46,4 +46,4 @@ LL | fn win(f: extern "win64" fn(usize, ...)) {
 error: aborting due to 6 previous errors
 
 Some errors have detailed explanations: E0045, E0658.
-For more information about an error, try `rustc --explain E0045`.
+For more information about an error, try `crablangc --explain E0045`.

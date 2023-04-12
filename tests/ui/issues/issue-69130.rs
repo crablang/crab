@@ -1,4 +1,4 @@
-// Issue 69130: character indexing bug in rustc_errors::CodeSuggestion::splice_lines().
+// Issue 69130: character indexing bug in crablangc_errors::CodeSuggestion::splice_lines().
 
 enum F {
 M (§& u8)}

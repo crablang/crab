@@ -99,4 +99,4 @@ LL |     if let NonExhaustiveVariants::Struct { field , .. } = variant_struct {
 error: aborting due to 8 previous errors
 
 Some errors have detailed explanations: E0603, E0638, E0639.
-For more information about an error, try `rustc --explain E0603`.
+For more information about an error, try `crablangc --explain E0603`.

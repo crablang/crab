@@ -1,6 +1,6 @@
 // run-pass
 
-// https://github.com/rust-lang/rust/issues/37448
+// https://github.com/crablang/crablang/issues/37448
 
 fn main() {
     struct A;

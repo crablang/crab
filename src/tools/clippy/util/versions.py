@@ -15,7 +15,7 @@ def key(v):
     if v == 'beta':
         return sys.maxsize - 1
 
-    v = v.replace('v', '').replace('rust-', '')
+    v = v.replace('v', '').replace('crablang-', '')
 
     s = 0
     for i, val in enumerate(v.split('.')[::-1]):

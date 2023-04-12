@@ -6,7 +6,7 @@ LL |     let _moved @ _from = String::from("foo");
    |         |        |
    |         |        value moved here
    |         value used here after move
--Ztrack-diagnostics: created at compiler/rustc_borrowck/src/borrowck_errors.rs:LL:CC
+-Ztrack-diagnostics: created at compiler/crablangc_borrowck/src/borrowck_errors.rs:LL:CC
    |
 help: borrow this binding in the pattern to avoid moving the value
    |
@@ -15,4 +15,4 @@ LL |     let ref _moved @ ref _from = String::from("foo");
 
 error: aborting due to previous error
 
-For more information about this error, try `rustc --explain E0382`.
+For more information about this error, try `crablangc --explain E0382`.

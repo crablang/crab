@@ -1,11 +1,11 @@
 // aux-build:legacy-const-generics.rs
 // run-pass
 
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 
 extern crate legacy_const_generics;
 
-#[rustc_legacy_const_generics(1)]
+#[crablangc_legacy_const_generics(1)]
 pub fn bar<const Y: usize>(x: usize, z: usize) -> [usize; 3] {
     [x, Y, z]
 }

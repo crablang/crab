@@ -1,5 +1,5 @@
 // Adaptation of existing ui test (from way back in
-// rust-lang/rust#2329), that starts passing with this feature in
+// crablang/crablang#2329), that starts passing with this feature in
 // place.
 
 // run-pass

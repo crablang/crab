@@ -2,7 +2,7 @@
 
 use unicode_xid::UnicodeXID;
 
-/// A `char` in Rust is a Unicode Scalar Value
+/// A `char` in CrabLang is a Unicode Scalar Value
 ///
 /// See: http://www.unicode.org/glossary/#unicode_scalar_value
 fn all_valid_chars() -> impl Iterator<Item = char> {

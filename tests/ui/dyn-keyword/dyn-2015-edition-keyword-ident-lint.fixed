@@ -1,11 +1,11 @@
 // Under the 2015 edition with the keyword_idents lint, `dyn` is not
 // entirely acceptable as an identifier. We currently do not attempt
 // to detect or fix uses of `dyn` under a macro. Since we are testing
-// this file via `rustfix`, we want the rustfix output to be
+// this file via `crablangfix`, we want the crablangfix output to be
 // compilable; so the macros here carefully use `dyn` "correctly."
 //
 // edition:2015
-// run-rustfix
+// run-crablangfix
 
 #![allow(non_camel_case_types)]
 #![deny(keyword_idents)]

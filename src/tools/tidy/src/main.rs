@@ -28,7 +28,7 @@ fn main() {
     let tests_path = root_path.join("tests");
     let library_path = root_path.join("library");
     let compiler_path = root_path.join("compiler");
-    let librustdoc_path = src_path.join("librustdoc");
+    let libcrablangdoc_path = src_path.join("libcrablangdoc");
 
     let args: Vec<String> = env::args().skip(1).collect();
 
@@ -92,10 +92,10 @@ fn main() {
         check!(debug_artifacts, &tests_path);
         check!(ui_tests, &tests_path);
         check!(mir_opt_tests, &tests_path, bless);
-        check!(rustdoc_gui_tests, &tests_path);
+        check!(crablangdoc_gui_tests, &tests_path);
 
         // Checks that only make sense for the compiler.
-        check!(error_codes, &root_path, &[&compiler_path, &librustdoc_path], verbose);
+        check!(error_codes, &root_path, &[&compiler_path, &libcrablangdoc_path], verbose);
 
         // Checks that only make sense for the std libs.
         check!(pal, &library_path);

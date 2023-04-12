@@ -1,7 +1,7 @@
 # ignore-cross-compile
 include ../tools.mk
 
-# The rust crate foo will link to the native library foo, while the rust crate
+# The crablang crate foo will link to the native library foo, while the crablang crate
 # bar will link to the native library bar. There is also a dependency between
 # the native library bar to the natibe library foo.
 #
@@ -10,6 +10,6 @@ include ../tools.mk
 # library will be stripped out, and the linkage will fail.
 
 all: $(call NATIVE_STATICLIB,foo) $(call NATIVE_STATICLIB,bar)
-	$(RUSTC) foo.rs
-	$(RUSTC) bar.rs
-	$(RUSTC) main.rs --print link-args
+	$(CRABLANGC) foo.rs
+	$(CRABLANGC) bar.rs
+	$(CRABLANGC) main.rs --print link-args

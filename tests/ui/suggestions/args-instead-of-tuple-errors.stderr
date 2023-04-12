@@ -106,4 +106,4 @@ note: tuple variant defined here
 error: aborting due to 5 previous errors
 
 Some errors have detailed explanations: E0061, E0308.
-For more information about an error, try `rustc --explain E0061`.
+For more information about an error, try `crablangc --explain E0061`.

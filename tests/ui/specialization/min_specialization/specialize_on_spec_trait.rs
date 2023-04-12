@@ -1,11 +1,11 @@
-// Test that specializing on a `rustc_specialization_trait` trait is allowed.
+// Test that specializing on a `crablangc_specialization_trait` trait is allowed.
 
 // check-pass
 
 #![feature(min_specialization)]
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 
-#[rustc_specialization_trait]
+#[crablangc_specialization_trait]
 trait SpecTrait {
     fn g(&self);
 }

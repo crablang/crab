@@ -5,5 +5,5 @@ stack backtrace:
    2: c
    3: b
    4: a
-   5: some Rust fn
-note: Some details are omitted, run with `RUST_BACKTRACE=full` for a verbose backtrace.
+   5: some CrabLang fn
+note: Some details are omitted, run with `CRABLANG_BACKTRACE=full` for a verbose backtrace.

@@ -1,4 +1,4 @@
-// Regression test for https://github.com/rust-lang/miri/issues/2536
+// Regression test for https://github.com/crablang/miri/issues/2536
 // This tests that we don't try to back too far up the stack when selecting a span to report.
 // We should display the as_mut_ptr() call as the location of the invalidation, not the call to
 // inner

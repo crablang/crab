@@ -45,4 +45,4 @@ LL | #[deny(unused_imports)]
 error: aborting due to 4 previous errors
 
 Some errors have detailed explanations: E0364, E0365.
-For more information about an error, try `rustc --explain E0364`.
+For more information about an error, try `crablangc --explain E0364`.

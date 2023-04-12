@@ -1,5 +1,5 @@
 // Regression test for the ICE caused by the example in
-// https://github.com/rust-lang/rust/issues/86053#issuecomment-855672258
+// https://github.com/crablang/crablang/issues/86053#issuecomment-855672258
 
 #![feature(c_variadic)]
 

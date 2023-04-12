@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 
 #![allow(dead_code)]
 
@@ -124,16 +124,16 @@ impl Default for Y {
     }
 }
 
-struct RustIssue26925<T> {
+struct CrabLangIssue26925<T> {
     a: Option<T>,
 }
 
 // We should watch out for cases where a manual impl is needed because a
-// derive adds different type bounds (https://github.com/rust-lang/rust/issues/26925).
+// derive adds different type bounds (https://github.com/crablang/crablang/issues/26925).
 // For example, a struct with Option<T> does not require T: Default, but a derive adds
 // that type bound anyways. So until #26925 get fixed we should disable lint
 // for the following case
-impl<T> Default for RustIssue26925<T> {
+impl<T> Default for CrabLangIssue26925<T> {
     fn default() -> Self {
         Self { a: None }
     }
@@ -171,7 +171,7 @@ impl Default for WithoutSelfParan {
     }
 }
 
-// https://github.com/rust-lang/rust-clippy/issues/7655
+// https://github.com/crablang/crablang-clippy/issues/7655
 
 pub struct SpecializedImpl2<T> {
     v: Vec<T>,
@@ -183,7 +183,7 @@ impl Default for SpecializedImpl2<String> {
     }
 }
 
-// https://github.com/rust-lang/rust-clippy/issues/7654
+// https://github.com/crablang/crablang-clippy/issues/7654
 
 pub struct Color {
     pub r: u8,
@@ -231,7 +231,7 @@ impl Default for RepeatDefault2 {
     }
 }
 
-// https://github.com/rust-lang/rust-clippy/issues/7753
+// https://github.com/crablang/crablang-clippy/issues/7753
 
 pub enum IntOrString {
     Int(i32),
@@ -267,7 +267,7 @@ impl Default for NonExhaustiveEnum {
     }
 }
 
-// https://github.com/rust-lang/rust-clippy/issues/10396
+// https://github.com/crablang/crablang-clippy/issues/10396
 
 #[derive(Default)]
 struct DefaultType;

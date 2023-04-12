@@ -1,7 +1,7 @@
 #![feature(intrinsics)]
 
 // Directly call intrinsic to avoid debug assertions in libstd
-extern "rust-intrinsic" {
+extern "crablang-intrinsic" {
     fn float_to_int_unchecked<Float: Copy, Int: Copy>(value: Float) -> Int;
 }
 

@@ -14,11 +14,11 @@ if [ -z "$package_id" ]; then
     exit 1
 fi
 
-if [ "$package_id" = "org.rust-lang.uninstall" ]; then
-    if [ ! -e "$dest_dir/lib/rustlib/uninstall.sh" ]; then
+if [ "$package_id" = "org.crablang.uninstall" ]; then
+    if [ ! -e "$dest_dir/lib/crablanglib/uninstall.sh" ]; then
 	exit 1
     fi
-    sh "$dest_dir/lib/rustlib/uninstall.sh"
+    sh "$dest_dir/lib/crablanglib/uninstall.sh"
 else
     sh "$source_dir/install.sh" --prefix="$dest_dir"
 fi

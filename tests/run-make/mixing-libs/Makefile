@@ -2,9 +2,9 @@
 include ../tools.mk
 
 all:
-	$(RUSTC) rlib.rs
-	$(RUSTC) dylib.rs
-	$(RUSTC) rlib.rs --crate-type=dylib
-	$(RUSTC) dylib.rs
+	$(CRABLANGC) rlib.rs
+	$(CRABLANGC) dylib.rs
+	$(CRABLANGC) rlib.rs --crate-type=dylib
+	$(CRABLANGC) dylib.rs
 	$(call REMOVE_DYLIBS,rlib)
-	$(RUSTC) prog.rs && exit 1 || exit 0
+	$(CRABLANGC) prog.rs && exit 1 || exit 0

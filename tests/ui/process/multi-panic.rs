@@ -9,7 +9,7 @@ fn check_for_no_backtrace(test: std::process::Output) {
     let mut it = err.lines();
 
     assert_eq!(it.next().map(|l| l.starts_with("thread '<unnamed>' panicked at")), Some(true));
-    assert_eq!(it.next(), Some("note: run with `RUST_BACKTRACE=1` \
+    assert_eq!(it.next(), Some("note: run with `CRABLANG_BACKTRACE=1` \
                                 environment variable to display a backtrace"));
     assert_eq!(it.next().map(|l| l.starts_with("thread 'main' panicked at")), Some(true));
     assert_eq!(it.next(), None);
@@ -25,12 +25,12 @@ fn main() {
         panic!();
     } else {
         let test = std::process::Command::new(&args[0]).arg("run_test")
-                                                       .env_remove("RUST_BACKTRACE")
+                                                       .env_remove("CRABLANG_BACKTRACE")
                                                        .output()
                                                        .unwrap();
         check_for_no_backtrace(test);
         let test = std::process::Command::new(&args[0]).arg("run_test")
-                                                       .env("RUST_BACKTRACE","0")
+                                                       .env("CRABLANG_BACKTRACE","0")
                                                        .output()
                                                        .unwrap();
         check_for_no_backtrace(test);

@@ -5,9 +5,9 @@ use std::num::NonZeroU64;
 use log::trace;
 use smallvec::SmallVec;
 
-use rustc_data_structures::fx::{FxHashMap, FxHashSet};
-use rustc_middle::mir::RetagKind;
-use rustc_target::abi::Size;
+use crablangc_data_structures::fx::{FxHashMap, FxHashSet};
+use crablangc_middle::mir::RetagKind;
+use crablangc_target::abi::Size;
 
 use crate::*;
 pub mod stacked_borrows;

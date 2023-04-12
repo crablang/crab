@@ -35,4 +35,4 @@ LL |     let _ = Foo { bar.into(), bat: -1, . };
 
 error: aborting due to 5 previous errors
 
-For more information about this error, try `rustc --explain E0063`.
+For more information about this error, try `crablangc --explain E0063`.

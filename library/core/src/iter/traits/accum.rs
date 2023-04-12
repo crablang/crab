@@ -10,7 +10,7 @@ use crate::num::Wrapping;
 /// [`sum()`]: Iterator::sum
 /// [`FromIterator`]: iter::FromIterator
 #[stable(feature = "iter_arith_traits", since = "1.12.0")]
-#[rustc_on_unimplemented(
+#[crablangc_on_unimplemented(
     message = "a value of type `{Self}` cannot be made by summing an iterator over elements of type `{A}`",
     label = "value of type `{Self}` cannot be made by summing a `std::iter::Iterator<Item={A}>`"
 )]
@@ -31,7 +31,7 @@ pub trait Sum<A = Self>: Sized {
 /// [`product()`]: Iterator::product
 /// [`FromIterator`]: iter::FromIterator
 #[stable(feature = "iter_arith_traits", since = "1.12.0")]
-#[rustc_on_unimplemented(
+#[crablangc_on_unimplemented(
     message = "a value of type `{Self}` cannot be made by multiplying all elements of type `{A}` from an iterator",
     label = "value of type `{Self}` cannot be made by multiplying all elements from a `std::iter::Iterator<Item={A}>`"
 )]
@@ -49,7 +49,7 @@ macro_rules! integer_sum_product {
             fn sum<I: Iterator<Item=Self>>(iter: I) -> Self {
                 iter.fold(
                     $zero,
-                    #[rustc_inherit_overflow_checks]
+                    #[crablangc_inherit_overflow_checks]
                     |a, b| a + b,
                 )
             }
@@ -60,7 +60,7 @@ macro_rules! integer_sum_product {
             fn product<I: Iterator<Item=Self>>(iter: I) -> Self {
                 iter.fold(
                     $one,
-                    #[rustc_inherit_overflow_checks]
+                    #[crablangc_inherit_overflow_checks]
                     |a, b| a * b,
                 )
             }
@@ -71,7 +71,7 @@ macro_rules! integer_sum_product {
             fn sum<I: Iterator<Item=&'a Self>>(iter: I) -> Self {
                 iter.fold(
                     $zero,
-                    #[rustc_inherit_overflow_checks]
+                    #[crablangc_inherit_overflow_checks]
                     |a, b| a + b,
                 )
             }
@@ -82,7 +82,7 @@ macro_rules! integer_sum_product {
             fn product<I: Iterator<Item=&'a Self>>(iter: I) -> Self {
                 iter.fold(
                     $one,
-                    #[rustc_inherit_overflow_checks]
+                    #[crablangc_inherit_overflow_checks]
                     |a, b| a * b,
                 )
             }
@@ -105,7 +105,7 @@ macro_rules! float_sum_product {
             fn sum<I: Iterator<Item=Self>>(iter: I) -> Self {
                 iter.fold(
                     0.0,
-                    #[rustc_inherit_overflow_checks]
+                    #[crablangc_inherit_overflow_checks]
                     |a, b| a + b,
                 )
             }
@@ -116,7 +116,7 @@ macro_rules! float_sum_product {
             fn product<I: Iterator<Item=Self>>(iter: I) -> Self {
                 iter.fold(
                     1.0,
-                    #[rustc_inherit_overflow_checks]
+                    #[crablangc_inherit_overflow_checks]
                     |a, b| a * b,
                 )
             }
@@ -127,7 +127,7 @@ macro_rules! float_sum_product {
             fn sum<I: Iterator<Item=&'a Self>>(iter: I) -> Self {
                 iter.fold(
                     0.0,
-                    #[rustc_inherit_overflow_checks]
+                    #[crablangc_inherit_overflow_checks]
                     |a, b| a + b,
                 )
             }
@@ -138,7 +138,7 @@ macro_rules! float_sum_product {
             fn product<I: Iterator<Item=&'a Self>>(iter: I) -> Self {
                 iter.fold(
                     1.0,
-                    #[rustc_inherit_overflow_checks]
+                    #[crablangc_inherit_overflow_checks]
                     |a, b| a * b,
                 )
             }

@@ -1,7 +1,7 @@
 use clippy_utils::diagnostics::span_lint;
-use rustc_ast::ast::{Expr, ExprKind, Stmt, StmtKind};
-use rustc_lint::{EarlyContext, EarlyLintPass};
-use rustc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_ast::ast::{Expr, ExprKind, Stmt, StmtKind};
+use crablangc_lint::{EarlyContext, EarlyLintPass};
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
 
 declare_clippy_lint! {
     /// ### What it does
@@ -13,12 +13,12 @@ declare_clippy_lint! {
     /// where such assignments return a copy of the assigned value.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     ///# let (a, b);
     /// a = b = 42;
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     ///# let (a, b);
     /// b = 42;
     /// a = b;

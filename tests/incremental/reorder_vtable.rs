@@ -3,7 +3,7 @@
 // This test case makes sure re-order the methods in a vtable will
 // trigger recompilation of codegen units that instantiate it.
 //
-// See https://github.com/rust-lang/rust/issues/89598
+// See https://github.com/crablang/crablang/issues/89598
 
 trait Foo {
     #[cfg(rpass1)]

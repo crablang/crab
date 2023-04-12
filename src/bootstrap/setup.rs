@@ -24,7 +24,7 @@ pub enum Profile {
     None,
 }
 
-/// A list of historical hashes of `src/etc/rust_analyzer_settings.json`.
+/// A list of historical hashes of `src/etc/crablang_analyzer_settings.json`.
 /// New entries should be appended whenever this is updated so we can detect
 /// outdated vs. user-modified settings files.
 static SETTINGS_HASHES: &[&str] = &[
@@ -32,7 +32,7 @@ static SETTINGS_HASHES: &[&str] = &[
     "56e7bf011c71c5d81e0bf42e84938111847a810eee69d906bba494ea90b51922",
     "af1b5efe196aed007577899db9dae15d6dbc923d6fa42fa0934e68617ba9bbe0",
 ];
-static RUST_ANALYZER_SETTINGS: &str = include_str!("../etc/rust_analyzer_settings.json");
+static CRABLANG_ANALYZER_SETTINGS: &str = include_str!("../etc/crablang_analyzer_settings.json");
 
 impl Profile {
     fn include_path(&self, src_path: &Path) -> PathBuf {
@@ -51,8 +51,8 @@ impl Profile {
             Library => "Contribute to the standard library",
             Compiler => "Contribute to the compiler itself",
             Codegen => "Contribute to the compiler, and also modify LLVM or codegen",
-            Tools => "Contribute to tools which depend on the compiler, but do not modify it directly (e.g. rustdoc, clippy, miri)",
-            User => "Install Rust from source",
+            Tools => "Contribute to tools which depend on the compiler, but do not modify it directly (e.g. crablangdoc, clippy, miri)",
+            User => "Install CrabLang from source",
             None => "Do not modify `config.toml`"
         }
         .to_string()
@@ -87,7 +87,7 @@ impl FromStr for Profile {
             "compiler" => Ok(Profile::Compiler),
             "llvm" | "codegen" => Ok(Profile::Codegen),
             "maintainer" | "user" => Ok(Profile::User),
-            "tools" | "tool" | "rustdoc" | "clippy" | "miri" | "rustfmt" | "rls" => {
+            "tools" | "tool" | "crablangdoc" | "clippy" | "miri" | "crablangfmt" | "rls" => {
                 Ok(Profile::Tools)
             }
             "none" => Ok(Profile::None),
@@ -153,10 +153,10 @@ pub fn setup(config: &Config, profile: Profile) {
         Profile::Tools => &[
             "check",
             "build",
-            "test tests/rustdoc*",
+            "test tests/crablangdoc*",
             "test src/tools/clippy",
             "test src/tools/miri",
-            "test src/tools/rustfmt",
+            "test src/tools/crablangfmt",
         ],
         Profile::Library => &["check", "build", "test library/std", "doc"],
         Profile::User => &["dist", "build"],
@@ -171,7 +171,7 @@ pub fn setup(config: &Config, profile: Profile) {
 
     if profile != Profile::User {
         println!(
-            "For more suggestions, see https://rustc-dev-guide.rust-lang.org/building/suggested.html"
+            "For more suggestions, see https://crablangc-dev-guide.crablang.org/building/suggested.html"
         );
     }
 
@@ -210,7 +210,7 @@ fn setup_config_toml(path: &PathBuf, profile: Profile, config: &Config) {
     println!("`x.py` will now use the configuration at {}", include_path.display());
 }
 
-/// Creates a toolchain link for stage1 using `rustup`
+/// Creates a toolchain link for stage1 using `crablangup`
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Hash)]
 pub struct Link;
 impl Step for Link {
@@ -235,18 +235,18 @@ impl Step for Link {
             return;
         }
         let stage_path =
-            ["build", config.build.rustc_target_arg(), "stage1"].join(&MAIN_SEPARATOR.to_string());
+            ["build", config.build.crablangc_target_arg(), "stage1"].join(&MAIN_SEPARATOR.to_string());
 
-        if !rustup_installed() {
-            eprintln!("`rustup` is not installed; cannot link `stage1` toolchain");
+        if !crablangup_installed() {
+            eprintln!("`crablangup` is not installed; cannot link `stage1` toolchain");
         } else if stage_dir_exists(&stage_path[..]) && !config.dry_run() {
             attempt_toolchain_link(&stage_path[..]);
         }
     }
 }
 
-fn rustup_installed() -> bool {
-    Command::new("rustup")
+fn crablangup_installed() -> bool {
+    Command::new("crablangup")
         .arg("--version")
         .stdout(std::process::Stdio::null())
         .output()
@@ -274,20 +274,20 @@ fn attempt_toolchain_link(stage_path: &str) {
 
     if try_link_toolchain(&stage_path) {
         println!(
-            "Added `stage1` rustup toolchain; try `cargo +stage1 build` on a separate rust project to run a newly-built toolchain"
+            "Added `stage1` crablangup toolchain; try `cargo +stage1 build` on a separate crablang project to run a newly-built toolchain"
         );
     } else {
-        eprintln!("`rustup` failed to link stage 1 build to `stage1` toolchain");
+        eprintln!("`crablangup` failed to link stage 1 build to `stage1` toolchain");
         eprintln!(
             "To manually link stage 1 build to `stage1` toolchain, run:\n
-            `rustup toolchain link stage1 {}`",
+            `crablangup toolchain link stage1 {}`",
             &stage_path
         );
     }
 }
 
 fn toolchain_is_linked() -> bool {
-    match Command::new("rustup")
+    match Command::new("crablangup")
         .args(&["toolchain", "list"])
         .stdout(std::process::Stdio::piped())
         .output()
@@ -303,9 +303,9 @@ fn toolchain_is_linked() -> bool {
         }
         Err(_) => {
             // In this case, we don't know if the `stage1` toolchain has been linked;
-            // but `rustup` failed, so let's not go any further.
+            // but `crablangup` failed, so let's not go any further.
             println!(
-                "`rustup` failed to list current toolchains; not attempting to link `stage1` toolchain"
+                "`crablangup` failed to list current toolchains; not attempting to link `stage1` toolchain"
             );
         }
     }
@@ -313,7 +313,7 @@ fn toolchain_is_linked() -> bool {
 }
 
 fn try_link_toolchain(stage_path: &str) -> bool {
-    Command::new("rustup")
+    Command::new("crablangup")
         .stdout(std::process::Stdio::null())
         .args(&["toolchain", "link", "stage1", &stage_path])
         .output()
@@ -332,7 +332,7 @@ fn ensure_stage1_toolchain_placeholder_exists(stage_path: &str) -> bool {
         return false;
     };
 
-    let pathbuf = pathbuf.join(format!("rustc{}", EXE_SUFFIX));
+    let pathbuf = pathbuf.join(format!("crablangc{}", EXE_SUFFIX));
 
     if pathbuf.exists() {
         return true;
@@ -366,7 +366,7 @@ pub fn interactive_path() -> io::Result<Profile> {
         input.parse()
     }
 
-    println!("Welcome to the Rust project! What do you want to do with x.py?");
+    println!("Welcome to the CrabLang project! What do you want to do with x.py?");
     for ((letter, _), profile) in abbrev_all() {
         println!("{}) {}: {}", letter, profile, profile.purpose());
     }
@@ -464,7 +464,7 @@ fn install_git_hook_maybe(config: &Config) -> io::Result<()> {
     }
 
     println!(
-        "\nRust's CI will automatically fail if it doesn't pass `tidy`, the internal tool for ensuring code quality.
+        "\nCrabLang's CI will automatically fail if it doesn't pass `tidy`, the internal tool for ensuring code quality.
 If you'd like, x.py can install a git hook for you that will automatically run `test tidy` before
 pushing your code to ensure your code is up to par. If you decide later that this behavior is
 undesirable, simply delete the `pre-push` file from .git/hooks."
@@ -489,7 +489,7 @@ undesirable, simply delete the `pre-push` file from .git/hooks."
     Ok(())
 }
 
-/// Sets up or displays `src/etc/rust_analyzer_settings.json`
+/// Sets up or displays `src/etc/crablang_analyzer_settings.json`
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Hash)]
 pub struct Vscode;
 
@@ -518,7 +518,7 @@ impl Step for Vscode {
     }
 }
 
-/// Create a `.vscode/settings.json` file for rustc development, or just print it
+/// Create a `.vscode/settings.json` file for crablangc development, or just print it
 fn create_vscode_settings_maybe(config: &Config) -> io::Result<()> {
     let (current_hash, historical_hashes) = SETTINGS_HASHES.split_last().unwrap();
     let vscode_settings = config.src.join(".vscode").join("settings.json");
@@ -540,7 +540,7 @@ fn create_vscode_settings_maybe(config: &Config) -> io::Result<()> {
         }
     }
     println!(
-        "\nx.py can automatically install the recommended `.vscode/settings.json` file for rustc development"
+        "\nx.py can automatically install the recommended `.vscode/settings.json` file for crablangc development"
     );
     match mismatched_settings {
         Some(true) => eprintln!(
@@ -580,10 +580,10 @@ fn create_vscode_settings_maybe(config: &Config) -> io::Result<()> {
             }
             _ => "Created",
         };
-        fs::write(&vscode_settings, &RUST_ANALYZER_SETTINGS)?;
+        fs::write(&vscode_settings, &CRABLANG_ANALYZER_SETTINGS)?;
         println!("{verb} `.vscode/settings.json`");
     } else {
-        println!("\n{RUST_ANALYZER_SETTINGS}");
+        println!("\n{CRABLANG_ANALYZER_SETTINGS}");
     }
     Ok(())
 }

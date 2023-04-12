@@ -4,19 +4,19 @@
 use crate::source::{snippet, snippet_opt, snippet_with_applicability, snippet_with_context};
 use crate::ty::expr_sig;
 use crate::{get_parent_expr_for_hir, higher};
-use rustc_ast::util::parser::AssocOp;
-use rustc_ast::{ast, token};
-use rustc_ast_pretty::pprust::token_kind_to_string;
-use rustc_errors::Applicability;
-use rustc_hir as hir;
-use rustc_hir::{Closure, ExprKind, HirId, MutTy, TyKind};
-use rustc_hir_typeck::expr_use_visitor::{Delegate, ExprUseVisitor, PlaceBase, PlaceWithHirId};
-use rustc_infer::infer::TyCtxtInferExt;
-use rustc_lint::{EarlyContext, LateContext, LintContext};
-use rustc_middle::hir::place::ProjectionKind;
-use rustc_middle::mir::{FakeReadCause, Mutability};
-use rustc_middle::ty;
-use rustc_span::source_map::{BytePos, CharPos, Pos, Span, SyntaxContext};
+use crablangc_ast::util::parser::AssocOp;
+use crablangc_ast::{ast, token};
+use crablangc_ast_pretty::ppcrablang::token_kind_to_string;
+use crablangc_errors::Applicability;
+use crablangc_hir as hir;
+use crablangc_hir::{Closure, ExprKind, HirId, MutTy, TyKind};
+use crablangc_hir_typeck::expr_use_visitor::{Delegate, ExprUseVisitor, PlaceBase, PlaceWithHirId};
+use crablangc_infer::infer::TyCtxtInferExt;
+use crablangc_lint::{EarlyContext, LateContext, LintContext};
+use crablangc_middle::hir::place::ProjectionKind;
+use crablangc_middle::mir::{FakeReadCause, Mutability};
+use crablangc_middle::ty;
+use crablangc_span::source_map::{BytePos, CharPos, Pos, Span, SyntaxContext};
 use std::borrow::Cow;
 use std::fmt::{self, Display, Write as _};
 use std::ops::{Add, Neg, Not, Sub};
@@ -174,7 +174,7 @@ impl<'a> Sugg<'a> {
         ctxt: SyntaxContext,
         app: &mut Applicability,
     ) -> Self {
-        use rustc_ast::ast::RangeLimits;
+        use crablangc_ast::ast::RangeLimits;
 
         match expr.kind {
             _ if expr.span.ctxt() != ctxt => Sugg::NonParen(snippet_with_context(cx, expr.span, ctxt, default, app).0),
@@ -415,7 +415,7 @@ pub fn has_enclosing_paren(sugg: impl AsRef<str>) -> bool {
     }
 }
 
-/// Copied from the rust standard library, and then edited
+/// Copied from the crablang standard library, and then edited
 macro_rules! forward_binop_impls_to_ref {
     (impl $imp:ident, $method:ident for $t:ty, type Output = $o:ty) => {
         impl $imp<$t> for &$t {
@@ -599,7 +599,7 @@ enum Associativity {
 /// associative.
 #[must_use]
 fn associativity(op: AssocOp) -> Associativity {
-    use rustc_ast::util::parser::AssocOp::{
+    use crablangc_ast::util::parser::AssocOp::{
         Add, As, Assign, AssignOp, BitAnd, BitOr, BitXor, Colon, Divide, DotDot, DotDotEq, Equal, Greater,
         GreaterEqual, LAnd, LOr, Less, LessEqual, Modulus, Multiply, NotEqual, ShiftLeft, ShiftRight, Subtract,
     };
@@ -615,7 +615,7 @@ fn associativity(op: AssocOp) -> Associativity {
 
 /// Converts a `hir::BinOp` to the corresponding assigning binary operator.
 fn hirbinop2assignop(op: hir::BinOp) -> AssocOp {
-    use rustc_ast::token::BinOpToken::{And, Caret, Minus, Or, Percent, Plus, Shl, Shr, Slash, Star};
+    use crablangc_ast::token::BinOpToken::{And, Caret, Minus, Or, Percent, Plus, Shl, Shr, Slash, Star};
 
     AssocOp::AssignOp(match op.node {
         hir::BinOpKind::Add => Plus,
@@ -642,10 +642,10 @@ fn hirbinop2assignop(op: hir::BinOp) -> AssocOp {
 
 /// Converts an `ast::BinOp` to the corresponding assigning binary operator.
 fn astbinop2assignop(op: ast::BinOp) -> AssocOp {
-    use rustc_ast::ast::BinOpKind::{
+    use crablangc_ast::ast::BinOpKind::{
         Add, And, BitAnd, BitOr, BitXor, Div, Eq, Ge, Gt, Le, Lt, Mul, Ne, Or, Rem, Shl, Shr, Sub,
     };
-    use rustc_ast::token::BinOpToken;
+    use crablangc_ast::token::BinOpToken;
 
     AssocOp::AssignOp(match op.node {
         Add => BinOpToken::Plus,
@@ -690,7 +690,7 @@ pub trait DiagnosticExt<T: LintContext> {
     ///
     /// # Example
     ///
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// diag.suggest_item_with_attr(cx, item, "#[derive(Default)]");
     /// ```
     fn suggest_item_with_attr<D: Display + ?Sized>(
@@ -708,7 +708,7 @@ pub trait DiagnosticExt<T: LintContext> {
     ///
     /// # Example
     ///
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// diag.suggest_prepend_item(cx, item,
     /// "fn foo() {
     ///     bar();
@@ -724,13 +724,13 @@ pub trait DiagnosticExt<T: LintContext> {
     ///
     /// # Example
     ///
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// diag.suggest_remove_item(cx, item, "remove this")
     /// ```
     fn suggest_remove_item(&mut self, cx: &T, item: Span, msg: &str, applicability: Applicability);
 }
 
-impl<T: LintContext> DiagnosticExt<T> for rustc_errors::Diagnostic {
+impl<T: LintContext> DiagnosticExt<T> for crablangc_errors::Diagnostic {
     fn suggest_item_with_attr<D: Display + ?Sized>(
         &mut self,
         cx: &T,
@@ -1060,7 +1060,7 @@ impl<'tcx> Delegate<'tcx> for DerefDelegate<'_, 'tcx> {
 mod test {
     use super::Sugg;
 
-    use rustc_ast::util::parser::AssocOp;
+    use crablangc_ast::util::parser::AssocOp;
     use std::borrow::Cow;
 
     const SUGGESTION: Sugg<'static> = Sugg::NonParen(Cow::Borrowed("function_call()"));

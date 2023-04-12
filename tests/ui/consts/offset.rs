@@ -10,7 +10,7 @@ struct Struct {
 static S: Struct = Struct { a: 0, b: 0, c: 0 };
 
 // For these tests we use offset_from to check that two pointers are equal.
-// Rust doesn't currently support comparing pointers in const fn.
+// CrabLang doesn't currently support comparing pointers in const fn.
 
 static OFFSET_NO_CHANGE: bool = unsafe {
     let p1 = &S.b as *const u32;

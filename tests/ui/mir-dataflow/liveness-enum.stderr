@@ -1,7 +1,7 @@
-error: rustc_peek: bit not set
+error: crablangc_peek: bit not set
   --> $DIR/liveness-enum.rs:15:5
    |
-LL |     rustc_peek(x);
+LL |     crablangc_peek(x);
    |     ^^^^^^^^^^^^^
 
 error: stop_after_dataflow ended compilation

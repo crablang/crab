@@ -70,4 +70,4 @@ LL | impl Sized for &'static [NotSync] {}
 error: aborting due to 9 previous errors
 
 Some errors have detailed explanations: E0117, E0322.
-For more information about an error, try `rustc --explain E0117`.
+For more information about an error, try `crablangc --explain E0117`.

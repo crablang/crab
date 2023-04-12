@@ -152,4 +152,4 @@ LL | fn f() -> String { let mut _t1 = D(Box::new("t1")); let x = D(&_t1).end(); 
 
 error: aborting due to 9 previous errors
 
-For more information about this error, try `rustc --explain E0597`.
+For more information about this error, try `crablangc --explain E0597`.

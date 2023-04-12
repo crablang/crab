@@ -1,8 +1,8 @@
 use clippy_utils::consts::{constant, Constant};
 use clippy_utils::diagnostics::span_lint;
 use clippy_utils::in_constant;
-use rustc_hir::{BinOpKind, Expr};
-use rustc_lint::LateContext;
+use crablangc_hir::{BinOpKind, Expr};
+use crablangc_lint::LateContext;
 
 use super::CMP_NAN;
 

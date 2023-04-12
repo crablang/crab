@@ -816,4 +816,4 @@ LL |         match $s { $($t)+ => {}, 43_i128 => todo!() }
 
 error: aborting due to 68 previous errors
 
-For more information about this error, try `rustc --explain E0004`.
+For more information about this error, try `crablangc --explain E0004`.

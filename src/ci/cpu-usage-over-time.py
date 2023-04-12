@@ -3,7 +3,7 @@
 
 # This is a small script that we use on CI to collect CPU usage statistics of
 # our builders. By seeing graphs of CPU usage over time we hope to correlate
-# that with possible improvements to Rust's own build system, ideally diagnosing
+# that with possible improvements to CrabLang's own build system, ideally diagnosing
 # that either builders are always fully using their CPU resources or they're
 # idle for long stretches of time.
 #
@@ -19,11 +19,11 @@
 # All builders will upload their CPU statistics as CSV files to our S3 buckets.
 # These URLS look like:
 #
-#   https://$bucket.s3.amazonaws.com/rustc-builds/$commit/cpu-$builder.csv
+#   https://$bucket.s3.amazonaws.com/crablangc-builds/$commit/cpu-$builder.csv
 #
 # for example
 #
-#   https://rust-lang-ci2.s3.amazonaws.com/rustc-builds/68baada19cd5340f05f0db15a3e16d6671609bcc/cpu-x86_64-apple.csv
+#   https://crablang-ci2.s3.amazonaws.com/crablangc-builds/68baada19cd5340f05f0db15a3e16d6671609bcc/cpu-x86_64-apple.csv
 #
 # Each CSV file has two columns. The first is the timestamp of the measurement
 # and the second column is the % of idle cpu time in that time slice. Ideally

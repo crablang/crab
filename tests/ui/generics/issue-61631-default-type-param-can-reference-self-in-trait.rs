@@ -1,10 +1,10 @@
 #![crate_type="lib"]
 
-// rust-lang/rust#61631: The use of `Self` in the defaults of generic
+// crablang/crablang#61631: The use of `Self` in the defaults of generic
 // types in a *trait* definition are allowed.
 //
 // It *must* be accepted; we have used this pattern extensively since
-// Rust 1.0 (see e.g. `trait Add<Rhs=Self>`).
+// CrabLang 1.0 (see e.g. `trait Add<Rhs=Self>`).
 trait Tnobound<P = Self> {}
 
 impl Tnobound for () { }

@@ -15,4 +15,4 @@ LL | fn f<T: X<Y<i32> = Vec<i32>>>(a: T::Y<i32>) {
 
 error: aborting due to previous error
 
-For more information about this error, try `rustc --explain E0308`.
+For more information about this error, try `crablangc --explain E0308`.

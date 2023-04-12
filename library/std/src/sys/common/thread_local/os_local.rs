@@ -50,7 +50,7 @@ macro_rules! __thread_local_inner {
             fn __init() -> $t { $init }
 
             // `#[inline] does not work on windows-gnu due to linking errors around dllimports.
-            // See https://github.com/rust-lang/rust/issues/109797.
+            // See https://github.com/crablang/crablang/issues/109797.
             #[cfg_attr(not(windows), inline)]
             unsafe fn __getit(
                 init: $crate::option::Option<&mut $crate::option::Option<$t>>,
@@ -60,7 +60,7 @@ macro_rules! __thread_local_inner {
 
                 // FIXME: remove the #[allow(...)] marker when macros don't
                 // raise warning for missing/extraneous unsafe blocks anymore.
-                // See https://github.com/rust-lang/rust/issues/74838.
+                // See https://github.com/crablang/crablang/issues/74838.
                 #[allow(unused_unsafe)]
                 unsafe {
                     __KEY.get(move || {
@@ -116,7 +116,7 @@ pub mod os {
     }
 
     impl<T: 'static> Key<T> {
-        #[rustc_const_unstable(feature = "thread_local_internals", issue = "none")]
+        #[crablangc_const_unstable(feature = "thread_local_internals", issue = "none")]
         pub const fn new() -> Key<T> {
             Key { os: OsStaticKey::new(Some(destroy_value::<T>)), marker: marker::PhantomData }
         }
@@ -128,7 +128,7 @@ pub mod os {
             let ptr = unsafe { self.os.get() as *mut Value<T> };
             if ptr.addr() > 1 {
                 // SAFETY: the check ensured the pointer is safe (its destructor
-                // is not running) + it is coming from a trusted source (self).
+                // is not running) + it is coming from a tcrablanged source (self).
                 if let Some(ref value) = unsafe { (*ptr).inner.get() } {
                     return Some(value);
                 }

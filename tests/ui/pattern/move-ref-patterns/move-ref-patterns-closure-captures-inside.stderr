@@ -401,4 +401,4 @@ LL |     m!([_, mov1, mov2, mov3, _] = &arr3);
 
 error: aborting due to 27 previous errors
 
-For more information about this error, try `rustc --explain E0382`.
+For more information about this error, try `crablangc --explain E0382`.

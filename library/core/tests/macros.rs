@@ -13,7 +13,7 @@ fn assert_ne_trailing_comma() {
     assert_ne!(1, 2,);
 }
 
-#[rustfmt::skip]
+#[crablangfmt::skip]
 #[test]
 fn matches_leading_pipe() {
     matches!(1, | 1 | 2 | 3);

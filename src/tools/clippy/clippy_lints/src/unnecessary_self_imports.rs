@@ -1,10 +1,10 @@
 use clippy_utils::diagnostics::span_lint_and_then;
 use if_chain::if_chain;
-use rustc_ast::{Item, ItemKind, UseTreeKind};
-use rustc_errors::Applicability;
-use rustc_lint::{EarlyContext, EarlyLintPass};
-use rustc_session::{declare_lint_pass, declare_tool_lint};
-use rustc_span::symbol::kw;
+use crablangc_ast::{Item, ItemKind, UseTreeKind};
+use crablangc_errors::Applicability;
+use crablangc_lint::{EarlyContext, EarlyLintPass};
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_span::symbol::kw;
 
 declare_clippy_lint! {
     /// ### What it does
@@ -15,15 +15,15 @@ declare_clippy_lint! {
     ///
     /// ### Known problems
     /// Removing `::{self}` will cause any non-module items at the same path to also be imported.
-    /// This might cause a naming conflict (https://github.com/rust-lang/rustfmt/issues/3568). This lint makes no attempt
+    /// This might cause a naming conflict (https://github.com/crablang/crablangfmt/issues/3568). This lint makes no attempt
     /// to detect this scenario and that is why it is a restriction lint.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// use std::io::{self};
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// use std::io;
     /// ```
     #[clippy::version = "1.53.0"]

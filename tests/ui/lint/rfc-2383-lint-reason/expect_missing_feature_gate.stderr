@@ -4,9 +4,9 @@ error[E0658]: the `#[expect]` attribute is an experimental feature
 LL | #[expect(unused)]
    | ^^^^^^^^^^^^^^^^^
    |
-   = note: see issue #54503 <https://github.com/rust-lang/rust/issues/54503> for more information
+   = note: see issue #54503 <https://github.com/crablang/crablang/issues/54503> for more information
    = help: add `#![feature(lint_reasons)]` to the crate attributes to enable
 
 error: aborting due to previous error
 
-For more information about this error, try `rustc --explain E0658`.
+For more information about this error, try `crablangc --explain E0658`.

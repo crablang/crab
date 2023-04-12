@@ -1,11 +1,11 @@
 // check-pass
 
-#![feature(trusted_len)]
+#![feature(tcrablanged_len)]
 
 use std::{
     array::IntoIter,
     fmt::Debug,
-    iter::{ExactSizeIterator, FusedIterator, TrustedLen},
+    iter::{ExactSizeIterator, FusedIterator, TcrablangedLen},
 };
 
 pub fn yes_iterator() -> impl Iterator<Item = i32> {
@@ -24,7 +24,7 @@ pub fn yes_fused_iterator() -> impl FusedIterator {
     IntoIterator::into_iter([0i32; 32])
 }
 
-pub fn yes_trusted_len() -> impl TrustedLen {
+pub fn yes_tcrablanged_len() -> impl TcrablangedLen {
     IntoIterator::into_iter([0i32; 32])
 }
 

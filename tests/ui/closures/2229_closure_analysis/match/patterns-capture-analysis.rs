@@ -1,15 +1,15 @@
 // edition:2021
 
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 
 // Should capture the discriminant since a variant of a multivariant enum is
 // mentioned in the match arm; the discriminant is captured by the closure regardless
 // of if it creates a binding
 fn test_1_should_capture() {
     let variant = Some(2229);
-    let c =  #[rustc_capture_analysis]
+    let c =  #[crablangc_capture_analysis]
     //~^ ERROR: attributes on expressions are experimental
-    //~| NOTE: see issue #15701 <https://github.com/rust-lang/rust/issues/15701>
+    //~| NOTE: see issue #15701 <https://github.com/crablang/crablang/issues/15701>
 
     || {
     //~^ First Pass analysis includes:
@@ -28,9 +28,9 @@ fn test_1_should_capture() {
 // match arm
 fn test_2_should_not_capture() {
     let variant = Some(2229);
-    let c =  #[rustc_capture_analysis]
+    let c =  #[crablangc_capture_analysis]
     //~^ ERROR: attributes on expressions are experimental
-    //~| NOTE: see issue #15701 <https://github.com/rust-lang/rust/issues/15701>
+    //~| NOTE: see issue #15701 <https://github.com/crablang/crablang/issues/15701>
     || {
     //~^ First Pass analysis includes:
         match variant {
@@ -49,9 +49,9 @@ enum SingleVariant {
 // in the match arm does not trigger a binding
 fn test_3_should_not_capture_single_variant() {
     let variant = SingleVariant::Points(1);
-    let c =  #[rustc_capture_analysis]
+    let c =  #[crablangc_capture_analysis]
     //~^ ERROR: attributes on expressions are experimental
-    //~| NOTE: see issue #15701 <https://github.com/rust-lang/rust/issues/15701>
+    //~| NOTE: see issue #15701 <https://github.com/crablang/crablang/issues/15701>
     || {
     //~^ First Pass analysis includes:
         match variant {
@@ -65,9 +65,9 @@ fn test_3_should_not_capture_single_variant() {
 // in the match arm does not trigger a binding
 fn test_6_should_capture_single_variant() {
     let variant = SingleVariant::Points(1);
-    let c =  #[rustc_capture_analysis]
+    let c =  #[crablangc_capture_analysis]
     //~^ ERROR: attributes on expressions are experimental
-    //~| NOTE: see issue #15701 <https://github.com/rust-lang/rust/issues/15701>
+    //~| NOTE: see issue #15701 <https://github.com/crablang/crablang/issues/15701>
     || {
     //~^ First Pass analysis includes:
     //~| Min Capture analysis includes:
@@ -87,9 +87,9 @@ fn test_6_should_capture_single_variant() {
 // match arm
 fn test_4_should_not_capture_array() {
     let array: [i32; 3] = [0; 3];
-    let c =  #[rustc_capture_analysis]
+    let c =  #[crablangc_capture_analysis]
     //~^ ERROR: attributes on expressions are experimental
-    //~| NOTE: see issue #15701 <https://github.com/rust-lang/rust/issues/15701>
+    //~| NOTE: see issue #15701 <https://github.com/crablang/crablang/issues/15701>
     || {
     //~^ First Pass analysis includes:
         match array {
@@ -111,9 +111,9 @@ enum MVariant {
 // regardless of if it creates a binding
 fn test_5_should_capture_multi_variant() {
     let variant = MVariant::A;
-    let c =  #[rustc_capture_analysis]
+    let c =  #[crablangc_capture_analysis]
     //~^ ERROR: attributes on expressions are experimental
-    //~| NOTE: see issue #15701 <https://github.com/rust-lang/rust/issues/15701>
+    //~| NOTE: see issue #15701 <https://github.com/crablang/crablang/issues/15701>
     || {
     //~^ First Pass analysis includes:
     //~| Min Capture analysis includes:

@@ -382,4 +382,4 @@ LL |     no_curly__rhs_dollar__no_round!(a);
 
 error: aborting due to 40 previous errors
 
-For more information about this error, try `rustc --explain E0425`.
+For more information about this error, try `crablangc --explain E0425`.

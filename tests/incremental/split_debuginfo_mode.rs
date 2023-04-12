@@ -11,16 +11,16 @@
 // [rpass3]compile-flags: -Zquery-dep-graph -Csplit-debuginfo=packed -Zsplit-dwarf-kind=split -Zsplit-dwarf-inlining=on
 // [rpass4]compile-flags: -Zquery-dep-graph -Csplit-debuginfo=packed -Zsplit-dwarf-kind=split -Zsplit-dwarf-inlining=off
 
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 // For rpass2 we change -Csplit-debuginfo and thus expect every CGU to be recompiled
-#![rustc_partition_codegened(module = "split_debuginfo_mode", cfg = "rpass2")]
-#![rustc_partition_codegened(module = "split_debuginfo_mode-another_module", cfg = "rpass2")]
+#![crablangc_partition_codegened(module = "split_debuginfo_mode", cfg = "rpass2")]
+#![crablangc_partition_codegened(module = "split_debuginfo_mode-another_module", cfg = "rpass2")]
 // For rpass3 we change -Zsplit-dwarf-kind and thus also expect every CGU to be recompiled
-#![rustc_partition_codegened(module = "split_debuginfo_mode", cfg = "rpass3")]
-#![rustc_partition_codegened(module = "split_debuginfo_mode-another_module", cfg = "rpass3")]
+#![crablangc_partition_codegened(module = "split_debuginfo_mode", cfg = "rpass3")]
+#![crablangc_partition_codegened(module = "split_debuginfo_mode-another_module", cfg = "rpass3")]
 // For rpass4 we change -Zsplit-dwarf-inlining and thus also expect every CGU to be recompiled
-#![rustc_partition_codegened(module = "split_debuginfo_mode", cfg = "rpass4")]
-#![rustc_partition_codegened(module = "split_debuginfo_mode-another_module", cfg = "rpass4")]
+#![crablangc_partition_codegened(module = "split_debuginfo_mode", cfg = "rpass4")]
+#![crablangc_partition_codegened(module = "split_debuginfo_mode-another_module", cfg = "rpass4")]
 
 mod another_module {
     pub fn foo() -> &'static str {

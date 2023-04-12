@@ -45,4 +45,4 @@ LL |     let y: &mut usize = &mut(0);
 error: aborting due to 4 previous errors
 
 Some errors have detailed explanations: E0594, E0596.
-For more information about an error, try `rustc --explain E0594`.
+For more information about an error, try `crablangc --explain E0594`.

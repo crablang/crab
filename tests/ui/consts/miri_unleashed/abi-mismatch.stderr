@@ -2,9 +2,9 @@ error[E0080]: could not evaluate static initializer
   --> $DIR/abi-mismatch.rs:9:5
    |
 LL |     my_fn();
-   |     ^^^^^^^ calling a function with calling convention C using calling convention Rust
+   |     ^^^^^^^ calling a function with calling convention C using calling convention CrabLang
    |
-note: inside `call_rust_fn`
+note: inside `call_crablang_fn`
   --> $DIR/abi-mismatch.rs:9:5
    |
 LL |     my_fn();
@@ -12,7 +12,7 @@ LL |     my_fn();
 note: inside `VAL`
   --> $DIR/abi-mismatch.rs:15:18
    |
-LL | static VAL: () = call_rust_fn(unsafe { std::mem::transmute(c_fn as extern "C" fn()) });
+LL | static VAL: () = call_crablang_fn(unsafe { std::mem::transmute(c_fn as extern "C" fn()) });
    |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 warning: skipping const checks
@@ -25,4 +25,4 @@ LL |     my_fn();
 
 error: aborting due to previous error; 1 warning emitted
 
-For more information about this error, try `rustc --explain E0080`.
+For more information about this error, try `crablangc --explain E0080`.

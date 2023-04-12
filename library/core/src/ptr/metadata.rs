@@ -7,7 +7,7 @@ use crate::hash::{Hash, Hasher};
 ///
 /// # Pointer metadata
 ///
-/// Raw pointer types and reference types in Rust can be thought of as made of two parts:
+/// Raw pointer types and reference types in CrabLang can be thought of as made of two parts:
 /// a data pointer that contains the memory address of the value, and some metadata.
 ///
 /// For statically-sized types (that implement the `Sized` traits)
@@ -23,10 +23,10 @@ use crate::hash::{Hash, Hasher};
 /// * For trait objects like `dyn SomeTrait`, metadata is [`DynMetadata<Self>`][DynMetadata]
 ///   (e.g. `DynMetadata<dyn SomeTrait>`)
 ///
-/// In the future, the Rust language may gain new kinds of types
+/// In the future, the CrabLang language may gain new kinds of types
 /// that have different pointer metadata.
 ///
-/// [dst]: https://doc.rust-lang.org/nomicon/exotic-sizes.html#dynamically-sized-types-dsts
+/// [dst]: https://doc.crablang.org/nomicon/exotic-sizes.html#dynamically-sized-types-dsts
 ///
 ///
 /// # The `Pointee` trait
@@ -50,7 +50,7 @@ use crate::hash::{Hash, Hasher};
 ///
 /// [`to_raw_parts`]: *const::to_raw_parts
 #[lang = "pointee_trait"]
-#[rustc_deny_explicit_impl]
+#[crablangc_deny_explicit_impl]
 pub trait Pointee {
     /// The type for metadata in pointers and references to `Self`.
     #[lang = "metadata_type"]
@@ -66,7 +66,7 @@ pub trait Pointee {
 ///
 /// # Example
 ///
-/// ```rust
+/// ```crablang
 /// #![feature(ptr_metadata)]
 ///
 /// fn this_never_panics<T: std::ptr::Thin>() {
@@ -89,7 +89,7 @@ pub trait Thin = Pointee<Metadata = ()>;
 ///
 /// assert_eq!(std::ptr::metadata("foo"), 3_usize);
 /// ```
-#[rustc_const_unstable(feature = "ptr_metadata", issue = "81513")]
+#[crablangc_const_unstable(feature = "ptr_metadata", issue = "81513")]
 #[inline]
 pub const fn metadata<T: ?Sized>(ptr: *const T) -> <T as Pointee>::Metadata {
     // SAFETY: Accessing the value from the `PtrRepr` union is safe since *const T
@@ -106,7 +106,7 @@ pub const fn metadata<T: ?Sized>(ptr: *const T) -> <T as Pointee>::Metadata {
 ///
 /// [`slice::from_raw_parts`]: crate::slice::from_raw_parts
 #[unstable(feature = "ptr_metadata", issue = "81513")]
-#[rustc_const_unstable(feature = "ptr_metadata", issue = "81513")]
+#[crablangc_const_unstable(feature = "ptr_metadata", issue = "81513")]
 #[inline]
 pub const fn from_raw_parts<T: ?Sized>(
     data_address: *const (),
@@ -123,7 +123,7 @@ pub const fn from_raw_parts<T: ?Sized>(
 ///
 /// See the documentation of [`from_raw_parts`] for more details.
 #[unstable(feature = "ptr_metadata", issue = "81513")]
-#[rustc_const_unstable(feature = "ptr_metadata", issue = "81513")]
+#[crablangc_const_unstable(feature = "ptr_metadata", issue = "81513")]
 #[inline]
 pub const fn from_raw_parts_mut<T: ?Sized>(
     data_address: *mut (),
@@ -214,7 +214,7 @@ impl<Dyn: ?Sized> DynMetadata<Dyn> {
     /// Returns the size and alignment together as a `Layout`
     #[inline]
     pub fn layout(self) -> crate::alloc::Layout {
-        // SAFETY: the compiler emitted this vtable for a concrete Rust type which
+        // SAFETY: the compiler emitted this vtable for a concrete CrabLang type which
         // is known to have a valid layout. Same rationale as in `Layout::for_value`.
         unsafe { crate::alloc::Layout::from_size_align_unchecked(self.size_of(), self.align_of()) }
     }

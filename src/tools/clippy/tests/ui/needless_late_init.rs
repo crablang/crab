@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 // aux-build:proc_macros.rs
 #![feature(let_chains)]
 #![allow(unused)]
@@ -221,7 +221,7 @@ fn does_not_lint() {
         }
     });
 
-    // ignore if-lets - https://github.com/rust-lang/rust-clippy/issues/8613
+    // ignore if-lets - https://github.com/crablang/crablang-clippy/issues/8613
     let x;
     if let Some(n) = Some("v") {
         x = 1;
@@ -251,7 +251,7 @@ fn does_not_lint() {
     x = SignificantDrop;
 }
 
-#[rustfmt::skip]
+#[crablangfmt::skip]
 fn issue8911() -> u32 {
     let x;
     match 1 {

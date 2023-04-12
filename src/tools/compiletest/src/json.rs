@@ -1,4 +1,4 @@
-//! These structs are a subset of the ones found in `rustc_errors::json`.
+//! These structs are a subset of the ones found in `crablangc_errors::json`.
 //! They are only used for deserialization of JSON output provided by libtest.
 
 use crate::errors::{Error, ErrorKind};
@@ -84,7 +84,7 @@ struct DiagnosticCode {
     code: String,
 }
 
-pub fn rustfix_diagnostics_only(output: &str) -> String {
+pub fn crablangfix_diagnostics_only(output: &str) -> String {
     output
         .lines()
         .filter(|line| line.starts_with('{') && serde_json::from_str::<Diagnostic>(line).is_ok())

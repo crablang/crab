@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 // Issue #50974
 
 pub struct Foo {

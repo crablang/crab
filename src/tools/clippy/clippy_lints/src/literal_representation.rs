@@ -5,13 +5,13 @@ use clippy_utils::diagnostics::span_lint_and_sugg;
 use clippy_utils::numeric_literal::{NumericLiteral, Radix};
 use clippy_utils::source::snippet_opt;
 use if_chain::if_chain;
-use rustc_ast::ast::{Expr, ExprKind, LitKind};
-use rustc_ast::token;
-use rustc_errors::Applicability;
-use rustc_lint::{EarlyContext, EarlyLintPass, LintContext};
-use rustc_middle::lint::in_external_macro;
-use rustc_session::{declare_tool_lint, impl_lint_pass};
-use rustc_span::Span;
+use crablangc_ast::ast::{Expr, ExprKind, LitKind};
+use crablangc_ast::token;
+use crablangc_errors::Applicability;
+use crablangc_lint::{EarlyContext, EarlyLintPass, LintContext};
+use crablangc_middle::lint::in_external_macro;
+use crablangc_session::{declare_tool_lint, impl_lint_pass};
+use crablangc_span::Span;
 use std::iter;
 
 declare_clippy_lint! {
@@ -23,14 +23,14 @@ declare_clippy_lint! {
     /// Reading long numbers is difficult without separators.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// # let _: u64 =
     /// 61864918973511
     /// # ;
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// # let _: u64 =
     /// 61_864_918_973_511
     /// # ;
@@ -73,14 +73,14 @@ declare_clippy_lint! {
     /// grouped digits.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// # let _: u64 =
     /// 618_64_9189_73_511
     /// # ;
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// # let _: u64 =
     /// 61_864_918_973_511
     /// # ;
@@ -100,7 +100,7 @@ declare_clippy_lint! {
     /// Negatively impacts readability.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// let x: u32 = 0xFFF_FFF;
     /// let y: u8 = 0b01_011_101;
     /// ```
@@ -120,7 +120,7 @@ declare_clippy_lint! {
     /// Negatively impacts readability.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// let x: u64 = 6186491_8973511;
     /// ```
     #[clippy::version = "pre 1.29.0"]
@@ -159,7 +159,7 @@ enum WarningType {
 }
 
 impl WarningType {
-    fn display(&self, suggested_format: String, cx: &EarlyContext<'_>, span: rustc_span::Span) {
+    fn display(&self, suggested_format: String, cx: &EarlyContext<'_>, span: crablangc_span::Span) {
         match self {
             Self::MistypedLiteralSuffix => span_lint_and_sugg(
                 cx,
@@ -313,7 +313,7 @@ impl LiteralDigitGrouping {
     // Returns `false` if the check fails
     fn check_for_mistyped_suffix(
         cx: &EarlyContext<'_>,
-        span: rustc_span::Span,
+        span: crablangc_span::Span,
         num_lit: &mut NumericLiteral<'_>,
     ) -> bool {
         if num_lit.suffix.is_some() {

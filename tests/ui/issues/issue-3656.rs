@@ -7,7 +7,7 @@
 
 // pretty-expanded FIXME #23616
 // ignore-wasm32-bare no libc to test with
-#![feature(rustc_private)]
+#![feature(crablangc_private)]
 
 extern crate libc;
 use libc::{c_uint, c_void};

@@ -9,21 +9,21 @@ use crate::util::t;
 
 #[derive(Copy, Clone)]
 pub(crate) enum OverlayKind {
-    Rust,
+    CrabLang,
     LLVM,
     Cargo,
     Clippy,
     Miri,
-    Rustfmt,
-    RustDemangler,
+    CrabLangfmt,
+    CrabLangDemangler,
     RLS,
-    RustAnalyzer,
+    CrabLangAnalyzer,
 }
 
 impl OverlayKind {
     fn legal_and_readme(&self) -> &[&str] {
         match self {
-            OverlayKind::Rust => &["COPYRIGHT", "LICENSE-APACHE", "LICENSE-MIT", "README.md"],
+            OverlayKind::CrabLang => &["COPYRIGHT", "LICENSE-APACHE", "LICENSE-MIT", "README.md"],
             OverlayKind::LLVM => {
                 &["src/llvm-project/llvm/LICENSE.TXT", "src/llvm-project/llvm/README.txt"]
             }
@@ -43,28 +43,28 @@ impl OverlayKind {
                 "src/tools/miri/LICENSE-APACHE",
                 "src/tools/miri/LICENSE-MIT",
             ],
-            OverlayKind::Rustfmt => &[
-                "src/tools/rustfmt/README.md",
-                "src/tools/rustfmt/LICENSE-APACHE",
-                "src/tools/rustfmt/LICENSE-MIT",
+            OverlayKind::CrabLangfmt => &[
+                "src/tools/crablangfmt/README.md",
+                "src/tools/crablangfmt/LICENSE-APACHE",
+                "src/tools/crablangfmt/LICENSE-MIT",
             ],
-            OverlayKind::RustDemangler => {
-                &["src/tools/rust-demangler/README.md", "LICENSE-APACHE", "LICENSE-MIT"]
+            OverlayKind::CrabLangDemangler => {
+                &["src/tools/crablang-demangler/README.md", "LICENSE-APACHE", "LICENSE-MIT"]
             }
             OverlayKind::RLS => &["src/tools/rls/README.md", "LICENSE-APACHE", "LICENSE-MIT"],
-            OverlayKind::RustAnalyzer => &[
-                "src/tools/rust-analyzer/README.md",
-                "src/tools/rust-analyzer/LICENSE-APACHE",
-                "src/tools/rust-analyzer/LICENSE-MIT",
+            OverlayKind::CrabLangAnalyzer => &[
+                "src/tools/crablang-analyzer/README.md",
+                "src/tools/crablang-analyzer/LICENSE-APACHE",
+                "src/tools/crablang-analyzer/LICENSE-MIT",
             ],
         }
     }
 
     fn version(&self, builder: &Builder<'_>) -> String {
         match self {
-            OverlayKind::Rust => builder.rust_version(),
-            OverlayKind::LLVM => builder.rust_version(),
-            OverlayKind::RustDemangler => builder.release_num("rust-demangler"),
+            OverlayKind::CrabLang => builder.crablang_version(),
+            OverlayKind::LLVM => builder.crablang_version(),
+            OverlayKind::CrabLangDemangler => builder.release_num("crablang-demangler"),
             OverlayKind::Cargo => {
                 builder.cargo_info.version(builder, &builder.release_num("cargo"))
             }
@@ -72,13 +72,13 @@ impl OverlayKind {
                 builder.clippy_info.version(builder, &builder.release_num("clippy"))
             }
             OverlayKind::Miri => builder.miri_info.version(builder, &builder.release_num("miri")),
-            OverlayKind::Rustfmt => {
-                builder.rustfmt_info.version(builder, &builder.release_num("rustfmt"))
+            OverlayKind::CrabLangfmt => {
+                builder.crablangfmt_info.version(builder, &builder.release_num("crablangfmt"))
             }
             OverlayKind::RLS => builder.release(&builder.release_num("rls")),
-            OverlayKind::RustAnalyzer => builder
-                .rust_analyzer_info
-                .version(builder, &builder.release_num("rust-analyzer/crates/rust-analyzer")),
+            OverlayKind::CrabLangAnalyzer => builder
+                .crablang_analyzer_info
+                .version(builder, &builder.release_num("crablang-analyzer/crates/crablang-analyzer")),
         }
     }
 }
@@ -129,8 +129,8 @@ impl<'a> Tarball<'a> {
             pkgname,
             component: component.into(),
             target,
-            product_name: "Rust".into(),
-            overlay: OverlayKind::Rust,
+            product_name: "CrabLang".into(),
+            overlay: OverlayKind::CrabLang,
 
             temp_dir,
             image_dir,
@@ -260,7 +260,7 @@ impl<'a> Tarball<'a> {
     pub(crate) fn bare(self) -> GeneratedTarball {
         // Bare tarballs should have the top level directory match the package
         // name, not "image". We rename the image directory just before passing
-        // into rust-installer.
+        // into crablang-installer.
         let dest = self.temp_dir.join(self.package_name());
         t!(std::fs::rename(&self.image_dir, &dest));
 
@@ -284,8 +284,8 @@ impl<'a> Tarball<'a> {
     }
 
     fn non_bare_args(&self, cmd: &mut Command) {
-        cmd.arg("--rel-manifest-dir=rustlib")
-            .arg("--legacy-manifest-dirs=rustlib,cargo")
+        cmd.arg("--rel-manifest-dir=crablanglib")
+            .arg("--legacy-manifest-dirs=crablanglib,cargo")
             .arg(format!("--product-name={}", self.product_name))
             .arg(format!("--success-message={} installed.", self.component))
             .arg(format!("--package-name={}", self.package_name()))
@@ -298,7 +298,7 @@ impl<'a> Tarball<'a> {
     fn run(self, build_cli: impl FnOnce(&Tarball<'a>, &mut Command)) -> GeneratedTarball {
         t!(std::fs::create_dir_all(&self.overlay_dir));
         self.builder.create(&self.overlay_dir.join("version"), &self.overlay.version(self.builder));
-        if let Some(info) = self.builder.rust_info().info() {
+        if let Some(info) = self.builder.crablang_info().info() {
             channel::write_commit_hash_file(&self.overlay_dir, &info.sha);
             channel::write_commit_info_file(&self.overlay_dir, info);
         }
@@ -306,7 +306,7 @@ impl<'a> Tarball<'a> {
             self.builder.install(&self.builder.src.join(file), &self.overlay_dir, 0o644);
         }
 
-        let mut cmd = self.builder.tool_cmd(crate::tool::Tool::RustInstaller);
+        let mut cmd = self.builder.tool_cmd(crate::tool::Tool::CrabLangInstaller);
 
         let package_name = self.package_name();
         self.builder.info(&format!("Dist {}", package_name));
@@ -322,7 +322,7 @@ impl<'a> Tarball<'a> {
         self.builder.run(&mut cmd);
 
         // Ensure there are no symbolic links in the tarball. In particular,
-        // rustup-toolchain-install-master and most versions of Windows can't handle symbolic links.
+        // crablangup-toolchain-install-master and most versions of Windows can't handle symbolic links.
         let decompressed_output = self.temp_dir.join(&package_name);
         if !self.builder.config.dry_run() && !self.permit_symlinks {
             for entry in walkdir::WalkDir::new(&decompressed_output) {

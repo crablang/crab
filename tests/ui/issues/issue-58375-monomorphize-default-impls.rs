@@ -1,6 +1,6 @@
 // Make sure that the mono-item collector does not crash when trying to
 // instantiate a default impl for DecodeUtf16<<u8 as A>::Item>
-// See https://github.com/rust-lang/rust/issues/58375
+// See https://github.com/crablang/crablang/issues/58375
 
 // build-pass
 // compile-flags:-C link-dead-code

@@ -14,4 +14,4 @@ LL |     fn foo(&self) -> Pin<Box<dyn Future<Output = i32> + '_>>;
 
 error: aborting due to previous error
 
-For more information about this error, try `rustc --explain E0053`.
+For more information about this error, try `crablangc --explain E0053`.

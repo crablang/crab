@@ -5,18 +5,18 @@
 // ignore-stage1
 // ignore-remote
 
-#![feature(rustc_private)]
+#![feature(crablangc_private)]
 
-extern crate rustc_driver;
-extern crate rustc_interface;
+extern crate crablangc_driver;
+extern crate crablangc_interface;
 
-use rustc_interface::interface;
+use crablangc_interface::interface;
 
 struct TestCalls<'a> {
     count: &'a mut u32
 }
 
-impl rustc_driver::Callbacks for TestCalls<'_> {
+impl crablangc_driver::Callbacks for TestCalls<'_> {
     fn config(&mut self, _config: &mut interface::Config) {
         *self.count *= 2;
     }
@@ -25,8 +25,8 @@ impl rustc_driver::Callbacks for TestCalls<'_> {
 fn main() {
     let mut count = 1;
     let args = vec!["compiler-calls".to_string(), "foo.rs".to_string()];
-    rustc_driver::catch_fatal_errors(|| {
-        rustc_driver::RunCompiler::new(&args, &mut TestCalls { count: &mut count }).run().ok();
+    crablangc_driver::catch_fatal_errors(|| {
+        crablangc_driver::RunCompiler::new(&args, &mut TestCalls { count: &mut count }).run().ok();
     })
     .ok();
     assert_eq!(count, 2);

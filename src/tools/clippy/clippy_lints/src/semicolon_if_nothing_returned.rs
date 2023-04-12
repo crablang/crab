@@ -1,11 +1,11 @@
-use crate::rustc_lint::LintContext;
+use crate::crablangc_lint::LintContext;
 use clippy_utils::diagnostics::span_lint_and_sugg;
 use clippy_utils::source::snippet_with_context;
 use if_chain::if_chain;
-use rustc_errors::Applicability;
-use rustc_hir::{Block, ExprKind};
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_errors::Applicability;
+use crablangc_hir::{Block, ExprKind};
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
 
 declare_clippy_lint! {
     /// ### What it does
@@ -17,13 +17,13 @@ declare_clippy_lint! {
     /// code, it doesn't require a change in previous last line.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// fn main() {
     ///     println!("Hello world")
     /// }
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// fn main() {
     ///     println!("Hello world");
     /// }

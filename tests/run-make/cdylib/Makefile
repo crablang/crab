@@ -4,7 +4,7 @@ include ../tools.mk
 all: $(call RUN_BINFILE,foo)
 	$(call RUN,foo)
 	rm $(call DYLIB,foo)
-	$(RUSTC) foo.rs -C lto
+	$(CRABLANGC) foo.rs -C lto
 	$(call RUN,foo)
 
 ifdef IS_MSVC
@@ -16,5 +16,5 @@ $(call RUN_BINFILE,foo): $(call DYLIB,foo)
 endif
 
 $(call DYLIB,foo):
-	$(RUSTC) bar.rs
-	$(RUSTC) foo.rs
+	$(CRABLANGC) bar.rs
+	$(CRABLANGC) foo.rs

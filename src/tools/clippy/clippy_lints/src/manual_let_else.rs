@@ -6,15 +6,15 @@ use clippy_utils::source::snippet_with_context;
 use clippy_utils::ty::is_type_diagnostic_item;
 use clippy_utils::visitors::{Descend, Visitable};
 use if_chain::if_chain;
-use rustc_data_structures::fx::FxHashSet;
-use rustc_errors::Applicability;
-use rustc_hir::intravisit::{walk_expr, Visitor};
-use rustc_hir::{Expr, ExprKind, HirId, ItemId, Local, MatchSource, Pat, PatKind, QPath, Stmt, StmtKind, Ty};
-use rustc_lint::{LateContext, LateLintPass, LintContext};
-use rustc_middle::lint::in_external_macro;
-use rustc_session::{declare_tool_lint, impl_lint_pass};
-use rustc_span::symbol::sym;
-use rustc_span::Span;
+use crablangc_data_structures::fx::FxHashSet;
+use crablangc_errors::Applicability;
+use crablangc_hir::intravisit::{walk_expr, Visitor};
+use crablangc_hir::{Expr, ExprKind, HirId, ItemId, Local, MatchSource, Pat, PatKind, QPath, Stmt, StmtKind, Ty};
+use crablangc_lint::{LateContext, LateLintPass, LintContext};
+use crablangc_middle::lint::in_external_macro;
+use crablangc_session::{declare_tool_lint, impl_lint_pass};
+use crablangc_span::symbol::sym;
+use crablangc_span::Span;
 use serde::Deserialize;
 use std::ops::ControlFlow;
 
@@ -30,14 +30,14 @@ declare_clippy_lint! {
     ///
     /// ### Example
     ///
-    /// ```rust
+    /// ```crablang
     /// # let w = Some(0);
     /// let v = if let Some(v) = w { v } else { return };
     /// ```
     ///
     /// Could be written:
     ///
-    /// ```rust
+    /// ```crablang
     /// # #![feature(let_else)]
     /// # fn main () {
     /// # let w = Some(0);

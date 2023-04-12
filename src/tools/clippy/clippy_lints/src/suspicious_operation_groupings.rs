@@ -3,14 +3,14 @@ use clippy_utils::diagnostics::span_lint_and_sugg;
 use clippy_utils::source::snippet_with_applicability;
 use core::ops::{Add, AddAssign};
 use if_chain::if_chain;
-use rustc_ast::ast::{BinOpKind, Expr, ExprKind, StmtKind};
-use rustc_data_structures::fx::FxHashSet;
-use rustc_errors::Applicability;
-use rustc_lint::{EarlyContext, EarlyLintPass};
-use rustc_session::{declare_lint_pass, declare_tool_lint};
-use rustc_span::source_map::Spanned;
-use rustc_span::symbol::Ident;
-use rustc_span::Span;
+use crablangc_ast::ast::{BinOpKind, Expr, ExprKind, StmtKind};
+use crablangc_data_structures::fx::FxHashSet;
+use crablangc_errors::Applicability;
+use crablangc_lint::{EarlyContext, EarlyLintPass};
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_span::source_map::Spanned;
+use crablangc_span::symbol::Ident;
+use crablangc_span::Span;
 
 declare_clippy_lint! {
     /// ### What it does
@@ -28,7 +28,7 @@ declare_clippy_lint! {
     /// unusual that happens to look like a typo.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// struct Vec3 {
     ///     x: f64,
     ///     y: f64,
@@ -45,7 +45,7 @@ declare_clippy_lint! {
     /// }
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// # struct Vec3 {
     /// #     x: f64,
     /// #     y: f64,
@@ -535,7 +535,7 @@ fn ident_difference_expr_with_base_location(
     // return because if without that restriction the lint would lead to false
     // positives.
     //
-    // But, we cannot (easily?) use a `rustc_ast::visit::Visitor`, since we need
+    // But, we cannot (easily?) use a `crablangc_ast::visit::Visitor`, since we need
     // the two expressions to be walked in lockstep. And without a `Visitor`, we'd
     // have to do all the AST traversal ourselves, which is a lot of work, since to
     // do it properly we'd need to be able to handle more or less every possible

@@ -21,7 +21,7 @@ all: \
 abs_input_inside_working_dir:
 	# We explicitly switch to a directory that *is* a prefix of the directory our
 	# source code is contained in.
-	cd $(SRC_DIR) && $(RUSTC) $(SRC_DIR)/src/quux.rs -o "$(TMPDIR)/abs_input_inside_working_dir.rlib" -Cdebuginfo=2 --remap-path-prefix $(SRC_DIR)=REMAPPED
+	cd $(SRC_DIR) && $(CRABLANGC) $(SRC_DIR)/src/quux.rs -o "$(TMPDIR)/abs_input_inside_working_dir.rlib" -Cdebuginfo=2 --remap-path-prefix $(SRC_DIR)=REMAPPED
 	# We expect the path to the main source file to be remapped.
 	"$(LLVM_BIN_DIR)"/llvm-dwarfdump $(TMPDIR)/abs_input_inside_working_dir.rlib | $(CGREP) "REMAPPED/src/quux.rs"
 	# No weird duplication of remapped components (see #78479)
@@ -37,7 +37,7 @@ abs_input_inside_working_dir:
 abs_input_outside_working_dir:
 	# We explicitly switch to a directory that is *not* a prefix of the directory our
 	# source code is contained in.
-	cd $(TMPDIR) && $(RUSTC) $(SRC_DIR)/src/quux.rs -o "$(TMPDIR)/abs_input_outside_working_dir.rlib" -Cdebuginfo=2 --remap-path-prefix $(SRC_DIR)=REMAPPED --remap-path-prefix $(TMPDIR)=REMAPPED
+	cd $(TMPDIR) && $(CRABLANGC) $(SRC_DIR)/src/quux.rs -o "$(TMPDIR)/abs_input_outside_working_dir.rlib" -Cdebuginfo=2 --remap-path-prefix $(SRC_DIR)=REMAPPED --remap-path-prefix $(TMPDIR)=REMAPPED
 	"$(LLVM_BIN_DIR)"/llvm-dwarfdump $(TMPDIR)/abs_input_outside_working_dir.rlib | $(CGREP) "REMAPPED/src/quux.rs"
 	# No weird duplication of remapped components (see #78479)
 	"$(LLVM_BIN_DIR)"/llvm-dwarfdump $(TMPDIR)/abs_input_outside_working_dir.rlib | $(CGREP) -v "REMAPPED/REMAPPED"
@@ -47,7 +47,7 @@ abs_input_outside_working_dir:
 # expand the relative path to an absolute path and we expect the working directory to be remapped
 # in that expansion.
 rel_input_remap_working_dir:
-	cd $(SRC_DIR) && $(RUSTC) src/quux.rs -o "$(TMPDIR)/rel_input_remap_working_dir.rlib" -Cdebuginfo=2 --remap-path-prefix "$(SRC_DIR)=REMAPPED"
+	cd $(SRC_DIR) && $(CRABLANGC) src/quux.rs -o "$(TMPDIR)/rel_input_remap_working_dir.rlib" -Cdebuginfo=2 --remap-path-prefix "$(SRC_DIR)=REMAPPED"
 	"$(LLVM_BIN_DIR)"/llvm-dwarfdump "$(TMPDIR)/rel_input_remap_working_dir.rlib" | $(CGREP) "REMAPPED/src/quux.rs"
 	# No weird duplication of remapped components (see #78479)
 	"$(LLVM_BIN_DIR)"/llvm-dwarfdump "$(TMPDIR)/rel_input_remap_working_dir.rlib" | $(CGREP) -v "REMAPPED/REMAPPED"
@@ -57,7 +57,7 @@ rel_input_remap_working_dir:
 # won't actually show up in this form in the compiler's SourceMap and instead is only constructed
 # on demand during debuginfo generation.
 rel_input_remap_working_dir_child:
-	cd $(SRC_DIR) && $(RUSTC) src/quux.rs -o "$(TMPDIR)/rel_input_remap_working_dir_child.rlib" -Cdebuginfo=2 --remap-path-prefix "$(SRC_DIR)/src=REMAPPED"
+	cd $(SRC_DIR) && $(CRABLANGC) src/quux.rs -o "$(TMPDIR)/rel_input_remap_working_dir_child.rlib" -Cdebuginfo=2 --remap-path-prefix "$(SRC_DIR)/src=REMAPPED"
 	# We expect `src/quux.rs` to have been remapped to `REMAPPED/quux.rs`.
 	"$(LLVM_BIN_DIR)"/llvm-dwarfdump "$(TMPDIR)/rel_input_remap_working_dir_child.rlib" | $(CGREP) "REMAPPED/quux.rs"
 	# We don't want to find the path that we just remapped anywhere in the DWARF
@@ -68,7 +68,7 @@ rel_input_remap_working_dir_child:
 # The compiler is called with a *RELATIVE PATH* as input. We are remapping a *PARENT DIRECTORY* of
 # the compiler's working directory.
 rel_input_remap_working_dir_parent:
-	cd $(SRC_DIR) && $(RUSTC) src/quux.rs -o "$(TMPDIR)/rel_input_remap_working_dir_parent.rlib" -Cdebuginfo=2 --remap-path-prefix "$(SRC_DIR_PARENT)=REMAPPED"
+	cd $(SRC_DIR) && $(CRABLANGC) src/quux.rs -o "$(TMPDIR)/rel_input_remap_working_dir_parent.rlib" -Cdebuginfo=2 --remap-path-prefix "$(SRC_DIR_PARENT)=REMAPPED"
 	# We expect `src/quux.rs` to have been remapped to `REMAPPED/remap-path-prefix-dwarf/src/quux.rs`.
 	"$(LLVM_BIN_DIR)"/llvm-dwarfdump "$(TMPDIR)/rel_input_remap_working_dir_parent.rlib" | $(CGREP) "REMAPPED/remap-path-prefix-dwarf/src/quux.rs"
 	# We don't want to find the path that we just remapped anywhere in the DWARF

@@ -9,7 +9,7 @@ extern crate proc_macros;
 use proc_macros::{external, inline_macros};
 
 // Don't lint on derives that derive `Default`
-// See https://github.com/rust-lang/rust-clippy/issues/6545
+// See https://github.com/crablang/crablang-clippy/issues/6545
 #[derive(FieldReassignWithDefault)]
 struct DerivedStruct;
 

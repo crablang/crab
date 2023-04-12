@@ -1,13 +1,13 @@
-//! Implementation of rustbuild, the Rust build system.
+//! Implementation of crablangbuild, the CrabLang build system.
 //!
-//! This module, and its descendants, are the implementation of the Rust build
+//! This module, and its descendants, are the implementation of the CrabLang build
 //! system. Most of this build system is backed by Cargo but the outer layer
 //! here serves as the ability to orchestrate calling Cargo, sequencing Cargo
-//! builds, building artifacts like LLVM, etc. The goals of rustbuild are:
+//! builds, building artifacts like LLVM, etc. The goals of crablangbuild are:
 //!
 //! * To be an easily understandable, easily extensible, and maintainable build
 //!   system.
-//! * Leverage standard tools in the Rust ecosystem to build the compiler, aka
+//! * Leverage standard tools in the CrabLang ecosystem to build the compiler, aka
 //!   crates.io and Cargo.
 //! * A standard interface to build across all platforms, including MSVC
 //!
@@ -115,8 +115,8 @@ pub const VERSION: usize = 2;
 /// (Mode restriction, config name, config values (if any))
 const EXTRA_CHECK_CFGS: &[(Option<Mode>, &'static str, Option<&[&'static str]>)] = &[
     (None, "bootstrap", None),
-    (Some(Mode::Rustc), "parallel_compiler", None),
-    (Some(Mode::ToolRustc), "parallel_compiler", None),
+    (Some(Mode::CrabLangc), "parallel_compiler", None),
+    (Some(Mode::ToolCrabLangc), "parallel_compiler", None),
     (Some(Mode::Codegen), "parallel_compiler", None),
     (Some(Mode::Std), "stdarch_intel_sde", None),
     (Some(Mode::Std), "no_fp_fmt_parse", None),
@@ -132,28 +132,28 @@ const EXTRA_CHECK_CFGS: &[(Option<Mode>, &'static str, Option<&[&'static str]>)]
     (Some(Mode::Std), "target_arch", Some(&["asmjs", "spirv", "nvptx", "xtensa"])),
     /* Extra names used by dependencies */
     // FIXME: Used by serde_json, but we should not be triggering on external dependencies.
-    (Some(Mode::Rustc), "no_btreemap_remove_entry", None),
-    (Some(Mode::ToolRustc), "no_btreemap_remove_entry", None),
+    (Some(Mode::CrabLangc), "no_btreemap_remove_entry", None),
+    (Some(Mode::ToolCrabLangc), "no_btreemap_remove_entry", None),
     // FIXME: Used by crossbeam-utils, but we should not be triggering on external dependencies.
-    (Some(Mode::Rustc), "crossbeam_loom", None),
-    (Some(Mode::ToolRustc), "crossbeam_loom", None),
+    (Some(Mode::CrabLangc), "crossbeam_loom", None),
+    (Some(Mode::ToolCrabLangc), "crossbeam_loom", None),
     // FIXME: Used by proc-macro2, but we should not be triggering on external dependencies.
-    (Some(Mode::Rustc), "span_locations", None),
-    (Some(Mode::ToolRustc), "span_locations", None),
-    // FIXME: Used by rustix, but we should not be triggering on external dependencies.
-    (Some(Mode::Rustc), "rustix_use_libc", None),
-    (Some(Mode::ToolRustc), "rustix_use_libc", None),
+    (Some(Mode::CrabLangc), "span_locations", None),
+    (Some(Mode::ToolCrabLangc), "span_locations", None),
+    // FIXME: Used by crablangix, but we should not be triggering on external dependencies.
+    (Some(Mode::CrabLangc), "crablangix_use_libc", None),
+    (Some(Mode::ToolCrabLangc), "crablangix_use_libc", None),
     // FIXME: Used by filetime, but we should not be triggering on external dependencies.
-    (Some(Mode::Rustc), "emulate_second_only_system", None),
-    (Some(Mode::ToolRustc), "emulate_second_only_system", None),
+    (Some(Mode::CrabLangc), "emulate_second_only_system", None),
+    (Some(Mode::ToolCrabLangc), "emulate_second_only_system", None),
     // Needed to avoid the need to copy windows.lib into the sysroot.
-    (Some(Mode::Rustc), "windows_raw_dylib", None),
-    (Some(Mode::ToolRustc), "windows_raw_dylib", None),
+    (Some(Mode::CrabLangc), "windows_raw_dylib", None),
+    (Some(Mode::ToolCrabLangc), "windows_raw_dylib", None),
     // #[cfg(bootstrap)] ohos
     (Some(Mode::Std), "target_env", Some(&["ohos"])),
 ];
 
-/// A structure representing a Rust compiler.
+/// A structure representing a CrabLang compiler.
 ///
 /// Each compiler has a `stage` that it is associated with and a `host` that
 /// corresponds to the platform the compiler runs on. This structure is used as
@@ -175,7 +175,7 @@ pub enum DocTests {
 }
 
 pub enum GitRepo {
-    Rustc,
+    CrabLangc,
     Llvm,
 }
 
@@ -201,10 +201,10 @@ pub struct Build {
     out: PathBuf,
     bootstrap_out: PathBuf,
     cargo_info: channel::GitInfo,
-    rust_analyzer_info: channel::GitInfo,
+    crablang_analyzer_info: channel::GitInfo,
     clippy_info: channel::GitInfo,
     miri_info: channel::GitInfo,
-    rustfmt_info: channel::GitInfo,
+    crablangfmt_info: channel::GitInfo,
     in_tree_llvm_info: channel::GitInfo,
     local_rebuild: bool,
     fail_fast: bool,
@@ -216,7 +216,7 @@ pub struct Build {
     hosts: Vec<TargetSelection>,
     targets: Vec<TargetSelection>,
 
-    initial_rustc: PathBuf,
+    initial_crablangc: PathBuf,
     initial_cargo: PathBuf,
     initial_lld: PathBuf,
     initial_libdir: PathBuf,
@@ -255,14 +255,14 @@ impl Crate {
     }
 }
 
-/// When building Rust various objects are handled differently.
+/// When building CrabLang various objects are handled differently.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
 pub enum DependencyType {
     /// Libraries originating from proc-macros.
     Host,
-    /// Typical Rust libraries.
+    /// Typical CrabLang libraries.
     Target,
-    /// Non Rust libraries and objects shipped to ease usage of certain targets.
+    /// Non CrabLang libraries and objects shipped to ease usage of certain targets.
     TargetSelfContained,
 }
 
@@ -275,16 +275,16 @@ pub enum Mode {
     /// Build the standard library, placing output in the "stageN-std" directory.
     Std,
 
-    /// Build librustc, and compiler libraries, placing output in the "stageN-rustc" directory.
-    Rustc,
+    /// Build libcrablangc, and compiler libraries, placing output in the "stageN-crablangc" directory.
+    CrabLangc,
 
-    /// Build a codegen backend for rustc, placing the output in the "stageN-codegen" directory.
+    /// Build a codegen backend for crablangc, placing the output in the "stageN-codegen" directory.
     Codegen,
 
     /// Build a tool, placing output in the "stage0-bootstrap-tools"
     /// directory. This is for miscellaneous sets of tools that are built
     /// using the bootstrap stage0 compiler in its entirety (target libraries
-    /// and all). Typically these tools compile with stable Rust.
+    /// and all). Typically these tools compile with stable CrabLang.
     ToolBootstrap,
 
     /// Build a tool which uses the locally built std, placing output in the
@@ -292,16 +292,16 @@ pub enum Mode {
     /// compiletest which needs libtest.
     ToolStd,
 
-    /// Build a tool which uses the locally built rustc and the target std,
+    /// Build a tool which uses the locally built crablangc and the target std,
     /// placing the output in the "stageN-tools" directory. This is used for
-    /// anything that needs a fully functional rustc, such as rustdoc, clippy,
-    /// cargo, rls, rustfmt, miri, etc.
-    ToolRustc,
+    /// anything that needs a fully functional crablangc, such as crablangdoc, clippy,
+    /// cargo, rls, crablangfmt, miri, etc.
+    ToolCrabLangc,
 }
 
 impl Mode {
     pub fn is_tool(&self) -> bool {
-        matches!(self, Mode::ToolBootstrap | Mode::ToolRustc | Mode::ToolStd)
+        matches!(self, Mode::ToolBootstrap | Mode::ToolCrabLangc | Mode::ToolStd)
     }
 
     pub fn must_support_dlopen(&self) -> bool {
@@ -332,8 +332,8 @@ forward! {
     tempdir() -> PathBuf,
     try_run(cmd: &mut Command) -> bool,
     llvm_link_shared() -> bool,
-    download_rustc() -> bool,
-    initial_rustfmt() -> Option<PathBuf>,
+    download_crablangc() -> bool,
+    initial_crablangfmt() -> Option<PathBuf>,
 }
 
 impl Build {
@@ -347,7 +347,7 @@ impl Build {
 
         #[cfg(unix)]
         // keep this consistent with the equivalent check in x.py:
-        // https://github.com/rust-lang/rust/blob/a8a33cf27166d3eabaffc58ed3799e054af3b0c6/src/bootstrap/bootstrap.py#L796-L797
+        // https://github.com/crablang/crablang/blob/a8a33cf27166d3eabaffc58ed3799e054af3b0c6/src/bootstrap/bootstrap.py#L796-L797
         let is_sudo = match env::var_os("SUDO_USER") {
             Some(_sudo_user) => {
                 let uid = unsafe { libc::getuid() };
@@ -359,13 +359,13 @@ impl Build {
         let is_sudo = false;
 
         let omit_git_hash = config.omit_git_hash;
-        let rust_info = channel::GitInfo::new(omit_git_hash, &src);
+        let crablang_info = channel::GitInfo::new(omit_git_hash, &src);
         let cargo_info = channel::GitInfo::new(omit_git_hash, &src.join("src/tools/cargo"));
-        let rust_analyzer_info =
-            channel::GitInfo::new(omit_git_hash, &src.join("src/tools/rust-analyzer"));
+        let crablang_analyzer_info =
+            channel::GitInfo::new(omit_git_hash, &src.join("src/tools/crablang-analyzer"));
         let clippy_info = channel::GitInfo::new(omit_git_hash, &src.join("src/tools/clippy"));
         let miri_info = channel::GitInfo::new(omit_git_hash, &src.join("src/tools/miri"));
-        let rustfmt_info = channel::GitInfo::new(omit_git_hash, &src.join("src/tools/rustfmt"));
+        let crablangfmt_info = channel::GitInfo::new(omit_git_hash, &src.join("src/tools/crablangfmt"));
 
         // we always try to use git for LLVM builds
         let in_tree_llvm_info = channel::GitInfo::new(false, &src.join("src/llvm-project"));
@@ -374,20 +374,20 @@ impl Build {
             "/dummy/lib/path/to/lib/".to_string()
         } else {
             output(
-                Command::new(&config.initial_rustc)
+                Command::new(&config.initial_crablangc)
                     .arg("--target")
-                    .arg(config.build.rustc_target_arg())
+                    .arg(config.build.crablangc_target_arg())
                     .arg("--print")
                     .arg("target-libdir"),
             )
         };
         let initial_target_dir = Path::new(&initial_target_libdir_str).parent().unwrap();
-        let initial_lld = initial_target_dir.join("bin").join("rust-lld");
+        let initial_lld = initial_target_dir.join("bin").join("crablang-lld");
 
         let initial_sysroot = if config.dry_run() {
             "/dummy".to_string()
         } else {
-            output(Command::new(&config.initial_rustc).arg("--print").arg("sysroot"))
+            output(Command::new(&config.initial_crablangc).arg("--print").arg("sysroot"))
         };
         let initial_libdir = initial_target_dir
             .parent()
@@ -407,20 +407,20 @@ impl Build {
             .parent()
             .unwrap()
             .to_path_buf();
-        if !bootstrap_out.join(exe("rustc", config.build)).exists() && !cfg!(test) {
-            // this restriction can be lifted whenever https://github.com/rust-lang/rfcs/pull/3028 is implemented
+        if !bootstrap_out.join(exe("crablangc", config.build)).exists() && !cfg!(test) {
+            // this restriction can be lifted whenever https://github.com/crablang/rfcs/pull/3028 is implemented
             panic!(
-                "`rustc` not found in {}, run `cargo build --bins` before `cargo run`",
+                "`crablangc` not found in {}, run `cargo build --bins` before `cargo run`",
                 bootstrap_out.display()
             )
         }
 
-        if rust_info.is_from_tarball() && config.description.is_none() {
+        if crablang_info.is_from_tarball() && config.description.is_none() {
             config.description = Some("built from a source tarball".to_owned());
         }
 
         let mut build = Build {
-            initial_rustc: config.initial_rustc.clone(),
+            initial_crablangc: config.initial_crablangc.clone(),
             initial_cargo: config.initial_cargo.clone(),
             initial_lld,
             initial_libdir,
@@ -440,10 +440,10 @@ impl Build {
             bootstrap_out,
 
             cargo_info,
-            rust_analyzer_info,
+            crablang_analyzer_info,
             clippy_info,
             miri_info,
-            rustfmt_info,
+            crablangfmt_info,
             in_tree_llvm_info,
             cc: HashMap::new(),
             cxx: HashMap::new(),
@@ -461,10 +461,10 @@ impl Build {
             metrics: metrics::BuildMetrics::init(),
         };
 
-        // If local-rust is the same major.minor as the current version, then force a
+        // If local-crablang is the same major.minor as the current version, then force a
         // local-rebuild
         let local_version_verbose =
-            output(Command::new(&build.initial_rustc).arg("--version").arg("--verbose"));
+            output(Command::new(&build.initial_crablangc).arg("--version").arg("--verbose"));
         let local_release = local_version_verbose
             .lines()
             .filter_map(|x| x.strip_prefix("release:"))
@@ -489,8 +489,8 @@ impl Build {
 
             // Make sure we update these before gathering metadata so we don't get an error about missing
             // Cargo.toml files.
-            let rust_submodules = ["src/tools/cargo", "library/backtrace", "library/stdarch"];
-            for s in rust_submodules {
+            let crablang_submodules = ["src/tools/cargo", "library/backtrace", "library/stdarch"];
+            for s in crablang_submodules {
                 build.update_submodule(Path::new(s));
             }
             // Now, update all existing submodules.
@@ -529,7 +529,7 @@ impl Build {
             t!(std::fs::read_dir(dir)).next().is_none()
         }
 
-        if !self.config.submodules(&self.rust_info()) {
+        if !self.config.submodules(&self.crablang_info()) {
             return;
         }
 
@@ -629,7 +629,7 @@ impl Build {
     /// This avoids contributors checking in a submodule change by accident.
     pub fn update_existing_submodules(&self) {
         // Avoid running git when there isn't a git checkout.
-        if !self.config.submodules(&self.rust_info()) {
+        if !self.config.submodules(&self.crablang_info()) {
             return;
         }
         let output = output(
@@ -641,7 +641,7 @@ impl Build {
         );
         for line in output.lines() {
             // Look for `submodule.$name.path = $path`
-            // Sample output: `submodule.src/rust-installer.path src/tools/rust-installer`
+            // Sample output: `submodule.src/crablang-installer.path src/tools/crablang-installer`
             let submodule = Path::new(line.splitn(2, ' ').nth(1).unwrap());
             // Don't update the submodule unless it's already been cloned.
             if channel::GitInfo::new(false, submodule).is_managed_git_subrepository() {
@@ -660,8 +660,8 @@ impl Build {
             return format::format(&builder::Builder::new(&self), *check, &paths);
         }
 
-        // Download rustfmt early so that it can be used in rust-analyzer configs.
-        let _ = &builder::Builder::new(&self).initial_rustfmt();
+        // Download crablangfmt early so that it can be used in crablang-analyzer configs.
+        let _ = &builder::Builder::new(&self).initial_crablangfmt();
 
         {
             let builder = builder::Builder::new(&self);
@@ -718,8 +718,8 @@ impl Build {
         cleared
     }
 
-    fn rust_info(&self) -> &GitInfo {
-        &self.config.rust_info
+    fn crablang_info(&self) -> &GitInfo {
+        &self.config.crablang_info
     }
 
     /// Gets the space-separated set of activated features for the standard
@@ -742,7 +742,7 @@ impl Build {
     }
 
     /// Gets the space-separated set of activated features for the compiler.
-    fn rustc_features(&self, kind: Kind) -> String {
+    fn crablangc_features(&self, kind: Kind) -> String {
         let mut features = vec![];
         if self.config.jemalloc {
             features.push("jemalloc");
@@ -750,9 +750,9 @@ impl Build {
         if self.config.llvm_enabled() || kind == Kind::Check {
             features.push("llvm");
         }
-        // keep in sync with `bootstrap/compile.rs:rustc_cargo_env`
-        if self.config.rustc_parallel {
-            features.push("rustc_use_parallel_compiler");
+        // keep in sync with `bootstrap/compile.rs:crablangc_cargo_env`
+        if self.config.crablangc_parallel {
+            features.push("crablangc_use_parallel_compiler");
         }
 
         // If debug logging is on, then we want the default for tracing:
@@ -760,7 +760,7 @@ impl Build {
         // which is everything (including debug/trace/etc.)
         // if its unset, if debug_assertions is on, then debug_logging will also be on
         // as well as tracing *ignoring* this feature when debug_assertions is on
-        if !self.config.rust_debug_logging {
+        if !self.config.crablang_debug_logging {
             features.push("max_level_info");
         }
 
@@ -770,7 +770,7 @@ impl Build {
     /// Component directory that Cargo will produce output into (e.g.
     /// release/debug)
     fn cargo_dir(&self) -> &'static str {
-        if self.config.rust_optimize { "release" } else { "debug" }
+        if self.config.crablang_optimize { "release" } else { "debug" }
     }
 
     fn tools_dir(&self, compiler: Compiler) -> PathBuf {
@@ -789,10 +789,10 @@ impl Build {
     fn stage_out(&self, compiler: Compiler, mode: Mode) -> PathBuf {
         let suffix = match mode {
             Mode::Std => "-std",
-            Mode::Rustc => "-rustc",
+            Mode::CrabLangc => "-crablangc",
             Mode::Codegen => "-codegen",
             Mode::ToolBootstrap => "-bootstrap-tools",
-            Mode::ToolStd | Mode::ToolRustc => "-tools",
+            Mode::ToolStd | Mode::ToolCrabLangc => "-tools",
         };
         self.out.join(&*compiler.host.triple).join(format!("stage{}{}", compiler.stage, suffix))
     }
@@ -842,12 +842,12 @@ impl Build {
 
     /// Returns `true` if no custom `llvm-config` is set for the specified target.
     ///
-    /// If no custom `llvm-config` was specified then Rust's llvm will be used.
-    fn is_rust_llvm(&self, target: TargetSelection) -> bool {
+    /// If no custom `llvm-config` was specified then CrabLang's llvm will be used.
+    fn is_crablang_llvm(&self, target: TargetSelection) -> bool {
         match self.config.target_config.get(&target) {
-            Some(Target { llvm_has_rust_patches: Some(patched), .. }) => *patched,
+            Some(Target { llvm_has_crablang_patches: Some(patched), .. }) => *patched,
             Some(Target { llvm_config, .. }) => {
-                // If the user set llvm-config we assume Rust is not patched,
+                // If the user set llvm-config we assume CrabLang is not patched,
                 // but first check to see if it was configured by llvm-from-ci.
                 (self.config.llvm_from_ci && target == self.config.build) || llvm_config.is_none()
             }
@@ -904,31 +904,31 @@ impl Build {
         self.out.join(&*target.triple).join("native")
     }
 
-    /// Root output directory for rust_test_helpers library compiled for
+    /// Root output directory for crablang_test_helpers library compiled for
     /// `target`
     fn test_helpers_out(&self, target: TargetSelection) -> PathBuf {
-        self.native_dir(target).join("rust-test-helpers")
+        self.native_dir(target).join("crablang-test-helpers")
     }
 
-    /// Adds the `RUST_TEST_THREADS` env var if necessary
-    fn add_rust_test_threads(&self, cmd: &mut Command) {
-        if env::var_os("RUST_TEST_THREADS").is_none() {
-            cmd.env("RUST_TEST_THREADS", self.jobs().to_string());
+    /// Adds the `CRABLANG_TEST_THREADS` env var if necessary
+    fn add_crablang_test_threads(&self, cmd: &mut Command) {
+        if env::var_os("CRABLANG_TEST_THREADS").is_none() {
+            cmd.env("CRABLANG_TEST_THREADS", self.jobs().to_string());
         }
     }
 
     /// Returns the libdir of the snapshot compiler.
-    fn rustc_snapshot_libdir(&self) -> PathBuf {
-        self.rustc_snapshot_sysroot().join(libdir(self.config.build))
+    fn crablangc_snapshot_libdir(&self) -> PathBuf {
+        self.crablangc_snapshot_sysroot().join(libdir(self.config.build))
     }
 
     /// Returns the sysroot of the snapshot compiler.
-    fn rustc_snapshot_sysroot(&self) -> &Path {
+    fn crablangc_snapshot_sysroot(&self) -> &Path {
         static SYSROOT_CACHE: OnceCell<PathBuf> = once_cell::sync::OnceCell::new();
         SYSROOT_CACHE.get_or_init(|| {
-            let mut rustc = Command::new(&self.initial_rustc);
-            rustc.args(&["--print", "sysroot"]);
-            output(&mut rustc).trim().into()
+            let mut crablangc = Command::new(&self.initial_crablangc);
+            crablangc.args(&["--print", "sysroot"]);
+            output(&mut crablangc).trim().into()
         })
     }
 
@@ -990,16 +990,16 @@ impl Build {
     }
 
     fn debuginfo_map_to(&self, which: GitRepo) -> Option<String> {
-        if !self.config.rust_remap_debuginfo {
+        if !self.config.crablang_remap_debuginfo {
             return None;
         }
 
         match which {
-            GitRepo::Rustc => {
-                let sha = self.rust_sha().unwrap_or(&self.version);
-                Some(format!("/rustc/{}", sha))
+            GitRepo::CrabLangc => {
+                let sha = self.crablang_sha().unwrap_or(&self.version);
+                Some(format!("/crablangc/{}", sha))
             }
-            GitRepo::Llvm => Some(String::from("/rustc/llvm")),
+            GitRepo::Llvm => Some(String::from("/crablangc/llvm")),
         }
     }
 
@@ -1181,7 +1181,7 @@ impl Build {
             self.config
                 .python
                 .as_ref()
-                .expect("python is required for running LLDB or rustdoc tests")
+                .expect("python is required for running LLDB or crablangdoc tests")
         }
     }
 
@@ -1210,7 +1210,7 @@ impl Build {
     /// the previous stage forward.
     fn force_use_stage1(&self, stage: u32, target: TargetSelection) -> bool {
         !self.config.full_bootstrap
-            && !self.config.download_rustc()
+            && !self.config.download_crablangc()
             && stage >= 2
             && (self.hosts.iter().any(|h| *h == target) || target == self.build)
     }
@@ -1218,10 +1218,10 @@ impl Build {
     /// Checks whether the `compiler` compiling for `target` should be forced to
     /// use a stage2 compiler instead.
     ///
-    /// When we download the pre-compiled version of rustc and compiler stage is >= 2,
+    /// When we download the pre-compiled version of crablangc and compiler stage is >= 2,
     /// it should be forced to use a stage2 compiler.
     fn force_use_stage2(&self, stage: u32) -> bool {
-        self.config.download_rustc() && stage >= 2
+        self.config.download_crablangc() && stage >= 2
     }
 
     /// Given `num` in the form "a.b.c" return a "release string" which
@@ -1233,7 +1233,7 @@ impl Build {
         match &self.config.channel[..] {
             "stable" => num.to_string(),
             "beta" => {
-                if self.rust_info().is_managed_git_subrepository() && !self.config.omit_git_hash {
+                if self.crablang_info().is_managed_git_subrepository() && !self.config.omit_git_hash {
                     format!("{}-beta.{}", num, self.beta_prerelease_version())
                 } else {
                     format!("{}-beta", num)
@@ -1262,8 +1262,8 @@ impl Build {
         n
     }
 
-    /// Returns the value of `release` above for Rust itself.
-    fn rust_release(&self) -> String {
+    /// Returns the value of `release` above for CrabLang itself.
+    fn crablang_release(&self) -> String {
         self.release(&self.version)
     }
 
@@ -1282,18 +1282,18 @@ impl Build {
         }
     }
 
-    /// Returns the value of `package_vers` above for Rust itself.
-    fn rust_package_vers(&self) -> String {
+    /// Returns the value of `package_vers` above for CrabLang itself.
+    fn crablang_package_vers(&self) -> String {
         self.package_vers(&self.version)
     }
 
-    /// Returns the `version` string associated with this compiler for Rust
+    /// Returns the `version` string associated with this compiler for CrabLang
     /// itself.
     ///
     /// Note that this is a descriptive string which includes the commit date,
     /// sha, version, etc.
-    fn rust_version(&self) -> String {
-        let mut version = self.rust_info().version(self, &self.version);
+    fn crablang_version(&self) -> String {
+        let mut version = self.crablang_info().version(self, &self.version);
         if let Some(ref s) = self.config.description {
             version.push_str(" (");
             version.push_str(s);
@@ -1303,8 +1303,8 @@ impl Build {
     }
 
     /// Returns the full commit hash.
-    fn rust_sha(&self) -> Option<&str> {
-        self.rust_info().sha()
+    fn crablang_sha(&self) -> Option<&str> {
+        self.crablang_info().sha()
     }
 
     /// Returns the `a.b.c` version that the given package is at.
@@ -1359,7 +1359,7 @@ impl Build {
                         || target
                             .map(|t| self.config.profiler_enabled(t))
                             .unwrap_or_else(|| self.config.any_profiler_enabled()))
-                    && (dep != "rustc_codegen_llvm" || self.config.llvm_enabled())
+                    && (dep != "crablangc_codegen_llvm" || self.config.llvm_enabled())
                 {
                     list.push(*dep);
                 }
@@ -1624,7 +1624,7 @@ fn chmod(path: &Path, perms: u32) {
 #[cfg(windows)]
 fn chmod(_path: &Path, _perms: u32) {}
 
-/// If code is not 0 (successful exit status), exit status is 101 (rust's default error code.)
+/// If code is not 0 (successful exit status), exit status is 101 (crablang's default error code.)
 /// If the test is running and code is an error code, it will cause a panic.
 fn detail_exit(code: i32) -> ! {
     // if in test and code is an error code, panic with status code provided

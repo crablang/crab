@@ -5,11 +5,11 @@ use clippy_utils::diagnostics::{span_lint, span_lint_and_help};
 use clippy_utils::source::snippet_opt;
 use clippy_utils::{match_def_path, paths};
 use if_chain::if_chain;
-use rustc_ast::ast::{LitKind, StrStyle};
-use rustc_hir::{BorrowKind, Expr, ExprKind};
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_session::{declare_lint_pass, declare_tool_lint};
-use rustc_span::source_map::{BytePos, Span};
+use crablangc_ast::ast::{LitKind, StrStyle};
+use crablangc_hir::{BorrowKind, Expr, ExprKind};
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_span::source_map::{BytePos, Span};
 
 declare_clippy_lint! {
     /// ### What it does
@@ -98,7 +98,7 @@ fn lint_syntax_error(cx: &LateContext<'_>, error: &regex_syntax::Error, unescape
     if let Some((primary, auxiliary, kind)) = parts
         && let Some(literal_snippet) = snippet_opt(cx, base)
         && let Some(inner) = literal_snippet.get(offset as usize..)
-        // Only convert to native rustc spans if the parsed regex matches the
+        // Only convert to native crablangc spans if the parsed regex matches the
         // source snippet exactly, to ensure the span offsets are correct
         && inner.get(..unescaped.len()) == Some(unescaped)
     {

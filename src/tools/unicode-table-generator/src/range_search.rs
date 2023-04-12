@@ -1,4 +1,4 @@
-#[rustc_const_unstable(feature = "const_unicode_case_lookup", issue = "101400")]
+#[crablangc_const_unstable(feature = "const_unicode_case_lookup", issue = "101400")]
 #[inline(always)]
 const fn bitset_search<
     const N: usize,

@@ -24,14 +24,14 @@ Build miri, set up a sysroot and then run the driver with the given <flags>.
 (Also respects MIRIFLAGS environment variable.)
 
 ./miri fmt <flags>:
-Format all sources and tests. <flags> are passed to `rustfmt`.
+Format all sources and tests. <flags> are passed to `crablangfmt`.
 
 ./miri clippy <flags>:
 Runs clippy on all sources. <flags> are passed to `cargo clippy`.
 
 ./miri cargo <flags>:
 Runs just `cargo <flags>` with the Miri-specific environment variables.
-Mainly meant to be invoked by rust-analyzer.
+Mainly meant to be invoked by crablang-analyzer.
 
 ./miri many-seeds <command>:
 Runs <command> over and over again with different seeds for Miri. The MIRIFLAGS
@@ -44,20 +44,20 @@ Runs the benchmarks from bench-cargo-miri in hyperfine. hyperfine needs to be in
 <benches> can explicitly list the benchmarks to run; by default, all of them are run.
 
 ./miri toolchain <flags>:
-Update and activate the rustup toolchain 'miri' to the commit given in the
-`rust-version` file.
-`rustup-toolchain-install-master` must be installed for this to work. Any extra
-flags are passed to `rustup-toolchain-install-master`.
+Update and activate the crablangup toolchain 'miri' to the commit given in the
+`crablang-version` file.
+`crablangup-toolchain-install-master` must be installed for this to work. Any extra
+flags are passed to `crablangup-toolchain-install-master`.
 
-./miri rustc-pull <commit>:
-Pull and merge Miri changes from the rustc repo. Defaults to fetching the latest
-rustc commit. The fetched commit is stored in the `rust-version` file, so the
-next `./miri toolchain` will install the rustc that just got pulled.
+./miri crablangc-pull <commit>:
+Pull and merge Miri changes from the crablangc repo. Defaults to fetching the latest
+crablangc commit. The fetched commit is stored in the `crablang-version` file, so the
+next `./miri toolchain` will install the crablangc that just got pulled.
 
-./miri rustc-push <github user> <branch>:
-Push Miri changes back to the rustc repo. This will pull a copy of the rustc
-history into the Miri repo, unless you set the RUSTC_GIT env var to an existing
-clone of the rustc repo.
+./miri crablangc-push <github user> <branch>:
+Push Miri changes back to the crablangc repo. This will pull a copy of the crablangc
+history into the Miri repo, unless you set the CRABLANGC_GIT env var to an existing
+clone of the crablangc repo.
 
   ENVIRONMENT VARIABLES
 
@@ -78,99 +78,99 @@ fi
 shift
 # macOS does not have a useful readlink/realpath so we have to use Python instead...
 MIRIDIR=$(python3 -c 'import os, sys; print(os.path.dirname(os.path.realpath(sys.argv[1])))' "$0")
-# Used for rustc syncs.
+# Used for crablangc syncs.
 JOSH_FILTER=":rev(75dd959a3a40eb5b4574f8d2e23aa6efbeb33573:prefix=src/tools/miri):/src/tools/miri"
 # Needed for `./miri bench`.
-TOOLCHAIN=$(cd "$MIRIDIR"; rustup show active-toolchain | head -n 1 | cut -d ' ' -f 1)
+TOOLCHAIN=$(cd "$MIRIDIR"; crablangup show active-toolchain | head -n 1 | cut -d ' ' -f 1)
 
 ## Early commands, that don't do auto-things and don't want the environment-altering things happening below.
 case "$COMMAND" in
 toolchain)
     cd "$MIRIDIR"
-    NEW_COMMIT=$(cat rust-version)
-    # Make sure rustup-toolchain-install-master is installed.
-    if ! which rustup-toolchain-install-master >/dev/null; then
-        echo "Please install rustup-toolchain-install-master by running 'cargo install rustup-toolchain-install-master'"
+    NEW_COMMIT=$(cat crablang-version)
+    # Make sure crablangup-toolchain-install-master is installed.
+    if ! which crablangup-toolchain-install-master >/dev/null; then
+        echo "Please install crablangup-toolchain-install-master by running 'cargo install crablangup-toolchain-install-master'"
         exit 1
     fi
     # Check if we already are at that commit.
-    CUR_COMMIT=$(rustc +miri --version -v 2>/dev/null | grep "^commit-hash: " | cut -d " " -f 2)
+    CUR_COMMIT=$(crablangc +miri --version -v 2>/dev/null | grep "^commit-hash: " | cut -d " " -f 2)
     if [[ "$CUR_COMMIT" == "$NEW_COMMIT" ]]; then
         echo "miri toolchain is already at commit $CUR_COMMIT."
-        rustup override set miri
+        crablangup override set miri
         exit 0
     fi
     # Install and setup new toolchain.
-    rustup toolchain uninstall miri
-    rustup-toolchain-install-master -n miri -c cargo -c rust-src -c rustc-dev -c llvm-tools -c rustfmt -c clippy "$@" -- "$NEW_COMMIT"
-    rustup override set miri
+    crablangup toolchain uninstall miri
+    crablangup-toolchain-install-master -n miri -c cargo -c crablang-src -c crablangc-dev -c llvm-tools -c crablangfmt -c clippy "$@" -- "$NEW_COMMIT"
+    crablangup override set miri
     # Cleanup.
     cargo clean
     # Call 'cargo metadata' on the sources in case that changes the lockfile
     # (which fails under some setups when it is done from inside vscode).
-    cargo metadata --format-version 1 --manifest-path "$(rustc --print sysroot)/lib/rustlib/rustc-src/rust/compiler/rustc/Cargo.toml" >/dev/null
+    cargo metadata --format-version 1 --manifest-path "$(crablangc --print sysroot)/lib/crablanglib/crablangc-src/crablang/compiler/crablangc/Cargo.toml" >/dev/null
     # Done!
     exit 0
     ;;
-rustc-pull)
+crablangc-pull)
     cd "$MIRIDIR"
     FETCH_COMMIT="$1"
     if [ -z "$FETCH_COMMIT" ]; then
-        FETCH_COMMIT=$(git ls-remote https://github.com/rust-lang/rust/ HEAD | cut -f 1)
+        FETCH_COMMIT=$(git ls-remote https://github.com/crablang/crablang/ HEAD | cut -f 1)
     fi
-    # Update rust-version file. As a separate commit, since making it part of
+    # Update crablang-version file. As a separate commit, since making it part of
     # the merge has confused the heck out of josh in the past.
-    echo "$FETCH_COMMIT" > rust-version
-    git commit rust-version -m "Preparing for merge from rustc"
-    # Fetch given rustc commit and note down which one that was
-    git fetch http://localhost:8000/rust-lang/rust.git@$FETCH_COMMIT$JOSH_FILTER.git
-    git merge FETCH_HEAD --no-ff -m "Merge from rustc"
+    echo "$FETCH_COMMIT" > crablang-version
+    git commit crablang-version -m "Preparing for merge from crablangc"
+    # Fetch given crablangc commit and note down which one that was
+    git fetch http://localhost:8000/crablang/crablang.git@$FETCH_COMMIT$JOSH_FILTER.git
+    git merge FETCH_HEAD --no-ff -m "Merge from crablangc"
     exit 0
     ;;
-rustc-push)
+crablangc-push)
     USER="$1"
     BRANCH="$2"
     if [ -z "$USER" ] || [ -z "$BRANCH" ]; then
-        echo "Usage: $0 rustc-push <github user> <branch>"
+        echo "Usage: $0 crablangc-push <github user> <branch>"
         exit 1
     fi
-    if [ -n "$RUSTC_GIT" ]; then
+    if [ -n "$CRABLANGC_GIT" ]; then
         # Use an existing fork for the branch updates.
-        cd "$RUSTC_GIT"
+        cd "$CRABLANGC_GIT"
     else
         # Do this in the local Miri repo.
-        echo "This will pull a copy of the rust-lang/rust history into this Miri checkout, growing it by about 1GB."
-        read -r -p "To avoid that, abort now and set the RUSTC_GIT environment variable to an existing rustc checkout. Proceed? [y/N] "
+        echo "This will pull a copy of the crablang/crablang history into this Miri checkout, growing it by about 1GB."
+        read -r -p "To avoid that, abort now and set the CRABLANGC_GIT environment variable to an existing crablangc checkout. Proceed? [y/N] "
         if [[ ! $REPLY =~ ^[Yy]$ ]]; then
             exit 1
         fi
         cd "$MIRIDIR"
     fi
     # Prepare the branch. Pushing works much better if we use as base exactly
-    # the commit that we pulled from last time, so we use the `rust-version`
+    # the commit that we pulled from last time, so we use the `crablang-version`
     # file as a good approximation of that.
-    BASE=$(cat "$MIRIDIR/rust-version")
-    echo "Preparing $USER/rust (base: $BASE)..."
-    if git fetch "https://github.com/$USER/rust" "$BRANCH" &>/dev/null; then
-        echo "The branch '$BRANCH' seems to already exist in 'https://github.com/$USER/rust'. Please delete it and try again."
+    BASE=$(cat "$MIRIDIR/crablang-version")
+    echo "Preparing $USER/crablang (base: $BASE)..."
+    if git fetch "https://github.com/$USER/crablang" "$BRANCH" &>/dev/null; then
+        echo "The branch '$BRANCH' seems to already exist in 'https://github.com/$USER/crablang'. Please delete it and try again."
         exit 1
     fi
-    git fetch https://github.com/rust-lang/rust $BASE
-    git push https://github.com/$USER/rust $BASE:refs/heads/$BRANCH -f
+    git fetch https://github.com/crablang/crablang $BASE
+    git push https://github.com/$USER/crablang $BASE:refs/heads/$BRANCH -f
     echo
     # Do the actual push.
     cd "$MIRIDIR"
     echo "Pushing Miri changes..."
-    git push http://localhost:8000/$USER/rust.git$JOSH_FILTER.git HEAD:$BRANCH
+    git push http://localhost:8000/$USER/crablang.git$JOSH_FILTER.git HEAD:$BRANCH
     # Do a round-trip check to make sure the push worked as expected.
     echo
-    git fetch http://localhost:8000/$USER/rust.git@$JOSH_FILTER.git $BRANCH &>/dev/null
+    git fetch http://localhost:8000/$USER/crablang.git@$JOSH_FILTER.git $BRANCH &>/dev/null
     if [[ $(git rev-parse HEAD) != $(git rev-parse FETCH_HEAD) ]]; then
-        echo "ERROR: Josh created a non-roundtrip push! Do NOT merge this into rustc!"
+        echo "ERROR: Josh created a non-roundtrip push! Do NOT merge this into crablangc!"
         exit 1
     else
-        echo "Confirmed that the push round-trips back to Miri properly. Please create a rustc PR:"
-        echo "    https://github.com/$USER/rust/pull/new/$BRANCH"
+        echo "Confirmed that the push round-trips back to Miri properly. Please create a crablangc PR:"
+        echo "    https://github.com/$USER/crablang/pull/new/$BRANCH"
         exit 0
     fi
     ;;
@@ -222,17 +222,17 @@ fi
 
 ## Prepare the environment
 # Determine some toolchain properties
-TARGET=$(rustc +$TOOLCHAIN --version --verbose | grep "^host:" | cut -d ' ' -f 2)
-SYSROOT=$(rustc +$TOOLCHAIN --print sysroot)
-LIBDIR=$SYSROOT/lib/rustlib/$TARGET/lib
+TARGET=$(crablangc +$TOOLCHAIN --version --verbose | grep "^host:" | cut -d ' ' -f 2)
+SYSROOT=$(crablangc +$TOOLCHAIN --print sysroot)
+LIBDIR=$SYSROOT/lib/crablanglib/$TARGET/lib
 if ! test -d "$LIBDIR"; then
     echo "Something went wrong determining the library dir."
     echo "I got $LIBDIR but that does not exist."
-    echo "Please report a bug at https://github.com/rust-lang/miri/issues."
+    echo "Please report a bug at https://github.com/crablang/miri/issues."
     exit 2
 fi
 
-# Prepare flags for cargo and rustc.
+# Prepare flags for cargo and crablangc.
 CARGO="cargo +$TOOLCHAIN"
 # Share target dir between `miri` and `cargo-miri`.
 if [ -z "$CARGO_TARGET_DIR" ]; then
@@ -242,10 +242,10 @@ fi
 if [ -z "$CARGO_PROFILE_DEV_OPT_LEVEL" ]; then
     export CARGO_PROFILE_DEV_OPT_LEVEL=2
 fi
-# Enable rustc-specific lints (ignored without `-Zunstable-options`).
-export RUSTFLAGS="-Zunstable-options -Wrustc::internal -Wrust_2018_idioms -Wunused_lifetimes -Wsemicolon_in_expressions_from_macros $RUSTFLAGS"
-# We set the rpath so that Miri finds the private rustc libraries it needs.
-export RUSTFLAGS="-C link-args=-Wl,-rpath,$LIBDIR $RUSTFLAGS"
+# Enable crablangc-specific lints (ignored without `-Zunstable-options`).
+export CRABLANGFLAGS="-Zunstable-options -Wcrablangc::internal -Wcrablang_2018_idioms -Wunused_lifetimes -Wsemicolon_in_expressions_from_macros $CRABLANGFLAGS"
+# We set the rpath so that Miri finds the private crablangc libraries it needs.
+export CRABLANGFLAGS="-C link-args=-Wl,-rpath,$LIBDIR $CRABLANGFLAGS"
 
 ## Helper functions
 
@@ -261,7 +261,7 @@ build_sysroot() {
 }
 
 # Prepare and set MIRI_SYSROOT. Respects `MIRI_TEST_TARGET` and takes into account
-# locally built vs. distributed rustc.
+# locally built vs. distributed crablangc.
 find_sysroot() {
     if [ -n "$MIRI_SYSROOT" ]; then
         # Sysroot already set, use that.
@@ -331,7 +331,7 @@ run)
     ;;
 fmt)
     find "$MIRIDIR" -not \( -name target -prune \) -name '*.rs' \
-        | xargs rustfmt +$TOOLCHAIN --edition=2021 --config-path "$MIRIDIR/rustfmt.toml" "$@"
+        | xargs crablangfmt +$TOOLCHAIN --edition=2021 --config-path "$MIRIDIR/crablangfmt.toml" "$@"
     ;;
 clippy)
     $CARGO clippy $CARGO_EXTRA_FLAGS --manifest-path "$MIRIDIR"/Cargo.toml --all-targets "$@"

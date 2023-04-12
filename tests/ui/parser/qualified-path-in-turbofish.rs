@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 trait T {
     type Ty;
 }

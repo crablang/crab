@@ -2,10 +2,10 @@ use clippy_utils::diagnostics::{span_lint_and_help, span_lint_and_note};
 use clippy_utils::get_parent_node;
 use clippy_utils::is_must_use_func_call;
 use clippy_utils::ty::{is_copy, is_must_use_ty, is_type_lang_item};
-use rustc_hir::{Arm, Expr, ExprKind, LangItem, Node};
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_session::{declare_lint_pass, declare_tool_lint};
-use rustc_span::sym;
+use crablangc_hir::{Arm, Expr, ExprKind, LangItem, Node};
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_span::sym;
 
 declare_clippy_lint! {
     /// ### What it does
@@ -43,7 +43,7 @@ declare_clippy_lint! {
     /// value, which is likely what was intended.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// let x = Box::new(1);
     /// std::mem::forget(&x) // Should have been forget(x), x will still be dropped
     /// ```
@@ -60,11 +60,11 @@ declare_clippy_lint! {
     ///
     /// ### Why is this bad?
     /// Calling `std::mem::drop` [does nothing for types that
-    /// implement Copy](https://doc.rust-lang.org/std/mem/fn.drop.html), since the
+    /// implement Copy](https://doc.crablang.org/std/mem/fn.drop.html), since the
     /// value will be copied and moved into the function on invocation.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// let x: i32 = 42; // i32 implements Copy
     /// std::mem::drop(x) // A copy of x is passed to the function, leaving the
     ///                   // original unaffected
@@ -82,7 +82,7 @@ declare_clippy_lint! {
     ///
     /// ### Why is this bad?
     /// Calling `std::mem::forget` [does nothing for types that
-    /// implement Copy](https://doc.rust-lang.org/std/mem/fn.drop.html) since the
+    /// implement Copy](https://doc.crablang.org/std/mem/fn.drop.html) since the
     /// value will be copied and moved into the function on invocation.
     ///
     /// An alternative, but also valid, explanation is that Copy types do not
@@ -92,7 +92,7 @@ declare_clippy_lint! {
     /// is nothing for `std::mem::forget` to ignore.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// let x: i32 = 42; // i32 implements Copy
     /// std::mem::forget(x) // A copy of x is passed to the function, leaving the
     ///                     // original unaffected
@@ -112,7 +112,7 @@ declare_clippy_lint! {
     /// have been intended.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// struct Foo;
     /// let x = Foo;
     /// std::mem::drop(x);
@@ -132,7 +132,7 @@ declare_clippy_lint! {
     /// have been intended.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// struct Foo;
     /// let x = Foo;
     /// std::mem::forget(x);
@@ -155,12 +155,12 @@ declare_clippy_lint! {
     /// to a different name and calls it that way.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// struct S;
     /// drop(std::mem::ManuallyDrop::new(S));
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// struct S;
     /// unsafe {
     ///     std::mem::ManuallyDrop::drop(&mut std::mem::ManuallyDrop::new(S));

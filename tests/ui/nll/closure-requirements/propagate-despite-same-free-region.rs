@@ -6,7 +6,7 @@
 // compile-flags:-Zverbose
 // check-pass
 
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 
 use std::cell::Cell;
 
@@ -35,7 +35,7 @@ fn establish_relationships<'a, F>(
 
 fn demand_y<'x, 'y>(_cell_x: Cell<&'x u32>, _cell_y: Cell<&'y u32>, _y: &'y u32) {}
 
-#[rustc_regions]
+#[crablangc_regions]
 fn supply<'a>(cell_a: Cell<&'a u32>) {
     establish_relationships(
         cell_a,

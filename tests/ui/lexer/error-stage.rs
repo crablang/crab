@@ -4,7 +4,7 @@
 // Literals with bad suffixes
 // --------------------------
 // Literals consist of a primary part and an optional suffix.
-// https://doc.rust-lang.org/reference/tokens.html#suffixes says:
+// https://doc.crablang.org/reference/tokens.html#suffixes says:
 //
 //   Any kind of literal (string, integer, etc) with any suffix is valid as a
 //   token, and can be passed to a macro without producing an error. The macro
@@ -16,7 +16,7 @@
 //   blackhole!("string"suffix); // OK
 //   ```
 //
-//   However, suffixes on literal tokens parsed as Rust code are restricted.
+//   However, suffixes on literal tokens parsed as CrabLang code are restricted.
 //   Any suffixes are rejected on non-numeric literal tokens, and numeric
 //   literal tokens are accepted only with suffixes from the list below.
 //
@@ -38,7 +38,7 @@
 //
 // Too-large integer literals
 // --------------------------
-// https://doc.rust-lang.org/reference/tokens.html#integer-literals says that
+// https://doc.crablang.org/reference/tokens.html#integer-literals says that
 // literals like `128_i8` and `256_u8` "are too big for their type, but are
 // still valid tokens".
 

@@ -1,10 +1,10 @@
 ---
 name: Regression
-about: Report something that unexpectedly changed between Rust versions.
+about: Report something that unexpectedly changed between CrabLang versions.
 labels: C-bug, regression-untriaged
 ---
 <!--
-Thank you for filing a regression report! 🐛 A regression is something that changed between versions of Rust but was not supposed to.
+Thank you for filing a regression report! 🐛 A regression is something that changed between versions of CrabLang but was not supposed to.
 
 Please provide a short summary of the regression, along with any information you feel is relevant to replicate it.
 -->
@@ -13,7 +13,7 @@ Please provide a short summary of the regression, along with any information you
 
 I tried this code:
 
-```rust
+```crablang
 <code>
 ```
 
@@ -26,7 +26,7 @@ Instead, this happened: *explanation*
 <!--
 Provide the most recent version this worked on, for example:
 
-It most recently worked on: Rust 1.47
+It most recently worked on: CrabLang 1.47
 -->
 
 It most recently worked on: <!-- version -->
@@ -37,7 +37,7 @@ It most recently worked on: <!-- version -->
 Provide the version you are using that has the regression.
 -->
 
-`rustc --version --verbose`:
+`crablangc --version --verbose`:
 ```
 <version>
 ```
@@ -48,8 +48,8 @@ Did the compiler crash? If so, please provide a backtrace.
 
 ### Backtrace
 <!--
-Include a backtrace in the code block by setting `RUST_BACKTRACE=1` in your
-environment. E.g. `RUST_BACKTRACE=1 cargo build`.
+Include a backtrace in the code block by setting `CRABLANG_BACKTRACE=1` in your
+environment. E.g. `CRABLANG_BACKTRACE=1 cargo build`.
 -->
 <details><summary>Backtrace</summary>
 <p>
@@ -64,5 +64,5 @@ environment. E.g. `RUST_BACKTRACE=1 cargo build`.
 <!--
 If you know when this regression occurred, please add a line like below, replacing `{channel}` with one of stable, beta, or nightly.
 
-@rustbot modify labels: +regression-from-stable-to-{channel} -regression-untriaged
+@crablangbot modify labels: +regression-from-stable-to-{channel} -regression-untriaged
 -->

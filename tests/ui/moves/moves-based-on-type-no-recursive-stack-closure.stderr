@@ -25,4 +25,4 @@ LL |     let mut r = R {c: Box::new(&mut f)};
 error: aborting due to 2 previous errors
 
 Some errors have detailed explanations: E0382, E0499.
-For more information about an error, try `rustc --explain E0382`.
+For more information about an error, try `crablangc --explain E0382`.

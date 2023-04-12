@@ -3,7 +3,7 @@
 
 use std::mem;
 
-// Get around the limitations of CTFE in today's Rust.
+// Get around the limitations of CTFE in today's CrabLang.
 const fn choice_u64(c: bool, a: u64, b: u64) -> u64 {
     (-(c as i64) as u64) & a | (-(!c as i64) as u64) & b
 }

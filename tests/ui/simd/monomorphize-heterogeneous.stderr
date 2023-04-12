@@ -6,4 +6,4 @@ LL | struct I64F64(i64, f64);
 
 error: aborting due to previous error
 
-For more information about this error, try `rustc --explain E0076`.
+For more information about this error, try `crablangc --explain E0076`.

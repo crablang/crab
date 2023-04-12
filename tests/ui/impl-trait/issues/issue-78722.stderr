@@ -4,7 +4,7 @@ error[E0658]: `async` blocks are not allowed in constants
 LL |         let f: F = async { 1 };
    |                    ^^^^^^^^^^^
    |
-   = note: see issue #85368 <https://github.com/rust-lang/rust/issues/85368> for more information
+   = note: see issue #85368 <https://github.com/crablang/crablang/issues/85368> for more information
    = help: add `#![feature(const_async_blocks)]` to the crate attributes to enable
 
 error[E0271]: expected `[async block@$DIR/issue-78722.rs:11:13: 11:21]` to be a future that resolves to `u8`, but it resolves to `()`
@@ -16,4 +16,4 @@ LL |         fn concrete_use() -> F {
 error: aborting due to 2 previous errors
 
 Some errors have detailed explanations: E0271, E0658.
-For more information about an error, try `rustc --explain E0271`.
+For more information about an error, try `crablangc --explain E0271`.

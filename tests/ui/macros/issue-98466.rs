@@ -1,5 +1,5 @@
 // check-pass
-// run-rustfix
+// run-crablangfix
 
 fn main() {
     let mut _x: usize;

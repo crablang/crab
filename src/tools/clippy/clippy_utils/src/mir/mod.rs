@@ -1,9 +1,9 @@
-use rustc_hir::{Expr, HirId};
-use rustc_middle::mir::visit::{MutatingUseContext, NonMutatingUseContext, PlaceContext, Visitor};
-use rustc_middle::mir::{
+use crablangc_hir::{Expr, HirId};
+use crablangc_middle::mir::visit::{MutatingUseContext, NonMutatingUseContext, PlaceContext, Visitor};
+use crablangc_middle::mir::{
     traversal, Body, InlineAsmOperand, Local, Location, Place, StatementKind, TerminatorKind, START_BLOCK,
 };
-use rustc_middle::ty::TyCtxt;
+use crablangc_middle::ty::TyCtxt;
 
 mod possible_borrower;
 pub use possible_borrower::PossibleBorrowerMap;
@@ -80,7 +80,7 @@ impl<'a, 'tcx> Visitor<'tcx> for V<'a> {
 }
 
 /// Convenience wrapper around `visit_local_usage`.
-pub fn used_exactly_once(mir: &rustc_middle::mir::Body<'_>, local: rustc_middle::mir::Local) -> Option<bool> {
+pub fn used_exactly_once(mir: &crablangc_middle::mir::Body<'_>, local: crablangc_middle::mir::Local) -> Option<bool> {
     visit_local_usage(
         &[local],
         mir,
@@ -134,7 +134,7 @@ pub fn local_assignments(mir: &Body<'_>, local: Local) -> Vec<Location> {
 }
 
 // `is_local_assignment` is based on `is_place_assignment`:
-// https://github.com/rust-lang/rust/blob/b7413511dc85ec01ef4b91785f86614589ac6103/compiler/rustc_middle/src/mir/visit.rs#L1350
+// https://github.com/crablang/crablang/blob/b7413511dc85ec01ef4b91785f86614589ac6103/compiler/crablangc_middle/src/mir/visit.rs#L1350
 fn is_local_assignment(mir: &Body<'_>, local: Local, location: Location) -> bool {
     let Location { block, statement_index } = location;
     let basic_block = &mir.basic_blocks[block];

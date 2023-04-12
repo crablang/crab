@@ -3,8 +3,8 @@ use std::num::NonZeroU64;
 
 use log::trace;
 
-use rustc_span::{source_map::DUMMY_SP, SpanData, Symbol};
-use rustc_target::abi::{Align, Size};
+use crablangc_span::{source_map::DUMMY_SP, SpanData, Symbol};
+use crablangc_target::abi::{Align, Size};
 
 use crate::borrow_tracker::stacked_borrows::diagnostics::TagHistory;
 use crate::*;
@@ -111,9 +111,9 @@ enum DiagLevel {
     Note,
 }
 
-/// Attempts to prune a stacktrace to omit the Rust runtime, and returns a bool indicating if any
+/// Attempts to prune a stacktrace to omit the CrabLang runtime, and returns a bool indicating if any
 /// frames were pruned. If the stacktrace does not have any local frames, we conclude that it must
-/// be pointing to a problem in the Rust runtime itself, and do not prune it at all.
+/// be pointing to a problem in the CrabLang runtime itself, and do not prune it at all.
 fn prune_stacktrace<'tcx>(
     mut stacktrace: Vec<FrameInfo<'tcx>>,
     machine: &MiriMachine<'_, 'tcx>,
@@ -131,7 +131,7 @@ fn prune_stacktrace<'tcx>(
             let original_len = stacktrace.len();
             // Only prune frames if there is at least one local frame. This check ensures that if
             // we get a backtrace that never makes it to the user code because it has detected a
-            // bug in the Rust runtime, we don't prune away every frame.
+            // bug in the CrabLang runtime, we don't prune away every frame.
             let has_local_frame = stacktrace.iter().any(|frame| machine.is_local(frame));
             if has_local_frame {
                 // Remove all frames marked with `caller_location` -- that attribute indicates we
@@ -140,20 +140,20 @@ fn prune_stacktrace<'tcx>(
                     .retain(|frame| !frame.instance.def.requires_caller_location(machine.tcx));
 
                 // This is part of the logic that `std` uses to select the relevant part of a
-                // backtrace. But here, we only look for __rust_begin_short_backtrace, not
-                // __rust_end_short_backtrace because the end symbol comes from a call to the default
+                // backtrace. But here, we only look for __crablang_begin_short_backtrace, not
+                // __crablang_end_short_backtrace because the end symbol comes from a call to the default
                 // panic handler.
                 stacktrace = stacktrace
                     .into_iter()
                     .take_while(|frame| {
                         let def_id = frame.instance.def_id();
                         let path = machine.tcx.def_path_str(def_id);
-                        !path.contains("__rust_begin_short_backtrace")
+                        !path.contains("__crablang_begin_short_backtrace")
                     })
                     .collect::<Vec<_>>();
 
                 // After we prune frames from the bottom, there are a few left that are part of the
-                // Rust runtime. So we remove frames until we get to a local symbol, which should be
+                // CrabLang runtime. So we remove frames until we get to a local symbol, which should be
                 // main or a test.
                 // This len check ensures that we don't somehow remove every frame, as doing so breaks
                 // the primary error message.
@@ -194,7 +194,7 @@ pub fn report_error<'tcx, 'mir>(
             Deadlock => Some("deadlock"),
             MultipleSymbolDefinitions { .. } | SymbolShimClashing { .. } => None,
         };
-        #[rustfmt::skip]
+        #[crablangfmt::skip]
         let helps = match info {
             UnsupportedInIsolation(_) =>
                 vec![
@@ -202,7 +202,7 @@ pub fn report_error<'tcx, 'mir>(
                     (None, format!("or pass `-Zmiri-isolation-error=warn` to configure Miri to return an error code from isolated operations (if supported for that operation) and continue with a warning")),
                 ],
             StackedBorrowsUb { help, history, .. } => {
-                let url = "https://github.com/rust-lang/unsafe-code-guidelines/blob/master/wip/stacked-borrows.md";
+                let url = "https://github.com/crablang/unsafe-code-guidelines/blob/master/wip/stacked-borrows.md";
                 msg.extend(help.clone());
                 let mut helps = vec![
                     (None, format!("this indicates a potential bug in the program: it performed an invalid operation, but the Stacked Borrows rules it violated are still experimental")),
@@ -233,18 +233,18 @@ pub fn report_error<'tcx, 'mir>(
             SymbolShimClashing { link_name, span } =>
                 vec![(Some(*span), format!("the `{link_name}` symbol is defined here"))],
             Int2PtrWithStrictProvenance =>
-                vec![(None, format!("use Strict Provenance APIs (https://doc.rust-lang.org/nightly/std/ptr/index.html#strict-provenance, https://crates.io/crates/sptr) instead"))],
+                vec![(None, format!("use Strict Provenance APIs (https://doc.crablang.org/nightly/std/ptr/index.html#strict-provenance, https://crates.io/crates/sptr) instead"))],
             DataRace { op1, .. } =>
                 vec![
                     (Some(op1.span), format!("and (1) occurred earlier here")),
                     (None, format!("this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior")),
-                    (None, format!("see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information")),
+                    (None, format!("see https://doc.crablang.org/nightly/reference/behavior-considered-undefined.html for further information")),
                 ],
             _ => vec![],
         };
         (title, helps)
     } else {
-        #[rustfmt::skip]
+        #[crablangfmt::skip]
         let title = match e.kind() {
             UndefinedBehavior(_) =>
                 "Undefined Behavior",
@@ -264,7 +264,7 @@ pub fn report_error<'tcx, 'mir>(
             kind =>
                 bug!("This error should be impossible in Miri: {kind:?}"),
         };
-        #[rustfmt::skip]
+        #[crablangfmt::skip]
         let helps = match e.kind() {
             Unsupported(_) =>
                 vec![(None, format!("this is likely not a bug in the program; it indicates that the program performed an operation that the interpreter does not support"))],
@@ -278,10 +278,10 @@ pub fn report_error<'tcx, 'mir>(
             UndefinedBehavior(_) =>
                 vec![
                     (None, format!("this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior")),
-                    (None, format!("see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information")),
+                    (None, format!("see https://doc.crablang.org/nightly/reference/behavior-considered-undefined.html for further information")),
                 ],
             InvalidProgram(
-                InvalidProgramInfo::AlreadyReported(rustc_errors::ErrorGuaranteed { .. })
+                InvalidProgramInfo::AlreadyReported(crablangc_errors::ErrorGuaranteed { .. })
             ) => {
                 // This got already reported. No point in reporting it again.
                 return None;
@@ -482,13 +482,13 @@ impl<'mir, 'tcx> MiriMachine<'mir, 'tcx> {
                     (
                         None,
                         format!(
-                            "See https://doc.rust-lang.org/nightly/std/ptr/fn.from_exposed_addr.html for more details on that operation."
+                            "See https://doc.crablang.org/nightly/std/ptr/fn.from_exposed_addr.html for more details on that operation."
                         ),
                     ),
                     (
                         None,
                         format!(
-                            "To ensure that Miri does not miss bugs in your program, use Strict Provenance APIs (https://doc.rust-lang.org/nightly/std/ptr/index.html#strict-provenance, https://crates.io/crates/sptr) instead."
+                            "To ensure that Miri does not miss bugs in your program, use Strict Provenance APIs (https://doc.crablang.org/nightly/std/ptr/index.html#strict-provenance, https://crates.io/crates/sptr) instead."
                         ),
                     ),
                     (

@@ -2,14 +2,14 @@ use clippy_utils::diagnostics::span_lint_and_sugg;
 use clippy_utils::get_parent_expr;
 use clippy_utils::msrvs::{self, Msrv};
 use clippy_utils::source::snippet_with_context;
-use rustc_ast::ast::LitKind;
-use rustc_errors::Applicability;
-use rustc_hir::{BinOpKind, Expr, ExprKind, GenericArg, QPath};
-use rustc_lint::{LateContext, LateLintPass, LintContext};
-use rustc_middle::lint::in_external_macro;
-use rustc_middle::ty::{self, Ty};
-use rustc_session::{declare_tool_lint, impl_lint_pass};
-use rustc_span::sym;
+use crablangc_ast::ast::LitKind;
+use crablangc_errors::Applicability;
+use crablangc_hir::{BinOpKind, Expr, ExprKind, GenericArg, QPath};
+use crablangc_lint::{LateContext, LateLintPass, LintContext};
+use crablangc_middle::lint::in_external_macro;
+use crablangc_middle::ty::{self, Ty};
+use crablangc_session::{declare_tool_lint, impl_lint_pass};
+use crablangc_span::sym;
 
 declare_clippy_lint! {
     /// ### What it does
@@ -20,11 +20,11 @@ declare_clippy_lint! {
     /// Can be written as the shorter `T::BITS`.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// std::mem::size_of::<usize>() * 8;
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// usize::BITS as usize;
     /// ```
     #[clippy::version = "1.60.0"]
@@ -89,7 +89,7 @@ fn get_one_size_of_ty<'tcx>(
     cx: &LateContext<'tcx>,
     expr1: &'tcx Expr<'_>,
     expr2: &'tcx Expr<'_>,
-) -> Option<(&'tcx rustc_hir::Ty<'tcx>, Ty<'tcx>, &'tcx Expr<'tcx>)> {
+) -> Option<(&'tcx crablangc_hir::Ty<'tcx>, Ty<'tcx>, &'tcx Expr<'tcx>)> {
     match (get_size_of_ty(cx, expr1), get_size_of_ty(cx, expr2)) {
         (Some((real_ty, resolved_ty)), None) => Some((real_ty, resolved_ty, expr2)),
         (None, Some((real_ty, resolved_ty))) => Some((real_ty, resolved_ty, expr1)),
@@ -97,7 +97,7 @@ fn get_one_size_of_ty<'tcx>(
     }
 }
 
-fn get_size_of_ty<'tcx>(cx: &LateContext<'tcx>, expr: &'tcx Expr<'_>) -> Option<(&'tcx rustc_hir::Ty<'tcx>, Ty<'tcx>)> {
+fn get_size_of_ty<'tcx>(cx: &LateContext<'tcx>, expr: &'tcx Expr<'_>) -> Option<(&'tcx crablangc_hir::Ty<'tcx>, Ty<'tcx>)> {
     if_chain! {
         if let ExprKind::Call(count_func, _func_args) = expr.kind;
         if let ExprKind::Path(ref count_func_qpath) = count_func.kind;
@@ -140,7 +140,7 @@ fn is_ty_conversion(expr: &Expr<'_>) -> bool {
     if let ExprKind::Cast(..) = expr.kind {
         true
     } else if let ExprKind::MethodCall(path, _, [], _) = expr.kind
-        && path.ident.name == rustc_span::sym::try_into
+        && path.ident.name == crablangc_span::sym::try_into
     {
         // This is only called for `usize` which implements `TryInto`. Therefore,
         // we don't have to check here if `self` implements the `TryInto` trait.

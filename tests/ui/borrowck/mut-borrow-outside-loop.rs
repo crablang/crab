@@ -1,6 +1,6 @@
 // ensure borrowck messages are correct outside special case
-#![feature(rustc_attrs)]
-fn main() { #![rustc_error] // rust-lang/rust#49855
+#![feature(crablangc_attrs)]
+fn main() { #![crablangc_error] // crablang/crablang#49855
     let mut void = ();
 
     let first = &mut void;

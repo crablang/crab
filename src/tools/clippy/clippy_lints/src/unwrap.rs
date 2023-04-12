@@ -3,17 +3,17 @@ use clippy_utils::higher;
 use clippy_utils::ty::is_type_diagnostic_item;
 use clippy_utils::{path_to_local, usage::is_potentially_mutated};
 use if_chain::if_chain;
-use rustc_errors::Applicability;
-use rustc_hir::intravisit::{walk_expr, walk_fn, FnKind, Visitor};
-use rustc_hir::{BinOpKind, Body, Expr, ExprKind, FnDecl, HirId, PathSegment, UnOp};
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_middle::hir::nested_filter;
-use rustc_middle::lint::in_external_macro;
-use rustc_middle::ty::Ty;
-use rustc_session::{declare_lint_pass, declare_tool_lint};
-use rustc_span::def_id::LocalDefId;
-use rustc_span::source_map::Span;
-use rustc_span::sym;
+use crablangc_errors::Applicability;
+use crablangc_hir::intravisit::{walk_expr, walk_fn, FnKind, Visitor};
+use crablangc_hir::{BinOpKind, Body, Expr, ExprKind, FnDecl, HirId, PathSegment, UnOp};
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_middle::hir::nested_filter;
+use crablangc_middle::lint::in_external_macro;
+use crablangc_middle::ty::Ty;
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_span::def_id::LocalDefId;
+use crablangc_span::source_map::Span;
+use crablangc_span::sym;
 
 declare_clippy_lint! {
     /// ### What it does
@@ -23,7 +23,7 @@ declare_clippy_lint! {
     /// Using `if let` or `match` is more idiomatic.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// # let option = Some(0);
     /// # fn do_something_with(_x: usize) {}
     /// if option.is_some() {
@@ -33,7 +33,7 @@ declare_clippy_lint! {
     ///
     /// Could be written:
     ///
-    /// ```rust
+    /// ```crablang
     /// # let option = Some(0);
     /// # fn do_something_with(_x: usize) {}
     /// if let Some(value) = option {
@@ -58,7 +58,7 @@ declare_clippy_lint! {
     /// So something like `let x: Option<()> = None; x.unwrap();` will not be recognized.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// # let option = Some(0);
     /// # fn do_something_with(_x: usize) {}
     /// if option.is_none() {

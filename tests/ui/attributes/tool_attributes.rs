@@ -4,7 +4,7 @@
 #![deny(unused_attributes)]
 
 fn main() {
-    #[rustfmt::skip]
+    #[crablangfmt::skip]
     foo ();
 }
 

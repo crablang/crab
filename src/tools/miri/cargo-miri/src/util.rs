@@ -106,7 +106,7 @@ pub fn miri() -> Command {
 
 pub fn miri_for_host() -> Command {
     let mut cmd = miri();
-    cmd.env("MIRI_BE_RUSTC", "host");
+    cmd.env("MIRI_BE_CRABLANGC", "host");
     cmd
 }
 

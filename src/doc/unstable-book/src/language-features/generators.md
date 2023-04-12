@@ -2,11 +2,11 @@
 
 The tracking issue for this feature is: [#43122]
 
-[#43122]: https://github.com/rust-lang/rust/issues/43122
+[#43122]: https://github.com/crablang/crablang/issues/43122
 
 ------------------------
 
-The `generators` feature gate in Rust allows you to define generator or
+The `generators` feature gate in CrabLang allows you to define generator or
 coroutine literals. A generator is a "resumable function" that syntactically
 resembles a closure but compiles to much different semantics in the compiler
 itself. The primary feature of a generator is that it can be suspended during
@@ -21,11 +21,11 @@ compiler before actual stabilization. A further RFC will be required to
 stabilize generators/coroutines and will likely contain at least a few small
 tweaks to the overall design.
 
-[RFC 2033]: https://github.com/rust-lang/rfcs/pull/2033
+[RFC 2033]: https://github.com/crablang/rfcs/pull/2033
 
 A syntactical example of a generator is:
 
-```rust
+```crablang
 #![feature(generators, generator_trait)]
 
 use std::ops::{Generator, GeneratorState};
@@ -57,7 +57,7 @@ resumes execution of the generator at the previous suspension point.
 An example of the control flow of generators is that the following example
 prints all numbers in order:
 
-```rust
+```crablang
 #![feature(generators, generator_trait)]
 
 use std::ops::Generator;
@@ -87,7 +87,7 @@ Feedback on the design and usage is always appreciated!
 
 The `Generator` trait in `std::ops` currently looks like:
 
-```rust
+```crablang
 # #![feature(arbitrary_self_types, generator_trait)]
 # use std::ops::GeneratorState;
 # use std::pin::Pin;
@@ -107,7 +107,7 @@ point for executing the `Generator` itself.
 
 The return value of `resume`, `GeneratorState`, looks like:
 
-```rust
+```crablang
 pub enum GeneratorState<Y, R> {
     Yielded(Y),
     Complete(R),
@@ -162,7 +162,7 @@ which point all state is saved off in the generator and a value is returned.
 
 Let's take a look at an example to see what's going on here:
 
-```rust
+```crablang
 #![feature(generators, generator_trait)]
 
 use std::ops::Generator;
@@ -182,7 +182,7 @@ fn main() {
 
 This generator literal will compile down to something similar to:
 
-```rust
+```crablang
 #![feature(arbitrary_self_types, generators, generator_trait)]
 
 use std::ops::{Generator, GeneratorState};

@@ -1,23 +1,23 @@
 use clippy_utils::diagnostics::span_lint_and_help;
-use rustc_hir::{self as hir, HirId, Item, ItemKind};
-use rustc_hir_analysis::hir_ty_to_ty;
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_middle::ty::layout::LayoutOf;
-use rustc_session::{declare_lint_pass, declare_tool_lint};
-use rustc_span::sym;
+use crablangc_hir::{self as hir, HirId, Item, ItemKind};
+use crablangc_hir_analysis::hir_ty_to_ty;
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_middle::ty::layout::LayoutOf;
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_span::sym;
 
 declare_clippy_lint! {
     /// ### What it does
     /// Displays a warning when a union is declared with the default representation (without a `#[repr(C)]` attribute).
     ///
     /// ### Why is this bad?
-    /// Unions in Rust have unspecified layout by default, despite many people thinking that they
+    /// Unions in CrabLang have unspecified layout by default, despite many people thinking that they
     /// lay out each field at the start of the union (like C does). That is, there are no guarantees
     /// about the offset of the fields for unions with multiple non-ZST fields without an explicitly
     /// specified layout. These cases may lead to undefined behavior in unsafe blocks.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// union Foo {
     ///     a: i32,
     ///     b: u32,
@@ -30,7 +30,7 @@ declare_clippy_lint! {
     /// }
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// #[repr(C)]
     /// union Foo {
     ///     a: i32,

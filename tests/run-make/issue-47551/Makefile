@@ -4,6 +4,6 @@
 include ../tools.mk
 
 all:
-	$(RUSTC) eh_frame-terminator.rs
+	$(CRABLANGC) eh_frame-terminator.rs
 	$(call RUN,eh_frame-terminator) | $(CGREP) '1122334455667788'
 	objdump --dwarf=frames $(TMPDIR)/eh_frame-terminator | $(CGREP) 'ZERO terminator'

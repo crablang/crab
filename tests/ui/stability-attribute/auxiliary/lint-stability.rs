@@ -27,12 +27,12 @@ pub fn unstable() {}
 #[unstable(feature = "unstable_test_feature", reason = "text", issue = "none")]
 pub fn unstable_text() {}
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub fn stable() {}
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub fn stable_text() {}
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub struct MethodTester;
 
 impl MethodTester {
@@ -55,9 +55,9 @@ impl MethodTester {
     #[unstable(feature = "unstable_test_feature", reason = "text", issue = "none")]
     pub fn method_unstable_text(&self) {}
 
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn method_stable(&self) {}
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn method_stable_text(&self) {}
 }
 
@@ -82,9 +82,9 @@ pub trait Trait {
     #[unstable(feature = "unstable_test_feature", reason = "text", issue = "none")]
     fn trait_unstable_text(&self) {}
 
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     fn trait_stable(&self) {}
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     fn trait_stable_text(&self) {}
 }
 
@@ -123,13 +123,13 @@ pub struct DeprecatedUnstableStruct {
 pub struct UnstableStruct {
     #[stable(feature = "stable_test_feature", since = "1.0.0")] pub i: isize
 }
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub struct StableStruct {
     #[stable(feature = "stable_test_feature", since = "1.0.0")] pub i: isize
 }
 #[unstable(feature = "unstable_test_feature", issue = "none")]
 pub enum UnstableEnum {}
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub enum StableEnum {}
 
 #[stable(feature = "stable_test_feature", since = "1.0.0")]
@@ -140,7 +140,7 @@ pub struct DeprecatedUnitStruct;
 pub struct DeprecatedUnstableUnitStruct;
 #[unstable(feature = "unstable_test_feature", issue = "none")]
 pub struct UnstableUnitStruct;
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub struct StableUnitStruct;
 
 #[stable(feature = "stable_test_feature", since = "1.0.0")]
@@ -154,20 +154,20 @@ pub enum Enum {
     #[unstable(feature = "unstable_test_feature", issue = "none")]
     UnstableVariant,
 
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     StableVariant,
 }
 
 #[stable(feature = "stable_test_feature", since = "1.0.0")]
 #[deprecated(since = "1.0.0", note = "text")]
-pub struct DeprecatedTupleStruct(#[stable(feature = "rust1", since = "1.0.0")] pub isize);
+pub struct DeprecatedTupleStruct(#[stable(feature = "crablang1", since = "1.0.0")] pub isize);
 #[unstable(feature = "unstable_test_feature", issue = "none")]
 #[deprecated(since = "1.0.0", note = "text")]
-pub struct DeprecatedUnstableTupleStruct(#[stable(feature = "rust1", since = "1.0.0")] pub isize);
+pub struct DeprecatedUnstableTupleStruct(#[stable(feature = "crablang1", since = "1.0.0")] pub isize);
 #[unstable(feature = "unstable_test_feature", issue = "none")]
-pub struct UnstableTupleStruct(#[stable(feature = "rust1", since = "1.0.0")] pub isize);
-#[stable(feature = "rust1", since = "1.0.0")]
-pub struct StableTupleStruct(#[stable(feature = "rust1", since = "1.0.0")] pub isize);
+pub struct UnstableTupleStruct(#[stable(feature = "crablang1", since = "1.0.0")] pub isize);
+#[stable(feature = "crablang1", since = "1.0.0")]
+pub struct StableTupleStruct(#[stable(feature = "crablang1", since = "1.0.0")] pub isize);
 
 #[stable(feature = "stable_test_feature", since = "1.0.0")]
 #[macro_export]

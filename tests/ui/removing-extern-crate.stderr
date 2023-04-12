@@ -7,9 +7,9 @@ LL | extern crate removing_extern_crate as foo;
 note: the lint level is defined here
   --> $DIR/removing-extern-crate.rs:6:9
    |
-LL | #![warn(rust_2018_idioms)]
+LL | #![warn(crablang_2018_idioms)]
    |         ^^^^^^^^^^^^^^^^
-   = note: `#[warn(unused_extern_crates)]` implied by `#[warn(rust_2018_idioms)]`
+   = note: `#[warn(unused_extern_crates)]` implied by `#[warn(crablang_2018_idioms)]`
 
 warning: unused extern crate
   --> $DIR/removing-extern-crate.rs:9:1

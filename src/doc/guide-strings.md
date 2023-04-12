@@ -1,4 +1,4 @@
-% The (old) Guide to Rust Strings
+% The (old) Guide to CrabLang Strings
 
 This content has moved into
-[the Rust Programming Language book](book/strings.html).
+[the CrabLang Programming Language book](book/strings.html).

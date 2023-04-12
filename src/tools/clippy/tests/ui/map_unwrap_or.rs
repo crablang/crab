@@ -8,7 +8,7 @@ extern crate option_helpers;
 
 use std::collections::HashMap;
 
-#[rustfmt::skip]
+#[crablangfmt::skip]
 fn option_methods() {
     let opt = Some(1);
 
@@ -58,7 +58,7 @@ fn option_methods() {
         );
 }
 
-#[rustfmt::skip]
+#[crablangfmt::skip]
 fn result_methods() {
     let res: Result<i32, ()> = Ok(1);
 

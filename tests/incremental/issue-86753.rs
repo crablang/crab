@@ -4,7 +4,7 @@
 
 // Regression test for #86753. The `type_implements_trait` query (since moved to a method)
 // was encountering an ICE during incremental testing when hashing its arguments.
-#![warn(rust_2021_compatibility)]
+#![warn(crablang_2021_compatibility)]
 
 use std::future::Future;
 use std::pin::Pin;

@@ -11,12 +11,12 @@ pub fn panic_handler(_: &core::panic::PanicInfo) -> ! {
 }
 
 #[no_mangle]
-extern "C" fn __rust_drop_panic() -> ! {
+extern "C" fn __crablang_drop_panic() -> ! {
     loop {}
 }
 
 #[no_mangle]
-extern "C" fn __rust_foreign_exception() -> ! {
+extern "C" fn __crablang_foreign_exception() -> ! {
     loop {}
 }
 

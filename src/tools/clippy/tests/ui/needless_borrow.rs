@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 #![feature(lint_reasons)]
 #![allow(
     unused,
@@ -264,7 +264,7 @@ where
 {
 }
 
-// https://github.com/rust-lang/rust-clippy/pull/9136#pullrequestreview-1037379321
+// https://github.com/crablang/crablang-clippy/pull/9136#pullrequestreview-1037379321
 mod copyable_iterator {
     #[derive(Clone, Copy)]
     struct Iter;
@@ -374,7 +374,7 @@ mod used_more_than_once {
     fn use_x_again(_: impl AsRef<str>) {}
 }
 
-// https://github.com/rust-lang/rust-clippy/issues/9111#issuecomment-1277114280
+// https://github.com/crablang/crablang-clippy/issues/9111#issuecomment-1277114280
 mod issue_9111 {
     struct A;
 

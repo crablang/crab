@@ -1,12 +1,12 @@
 use clippy_utils::diagnostics::span_lint_hir_and_then;
-use rustc_data_structures::fx::FxHashMap;
-use rustc_hir::def::{DefKind, Res};
-use rustc_hir::{HirId, Impl, ItemKind, Node, Path, QPath, TraitRef, TyKind};
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_middle::ty::AssocKind;
-use rustc_session::{declare_lint_pass, declare_tool_lint};
-use rustc_span::symbol::Symbol;
-use rustc_span::Span;
+use crablangc_data_structures::fx::FxHashMap;
+use crablangc_hir::def::{DefKind, Res};
+use crablangc_hir::{HirId, Impl, ItemKind, Node, Path, QPath, TraitRef, TyKind};
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_middle::ty::AssocKind;
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_span::symbol::Symbol;
+use crablangc_span::Span;
 use std::collections::{BTreeMap, BTreeSet};
 
 declare_clippy_lint! {
@@ -18,7 +18,7 @@ declare_clippy_lint! {
     /// Confusing.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// trait T {
     ///     fn foo(&self) {}
     /// }
@@ -81,7 +81,7 @@ impl<'tcx> LateLintPass<'tcx> for SameNameMethod {
                             if let Res::Def(DefKind::Trait, did) = path.res;
                             then{
                                 // FIXME: if
-                                // `rustc_middle::ty::assoc::AssocItems::items` is public,
+                                // `crablangc_middle::ty::assoc::AssocItems::items` is public,
                                 // we can iterate its keys instead of `in_definition_order`,
                                 // which's more efficient
                                 cx.tcx
@@ -121,7 +121,7 @@ impl<'tcx> LateLintPass<'tcx> for SameNameMethod {
                         };
 
                         for impl_item_ref in (*items).iter().filter(|impl_item_ref| {
-                            matches!(impl_item_ref.kind, rustc_hir::AssocItemKind::Fn { .. })
+                            matches!(impl_item_ref.kind, crablangc_hir::AssocItemKind::Fn { .. })
                         }) {
                             let method_name = impl_item_ref.ident.name;
                             methods_in_trait.remove(&method_name);
@@ -134,7 +134,7 @@ impl<'tcx> LateLintPass<'tcx> for SameNameMethod {
                     },
                     None => {
                         for impl_item_ref in (*items).iter().filter(|impl_item_ref| {
-                            matches!(impl_item_ref.kind, rustc_hir::AssocItemKind::Fn { .. })
+                            matches!(impl_item_ref.kind, crablangc_hir::AssocItemKind::Fn { .. })
                         }) {
                             let method_name = impl_item_ref.ident.name;
                             let impl_span = impl_item_ref.span;

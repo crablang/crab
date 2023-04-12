@@ -87,4 +87,4 @@ LL |     fn in_param(Foo: foo::Foo) {}
 
 error: aborting due to 9 previous errors; 3 warnings emitted
 
-For more information about this error, try `rustc --explain E0170`.
+For more information about this error, try `crablangc --explain E0170`.

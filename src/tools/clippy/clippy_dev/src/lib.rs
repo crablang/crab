@@ -1,13 +1,13 @@
 #![feature(let_chains)]
-#![feature(rustc_private)]
+#![feature(crablangc_private)]
 #![cfg_attr(feature = "deny-warnings", deny(warnings))]
-// warn on lints, that are included in `rust-lang/rust`s bootstrap
-#![warn(rust_2018_idioms, unused_lifetimes)]
+// warn on lints, that are included in `crablang/crablang`s bootstrap
+#![warn(crablang_2018_idioms, unused_lifetimes)]
 
-// The `rustc_driver` crate seems to be required in order to use the `rust_lexer` crate.
+// The `crablangc_driver` crate seems to be required in order to use the `crablang_lexer` crate.
 #[allow(unused_extern_crates)]
-extern crate rustc_driver;
-extern crate rustc_lexer;
+extern crate crablangc_driver;
+extern crate crablangc_lexer;
 
 use std::path::PathBuf;
 

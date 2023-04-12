@@ -64,7 +64,7 @@
 //! [`components`]: Path::components
 //! [`push`]: PathBuf::push
 
-#![stable(feature = "rust1", since = "1.0.0")]
+#![stable(feature = "crablang1", since = "1.0.0")]
 #![deny(unsafe_op_in_unsafe_fn)]
 
 #[cfg(test)]
@@ -135,57 +135,57 @@ use crate::sys::path::{is_sep_byte, is_verbatim_sep, parse_prefix, MAIN_SEP_STR}
 ///            get_path_prefix(r"\\.\BrainInterface"));
 /// assert_eq!(UNC(OsStr::new("server"), OsStr::new("share")),
 ///            get_path_prefix(r"\\server\share"));
-/// assert_eq!(Disk(b'C'), get_path_prefix(r"C:\Users\Rust\Pictures\Ferris"));
+/// assert_eq!(Disk(b'C'), get_path_prefix(r"C:\Users\CrabLang\Pictures\Ferris"));
 /// # }
 /// ```
 #[derive(Copy, Clone, Debug, Hash, PartialOrd, Ord, PartialEq, Eq)]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub enum Prefix<'a> {
     /// Verbatim prefix, e.g., `\\?\cat_pics`.
     ///
     /// Verbatim prefixes consist of `\\?\` immediately followed by the given
     /// component.
-    #[stable(feature = "rust1", since = "1.0.0")]
-    Verbatim(#[stable(feature = "rust1", since = "1.0.0")] &'a OsStr),
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    Verbatim(#[stable(feature = "crablang1", since = "1.0.0")] &'a OsStr),
 
     /// Verbatim prefix using Windows' _**U**niform **N**aming **C**onvention_,
     /// e.g., `\\?\UNC\server\share`.
     ///
     /// Verbatim UNC prefixes consist of `\\?\UNC\` immediately followed by the
     /// server's hostname and a share name.
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     VerbatimUNC(
-        #[stable(feature = "rust1", since = "1.0.0")] &'a OsStr,
-        #[stable(feature = "rust1", since = "1.0.0")] &'a OsStr,
+        #[stable(feature = "crablang1", since = "1.0.0")] &'a OsStr,
+        #[stable(feature = "crablang1", since = "1.0.0")] &'a OsStr,
     ),
 
     /// Verbatim disk prefix, e.g., `\\?\C:`.
     ///
     /// Verbatim disk prefixes consist of `\\?\` immediately followed by the
     /// drive letter and `:`.
-    #[stable(feature = "rust1", since = "1.0.0")]
-    VerbatimDisk(#[stable(feature = "rust1", since = "1.0.0")] u8),
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    VerbatimDisk(#[stable(feature = "crablang1", since = "1.0.0")] u8),
 
     /// Device namespace prefix, e.g., `\\.\COM42`.
     ///
     /// Device namespace prefixes consist of `\\.\` (possibly using `/`
     /// instead of `\`), immediately followed by the device name.
-    #[stable(feature = "rust1", since = "1.0.0")]
-    DeviceNS(#[stable(feature = "rust1", since = "1.0.0")] &'a OsStr),
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    DeviceNS(#[stable(feature = "crablang1", since = "1.0.0")] &'a OsStr),
 
     /// Prefix using Windows' _**U**niform **N**aming **C**onvention_, e.g.
     /// `\\server\share`.
     ///
     /// UNC prefixes consist of the server's hostname and a share name.
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     UNC(
-        #[stable(feature = "rust1", since = "1.0.0")] &'a OsStr,
-        #[stable(feature = "rust1", since = "1.0.0")] &'a OsStr,
+        #[stable(feature = "crablang1", since = "1.0.0")] &'a OsStr,
+        #[stable(feature = "crablang1", since = "1.0.0")] &'a OsStr,
     ),
 
     /// Prefix `C:` for the given disk drive.
-    #[stable(feature = "rust1", since = "1.0.0")]
-    Disk(#[stable(feature = "rust1", since = "1.0.0")] u8),
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    Disk(#[stable(feature = "crablang1", since = "1.0.0")] u8),
 }
 
 impl<'a> Prefix<'a> {
@@ -224,7 +224,7 @@ impl<'a> Prefix<'a> {
     /// ```
     #[inline]
     #[must_use]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn is_verbatim(&self) -> bool {
         use self::Prefix::*;
         matches!(*self, Verbatim(_) | VerbatimDisk(_) | VerbatimUNC(..))
@@ -257,7 +257,7 @@ impl<'a> Prefix<'a> {
 /// assert!(!path::is_separator('❤'));
 /// ```
 #[must_use]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub fn is_separator(c: char) -> bool {
     c.is_ascii() && is_sep_byte(c as u8)
 }
@@ -265,7 +265,7 @@ pub fn is_separator(c: char) -> bool {
 /// The primary separator of path components for the current platform.
 ///
 /// For example, `/` on Unix and `\` on Windows.
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub const MAIN_SEPARATOR: char = crate::sys::path::MAIN_SEP;
 
 /// The primary separator of path components for the current platform.
@@ -418,7 +418,7 @@ enum State {
 /// [`as_os_str`]: PrefixComponent::as_os_str
 /// [`kind`]: PrefixComponent::kind
 /// [`Prefix` variant]: Component::Prefix
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[derive(Copy, Clone, Eq, Debug)]
 pub struct PrefixComponent<'a> {
     /// The prefix as an unparsed `OsStr` slice.
@@ -433,7 +433,7 @@ impl<'a> PrefixComponent<'a> {
     ///
     /// See [`Prefix`]'s documentation for more information on the different
     /// kinds of prefixes.
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[must_use]
     #[inline]
     pub fn kind(&self) -> Prefix<'a> {
@@ -441,7 +441,7 @@ impl<'a> PrefixComponent<'a> {
     }
 
     /// Returns the raw [`OsStr`] slice for this prefix.
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[must_use]
     #[inline]
     pub fn as_os_str(&self) -> &'a OsStr {
@@ -449,7 +449,7 @@ impl<'a> PrefixComponent<'a> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<'a> cmp::PartialEq for PrefixComponent<'a> {
     #[inline]
     fn eq(&self, other: &PrefixComponent<'a>) -> bool {
@@ -457,7 +457,7 @@ impl<'a> cmp::PartialEq for PrefixComponent<'a> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<'a> cmp::PartialOrd for PrefixComponent<'a> {
     #[inline]
     fn partial_cmp(&self, other: &PrefixComponent<'a>) -> Option<cmp::Ordering> {
@@ -465,7 +465,7 @@ impl<'a> cmp::PartialOrd for PrefixComponent<'a> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl cmp::Ord for PrefixComponent<'_> {
     #[inline]
     fn cmp(&self, other: &Self) -> cmp::Ordering {
@@ -473,7 +473,7 @@ impl cmp::Ord for PrefixComponent<'_> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl Hash for PrefixComponent<'_> {
     fn hash<H: Hasher>(&self, h: &mut H) {
         self.parsed.hash(h);
@@ -490,7 +490,7 @@ impl Hash for PrefixComponent<'_> {
 ///
 /// # Examples
 ///
-/// ```rust
+/// ```crablang
 /// use std::path::{Component, Path};
 ///
 /// let path = Path::new("/tmp/foo/bar.txt");
@@ -503,7 +503,7 @@ impl Hash for PrefixComponent<'_> {
 /// ]);
 /// ```
 #[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Debug)]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub enum Component<'a> {
     /// A Windows path prefix, e.g., `C:` or `\\server\share`.
     ///
@@ -511,29 +511,29 @@ pub enum Component<'a> {
     /// for more.
     ///
     /// Does not occur on Unix.
-    #[stable(feature = "rust1", since = "1.0.0")]
-    Prefix(#[stable(feature = "rust1", since = "1.0.0")] PrefixComponent<'a>),
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    Prefix(#[stable(feature = "crablang1", since = "1.0.0")] PrefixComponent<'a>),
 
     /// The root directory component, appears after any prefix and before anything else.
     ///
     /// It represents a separator that designates that a path starts from root.
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     RootDir,
 
     /// A reference to the current directory, i.e., `.`.
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     CurDir,
 
     /// A reference to the parent directory, i.e., `..`.
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     ParentDir,
 
     /// A normal component, e.g., `a` and `b` in `a/b`.
     ///
     /// This variant is the most common one, it represents references to files
     /// or directories.
-    #[stable(feature = "rust1", since = "1.0.0")]
-    Normal(#[stable(feature = "rust1", since = "1.0.0")] &'a OsStr),
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    Normal(#[stable(feature = "crablang1", since = "1.0.0")] &'a OsStr),
 }
 
 impl<'a> Component<'a> {
@@ -549,7 +549,7 @@ impl<'a> Component<'a> {
     /// assert_eq!(&components, &[".", "tmp", "foo", "bar.txt"]);
     /// ```
     #[must_use = "`self` will be dropped if the result is not used"]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn as_os_str(self) -> &'a OsStr {
         match self {
             Component::Prefix(p) => p.as_os_str(),
@@ -561,7 +561,7 @@ impl<'a> Component<'a> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl AsRef<OsStr> for Component<'_> {
     #[inline]
     fn as_ref(&self) -> &OsStr {
@@ -597,7 +597,7 @@ impl AsRef<Path> for Component<'_> {
 /// [`components`]: Path::components
 #[derive(Clone)]
 #[must_use = "iterators are lazy and do nothing unless consumed"]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub struct Components<'a> {
     // The path left to parse components from
     path: &'a [u8],
@@ -624,7 +624,7 @@ pub struct Components<'a> {
 /// [`iter`]: Path::iter
 #[derive(Clone)]
 #[must_use = "iterators are lazy and do nothing unless consumed"]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub struct Iter<'a> {
     inner: Components<'a>,
 }
@@ -695,7 +695,7 @@ impl<'a> Components<'a> {
     /// assert_eq!(Path::new("foo/bar.txt"), components.as_path());
     /// ```
     #[must_use]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn as_path(&self) -> &'a Path {
         let mut comps = self.clone();
         if comps.front == State::Body {
@@ -794,7 +794,7 @@ impl<'a> Components<'a> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl AsRef<Path> for Components<'_> {
     #[inline]
     fn as_ref(&self) -> &Path {
@@ -802,7 +802,7 @@ impl AsRef<Path> for Components<'_> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl AsRef<OsStr> for Components<'_> {
     #[inline]
     fn as_ref(&self) -> &OsStr {
@@ -839,7 +839,7 @@ impl<'a> Iter<'a> {
     ///
     /// assert_eq!(Path::new("foo/bar.txt"), iter.as_path());
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[must_use]
     #[inline]
     pub fn as_path(&self) -> &'a Path {
@@ -847,7 +847,7 @@ impl<'a> Iter<'a> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl AsRef<Path> for Iter<'_> {
     #[inline]
     fn as_ref(&self) -> &Path {
@@ -855,7 +855,7 @@ impl AsRef<Path> for Iter<'_> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl AsRef<OsStr> for Iter<'_> {
     #[inline]
     fn as_ref(&self) -> &OsStr {
@@ -863,7 +863,7 @@ impl AsRef<OsStr> for Iter<'_> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<'a> Iterator for Iter<'a> {
     type Item = &'a OsStr;
 
@@ -873,7 +873,7 @@ impl<'a> Iterator for Iter<'a> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<'a> DoubleEndedIterator for Iter<'a> {
     #[inline]
     fn next_back(&mut self) -> Option<&'a OsStr> {
@@ -884,7 +884,7 @@ impl<'a> DoubleEndedIterator for Iter<'a> {
 #[stable(feature = "fused", since = "1.26.0")]
 impl FusedIterator for Iter<'_> {}
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<'a> Iterator for Components<'a> {
     type Item = Component<'a>;
 
@@ -937,7 +937,7 @@ impl<'a> Iterator for Components<'a> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<'a> DoubleEndedIterator for Components<'a> {
     fn next_back(&mut self) -> Option<Component<'a>> {
         while !self.finished() {
@@ -987,7 +987,7 @@ impl<'a> DoubleEndedIterator for Components<'a> {
 #[stable(feature = "fused", since = "1.26.0")]
 impl FusedIterator for Components<'_> {}
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<'a> cmp::PartialEq for Components<'a> {
     #[inline]
     fn eq(&self, other: &Components<'a>) -> bool {
@@ -1014,10 +1014,10 @@ impl<'a> cmp::PartialEq for Components<'a> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl cmp::Eq for Components<'_> {}
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<'a> cmp::PartialOrd for Components<'a> {
     #[inline]
     fn partial_cmp(&self, other: &Components<'a>) -> Option<cmp::Ordering> {
@@ -1025,7 +1025,7 @@ impl<'a> cmp::PartialOrd for Components<'a> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl cmp::Ord for Components<'_> {
     #[inline]
     fn cmp(&self, other: &Self) -> cmp::Ordering {
@@ -1157,8 +1157,8 @@ impl FusedIterator for Ancestors<'_> {}
 /// ```
 ///
 /// Which method works best depends on what kind of situation you're in.
-#[cfg_attr(not(test), rustc_diagnostic_item = "PathBuf")]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[cfg_attr(not(test), crablangc_diagnostic_item = "PathBuf")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 // FIXME:
 // `PathBuf::as_mut_vec` current implementation relies
 // on `PathBuf` being layout-compatible with `Vec<u8>`.
@@ -1184,7 +1184,7 @@ impl PathBuf {
     ///
     /// let path = PathBuf::new();
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[must_use]
     #[inline]
     pub fn new() -> PathBuf {
@@ -1226,7 +1226,7 @@ impl PathBuf {
     /// let p = PathBuf::from("/test");
     /// assert_eq!(Path::new("/test"), p.as_path());
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[must_use]
     #[inline]
     pub fn as_path(&self) -> &Path {
@@ -1270,7 +1270,7 @@ impl PathBuf {
     /// path.push("/etc");
     /// assert_eq!(path, PathBuf::from("/etc"));
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn push<P: AsRef<Path>>(&mut self, path: P) {
         self._push(path.as_ref())
     }
@@ -1365,7 +1365,7 @@ impl PathBuf {
     /// p.pop();
     /// assert_eq!(Path::new("/"), p);
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn pop(&mut self) -> bool {
         match self.parent().map(|p| p.as_u8_slice().len()) {
             Some(len) => {
@@ -1401,7 +1401,7 @@ impl PathBuf {
     /// buf.set_file_name("baz.txt");
     /// assert!(buf == PathBuf::from("/baz.txt"));
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn set_file_name<S: AsRef<OsStr>>(&mut self, file_name: S) {
         self._set_file_name(file_name.as_ref())
     }
@@ -1465,7 +1465,7 @@ impl PathBuf {
     /// p.set_extension("");
     /// assert_eq!(Path::new("/feel/the"), p.as_path());
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn set_extension<S: AsRef<OsStr>>(&mut self, extension: S) -> bool {
         self._set_extension(extension.as_ref())
     }
@@ -1509,7 +1509,7 @@ impl PathBuf {
     /// path.as_mut_os_string().push("baz");
     /// assert_eq!(path, Path::new("/foo/barbaz"));
     /// ```
-    #[stable(feature = "path_as_mut_os_str", since = "CURRENT_RUSTC_VERSION")]
+    #[stable(feature = "path_as_mut_os_str", since = "CURRENT_CRABLANGC_VERSION")]
     #[must_use]
     #[inline]
     pub fn as_mut_os_string(&mut self) -> &mut OsString {
@@ -1526,7 +1526,7 @@ impl PathBuf {
     /// let p = PathBuf::from("/the/head");
     /// let os_str = p.into_os_string();
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[must_use = "`self` will be dropped if the result is not used"]
     #[inline]
     pub fn into_os_string(self) -> OsString {
@@ -1616,7 +1616,7 @@ impl PathBuf {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl Clone for PathBuf {
     #[inline]
     fn clone(&self) -> Self {
@@ -1686,7 +1686,7 @@ impl Clone for Box<Path> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: ?Sized + AsRef<OsStr>> From<&T> for PathBuf {
     /// Converts a borrowed [`OsStr`] to a [`PathBuf`].
     ///
@@ -1697,7 +1697,7 @@ impl<T: ?Sized + AsRef<OsStr>> From<&T> for PathBuf {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl From<OsString> for PathBuf {
     /// Converts an [`OsString`] into a [`PathBuf`]
     ///
@@ -1719,7 +1719,7 @@ impl From<PathBuf> for OsString {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl From<String> for PathBuf {
     /// Converts a [`String`] into a [`PathBuf`]
     ///
@@ -1740,7 +1740,7 @@ impl FromStr for PathBuf {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<P: AsRef<Path>> iter::FromIterator<P> for PathBuf {
     fn from_iter<I: IntoIterator<Item = P>>(iter: I) -> PathBuf {
         let mut buf = PathBuf::new();
@@ -1749,7 +1749,7 @@ impl<P: AsRef<Path>> iter::FromIterator<P> for PathBuf {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<P: AsRef<Path>> iter::Extend<P> for PathBuf {
     fn extend<I: IntoIterator<Item = P>>(&mut self, iter: I) {
         iter.into_iter().for_each(move |p| self.push(p.as_ref()));
@@ -1761,14 +1761,14 @@ impl<P: AsRef<Path>> iter::Extend<P> for PathBuf {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl fmt::Debug for PathBuf {
     fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
         fmt::Debug::fmt(&**self, formatter)
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl ops::Deref for PathBuf {
     type Target = Path;
     #[inline]
@@ -1785,7 +1785,7 @@ impl ops::DerefMut for PathBuf {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl Borrow<Path> for PathBuf {
     #[inline]
     fn borrow(&self) -> &Path {
@@ -1890,7 +1890,7 @@ impl From<&Path> for Rc<Path> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl ToOwned for Path {
     type Owned = PathBuf;
     #[inline]
@@ -1903,7 +1903,7 @@ impl ToOwned for Path {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl cmp::PartialEq for PathBuf {
     #[inline]
     fn eq(&self, other: &PathBuf) -> bool {
@@ -1911,17 +1911,17 @@ impl cmp::PartialEq for PathBuf {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl Hash for PathBuf {
     fn hash<H: Hasher>(&self, h: &mut H) {
         self.as_path().hash(h)
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl cmp::Eq for PathBuf {}
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl cmp::PartialOrd for PathBuf {
     #[inline]
     fn partial_cmp(&self, other: &PathBuf) -> Option<cmp::Ordering> {
@@ -1929,7 +1929,7 @@ impl cmp::PartialOrd for PathBuf {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl cmp::Ord for PathBuf {
     #[inline]
     fn cmp(&self, other: &PathBuf) -> cmp::Ordering {
@@ -1937,7 +1937,7 @@ impl cmp::Ord for PathBuf {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl AsRef<OsStr> for PathBuf {
     #[inline]
     fn as_ref(&self) -> &OsStr {
@@ -1977,8 +1977,8 @@ impl AsRef<OsStr> for PathBuf {
 /// let extension = path.extension();
 /// assert_eq!(extension, Some(OsStr::new("txt")));
 /// ```
-#[cfg_attr(not(test), rustc_diagnostic_item = "Path")]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[cfg_attr(not(test), crablangc_diagnostic_item = "Path")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 // FIXME:
 // `Path::new` current implementation relies
 // on `Path` being layout-compatible with `OsStr`.
@@ -2032,7 +2032,7 @@ impl Path {
     /// let from_path = Path::new(&from_string);
     /// assert_eq!(from_string, from_path);
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn new<S: AsRef<OsStr> + ?Sized>(s: &S) -> &Path {
         unsafe { &*(s.as_ref() as *const OsStr as *const Path) }
     }
@@ -2053,7 +2053,7 @@ impl Path {
     /// let os_str = Path::new("foo.txt").as_os_str();
     /// assert_eq!(os_str, std::ffi::OsStr::new("foo.txt"));
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[must_use]
     #[inline]
     pub fn as_os_str(&self) -> &OsStr {
@@ -2074,7 +2074,7 @@ impl Path {
     /// path.as_mut_os_str().make_ascii_lowercase();
     /// assert_eq!(path, Path::new("foo.txt"));
     /// ```
-    #[stable(feature = "path_as_mut_os_str", since = "CURRENT_RUSTC_VERSION")]
+    #[stable(feature = "path_as_mut_os_str", since = "CURRENT_CRABLANGC_VERSION")]
     #[must_use]
     #[inline]
     pub fn as_mut_os_str(&mut self) -> &mut OsStr {
@@ -2097,7 +2097,7 @@ impl Path {
     /// let path = Path::new("foo.txt");
     /// assert_eq!(path.to_str(), Some("foo.txt"));
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[must_use = "this returns the result of the operation, \
                   without modifying the original"]
     #[inline]
@@ -2125,7 +2125,7 @@ impl Path {
     ///
     /// Had `path` contained invalid unicode, the `to_string_lossy` call might
     /// have returned `"fo�.txt"`.
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[must_use = "this returns the result of the operation, \
                   without modifying the original"]
     #[inline]
@@ -2143,10 +2143,10 @@ impl Path {
     /// let path_buf = Path::new("foo.txt").to_path_buf();
     /// assert_eq!(path_buf, std::path::PathBuf::from("foo.txt"));
     /// ```
-    #[rustc_conversion_suggestion]
+    #[crablangc_conversion_suggestion]
     #[must_use = "this returns the result of the operation, \
                   without modifying the original"]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn to_path_buf(&self) -> PathBuf {
         PathBuf::from(self.inner.to_os_string())
     }
@@ -2169,7 +2169,7 @@ impl Path {
     /// ```
     ///
     /// [`has_root`]: Path::has_root
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[must_use]
     #[allow(deprecated)]
     pub fn is_absolute(&self) -> bool {
@@ -2194,7 +2194,7 @@ impl Path {
     /// ```
     ///
     /// [`is_absolute`]: Path::is_absolute
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[must_use]
     #[inline]
     pub fn is_relative(&self) -> bool {
@@ -2221,7 +2221,7 @@ impl Path {
     ///
     /// assert!(Path::new("/etc/passwd").has_root());
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[must_use]
     #[inline]
     pub fn has_root(&self) -> bool {
@@ -2256,7 +2256,7 @@ impl Path {
     /// let great_grand_parent = grand_parent.and_then(Path::parent);
     /// assert_eq!(great_grand_parent, None);
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[doc(alias = "dirname")]
     #[must_use]
     pub fn parent(&self) -> Option<&Path> {
@@ -2324,7 +2324,7 @@ impl Path {
     /// assert_eq!(None, Path::new("foo.txt/..").file_name());
     /// assert_eq!(None, Path::new("/").file_name());
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[doc(alias = "basename")]
     #[must_use]
     pub fn file_name(&self) -> Option<&OsStr> {
@@ -2398,7 +2398,7 @@ impl Path {
     ///
     /// assert!(!Path::new("/etc/foo.rs").starts_with("/etc/foo"));
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[must_use]
     pub fn starts_with<P: AsRef<Path>>(&self, base: P) -> bool {
         self._starts_with(base.as_ref())
@@ -2426,7 +2426,7 @@ impl Path {
     /// assert!(!path.ends_with("/resolv.conf"));
     /// assert!(!path.ends_with("conf")); // use .extension() instead
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[must_use]
     pub fn ends_with<P: AsRef<Path>>(&self, child: P) -> bool {
         self._ends_with(child.as_ref())
@@ -2462,7 +2462,7 @@ impl Path {
     ///
     /// [`Path::file_prefix`]: Path::file_prefix
     ///
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[must_use]
     pub fn file_stem(&self) -> Option<&OsStr> {
         self.file_name().map(rsplit_file_at_dot).and_then(|(before, after)| before.or(after))
@@ -2521,7 +2521,7 @@ impl Path {
     /// assert_eq!("rs", Path::new("foo.rs").extension().unwrap());
     /// assert_eq!("gz", Path::new("foo.tar.gz").extension().unwrap());
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[must_use]
     pub fn extension(&self) -> Option<&OsStr> {
         self.file_name().map(rsplit_file_at_dot).and_then(|(before, after)| before.and(after))
@@ -2541,7 +2541,7 @@ impl Path {
     /// assert_eq!(Path::new("/etc").join("passwd"), PathBuf::from("/etc/passwd"));
     /// assert_eq!(Path::new("/etc").join("/bin/sh"), PathBuf::from("/bin/sh"));
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[must_use]
     pub fn join<P: AsRef<Path>>(&self, path: P) -> PathBuf {
         self._join(path.as_ref())
@@ -2568,7 +2568,7 @@ impl Path {
     /// let path = Path::new("/tmp");
     /// assert_eq!(path.with_file_name("var"), PathBuf::from("/var"));
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[must_use]
     pub fn with_file_name<S: AsRef<OsStr>>(&self, file_name: S) -> PathBuf {
         self._with_file_name(file_name.as_ref())
@@ -2597,7 +2597,7 @@ impl Path {
     /// assert_eq!(path.with_extension("xz"), PathBuf::from("foo.tar.xz"));
     /// assert_eq!(path.with_extension("").with_extension("txt"), PathBuf::from("foo.txt"));
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn with_extension<S: AsRef<OsStr>>(&self, extension: S) -> PathBuf {
         self._with_extension(extension.as_ref())
     }
@@ -2641,7 +2641,7 @@ impl Path {
     /// ```
     ///
     /// [`CurDir`]: Component::CurDir
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn components(&self) -> Components<'_> {
         let prefix = parse_prefix(self.as_os_str());
         Components {
@@ -2674,7 +2674,7 @@ impl Path {
     /// assert_eq!(it.next(), Some(OsStr::new("foo.txt")));
     /// assert_eq!(it.next(), None)
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     pub fn iter(&self) -> Iter<'_> {
         Iter { inner: self.components() }
@@ -2697,7 +2697,7 @@ impl Path {
     ///
     /// println!("{}", path.display());
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[must_use = "this does not display the path, \
                   it returns an object that can be displayed"]
     #[inline]
@@ -2970,7 +2970,7 @@ impl Path {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl AsRef<OsStr> for Path {
     #[inline]
     fn as_ref(&self) -> &OsStr {
@@ -2978,7 +2978,7 @@ impl AsRef<OsStr> for Path {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl fmt::Debug for Path {
     fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
         fmt::Debug::fmt(&self.inner, formatter)
@@ -3005,26 +3005,26 @@ impl fmt::Debug for Path {
 ///
 /// [`Display`]: fmt::Display
 /// [`format!`]: crate::format
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub struct Display<'a> {
     path: &'a Path,
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl fmt::Debug for Display<'_> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         fmt::Debug::fmt(&self.path, f)
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl fmt::Display for Display<'_> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         self.path.inner.display(f)
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl cmp::PartialEq for Path {
     #[inline]
     fn eq(&self, other: &Path) -> bool {
@@ -3032,7 +3032,7 @@ impl cmp::PartialEq for Path {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl Hash for Path {
     fn hash<H: Hasher>(&self, h: &mut H) {
         let bytes = self.as_u8_slice();
@@ -3083,10 +3083,10 @@ impl Hash for Path {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl cmp::Eq for Path {}
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl cmp::PartialOrd for Path {
     #[inline]
     fn partial_cmp(&self, other: &Path) -> Option<cmp::Ordering> {
@@ -3094,7 +3094,7 @@ impl cmp::PartialOrd for Path {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl cmp::Ord for Path {
     #[inline]
     fn cmp(&self, other: &Path) -> cmp::Ordering {
@@ -3102,7 +3102,7 @@ impl cmp::Ord for Path {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl AsRef<Path> for Path {
     #[inline]
     fn as_ref(&self) -> &Path {
@@ -3110,7 +3110,7 @@ impl AsRef<Path> for Path {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl AsRef<Path> for OsStr {
     #[inline]
     fn as_ref(&self) -> &Path {
@@ -3126,7 +3126,7 @@ impl AsRef<Path> for Cow<'_, OsStr> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl AsRef<Path> for OsString {
     #[inline]
     fn as_ref(&self) -> &Path {
@@ -3134,7 +3134,7 @@ impl AsRef<Path> for OsString {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl AsRef<Path> for str {
     #[inline]
     fn as_ref(&self) -> &Path {
@@ -3142,7 +3142,7 @@ impl AsRef<Path> for str {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl AsRef<Path> for String {
     #[inline]
     fn as_ref(&self) -> &Path {
@@ -3150,7 +3150,7 @@ impl AsRef<Path> for String {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl AsRef<Path> for PathBuf {
     #[inline]
     fn as_ref(&self) -> &Path {

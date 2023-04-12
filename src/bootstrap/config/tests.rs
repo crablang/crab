@@ -22,8 +22,8 @@ fn download_ci_llvm() {
     assert!(parse_llvm("llvm.download-ci-llvm = true"));
     assert!(!parse_llvm("llvm.download-ci-llvm = false"));
     assert_eq!(parse_llvm(""), if_available);
-    assert_eq!(parse_llvm("rust.channel = \"dev\""), if_available);
-    assert!(!parse_llvm("rust.channel = \"stable\""));
+    assert_eq!(parse_llvm("crablang.channel = \"dev\""), if_available);
+    assert!(!parse_llvm("crablang.channel = \"stable\""));
     assert!(parse_llvm("build.build = \"x86_64-unknown-linux-gnu\""));
     assert!(parse_llvm(
         "llvm.assertions = true \r\n build.build = \"x86_64-unknown-linux-gnu\" \r\n llvm.download-ci-llvm = \"if-available\""
@@ -35,8 +35,8 @@ fn download_ci_llvm() {
 
 // FIXME(ozkanonur): extend scope of the test
 // refs:
-//   - https://github.com/rust-lang/rust/issues/109120
-//   - https://github.com/rust-lang/rust/pull/109162#issuecomment-1496782487
+//   - https://github.com/crablang/crablang/issues/109120
+//   - https://github.com/crablang/crablang/pull/109162#issuecomment-1496782487
 #[test]
 fn detect_src_and_out() {
     fn test(cfg: Config, build_dir: Option<&str>) {
@@ -73,7 +73,7 @@ fn detect_src_and_out() {
             //
             // This will bring something similar to:
             //     `{build-dir}/bootstrap/debug/deps/bootstrap-c7ee91d5661e2804`
-            // `{build-dir}` can be anywhere, not just in the rust project directory.
+            // `{build-dir}` can be anywhere, not just in the crablang project directory.
             let dep = Path::new(args.first().unwrap());
             let expected_out = dep.ancestors().nth(4).unwrap();
 

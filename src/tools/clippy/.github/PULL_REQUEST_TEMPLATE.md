@@ -25,7 +25,7 @@ checked during review or continuous integration.
 - \[ ] Added lint documentation
 - \[ ] Run `cargo dev fmt`
 
-[lint_naming]: https://rust-lang.github.io/rfcs/0344-conventions-galore.html#lints
+[lint_naming]: https://crablang.github.io/rfcs/0344-conventions-galore.html#lints
 
 Note that you can skip the above if you are just opening a WIP PR in
 order to get feedback.

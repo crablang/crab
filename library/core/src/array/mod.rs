@@ -35,7 +35,7 @@ pub use iter::IntoIter;
 ///
 /// # Example
 ///
-/// ```rust
+/// ```crablang
 /// // type inference is helping us here, the way `from_fn` knows how many
 /// // elements to produce is the length of array down there: only arrays of
 /// // equal lengths can be compared, so the const generic parameter `N` is
@@ -76,7 +76,7 @@ where
 ///
 /// # Example
 ///
-/// ```rust
+/// ```crablang
 /// #![feature(array_try_from_fn)]
 ///
 /// let array: Result<[u8; 5], _> = std::array::try_from_fn(|i| i.try_into());
@@ -111,7 +111,7 @@ where
 
 /// Converts a reference to `T` into a reference to an array of length 1 (without copying).
 #[stable(feature = "array_from_ref", since = "1.53.0")]
-#[rustc_const_stable(feature = "const_array_from_ref_shared", since = "1.63.0")]
+#[crablangc_const_stable(feature = "const_array_from_ref_shared", since = "1.63.0")]
 pub const fn from_ref<T>(s: &T) -> &[T; 1] {
     // SAFETY: Converting `&T` to `&[T; 1]` is sound.
     unsafe { &*(s as *const T).cast::<[T; 1]>() }
@@ -119,7 +119,7 @@ pub const fn from_ref<T>(s: &T) -> &[T; 1] {
 
 /// Converts a mutable reference to `T` into a mutable reference to an array of length 1 (without copying).
 #[stable(feature = "array_from_ref", since = "1.53.0")]
-#[rustc_const_unstable(feature = "const_array_from_ref", issue = "90206")]
+#[crablangc_const_unstable(feature = "const_array_from_ref", issue = "90206")]
 pub const fn from_mut<T>(s: &mut T) -> &mut [T; 1] {
     // SAFETY: Converting `&mut T` to `&mut [T; 1]` is sound.
     unsafe { &mut *(s as *mut T).cast::<[T; 1]>() }
@@ -148,14 +148,14 @@ impl Error for TryFromSliceError {
 }
 
 #[stable(feature = "try_from_slice_error", since = "1.36.0")]
-#[rustc_const_unstable(feature = "const_convert", issue = "88674")]
+#[crablangc_const_unstable(feature = "const_convert", issue = "88674")]
 impl const From<Infallible> for TryFromSliceError {
     fn from(x: Infallible) -> TryFromSliceError {
         match x {}
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T, const N: usize> AsRef<[T]> for [T; N] {
     #[inline]
     fn as_ref(&self) -> &[T] {
@@ -163,7 +163,7 @@ impl<T, const N: usize> AsRef<[T]> for [T; N] {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T, const N: usize> AsMut<[T]> for [T; N] {
     #[inline]
     fn as_mut(&mut self) -> &mut [T] {
@@ -172,7 +172,7 @@ impl<T, const N: usize> AsMut<[T]> for [T; N] {
 }
 
 #[stable(feature = "array_borrow", since = "1.4.0")]
-#[rustc_const_unstable(feature = "const_borrow", issue = "91522")]
+#[crablangc_const_unstable(feature = "const_borrow", issue = "91522")]
 impl<T, const N: usize> const Borrow<[T]> for [T; N] {
     fn borrow(&self) -> &[T] {
         self
@@ -180,7 +180,7 @@ impl<T, const N: usize> const Borrow<[T]> for [T; N] {
 }
 
 #[stable(feature = "array_borrow", since = "1.4.0")]
-#[rustc_const_unstable(feature = "const_borrow", issue = "91522")]
+#[crablangc_const_unstable(feature = "const_borrow", issue = "91522")]
 impl<T, const N: usize> const BorrowMut<[T]> for [T; N] {
     fn borrow_mut(&mut self) -> &mut [T] {
         self
@@ -301,21 +301,21 @@ impl<'a, T, const N: usize> TryFrom<&'a mut [T]> for &'a mut [T; N] {
 /// let s: &[u8] = &[0xa8, 0x3c, 0x09];
 /// assert_eq!(b.hash_one(a), b.hash_one(s));
 /// ```
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: Hash, const N: usize> Hash for [T; N] {
     fn hash<H: hash::Hasher>(&self, state: &mut H) {
         Hash::hash(&self[..], state)
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: fmt::Debug, const N: usize> fmt::Debug for [T; N] {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         fmt::Debug::fmt(&&self[..], f)
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<'a, T, const N: usize> IntoIterator for &'a [T; N] {
     type Item = &'a T;
     type IntoIter = Iter<'a, T>;
@@ -325,7 +325,7 @@ impl<'a, T, const N: usize> IntoIterator for &'a [T; N] {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<'a, T, const N: usize> IntoIterator for &'a mut [T; N] {
     type Item = &'a mut T;
     type IntoIter = IterMut<'a, T>;
@@ -336,7 +336,7 @@ impl<'a, T, const N: usize> IntoIterator for &'a mut [T; N] {
 }
 
 #[stable(feature = "index_trait_on_arrays", since = "1.50.0")]
-#[rustc_const_unstable(feature = "const_slice_index", issue = "none")]
+#[crablangc_const_unstable(feature = "const_slice_index", issue = "none")]
 impl<T, I, const N: usize> const Index<I> for [T; N]
 where
     [T]: ~const Index<I>,
@@ -350,7 +350,7 @@ where
 }
 
 #[stable(feature = "index_trait_on_arrays", since = "1.50.0")]
-#[rustc_const_unstable(feature = "const_slice_index", issue = "none")]
+#[crablangc_const_unstable(feature = "const_slice_index", issue = "none")]
 impl<T, I, const N: usize> const IndexMut<I> for [T; N]
 where
     [T]: ~const IndexMut<I>,
@@ -361,7 +361,7 @@ where
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: PartialOrd, const N: usize> PartialOrd for [T; N] {
     #[inline]
     fn partial_cmp(&self, other: &[T; N]) -> Option<Ordering> {
@@ -386,7 +386,7 @@ impl<T: PartialOrd, const N: usize> PartialOrd for [T; N] {
 }
 
 /// Implements comparison of arrays [lexicographically](Ord#lexicographical-comparison).
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: Ord, const N: usize> Ord for [T; N] {
     #[inline]
     fn cmp(&self, other: &[T; N]) -> Ordering {
@@ -417,7 +417,7 @@ trait SpecArrayClone: Clone {
 impl<T: Clone> SpecArrayClone for T {
     #[inline]
     default fn clone<const N: usize>(array: &[T; N]) -> [T; N] {
-        from_trusted_iterator(array.iter().cloned())
+        from_tcrablanged_iterator(array.iter().cloned())
     }
 }
 
@@ -435,7 +435,7 @@ impl<T: Copy> SpecArrayClone for T {
 macro_rules! array_impl_default {
     {$n:expr, $t:ident $($ts:ident)*} => {
         #[stable(since = "1.4.0", feature = "array_default")]
-        #[rustc_const_unstable(feature = "const_default_impls", issue = "87864")]
+        #[crablangc_const_unstable(feature = "const_default_impls", issue = "87864")]
         impl<T> const Default for [T; $n] where T: ~const Default {
             fn default() -> [T; $n] {
                 [$t::default(), $($ts::default()),*]
@@ -445,7 +445,7 @@ macro_rules! array_impl_default {
     };
     {$n:expr,} => {
         #[stable(since = "1.4.0", feature = "array_default")]
-        #[rustc_const_unstable(feature = "const_default_impls", issue = "87864")]
+        #[crablangc_const_unstable(feature = "const_default_impls", issue = "87864")]
         impl<T> const Default for [T; $n] {
             fn default() -> [T; $n] { [] }
         }
@@ -476,7 +476,7 @@ impl<T, const N: usize> [T; N] {
     ///
     /// In many cases, you can instead use [`Iterator::map`] by calling `.iter()`
     /// or `.into_iter()` on your array. `[T; N]::map` is only necessary if you
-    /// really need a new array of the same size as the result. Rust's lazy
+    /// really need a new array of the same size as the result. CrabLang's lazy
     /// iterators tend to get optimized very well.
     ///
     ///
@@ -538,7 +538,7 @@ impl<T, const N: usize> [T; N] {
         R: Try,
         R::Residual: Residual<[R::Output; N]>,
     {
-        drain_array_with(self, |iter| try_from_trusted_iterator(iter.map(f)))
+        drain_array_with(self, |iter| try_from_tcrablanged_iterator(iter.map(f)))
     }
 
     /// 'Zips up' two arrays into a single array of pairs.
@@ -560,13 +560,13 @@ impl<T, const N: usize> [T; N] {
     #[unstable(feature = "array_zip", issue = "80094")]
     pub fn zip<U>(self, rhs: [U; N]) -> [(T, U); N] {
         drain_array_with(self, |lhs| {
-            drain_array_with(rhs, |rhs| from_trusted_iterator(crate::iter::zip(lhs, rhs)))
+            drain_array_with(rhs, |rhs| from_tcrablanged_iterator(crate::iter::zip(lhs, rhs)))
         })
     }
 
     /// Returns a slice containing the entire array. Equivalent to `&s[..]`.
     #[stable(feature = "array_as_slice", since = "1.57.0")]
-    #[rustc_const_stable(feature = "array_as_slice", since = "1.57.0")]
+    #[crablangc_const_stable(feature = "array_as_slice", since = "1.57.0")]
     pub const fn as_slice(&self) -> &[T] {
         self
     }
@@ -599,7 +599,7 @@ impl<T, const N: usize> [T; N] {
     /// ```
     /// #![feature(array_methods)]
     ///
-    /// let strings = ["Ferris".to_string(), "♥".to_string(), "Rust".to_string()];
+    /// let strings = ["Ferris".to_string(), "♥".to_string(), "CrabLang".to_string()];
     /// let is_ascii = strings.each_ref().map(|s| s.is_ascii());
     /// assert_eq!(is_ascii, [true, false, true]);
     ///
@@ -608,7 +608,7 @@ impl<T, const N: usize> [T; N] {
     /// ```
     #[unstable(feature = "array_methods", issue = "76118")]
     pub fn each_ref(&self) -> [&T; N] {
-        from_trusted_iterator(self.iter())
+        from_tcrablanged_iterator(self.iter())
     }
 
     /// Borrows each element mutably and returns an array of mutable references
@@ -628,7 +628,7 @@ impl<T, const N: usize> [T; N] {
     /// ```
     #[unstable(feature = "array_methods", issue = "76118")]
     pub fn each_mut(&mut self) -> [&mut T; N] {
-        from_trusted_iterator(self.iter_mut())
+        from_tcrablanged_iterator(self.iter_mut())
     }
 
     /// Divides one array reference into two at an index.
@@ -794,15 +794,15 @@ impl<T, const N: usize> [T; N] {
 ///
 /// If the iterator doesn't actually have enough items.
 ///
-/// By depending on `TrustedLen`, however, we can do that check up-front (where
+/// By depending on `TcrablangedLen`, however, we can do that check up-front (where
 /// it easily optimizes away) so it doesn't impact the loop that fills the array.
 #[inline]
-fn from_trusted_iterator<T, const N: usize>(iter: impl UncheckedIterator<Item = T>) -> [T; N] {
-    try_from_trusted_iterator(iter.map(NeverShortCircuit)).0
+fn from_tcrablanged_iterator<T, const N: usize>(iter: impl UncheckedIterator<Item = T>) -> [T; N] {
+    try_from_tcrablanged_iterator(iter.map(NeverShortCircuit)).0
 }
 
 #[inline]
-fn try_from_trusted_iterator<T, R, const N: usize>(
+fn try_from_tcrablanged_iterator<T, R, const N: usize>(
     iter: impl UncheckedIterator<Item = R>,
 ) -> ChangeOutputType<R, [T; N]>
 where

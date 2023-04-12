@@ -5,8 +5,8 @@
 
 // compile-flags: -C overflow-checks=on -Z query-dep-graph
 
-#![feature(rustc_attrs)]
-#![rustc_partition_codegened(module = "spans_significant_w_panic", cfg = "rpass2")]
+#![feature(crablangc_attrs)]
+#![crablangc_partition_codegened(module = "spans_significant_w_panic", cfg = "rpass2")]
 
 #[cfg(rpass1)]
 pub fn main() {
@@ -16,7 +16,7 @@ pub fn main() {
 }
 
 #[cfg(rpass2)]
-#[rustc_clean(cfg = "rpass2")]
+#[crablangc_clean(cfg = "rpass2")]
 pub fn main() {
     if std::hint::black_box(false) {
         panic!()

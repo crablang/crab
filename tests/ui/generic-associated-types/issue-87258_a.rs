@@ -1,6 +1,6 @@
 #![feature(type_alias_impl_trait)]
 
-// See https://github.com/rust-lang/rust/issues/87258#issuecomment-883293367
+// See https://github.com/crablang/crablang/issues/87258#issuecomment-883293367
 
 trait Trait1 {}
 

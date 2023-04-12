@@ -156,11 +156,11 @@ static TARGETS: &[&str] = &[
     "x86_64-unknown-uefi",
 ];
 
-/// This allows the manifest to contain rust-docs for hosts that don't build
+/// This allows the manifest to contain crablang-docs for hosts that don't build
 /// docs.
 ///
 /// Tuples of `(host_partial, host_instead)`. If the host does not have the
-/// rust-docs component available, then if the host name contains
+/// crablang-docs component available, then if the host name contains
 /// `host_partial`, it will use the docs from `host_instead` instead.
 ///
 /// The order here matters, more specific entries should be first.
@@ -249,12 +249,12 @@ impl Builder {
         let channel = self.versions.channel().to_string();
         self.write_channel_files(&channel, &manifest);
         if channel == "stable" {
-            // channel-rust-1.XX.YY.toml
-            let rust_version = self.versions.rustc_version().to_string();
-            self.write_channel_files(&rust_version, &manifest);
+            // channel-crablang-1.XX.YY.toml
+            let crablang_version = self.versions.crablangc_version().to_string();
+            self.write_channel_files(&crablang_version, &manifest);
 
-            // channel-rust-1.XX.toml
-            let major_minor = rust_version.split('.').take(2).collect::<Vec<_>>().join(".");
+            // channel-crablang-1.XX.toml
+            let major_minor = crablang_version.split('.').take(2).collect::<Vec<_>>().join(".");
             self.write_channel_files(&major_minor, &manifest);
         }
 
@@ -278,7 +278,7 @@ impl Builder {
         self.add_artifacts_to(&mut manifest);
         self.add_profiles_to(&mut manifest);
         self.add_renames_to(&mut manifest);
-        manifest.pkg.insert("rust".to_string(), self.rust_package(&manifest));
+        manifest.pkg.insert("crablang".to_string(), self.crablang_package(&manifest));
 
         self.checksums.fill_missing_checksums(&mut manifest);
 
@@ -293,20 +293,20 @@ impl Builder {
 
     fn add_artifacts_to(&mut self, manifest: &mut Manifest) {
         manifest.add_artifact("source-code", |artifact| {
-            let tarball = self.versions.tarball_name(&PkgType::Rustc, "src").unwrap();
+            let tarball = self.versions.tarball_name(&PkgType::CrabLangc, "src").unwrap();
             artifact.add_tarball(self, "*", &tarball);
         });
 
         manifest.add_artifact("installer-msi", |artifact| {
             for target in MSI_INSTALLERS {
-                let msi = self.versions.archive_name(&PkgType::Rust, target, "msi").unwrap();
+                let msi = self.versions.archive_name(&PkgType::CrabLang, target, "msi").unwrap();
                 artifact.add_file(self, target, &msi);
             }
         });
 
         manifest.add_artifact("installer-pkg", |artifact| {
             for target in PKG_INSTALLERS {
-                let pkg = self.versions.archive_name(&PkgType::Rust, target, "pkg").unwrap();
+                let pkg = self.versions.archive_name(&PkgType::CrabLang, target, "pkg").unwrap();
                 artifact.add_file(self, target, &pkg);
             }
         });
@@ -318,27 +318,27 @@ impl Builder {
         let mut profile = |name, pkgs: &_| self.profile(name, &mut manifest.profiles, pkgs);
 
         // Use a Vec here to make sure we don't exclude any components in an earlier profile.
-        let minimal = vec![Rustc, Cargo, RustStd, RustMingw];
+        let minimal = vec![CrabLangc, Cargo, CrabLangStd, CrabLangMingw];
         profile("minimal", &minimal);
 
         let mut default = minimal;
-        default.extend([HtmlDocs, Rustfmt, Clippy]);
+        default.extend([HtmlDocs, CrabLangfmt, Clippy]);
         profile("default", &default);
 
         // NOTE: this profile is effectively deprecated; do not add new components to it.
         let mut complete = default;
-        complete.extend([Rls, RustAnalyzer, RustSrc, LlvmTools, RustAnalysis, Miri]);
+        complete.extend([Rls, CrabLangAnalyzer, CrabLangSrc, LlvmTools, CrabLangAnalysis, Miri]);
         profile("complete", &complete);
 
         // The compiler libraries are not stable for end users, and they're also huge, so we only
-        // `rustc-dev` for nightly users, and only in the "complete" profile. It's still possible
+        // `crablangc-dev` for nightly users, and only in the "complete" profile. It's still possible
         // for users to install the additional component manually, if needed.
         if self.versions.channel() == "nightly" {
-            self.extend_profile("complete", &mut manifest.profiles, &[RustcDev]);
-            // Do not include the rustc-docs component for now, as it causes
-            // conflicts with the rust-docs component when installed. See
+            self.extend_profile("complete", &mut manifest.profiles, &[CrabLangcDev]);
+            // Do not include the crablangc-docs component for now, as it causes
+            // conflicts with the crablang-docs component when installed. See
             // #75833.
-            // self.extend_profile("complete", &mut manifest.profiles, &["rustc-docs"]);
+            // self.extend_profile("complete", &mut manifest.profiles, &["crablangc-docs"]);
         }
     }
 
@@ -353,10 +353,10 @@ impl Builder {
         }
     }
 
-    fn rust_package(&mut self, manifest: &Manifest) -> Package {
-        let version_info = self.versions.version(&PkgType::Rust).expect("missing Rust tarball");
+    fn crablang_package(&mut self, manifest: &Manifest) -> Package {
+        let version_info = self.versions.version(&PkgType::CrabLang).expect("missing CrabLang tarball");
         let mut pkg = Package {
-            version: version_info.version.expect("missing Rust version"),
+            version: version_info.version.expect("missing CrabLang version"),
             git_commit_hash: version_info.git_commit,
             target: BTreeMap::new(),
         };
@@ -372,7 +372,7 @@ impl Builder {
     }
 
     fn target_host_combination(&mut self, host: &str, manifest: &Manifest) -> Option<Target> {
-        let filename = self.versions.tarball_name(&PkgType::Rust, host).unwrap();
+        let filename = self.versions.tarball_name(&PkgType::CrabLang, host).unwrap();
 
         let mut target = Target::from_compressed_tar(self, &filename);
         if !target.available {
@@ -386,11 +386,11 @@ impl Builder {
 
         for pkg in PkgType::all() {
             match pkg {
-                // rustc/rust-std/cargo/docs are all required
-                PkgType::Rustc | PkgType::Cargo | PkgType::HtmlDocs => {
+                // crablangc/crablang-std/cargo/docs are all required
+                PkgType::CrabLangc | PkgType::Cargo | PkgType::HtmlDocs => {
                     components.push(host_component(pkg));
                 }
-                PkgType::RustStd => {
+                PkgType::CrabLangStd => {
                     components.push(host_component(pkg));
                     extensions.extend(
                         TARGETS
@@ -399,8 +399,8 @@ impl Builder {
                             .map(|target| Component::from_pkg(pkg, target)),
                     );
                 }
-                // so is rust-mingw if it's available for the target
-                PkgType::RustMingw => {
+                // so is crablang-mingw if it's available for the target
+                PkgType::CrabLangMingw => {
                     if host.contains("pc-windows-gnu") {
                         components.push(host_component(pkg));
                     }
@@ -410,21 +410,21 @@ impl Builder {
                 PkgType::Clippy
                 | PkgType::Miri
                 | PkgType::Rls
-                | PkgType::RustAnalyzer
-                | PkgType::Rustfmt
+                | PkgType::CrabLangAnalyzer
+                | PkgType::CrabLangfmt
                 | PkgType::LlvmTools
-                | PkgType::RustAnalysis
+                | PkgType::CrabLangAnalysis
                 | PkgType::JsonDocs => {
                     extensions.push(host_component(pkg));
                 }
-                PkgType::RustcDev | PkgType::RustcDocs => {
+                PkgType::CrabLangcDev | PkgType::CrabLangcDocs => {
                     extensions.extend(HOSTS.iter().map(|target| Component::from_pkg(pkg, target)));
                 }
-                PkgType::RustSrc => {
+                PkgType::CrabLangSrc => {
                     extensions.push(Component::from_pkg(pkg, "*"));
                 }
-                PkgType::Rust => {}
-                // NOTE: this is intentional, these artifacts aren't intended to be used with rustup
+                PkgType::CrabLang => {}
+                // NOTE: this is intentional, these artifacts aren't intended to be used with crablangup
                 PkgType::ReproducibleArtifacts => {}
             }
         }
@@ -474,9 +474,9 @@ impl Builder {
     }
 
     fn package(&mut self, pkg: &PkgType, dst: &mut BTreeMap<String, Package>) {
-        if *pkg == PkgType::Rust {
-            // This is handled specially by `rust_package` later.
-            // Order is important, so don't call `rust_package` here.
+        if *pkg == PkgType::CrabLang {
+            // This is handled specially by `crablang_package` later.
+            // Order is important, so don't call `crablang_package` here.
             return;
         }
 
@@ -528,7 +528,7 @@ impl Builder {
                     target_from_compressed_tar(name)
                 } else {
                     // If the component is not present for this build add it anyway but mark it as
-                    // unavailable -- this way rustup won't allow upgrades without --force
+                    // unavailable -- this way crablangup won't allow upgrades without --force
                     Target::unavailable()
                 };
                 (name.to_string(), target)
@@ -554,14 +554,14 @@ impl Builder {
         self.write(&toml::to_string(&manifest).unwrap(), channel_name, ".toml");
         self.write(&manifest.date, channel_name, "-date.txt");
         self.write(
-            manifest.pkg["rust"].git_commit_hash.as_ref().unwrap(),
+            manifest.pkg["crablang"].git_commit_hash.as_ref().unwrap(),
             channel_name,
             "-git-commit-hash.txt",
         );
     }
 
     fn write(&mut self, contents: &str, channel_name: &str, suffix: &str) {
-        let name = format!("channel-rust-{}{}", channel_name, suffix);
+        let name = format!("channel-crablang-{}{}", channel_name, suffix);
         self.shipped_files.insert(name.clone());
 
         let dst = self.output.join(name);

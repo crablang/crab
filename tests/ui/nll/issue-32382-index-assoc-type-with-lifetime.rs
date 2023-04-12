@@ -1,6 +1,6 @@
 // check-pass
 
-// rust-lang/rust#32382: Borrow checker used to complain about
+// crablang/crablang#32382: Borrow checker used to complain about
 // `foobar_3` in the `impl` below, presumably due to some interaction
 // between the use of a lifetime in the associated type and the use of
 // the overloaded operator[]. This regression test ensures that we do

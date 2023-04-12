@@ -1,5 +1,5 @@
 // check-fail
-// run-rustfix
+// run-crablangfix
 
 enum FakeResult<T> {
     Ok(T)

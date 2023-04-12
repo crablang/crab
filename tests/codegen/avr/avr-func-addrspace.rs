@@ -2,7 +2,7 @@
 // needs-llvm-components: avr
 
 // This test validates that function pointers can be stored in global variables
-// and called upon. It ensures that Rust emits function pointers in the correct
+// and called upon. It ensures that CrabLang emits function pointers in the correct
 // address space to LLVM so that an assertion error relating to casting is
 // not triggered.
 //
@@ -35,21 +35,21 @@ pub trait FnOnce<Args: Tuple> {
     #[lang = "fn_once_output"]
     type Output;
 
-    extern "rust-call" fn call_once(self, args: Args) -> Self::Output;
+    extern "crablang-call" fn call_once(self, args: Args) -> Self::Output;
 }
 
 #[lang = "fn_mut"]
 pub trait FnMut<Args: Tuple> : FnOnce<Args> {
-    extern "rust-call" fn call_mut(&mut self, args: Args) -> Self::Output;
+    extern "crablang-call" fn call_mut(&mut self, args: Args) -> Self::Output;
 }
 
 #[lang = "fn"]
 pub trait Fn<Args: Tuple>: FnOnce<Args> {
     /// Performs the call operation.
-    extern "rust-call" fn call(&self, args: Args) -> Self::Output;
+    extern "crablang-call" fn call(&self, args: Args) -> Self::Output;
 }
 
-extern "rust-intrinsic" {
+extern "crablang-intrinsic" {
     pub fn transmute<Src, Dst>(src: Src) -> Dst;
 }
 

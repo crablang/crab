@@ -107,7 +107,7 @@ fn x86_all() {
     println!("tsc: {:?}", is_x86_feature_detected!("tsc"));
 
     // the below is in alphabetical order and matches
-    // the order of X86_ALLOWED_FEATURES in rustc_codegen_ssa's target_features.rs
+    // the order of X86_ALLOWED_FEATURES in crablangc_codegen_ssa's target_features.rs
 
     // tidy-alphabetical-start
     println!("adx: {:?}", is_x86_feature_detected!("adx"));

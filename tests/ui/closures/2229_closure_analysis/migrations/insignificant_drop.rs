@@ -1,7 +1,7 @@
 // run-pass
-// run-rustfix
+// run-crablangfix
 
-#![deny(rust_2021_incompatible_closure_captures)]
+#![deny(crablang_2021_incompatible_closure_captures)]
 #![allow(unused)]
 
 // Test cases for types that implement an insignificant drop (stlib defined)

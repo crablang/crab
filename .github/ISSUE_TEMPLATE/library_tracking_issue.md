@@ -32,7 +32,7 @@ For most library features, it'd be useful to include a summarized version of the
 (E.g. just the public function signatures without their doc comments or implementation.)
 -->
 
-```rust
+```crablang
 // core::magic
 
 pub struct Magic;
@@ -64,7 +64,7 @@ A library API team member can kick off the stabilization process, at which point
 the rfcbot will ask all the team members to verify they agree with
 stabilization. Once enough members agree and there are no concerns, the final
 comment period begins: this issue will be marked as such and will be listed
-in the next This Week in Rust newsletter. If no blocking concerns are raised in
+in the next This Week in CrabLang newsletter. If no blocking concerns are raised in
 that period of 10 days, a stabilzation PR can be opened by anyone.
 -->
 
@@ -82,4 +82,4 @@ Zulip, or the internals forum) here.
 
 - None yet.
 
-[^1]: https://std-dev-guide.rust-lang.org/feature-lifecycle/stabilization.html
+[^1]: https://std-dev-guide.crablang.org/feature-lifecycle/stabilization.html

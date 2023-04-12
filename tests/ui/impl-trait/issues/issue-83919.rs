@@ -22,8 +22,8 @@ impl Foo for Implementor {
     //~^ ERROR `{integer}` is not a future
         async move {
             42
-            // 42 does not impl Future and rustc does actually point out the error,
-            // but rustc used to panic.
+            // 42 does not impl Future and crablangc does actually point out the error,
+            // but crablangc used to panic.
             // Putting a valid Future here always worked fine.
         }
     }

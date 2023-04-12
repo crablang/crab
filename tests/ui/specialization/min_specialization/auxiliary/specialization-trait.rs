@@ -1,6 +1,6 @@
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 
-#[rustc_specialization_trait]
+#[crablangc_specialization_trait]
 pub trait SpecTrait {
     fn method(&self);
 }

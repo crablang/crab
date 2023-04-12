@@ -2,20 +2,20 @@
 // compile-flags: --target aarch64-unknown-linux-gnu
 // needs-llvm-components: aarch64
 
-#![feature(no_core, lang_items, rustc_attrs, repr_simd)]
+#![feature(no_core, lang_items, crablangc_attrs, repr_simd)]
 #![crate_type = "rlib"]
 #![no_core]
 #![allow(asm_sub_register, non_camel_case_types)]
 
-#[rustc_builtin_macro]
+#[crablangc_builtin_macro]
 macro_rules! asm {
     () => {};
 }
-#[rustc_builtin_macro]
+#[crablangc_builtin_macro]
 macro_rules! concat {
     () => {};
 }
-#[rustc_builtin_macro]
+#[crablangc_builtin_macro]
 macro_rules! stringify {
     () => {};
 }
@@ -111,7 +111,7 @@ macro_rules! check {
         #[no_mangle]
         pub unsafe fn $func(x: $ty) -> $ty {
             // Hack to avoid function merging
-            extern "Rust" {
+            extern "CrabLang" {
                 fn dont_merge(s: &str);
             }
             dont_merge(stringify!($func));
@@ -132,7 +132,7 @@ macro_rules! check_reg {
         #[no_mangle]
         pub unsafe fn $func(x: $ty) -> $ty {
             // Hack to avoid function merging
-            extern "Rust" {
+            extern "CrabLang" {
                 fn dont_merge(s: &str);
             }
             dont_merge(stringify!($func));

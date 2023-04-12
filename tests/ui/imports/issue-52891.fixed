@@ -1,5 +1,5 @@
 // aux-build:issue-52891.rs
-// run-rustfix
+// run-crablangfix
 
 #![allow(warnings)]
 

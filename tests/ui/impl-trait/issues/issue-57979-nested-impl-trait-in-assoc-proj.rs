@@ -1,4 +1,4 @@
-// rust-lang/rust#57979 : the initial support for `impl Trait` didn't
+// crablang/crablang#57979 : the initial support for `impl Trait` didn't
 // properly check syntax hidden behind an associated type projection.
 // Here we test behavior of occurrences of `impl Trait` within an
 // `impl Trait` in that context.

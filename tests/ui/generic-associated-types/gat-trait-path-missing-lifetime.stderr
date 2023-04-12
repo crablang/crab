@@ -32,4 +32,4 @@ LL |   fn foo<'a, T1: X<Y<'a> = T1>>(t : T1) -> T1::Y<'a> {
 
 error: aborting due to 2 previous errors
 
-For more information about this error, try `rustc --explain E0107`.
+For more information about this error, try `crablangc --explain E0107`.

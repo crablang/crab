@@ -8,19 +8,19 @@ use clippy_utils::diagnostics::span_lint_and_then;
 use clippy_utils::in_constant;
 use clippy_utils::macros::macro_backtrace;
 use if_chain::if_chain;
-use rustc_hir::def::{DefKind, Res};
-use rustc_hir::def_id::DefId;
-use rustc_hir::{
+use crablangc_hir::def::{DefKind, Res};
+use crablangc_hir::def_id::DefId;
+use crablangc_hir::{
     BodyId, Expr, ExprKind, HirId, Impl, ImplItem, ImplItemKind, Item, ItemKind, Node, TraitItem, TraitItemKind, UnOp,
 };
-use rustc_hir_analysis::hir_ty_to_ty;
-use rustc_lint::{LateContext, LateLintPass, Lint};
-use rustc_middle::mir;
-use rustc_middle::mir::interpret::{ConstValue, ErrorHandled};
-use rustc_middle::ty::adjustment::Adjust;
-use rustc_middle::ty::{self, Ty};
-use rustc_session::{declare_lint_pass, declare_tool_lint};
-use rustc_span::{sym, InnerSpan, Span};
+use crablangc_hir_analysis::hir_ty_to_ty;
+use crablangc_lint::{LateContext, LateLintPass, Lint};
+use crablangc_middle::mir;
+use crablangc_middle::mir::interpret::{ConstValue, ErrorHandled};
+use crablangc_middle::ty::adjustment::Adjust;
+use crablangc_middle::ty::{self, Ty};
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_span::{sym, InnerSpan, Span};
 
 // FIXME: this is a correctness problem but there's no suitable
 // warn-by-default category.
@@ -46,18 +46,18 @@ declare_clippy_lint! {
     ///
     /// Even though the lint avoids triggering on a constant whose type has enums that have variants
     /// with interior mutability, and its value uses non interior mutable variants (see
-    /// [#3962](https://github.com/rust-lang/rust-clippy/issues/3962) and
-    /// [#3825](https://github.com/rust-lang/rust-clippy/issues/3825) for examples);
+    /// [#3962](https://github.com/crablang/crablang-clippy/issues/3962) and
+    /// [#3825](https://github.com/crablang/crablang-clippy/issues/3825) for examples);
     /// it complains about associated constants without default values only based on its types;
     /// which might not be preferable.
     /// There're other enums plus associated constants cases that the lint cannot handle.
     ///
     /// Types that have underlying or potential interior mutability trigger the lint whether
     /// the interior mutable field is used or not. See issues
-    /// [#5812](https://github.com/rust-lang/rust-clippy/issues/5812) and
+    /// [#5812](https://github.com/crablang/crablang-clippy/issues/5812) and
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// use std::sync::atomic::{AtomicUsize, Ordering::SeqCst};
     ///
     /// const CONST_ATOM: AtomicUsize = AtomicUsize::new(12);
@@ -66,7 +66,7 @@ declare_clippy_lint! {
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// # use std::sync::atomic::{AtomicUsize, Ordering::SeqCst};
     /// static STATIC_ATOM: AtomicUsize = AtomicUsize::new(15);
     /// STATIC_ATOM.store(9, SeqCst);
@@ -96,15 +96,15 @@ declare_clippy_lint! {
     /// ### Known problems
     /// When an enum has variants with interior mutability, use of its non
     /// interior mutable variants can generate false positives. See issue
-    /// [#3962](https://github.com/rust-lang/rust-clippy/issues/3962)
+    /// [#3962](https://github.com/crablang/crablang-clippy/issues/3962)
     ///
     /// Types that have underlying or potential interior mutability trigger the lint whether
     /// the interior mutable field is used or not. See issues
-    /// [#5812](https://github.com/rust-lang/rust-clippy/issues/5812) and
-    /// [#3825](https://github.com/rust-lang/rust-clippy/issues/3825)
+    /// [#5812](https://github.com/crablang/crablang-clippy/issues/5812) and
+    /// [#3825](https://github.com/crablang/crablang-clippy/issues/3825)
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// use std::sync::atomic::{AtomicUsize, Ordering::SeqCst};
     /// const CONST_ATOM: AtomicUsize = AtomicUsize::new(12);
     ///
@@ -113,7 +113,7 @@ declare_clippy_lint! {
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// use std::sync::atomic::{AtomicUsize, Ordering::SeqCst};
     /// const CONST_ATOM: AtomicUsize = AtomicUsize::new(12);
     ///
@@ -441,7 +441,7 @@ impl<'tcx> LateLintPass<'tcx> for NonCopyConst {
     }
 }
 
-fn ignored_macro(cx: &LateContext<'_>, it: &rustc_hir::Item<'_>) -> bool {
+fn ignored_macro(cx: &LateContext<'_>, it: &crablangc_hir::Item<'_>) -> bool {
     macro_backtrace(it.span).any(|macro_call| {
         matches!(
             cx.tcx.get_diagnostic_name(macro_call.def_id),

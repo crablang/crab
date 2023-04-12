@@ -58,4 +58,4 @@ LL | fn test_late_type<'a, T: 'a>() {
 
 error: aborting due to 5 previous errors
 
-For more information about this error, try `rustc --explain E0309`.
+For more information about this error, try `crablangc --explain E0309`.

@@ -120,7 +120,7 @@ fn any_unsized() {
 
 #[test]
 fn distinct_type_names() {
-    // https://github.com/rust-lang/rust/issues/84666
+    // https://github.com/crablang/crablang/issues/84666
 
     struct Velocity(f32, f32);
 

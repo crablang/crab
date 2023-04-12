@@ -7,7 +7,7 @@ LL | fn make_marker() -> impl Marker<gimme_a_const!(marker)> {
    |                                 this macro call doesn't expand to a type
    |                                 in this macro invocation
 ...
-LL |       ($rusty: ident) => {{ let $rusty = 3; *&$rusty }}
+LL |       ($crablangy: ident) => {{ let $crablangy = 3; *&$crablangy }}
    |                           ^ expected type
    |
    = note: this error originates in the macro `gimme_a_const` (in Nightly builds, run with -Z macro-backtrace for more info)
@@ -21,7 +21,7 @@ LL |   Example::<gimme_a_const!(marker)>
    |             this macro call doesn't expand to a type
    |             in this macro invocation
 ...
-LL |       ($rusty: ident) => {{ let $rusty = 3; *&$rusty }}
+LL |       ($crablangy: ident) => {{ let $crablangy = 3; *&$crablangy }}
    |                           ^ expected type
    |
    = note: this error originates in the macro `gimme_a_const` (in Nightly builds, run with -Z macro-backtrace for more info)
@@ -49,10 +49,10 @@ LL |     macro_rules! gimme_a_const {
 LL |   let _fail = Example::<gimme_a_const!()>;
    |                         ^^^^^^^^^^^^^^^^ missing tokens in macro arguments
    |
-note: while trying to match meta-variable `$rusty:ident`
+note: while trying to match meta-variable `$crablangy:ident`
   --> $DIR/macro-fail.rs:28:8
    |
-LL |       ($rusty: ident) => {{ let $rusty = 3; *&$rusty }}
+LL |       ($crablangy: ident) => {{ let $crablangy = 3; *&$crablangy }}
    |        ^^^^^^^^^^^^^
 
 error[E0747]: type provided when a constant was expected
@@ -63,4 +63,4 @@ LL | fn make_marker() -> impl Marker<gimme_a_const!(marker)> {
 
 error: aborting due to 5 previous errors
 
-For more information about this error, try `rustc --explain E0747`.
+For more information about this error, try `crablangc --explain E0747`.

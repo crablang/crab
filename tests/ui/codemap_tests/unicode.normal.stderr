@@ -4,8 +4,8 @@ error[E0703]: invalid ABI: found `路濫狼á́́`
 LL | extern "路濫狼á́́" fn foo() {}
    |        ^^^^^^^^^ invalid ABI
    |
-   = note: invoke `rustc --print=calling-conventions` for a full list of supported calling conventions.
+   = note: invoke `crablangc --print=calling-conventions` for a full list of supported calling conventions.
 
 error: aborting due to previous error
 
-For more information about this error, try `rustc --explain E0703`.
+For more information about this error, try `crablangc --explain E0703`.

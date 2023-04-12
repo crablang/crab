@@ -6,4 +6,4 @@ LL | impl<T, U> CoerceUnsized<Bar<U>> for Foo<T> where T: CoerceUnsized<U> {}
 
 error: aborting due to previous error
 
-For more information about this error, try `rustc --explain E0377`.
+For more information about this error, try `crablangc --explain E0377`.

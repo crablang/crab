@@ -6,7 +6,7 @@ LL |     establish_relationships(&cell_a, &cell_b, |_outlives, x, y| {
    |
    = note: defining type: supply::{closure#0} with closure substs [
                i16,
-               for<Region(BrAnon(None)), Region(BrAnon(None)), Region(BrAnon(None)), Region(BrAnon(None)), Region(BrAnon(None))> extern "rust-call" fn((&ReLateBound(DebruijnIndex(0), BoundRegion { var: 0, kind: BrAnon(None) }) std::cell::Cell<&'_#1r &ReLateBound(DebruijnIndex(0), BoundRegion { var: 1, kind: BrAnon(None) }) u32>, &ReLateBound(DebruijnIndex(0), BoundRegion { var: 2, kind: BrAnon(None) }) std::cell::Cell<&ReLateBound(DebruijnIndex(0), BoundRegion { var: 1, kind: BrAnon(None) }) u32>, &ReLateBound(DebruijnIndex(0), BoundRegion { var: 3, kind: BrAnon(None) }) std::cell::Cell<&ReLateBound(DebruijnIndex(0), BoundRegion { var: 4, kind: BrAnon(None) }) u32>)),
+               for<Region(BrAnon(None)), Region(BrAnon(None)), Region(BrAnon(None)), Region(BrAnon(None)), Region(BrAnon(None))> extern "crablang-call" fn((&ReLateBound(DebruijnIndex(0), BoundRegion { var: 0, kind: BrAnon(None) }) std::cell::Cell<&'_#1r &ReLateBound(DebruijnIndex(0), BoundRegion { var: 1, kind: BrAnon(None) }) u32>, &ReLateBound(DebruijnIndex(0), BoundRegion { var: 2, kind: BrAnon(None) }) std::cell::Cell<&ReLateBound(DebruijnIndex(0), BoundRegion { var: 1, kind: BrAnon(None) }) u32>, &ReLateBound(DebruijnIndex(0), BoundRegion { var: 3, kind: BrAnon(None) }) std::cell::Cell<&ReLateBound(DebruijnIndex(0), BoundRegion { var: 4, kind: BrAnon(None) }) u32>)),
                (),
            ]
    = note: late-bound region is '_#2r
@@ -42,8 +42,8 @@ LL | |     });
    |
    = note: requirement occurs because of the type `Cell<&'_#9r u32>`, which makes the generic argument `&'_#9r u32` invariant
    = note: the struct `Cell<T>` is invariant over the parameter `T`
-   = help: see <https://doc.rust-lang.org/nomicon/subtyping.html> for more information about variance
+   = help: see <https://doc.crablang.org/nomicon/subtyping.html> for more information about variance
 
 error: aborting due to previous error
 
-For more information about this error, try `rustc --explain E0521`.
+For more information about this error, try `crablangc --explain E0521`.

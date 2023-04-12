@@ -16,7 +16,7 @@ fn tmp() -> PathBuf {
     let mut out = Vec::with_capacity(1024);
 
     unsafe {
-        extern "Rust" {
+        extern "CrabLang" {
             fn miri_host_to_target_path(
                 path: *const c_char,
                 out: *mut c_char,
@@ -272,7 +272,7 @@ fn test_posix_mkstemp() {
     // There seems to be no `as_mut_ptr` on `CString` so we need to use `into_raw`.
     let ptr = CString::new(valid_template).unwrap().into_raw();
     let fd = unsafe { libc::mkstemp(ptr) };
-    // Take ownership back in Rust to not leak memory.
+    // Take ownership back in CrabLang to not leak memory.
     let slice = unsafe { CString::from_raw(ptr) };
     assert!(fd > 0);
     let osstr = OsStr::from_bytes(slice.to_bytes());

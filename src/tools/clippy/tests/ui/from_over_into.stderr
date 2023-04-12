@@ -47,7 +47,7 @@ LL | impl core::convert::Into<bool> for crate::ExplicitPaths {
    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
    |
    = help: `impl From<Local> for Foreign` is allowed by the orphan rules, for more information see
-           https://doc.rust-lang.org/reference/items/implementations.html#trait-implementation-coherence
+           https://doc.crablang.org/reference/items/implementations.html#trait-implementation-coherence
 help: replace the `Into` implentation with `From<ExplicitPaths>`
    |
 LL ~ impl core::convert::From<crate::ExplicitPaths> for bool {

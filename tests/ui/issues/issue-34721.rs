@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 
 pub trait Foo {
     fn zero(self) -> Self;

@@ -1,4 +1,4 @@
-// https://github.com/rust-lang/rust/issues/53708
+// https://github.com/crablang/crablang/issues/53708
 
 struct S;
 

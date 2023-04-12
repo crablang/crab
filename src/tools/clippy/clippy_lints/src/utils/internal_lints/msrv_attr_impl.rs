@@ -3,12 +3,12 @@ use clippy_utils::source::snippet;
 use clippy_utils::ty::match_type;
 use clippy_utils::{match_def_path, paths};
 use if_chain::if_chain;
-use rustc_errors::Applicability;
-use rustc_hir as hir;
-use rustc_hir_analysis::hir_ty_to_ty;
-use rustc_lint::{LateContext, LateLintPass, LintContext};
-use rustc_middle::ty::{self, subst::GenericArgKind};
-use rustc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_errors::Applicability;
+use crablangc_hir as hir;
+use crablangc_hir_analysis::hir_ty_to_ty;
+use crablangc_lint::{LateContext, LateLintPass, LintContext};
+use crablangc_middle::ty::{self, subst::GenericArgKind};
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
 
 declare_clippy_lint! {
     /// ### What it does

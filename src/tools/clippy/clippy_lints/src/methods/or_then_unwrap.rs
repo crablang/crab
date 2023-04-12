@@ -1,10 +1,10 @@
 use clippy_utils::source::snippet_with_applicability;
 use clippy_utils::ty::is_type_diagnostic_item;
 use clippy_utils::{diagnostics::span_lint_and_sugg, is_res_lang_ctor, path_res};
-use rustc_errors::Applicability;
-use rustc_hir::{lang_items::LangItem, Expr, ExprKind};
-use rustc_lint::LateContext;
-use rustc_span::{sym, Span};
+use crablangc_errors::Applicability;
+use crablangc_hir::{lang_items::LangItem, Expr, ExprKind};
+use crablangc_lint::LateContext;
+use crablangc_span::{sym, Span};
 
 use super::OR_THEN_UNWRAP;
 

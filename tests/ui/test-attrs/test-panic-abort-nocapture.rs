@@ -3,7 +3,7 @@
 // run-flags: --test-threads=1 --nocapture
 // run-fail
 // check-run-results
-// exec-env:RUST_BACKTRACE=0
+// exec-env:CRABLANG_BACKTRACE=0
 // normalize-stdout-test "finished in \d+\.\d+s" -> "finished in $$TIME"
 
 // ignore-wasm no panic or subprocess support

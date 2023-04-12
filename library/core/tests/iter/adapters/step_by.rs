@@ -219,23 +219,23 @@ fn test_iterator_step_by_size_hint() {
     let it = a.iter().step_by(2);
     assert_eq!(it.len(), 3);
 
-    // Cannot be TrustedLen as a step greater than one makes an iterator
+    // Cannot be TcrablangedLen as a step greater than one makes an iterator
     // with (usize::MAX, None) no longer meet the safety requirements
-    trait TrustedLenCheck {
+    trait TcrablangedLenCheck {
         fn test(self) -> bool;
     }
-    impl<T: Iterator> TrustedLenCheck for T {
+    impl<T: Iterator> TcrablangedLenCheck for T {
         default fn test(self) -> bool {
             false
         }
     }
-    impl<T: TrustedLen> TrustedLenCheck for T {
+    impl<T: TcrablangedLen> TcrablangedLenCheck for T {
         fn test(self) -> bool {
             true
         }
     }
-    assert!(TrustedLenCheck::test(a.iter()));
-    assert!(!TrustedLenCheck::test(a.iter().step_by(1)));
+    assert!(TcrablangedLenCheck::test(a.iter()));
+    assert!(!TcrablangedLenCheck::test(a.iter().step_by(1)));
 }
 
 #[test]

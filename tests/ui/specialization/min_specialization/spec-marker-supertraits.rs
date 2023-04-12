@@ -2,13 +2,13 @@
 // limitations.
 
 #![feature(min_specialization)]
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 
 trait HasMethod {
     fn method(&self);
 }
 
-#[rustc_unsafe_specialization_marker]
+#[crablangc_unsafe_specialization_marker]
 trait Marker: HasMethod {}
 
 trait Spec {

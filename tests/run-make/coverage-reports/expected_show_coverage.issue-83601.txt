@@ -1,4 +1,4 @@
-    1|       |// Shows that rust-lang/rust/83601 is resolved
+    1|       |// Shows that crablang/crablang/83601 is resolved
     2|       |
     3|      3|#[derive(Debug, PartialEq, Eq)]
                               ^2

@@ -2,9 +2,9 @@ use clippy_utils::diagnostics::span_lint_and_then;
 use clippy_utils::is_from_proc_macro;
 use clippy_utils::source::{indent_of, reindent_multiline, snippet_opt};
 use if_chain::if_chain;
-use rustc_errors::Applicability;
-use rustc_hir::{self as hir, Block, Expr, ExprKind, MatchSource, Node, StmtKind};
-use rustc_lint::LateContext;
+use crablangc_errors::Applicability;
+use crablangc_hir::{self as hir, Block, Expr, ExprKind, MatchSource, Node, StmtKind};
+use crablangc_lint::LateContext;
 
 use super::{utils, UNIT_ARG};
 
@@ -55,7 +55,7 @@ pub(super) fn check<'tcx>(cx: &LateContext<'tcx>, expr: &'tcx Expr<'tcx>) {
 }
 
 fn is_questionmark_desugar_marked_call(expr: &Expr<'_>) -> bool {
-    use rustc_span::hygiene::DesugaringKind;
+    use crablangc_span::hygiene::DesugaringKind;
     if let ExprKind::Call(callee, _) = expr.kind {
         callee.span.is_desugaring(DesugaringKind::QuestionMark)
     } else {

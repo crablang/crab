@@ -6,7 +6,7 @@ pub trait Interner {
     type InternedVariableKinds;
 }
 
-trait RustIrDatabase<I: Interner> {
+trait CrabLangIrDatabase<I: Interner> {
     fn associated_ty_data(&self) -> AssociatedTyDatum<I>;
     fn impl_datum(&self) -> ImplDatum<I>;
 }
@@ -127,7 +127,7 @@ impl<I: Interner> HasInterner for AssociatedTyDatumBound<I> {
 }
 
 struct ClauseBuilder<'me, I: Interner> {
-    db: &'me dyn RustIrDatabase<I>,
+    db: &'me dyn CrabLangIrDatabase<I>,
 }
 impl<'me, I: Interner> ClauseBuilder<'me, I> {
     fn new() -> Self {

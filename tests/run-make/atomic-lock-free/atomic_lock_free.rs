@@ -2,7 +2,7 @@
 #![crate_type="rlib"]
 #![no_core]
 
-extern "rust-intrinsic" {
+extern "crablang-intrinsic" {
     fn atomic_xadd_seqcst<T>(dst: *mut T, src: T) -> T;
 }
 

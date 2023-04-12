@@ -33,4 +33,4 @@ LL | fn foo4(t0: &mut &mut isize) {
 error: aborting due to 3 previous errors
 
 Some errors have detailed explanations: E0502, E0594, E0596.
-For more information about an error, try `rustc --explain E0502`.
+For more information about an error, try `crablangc --explain E0502`.

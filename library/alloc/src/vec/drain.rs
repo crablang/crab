@@ -1,6 +1,6 @@
 use crate::alloc::{Allocator, Global};
 use core::fmt;
-use core::iter::{FusedIterator, TrustedLen};
+use core::iter::{FusedIterator, TcrablangedLen};
 use core::mem::{self, ManuallyDrop, SizedTypeProperties};
 use core::ptr::{self, NonNull};
 use core::slice::{self};
@@ -248,8 +248,8 @@ impl<T, A: Allocator> ExactSizeIterator for Drain<'_, T, A> {
     }
 }
 
-#[unstable(feature = "trusted_len", issue = "37572")]
-unsafe impl<T, A: Allocator> TrustedLen for Drain<'_, T, A> {}
+#[unstable(feature = "tcrablanged_len", issue = "37572")]
+unsafe impl<T, A: Allocator> TcrablangedLen for Drain<'_, T, A> {}
 
 #[stable(feature = "fused", since = "1.26.0")]
 impl<T, A: Allocator> FusedIterator for Drain<'_, T, A> {}

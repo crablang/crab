@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 use std::cell::RefCell;
 
 fn main() {

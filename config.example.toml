@@ -1,7 +1,7 @@
-# Sample TOML configuration file for building Rust.
+# Sample TOML configuration file for building CrabLang.
 #
-# To configure rustbuild, run `./configure` or `./x.py setup`.
-# See https://rustc-dev-guide.rust-lang.org/building/how-to-build-and-run.html#create-a-configtoml for more information.
+# To configure crablangbuild, run `./configure` or `./x.py setup`.
+# See https://crablangc-dev-guide.crablang.org/building/how-to-build-and-run.html#create-a-configtoml for more information.
 #
 # All options are commented out by default in this file, and they're commented
 # out with their default values. The build system by default looks for
@@ -30,9 +30,9 @@ changelog-seen = 2
 # =============================================================================
 [llvm]
 
-# Whether to use Rust CI built LLVM instead of locally building it.
+# Whether to use CrabLang CI built LLVM instead of locally building it.
 #
-# Unless you're developing for a target where Rust CI doesn't build a compiler
+# Unless you're developing for a target where CrabLang CI doesn't build a compiler
 # toolchain or changing LLVM locally, you probably want to leave this enabled.
 #
 # All tier 1 targets are currently supported; set this to `"if-available"` if
@@ -42,7 +42,7 @@ changelog-seen = 2
 #
 # Note that many of the LLVM options are not currently supported for
 # downloading. Currently only the "assertions" option can be toggled.
-#download-ci-llvm = if rust.channel == "dev" { "if-available" } else { false }
+#download-ci-llvm = if crablang.channel == "dev" { "if-available" } else { false }
 
 # Indicates whether the LLVM build is a Release or Debug build
 #optimize = true
@@ -57,14 +57,14 @@ changelog-seen = 2
 #release-debuginfo = false
 
 # Indicates whether the LLVM assertions are enabled or not
-# NOTE: When assertions are disabled, bugs in the integration between rustc and LLVM can lead to
-# unsoundness (segfaults, etc.) in the rustc process itself, not just in the generated code.
+# NOTE: When assertions are disabled, bugs in the integration between crablangc and LLVM can lead to
+# unsoundness (segfaults, etc.) in the crablangc process itself, not just in the generated code.
 #assertions = false
 
 # Indicates whether the LLVM testsuite is enabled in the build or not. Does
 # not execute the tests as part of the build as part of x.py build et al,
 # just makes it possible to do `ninja check-llvm` in the staged LLVM build
-# directory when doing LLVM development as part of Rust development.
+# directory when doing LLVM development as part of CrabLang development.
 #tests = false
 
 # Indicates whether the LLVM plugin is enabled or not
@@ -74,7 +74,7 @@ changelog-seen = 2
 # PATH, or set an absolute path to use a specific version.
 #ccache = false
 
-# When true, link libstdc++ statically into the rustc_llvm.
+# When true, link libstdc++ statically into the crablangc_llvm.
 # This is useful if you don't want to use the dynamic version of that
 # library provided by LLVM.
 #static-libstdcpp = false
@@ -83,16 +83,16 @@ changelog-seen = 2
 #ninja = true
 
 # LLVM targets to build support for.
-# Note: this is NOT related to Rust compilation targets. However, as Rust is
+# Note: this is NOT related to CrabLang compilation targets. However, as CrabLang is
 # dependent on LLVM for code generation, turning targets off here WILL lead to
-# the resulting rustc being unable to compile for the disabled architectures.
+# the resulting crablangc being unable to compile for the disabled architectures.
 #
-# To add support for new targets, see https://rustc-dev-guide.rust-lang.org/building/new-target.html.
+# To add support for new targets, see https://crablangc-dev-guide.crablang.org/building/new-target.html.
 #targets = "AArch64;ARM;BPF;Hexagon;MSP430;Mips;NVPTX;PowerPC;RISCV;Sparc;SystemZ;WebAssembly;X86"
 
 # LLVM experimental targets to build support for. These targets are specified in
 # the same format as above, but since these targets are experimental, they are
-# not built by default and the experimental Rust compilation targets that depend
+# not built by default and the experimental CrabLang compilation targets that depend
 # on them will not work unless the user opts in to building them.
 #experimental-targets = "AVR;M68k"
 
@@ -101,7 +101,7 @@ changelog-seen = 2
 # increases the size of binaries and consequently the memory required by
 # each linker process.
 # If set to 0, linker invocations are treated like any other job and
-# controlled by rustbuild's -j parameter.
+# controlled by crablangbuild's -j parameter.
 #link-jobs = 0
 
 # Whether to build LLVM as a dynamically linked library (as opposed to statically linked).
@@ -111,7 +111,7 @@ changelog-seen = 2
 
 # When building llvm, this configures what is being appended to the version.
 # To use LLVM version as is, provide an empty string.
-#version-suffix = if rust.channel == "dev" { "-rust-dev" } else { "-rust-$version-$channel" }
+#version-suffix = if crablang.channel == "dev" { "-crablang-dev" } else { "-crablang-$version-$channel" }
 
 # On MSVC you can compile LLVM with clang-cl, but the test suite doesn't pass
 # with clang-cl, so this is special in that it only compiles LLVM with clang-cl.
@@ -173,13 +173,13 @@ changelog-seen = 2
 # The default stage to use for the `bench` subcommand
 #bench-stage = 2
 
-# Build triple for the pre-compiled snapshot compiler. If `rustc` is set, this must match its host
-# triple (see `rustc --version --verbose`; cross-compiling the rust build system itself is NOT
-# supported). If `rustc` is unset, this must be a platform with pre-compiled host tools
-# (https://doc.rust-lang.org/nightly/rustc/platform-support.html). The current platform must be
+# Build triple for the pre-compiled snapshot compiler. If `crablangc` is set, this must match its host
+# triple (see `crablangc --version --verbose`; cross-compiling the crablang build system itself is NOT
+# supported). If `crablangc` is unset, this must be a platform with pre-compiled host tools
+# (https://doc.crablang.org/nightly/crablangc/platform-support.html). The current platform must be
 # able to run binaries of this build triple.
 #
-# If `rustc` is present in path, this defaults to the host it was compiled for.
+# If `crablangc` is present in path, this defaults to the host it was compiled for.
 # Otherwise, `x.py` will try to infer it from the output of `uname`.
 # If `uname` is not found in PATH, we assume this is `x86_64-pc-windows-msvc`.
 # This may be changed in the future.
@@ -206,20 +206,20 @@ changelog-seen = 2
 #build-dir = "build"
 
 # Instead of downloading the src/stage0.json version of Cargo specified, use
-# this Cargo binary instead to build all Rust code
-# If you set this, you likely want to set `rustc` as well.
+# this Cargo binary instead to build all CrabLang code
+# If you set this, you likely want to set `crablangc` as well.
 #cargo = "/path/to/cargo"
 
 # Instead of downloading the src/stage0.json version of the compiler
-# specified, use this rustc binary instead as the stage0 snapshot compiler.
+# specified, use this crablangc binary instead as the stage0 snapshot compiler.
 # If you set this, you likely want to set `cargo` as well.
-#rustc = "/path/to/rustc"
+#crablangc = "/path/to/crablangc"
 
-# Instead of downloading the src/stage0.json version of rustfmt specified,
-# use this rustfmt binary instead as the stage0 snapshot rustfmt.
-#rustfmt = "/path/to/rustfmt"
+# Instead of downloading the src/stage0.json version of crablangfmt specified,
+# use this crablangfmt binary instead as the stage0 snapshot crablangfmt.
+#crablangfmt = "/path/to/crablangfmt"
 
-# Whether to build documentation by default. If false, rustdoc and
+# Whether to build documentation by default. If false, crablangdoc and
 # friends will still be compiled but they will not be used to generate any
 # documentation.
 #
@@ -251,7 +251,7 @@ changelog-seen = 2
 #nodejs = "node"
 
 # Python interpreter to use for various tasks throughout the build, notably
-# rustdoc tests, the lldb python interpreter, and some dist bits and pieces.
+# crablangdoc tests, the lldb python interpreter, and some dist bits and pieces.
 #
 # Defaults to the Python interpreter used to execute x.py.
 #python = "python"
@@ -270,48 +270,48 @@ changelog-seen = 2
 # set that all the Cargo.toml files create, instead of updating it.
 #locked-deps = false
 
-# Indicate whether the vendored sources are used for Rust dependencies or not.
+# Indicate whether the vendored sources are used for CrabLang dependencies or not.
 #
 # Vendoring requires additional setup. We recommend using the pre-generated source tarballs if you
 # want to use vendoring. See
-# https://forge.rust-lang.org/infra/other-installation-methods.html#source-code.
+# https://forge.crablang.org/infra/other-installation-methods.html#source-code.
 #vendor = false
 
-# Typically the build system will build the Rust compiler twice. The second
+# Typically the build system will build the CrabLang compiler twice. The second
 # compiler, however, will simply use its own libraries to link against. If you
 # would rather to perform a full bootstrap, compiling the compiler three times,
 # then you can set this option to true.
 #
-# This is only useful for verifying that rustc generates reproducible builds.
+# This is only useful for verifying that crablangc generates reproducible builds.
 #full-bootstrap = false
 
-# Enable a build of the extended Rust tool set which is not only the compiler
+# Enable a build of the extended CrabLang tool set which is not only the compiler
 # but also tools such as Cargo. This will also produce "combined installers"
-# which are used to install Rust and Cargo together. This is disabled by
+# which are used to install CrabLang and Cargo together. This is disabled by
 # default. The `tools` option (immediately below) specifies which tools should
 # be built if `extended = true`.
 #extended = false
 
 # Set of tools to be included in the installation.
 #
-# If `extended = false`, the only one of these built by default is rustdoc.
+# If `extended = false`, the only one of these built by default is crablangdoc.
 #
 # If `extended = true`, they're all included, with the exception of
-# rust-demangler which additionally requires `profiler = true` to be set.
+# crablang-demangler which additionally requires `profiler = true` to be set.
 #
 # If any enabled tool fails to build, the installation fails.
 #tools = [
 #    "cargo",
 #    "clippy",
-#    "rustdoc",
-#    "rustfmt",
-#    "rust-analyzer",
+#    "crablangdoc",
+#    "crablangfmt",
+#    "crablang-analyzer",
 #    "analysis",
 #    "src",
-#    "rust-demangler",  # if profiler = true
+#    "crablang-demangler",  # if profiler = true
 #]
 
-# Verbosity level: 0 == not verbose, 1 == verbose, 2 == very verbose, 3 == print environment variables on each rustc invocation
+# Verbosity level: 0 == not verbose, 1 == verbose, 2 == very verbose, 3 == print environment variables on each crablangc invocation
 #verbose = 0
 
 # Build the sanitizer runtimes
@@ -339,11 +339,11 @@ changelog-seen = 2
 # Useful for modifying only the stage2 compiler without having to pass `--keep-stage 0` each time.
 #local-rebuild = false
 
-# Print out how long each rustbuild step took (mostly intended for CI and
+# Print out how long each crablangbuild step took (mostly intended for CI and
 # tracking over time)
 #print-step-timings = false
 
-# Print out resource usage data for each rustbuild step, as defined by the Unix
+# Print out resource usage data for each crablangbuild step, as defined by the Unix
 # struct rusage. (Note that this setting is completely unstable: the data it
 # captures, what platforms it supports, the format of its associated output, and
 # this setting's very existence, are all subject to change.)
@@ -374,7 +374,7 @@ changelog-seen = 2
 #sysconfdir = "/etc"
 
 # Where to install documentation in `prefix` above
-#docdir = "share/doc/rust"
+#docdir = "share/doc/crablang"
 
 # Where to install binaries in `prefix` above
 #bindir = "bin"
@@ -389,9 +389,9 @@ changelog-seen = 2
 #datadir = "share"
 
 # =============================================================================
-# Options for compiling Rust code itself
+# Options for compiling CrabLang code itself
 # =============================================================================
-[rust]
+[crablang]
 
 # Whether or not to optimize the compiler and standard library.
 # WARNING: Building with optimize = false is NOT SUPPORTED. Due to bootstrapping,
@@ -399,7 +399,7 @@ changelog-seen = 2
 # fail to build without this optimization (c.f. #65352).
 #optimize = true
 
-# Indicates that the build should be configured for debugging Rust. A
+# Indicates that the build should be configured for debugging CrabLang. A
 # `debug`-enabled compiler and standard library will be somewhat
 # slower (due to e.g. checking of debug assertions) but should remain
 # usable.
@@ -414,8 +414,8 @@ changelog-seen = 2
 #       facilities of debuggers like lldb and gdb. To recreate such an
 #       environment, explicitly set `optimize` to `false` and `debug`
 #       to `true`. In practice, everyone leaves `optimize` set to
-#       `true`, because an unoptimized rustc with debugging
-#       enabled becomes *unusably slow* (e.g. rust-lang/rust#24840
+#       `true`, because an unoptimized crablangc with debugging
+#       enabled becomes *unusably slow* (e.g. crablang/crablang#24840
 #       reported a 25x slowdown) and bootstrapping the supposed
 #       "maximally debuggable" environment (notably libstd) takes
 #       hours to build.
@@ -427,81 +427,81 @@ changelog-seen = 2
 #
 # Set this to "if-unchanged" to only download if the compiler and standard library have not been modified.
 # Set this to `true` to download unconditionally (useful if e.g. you are only changing doc-comments).
-#download-rustc = false
+#download-crablangc = false
 
 # Number of codegen units to use for each compiler invocation. A value of 0
 # means "the number of cores on this machine", and 1+ is passed through to the
 # compiler.
 #
-# Uses the rustc defaults: https://doc.rust-lang.org/rustc/codegen-options/index.html#codegen-units
+# Uses the crablangc defaults: https://doc.crablang.org/crablangc/codegen-options/index.html#codegen-units
 #codegen-units = if incremental { 256 } else { 16 }
 
 # Sets the number of codegen units to build the standard library with,
 # regardless of what the codegen-unit setting for the rest of the compiler is.
 # NOTE: building with anything other than 1 is known to occasionally have bugs.
-# See https://github.com/rust-lang/rust/issues/83600.
+# See https://github.com/crablang/crablang/issues/83600.
 #codegen-units-std = codegen-units
 
 # Whether or not debug assertions are enabled for the compiler and standard library.
 # These can help find bugs at the cost of a small runtime slowdown.
 #
-# Defaults to rust.debug value
-#debug-assertions = rust.debug (boolean)
+# Defaults to crablang.debug value
+#debug-assertions = crablang.debug (boolean)
 
 # Whether or not debug assertions are enabled for the standard library.
 # Overrides the `debug-assertions` option, if defined.
 #
-# Defaults to rust.debug-assertions value
-#debug-assertions-std = rust.debug-assertions (boolean)
+# Defaults to crablang.debug-assertions value
+#debug-assertions-std = crablang.debug-assertions (boolean)
 
-# Whether or not to leave debug! and trace! calls in the rust binary.
+# Whether or not to leave debug! and trace! calls in the crablang binary.
 #
-# Defaults to rust.debug-assertions value
+# Defaults to crablang.debug-assertions value
 #
 # If you see a message from `tracing` saying "some trace filter directives would enable traces that
 # are disabled statically" because `max_level_info` is enabled, set this value to `true`.
-#debug-logging = rust.debug-assertions (boolean)
+#debug-logging = crablang.debug-assertions (boolean)
 
 # Whether or not overflow checks are enabled for the compiler and standard
 # library.
 #
-# Defaults to rust.debug value
-#overflow-checks = rust.debug (boolean)
+# Defaults to crablang.debug value
+#overflow-checks = crablang.debug (boolean)
 
 # Whether or not overflow checks are enabled for the standard library.
 # Overrides the `overflow-checks` option, if defined.
 #
-# Defaults to rust.overflow-checks value
-#overflow-checks-std = rust.overflow-checks (boolean)
+# Defaults to crablang.overflow-checks value
+#overflow-checks-std = crablang.overflow-checks (boolean)
 
-# Debuginfo level for most of Rust code, corresponds to the `-C debuginfo=N` option of `rustc`.
+# Debuginfo level for most of CrabLang code, corresponds to the `-C debuginfo=N` option of `crablangc`.
 # `0` - no debug info
 # `1` - line tables only - sufficient to generate backtraces that include line
 #       information and inlined functions, set breakpoints at source code
 #       locations, and step through execution in a debugger.
 # `2` - full debug info with variable and type information
-# Can be overridden for specific subsets of Rust code (rustc, std or tools).
+# Can be overridden for specific subsets of CrabLang code (crablangc, std or tools).
 # Debuginfo for tests run with compiletest is not controlled by this option
 # and needs to be enabled separately with `debuginfo-level-tests`.
 #
 # Note that debuginfo-level = 2 generates several gigabytes of debuginfo
 # and will slow down the linking process significantly.
-#debuginfo-level = if rust.debug { 1 } else { 0 }
+#debuginfo-level = if crablang.debug { 1 } else { 0 }
 
 # Debuginfo level for the compiler.
-#debuginfo-level-rustc = rust.debuginfo-level
+#debuginfo-level-crablangc = crablang.debuginfo-level
 
 # Debuginfo level for the standard library.
-#debuginfo-level-std = rust.debuginfo-level
+#debuginfo-level-std = crablang.debuginfo-level
 
 # Debuginfo level for the tools.
-#debuginfo-level-tools = rust.debuginfo-level
+#debuginfo-level-tools = crablang.debuginfo-level
 
 # Debuginfo level for the test suites run with compiletest.
 # FIXME(#61117): Some tests fail when this option is enabled.
 #debuginfo-level-tests = 0
 
-# Should rustc be build with split debuginfo? Default is platform dependent.
+# Should crablangc be build with split debuginfo? Default is platform dependent.
 # Valid values are the same as those accepted by `-C split-debuginfo`
 # (`off`/`unpacked`/`packed`).
 #
@@ -519,13 +519,13 @@ changelog-seen = 2
 # producing a `.pdb` file.
 #split-debuginfo = if linux { off } else if windows { packed } else if apple { unpacked }
 
-# Whether or not `panic!`s generate backtraces (RUST_BACKTRACE)
+# Whether or not `panic!`s generate backtraces (CRABLANG_BACKTRACE)
 #backtrace = true
 
-# Whether to always use incremental compilation when building rustc
+# Whether to always use incremental compilation when building crablangc
 #incremental = false
 
-# Build a multi-threaded rustc
+# Build a multi-threaded crablangc
 # FIXME(#75760): Some UI tests fail when this option is enabled.
 # NOTE: This option is NOT SUPPORTED. See #48685.
 #parallel-compiler = false
@@ -537,21 +537,21 @@ changelog-seen = 2
 # `[target.<triple>]` block), which may be useful in a cross-compilation
 # setting.
 #
-# See https://doc.rust-lang.org/rustc/codegen-options/index.html#linker for more information.
+# See https://doc.crablang.org/crablangc/codegen-options/index.html#linker for more information.
 #default-linker = <none> (path)
 
-# The "channel" for the Rust build to produce. The stable/beta channels only
+# The "channel" for the CrabLang build to produce. The stable/beta channels only
 # allow using stable features, whereas the nightly and dev channels allow using
 # nightly features
 #channel = "dev"
 
-# A descriptive string to be appended to `rustc --version` output, which is
+# A descriptive string to be appended to `crablangc --version` output, which is
 # also used in places like debuginfo `DW_AT_producer`. This may be useful for
 # supplementary build information, like distro-specific package versions.
 #
-# The Rust compiler will differentiate between versions of itself, including
+# The CrabLang compiler will differentiate between versions of itself, including
 # based on this string, which means that if you wish to be compatible with
-# upstream Rust you need to set this to "". However, note that if you are not
+# upstream CrabLang you need to set this to "". However, note that if you are not
 # actually compatible -- for example if you've backported patches that change
 # behavior -- this may lead to miscompilations or other bugs.
 #description = ""
@@ -564,7 +564,7 @@ changelog-seen = 2
 # Defaults to /usr on musl hosts. Has no default otherwise.
 #musl-root = <platform specific> (path)
 
-# By default the `rustc` executable is built with `-Wl,-rpath` flags on Unix
+# By default the `crablangc` executable is built with `-Wl,-rpath` flags on Unix
 # platforms to ensure that the compiler is usable by default from the build
 # directory (as it links to a number of dynamic libraries). This may not be
 # desired in distributions, for example.
@@ -585,29 +585,29 @@ changelog-seen = 2
 # Having the git information can cause a lot of rebuilds during development.
 #
 # FIXME(#76720): this can causes bugs if different compilers reuse the same metadata cache.
-#omit-git-hash = if rust.channel == "dev" { true } else { false }
+#omit-git-hash = if crablang.channel == "dev" { true } else { false }
 
 # Whether to create a source tarball by default when running `x dist`.
 #
-# You can still build a source tarball when this is disabled by explicitly passing `x dist rustc-src`.
+# You can still build a source tarball when this is disabled by explicitly passing `x dist crablangc-src`.
 #dist-src = true
 
 # After building or testing an optional component (e.g. the nomicon or reference), append the
 # result (broken, compiling, testing) into this JSON file.
 #save-toolstates = <none> (path)
 
-# This is an array of the codegen backends that will be compiled for the rustc
+# This is an array of the codegen backends that will be compiled for the crablangc
 # that's being compiled. The default is to only build the LLVM codegen backend,
 # and currently the only standard options supported are `"llvm"`, `"cranelift"`
-# and `"gcc"`. The first backend in this list will be used as default by rustc
+# and `"gcc"`. The first backend in this list will be used as default by crablangc
 # when no explicit backend is specified.
 #codegen-backends = ["llvm"]
 
 # Indicates whether LLD will be compiled and made available in the sysroot for
-# rustc to execute.
+# crablangc to execute.
 #lld = false
 
-# Indicates whether LLD will be used to link Rust crates during bootstrap on
+# Indicates whether LLD will be used to link CrabLang crates during bootstrap on
 # supported platforms. The LLD from the bootstrap distribution will be used
 # and not the LLD compiled during the bootstrap.
 #
@@ -634,7 +634,7 @@ changelog-seen = 2
 # will make code compile faster at the expense of lower runtime performance.
 #thin-lto-import-instr-limit = if incremental { 10 } else { LLVM default (currently 100) }
 
-# Map debuginfo paths to `/rust/$sha/...`.
+# Map debuginfo paths to `/crablang/$sha/...`.
 # Useful for reproducible builds. Generally only set for releases
 #remap-debuginfo = false
 
@@ -656,7 +656,7 @@ changelog-seen = 2
 # This only applies from stage 1 onwards, and only for Windows targets.
 #control-flow-guard = false
 
-# Enable symbol-mangling-version v0. This can be helpful when profiling rustc,
+# Enable symbol-mangling-version v0. This can be helpful when profiling crablangc,
 # as generics will be preserved in symbols (rather than erased into opaque T).
 # When no setting is given, the new scheme will be used when compiling the
 # compiler and its tools and the legacy scheme will be used when compiling the
@@ -664,16 +664,16 @@ changelog-seen = 2
 # If an explicit setting is given, it will be used for all parts of the codebase.
 #new-symbol-mangling = true|false (see comment)
 
-# Select LTO mode that will be used for compiling rustc. By default, thin local LTO
-# (LTO within a single crate) is used (like for any Rust crate). You can also select
-# "thin" or "fat" to apply Thin/Fat LTO to the `rustc_driver` dylib, or "off" to disable
+# Select LTO mode that will be used for compiling crablangc. By default, thin local LTO
+# (LTO within a single crate) is used (like for any CrabLang crate). You can also select
+# "thin" or "fat" to apply Thin/Fat LTO to the `crablangc_driver` dylib, or "off" to disable
 # LTO entirely.
 #lto = "thin-local"
 
 # Build compiler with the optimization enabled and -Zvalidate-mir, currently only for `std`
 #validate-mir-opts = 3
 
-# Copy the linker, DLLs, and various libraries from MinGW into the rustc toolchain.
+# Copy the linker, DLLs, and various libraries from MinGW into the crablangc toolchain.
 # Only applies when the host or target is pc-windows-gnu.
 #include-mingw-linker = true
 
@@ -704,10 +704,10 @@ changelog-seen = 2
 # Note: an absolute path should be used, otherwise LLVM build will break.
 #ranlib = "ranlib" (path)
 
-# Linker to be used to bootstrap Rust code. Note that the
+# Linker to be used to bootstrap CrabLang code. Note that the
 # default value is platform specific, and if not specified it may also depend on
 # what platform is crossing to what platform.
-# Setting this will override the `use-lld` option for Rust code when targeting MSVC.
+# Setting this will override the `use-lld` option for CrabLang code when targeting MSVC.
 #linker = "cc" (path)
 
 # Path to the `llvm-config` binary of the installation of a custom LLVM to link
@@ -715,15 +715,15 @@ changelog-seen = 2
 # target.
 #llvm-config = <none> (path)
 
-# Override detection of whether this is a Rust-patched LLVM. This would be used
+# Override detection of whether this is a CrabLang-patched LLVM. This would be used
 # in conjunction with either an llvm-config or build.submodules = false.
-#llvm-has-rust-patches = if llvm-config { false } else { true }
+#llvm-has-crablang-patches = if llvm-config { false } else { true }
 
 # Normally the build system can find LLVM's FileCheck utility, but if
 # not, you can specify an explicit file name for it.
 #llvm-filecheck = "/path/to/llvm-version/bin/FileCheck"
 
-# Use LLVM libunwind as the implementation for Rust's unwinder.
+# Use LLVM libunwind as the implementation for CrabLang's unwinder.
 # Accepted values are 'in-tree' (formerly true), 'system' or 'no' (formerly false).
 # This option only applies for Linux and Fuchsia targets.
 # On Linux target, if crt-static is not enabled, 'no' means dynamic link to
@@ -751,8 +751,8 @@ changelog-seen = 2
 #profiler = build.profiler (bool)
 
 # Force static or dynamic linkage of the standard library for this target. If
-# this target is a host for rustc, this will also affect the linkage of the
-# compiler itself. This is useful for building rustc on targets that normally
+# this target is a host for crablangc, this will also affect the linkage of the
+# compiler itself. This is useful for building crablangc on targets that normally
 # only use static libraries. If unset, the target's default linkage is used.
 #crt-static = <platform-specific> (bool)
 
@@ -781,7 +781,7 @@ changelog-seen = 2
 # =============================================================================
 # Distribution options
 #
-# These options are related to distribution, mostly for the Rust project itself.
+# These options are related to distribution, mostly for the CrabLang project itself.
 # You probably won't need to concern yourself with any of these options
 # =============================================================================
 [dist]
@@ -813,7 +813,7 @@ changelog-seen = 2
 #missing-tools = false
 
 # List of compression formats to use when generating dist tarballs. The list of
-# formats is provided to rust-installer, which must support all of them.
+# formats is provided to crablang-installer, which must support all of them.
 #
 # This list must be non-empty.
 #compression-formats = ["gz", "xz"]

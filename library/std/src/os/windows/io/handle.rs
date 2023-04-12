@@ -150,7 +150,7 @@ impl BorrowedHandle<'_> {
     ///
     /// [here]: https://devblogs.microsoft.com/oldnewthing/20040302-00/?p=40443
     #[inline]
-    #[rustc_const_stable(feature = "io_safety", since = "1.63.0")]
+    #[crablangc_const_stable(feature = "io_safety", since = "1.63.0")]
     #[stable(feature = "io_safety", since = "1.63.0")]
     pub const unsafe fn borrow_raw(handle: RawHandle) -> Self {
         Self { handle, _phantom: PhantomData }
@@ -408,7 +408,7 @@ pub trait AsHandle {
     ///
     /// # Example
     ///
-    /// ```rust,no_run
+    /// ```crablang,no_run
     /// use std::fs::File;
     /// # use std::io;
     /// use std::os::windows::io::{AsHandle, BorrowedHandle};

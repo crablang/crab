@@ -1,4 +1,4 @@
-// Regression test for #15896. It used to ICE rustc.
+// Regression test for #15896. It used to ICE crablangc.
 
 fn main() {
     enum R { REB(()) }

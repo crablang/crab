@@ -2,12 +2,12 @@ use clippy_utils::diagnostics::span_lint_and_sugg;
 use clippy_utils::source::snippet_with_applicability;
 use clippy_utils::{is_trait_method, path_to_local_id, peel_blocks, strip_pat_refs};
 use if_chain::if_chain;
-use rustc_ast::ast;
-use rustc_errors::Applicability;
-use rustc_hir as hir;
-use rustc_hir::PatKind;
-use rustc_lint::LateContext;
-use rustc_span::{source_map::Span, sym};
+use crablangc_ast::ast;
+use crablangc_errors::Applicability;
+use crablangc_hir as hir;
+use crablangc_hir::PatKind;
+use crablangc_lint::LateContext;
+use crablangc_span::{source_map::Span, sym};
 
 use super::UNNECESSARY_FOLD;
 

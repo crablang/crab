@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 #![deny(unused_variables)]
 
 struct Point {

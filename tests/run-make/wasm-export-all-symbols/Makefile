@@ -3,17 +3,17 @@ include ../tools.mk
 # only-wasm32-bare
 
 all:
-	$(RUSTC) bar.rs --target wasm32-unknown-unknown
-	$(RUSTC) foo.rs --target wasm32-unknown-unknown
+	$(CRABLANGC) bar.rs --target wasm32-unknown-unknown
+	$(CRABLANGC) foo.rs --target wasm32-unknown-unknown
 	$(NODE) verify.js $(TMPDIR)/foo.wasm
-	$(RUSTC) main.rs --target wasm32-unknown-unknown
+	$(CRABLANGC) main.rs --target wasm32-unknown-unknown
 	$(NODE) verify.js $(TMPDIR)/main.wasm
-	$(RUSTC) bar.rs --target wasm32-unknown-unknown -O
-	$(RUSTC) foo.rs --target wasm32-unknown-unknown -O
+	$(CRABLANGC) bar.rs --target wasm32-unknown-unknown -O
+	$(CRABLANGC) foo.rs --target wasm32-unknown-unknown -O
 	$(NODE) verify.js $(TMPDIR)/foo.wasm
-	$(RUSTC) main.rs --target wasm32-unknown-unknown -O
+	$(CRABLANGC) main.rs --target wasm32-unknown-unknown -O
 	$(NODE) verify.js $(TMPDIR)/main.wasm
-	$(RUSTC) foo.rs --target wasm32-unknown-unknown -C lto
+	$(CRABLANGC) foo.rs --target wasm32-unknown-unknown -C lto
 	$(NODE) verify.js $(TMPDIR)/foo.wasm
-	$(RUSTC) main.rs --target wasm32-unknown-unknown -C lto
+	$(CRABLANGC) main.rs --target wasm32-unknown-unknown -C lto
 	$(NODE) verify.js $(TMPDIR)/main.wasm

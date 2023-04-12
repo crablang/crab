@@ -4,10 +4,10 @@ error[E0658]: async closures are unstable
 LL |     let _ = async || {};
    |             ^^^^^
    |
-   = note: see issue #62290 <https://github.com/rust-lang/rust/issues/62290> for more information
+   = note: see issue #62290 <https://github.com/crablang/crablang/issues/62290> for more information
    = help: add `#![feature(async_closure)]` to the crate attributes to enable
    = help: to use an async block, remove the `||`: `async {`
 
 error: aborting due to previous error
 
-For more information about this error, try `rustc --explain E0658`.
+For more information about this error, try `crablangc --explain E0658`.

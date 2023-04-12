@@ -1,9 +1,9 @@
 // check-pass
 
 #![feature(closure_lifetime_binder)]
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 
-#[rustc_regions]
+#[crablangc_regions]
 fn main() {
     for<'a> || -> () { for<'c> |_: &'a ()| -> () {}; };
 }

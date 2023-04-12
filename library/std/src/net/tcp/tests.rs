@@ -471,7 +471,7 @@ fn tcp_clone_two_write() {
 }
 
 #[test]
-// FIXME: https://github.com/fortanix/rust-sgx/issues/110
+// FIXME: https://github.com/fortanix/crablang-sgx/issues/110
 #[cfg_attr(target_env = "sgx", ignore)]
 fn shutdown_smoke() {
     each_ip(&mut |addr| {
@@ -493,7 +493,7 @@ fn shutdown_smoke() {
 }
 
 #[test]
-// FIXME: https://github.com/fortanix/rust-sgx/issues/110
+// FIXME: https://github.com/fortanix/crablang-sgx/issues/110
 #[cfg_attr(target_env = "sgx", ignore)]
 fn close_readwrite_smoke() {
     each_ip(&mut |addr| {
@@ -700,7 +700,7 @@ fn debug() {
     any(target_os = "netbsd", target_os = "openbsd", target_os = "vxworks", target_os = "nto"),
     ignore
 )]
-#[cfg_attr(target_env = "sgx", ignore)] // FIXME: https://github.com/fortanix/rust-sgx/issues/31
+#[cfg_attr(target_env = "sgx", ignore)] // FIXME: https://github.com/fortanix/crablang-sgx/issues/31
 #[test]
 fn timeouts() {
     let addr = next_test_ip4();
@@ -728,7 +728,7 @@ fn timeouts() {
 }
 
 #[test]
-#[cfg_attr(target_env = "sgx", ignore)] // FIXME: https://github.com/fortanix/rust-sgx/issues/31
+#[cfg_attr(target_env = "sgx", ignore)] // FIXME: https://github.com/fortanix/crablang-sgx/issues/31
 fn test_read_timeout() {
     let addr = next_test_ip4();
     let listener = t!(TcpListener::bind(&addr));
@@ -749,7 +749,7 @@ fn test_read_timeout() {
 }
 
 #[test]
-#[cfg_attr(target_env = "sgx", ignore)] // FIXME: https://github.com/fortanix/rust-sgx/issues/31
+#[cfg_attr(target_env = "sgx", ignore)] // FIXME: https://github.com/fortanix/crablang-sgx/issues/31
 fn test_read_with_timeout() {
     let addr = next_test_ip4();
     let listener = t!(TcpListener::bind(&addr));
@@ -865,7 +865,7 @@ fn set_nonblocking() {
 }
 
 #[test]
-#[cfg_attr(target_env = "sgx", ignore)] // FIXME: https://github.com/fortanix/rust-sgx/issues/31
+#[cfg_attr(target_env = "sgx", ignore)] // FIXME: https://github.com/fortanix/crablang-sgx/issues/31
 fn peek() {
     each_ip(&mut |addr| {
         let (txdone, rxdone) = channel();
@@ -897,7 +897,7 @@ fn peek() {
 }
 
 #[test]
-#[cfg_attr(target_env = "sgx", ignore)] // FIXME: https://github.com/fortanix/rust-sgx/issues/31
+#[cfg_attr(target_env = "sgx", ignore)] // FIXME: https://github.com/fortanix/crablang-sgx/issues/31
 fn connect_timeout_valid() {
     let listener = TcpListener::bind("127.0.0.1:0").unwrap();
     let addr = listener.local_addr().unwrap();

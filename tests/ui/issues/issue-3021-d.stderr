@@ -16,4 +16,4 @@ LL |             self.v1 = k1 ^ 0x646f72616e646f6d;
 
 error: aborting due to 2 previous errors
 
-For more information about this error, try `rustc --explain E0434`.
+For more information about this error, try `crablangc --explain E0434`.

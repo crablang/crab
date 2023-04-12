@@ -20,4 +20,4 @@ LL |     fn bar(f: Box<dyn FnMut(T) -> T>) { }
 
 error: aborting due to 2 previous errors
 
-For more information about this error, try `rustc --explain E0401`.
+For more information about this error, try `crablangc --explain E0401`.

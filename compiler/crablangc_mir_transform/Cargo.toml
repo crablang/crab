@@ -1,0 +1,29 @@
+[package]
+name = "crablangc_mir_transform"
+version = "0.0.0"
+edition = "2021"
+
+[lib]
+
+[dependencies]
+itertools = "0.10.1"
+smallvec = { version = "1.8.1", features = ["union", "may_dangle"] }
+tracing = "0.1"
+either = "1"
+crablangc_ast = { path = "../crablangc_ast" }
+crablangc_attr = { path = "../crablangc_attr" }
+crablangc_data_structures = { path = "../crablangc_data_structures" }
+crablangc_errors = { path = "../crablangc_errors" }
+crablangc_hir = { path = "../crablangc_hir" }
+crablangc_index = { path = "../crablangc_index" }
+crablangc_middle = { path = "../crablangc_middle" }
+crablangc_const_eval = { path = "../crablangc_const_eval" }
+crablangc_mir_dataflow = { path = "../crablangc_mir_dataflow" }
+crablangc_serialize = { path = "../crablangc_serialize" }
+crablangc_session = { path = "../crablangc_session" }
+crablangc_target = { path = "../crablangc_target" }
+crablangc_trait_selection = { path = "../crablangc_trait_selection" }
+crablangc_span = { path = "../crablangc_span" }
+
+[dev-dependencies]
+coverage_test_macros = { path = "src/coverage/test_macros" }

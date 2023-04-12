@@ -1,17 +1,17 @@
 // run-pass
 #![allow(unused_must_use)]
 // ignore-emscripten no threads support
-#![feature(rustc_private)]
+#![feature(crablangc_private)]
 
 extern crate libc;
 use std::thread;
 
-mod rustrt {
+mod crablangrt {
     extern crate libc;
 
-    #[link(name = "rust_test_helpers", kind = "static")]
+    #[link(name = "crablang_test_helpers", kind = "static")]
     extern "C" {
-        pub fn rust_dbg_call(
+        pub fn crablang_dbg_call(
             cb: extern "C" fn(libc::uintptr_t) -> libc::uintptr_t,
             data: libc::uintptr_t,
         ) -> libc::uintptr_t;
@@ -25,12 +25,12 @@ extern "C" fn cb(data: libc::uintptr_t) -> libc::uintptr_t {
 fn count(n: libc::uintptr_t) -> libc::uintptr_t {
     unsafe {
         println!("n = {}", n);
-        rustrt::rust_dbg_call(cb, n)
+        crablangrt::crablang_dbg_call(cb, n)
     }
 }
 
 pub fn main() {
-    // Make sure we're on a thread with small Rust stacks (main currently
+    // Make sure we're on a thread with small CrabLang stacks (main currently
     // has a large stack)
     thread::spawn(move || {
         let result = count(1000);

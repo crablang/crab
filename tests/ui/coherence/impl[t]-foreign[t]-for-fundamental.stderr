@@ -18,4 +18,4 @@ LL | impl<'a, A, B> Remote1<A> for &'a B {
 
 error: aborting due to 2 previous errors
 
-For more information about this error, try `rustc --explain E0210`.
+For more information about this error, try `crablangc --explain E0210`.

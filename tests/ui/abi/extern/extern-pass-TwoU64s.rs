@@ -12,15 +12,15 @@ pub struct TwoU64s {
     two: u64,
 }
 
-#[link(name = "rust_test_helpers", kind = "static")]
+#[link(name = "crablang_test_helpers", kind = "static")]
 extern "C" {
-    pub fn rust_dbg_extern_identity_TwoU64s(v: TwoU64s) -> TwoU64s;
+    pub fn crablang_dbg_extern_identity_TwoU64s(v: TwoU64s) -> TwoU64s;
 }
 
 pub fn main() {
     unsafe {
         let x = TwoU64s { one: 22, two: 23 };
-        let y = rust_dbg_extern_identity_TwoU64s(x);
+        let y = crablang_dbg_extern_identity_TwoU64s(x);
         assert_eq!(x, y);
     }
 }

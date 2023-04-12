@@ -2,7 +2,7 @@
 // edition:2018
 
 // This test is derived from
-// https://github.com/rust-lang/rust/issues/72651#issuecomment-668720468
+// https://github.com/crablang/crablang/issues/72651#issuecomment-668720468
 
 // This test demonstrates that, in `async fn g()`,
 // indeed a temporary borrow `y` from `x` is live

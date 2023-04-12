@@ -1,5 +1,5 @@
-use rustc_middle::mir;
-use rustc_target::spec::abi::Abi;
+use crablangc_middle::mir;
+use crablangc_target::spec::abi::Abi;
 
 use log::trace;
 

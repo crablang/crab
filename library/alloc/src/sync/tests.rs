@@ -651,7 +651,7 @@ fn test_arc_cyclic_two_refs() {
     assert_eq!(Arc::weak_count(&two_refs), 2);
 }
 
-/// Test for Arc::drop bug (https://github.com/rust-lang/rust/issues/55005)
+/// Test for Arc::drop bug (https://github.com/crablang/crablang/issues/55005)
 #[test]
 #[cfg(miri)] // relies on Stacked Borrows in Miri
 fn arc_drop_dereferenceable_race() {

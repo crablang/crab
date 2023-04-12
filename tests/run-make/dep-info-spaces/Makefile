@@ -8,7 +8,7 @@ all:
 	cp lib.rs $(TMPDIR)/
 	cp 'foo foo.rs' $(TMPDIR)/
 	cp bar.rs $(TMPDIR)/
-	$(RUSTC) --emit link,dep-info --crate-type=lib $(TMPDIR)/lib.rs
+	$(CRABLANGC) --emit link,dep-info --crate-type=lib $(TMPDIR)/lib.rs
 	sleep 1
 	touch $(TMPDIR)/'foo foo.rs'
 	-rm -f $(TMPDIR)/done

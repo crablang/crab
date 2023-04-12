@@ -1716,4 +1716,4 @@ LL |         x_isize > x_usize.try_into().unwrap();
 
 error: aborting due to 132 previous errors
 
-For more information about this error, try `rustc --explain E0308`.
+For more information about this error, try `crablangc --explain E0308`.

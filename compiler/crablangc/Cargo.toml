@@ -1,0 +1,26 @@
+[package]
+name = "crablangc-main"
+version = "0.0.0"
+edition = "2021"
+
+[dependencies]
+crablangc_driver = { path = "../crablangc_driver" }
+crablangc_driver_impl = { path = "../crablangc_driver_impl" }
+
+# Make sure crablangc_codegen_ssa ends up in the sysroot, because this
+# crate is intended to be used by codegen backends, which may not be in-tree.
+crablangc_codegen_ssa = { path = "../crablangc_codegen_ssa" }
+# Make sure crablangc_smir ends up in the sysroot, because this
+# crate is intended to be used by stable MIR consumers, which are not in-tree
+crablangc_smir = { path = "../crablangc_smir" }
+
+[dependencies.jemalloc-sys]
+version = "0.5.0"
+optional = true
+features = ['unprefixed_malloc_on_supported_platforms']
+
+[features]
+jemalloc = ['jemalloc-sys']
+llvm = ['crablangc_driver_impl/llvm']
+max_level_info = ['crablangc_driver_impl/max_level_info']
+crablangc_use_parallel_compiler = ['crablangc_driver_impl/crablangc_use_parallel_compiler']

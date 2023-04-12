@@ -1,7 +1,7 @@
 error: an inner attribute is not permitted in this context
   --> $DIR/auxiliary/issue-94340-inc.rs:2:1
    |
-LL | #![deny(rust_2018_idioms)]
+LL | #![deny(crablang_2018_idioms)]
    | ^^^^^^^^^^^^^^^^^^^^^^^^^^
    |
    = note: inner attributes, like `#![no_std]`, annotate the item enclosing them, and are usually found at the beginning of source files

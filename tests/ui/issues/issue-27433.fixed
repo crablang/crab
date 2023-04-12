@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 fn main() {
     let foo = 42u32;
     #[allow(unused_variables, non_snake_case)]

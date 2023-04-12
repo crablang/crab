@@ -14,4 +14,4 @@ LL |     let ref a @ NC(b, ref c @ NC(d, e)) = NC(C, NC(C, C));
 
 error: aborting due to previous error
 
-For more information about this error, try `rustc --explain E0382`.
+For more information about this error, try `crablangc --explain E0382`.

@@ -19,7 +19,7 @@ mod lifetime_params_2 {
     //~^ ERROR return type references an anonymous lifetime, which is not constrained by the fn input types
 }
 
-// regression test for https://github.com/rust-lang/rust/issues/97104
+// regression test for https://github.com/crablang/crablang/issues/97104
 mod type_params {
     type Ty<T> = impl Sized;
     fn define<T>(s: T) -> Ty<T> { s }

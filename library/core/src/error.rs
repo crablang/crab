@@ -25,9 +25,9 @@ use crate::fmt::{Debug, Display};
 /// accessing that error via [`Error::source()`]. This makes it possible for the
 /// high-level module to provide its own errors while also revealing some of the
 /// implementation for debugging.
-#[stable(feature = "rust1", since = "1.0.0")]
-#[cfg_attr(not(test), rustc_diagnostic_item = "Error")]
-#[rustc_has_incoherent_inherent_impls]
+#[stable(feature = "crablang1", since = "1.0.0")]
+#[cfg_attr(not(test), crablangc_diagnostic_item = "Error")]
+#[crablangc_has_incoherent_inherent_impls]
 #[allow(multiple_supertrait_upcastable)]
 pub trait Error: Debug + Display {
     /// The lower-level source of this error, if any.
@@ -105,13 +105,13 @@ pub trait Error: Debug + Display {
     ///     eprintln!("Error: {e}");
     /// }
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[deprecated(since = "1.42.0", note = "use the Display impl or to_string()")]
     fn description(&self) -> &str {
         "description() is deprecated; use Display"
     }
 
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[deprecated(
         since = "1.33.0",
         note = "replaced by Error::source, which can support downcasting"
@@ -128,7 +128,7 @@ pub trait Error: Debug + Display {
     ///
     /// # Example
     ///
-    /// ```rust
+    /// ```crablang
     /// #![feature(provide_any)]
     /// #![feature(error_generic_member_access)]
     /// use core::fmt;

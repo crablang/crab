@@ -1,4 +1,4 @@
-// these are rustfixable, but run-rustfix tests cannot handle them
+// these are crablangfixable, but run-crablangfix tests cannot handle them
 
 const VAR_FIVE: &'static [&[&'static str]] = &[&["test"], &["other one"]]; // ERROR Consider removing 'static
 

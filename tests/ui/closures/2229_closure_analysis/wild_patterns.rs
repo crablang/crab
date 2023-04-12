@@ -1,6 +1,6 @@
 // edition:2021
 
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 
 // Test to ensure that we can handle cases where
 // let statements create no bindings are initialized
@@ -9,7 +9,7 @@
 // Note: Currently when feature `capture_disjoint_fields` is enabled
 // we can't handle such cases. So the test current use `_x` instead of
 // `_` until the issue is resolved.
-// Check rust-lang/project-rfc-2229#24 for status.
+// Check crablang/project-rfc-2229#24 for status.
 
 struct Point {
     x: i32,
@@ -19,9 +19,9 @@ struct Point {
 fn wild_struct() {
     let p = Point { x: 10, y: 20 };
 
-    let c = #[rustc_capture_analysis]
+    let c = #[crablangc_capture_analysis]
     //~^ ERROR: attributes on expressions are experimental
-    //~| NOTE: see issue #15701 <https://github.com/rust-lang/rust/issues/15701>
+    //~| NOTE: see issue #15701 <https://github.com/crablang/crablang/issues/15701>
     || {
     //~^ ERROR: First Pass analysis includes:
     //~| ERROR: Min Capture analysis includes:
@@ -37,9 +37,9 @@ fn wild_struct() {
 fn wild_tuple() {
     let t = (String::new(), 10);
 
-    let c = #[rustc_capture_analysis]
+    let c = #[crablangc_capture_analysis]
     //~^ ERROR: attributes on expressions are experimental
-    //~| NOTE: see issue #15701 <https://github.com/rust-lang/rust/issues/15701>
+    //~| NOTE: see issue #15701 <https://github.com/crablang/crablang/issues/15701>
     || {
     //~^ ERROR: First Pass analysis includes:
     //~| ERROR: Min Capture analysis includes:
@@ -55,9 +55,9 @@ fn wild_tuple() {
 fn wild_arr() {
     let arr = [String::new(), String::new()];
 
-    let c = #[rustc_capture_analysis]
+    let c = #[crablangc_capture_analysis]
     //~^ ERROR: attributes on expressions are experimental
-    //~| NOTE: see issue #15701 <https://github.com/rust-lang/rust/issues/15701>
+    //~| NOTE: see issue #15701 <https://github.com/crablang/crablang/issues/15701>
     || {
     //~^ ERROR: First Pass analysis includes:
     //~| ERROR: Min Capture analysis includes:

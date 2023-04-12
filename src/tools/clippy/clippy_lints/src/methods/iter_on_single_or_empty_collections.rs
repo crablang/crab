@@ -2,10 +2,10 @@ use clippy_utils::diagnostics::span_lint_and_sugg;
 use clippy_utils::source::snippet;
 use clippy_utils::{get_expr_use_or_unification_node, is_no_std_crate, is_res_lang_ctor, path_res};
 
-use rustc_errors::Applicability;
-use rustc_hir::LangItem::{OptionNone, OptionSome};
-use rustc_hir::{Expr, ExprKind, Node};
-use rustc_lint::LateContext;
+use crablangc_errors::Applicability;
+use crablangc_hir::LangItem::{OptionNone, OptionSome};
+use crablangc_hir::{Expr, ExprKind, Node};
+use crablangc_lint::LateContext;
 
 use super::{ITER_ON_EMPTY_COLLECTIONS, ITER_ON_SINGLE_ITEMS};
 

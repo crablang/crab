@@ -1,4 +1,4 @@
-// https://github.com/rust-lang/rust/issues/73481
+// https://github.com/crablang/crablang/issues/73481
 // This test used to cause unsoundness, since one of the two possible
 // resolutions was chosen at random instead of erroring due to conflicts.
 

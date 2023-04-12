@@ -8,7 +8,7 @@ See also [`inline_const`](inline-const.md)
 
 This feature allows you to use inline constant expressions in pattern position:
 
-```rust
+```crablang
 #![feature(inline_const_pat)]
 
 const fn one() -> i32 { 1 }
@@ -21,4 +21,4 @@ match some_int {
 }
 ```
 
-[#76001]: https://github.com/rust-lang/rust/issues/76001
+[#76001]: https://github.com/crablang/crablang/issues/76001

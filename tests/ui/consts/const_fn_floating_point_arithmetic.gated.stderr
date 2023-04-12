@@ -1,4 +1,4 @@
-error: fatal error triggered by #[rustc_error]
+error: fatal error triggered by #[crablangc_error]
   --> $DIR/const_fn_floating_point_arithmetic.rs:20:1
    |
 LL | fn main() {}

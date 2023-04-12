@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 
 #![warn(clippy::enum_glob_use)]
 #![allow(unused)]

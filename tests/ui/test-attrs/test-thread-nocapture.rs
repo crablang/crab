@@ -2,7 +2,7 @@
 // run-fail
 // run-flags: --test-threads=1 --nocapture
 // check-run-results
-// exec-env:RUST_BACKTRACE=0
+// exec-env:CRABLANG_BACKTRACE=0
 // normalize-stdout-test "finished in \d+\.\d+s" -> "finished in $$TIME"
 // ignore-emscripten no threads support
 // needs-unwind

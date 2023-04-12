@@ -1,6 +1,6 @@
 // Make sure the workaround for "crate ... required to be available in rlib format, but was not
 // found in this form" errors works without `-C prefer-dynamic` (`panic!` calls foreign function
-// `__rust_start_panic`).
+// `__crablang_start_panic`).
 // no-prefer-dynamic
 #![feature(c_unwind, unboxed_closures)]
 
@@ -12,13 +12,13 @@ extern "C-unwind" fn good_unwind_c() {
 }
 
 #[no_mangle]
-fn good_unwind_rust() {
+fn good_unwind_crablang() {
     panic!();
 }
 
 // Diverging function calls are on a different code path.
 #[no_mangle]
-extern "rust-call" fn good_unwind_rust_call(_: ()) -> ! {
+extern "crablang-call" fn good_unwind_crablang_call(_: ()) -> ! {
     panic!();
 }
 
@@ -27,12 +27,12 @@ fn main() -> ! {
         fn good_unwind_c();
     }
     panic::catch_unwind(|| unsafe { good_unwind_c() }).unwrap_err();
-    extern "Rust" {
-        fn good_unwind_rust();
+    extern "CrabLang" {
+        fn good_unwind_crablang();
     }
-    panic::catch_unwind(|| unsafe { good_unwind_rust() }).unwrap_err();
-    extern "rust-call" {
-        fn good_unwind_rust_call(_: ()) -> !;
+    panic::catch_unwind(|| unsafe { good_unwind_crablang() }).unwrap_err();
+    extern "crablang-call" {
+        fn good_unwind_crablang_call(_: ()) -> !;
     }
-    unsafe { good_unwind_rust_call(()) }
+    unsafe { good_unwind_crablang_call(()) }
 }

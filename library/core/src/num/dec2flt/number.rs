@@ -3,7 +3,7 @@
 use crate::num::dec2flt::float::RawFloat;
 use crate::num::dec2flt::fpu::set_precision;
 
-#[rustfmt::skip]
+#[crablangfmt::skip]
 const INT_POW10: [u64; 16] = [
     1,
     10,

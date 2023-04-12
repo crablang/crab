@@ -36,15 +36,15 @@ x--expand-yaml-anchors--remove:
     CARGO_REGISTRIES_CRATES_IO_PROTOCOL: sparse
 
   - &public-variables
-    SCCACHE_BUCKET: rust-lang-ci-sccache2
-    TOOLSTATE_REPO: https://github.com/rust-lang-nursery/rust-toolstate
-    CACHE_DOMAIN: ci-caches.rust-lang.org
+    SCCACHE_BUCKET: crablang-ci-sccache2
+    TOOLSTATE_REPO: https://github.com/crablang-nursery/crablang-toolstate
+    CACHE_DOMAIN: ci-caches.crablang.org
 
   - &prod-variables
-    SCCACHE_BUCKET: rust-lang-ci-sccache2
-    DEPLOY_BUCKET: rust-lang-ci2
-    TOOLSTATE_REPO: https://github.com/rust-lang-nursery/rust-toolstate
-    TOOLSTATE_ISSUES_API_URL: https://api.github.com/repos/rust-lang/rust/issues
+    SCCACHE_BUCKET: crablang-ci-sccache2
+    DEPLOY_BUCKET: crablang-ci2
+    TOOLSTATE_REPO: https://github.com/crablang-nursery/crablang-toolstate
+    TOOLSTATE_ISSUES_API_URL: https://api.github.com/repos/crablang/crablang/issues
     TOOLSTATE_PUBLISH: 1
     # AWS_SECRET_ACCESS_KEYs are stored in GitHub's secrets storage, named
     # AWS_SECRET_ACCESS_KEY_<keyid>. Including the key id in the name allows to
@@ -53,13 +53,13 @@ x--expand-yaml-anchors--remove:
     # (caches, artifacts...).
     CACHES_AWS_ACCESS_KEY_ID: AKIA46X5W6CZI5DHEBFL
     ARTIFACTS_AWS_ACCESS_KEY_ID: AKIA46X5W6CZN24CBO55
-    CACHE_DOMAIN: ci-caches.rust-lang.org
+    CACHE_DOMAIN: ci-caches.crablang.org
 
   - &dummy-variables
-    SCCACHE_BUCKET: rust-lang-gha-caches
-    DEPLOY_BUCKET: rust-lang-gha
-    TOOLSTATE_REPO: https://github.com/pietroalbini/rust-toolstate
-    TOOLSTATE_ISSUES_API_URL: https://api.github.com/repos/pietroalbini/rust-toolstate/issues
+    SCCACHE_BUCKET: crablang-gha-caches
+    DEPLOY_BUCKET: crablang-gha
+    TOOLSTATE_REPO: https://github.com/pietroalbini/crablang-toolstate
+    TOOLSTATE_ISSUES_API_URL: https://api.github.com/repos/pietroalbini/crablang-toolstate/issues
     TOOLSTATE_PUBLISH: 1
     # AWS_SECRET_ACCESS_KEYs are stored in GitHub's secrets storage, named
     # AWS_SECRET_ACCESS_KEY_<keyid>. Including the key id in the name allows to
@@ -68,7 +68,7 @@ x--expand-yaml-anchors--remove:
     # (caches, artifacts...).
     CACHES_AWS_ACCESS_KEY_ID: AKIA46X5W6CZOMUQATD5
     ARTIFACTS_AWS_ACCESS_KEY_ID: AKIA46X5W6CZH5AYXDVF
-    CACHE_DOMAIN: ci-caches-gha.rust-lang.org
+    CACHE_DOMAIN: ci-caches-gha.crablang.org
 
   - &base-job
     env: {}
@@ -104,7 +104,7 @@ x--expand-yaml-anchors--remove:
         with:
           fetch-depth: 2
 
-      # Rust Log Analyzer can't currently detect the PR number of a GitHub
+      # CrabLang Log Analyzer can't currently detect the PR number of a GitHub
       # Actions build on its own, so a hint in the log message is needed to
       # point it in the right direction.
       - name: configure the PR in which the error message will be posted
@@ -132,7 +132,7 @@ x--expand-yaml-anchors--remove:
         <<: *step
 
       - name: configure GitHub Actions to kill the build when outdated
-        uses: rust-lang/simpleinfra/github-actions/cancel-outdated-builds@master
+        uses: crablang/simpleinfra/github-actions/cancel-outdated-builds@master
         with:
           github_token: "${{ secrets.github_token }}"
         if: success() && !env.SKIP_JOB && github.ref != 'refs/heads/try' && github.ref != 'refs/heads/try-perf'
@@ -282,7 +282,7 @@ defaults:
 jobs:
   pr:
     permissions:
-      actions: write # for rust-lang/simpleinfra/github-actions/cancel-outdated-builds
+      actions: write # for crablang/simpleinfra/github-actions/cancel-outdated-builds
     <<: *base-ci-job
     name: PR - ${{ matrix.name }}
     env:
@@ -310,12 +310,12 @@ jobs:
 
   auto:
     permissions:
-      actions: write # for rust-lang/simpleinfra/github-actions/cancel-outdated-builds
+      actions: write # for crablang/simpleinfra/github-actions/cancel-outdated-builds
     <<: *base-ci-job
     name: auto - ${{ matrix.name }}
     env:
       <<: [*shared-ci-variables, *prod-variables]
-    if: github.event_name == 'push' && github.ref == 'refs/heads/auto' && github.repository == 'rust-lang-ci/rust'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/auto' && github.repository == 'crablang-ci/crablang'
     strategy:
       matrix:
         include:
@@ -433,7 +433,7 @@ jobs:
           - name: x86_64-gnu-stable
             env:
               IMAGE: x86_64-gnu
-              RUST_CI_OVERRIDE_RELEASE_CHANNEL: stable
+              CRABLANG_CI_OVERRIDE_RELEASE_CHANNEL: stable
               # Only run this job on the nightly channel. Running this on beta
               # could cause failures when `dev: 1` in `stage0.txt`, and running
               # this on stable is useless.
@@ -451,17 +451,17 @@ jobs:
 
           - name: x86_64-gnu-llvm-15
             env:
-              RUST_BACKTRACE: 1
+              CRABLANG_BACKTRACE: 1
             <<: *job-linux-xl
 
           - name: x86_64-gnu-llvm-14
             env:
-              RUST_BACKTRACE: 1
+              CRABLANG_BACKTRACE: 1
             <<: *job-linux-xl
 
           - name: x86_64-gnu-llvm-14-stage1
             env:
-              RUST_BACKTRACE: 1
+              CRABLANG_BACKTRACE: 1
             <<: *job-linux-xl
 
           - name: x86_64-gnu-nopt
@@ -479,8 +479,8 @@ jobs:
           - name: dist-x86_64-apple
             env:
               SCRIPT: ./x.py dist bootstrap --include-default-paths --host=x86_64-apple-darwin --target=x86_64-apple-darwin
-              RUST_CONFIGURE_ARGS: --enable-full-tools --enable-sanitizers --enable-profiler --set rust.jemalloc --set llvm.ninja=false --set rust.lto=thin
-              RUSTC_RETRY_LINKER_ON_SEGFAULT: 1
+              CRABLANG_CONFIGURE_ARGS: --enable-full-tools --enable-sanitizers --enable-profiler --set crablang.jemalloc --set llvm.ninja=false --set crablang.lto=thin
+              CRABLANGC_RETRY_LINKER_ON_SEGFAULT: 1
               MACOSX_DEPLOYMENT_TARGET: 10.7
               SELECT_XCODE: /Applications/Xcode_13.4.1.app
               NO_LLVM_ASSERTIONS: 1
@@ -492,8 +492,8 @@ jobs:
           - name: dist-apple-various
             env:
               SCRIPT: ./x.py dist bootstrap --include-default-paths --host='' --target=aarch64-apple-ios,x86_64-apple-ios,aarch64-apple-ios-sim
-              RUST_CONFIGURE_ARGS: --enable-sanitizers --enable-profiler --set rust.jemalloc --set llvm.ninja=false
-              RUSTC_RETRY_LINKER_ON_SEGFAULT: 1
+              CRABLANG_CONFIGURE_ARGS: --enable-sanitizers --enable-profiler --set crablang.jemalloc --set llvm.ninja=false
+              CRABLANGC_RETRY_LINKER_ON_SEGFAULT: 1
               MACOSX_DEPLOYMENT_TARGET: 10.7
               SELECT_XCODE: /Applications/Xcode_13.4.1.app
               NO_LLVM_ASSERTIONS: 1
@@ -504,8 +504,8 @@ jobs:
           - name: dist-x86_64-apple-alt
             env:
               SCRIPT: ./x.py dist bootstrap --include-default-paths
-              RUST_CONFIGURE_ARGS: --enable-extended --enable-profiler --set rust.jemalloc --set llvm.ninja=false
-              RUSTC_RETRY_LINKER_ON_SEGFAULT: 1
+              CRABLANG_CONFIGURE_ARGS: --enable-extended --enable-profiler --set crablang.jemalloc --set llvm.ninja=false
+              CRABLANGC_RETRY_LINKER_ON_SEGFAULT: 1
               MACOSX_DEPLOYMENT_TARGET: 10.7
               SELECT_XCODE: /Applications/Xcode_13.4.1.app
               NO_LLVM_ASSERTIONS: 1
@@ -515,9 +515,9 @@ jobs:
 
           - name: x86_64-apple-1
             env: &env-x86_64-apple-tests
-              SCRIPT: ./x.py --stage 2 test --exclude tests/ui --exclude tests/rustdoc --exclude tests/run-make-fulldeps
-              RUST_CONFIGURE_ARGS: --build=x86_64-apple-darwin --enable-sanitizers --enable-profiler --set rust.jemalloc --set llvm.ninja=false
-              RUSTC_RETRY_LINKER_ON_SEGFAULT: 1
+              SCRIPT: ./x.py --stage 2 test --exclude tests/ui --exclude tests/crablangdoc --exclude tests/run-make-fulldeps
+              CRABLANG_CONFIGURE_ARGS: --build=x86_64-apple-darwin --enable-sanitizers --enable-profiler --set crablang.jemalloc --set llvm.ninja=false
+              CRABLANGC_RETRY_LINKER_ON_SEGFAULT: 1
               MACOSX_DEPLOYMENT_TARGET: 10.8
               MACOSX_STD_DEPLOYMENT_TARGET: 10.7
               NO_LLVM_ASSERTIONS: 1
@@ -527,7 +527,7 @@ jobs:
 
           - name: x86_64-apple-2
             env:
-              SCRIPT: ./x.py --stage 2 test tests/ui tests/rustdoc tests/run-make-fulldeps
+              SCRIPT: ./x.py --stage 2 test tests/ui tests/crablangdoc tests/run-make-fulldeps
               <<: *env-x86_64-apple-tests
             <<: *job-macos-xl
 
@@ -535,7 +535,7 @@ jobs:
           - name: dist-aarch64-apple
             env:
               SCRIPT: ./x.py dist bootstrap --include-default-paths --stage 2
-              RUST_CONFIGURE_ARGS: >-
+              CRABLANG_CONFIGURE_ARGS: >-
                 --build=x86_64-apple-darwin
                 --host=aarch64-apple-darwin
                 --target=aarch64-apple-darwin
@@ -543,9 +543,9 @@ jobs:
                 --enable-sanitizers
                 --enable-profiler
                 --disable-docs
-                --set rust.jemalloc
+                --set crablang.jemalloc
                 --set llvm.ninja=false
-              RUSTC_RETRY_LINKER_ON_SEGFAULT: 1
+              CRABLANGC_RETRY_LINKER_ON_SEGFAULT: 1
               SELECT_XCODE: /Applications/Xcode_13.4.1.app
               USE_XCODE_CLANG: 1
               MACOSX_DEPLOYMENT_TARGET: 11.0
@@ -570,38 +570,38 @@ jobs:
 
           - name: x86_64-msvc-1
             env:
-              RUST_CONFIGURE_ARGS: --build=x86_64-pc-windows-msvc --enable-profiler
+              CRABLANG_CONFIGURE_ARGS: --build=x86_64-pc-windows-msvc --enable-profiler
               SCRIPT: make ci-subset-1
             <<: *job-windows-xl
 
           - name: x86_64-msvc-2
             env:
-              RUST_CONFIGURE_ARGS: --build=x86_64-pc-windows-msvc --enable-profiler
+              CRABLANG_CONFIGURE_ARGS: --build=x86_64-pc-windows-msvc --enable-profiler
               SCRIPT: make ci-subset-2
             <<: *job-windows-xl
 
           - name: i686-msvc-1
             env:
-              RUST_CONFIGURE_ARGS: --build=i686-pc-windows-msvc
+              CRABLANG_CONFIGURE_ARGS: --build=i686-pc-windows-msvc
               SCRIPT: make ci-subset-1
             <<: *job-windows-xl
 
           - name: i686-msvc-2
             env:
-              RUST_CONFIGURE_ARGS: --build=i686-pc-windows-msvc
+              CRABLANG_CONFIGURE_ARGS: --build=i686-pc-windows-msvc
               SCRIPT: make ci-subset-2
             <<: *job-windows-xl
 
           - name: x86_64-msvc-cargo
             env:
               SCRIPT: python x.py --stage 2 test src/tools/cargotest src/tools/cargo
-              RUST_CONFIGURE_ARGS: --build=x86_64-pc-windows-msvc --enable-lld
+              CRABLANG_CONFIGURE_ARGS: --build=x86_64-pc-windows-msvc --enable-lld
             <<: *job-windows-xl
 
           - name: x86_64-msvc-tools
             env:
               SCRIPT: src/ci/docker/host-x86_64/x86_64-gnu-tools/checktools.sh x.py /tmp/toolstate/toolstates.json windows
-              RUST_CONFIGURE_ARGS: --build=x86_64-pc-windows-msvc --save-toolstates=/tmp/toolstate/toolstates.json
+              CRABLANG_CONFIGURE_ARGS: --build=x86_64-pc-windows-msvc --save-toolstates=/tmp/toolstate/toolstates.json
               DEPLOY_TOOLSTATES_JSON: toolstates-windows.json
             <<: *job-windows-xl
 
@@ -616,14 +616,14 @@ jobs:
           # and install one ourselves so we won't be surprised by changes to CI's
           # build image.
           #
-          # Finally, note that the downloads below are all in the `rust-lang-ci` S3
+          # Finally, note that the downloads below are all in the `crablang-ci` S3
           # bucket, but they clearly didn't originate there! The downloads originally
           # came from the mingw-w64 SourceForge download site. Unfortunately
           # SourceForge is notoriously flaky, so we mirror it on our own infrastructure.
 
           - name: i686-mingw-1
             env:
-              RUST_CONFIGURE_ARGS: --build=i686-pc-windows-gnu
+              CRABLANG_CONFIGURE_ARGS: --build=i686-pc-windows-gnu
               SCRIPT: make ci-mingw-subset-1
               # We are intentionally allowing an old toolchain on this builder (and that's
               # incompatible with LLVM downloads today).
@@ -633,7 +633,7 @@ jobs:
 
           - name: i686-mingw-2
             env:
-              RUST_CONFIGURE_ARGS: --build=i686-pc-windows-gnu
+              CRABLANG_CONFIGURE_ARGS: --build=i686-pc-windows-gnu
               SCRIPT: make ci-mingw-subset-2
               # We are intentionally allowing an old toolchain on this builder (and that's
               # incompatible with LLVM downloads today).
@@ -644,7 +644,7 @@ jobs:
           - name: x86_64-mingw-1
             env:
               SCRIPT: make ci-mingw-subset-1
-              RUST_CONFIGURE_ARGS: >-
+              CRABLANG_CONFIGURE_ARGS: >-
                 --build=x86_64-pc-windows-gnu
                 --enable-profiler
               # We are intentionally allowing an old toolchain on this builder (and that's
@@ -656,7 +656,7 @@ jobs:
           - name: x86_64-mingw-2
             env:
               SCRIPT: make ci-mingw-subset-2
-              RUST_CONFIGURE_ARGS: >-
+              CRABLANG_CONFIGURE_ARGS: >-
                 --build=x86_64-pc-windows-gnu
                 --enable-profiler
               # We are intentionally allowing an old toolchain on this builder (and that's
@@ -667,7 +667,7 @@ jobs:
 
           - name: dist-x86_64-msvc
             env:
-              RUST_CONFIGURE_ARGS: >-
+              CRABLANG_CONFIGURE_ARGS: >-
                 --build=x86_64-pc-windows-msvc
                 --host=x86_64-pc-windows-msvc
                 --target=x86_64-pc-windows-msvc
@@ -679,7 +679,7 @@ jobs:
 
           - name: dist-i686-msvc
             env:
-              RUST_CONFIGURE_ARGS: >-
+              CRABLANG_CONFIGURE_ARGS: >-
                 --build=i686-pc-windows-msvc
                 --host=i686-pc-windows-msvc
                 --target=i686-pc-windows-msvc,i586-pc-windows-msvc
@@ -691,7 +691,7 @@ jobs:
 
           - name: dist-aarch64-msvc
             env:
-              RUST_CONFIGURE_ARGS: >-
+              CRABLANG_CONFIGURE_ARGS: >-
                 --build=x86_64-pc-windows-msvc
                 --host=aarch64-pc-windows-msvc
                 --enable-full-tools
@@ -699,13 +699,13 @@ jobs:
               SCRIPT: python x.py dist bootstrap --include-default-paths
               DIST_REQUIRE_ALL_TOOLS: 1
               # Hack around this SDK version, because it doesn't work with clang.
-              # See https://github.com/rust-lang/rust/issues/88796
+              # See https://github.com/crablang/crablang/issues/88796
               WINDOWS_SDK_20348_HACK: 1
             <<: *job-windows-xl
 
           - name: dist-i686-mingw
             env:
-              RUST_CONFIGURE_ARGS: >-
+              CRABLANG_CONFIGURE_ARGS: >-
                 --build=i686-pc-windows-gnu
                 --enable-full-tools
                 --enable-profiler
@@ -720,7 +720,7 @@ jobs:
           - name: dist-x86_64-mingw
             env:
               SCRIPT: python x.py dist bootstrap --include-default-paths
-              RUST_CONFIGURE_ARGS: >-
+              CRABLANG_CONFIGURE_ARGS: >-
                 --build=x86_64-pc-windows-gnu
                 --enable-full-tools
                 --enable-profiler
@@ -733,18 +733,18 @@ jobs:
 
           - name: dist-x86_64-msvc-alt
             env:
-              RUST_CONFIGURE_ARGS: --build=x86_64-pc-windows-msvc --enable-extended --enable-profiler
+              CRABLANG_CONFIGURE_ARGS: --build=x86_64-pc-windows-msvc --enable-extended --enable-profiler
               SCRIPT: python x.py dist bootstrap --include-default-paths
             <<: *job-windows-xl
 
   try:
     permissions:
-      actions: write # for rust-lang/simpleinfra/github-actions/cancel-outdated-builds
+      actions: write # for crablang/simpleinfra/github-actions/cancel-outdated-builds
     <<: *base-ci-job
     name: try - ${{ matrix.name }}
     env:
       <<: [*shared-ci-variables, *prod-variables]
-    if: github.event_name == 'push' && (github.ref == 'refs/heads/try' || github.ref == 'refs/heads/try-perf') && github.repository == 'rust-lang-ci/rust'
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/try' || github.ref == 'refs/heads/try-perf') && github.repository == 'crablang-ci/crablang'
     strategy:
       matrix:
         include:
@@ -757,7 +757,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       <<: [*prod-variables]
-    if: github.event_name == 'push' && github.ref == 'refs/heads/master' && github.repository == 'rust-lang-ci/rust'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master' && github.repository == 'crablang-ci/crablang'
     steps:
       - name: checkout the source code
         uses: actions/checkout@v3
@@ -776,17 +776,17 @@ jobs:
   # successful listening to webhooks only.
   try-success:
     needs: [try]
-    if: "success() && github.event_name == 'push' && (github.ref == 'refs/heads/try' || github.ref == 'refs/heads/try-perf') && github.repository == 'rust-lang-ci/rust'"
+    if: "success() && github.event_name == 'push' && (github.ref == 'refs/heads/try' || github.ref == 'refs/heads/try-perf') && github.repository == 'crablang-ci/crablang'"
     <<: *base-success-job
   try-failure:
     needs: [try]
-    if: "!success() && github.event_name == 'push' && (github.ref == 'refs/heads/try' || github.ref == 'refs/heads/try-perf') && github.repository == 'rust-lang-ci/rust'"
+    if: "!success() && github.event_name == 'push' && (github.ref == 'refs/heads/try' || github.ref == 'refs/heads/try-perf') && github.repository == 'crablang-ci/crablang'"
     <<: *base-failure-job
   auto-success:
     needs: [auto]
-    if: "success() && github.event_name == 'push' && github.ref == 'refs/heads/auto' && github.repository == 'rust-lang-ci/rust'"
+    if: "success() && github.event_name == 'push' && github.ref == 'refs/heads/auto' && github.repository == 'crablang-ci/crablang'"
     <<: *base-success-job
   auto-failure:
     needs: [auto]
-    if: "!success() && github.event_name == 'push' && github.ref == 'refs/heads/auto' && github.repository == 'rust-lang-ci/rust'"
+    if: "!success() && github.event_name == 'push' && github.ref == 'refs/heads/auto' && github.repository == 'crablang-ci/crablang'"
     <<: *base-failure-job

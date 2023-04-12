@@ -2,14 +2,14 @@
 
 The tracking issue for this feature is: [#58713]
 
-[#58713]: https://github.com/rust-lang/rust/issues/58713
+[#58713]: https://github.com/crablang/crablang/issues/58713
 
 ------------------------
 
 The `raw_dylib` feature allows you to link against the implementations of functions in an `extern`
 block without, on Windows, linking against an import library.
 
-```rust,ignore (partial-example)
+```crablang,ignore (partial-example)
 #![feature(raw_dylib)]
 
 #[link(name="library", kind="raw-dylib")]

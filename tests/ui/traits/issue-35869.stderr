@@ -68,4 +68,4 @@ LL |     fn qux() -> u8;
 
 error: aborting due to 4 previous errors
 
-For more information about this error, try `rustc --explain E0053`.
+For more information about this error, try `crablangc --explain E0053`.

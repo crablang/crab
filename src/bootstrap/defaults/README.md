@@ -9,4 +9,4 @@ others would benefit from, please [file an issue] or make a PR with the changes.
 Similarly, if one of these defaults doesn't match what you use personally,
 please open an issue to get it changed.
 
-[file an issue]: https://github.com/rust-lang/rust/issues/new/choose
+[file an issue]: https://github.com/crablang/crablang/issues/new/choose

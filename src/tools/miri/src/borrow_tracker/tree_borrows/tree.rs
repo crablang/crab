@@ -12,9 +12,9 @@
 
 use smallvec::SmallVec;
 
-use rustc_const_eval::interpret::InterpResult;
-use rustc_data_structures::fx::FxHashSet;
-use rustc_target::abi::Size;
+use crablangc_const_eval::interpret::InterpResult;
+use crablangc_data_structures::fx::FxHashSet;
+use crablangc_target::abi::Size;
 
 use crate::borrow_tracker::tree_borrows::{
     diagnostics::{NodeDebugInfo, TbError, TransitionError},

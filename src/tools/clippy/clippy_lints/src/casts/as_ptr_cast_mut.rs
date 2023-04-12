@@ -1,9 +1,9 @@
 use clippy_utils::diagnostics::span_lint_and_sugg;
 use clippy_utils::source::snippet_opt;
-use rustc_errors::Applicability;
-use rustc_hir::{Expr, ExprKind};
-use rustc_lint::LateContext;
-use rustc_middle::{
+use crablangc_errors::Applicability;
+use crablangc_hir::{Expr, ExprKind};
+use crablangc_lint::LateContext;
+use crablangc_middle::{
     mir::Mutability,
     ty::{self, Ty, TypeAndMut},
 };
@@ -15,7 +15,7 @@ pub(super) fn check(cx: &LateContext<'_>, expr: &Expr<'_>, cast_expr: &Expr<'_>,
         && let ty::RawPtr(TypeAndMut { mutbl: Mutability::Not, .. }) =
             cx.typeck_results().node_type(cast_expr.hir_id).kind()
         && let ExprKind::MethodCall(method_name, receiver, [], _) = cast_expr.peel_blocks().kind
-        && method_name.ident.name == rustc_span::sym::as_ptr
+        && method_name.ident.name == crablangc_span::sym::as_ptr
         && let Some(as_ptr_did) = cx.typeck_results().type_dependent_def_id(cast_expr.peel_blocks().hir_id)
         && let as_ptr_sig = cx.tcx.fn_sig(as_ptr_did).subst_identity()
         && let Some(first_param_ty) = as_ptr_sig.skip_binder().inputs().iter().next()

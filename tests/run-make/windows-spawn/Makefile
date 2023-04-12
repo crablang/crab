@@ -3,6 +3,6 @@ include ../tools.mk
 # only-windows
 
 all:
-	$(RUSTC) -o "$(TMPDIR)/hopefullydoesntexist bar.exe" hello.rs
-	$(RUSTC) spawn.rs
+	$(CRABLANGC) -o "$(TMPDIR)/hopefullydoesntexist bar.exe" hello.rs
+	$(CRABLANGC) spawn.rs
 	$(TMPDIR)/spawn.exe

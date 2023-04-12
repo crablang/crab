@@ -2,12 +2,12 @@ use clippy_utils::diagnostics::span_lint_and_sugg;
 use clippy_utils::is_wild;
 use clippy_utils::source::snippet_with_applicability;
 use clippy_utils::span_contains_comment;
-use rustc_ast::{Attribute, LitKind};
-use rustc_errors::Applicability;
-use rustc_hir::{Arm, BorrowKind, Expr, ExprKind, Guard, Pat};
-use rustc_lint::{LateContext, LintContext};
-use rustc_middle::ty;
-use rustc_span::source_map::Spanned;
+use crablangc_ast::{Attribute, LitKind};
+use crablangc_errors::Applicability;
+use crablangc_hir::{Arm, BorrowKind, Expr, ExprKind, Guard, Pat};
+use crablangc_lint::{LateContext, LintContext};
+use crablangc_middle::ty;
+use crablangc_span::source_map::Spanned;
 
 use super::MATCH_LIKE_MATCHES_MACRO;
 
@@ -151,7 +151,7 @@ fn find_bool_lit(ex: &ExprKind<'_>) -> Option<bool> {
             node: LitKind::Bool(b), ..
         }) => Some(*b),
         ExprKind::Block(
-            rustc_hir::Block {
+            crablangc_hir::Block {
                 stmts: &[],
                 expr: Some(exp),
                 ..

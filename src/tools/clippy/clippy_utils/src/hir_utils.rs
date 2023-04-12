@@ -1,19 +1,19 @@
 use crate::consts::constant_simple;
 use crate::macros::macro_backtrace;
 use crate::source::snippet_opt;
-use rustc_ast::ast::InlineAsmTemplatePiece;
-use rustc_data_structures::fx::FxHasher;
-use rustc_hir::def::Res;
-use rustc_hir::HirIdMap;
-use rustc_hir::{
+use crablangc_ast::ast::InlineAsmTemplatePiece;
+use crablangc_data_structures::fx::FxHasher;
+use crablangc_hir::def::Res;
+use crablangc_hir::HirIdMap;
+use crablangc_hir::{
     ArrayLen, BinOpKind, BindingAnnotation, Block, BodyId, Closure, Expr, ExprField, ExprKind, FnRetTy, GenericArg,
     GenericArgs, Guard, HirId, InlineAsmOperand, Let, Lifetime, LifetimeName, Pat, PatField, PatKind, Path,
     PathSegment, PrimTy, QPath, Stmt, StmtKind, Ty, TyKind, TypeBinding,
 };
-use rustc_lexer::{tokenize, TokenKind};
-use rustc_lint::LateContext;
-use rustc_middle::ty::TypeckResults;
-use rustc_span::{sym, Symbol};
+use crablangc_lexer::{tokenize, TokenKind};
+use crablangc_lint::LateContext;
+use crablangc_middle::ty::TypeckResults;
+use crablangc_span::{sym, Symbol};
 use std::hash::{Hash, Hasher};
 
 /// Callback that is called when two expressions are not equal in the sense of `SpanlessEq`, but

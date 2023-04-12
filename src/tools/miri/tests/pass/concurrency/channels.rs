@@ -7,7 +7,7 @@ use std::thread;
 
 // Check if channels are working.
 
-/// The test taken from the Rust documentation.
+/// The test taken from the CrabLang documentation.
 fn simple_send() {
     let (tx, rx) = channel();
     let t = thread::spawn(move || {
@@ -17,7 +17,7 @@ fn simple_send() {
     t.join().unwrap();
 }
 
-/// The test taken from the Rust documentation.
+/// The test taken from the CrabLang documentation.
 fn multiple_send() {
     let (tx, rx) = channel();
     let mut threads = vec![];
@@ -42,7 +42,7 @@ fn multiple_send() {
     }
 }
 
-/// The test taken from the Rust documentation.
+/// The test taken from the CrabLang documentation.
 fn send_on_sync() {
     let (sender, receiver) = sync_channel(1);
 

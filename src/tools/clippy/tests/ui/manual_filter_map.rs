@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 #![allow(dead_code)]
 #![warn(clippy::manual_filter_map)]
 #![allow(clippy::redundant_closure)] // FIXME suggestion may have redundant closure
@@ -28,7 +28,7 @@ fn main() {
         .map(|y| to_ref(to_res(y)).unwrap());
 }
 
-#[rustfmt::skip]
+#[crablangfmt::skip]
 fn simple_equal() {
     iter::<Option<&u8>>().find(|x| x.is_some()).map(|x| x.cloned().unwrap());
     iter::<&Option<&u8>>().find(|x| x.is_some()).map(|x| x.cloned().unwrap());

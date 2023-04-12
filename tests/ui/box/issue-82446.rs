@@ -1,4 +1,4 @@
-// https://github.com/rust-lang/rust/issues/82446
+// https://github.com/crablang/crablang/issues/82446
 // Spurious 'help: store this in the heap' regression test
 trait MyTrait {}
 

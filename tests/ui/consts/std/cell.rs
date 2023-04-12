@@ -27,11 +27,11 @@ const FOO4_CONST: Wrap<*mut u32> = Wrap(FOO3_CONST.0.as_ptr());
 const FOO2: *mut u32 = Cell::new(42).as_ptr();
 //~^ ERROR encountered dangling pointer
 
-struct IMSafeTrustMe(UnsafeCell<u32>);
-unsafe impl Send for IMSafeTrustMe {}
-unsafe impl Sync for IMSafeTrustMe {}
+struct IMSafeTcrablangMe(UnsafeCell<u32>);
+unsafe impl Send for IMSafeTcrablangMe {}
+unsafe impl Sync for IMSafeTcrablangMe {}
 
-static BAR: IMSafeTrustMe = IMSafeTrustMe(UnsafeCell::new(5));
+static BAR: IMSafeTcrablangMe = IMSafeTcrablangMe(UnsafeCell::new(5));
 
 
 

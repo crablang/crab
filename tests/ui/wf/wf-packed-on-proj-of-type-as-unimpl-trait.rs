@@ -1,4 +1,4 @@
-// rust-lang/rust#58158: We have special-case code to deal with case
+// crablang/crablang#58158: We have special-case code to deal with case
 // when a type is both packed and needs drop glue, (we move the fields
 // out of their potentially unaligned locations before dropping them,
 // which requires they be Sized; see PR #44884).

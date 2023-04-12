@@ -2,19 +2,19 @@
 
 The tracking issue for this feature is: [#42877]
 
-[#42877]: https://github.com/rust-lang/rust/issues/42877
+[#42877]: https://github.com/crablang/crablang/issues/42877
 
 ------------------------
 
 This is a part of [RFC0401]. According to the RFC, there should be an implementation like this:
 
-```rust,ignore (partial-example)
+```crablang,ignore (partial-example)
 impl<..., T, U: ?Sized> Unsized<(..., U)> for (..., T) where T: Unsized<U> {}
 ```
 
 This implementation is currently gated behind `#[feature(unsized_tuple_coercion)]` to avoid insta-stability. Therefore you can use it like this:
 
-```rust
+```crablang
 #![feature(unsized_tuple_coercion)]
 
 fn main() {
@@ -24,4 +24,4 @@ fn main() {
 }
 ```
 
-[RFC0401]: https://github.com/rust-lang/rfcs/blob/master/text/0401-coercions.md
+[RFC0401]: https://github.com/crablang/rfcs/blob/master/text/0401-coercions.md

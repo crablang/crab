@@ -1,4 +1,4 @@
-// Split out of impl_wf.rs to work around rust aborting compilation early
+// Split out of impl_wf.rs to work around crablang aborting compilation early
 
 // compile-flags: -Z trait-solver=chalk
 

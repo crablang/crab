@@ -3,7 +3,7 @@
 
 #![feature(stmt_expr_attributes)]
 #![feature(proc_macro_hygiene)]
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 
 #![no_std] // Don't load unnecessary hygiene information from std
 extern crate std;
@@ -19,6 +19,6 @@ fn main() {
     (#[recollect_attr] #[recollect_attr] ((#[recollect_attr] bad))); //~ ERROR cannot
 
     #[test_macros::print_attr]
-    #[rustc_dummy]
+    #[crablangc_dummy]
     { 1 +1; } // Don't change the weird spacing of the '+'
 }

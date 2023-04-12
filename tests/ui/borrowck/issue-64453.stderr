@@ -26,4 +26,4 @@ LL |     let settings_data = from_string(settings_dir);
 error: aborting due to 3 previous errors
 
 Some errors have detailed explanations: E0015, E0507.
-For more information about an error, try `rustc --explain E0015`.
+For more information about an error, try `crablangc --explain E0015`.

@@ -1,6 +1,6 @@
 #![crate_type="rlib"]
 
-pub fn public_rust_function_from_rlib() {}
+pub fn public_crablang_function_from_rlib() {}
 
 #[no_mangle]
 pub extern "C" fn public_c_function_from_rlib() {

@@ -21,10 +21,10 @@ enum Foo {
     Bar,
 }
 
-extern "rust-intrinsic" {
+extern "crablang-intrinsic" {
     #[stable(feature = "", since = "")]
-    #[rustc_const_stable(feature = "", since = "")]
-    #[rustc_safe_intrinsic]
+    #[crablangc_const_stable(feature = "", since = "")]
+    #[crablangc_safe_intrinsic]
     fn size_of<T>() -> usize;
 }
 

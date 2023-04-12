@@ -1,11 +1,11 @@
 use clippy_utils::diagnostics::span_lint_and_sugg;
-use rustc_ast::ast::{AttrKind, Attribute, Item, ItemKind};
-use rustc_ast::token::{Token, TokenKind};
-use rustc_ast::tokenstream::{TokenStream, TokenTree};
-use rustc_errors::Applicability;
-use rustc_lint::{EarlyContext, EarlyLintPass};
-use rustc_session::{declare_lint_pass, declare_tool_lint};
-use rustc_span::{symbol::sym, Span};
+use crablangc_ast::ast::{AttrKind, Attribute, Item, ItemKind};
+use crablangc_ast::token::{Token, TokenKind};
+use crablangc_ast::tokenstream::{TokenStream, TokenTree};
+use crablangc_errors::Applicability;
+use crablangc_lint::{EarlyContext, EarlyLintPass};
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_span::{symbol::sym, Span};
 
 declare_clippy_lint! {
     /// ### What it does
@@ -14,10 +14,10 @@ declare_clippy_lint! {
     /// ### Why is this bad?
     /// `crate` refers to the macro call's crate, whereas `$crate` refers to the macro definition's
     /// crate. Rarely is the former intended. See:
-    /// https://doc.rust-lang.org/reference/macros-by-example.html#hygiene
+    /// https://doc.crablang.org/reference/macros-by-example.html#hygiene
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// #[macro_export]
     /// macro_rules! print_message {
     ///     () => {
@@ -27,7 +27,7 @@ declare_clippy_lint! {
     /// pub const MESSAGE: &str = "Hello!";
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// #[macro_export]
     /// macro_rules! print_message {
     ///     () => {
@@ -39,7 +39,7 @@ declare_clippy_lint! {
     ///
     /// Note that if the use of `crate` is intentional, an `allow` attribute can be applied to the
     /// macro definition, e.g.:
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// #[allow(clippy::crate_in_macro_def)]
     /// macro_rules! ok { ... crate::foo ... }
     /// ```

@@ -5,7 +5,7 @@ LL |     r2.method2();
    |     ^^^^^^^^^^^^ `dyn` call on a pointer whose vtable does not match its type
    |
    = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior
-   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information
+   = help: see https://doc.crablang.org/nightly/reference/behavior-considered-undefined.html for further information
    = note: BACKTRACE:
    = note: inside `main` at $DIR/dyn-call-trait-mismatch.rs:LL:CC
 

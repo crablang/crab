@@ -1,0 +1,40 @@
+[package]
+name = "crablangc_codegen_llvm"
+version = "0.0.0"
+edition = "2021"
+
+[lib]
+test = false
+
+[dependencies]
+bitflags = "1.0"
+cstr = "0.2"
+libc = "0.2"
+measureme = "10.0.0"
+object = { version = "0.30.1", default-features = false, features = [
+    "std",
+    "read",
+] }
+tracing = "0.1"
+crablangc_middle = { path = "../crablangc_middle" }
+crablangc-demangle = "0.1.21"
+crablangc_attr = { path = "../crablangc_attr" }
+crablangc_codegen_ssa = { path = "../crablangc_codegen_ssa" }
+crablangc_data_structures = { path = "../crablangc_data_structures" }
+crablangc_errors = { path = "../crablangc_errors" }
+crablangc_fs_util = { path = "../crablangc_fs_util" }
+crablangc_hir = { path = "../crablangc_hir" }
+crablangc_index = { path = "../crablangc_index" }
+crablangc_llvm = { path = "../crablangc_llvm" }
+crablangc_macros = { path = "../crablangc_macros" }
+crablangc_metadata = { path = "../crablangc_metadata" }
+crablangc_query_system = { path = "../crablangc_query_system" }
+crablangc_session = { path = "../crablangc_session" }
+crablangc_symbol_mangling = { path = "../crablangc_symbol_mangling" }
+crablangc_target = { path = "../crablangc_target" }
+smallvec = { version = "1.8.1", features = ["union", "may_dangle"] }
+crablangc_ast = { path = "../crablangc_ast" }
+crablangc_span = { path = "../crablangc_span" }
+tempfile = "3.2.0"
+serde = { version = "1", features = [ "derive" ]}
+serde_json = "1"

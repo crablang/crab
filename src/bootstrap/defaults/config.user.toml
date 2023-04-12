@@ -11,8 +11,8 @@ extended = true
 # Most users installing from source want to build all parts of the project from source.
 [llvm]
 download-ci-llvm = false
-[rust]
-download-rustc = false
+[crablang]
+download-crablangc = false
 
 [dist]
 # Use better compression when preparing tarballs.

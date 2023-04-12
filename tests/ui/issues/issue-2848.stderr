@@ -8,4 +8,4 @@ LL |       alpha | beta => {}
 
 error: aborting due to previous error
 
-For more information about this error, try `rustc --explain E0408`.
+For more information about this error, try `crablangc --explain E0408`.

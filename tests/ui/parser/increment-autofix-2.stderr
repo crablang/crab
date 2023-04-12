@@ -1,4 +1,4 @@
-error: Rust has no postfix increment operator
+error: CrabLang has no postfix increment operator
   --> $DIR/increment-autofix-2.rs:13:6
    |
 LL |     i++;
@@ -9,7 +9,7 @@ help: use `+= 1` instead
 LL |     i += 1;
    |       ~~~~
 
-error: Rust has no postfix increment operator
+error: CrabLang has no postfix increment operator
   --> $DIR/increment-autofix-2.rs:19:12
    |
 LL |     while i++ < 5 {
@@ -22,7 +22,7 @@ help: use `+= 1` instead
 LL |     while { let tmp = i; i += 1; tmp } < 5 {
    |           +++++++++++  ~~~~~~~~~~~~~~~
 
-error: Rust has no postfix increment operator
+error: CrabLang has no postfix increment operator
   --> $DIR/increment-autofix-2.rs:27:8
    |
 LL |     tmp++;
@@ -33,7 +33,7 @@ help: use `+= 1` instead
 LL |     tmp += 1;
    |         ~~~~
 
-error: Rust has no postfix increment operator
+error: CrabLang has no postfix increment operator
   --> $DIR/increment-autofix-2.rs:33:14
    |
 LL |     while tmp++ < 5 {
@@ -46,7 +46,7 @@ help: use `+= 1` instead
 LL |     while { let tmp_ = tmp; tmp += 1; tmp_ } < 5 {
    |           ++++++++++++    ~~~~~~~~~~~~~~~~~~
 
-error: Rust has no postfix increment operator
+error: CrabLang has no postfix increment operator
   --> $DIR/increment-autofix-2.rs:41:16
    |
 LL |     foo.bar.qux++;
@@ -57,7 +57,7 @@ help: use `+= 1` instead
 LL |     foo.bar.qux += 1;
    |                 ~~~~
 
-error: Rust has no postfix increment operator
+error: CrabLang has no postfix increment operator
   --> $DIR/increment-autofix-2.rs:51:10
    |
 LL |     s.tmp++;
@@ -68,7 +68,7 @@ help: use `+= 1` instead
 LL |     s.tmp += 1;
    |           ~~~~
 
-error: Rust has no prefix increment operator
+error: CrabLang has no prefix increment operator
   --> $DIR/increment-autofix-2.rs:58:5
    |
 LL |     ++foo.bar.qux;

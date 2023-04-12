@@ -6,13 +6,13 @@ RUN sh /scripts/cross-apt-packages.sh
 COPY scripts/crosstool-ng-1.24.sh /scripts/
 RUN sh /scripts/crosstool-ng-1.24.sh
 
-COPY scripts/rustbuild-setup.sh /scripts/
-RUN sh /scripts/rustbuild-setup.sh
+COPY scripts/crablangbuild-setup.sh /scripts/
+RUN sh /scripts/crablangbuild-setup.sh
 WORKDIR /tmp
 
 COPY host-x86_64/dist-mips-linux/patches/ /tmp/patches/
 COPY host-x86_64/dist-mips-linux/mips-linux-gnu.config host-x86_64/dist-mips-linux/build-mips-toolchain.sh /tmp/
-RUN su rustbuild -c ./build-mips-toolchain.sh
+RUN su crablangbuild -c ./build-mips-toolchain.sh
 
 COPY scripts/sccache.sh /scripts/
 RUN sh /scripts/sccache.sh
@@ -26,5 +26,5 @@ ENV \
 
 ENV HOSTS=mips-unknown-linux-gnu
 
-ENV RUST_CONFIGURE_ARGS --enable-extended --disable-docs
+ENV CRABLANG_CONFIGURE_ARGS --enable-extended --disable-docs
 ENV SCRIPT python3 ../x.py dist --host $HOSTS --target $HOSTS

@@ -3,11 +3,11 @@ use clippy_utils::diagnostics::{span_lint_and_sugg, span_lint_and_then};
 use clippy_utils::source::snippet_with_applicability;
 use clippy_utils::{get_enclosing_block, is_integer_const};
 use if_chain::if_chain;
-use rustc_errors::Applicability;
-use rustc_hir::intravisit::{walk_block, walk_expr};
-use rustc_hir::{Expr, Pat};
-use rustc_lint::LateContext;
-use rustc_middle::ty::{self, Ty, UintTy};
+use crablangc_errors::Applicability;
+use crablangc_hir::intravisit::{walk_block, walk_expr};
+use crablangc_hir::{Expr, Pat};
+use crablangc_lint::LateContext;
+use crablangc_middle::ty::{self, Ty, UintTy};
 
 // To trigger the EXPLICIT_COUNTER_LOOP lint, a variable must be
 // incremented exactly once in the loop body, and initialized to zero

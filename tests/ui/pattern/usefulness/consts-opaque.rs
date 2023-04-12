@@ -1,7 +1,7 @@
 // This file tests the exhaustiveness algorithm on opaque constants. Most of the examples give
 // unnecessary warnings because const_to_pat.rs converts a constant pattern to a wildcard when the
 // constant is not allowed as a pattern. This is an edge case so we may not care to fix it.
-// See also https://github.com/rust-lang/rust/issues/78057
+// See also https://github.com/crablang/crablang/issues/78057
 
 #![deny(unreachable_patterns)]
 
@@ -40,7 +40,7 @@ fn main() {
         //~^ ERROR unreachable pattern
     }
 
-    // This used to cause an ICE (https://github.com/rust-lang/rust/issues/78071)
+    // This used to cause an ICE (https://github.com/crablang/crablang/issues/78071)
     match FOO_REF_REF {
         FOO_REF_REF => {}
         //~^ WARNING must be annotated with `#[derive(PartialEq, Eq)]`

@@ -6,24 +6,24 @@
 // build-pass
 #![no_core]
 #![crate_type = "rlib"]
-#![feature(intrinsics, rustc_attrs, no_core, lang_items, staged_api)]
+#![feature(intrinsics, crablangc_attrs, no_core, lang_items, staged_api)]
 #![stable(feature = "test", since = "1.0.0")]
 
 // Tests vetting "feature hierarchies" in the cases where we impose them.
 
-// Supporting minimal rust core code
+// Supporting minimal crablang core code
 #[lang = "sized"]
 trait Sized {}
 #[lang = "copy"]
 trait Copy {}
 impl Copy for bool {}
 
-extern "rust-intrinsic" {
-    #[rustc_const_stable(feature = "test", since = "1.0.0")]
+extern "crablang-intrinsic" {
+    #[crablangc_const_stable(feature = "test", since = "1.0.0")]
     fn unreachable() -> !;
 }
 
-#[rustc_builtin_macro]
+#[crablangc_builtin_macro]
 macro_rules! cfg {
     ($($cfg:tt)*) => {};
 }

@@ -1,11 +1,11 @@
 use clippy_utils::diagnostics::span_lint;
 use clippy_utils::higher;
-use rustc_hir as hir;
-use rustc_hir::intravisit;
-use rustc_lint::{LateContext, LateLintPass, LintContext};
-use rustc_middle::lint::in_external_macro;
-use rustc_middle::ty;
-use rustc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_hir as hir;
+use crablangc_hir::intravisit;
+use crablangc_lint::{LateContext, LateLintPass, LintContext};
+use crablangc_middle::lint::in_external_macro;
+use crablangc_middle::ty;
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
 
 declare_clippy_lint! {
     /// ### What it does
@@ -17,7 +17,7 @@ declare_clippy_lint! {
     /// misunderstanding of references.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// # let mut y = 1;
     /// let x = &mut &mut y;
     /// ```
@@ -35,7 +35,7 @@ impl<'tcx> LateLintPass<'tcx> for MutMut {
     }
 
     fn check_ty(&mut self, cx: &LateContext<'tcx>, ty: &'tcx hir::Ty<'_>) {
-        use rustc_hir::intravisit::Visitor;
+        use crablangc_hir::intravisit::Visitor;
 
         MutVisitor { cx }.visit_ty(ty);
     }
@@ -53,7 +53,7 @@ impl<'a, 'tcx> intravisit::Visitor<'tcx> for MutVisitor<'a, 'tcx> {
 
         if let Some(higher::ForLoop { arg, body, .. }) = higher::ForLoop::hir(expr) {
             // A `for` loop lowers to:
-            // ```rust
+            // ```crablang
             // match ::std::iter::Iterator::next(&mut iter) {
             // //                                ^^^^
             // ```

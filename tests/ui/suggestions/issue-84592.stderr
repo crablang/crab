@@ -14,4 +14,4 @@ LL | fn two_lifetimes_needed<'a>(a: &'a (), b: &'a ()) -> TwoLifetimes<'a, 'a> {
 
 error: aborting due to previous error
 
-For more information about this error, try `rustc --explain E0106`.
+For more information about this error, try `crablangc --explain E0106`.

@@ -16,7 +16,7 @@ use crate::{cmp, ptr};
 /// subset of the initialized region.
 ///
 /// In summary, the contents of the buffer can be visualized as:
-/// ```not_rust
+/// ```not_crablang
 /// [             capacity              ]
 /// [ filled |         unfilled         ]
 /// [    initialized    | uninitialized ]

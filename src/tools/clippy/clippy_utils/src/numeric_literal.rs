@@ -1,4 +1,4 @@
-use rustc_ast::ast::{LitFloatType, LitIntType, LitKind};
+use crablangc_ast::ast::{LitFloatType, LitIntType, LitKind};
 use std::iter;
 
 #[derive(Debug, PartialEq, Eq, Copy, Clone)]

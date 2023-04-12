@@ -1,0 +1,22 @@
+[package]
+name = "crablangc_incremental"
+version = "0.0.0"
+edition = "2021"
+
+[lib]
+
+[dependencies]
+rand = "0.8.4"
+crablangc_ast = { path = "../crablangc_ast" }
+crablangc_data_structures = { path = "../crablangc_data_structures" }
+crablangc_errors = { path = "../crablangc_errors" }
+crablangc_fs_util = { path = "../crablangc_fs_util" }
+crablangc_graphviz = { path = "../crablangc_graphviz" }
+crablangc_hir = { path = "../crablangc_hir" }
+crablangc_macros = { path = "../crablangc_macros" }
+crablangc_middle = { path = "../crablangc_middle" }
+crablangc_serialize = { path = "../crablangc_serialize" }
+crablangc_session = { path = "../crablangc_session" }
+crablangc_span = { path = "../crablangc_span" }
+thin-vec = "0.2.12"
+tracing = "0.1"

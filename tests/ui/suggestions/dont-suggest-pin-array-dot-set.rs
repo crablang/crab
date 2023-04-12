@@ -1,6 +1,6 @@
-// https://github.com/rust-lang/rust/issues/96834
+// https://github.com/crablang/crablang/issues/96834
 //
-// This test case verifies that rustc does not make an unhelpful suggestion:
+// This test case verifies that crablangc does not make an unhelpful suggestion:
 //
 //     help: consider wrapping the receiver expression with the appropriate type
 //         |

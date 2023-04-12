@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 
 #[allow(unused)]
 struct Struct<T>(T);

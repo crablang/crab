@@ -1,12 +1,12 @@
 use clippy_utils::diagnostics::span_lint_and_then;
 use clippy_utils::ty::is_type_diagnostic_item;
 use if_chain::if_chain;
-use rustc_ast::LitKind;
-use rustc_errors::Applicability;
-use rustc_hir::{Expr, ExprKind};
-use rustc_lint::LateContext;
-use rustc_span::source_map::Spanned;
-use rustc_span::{sym, Span};
+use crablangc_ast::LitKind;
+use crablangc_errors::Applicability;
+use crablangc_hir::{Expr, ExprKind};
+use crablangc_lint::LateContext;
+use crablangc_span::source_map::Spanned;
+use crablangc_span::{sym, Span};
 
 use super::VEC_RESIZE_TO_ZERO;
 

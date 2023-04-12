@@ -1,4 +1,4 @@
-//! Regression test for https://github.com/rust-lang/miri/issues/2629
+//! Regression test for https://github.com/crablang/miri/issues/2629
 use std::thread;
 
 fn main() {

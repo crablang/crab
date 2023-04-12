@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 
 trait GatTrait {
     type Gat<'a> where Self: 'a;

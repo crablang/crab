@@ -20,7 +20,7 @@ use crate::simd::{
 /// and return the result in the same lane in a vector of equal size. For a given operator, this is equivalent to zipping
 /// the two arrays together and mapping the operator over each lane.
 ///
-/// ```rust
+/// ```crablang
 /// # #![feature(array_zip, portable_simd)]
 /// # use core::simd::{Simd};
 /// let a0: [i32; 4] = [-2, 0, 2, 4];
@@ -52,17 +52,17 @@ use crate::simd::{
 /// but the reverse transmutation is more likely to require a copy the compiler cannot simply elide.
 ///
 /// # ABI "Features"
-/// Due to Rust's safety guarantees, `Simd<T, N>` is currently passed to and from functions via memory, not SIMD registers,
+/// Due to CrabLang's safety guarantees, `Simd<T, N>` is currently passed to and from functions via memory, not SIMD registers,
 /// except as an optimization. `#[inline]` hints are recommended on functions that accept `Simd<T, N>` or return it.
 /// The need for this may be corrected in the future.
 ///
-/// # Safe SIMD with Unsafe Rust
+/// # Safe SIMD with Unsafe CrabLang
 ///
 /// Operations with `Simd` are typically safe, but there are many reasons to want to combine SIMD with `unsafe` code.
 /// Care must be taken to respect differences between `Simd` and other types it may be transformed into or derived from.
 /// In particular, the layout of `Simd<T, N>` may be similar to `[T; N]`, and may allow some transmutations,
 /// but references to `[T; N]` are not interchangeable with those to `Simd<T, N>`.
-/// Thus, when using `unsafe` Rust to read and write `Simd<T, N>` through [raw pointers], it is a good idea to first try with
+/// Thus, when using `unsafe` CrabLang to read and write `Simd<T, N>` through [raw pointers], it is a good idea to first try with
 /// [`read_unaligned`] and [`write_unaligned`]. This is because:
 /// - [`read`] and [`write`] require full alignment (in this case, `Simd<T, N>`'s alignment)
 /// - the likely source for reading or destination for writing `Simd<T, N>` is [`[T]`](slice) and similar types, aligned to `T`
@@ -75,7 +75,7 @@ use crate::simd::{
 /// When trying to guarantee alignment, [`[T]::as_simd`][as_simd] is an option for converting `[T]` to `[Simd<T, N>]`,
 /// and allows soundly operating on an aligned SIMD body, but it may cost more time when handling the scalar head and tail.
 /// If these are not sufficient, then it is most ideal to design data structures to be already aligned
-/// to the `Simd<T, N>` you wish to use before using `unsafe` Rust to read or write.
+/// to the `Simd<T, N>` you wish to use before using `unsafe` CrabLang to read or write.
 /// More conventional ways to compensate for these facts, like materializing `Simd` to or from an array first,
 /// are handled by safe methods like [`Simd::from_array`] and [`Simd::from_slice`].
 ///
@@ -126,7 +126,7 @@ where
     /// ```
     pub fn splat(value: T) -> Self {
         // This is preferred over `[value; LANES]`, since it's explicitly a splat:
-        // https://github.com/rust-lang/rust/issues/97804
+        // https://github.com/crablang/crablang/issues/97804
         struct Splat;
         impl<const LANES: usize> Swizzle<1, LANES> for Splat {
             const INDEX: [usize; LANES] = [0; LANES];
@@ -192,7 +192,7 @@ where
 
     /// Performs lanewise conversion of a SIMD vector's elements to another SIMD-valid type.
     ///
-    /// This follows the semantics of Rust's `as` conversion for casting
+    /// This follows the semantics of CrabLang's `as` conversion for casting
     /// integers to unsigned integers (interpreting as the other type, so `-1` to `MAX`),
     /// and from floats to integers (truncating, or saturating at the limits) for each lane,
     /// or vice versa.
@@ -342,7 +342,7 @@ where
     /// let result = unsafe { Simd::gather_select_unchecked(&vec, enable, idxs, alt) };
     /// assert_eq!(result, Simd::from_array([-5, 13, 10, -2]));
     /// ```
-    /// [undefined behavior]: https://doc.rust-lang.org/reference/behavior-considered-undefined.html
+    /// [undefined behavior]: https://doc.crablang.org/reference/behavior-considered-undefined.html
     #[must_use]
     #[inline]
     pub unsafe fn gather_select_unchecked(
@@ -438,7 +438,7 @@ where
     /// // index 0's second write is masked, thus was omitted.
     /// assert_eq!(vec, vec![-41, 11, 12, 82, 14, 15, 16, 17, 18]);
     /// ```
-    /// [undefined behavior]: https://doc.rust-lang.org/reference/behavior-considered-undefined.html
+    /// [undefined behavior]: https://doc.crablang.org/reference/behavior-considered-undefined.html
     #[inline]
     pub unsafe fn scatter_select_unchecked(
         self,
@@ -447,7 +447,7 @@ where
         idxs: Simd<usize, LANES>,
     ) {
         // Safety: This block works with *mut T derived from &mut 'a [T],
-        // which means it is delicate in Rust's borrowing model, circa 2021:
+        // which means it is delicate in CrabLang's borrowing model, circa 2021:
         // &mut 'a [T] asserts uniqueness, so deriving &'a [T] invalidates live *mut Ts!
         // Even though this block is largely safe methods, it must be exactly this way
         // to prevent invalidating the raw ptrs while they're live.

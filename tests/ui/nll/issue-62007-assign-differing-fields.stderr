@@ -24,4 +24,4 @@ LL |         if let Some(n) = (list.0).next.as_mut() {
 
 error: aborting due to 2 previous errors
 
-For more information about this error, try `rustc --explain E0499`.
+For more information about this error, try `crablangc --explain E0499`.

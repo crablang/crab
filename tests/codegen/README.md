@@ -6,7 +6,7 @@ FileCheck. If your codegen test has different behavior based on the chosen
 target or different compiler flags that you want to exercise, you can use a
 revisions annotation, like so:
 
-```rust
+```crablang
 // revisions: aaa bbb
 // [bbb] compile-flags: --flags-for-bbb
 ```
@@ -15,7 +15,7 @@ After specifying those variations, you can write different expected, or
 explicitly *unexpected* output by using `<prefix>-SAME:` and `<prefix>-NOT:`,
 like so:
 
-```rust
+```crablang
 // CHECK: expected code
 // aaa-SAME: emitted-only-for-aaa
 // aaa-NOT:                        emitted-only-for-bbb

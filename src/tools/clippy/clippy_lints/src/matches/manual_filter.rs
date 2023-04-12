@@ -3,10 +3,10 @@ use clippy_utils::ty::is_type_diagnostic_item;
 use clippy_utils::visitors::contains_unsafe_block;
 use clippy_utils::{is_res_lang_ctor, path_res, path_to_local_id};
 
-use rustc_hir::LangItem::{OptionNone, OptionSome};
-use rustc_hir::{Arm, Expr, ExprKind, HirId, Pat, PatKind};
-use rustc_lint::LateContext;
-use rustc_span::{sym, SyntaxContext};
+use crablangc_hir::LangItem::{OptionNone, OptionSome};
+use crablangc_hir::{Arm, Expr, ExprKind, HirId, Pat, PatKind};
+use crablangc_lint::LateContext;
+use crablangc_span::{sym, SyntaxContext};
 
 use super::manual_utils::{check_with, SomeExpr};
 use super::MANUAL_FILTER;

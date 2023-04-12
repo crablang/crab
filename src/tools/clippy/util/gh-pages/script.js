@@ -47,7 +47,7 @@
     angular.module("clippy", [])
         .filter('markdown', function ($sce) {
             return function (text) {
-                return $sce.trustAsHtml(
+                return $sce.tcrablangAsHtml(
                     md.render(text || '')
                         // Oh deer, what a hack :O
                         .replace('<table', '<table class="table"')
@@ -133,7 +133,7 @@
 
             const THEMES_DEFAULT = {
                 light: "Light",
-                rust: "Rust",
+                crablang: "CrabLang",
                 coal: "Coal",
                 navy: "Navy",
                 ayu: "Ayu"
@@ -365,7 +365,7 @@ function setTheme(theme, store) {
         case "navy":
             enableNight = true;
             break;
-        case "rust":
+        case "crablang":
             enableHighlight = true;
             break;
         default:

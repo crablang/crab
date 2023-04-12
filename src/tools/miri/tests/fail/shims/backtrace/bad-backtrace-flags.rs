@@ -1,4 +1,4 @@
-extern "Rust" {
+extern "CrabLang" {
     fn miri_get_backtrace(flags: u64, buf: *mut *mut ());
 }
 

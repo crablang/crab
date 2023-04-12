@@ -4,15 +4,15 @@ use clippy_utils::sugg::Sugg;
 use clippy_utils::ty::is_type_diagnostic_item;
 use clippy_utils::{can_mut_borrow_both, eq_expr_value, in_constant, std_or_core};
 use if_chain::if_chain;
-use rustc_errors::Applicability;
-use rustc_hir::{BinOpKind, Block, Expr, ExprKind, PatKind, QPath, Stmt, StmtKind};
-use rustc_lint::{LateContext, LateLintPass, LintContext};
-use rustc_middle::lint::in_external_macro;
-use rustc_middle::ty;
-use rustc_session::{declare_lint_pass, declare_tool_lint};
-use rustc_span::source_map::Spanned;
-use rustc_span::SyntaxContext;
-use rustc_span::{sym, symbol::Ident, Span};
+use crablangc_errors::Applicability;
+use crablangc_hir::{BinOpKind, Block, Expr, ExprKind, PatKind, QPath, Stmt, StmtKind};
+use crablangc_lint::{LateContext, LateLintPass, LintContext};
+use crablangc_middle::lint::in_external_macro;
+use crablangc_middle::ty;
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_span::source_map::Spanned;
+use crablangc_span::SyntaxContext;
+use crablangc_span::{sym, symbol::Ident, Span};
 
 declare_clippy_lint! {
     /// ### What it does
@@ -25,7 +25,7 @@ declare_clippy_lint! {
     /// without deinitializing or copying either variable.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// let mut a = 42;
     /// let mut b = 1337;
     ///
@@ -34,7 +34,7 @@ declare_clippy_lint! {
     /// a = t;
     /// ```
     /// Use std::mem::swap():
-    /// ```rust
+    /// ```crablang
     /// let mut a = 1;
     /// let mut b = 2;
     /// std::mem::swap(&mut a, &mut b);
@@ -53,14 +53,14 @@ declare_clippy_lint! {
     /// This looks like a failed attempt to swap.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// # let mut a = 1;
     /// # let mut b = 2;
     /// a = b;
     /// b = a;
     /// ```
     /// If swapping is intended, use `swap()` instead:
-    /// ```rust
+    /// ```crablang
     /// # let mut a = 1;
     /// # let mut b = 2;
     /// std::mem::swap(&mut a, &mut b);

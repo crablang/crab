@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 
 #![warn(clippy::manual_map)]
 #![allow(
@@ -33,7 +33,7 @@ fn main() {
         None
     };
 
-    #[rustfmt::skip]
+    #[crablangfmt::skip]
     match Some(0) {
         Some(x) => { Some(std::convert::identity(x)) }
         None => { None }

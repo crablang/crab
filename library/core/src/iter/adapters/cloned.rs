@@ -1,7 +1,7 @@
 use crate::iter::adapters::{
-    zip::try_get_unchecked, TrustedRandomAccess, TrustedRandomAccessNoCoerce,
+    zip::try_get_unchecked, TcrablangedRandomAccess, TcrablangedRandomAccessNoCoerce,
 };
-use crate::iter::{FusedIterator, TrustedLen, UncheckedIterator};
+use crate::iter::{FusedIterator, TcrablangedLen, UncheckedIterator};
 use crate::ops::Try;
 
 /// An iterator that clones the elements of an underlying iterator.
@@ -62,7 +62,7 @@ where
 
     unsafe fn __iterator_get_unchecked(&mut self, idx: usize) -> T
     where
-        Self: TrustedRandomAccessNoCoerce,
+        Self: TcrablangedRandomAccessNoCoerce,
     {
         // SAFETY: the caller must uphold the contract for
         // `Iterator::__iterator_get_unchecked`.
@@ -121,22 +121,22 @@ where
 }
 
 #[doc(hidden)]
-#[unstable(feature = "trusted_random_access", issue = "none")]
-unsafe impl<I> TrustedRandomAccess for Cloned<I> where I: TrustedRandomAccess {}
+#[unstable(feature = "tcrablanged_random_access", issue = "none")]
+unsafe impl<I> TcrablangedRandomAccess for Cloned<I> where I: TcrablangedRandomAccess {}
 
 #[doc(hidden)]
-#[unstable(feature = "trusted_random_access", issue = "none")]
-unsafe impl<I> TrustedRandomAccessNoCoerce for Cloned<I>
+#[unstable(feature = "tcrablanged_random_access", issue = "none")]
+unsafe impl<I> TcrablangedRandomAccessNoCoerce for Cloned<I>
 where
-    I: TrustedRandomAccessNoCoerce,
+    I: TcrablangedRandomAccessNoCoerce,
 {
     const MAY_HAVE_SIDE_EFFECT: bool = true;
 }
 
-#[unstable(feature = "trusted_len", issue = "37572")]
-unsafe impl<'a, I, T: 'a> TrustedLen for Cloned<I>
+#[unstable(feature = "tcrablanged_len", issue = "37572")]
+unsafe impl<'a, I, T: 'a> TcrablangedLen for Cloned<I>
 where
-    I: TrustedLen<Item = &'a T>,
+    I: TcrablangedLen<Item = &'a T>,
     T: Clone,
 {
 }
@@ -154,7 +154,7 @@ where
     }
 }
 
-#[stable(feature = "default_iters", since = "CURRENT_RUSTC_VERSION")]
+#[stable(feature = "default_iters", since = "CURRENT_CRABLANGC_VERSION")]
 impl<I: Default> Default for Cloned<I> {
     /// Creates a `Cloned` iterator from the default value of `I`
     /// ```

@@ -1,4 +1,4 @@
 # Compiler Test Documentation
 
 Documentation for the compiler testing framework can be found in
-[the rustc dev guide](https://rustc-dev-guide.rust-lang.org/tests/intro.html).
+[the crablangc dev guide](https://crablangc-dev-guide.crablang.org/tests/intro.html).

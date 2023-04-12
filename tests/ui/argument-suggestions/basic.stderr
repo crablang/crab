@@ -99,4 +99,4 @@ LL |     closure(/* x */);
 error: aborting due to 6 previous errors
 
 Some errors have detailed explanations: E0057, E0061, E0308.
-For more information about an error, try `rustc --explain E0057`.
+For more information about an error, try `crablangc --explain E0057`.

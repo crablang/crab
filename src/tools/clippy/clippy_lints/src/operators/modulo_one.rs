@@ -1,8 +1,8 @@
 use clippy_utils::diagnostics::span_lint;
 use clippy_utils::{is_integer_const, unsext};
-use rustc_hir::{BinOpKind, Expr};
-use rustc_lint::LateContext;
-use rustc_middle::ty;
+use crablangc_hir::{BinOpKind, Expr};
+use crablangc_lint::LateContext;
+use crablangc_middle::ty;
 
 use super::MODULO_ONE;
 

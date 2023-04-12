@@ -224,8 +224,8 @@ fn get_lint_file_contents(lint: &LintData<'_>, enable_msrv: bool) -> String {
     let mut result = String::new();
 
     let (pass_type, pass_lifetimes, pass_import, context_import) = match lint.pass {
-        "early" => ("EarlyLintPass", "", "use rustc_ast::ast::*;", "EarlyContext"),
-        "late" => ("LateLintPass", "<'_>", "use rustc_hir::*;", "LateContext"),
+        "early" => ("EarlyLintPass", "", "use crablangc_ast::ast::*;", "EarlyContext"),
+        "late" => ("LateLintPass", "<'_>", "use crablangc_hir::*;", "LateContext"),
         _ => {
             unreachable!("`pass_type` should only ever be `early` or `late`!");
         },
@@ -241,8 +241,8 @@ fn get_lint_file_contents(lint: &LintData<'_>, enable_msrv: bool) -> String {
             r#"
             use clippy_utils::msrvs::{{self, Msrv}};
             {pass_import}
-            use rustc_lint::{{{context_import}, {pass_type}, LintContext}};
-            use rustc_session::{{declare_tool_lint, impl_lint_pass}};
+            use crablangc_lint::{{{context_import}, {pass_type}, LintContext}};
+            use crablangc_session::{{declare_tool_lint, impl_lint_pass}};
 
         "#
         )
@@ -250,8 +250,8 @@ fn get_lint_file_contents(lint: &LintData<'_>, enable_msrv: bool) -> String {
         formatdoc!(
             r#"
             {pass_import}
-            use rustc_lint::{{{context_import}, {pass_type}}};
-            use rustc_session::{{declare_lint_pass, declare_tool_lint}};
+            use crablangc_lint::{{{context_import}, {pass_type}}};
+            use crablangc_session::{{declare_lint_pass, declare_tool_lint}};
 
         "#
         )
@@ -280,7 +280,7 @@ fn get_lint_file_contents(lint: &LintData<'_>, enable_msrv: bool) -> String {
             }}
 
             // TODO: Add MSRV level to `clippy_utils/src/msrvs.rs` if needed.
-            // TODO: Add MSRV test to `tests/ui/min_rust_version_attr.rs`.
+            // TODO: Add MSRV test to `tests/ui/min_crablang_version_attr.rs`.
             // TODO: Update msrv config comment in `clippy_lints/src/utils/conf.rs`
         "#
         )
@@ -306,11 +306,11 @@ fn get_lint_declaration(name_upper: &str, category: &str) -> String {
                 /// ### Why is this bad?
                 ///
                 /// ### Example
-                /// ```rust
+                /// ```crablang
                 /// // example code where clippy issues a warning
                 /// ```
                 /// Use instead:
-                /// ```rust
+                /// ```crablang
                 /// // example code which does not raise clippy warning
                 /// ```
                 #[clippy::version = "{}"]
@@ -358,7 +358,7 @@ fn create_lint_for_ty(lint: &LintData<'_>, enable_msrv: bool, ty: &str) -> io::R
             lint_file_contents,
             r#"
                 use clippy_utils::msrvs::{{self, Msrv}};
-                use rustc_lint::{{{context_import}, LintContext}};
+                use crablangc_lint::{{{context_import}, LintContext}};
 
                 use super::{name_upper};
 
@@ -377,7 +377,7 @@ fn create_lint_for_ty(lint: &LintData<'_>, enable_msrv: bool, ty: &str) -> io::R
         let _: fmt::Result = writedoc!(
             lint_file_contents,
             r#"
-                use rustc_lint::{{{context_import}, LintContext}};
+                use crablangc_lint::{{{context_import}, LintContext}};
 
                 use super::{name_upper};
 
@@ -404,7 +404,7 @@ fn create_lint_for_ty(lint: &LintData<'_>, enable_msrv: bool, ty: &str) -> io::R
 #[allow(clippy::too_many_lines)]
 fn setup_mod_file(path: &Path, lint: &LintData<'_>) -> io::Result<&'static str> {
     use super::update_lints::{match_tokens, LintDeclSearchResult};
-    use rustc_lexer::TokenKind;
+    use crablangc_lexer::TokenKind;
 
     let lint_name_upper = lint.name.to_uppercase();
 
@@ -420,7 +420,7 @@ fn setup_mod_file(path: &Path, lint: &LintData<'_>) -> io::Result<&'static str> 
     let mut last_decl_curly_offset = None;
     let mut lint_context = None;
 
-    let mut iter = rustc_lexer::tokenize(&file_contents).map(|t| {
+    let mut iter = crablangc_lexer::tokenize(&file_contents).map(|t| {
         let range = offset..offset + t.len as usize;
         offset = range.end;
 
@@ -528,7 +528,7 @@ fn setup_mod_file(path: &Path, lint: &LintData<'_>) -> io::Result<&'static str> 
 
     file_contents.replace_range(arr_start + 1..arr_end, &new_arr_content);
 
-    // Just add the mod declaration at the top, it'll be fixed by rustfmt
+    // Just add the mod declaration at the top, it'll be fixed by crablangfmt
     file_contents.insert_str(0, &format!("mod {};\n", &lint.name));
 
     let mut file = OpenOptions::new()

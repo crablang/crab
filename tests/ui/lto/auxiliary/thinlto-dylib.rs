@@ -1,7 +1,7 @@
 // Auxiliary crate for test issue-105637: the LTOed dylib which had duplicate symbols from libstd,
 // breaking the panic hook feature.
 //
-// This simulates the `rustc_driver` crate, and the main crate simulates rustc's main binary hooking
+// This simulates the `crablangc_driver` crate, and the main crate simulates crablangc's main binary hooking
 // into this driver.
 
 // compile-flags: -Zdylib-lto -C lto=thin

@@ -15,12 +15,12 @@ Tools should make the above ordering optional.
 
 ### Function definitions
 
-In Rust, one finds functions by searching for `fn [function-name]`; It's
+In CrabLang, one finds functions by searching for `fn [function-name]`; It's
 important that you style your code so that it's very searchable in this way.
 
 The proper ordering and spacing is:
 
-```rust
+```crablang
 [pub] [unsafe] [extern ["ABI"]] fn foo(arg1: i32, arg2: i32) -> i32 {
     ...
 }
@@ -32,7 +32,7 @@ If the function signature does not fit on one line, then break after the opening
 parenthesis and before the closing parenthesis and put each argument on its own
 block-indented line. For example,
 
-```rust
+```crablang
 fn foo(
     arg1: i32,
     arg2: i32,
@@ -52,7 +52,7 @@ Build a tuple or tuple struct as you would call a function.
 
 #### Single-line
 
-```rust
+```crablang
 struct Bar(Type1, Type2);
 
 let x = Bar(11, 22);
@@ -66,7 +66,7 @@ In the declaration, put each variant on its own line, block indented.
 Format each variant accordingly as either a struct, tuple struct, or identifier,
 which doesn't require special formatting (but without the `struct` keyword.
 
-```rust
+```crablang
 enum FooBar {
     First(u32),
     Second,
@@ -81,7 +81,7 @@ If a struct variant is [*small*](index.html#small-items), it may be formatted on
 one line. In this case, do not use a trailing comma for the field list, but do
 put spaces around each brace:
 
-```rust
+```crablang
 enum FooBar {
     Error { err: Box<Error>, line: u32 },
 }
@@ -100,7 +100,7 @@ brace on the same line when it fits within the right margin. All struct fields
 are indented once and end with a trailing comma. The closing brace is not
 indented and appears on its own line.
 
-```rust
+```crablang
 struct Foo {
     a: A,
     b: B,
@@ -110,7 +110,7 @@ struct Foo {
 If and only if the type of a field does not fit within the right margin, it is
 pulled down to its own line and indented again.
 
-```rust
+```crablang
 struct Foo {
     a: A,
     long_name:
@@ -125,7 +125,7 @@ space between the braces: `struct Foo;` or `struct Foo {}`.
 
 The same guidelines are used for untagged union declarations.
 
-```rust
+```crablang
 union Foo {
     a: A,
     b: B,
@@ -141,7 +141,7 @@ Put the whole struct on one line if possible. Types in the parentheses should be
 separated by a comma and space with no trailing comma. No spaces around the
 parentheses or semi-colon:
 
-```rust
+```crablang
 pub struct Foo(String, u8);
 ```
 
@@ -152,7 +152,7 @@ For more than a few fields, prefer a proper struct with named fields. Given
 this, a tuple struct should always fit on one line. If it does not, block format
 the fields with a field on each line and a trailing comma:
 
-```rust
+```crablang
 pub struct Foo(
     String,
     u8,
@@ -166,7 +166,7 @@ Trait items should be block-indented. If there are no items, the trait may be
 formatted on a single line. Otherwise there should be line-breaks after the
 opening brace and before the closing brace:
 
-```rust
+```crablang
 trait Foo {}
 
 pub trait Bar {
@@ -177,7 +177,7 @@ pub trait Bar {
 If the trait has bounds, there should be a space after the colon but not before
 and before and after each `+`, e.g.,
 
-```rust
+```crablang
 trait Foo: Debug + Bar {}
 ```
 
@@ -187,7 +187,7 @@ you must break the bounds, put each bound (including the first) on its own
 block-indented line, break before the `+` and put the opening brace on its own
 line:
 
-```rust
+```crablang
 pub trait IndexRanges:
     Index<Range<usize>, Output=Self>
     + Index<RangeTo<usize>, Output=Self>
@@ -205,7 +205,7 @@ Impl items should be block indented. If there are no items, the impl may be
 formatted on a single line. Otherwise there should be line-breaks after the
 opening brace and before the closing brace:
 
-```rust
+```crablang
 impl Foo {}
 
 impl Bar for Foo {
@@ -217,7 +217,7 @@ Avoid line-breaking in the signature if possible. If a line break is required in
 a non-inherent impl, break immediately before `for`, block indent the concrete type
 and put the opening brace on its own line:
 
-```rust
+```crablang
 impl Bar
     for Foo
 {
@@ -235,12 +235,12 @@ Use spaces around keywords, no spaces around the semi-colon.
 
 ### Modules
 
-```rust
+```crablang
 mod foo {
 }
 ```
 
-```rust
+```crablang
 mod foo;
 ```
 
@@ -251,7 +251,7 @@ semi-colon.
 
 Use `{}` for the full definition of the macro.
 
-```rust
+```crablang
 macro_rules! foo {
 }
 ```
@@ -268,7 +268,7 @@ Do not put spaces before or after `<` nor before `>`. Only put a space after `>`
 if it is followed by a word or opening brace, not an opening parenthesis. There
 should be a space after each comma and no trailing comma.
 
-```rust
+```crablang
 fn foo<T: Display, U: Debug>(x: Vec<T>, y: Vec<U>) ...
 
 impl<T: Display, U: Debug> SomeType<T, U> { ...
@@ -279,7 +279,7 @@ should have its own block-indented line, there should be newlines after the
 opening bracket and before the closing bracket, and the should be a trailing
 comma.
 
-```rust
+```crablang
 fn foo<
     T: Display,
     U: Debug,
@@ -289,7 +289,7 @@ fn foo<
 If an associated type is bound in a generic type, then there should be spaces on
 either side of the `=`:
 
-```rust
+```crablang
 <T: Example<Item = u32>>
 ```
 
@@ -307,7 +307,7 @@ comma, unless the clause is terminated with a semicolon. If the `where` clause
 is followed by a block (or assignment), the block should be started on a new
 line. Examples:
 
-```rust
+```crablang
 fn function<T, U>(args)
 where
     T: Bound,
@@ -356,7 +356,7 @@ type parameter.
 If a component of a `where` clause is long, it may be broken before `+` and
 further block indented. Each bound should go on its own line. E.g.,
 
-```rust
+```crablang
 impl<T: ?Sized, Idx> IndexRanges<Idx> for T
 where
     T: Index<Range<Idx>, Output = Self::Output>
@@ -374,7 +374,7 @@ item's signature is also kept on one line. In this case, there is no need for a
 trailing comma and if followed by a block, no need for a newline before the
 block. E.g.,
 
-```rust
+```crablang
 // May be single-lined.
 fn foo<T>(args) -> ReturnType
 where T: Bound {
@@ -398,7 +398,7 @@ where
 Type aliases should generally be kept on one line. If necessary to break the
 line, do so after the `=`; the right-hand-side should be block indented:
 
-```rust
+```crablang
 pub type Foo = Bar<T>;
 
 // If multi-line is required
@@ -410,7 +410,7 @@ Where possible avoid `where` clauses and keep type constraints inline. Where
 that is not possible split the line before and after the `where` clause (and
 split the `where` clause as normal), e.g.,
 
-```rust
+```crablang
 type VeryLongType<T, U>
 where
     T: U::AnAssociatedType,
@@ -425,7 +425,7 @@ Associated types should follow the guidelines above for type aliases. Where an
 associated type has a bound, there should be a space after the colon but not
 before:
 
-```rust
+```crablang
 pub type Foo: Bar;
 ```
 
@@ -442,7 +442,7 @@ the ABI. For example, write `extern "C" fn foo ...`, not `extern fn foo ...`, or
 If an import can be formatted on one line, do so. There should be no spaces
 around braces.
 
-```rust
+```crablang
 use a::b::c;
 use a::b::d::*;
 use a::b::{foo, bar, baz};
@@ -460,7 +460,7 @@ below), then break after the opening brace and before the closing brace, use a
 trailing comma, and block indent the names.
 
 
-```rust
+```crablang
 // Prefer
 foo::{long, list, of, imports};
 foo::{more, imports};
@@ -484,7 +484,7 @@ imports must not be merged or re-ordered.
 
 E.g., input:
 
-```rust
+```crablang
 use d;
 use c;
 
@@ -494,7 +494,7 @@ use a;
 
 output:
 
-```rust
+```crablang
 use c;
 use d;
 
@@ -505,7 +505,7 @@ use b;
 Because of `macro_use`, attributes must also start a new group and prevent
 re-ordering.
 
-Note that tools which only have access to syntax (such as Rustfmt) cannot tell
+Note that tools which only have access to syntax (such as CrabLangfmt) cannot tell
 which imports are from an external crate or the std lib, etc.
 
 
@@ -539,7 +539,7 @@ but non-nested imports must be grouped on as few lines as possible.
 
 For example,
 
-```rust
+```crablang
 use a::b::{
     x, y, z,
     u::{...},
@@ -552,7 +552,7 @@ use a::b::{
 
 An example:
 
-```rust
+```crablang
 // Un-merged
 use a::b;
 use a::c::d;

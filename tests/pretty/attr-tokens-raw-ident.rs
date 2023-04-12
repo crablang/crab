@@ -3,5 +3,5 @@
 
 // pp-exact
 
-#[rustfmt::r#final(final)]
+#[crablangfmt::r#final(final)]
 fn main() {}

@@ -8,4 +8,4 @@ LL |     foo(Box::new(move || y = !y) as Box<_>);
 
 error: aborting due to previous error
 
-For more information about this error, try `rustc --explain E0594`.
+For more information about this error, try `crablangc --explain E0594`.

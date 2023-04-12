@@ -66,4 +66,4 @@ LL | fn f<T: Trait>(x: T) {}
 
 error: aborting due to 4 previous errors
 
-For more information about this error, try `rustc --explain E0277`.
+For more information about this error, try `crablangc --explain E0277`.

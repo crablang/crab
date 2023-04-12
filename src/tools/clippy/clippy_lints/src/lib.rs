@@ -7,41 +7,41 @@
 #![feature(let_chains)]
 #![feature(lint_reasons)]
 #![feature(never_type)]
-#![feature(rustc_private)]
+#![feature(crablangc_private)]
 #![feature(stmt_expr_attributes)]
 #![recursion_limit = "512"]
 #![cfg_attr(feature = "deny-warnings", deny(warnings))]
 #![allow(clippy::missing_docs_in_private_items, clippy::must_use_candidate)]
 #![warn(trivial_casts, trivial_numeric_casts)]
-// warn on lints, that are included in `rust-lang/rust`s bootstrap
-#![warn(rust_2018_idioms, unused_lifetimes)]
-// warn on rustc internal lints
-#![warn(rustc::internal)]
-// Disable this rustc lint for now, as it was also done in rustc
-#![allow(rustc::potential_query_instability)]
+// warn on lints, that are included in `crablang/crablang`s bootstrap
+#![warn(crablang_2018_idioms, unused_lifetimes)]
+// warn on crablangc internal lints
+#![warn(crablangc::internal)]
+// Disable this crablangc lint for now, as it was also done in crablangc
+#![allow(crablangc::potential_query_instability)]
 
 // FIXME: switch to something more ergonomic here, once available.
 // (Currently there is no way to opt into sysroot crates without `extern crate`.)
-extern crate rustc_arena;
-extern crate rustc_ast;
-extern crate rustc_ast_pretty;
-extern crate rustc_data_structures;
-extern crate rustc_driver;
-extern crate rustc_errors;
-extern crate rustc_hir;
-extern crate rustc_hir_analysis;
-extern crate rustc_hir_pretty;
-extern crate rustc_hir_typeck;
-extern crate rustc_index;
-extern crate rustc_infer;
-extern crate rustc_lexer;
-extern crate rustc_lint;
-extern crate rustc_middle;
-extern crate rustc_parse;
-extern crate rustc_session;
-extern crate rustc_span;
-extern crate rustc_target;
-extern crate rustc_trait_selection;
+extern crate crablangc_arena;
+extern crate crablangc_ast;
+extern crate crablangc_ast_pretty;
+extern crate crablangc_data_structures;
+extern crate crablangc_driver;
+extern crate crablangc_errors;
+extern crate crablangc_hir;
+extern crate crablangc_hir_analysis;
+extern crate crablangc_hir_pretty;
+extern crate crablangc_hir_typeck;
+extern crate crablangc_index;
+extern crate crablangc_infer;
+extern crate crablangc_lexer;
+extern crate crablangc_lint;
+extern crate crablangc_middle;
+extern crate crablangc_parse;
+extern crate crablangc_session;
+extern crate crablangc_span;
+extern crate crablangc_target;
+extern crate crablangc_trait_selection;
 extern crate thin_vec;
 
 #[macro_use]
@@ -53,9 +53,9 @@ use std::io;
 use std::path::PathBuf;
 
 use clippy_utils::msrvs::Msrv;
-use rustc_data_structures::fx::FxHashSet;
-use rustc_lint::{Lint, LintId};
-use rustc_session::Session;
+use crablangc_data_structures::fx::FxHashSet;
+use crablangc_lint::{Lint, LintId};
+use crablangc_session::Session;
 
 #[cfg(feature = "internal")]
 pub mod deprecated_lints;
@@ -224,7 +224,7 @@ mod neg_cmp_op_on_partial_ord;
 mod neg_multiply;
 mod new_without_default;
 mod no_effect;
-mod no_mangle_with_rust_abi;
+mod no_mangle_with_crablang_abi;
 mod non_copy_const;
 mod non_expressive_names;
 mod non_octal_unix_permissions;
@@ -335,7 +335,7 @@ pub use crate::utils::conf::{lookup_conf_file, Conf};
 /// level (i.e `#![cfg_attr(...)]`) will still be expanded even when using a pre-expansion pass.
 ///
 /// Used in `./src/driver.rs`.
-pub fn register_pre_expansion_lints(store: &mut rustc_lint::LintStore, sess: &Session, conf: &Conf) {
+pub fn register_pre_expansion_lints(store: &mut crablangc_lint::LintStore, sess: &Session, conf: &Conf) {
     // NOTE: Do not add any more pre-expansion passes. These should be removed eventually.
     let msrv = Msrv::read(&conf.msrv, sess);
     let msrv = move || msrv.clone();
@@ -394,8 +394,8 @@ struct RegistrationGroups {
 }
 
 impl RegistrationGroups {
-    #[rustfmt::skip]
-    fn register(self, store: &mut rustc_lint::LintStore) {
+    #[crablangfmt::skip]
+    fn register(self, store: &mut crablangc_lint::LintStore) {
         store.register_group(true, "clippy::all", Some("clippy_all"), self.all);
         store.register_group(true, "clippy::cargo", Some("clippy_cargo"), self.cargo);
         store.register_group(true, "clippy::complexity", Some("clippy_complexity"), self.complexity);
@@ -465,7 +465,7 @@ pub fn explain(name: &str) {
     }
 }
 
-fn register_categories(store: &mut rustc_lint::LintStore) {
+fn register_categories(store: &mut crablangc_lint::LintStore) {
     let mut groups = RegistrationGroups::default();
 
     for LintInfo { lint, category, .. } in declared_lints::LINTS {
@@ -482,11 +482,11 @@ fn register_categories(store: &mut rustc_lint::LintStore) {
     groups.register(store);
 }
 
-/// Register all lints and lint groups with the rustc plugin registry
+/// Register all lints and lint groups with the crablangc plugin registry
 ///
 /// Used in `./src/driver.rs`.
 #[expect(clippy::too_many_lines)]
-pub fn register_plugins(store: &mut rustc_lint::LintStore, sess: &Session, conf: &Conf) {
+pub fn register_plugins(store: &mut crablangc_lint::LintStore, sess: &Session, conf: &Conf) {
     register_removed_non_tool_lints(store);
     register_categories(store);
 
@@ -931,7 +931,7 @@ pub fn register_plugins(store: &mut rustc_lint::LintStore, sess: &Session, conf:
             avoid_breaking_exported_api,
         ))
     });
-    store.register_late_pass(|_| Box::new(no_mangle_with_rust_abi::NoMangleWithRustAbi));
+    store.register_late_pass(|_| Box::new(no_mangle_with_crablang_abi::NoMangleWithCrabLangAbi));
     store.register_late_pass(|_| Box::new(collection_is_never_read::CollectionIsNeverRead));
     store.register_late_pass(|_| Box::new(missing_assert_message::MissingAssertMessage));
     store.register_early_pass(|| Box::new(redundant_async_block::RedundantAsyncBlock));
@@ -942,8 +942,8 @@ pub fn register_plugins(store: &mut rustc_lint::LintStore, sess: &Session, conf:
     // add lints here, do not remove this comment, it's used in `new_lint`
 }
 
-#[rustfmt::skip]
-fn register_removed_non_tool_lints(store: &mut rustc_lint::LintStore) {
+#[crablangfmt::skip]
+fn register_removed_non_tool_lints(store: &mut crablangc_lint::LintStore) {
     store.register_removed(
         "should_assert_eq",
         "`assert!()` will be more flexible with RFC 2011",
@@ -989,7 +989,7 @@ fn register_removed_non_tool_lints(store: &mut rustc_lint::LintStore) {
 /// Register renamed lints.
 ///
 /// Used in `./src/driver.rs`.
-pub fn register_renamed(ls: &mut rustc_lint::LintStore) {
+pub fn register_renamed(ls: &mut crablangc_lint::LintStore) {
     for (old_name, new_name) in renamed_lints::RENAMED_LINTS {
         ls.register_renamed(old_name, new_name);
     }

@@ -4,7 +4,7 @@
 # together with the full commit message
 #
 # If you want to use this to update the Clippy changelog, be sure to manually
-# exclude the non-user facing changes like 'rustup' PRs, typo fixes, etc.
+# exclude the non-user facing changes like 'crablangup' PRs, typo fixes, etc.
 
 first=$1
 last=$2
@@ -19,8 +19,8 @@ for pr in $(git log --oneline --grep "Merge #" --grep "Merge pull request" --gre
     continue
   fi
 
-  echo "URL: https://github.com/rust-lang/rust-clippy/pull/$id"
-  echo "Markdown URL: [#$id](https://github.com/rust-lang/rust-clippy/pull/$id)"
+  echo "URL: https://github.com/crablang/crablang-clippy/pull/$id"
+  echo "Markdown URL: [#$id](https://github.com/crablang/crablang-clippy/pull/$id)"
   echo "$message"
   echo "---------------------------------------------------------"
   echo

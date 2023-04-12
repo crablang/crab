@@ -6,4 +6,4 @@ LL |     dyn_star_foreign::require_dyn_star_display(1usize as _);
 
 error: aborting due to previous error
 
-For more information about this error, try `rustc --explain E0606`.
+For more information about this error, try `crablangc --explain E0606`.

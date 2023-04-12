@@ -1,8 +1,8 @@
 use clippy_utils::diagnostics::span_lint;
-use rustc_hir::def::{CtorKind, CtorOf, DefKind, Res};
-use rustc_hir::{Expr, ExprKind};
-use rustc_lint::LateContext;
-use rustc_middle::ty::{self, Ty};
+use crablangc_hir::def::{CtorKind, CtorOf, DefKind, Res};
+use crablangc_hir::{Expr, ExprKind};
+use crablangc_lint::LateContext;
+use crablangc_middle::ty::{self, Ty};
 
 use super::CAST_ENUM_CONSTRUCTOR;
 

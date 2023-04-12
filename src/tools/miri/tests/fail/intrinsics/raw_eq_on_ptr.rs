@@ -1,6 +1,6 @@
 #![feature(intrinsics)]
 
-extern "rust-intrinsic" {
+extern "crablang-intrinsic" {
     fn raw_eq<T>(a: &T, b: &T) -> bool;
 }
 

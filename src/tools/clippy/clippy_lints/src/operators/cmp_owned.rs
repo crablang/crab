@@ -2,11 +2,11 @@ use clippy_utils::diagnostics::span_lint_and_then;
 use clippy_utils::source::snippet;
 use clippy_utils::ty::{implements_trait, is_copy};
 use clippy_utils::{match_def_path, path_def_id, paths};
-use rustc_errors::Applicability;
-use rustc_hir::{BinOpKind, Expr, ExprKind, UnOp};
-use rustc_lint::LateContext;
-use rustc_middle::ty::Ty;
-use rustc_span::symbol::sym;
+use crablangc_errors::Applicability;
+use crablangc_hir::{BinOpKind, Expr, ExprKind, UnOp};
+use crablangc_lint::LateContext;
+use crablangc_middle::ty::Ty;
+use crablangc_span::symbol::sym;
 
 use super::CMP_OWNED;
 

@@ -2,5 +2,5 @@
 include ../tools.mk
 
 all:
-	$(RUSTC) foo.rs -g -O
-	RUSTC="$(RUSTC_ORIGINAL)" $(call RUN,foo)
+	$(CRABLANGC) foo.rs -g -O
+	CRABLANGC="$(CRABLANGC_ORIGINAL)" $(call RUN,foo)

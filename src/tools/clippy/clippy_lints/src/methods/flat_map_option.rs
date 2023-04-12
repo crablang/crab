@@ -1,10 +1,10 @@
 use clippy_utils::diagnostics::span_lint_and_sugg;
 use clippy_utils::is_trait_method;
-use rustc_errors::Applicability;
-use rustc_hir as hir;
-use rustc_lint::LateContext;
-use rustc_middle::ty;
-use rustc_span::{source_map::Span, sym};
+use crablangc_errors::Applicability;
+use crablangc_hir as hir;
+use crablangc_lint::LateContext;
+use crablangc_middle::ty;
+use crablangc_span::{source_map::Span, sym};
 
 use super::FLAT_MAP_OPTION;
 use clippy_utils::ty::is_type_diagnostic_item;

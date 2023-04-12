@@ -2,9 +2,9 @@ use clippy_utils::consts::{constant_context, Constant};
 use clippy_utils::diagnostics::span_lint_and_sugg;
 use clippy_utils::source::snippet;
 use clippy_utils::ty::is_type_lang_item;
-use rustc_errors::Applicability;
-use rustc_hir::{Expr, LangItem};
-use rustc_lint::LateContext;
+use crablangc_errors::Applicability;
+use crablangc_hir::{Expr, LangItem};
+use crablangc_lint::LateContext;
 
 use super::REPEAT_ONCE;
 

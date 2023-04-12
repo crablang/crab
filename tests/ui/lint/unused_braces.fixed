@@ -1,8 +1,8 @@
 // check-pass
-// run-rustfix
+// run-crablangfix
 
 #![warn(unused_braces, unused_parens)]
-#![allow(unreachable_code, unused_unsafe)] // for rustfix
+#![allow(unreachable_code, unused_unsafe)] // for crablangfix
 
 fn consume<T>(_: T) {}
 
@@ -51,7 +51,7 @@ fn main() {
 
     }
 
-    // regression test for https://github.com/rust-lang/rust/issues/106899
+    // regression test for https://github.com/crablang/crablang/issues/106899
     return println!("!");
     //~^ WARN unnecessary braces
 }

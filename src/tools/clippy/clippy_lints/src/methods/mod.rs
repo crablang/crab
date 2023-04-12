@@ -109,14 +109,14 @@ use clippy_utils::msrvs::{self, Msrv};
 use clippy_utils::ty::{contains_ty_adt_constructor_opaque, implements_trait, is_copy, is_type_diagnostic_item};
 use clippy_utils::{contains_return, is_bool, is_trait_method, iter_input_pats, return_ty};
 use if_chain::if_chain;
-use rustc_hir as hir;
-use rustc_hir::{Expr, ExprKind, TraitItem, TraitItemKind};
-use rustc_hir_analysis::hir_ty_to_ty;
-use rustc_lint::{LateContext, LateLintPass, LintContext};
-use rustc_middle::lint::in_external_macro;
-use rustc_middle::ty::{self, TraitRef, Ty};
-use rustc_session::{declare_tool_lint, impl_lint_pass};
-use rustc_span::{sym, Span};
+use crablangc_hir as hir;
+use crablangc_hir::{Expr, ExprKind, TraitItem, TraitItemKind};
+use crablangc_hir_analysis::hir_ty_to_ty;
+use crablangc_lint::{LateContext, LateLintPass, LintContext};
+use crablangc_middle::lint::in_external_macro;
+use crablangc_middle::ty::{self, TraitRef, Ty};
+use crablangc_session::{declare_tool_lint, impl_lint_pass};
+use crablangc_span::{sym, Span};
 
 declare_clippy_lint! {
     /// ### What it does
@@ -128,11 +128,11 @@ declare_clippy_lint! {
     /// implements `Copy`.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// [1, 2, 3].iter().cloned();
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// [1, 2, 3].iter().copied();
     /// ```
     #[clippy::version = "1.53.0"]
@@ -151,14 +151,14 @@ declare_clippy_lint! {
     /// with repetitive code.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// let hello = "hesuo worpd"
     ///     .replace('s', "l")
     ///     .replace("u", "l")
     ///     .replace('p', "l");
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// let hello = "hesuo worpd".replace(['s', 'u', 'p'], "l");
     /// ```
     #[clippy::version = "1.65.0"]
@@ -180,14 +180,14 @@ declare_clippy_lint! {
     /// A code that relies on that side-effect could fail.
     ///
     /// ### Examples
-    /// ```rust
+    /// ```crablang
     /// # let vec = vec!["string".to_string()];
     /// vec.iter().cloned().take(10);
     /// vec.iter().cloned().last();
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// # let vec = vec!["string".to_string()];
     /// vec.iter().take(10).cloned();
     /// vec.iter().last().cloned();
@@ -208,11 +208,11 @@ declare_clippy_lint! {
     /// `Option` is used to produce 0 or 1 items.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// let nums: Vec<i32> = ["1", "2", "whee!"].iter().flat_map(|x| x.parse().ok()).collect();
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// let nums: Vec<i32> = ["1", "2", "whee!"].iter().filter_map(|x| x.parse().ok()).collect();
     /// ```
     #[clippy::version = "1.53.0"]
@@ -240,7 +240,7 @@ declare_clippy_lint! {
     /// where they may get displayed. Activate this lint to do just that.
     ///
     /// ### Examples
-    /// ```rust
+    /// ```crablang
     /// # let option = Some(1);
     /// # let result: Result<usize, ()> = Ok(1);
     /// option.unwrap();
@@ -248,7 +248,7 @@ declare_clippy_lint! {
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// # let option = Some(1);
     /// # let result: Result<usize, ()> = Ok(1);
     /// option.expect("more helpful message");
@@ -256,7 +256,7 @@ declare_clippy_lint! {
     /// ```
     ///
     /// If [expect_used](#expect_used) is enabled, instead:
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// # let option = Some(1);
     /// # let result: Result<usize, ()> = Ok(1);
     /// option?;
@@ -285,7 +285,7 @@ declare_clippy_lint! {
     /// and propagate errors upwards with `?` operator.
     ///
     /// ### Examples
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// # let option = Some(1);
     /// # let result: Result<usize, ()> = Ok(1);
     /// option.expect("one");
@@ -293,7 +293,7 @@ declare_clippy_lint! {
     /// ```
     ///
     /// Use instead:
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// # let option = Some(1);
     /// # let result: Result<usize, ()> = Ok(1);
     /// option?;
@@ -323,7 +323,7 @@ declare_clippy_lint! {
     /// them.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// struct X;
     /// impl X {
     ///     fn add(&self, other: &X) -> X {
@@ -364,7 +364,7 @@ declare_clippy_lint! {
     /// Clippy allows `Pin<&Self>` and `Pin<&mut Self>` if `&self` and `&mut self` is required.
     ///
     /// Please find more info here:
-    /// https://rust-lang.github.io/api-guidelines/naming.html#ad-hoc-conversions-follow-as_-to_-into_-conventions-c-conv
+    /// https://crablang.github.io/api-guidelines/naming.html#ad-hoc-conversions-follow-as_-to_-into_-conventions-c-conv
     ///
     /// ### Why is this bad?
     /// Consistency breeds readability. If you follow the
@@ -372,7 +372,7 @@ declare_clippy_lint! {
     /// mutable reference to a `as_..` function.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// # struct X;
     /// impl X {
     ///     fn as_str(self) -> &'static str {
@@ -399,13 +399,13 @@ declare_clippy_lint! {
     /// The error type needs to implement `Debug`
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// # let x = Ok::<_, ()>(());
     /// x.ok().expect("why did I do this again?");
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// # let x = Ok::<_, ()>(());
     /// x.expect("why did I do this again?");
     /// ```
@@ -448,14 +448,14 @@ declare_clippy_lint! {
     /// simpler and more concise.
     ///
     /// ### Examples
-    /// ```rust
+    /// ```crablang
     /// # let x = Some(1);
     /// x.unwrap_or_else(Default::default);
     /// x.unwrap_or_else(u32::default);
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// # let x = Some(1);
     /// x.unwrap_or_default();
     /// ```
@@ -478,7 +478,7 @@ declare_clippy_lint! {
     /// The order of the arguments is not in execution order
     ///
     /// ### Examples
-    /// ```rust
+    /// ```crablang
     /// # let option = Some(1);
     /// # let result: Result<usize, ()> = Ok(1);
     /// # fn some_function(foo: ()) -> usize { 1 }
@@ -487,7 +487,7 @@ declare_clippy_lint! {
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// # let option = Some(1);
     /// # let result: Result<usize, ()> = Ok(1);
     /// # fn some_function(foo: ()) -> usize { 1 }
@@ -512,13 +512,13 @@ declare_clippy_lint! {
     /// The order of the arguments is not in execution order.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// # let opt = Some(1);
     /// opt.map_or(None, |a| Some(a + 1));
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// # let opt = Some(1);
     /// opt.and_then(|a| Some(a + 1));
     /// ```
@@ -537,13 +537,13 @@ declare_clippy_lint! {
     /// `_.ok()`.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// # let r: Result<u32, &str> = Ok(1);
     /// assert_eq!(Some(1), r.map_or(None, Some));
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// # let r: Result<u32, &str> = Ok(1);
     /// assert_eq!(Some(1), r.ok());
     /// ```
@@ -563,7 +563,7 @@ declare_clippy_lint! {
     /// `_.map(|x| y)` or `_.map_err(|x| y)`.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// # fn opt() -> Option<&'static str> { Some("42") }
     /// # fn res() -> Result<&'static str, &'static str> { Ok("42") }
     /// let _ = opt().and_then(|s| Some(s.len()));
@@ -573,7 +573,7 @@ declare_clippy_lint! {
     ///
     /// The correct use would be:
     ///
-    /// ```rust
+    /// ```crablang
     /// # fn opt() -> Option<&'static str> { Some("42") }
     /// # fn res() -> Result<&'static str, &'static str> { Ok("42") }
     /// let _ = opt().map(|s| s.len());
@@ -595,13 +595,13 @@ declare_clippy_lint! {
     /// `_.find(_)`.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// # let vec = vec![1];
     /// vec.iter().filter(|x| **x == 0).next();
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// # let vec = vec![1];
     /// vec.iter().find(|x| **x == 0);
     /// ```
@@ -620,13 +620,13 @@ declare_clippy_lint! {
     /// `_.find(!condition)`.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// # let vec = vec![1];
     /// vec.iter().skip_while(|x| **x == 0).next();
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// # let vec = vec![1];
     /// vec.iter().find(|x| **x != 0);
     /// ```
@@ -645,7 +645,7 @@ declare_clippy_lint! {
     /// `_.flat_map(_)` for `Iterator` or `_.and_then(_)` for `Option`
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// let vec = vec![vec![1]];
     /// let opt = Some(5);
     ///
@@ -654,7 +654,7 @@ declare_clippy_lint! {
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// # let vec = vec![vec![1]];
     /// # let opt = Some(5);
     /// vec.iter().flat_map(|x| x.iter());
@@ -676,7 +676,7 @@ declare_clippy_lint! {
     /// less performant.
     ///
      /// ### Example
-    /// ```rust
+    /// ```crablang
     /// # #![allow(unused)]
     /// (0_i32..10)
     ///     .filter(|n| n.checked_add(1).is_some())
@@ -684,7 +684,7 @@ declare_clippy_lint! {
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// # #[allow(unused)]
     /// (0_i32..10).filter_map(|n| n.checked_add(1));
     /// ```
@@ -704,14 +704,14 @@ declare_clippy_lint! {
     /// less performant.
     ///
      /// ### Example
-    /// ```rust
+    /// ```crablang
     /// (0_i32..10)
     ///     .find(|n| n.checked_add(1).is_some())
     ///     .map(|n| n.checked_add(1).unwrap());
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// (0_i32..10).find_map(|n| n.checked_add(1));
     /// ```
     #[clippy::version = "1.51.0"]
@@ -729,12 +729,12 @@ declare_clippy_lint! {
     /// `_.find_map(_)`.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     ///  (0..3).filter_map(|x| if x == 2 { Some(x) } else { None }).next();
     /// ```
     /// Can be written as
     ///
-    /// ```rust
+    /// ```crablang
     ///  (0..3).find_map(|x| if x == 2 { Some(x) } else { None });
     /// ```
     #[clippy::version = "1.36.0"]
@@ -751,12 +751,12 @@ declare_clippy_lint! {
     /// Readability, this can be written more concisely by using `flatten`.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// # let iter = vec![vec![0]].into_iter();
     /// iter.flat_map(|x| x);
     /// ```
     /// Can be written as
-    /// ```rust
+    /// ```crablang
     /// # let iter = vec![vec![0]].into_iter();
     /// iter.flatten();
     /// ```
@@ -777,7 +777,7 @@ declare_clippy_lint! {
     /// * `!_.any(_)`, or `!_.contains(_)` for `is_none()`.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// # #![allow(unused)]
     /// let vec = vec![1];
     /// vec.iter().find(|x| **x == 0).is_some();
@@ -786,7 +786,7 @@ declare_clippy_lint! {
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// let vec = vec![1];
     /// vec.iter().any(|x| *x == 0);
     ///
@@ -809,13 +809,13 @@ declare_clippy_lint! {
     /// `_.starts_with(_)`.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// let name = "foo";
     /// if name.chars().next() == Some('_') {};
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// let name = "foo";
     /// if name.starts_with('_') {};
     /// ```
@@ -844,13 +844,13 @@ declare_clippy_lint! {
     /// actually expensive to call or not.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// # let foo = Some(String::new());
     /// foo.unwrap_or(String::from("empty"));
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// # let foo = Some(String::new());
     /// foo.unwrap_or_else(|| String::from("empty"));
     /// ```
@@ -868,7 +868,7 @@ declare_clippy_lint! {
     /// You should use `.unwrap_or(…)` instead for clarity.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// # let fallback = "fallback";
     /// // Result
     /// # type Error = &'static str;
@@ -880,7 +880,7 @@ declare_clippy_lint! {
     /// let value = option.or(Some(fallback)).unwrap();
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// # let fallback = "fallback";
     /// // Result
     /// # let result: Result<&str, &str> = Err("error");
@@ -909,7 +909,7 @@ declare_clippy_lint! {
     /// change the semantics of the program, but you shouldn't rely on that anyway.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// # let foo = Some(String::new());
     /// # let err_code = "418";
     /// # let err_msg = "I'm a teapot";
@@ -922,7 +922,7 @@ declare_clippy_lint! {
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// # let foo = Some(String::new());
     /// # let err_code = "418";
     /// # let err_msg = "I'm a teapot";
@@ -943,7 +943,7 @@ declare_clippy_lint! {
     /// generics, not for using the `clone` method on a concrete type.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// 42u64.clone();
     /// ```
     #[clippy::version = "pre 1.29.0"]
@@ -964,7 +964,7 @@ declare_clippy_lint! {
     /// data.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// # use std::rc::Rc;
     /// let x = Rc::new(1);
     ///
@@ -972,7 +972,7 @@ declare_clippy_lint! {
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// # use std::rc::Rc;
     /// # let x = Rc::new(1);
     /// Rc::clone(&x);
@@ -992,7 +992,7 @@ declare_clippy_lint! {
     /// cloning the underlying `T`.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// fn main() {
     ///     let x = vec![1];
     ///     let y = &&x;
@@ -1017,7 +1017,7 @@ declare_clippy_lint! {
     /// facilities.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// // Generic implementation for `T: Display` is used (slow)
     /// ["foo", "bar"].iter().map(|s| s.to_string());
     ///
@@ -1040,7 +1040,7 @@ declare_clippy_lint! {
     ///
     /// ### Example
     /// In an impl block:
-    /// ```rust
+    /// ```crablang
     /// # struct Foo;
     /// # struct NotAFoo;
     /// impl Foo {
@@ -1050,7 +1050,7 @@ declare_clippy_lint! {
     /// }
     /// ```
     ///
-    /// ```rust
+    /// ```crablang
     /// # struct Foo;
     /// struct Bar(Foo);
     /// impl Foo {
@@ -1061,7 +1061,7 @@ declare_clippy_lint! {
     /// }
     /// ```
     ///
-    /// ```rust
+    /// ```crablang
     /// # struct Foo;
     /// # struct FooError;
     /// impl Foo {
@@ -1073,14 +1073,14 @@ declare_clippy_lint! {
     /// ```
     ///
     /// Or in a trait definition:
-    /// ```rust
+    /// ```crablang
     /// pub trait Trait {
     ///     // Bad. The type name must contain `Self`
     ///     fn new();
     /// }
     /// ```
     ///
-    /// ```rust
+    /// ```crablang
     /// pub trait Trait {
     ///     // Good. Return type contains `Self`
     ///     fn new() -> Self;
@@ -1105,12 +1105,12 @@ declare_clippy_lint! {
     /// Does not catch multi-byte unicode characters.
     ///
     /// ### Example
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// _.split("x");
     /// ```
     ///
     /// Use instead:
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// _.split('x');
     /// ```
     #[clippy::version = "pre 1.29.0"]
@@ -1128,7 +1128,7 @@ declare_clippy_lint! {
     /// actually intend to panic.
     ///
     /// ### Example
-    /// ```rust,should_panic
+    /// ```crablang,should_panic
     /// for x in (0..100).step_by(0) {
     ///     //..
     /// }
@@ -1148,11 +1148,11 @@ declare_clippy_lint! {
     /// automatically does this without suspicious-looking `unwrap` calls.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// let _ = std::iter::empty::<Option<i32>>().filter(Option::is_some).map(Option::unwrap);
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// let _ = std::iter::empty::<Option<i32>>().flatten();
     /// ```
     #[clippy::version = "1.53.0"]
@@ -1171,7 +1171,7 @@ declare_clippy_lint! {
     ///  but is more readable.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// # use std::collections::HashSet;
     /// # let mut s = HashSet::new();
     /// # s.insert(1);
@@ -1179,7 +1179,7 @@ declare_clippy_lint! {
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// # use std::collections::HashSet;
     /// # let mut s = HashSet::new();
     /// # s.insert(1);
@@ -1201,13 +1201,13 @@ declare_clippy_lint! {
     /// readable.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// let some_vec = vec![0, 1, 2, 3];
     /// let bad_vec = some_vec.iter().nth(3);
     /// let bad_slice = &some_vec[..].iter().nth(3);
     /// ```
     /// The correct use would be:
-    /// ```rust
+    /// ```crablang
     /// let some_vec = vec![0, 1, 2, 3];
     /// let bad_vec = some_vec.get(3);
     /// let bad_slice = &some_vec[..].get(3);
@@ -1226,13 +1226,13 @@ declare_clippy_lint! {
     /// `.nth(x)` is cleaner
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// let some_vec = vec![0, 1, 2, 3];
     /// let bad_vec = some_vec.iter().skip(3).next();
     /// let bad_slice = &some_vec[..].iter().skip(3).next();
     /// ```
     /// The correct use would be:
-    /// ```rust
+    /// ```crablang
     /// let some_vec = vec![0, 1, 2, 3];
     /// let bad_vec = some_vec.iter().nth(3);
     /// let bad_slice = &some_vec[..].iter().nth(3);
@@ -1251,13 +1251,13 @@ declare_clippy_lint! {
     /// `.into_iter()` is simpler with better performance.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// # use std::collections::HashSet;
     /// let mut foo = vec![0, 1, 2, 3];
     /// let bar: HashSet<usize> = foo.drain(..).collect();
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// # use std::collections::HashSet;
     /// let foo = vec![0, 1, 2, 3];
     /// let bar: HashSet<usize> = foo.into_iter().collect();
@@ -1285,13 +1285,13 @@ declare_clippy_lint! {
     /// `x.get(index).unwrap()` instead of `x[index]`.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// let x = vec![2, 3, 5];
     /// let last_element = x.get(x.len() - 1);
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// let x = vec![2, 3, 5];
     /// let last_element = x.last();
     /// ```
@@ -1321,13 +1321,13 @@ declare_clippy_lint! {
     /// trait.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// let mut some_vec = vec![0, 1, 2, 3];
     /// let last = some_vec.get(3).unwrap();
     /// *some_vec.get_mut(0).unwrap() = 1;
     /// ```
     /// The correct use would be:
-    /// ```rust
+    /// ```crablang
     /// let mut some_vec = vec![0, 1, 2, 3];
     /// let last = some_vec[3];
     /// some_vec[0] = 1;
@@ -1346,7 +1346,7 @@ declare_clippy_lint! {
     /// Using `append` instead of `extend` is more concise and faster
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// let mut a = vec![1, 2, 3];
     /// let mut b = vec![4, 5, 6];
     ///
@@ -1354,7 +1354,7 @@ declare_clippy_lint! {
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// let mut a = vec![1, 2, 3];
     /// let mut b = vec![4, 5, 6];
     ///
@@ -1375,7 +1375,7 @@ declare_clippy_lint! {
     /// `.push_str(s)` is clearer
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// let abc = "abc";
     /// let def = String::from("def");
     /// let mut s = String::new();
@@ -1383,7 +1383,7 @@ declare_clippy_lint! {
     /// s.extend(def.chars());
     /// ```
     /// The correct use would be:
-    /// ```rust
+    /// ```crablang
     /// let abc = "abc";
     /// let def = String::from("def");
     /// let mut s = String::new();
@@ -1405,12 +1405,12 @@ declare_clippy_lint! {
     /// `.to_vec()` is clearer
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// let s = [1, 2, 3, 4, 5];
     /// let s2: Vec<isize> = s[..].iter().cloned().collect();
     /// ```
     /// The better use would be:
-    /// ```rust
+    /// ```crablang
     /// let s = [1, 2, 3, 4, 5];
     /// let s2: Vec<isize> = s.to_vec();
     /// ```
@@ -1430,13 +1430,13 @@ declare_clippy_lint! {
     /// `_.ends_with(_)`.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// # let name = "_";
     /// name.chars().last() == Some('_') || name.chars().next_back() == Some('-');
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// # let name = "_";
     /// name.ends_with('_') || name.ends_with('-');
     /// ```
@@ -1455,13 +1455,13 @@ declare_clippy_lint! {
     /// The call is unnecessary.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// # fn do_stuff(x: &[i32]) {}
     /// let x: &[i32] = &[1, 2, 3, 4, 5];
     /// do_stuff(x.as_ref());
     /// ```
     /// The correct use would be:
-    /// ```rust
+    /// ```crablang
     /// # fn do_stuff(x: &[i32]) {}
     /// let x: &[i32] = &[1, 2, 3, 4, 5];
     /// do_stuff(x);
@@ -1482,13 +1482,13 @@ declare_clippy_lint! {
     /// Readability.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// # #[allow(unused)]
     /// (0..3).fold(false, |acc, x| acc || x > 2);
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// (0..3).any(|x| x > 2);
     /// ```
     #[clippy::version = "pre 1.29.0"]
@@ -1508,14 +1508,14 @@ declare_clippy_lint! {
     /// operation is being performed.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// let _ = (0..3).filter_map(|x| if x > 2 { Some(x) } else { None });
     ///
     /// // As there is no transformation of the argument this could be written as:
     /// let _ = (0..3).filter(|&x| x > 2);
     /// ```
     ///
-    /// ```rust
+    /// ```crablang
     /// let _ = (0..4).filter_map(|x| Some(x + 1));
     ///
     /// // As there is no conditional check on the argument this could be written as:
@@ -1538,14 +1538,14 @@ declare_clippy_lint! {
     /// operation is being performed.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// let _ = (0..3).find_map(|x| if x > 2 { Some(x) } else { None });
     ///
     /// // As there is no transformation of the argument this could be written as:
     /// let _ = (0..3).find(|&x| x > 2);
     /// ```
     ///
-    /// ```rust
+    /// ```crablang
     /// let _ = (0..4).find_map(|x| Some(x + 1));
     ///
     /// // As there is no conditional check on the argument this could be written as:
@@ -1568,13 +1568,13 @@ declare_clippy_lint! {
     /// `iter_mut` directly.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// # let vec = vec![3, 4, 5];
     /// (&vec).into_iter();
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// # let vec = vec![3, 4, 5];
     /// (&vec).iter();
     /// ```
@@ -1595,7 +1595,7 @@ declare_clippy_lint! {
     /// completion, you can just use `for_each` instead.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// let _ = (0..3).map(|x| x + 2).count();
     /// ```
     #[clippy::version = "1.39.0"]
@@ -1617,7 +1617,7 @@ declare_clippy_lint! {
     /// data, but those are not yet rigorously defined.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// // Beware the UB
     /// use std::mem::MaybeUninit;
     ///
@@ -1626,7 +1626,7 @@ declare_clippy_lint! {
     ///
     /// Note that the following is OK:
     ///
-    /// ```rust
+    /// ```crablang
     /// use std::mem::MaybeUninit;
     ///
     /// let _: [MaybeUninit<bool>; 5] = unsafe {
@@ -1647,7 +1647,7 @@ declare_clippy_lint! {
     /// These can be written simply with `saturating_add/sub` methods.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// # let y: u32 = 0;
     /// # let x: u32 = 100;
     /// let add = x.checked_add(y).unwrap_or(u32::MAX);
@@ -1656,7 +1656,7 @@ declare_clippy_lint! {
     ///
     /// can be written using dedicated methods for saturating addition/subtraction as:
     ///
-    /// ```rust
+    /// ```crablang
     /// # let y: u32 = 0;
     /// # let x: u32 = 100;
     /// let add = x.saturating_add(y);
@@ -1677,7 +1677,7 @@ declare_clippy_lint! {
     /// This is a no-op, and likely unintended
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// unsafe { (&() as *const ()).offset(1) };
     /// ```
     #[clippy::version = "1.41.0"]
@@ -1697,7 +1697,7 @@ declare_clippy_lint! {
     /// symlink in windows. Using `!FileType::is_dir()` is a better way to that intention.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// # || {
     /// let metadata = std::fs::metadata("foo.txt")?;
     /// let filetype = metadata.file_type();
@@ -1711,7 +1711,7 @@ declare_clippy_lint! {
     ///
     /// should be written as:
     ///
-    /// ```rust
+    /// ```crablang
     /// # || {
     /// let metadata = std::fs::metadata("foo.txt")?;
     /// let filetype = metadata.file_type();
@@ -1737,13 +1737,13 @@ declare_clippy_lint! {
     /// `_.as_deref()`.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// # let opt = Some("".to_string());
     /// opt.as_ref().map(String::as_str)
     /// # ;
     /// ```
     /// Can be written as
-    /// ```rust
+    /// ```crablang
     /// # let opt = Some("".to_string());
     /// opt.as_deref()
     /// # ;
@@ -1762,14 +1762,14 @@ declare_clippy_lint! {
     /// These can be shortened into `.get()`
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// # let a = [1, 2, 3];
     /// # let b = vec![1, 2, 3];
     /// a[2..].iter().next();
     /// b.iter().next();
     /// ```
     /// should be written as:
-    /// ```rust
+    /// ```crablang
     /// # let a = [1, 2, 3];
     /// # let b = vec![1, 2, 3];
     /// a.get(2);
@@ -1790,14 +1790,14 @@ declare_clippy_lint! {
     /// It's less clear that we are pushing a single character.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// # let mut string = String::new();
     /// string.insert_str(0, "R");
     /// string.push_str("R");
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// # let mut string = String::new();
     /// string.insert(0, 'R');
     /// string.push('R');
@@ -1830,14 +1830,14 @@ declare_clippy_lint! {
     /// side effects. Eagerly evaluating them can change the semantics of the program.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// // example code where clippy issues a warning
     /// let opt: Option<u32> = None;
     ///
     /// opt.unwrap_or_else(|| 42);
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// let opt: Option<u32> = None;
     ///
     /// opt.unwrap_or(42);
@@ -1856,11 +1856,11 @@ declare_clippy_lint! {
     /// Using `try_for_each` instead is more readable and idiomatic.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// (0..3).map(|t| Err(t)).collect::<Result<(), _>>();
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// (0..3).try_for_each(|t| Err(t));
     /// ```
     #[clippy::version = "1.49.0"]
@@ -1876,10 +1876,10 @@ declare_clippy_lint! {
     ///
     /// ### Why is this bad?
     /// It is recommended style to use collect. See
-    /// [FromIterator documentation](https://doc.rust-lang.org/std/iter/trait.FromIterator.html)
+    /// [FromIterator documentation](https://doc.crablang.org/std/iter/trait.FromIterator.html)
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// let five_fives = std::iter::repeat(5).take(5);
     ///
     /// let v = Vec::from_iter(five_fives);
@@ -1887,7 +1887,7 @@ declare_clippy_lint! {
     /// assert_eq!(v, vec![5, 5, 5, 5, 5]);
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// let five_fives = std::iter::repeat(5).take(5);
     ///
     /// let v: Vec<i32> = five_fives.collect();
@@ -1909,7 +1909,7 @@ declare_clippy_lint! {
     /// inside `inspect` at the beginning of the closure in `for_each`.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// [1,2,3,4,5].iter()
     /// .inspect(|&x| println!("inspect the number: {}", x))
     /// .for_each(|&x| {
@@ -1917,7 +1917,7 @@ declare_clippy_lint! {
     /// });
     /// ```
     /// Can be written as
-    /// ```rust
+    /// ```crablang
     /// [1,2,3,4,5].iter()
     /// .for_each(|&x| {
     ///     println!("inspect the number: {}", x);
@@ -1938,12 +1938,12 @@ declare_clippy_lint! {
     /// Readability, this can be written more concisely by using `flatten`.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// # let iter = vec![Some(1)].into_iter();
     /// iter.filter_map(|x| x);
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// # let iter = vec![Some(1)].into_iter();
     /// iter.flatten();
     /// ```
@@ -1961,12 +1961,12 @@ declare_clippy_lint! {
     /// It can be written more concisely without the call to `map`.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// let x = [1, 2, 3];
     /// let y: Vec<_> = x.iter().map(|x| x).map(|x| 2*x).collect();
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// let x = [1, 2, 3];
     /// let y: Vec<_> = x.iter().map(|x| 2*x).collect();
     /// ```
@@ -1985,13 +1985,13 @@ declare_clippy_lint! {
     /// readable.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// # #[allow(unused)]
     /// "Hello".bytes().nth(3);
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// # #[allow(unused)]
     /// "Hello".as_bytes().get(3);
     /// ```
@@ -2010,13 +2010,13 @@ declare_clippy_lint! {
     /// to why we are calling `to_vec` on something that is already a `Vec` or calling `to_owned` on something that is already owned.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// let a = vec![1, 2, 3];
     /// let b = a.to_vec();
     /// let c = a.to_owned();
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// let a = vec![1, 2, 3];
     /// let b = a.clone();
     /// let c = a.clone();
@@ -2036,7 +2036,7 @@ declare_clippy_lint! {
     /// readable.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// # #![allow(unused)]
     /// let some_vec = vec![0, 1, 2, 3];
     ///
@@ -2045,7 +2045,7 @@ declare_clippy_lint! {
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// let some_vec = vec![0, 1, 2, 3];
     ///
     /// some_vec.len();
@@ -2074,7 +2074,7 @@ declare_clippy_lint! {
     /// was the original intent, using `into_owned` instead.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// # use std::borrow::Cow;
     /// let s = "Hello world!";
     /// let cow = Cow::Borrowed(s);
@@ -2083,7 +2083,7 @@ declare_clippy_lint! {
     /// assert!(matches!(data, Cow::Borrowed(_)))
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// # use std::borrow::Cow;
     /// let s = "Hello world!";
     /// let cow = Cow::Borrowed(s);
@@ -2092,7 +2092,7 @@ declare_clippy_lint! {
     /// assert!(matches!(data, Cow::Borrowed(_)))
     /// ```
     /// or
-    /// ```rust
+    /// ```crablang
     /// # use std::borrow::Cow;
     /// let s = "Hello world!";
     /// let cow = Cow::Borrowed(s);
@@ -2108,7 +2108,7 @@ declare_clippy_lint! {
 declare_clippy_lint! {
     /// ### What it does
     /// Checks for calls to [`splitn`]
-    /// (https://doc.rust-lang.org/std/primitive.str.html#method.splitn) and
+    /// (https://doc.crablang.org/std/primitive.str.html#method.splitn) and
     /// related functions with either zero or one splits.
     ///
     /// ### Why is this bad?
@@ -2116,7 +2116,7 @@ declare_clippy_lint! {
     /// likely to be intended as a different number.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// # let s = "";
     /// for x in s.splitn(1, ":") {
     ///     // ..
@@ -2124,7 +2124,7 @@ declare_clippy_lint! {
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// # let s = "";
     /// for x in s.splitn(2, ":") {
     ///     // ..
@@ -2144,12 +2144,12 @@ declare_clippy_lint! {
     /// These are both harder to read, as well as less performant.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// let x: String = std::iter::repeat('x').take(10).collect();
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// let x: String = "x".repeat(10);
     /// ```
     #[clippy::version = "1.54.0"]
@@ -2166,7 +2166,7 @@ declare_clippy_lint! {
     /// `split_once` is both clearer in intent and slightly more efficient.
     ///
     /// ### Example
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// let s = "key=value=add";
     /// let (key, value) = s.splitn(2, '=').next_tuple()?;
     /// let value = s.splitn(2, '=').nth(1)?;
@@ -2177,7 +2177,7 @@ declare_clippy_lint! {
     /// ```
     ///
     /// Use instead:
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// let s = "key=value=add";
     /// let (key, value) = s.split_once('=')?;
     /// let value = s.split_once('=')?.1;
@@ -2201,13 +2201,13 @@ declare_clippy_lint! {
     /// The function `split` is simpler and there is no performance difference in these cases, considering
     /// that both functions return a lazy iterator.
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// let str = "key=value=add";
     /// let _ = str.splitn(3, '=').next().unwrap();
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// let str = "key=value=add";
     /// let _ = str.split('=').next().unwrap();
     /// ```
@@ -2219,7 +2219,7 @@ declare_clippy_lint! {
 
 declare_clippy_lint! {
     /// ### What it does
-    /// Checks for unnecessary calls to [`ToOwned::to_owned`](https://doc.rust-lang.org/std/borrow/trait.ToOwned.html#tymethod.to_owned)
+    /// Checks for unnecessary calls to [`ToOwned::to_owned`](https://doc.crablang.org/std/borrow/trait.ToOwned.html#tymethod.to_owned)
     /// and other `to_owned`-like functions.
     ///
     /// ### Why is this bad?
@@ -2228,16 +2228,16 @@ declare_clippy_lint! {
     /// ### Known problems
     /// `unnecessary_to_owned` can falsely trigger if `IntoIterator::into_iter` is applied to an
     /// owned copy of a resource and the resource is later used mutably. See
-    /// [#8148](https://github.com/rust-lang/rust-clippy/issues/8148).
+    /// [#8148](https://github.com/crablang/crablang-clippy/issues/8148).
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// let path = std::path::Path::new("x");
     /// foo(&path.to_string_lossy().to_string());
     /// fn foo(s: &str) {}
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// let path = std::path::Path::new("x");
     /// foo(&path.to_string_lossy());
     /// fn foo(s: &str) {}
@@ -2256,13 +2256,13 @@ declare_clippy_lint! {
     /// `.collect::<String>()` is more concise and might be more performant
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// let vector = vec!["hello",  "world"];
     /// let output = vector.iter().map(|item| item.to_uppercase()).collect::<Vec<String>>().join("");
     /// println!("{}", output);
     /// ```
     /// The correct use would be:
-    /// ```rust
+    /// ```crablang
     /// let vector = vec!["hello",  "world"];
     /// let output = vector.iter().map(|item| item.to_uppercase()).collect::<String>();
     /// println!("{}", output);
@@ -2289,13 +2289,13 @@ declare_clippy_lint! {
     /// Redundant code and improving readability.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// let a = Some(&1);
     /// let b = a.as_deref(); // goes from Option<&i32> to Option<&i32>
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// let a = Some(&1);
     /// let b = a;
     /// ```
@@ -2307,21 +2307,21 @@ declare_clippy_lint! {
 
 declare_clippy_lint! {
     /// ### What it does
-    /// Finds usages of [`char::is_digit`](https://doc.rust-lang.org/stable/std/primitive.char.html#method.is_digit) that
-    /// can be replaced with [`is_ascii_digit`](https://doc.rust-lang.org/stable/std/primitive.char.html#method.is_ascii_digit) or
-    /// [`is_ascii_hexdigit`](https://doc.rust-lang.org/stable/std/primitive.char.html#method.is_ascii_hexdigit).
+    /// Finds usages of [`char::is_digit`](https://doc.crablang.org/stable/std/primitive.char.html#method.is_digit) that
+    /// can be replaced with [`is_ascii_digit`](https://doc.crablang.org/stable/std/primitive.char.html#method.is_ascii_digit) or
+    /// [`is_ascii_hexdigit`](https://doc.crablang.org/stable/std/primitive.char.html#method.is_ascii_hexdigit).
     ///
     /// ### Why is this bad?
     /// `is_digit(..)` is slower and requires specifying the radix.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// let c: char = '6';
     /// c.is_digit(10);
     /// c.is_digit(16);
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// let c: char = '6';
     /// c.is_ascii_digit();
     /// c.is_ascii_hexdigit();
@@ -2341,12 +2341,12 @@ declare_clippy_lint! {
     /// In this case the modification is useless as it's a temporary that cannot be read from afterwards.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// let x = Some(3);
     /// x.as_ref().take();
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// let x = Some(3);
     /// x.as_ref();
     /// ```
@@ -2364,7 +2364,7 @@ declare_clippy_lint! {
     /// It's either a mistake or confusing.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// "1234".replace("12", "12");
     /// "1234".replacen("12", "12", 1);
     /// ```
@@ -2387,12 +2387,12 @@ declare_clippy_lint! {
     /// to account for similar patterns.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// let x = true;
     /// x.then_some("a").unwrap_or("b");
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// let x = true;
     /// if x { "a" } else { "b" };
     /// ```
@@ -2414,12 +2414,12 @@ declare_clippy_lint! {
     ///
     /// ### Example
     ///
-    /// ```rust
+    /// ```crablang
     /// let a = [123].iter();
     /// let b = Some(123).into_iter();
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// use std::iter;
     /// let a = iter::once(&123);
     /// let b = iter::once(123);
@@ -2445,13 +2445,13 @@ declare_clippy_lint! {
     ///
     /// ### Example
     ///
-    /// ```rust
+    /// ```crablang
     /// use std::{slice, option};
     /// let a: slice::Iter<i32> = [].iter();
     /// let f: option::IntoIter<i32> = None.into_iter();
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// use std::iter;
     /// let a: iter::Empty<i32> = iter::empty();
     /// let b: iter::Empty<i32> = iter::empty();
@@ -2481,13 +2481,13 @@ declare_clippy_lint! {
     /// faster in those cases.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// # let vec = vec![1_u8];
     /// let count = vec.iter().filter(|x| **x == 0u8).count();
     /// ```
     ///
     /// Use instead:
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// # let vec = vec![1_u8];
     /// let count = bytecount::count(&vec, 0u8);
     /// ```
@@ -2507,12 +2507,12 @@ declare_clippy_lint! {
     /// `str::len()`.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// "hello".bytes().count();
     /// String::from("hello").bytes().count();
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// "hello".len();
     /// String::from("hello").len();
     /// ```
@@ -2531,14 +2531,14 @@ declare_clippy_lint! {
     /// `ends_with` is case-sensitive and may not detect files with a valid extension.
     ///
     /// ### Example
-    /// ```rust
-    /// fn is_rust_file(filename: &str) -> bool {
+    /// ```crablang
+    /// fn is_crablang_file(filename: &str) -> bool {
     ///     filename.ends_with(".rs")
     /// }
     /// ```
     /// Use instead:
-    /// ```rust
-    /// fn is_rust_file(filename: &str) -> bool {
+    /// ```crablang
+    /// fn is_crablang_file(filename: &str) -> bool {
     ///     let filename = std::path::Path::new(filename);
     ///     filename.extension()
     ///         .map_or(false, |ext| ext.eq_ignore_ascii_case("rs"))
@@ -2560,13 +2560,13 @@ declare_clippy_lint! {
     /// result.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// let x = vec![2, 3, 5];
     /// let first_element = x.get(0);
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// let x = vec![2, 3, 5];
     /// let first_element = x.first();
     /// ```
@@ -2586,13 +2586,13 @@ declare_clippy_lint! {
     /// Concise code helps focusing on behavior instead of boilerplate.
     ///
     /// ### Examples
-    /// ```rust
+    /// ```crablang
     /// let foo: Option<i32> = None;
     /// foo.map_or(Err("error"), |v| Ok(v));
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// let foo: Option<i32> = None;
     /// foo.ok_or("error");
     /// ```
@@ -2612,7 +2612,7 @@ declare_clippy_lint! {
     /// Readability, this can be written more concisely
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// let x = vec![42, 43];
     /// let y = x.iter();
     /// let z = y.map(|i| *i);
@@ -2620,7 +2620,7 @@ declare_clippy_lint! {
     ///
     /// The correct use would be:
     ///
-    /// ```rust
+    /// ```crablang
     /// let x = vec![42, 43];
     /// let y = x.iter();
     /// let z = y.cloned();
@@ -2640,7 +2640,7 @@ declare_clippy_lint! {
     ///
     /// ### Example
     /// Before:
-    /// ```rust
+    /// ```crablang
     /// use std::fmt;
     ///
     /// #[derive(Debug)]
@@ -2680,7 +2680,7 @@ declare_clippy_lint! {
     ///  ```
     ///
     ///  After:
-    ///  ```rust
+    ///  ```crablang
     /// use std::{fmt, num::ParseIntError};
     ///
     /// #[derive(Debug)]
@@ -2742,7 +2742,7 @@ declare_clippy_lint! {
     /// guarantee.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// use std::sync::{Arc, Mutex};
     ///
     /// let mut value_rc = Arc::new(Mutex::new(42_u8));
@@ -2752,7 +2752,7 @@ declare_clippy_lint! {
     /// *value += 1;
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// use std::sync::{Arc, Mutex};
     ///
     /// let mut value_rc = Arc::new(Mutex::new(42_u8));
@@ -2777,7 +2777,7 @@ declare_clippy_lint! {
     /// necessary. I don't know the worst case.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// use std::fs::OpenOptions;
     ///
     /// OpenOptions::new().read(true).truncate(true);
@@ -2790,7 +2790,7 @@ declare_clippy_lint! {
 
 declare_clippy_lint! {
     /// ### What it does
-    ///* Checks for [push](https://doc.rust-lang.org/std/path/struct.PathBuf.html#method.push)
+    ///* Checks for [push](https://doc.crablang.org/std/path/struct.PathBuf.html#method.push)
     /// calls on `PathBuf` that can cause overwrites.
     ///
     /// ### Why is this bad?
@@ -2798,7 +2798,7 @@ declare_clippy_lint! {
     /// previous defined path.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// use std::path::PathBuf;
     ///
     /// let mut x = PathBuf::from("/foo");
@@ -2807,7 +2807,7 @@ declare_clippy_lint! {
     /// ```
     /// Could be written:
     ///
-    /// ```rust
+    /// ```crablang
     /// use std::path::PathBuf;
     ///
     /// let mut x = PathBuf::from("/foo");
@@ -2829,13 +2829,13 @@ declare_clippy_lint! {
     /// The code is better expressed with `.enumerate()`.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// # let x = vec![1];
     /// let _ = x.iter().zip(0..x.len());
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// # let x = vec![1];
     /// let _ = x.iter().enumerate();
     /// ```
@@ -2853,20 +2853,20 @@ declare_clippy_lint! {
     /// - `.to_vec()` for `slice`
     ///
     /// The lint will evaluate constant expressions and values as arguments of `.repeat(..)` and emit a message if
-    /// they are equivalent to `1`. (Related discussion in [rust-clippy#7306](https://github.com/rust-lang/rust-clippy/issues/7306))
+    /// they are equivalent to `1`. (Related discussion in [crablang-clippy#7306](https://github.com/crablang/crablang-clippy/issues/7306))
     ///
     /// ### Why is this bad?
     /// For example, `String.repeat(1)` is equivalent to `.clone()`. If cloning
     /// the string is the intention behind this, `clone()` should be used.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// fn main() {
     ///     let x = String::from("hello world").repeat(1);
     /// }
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// fn main() {
     ///     let x = String::from("hello world").clone();
     /// }
@@ -2892,7 +2892,7 @@ declare_clippy_lint! {
     /// ### Known problems
     ///
     /// As pointed out in
-    /// [issue #8241](https://github.com/rust-lang/rust-clippy/issues/8241),
+    /// [issue #8241](https://github.com/crablang/crablang-clippy/issues/8241),
     /// a stable sort can instead be significantly faster for certain scenarios
     /// (eg. when a sorted vector is extended with new data and resorted).
     ///
@@ -2900,12 +2900,12 @@ declare_clippy_lint! {
     /// issue linked above.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// let mut vec = vec![2, 1, 3];
     /// vec.sort();
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// let mut vec = vec![2, 1, 3];
     /// vec.sort_unstable();
     /// ```
@@ -2923,7 +2923,7 @@ declare_clippy_lint! {
     /// Hashing a unit value doesn't do anything as the implementation of `Hash` for `()` is a no-op.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// # use std::hash::Hash;
     /// # use std::collections::hash_map::DefaultHasher;
     /// # enum Foo { Empty, WithValue(u8) }
@@ -2936,7 +2936,7 @@ declare_clippy_lint! {
     /// }
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// # use std::hash::Hash;
     /// # use std::collections::hash_map::DefaultHasher;
     /// # enum Foo { Empty, WithValue(u8) }
@@ -2969,14 +2969,14 @@ declare_clippy_lint! {
     /// imported by a use statement, then it will need to be added manually.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// # struct A;
     /// # impl A { fn foo(&self) {} }
     /// # let mut vec: Vec<A> = Vec::new();
     /// vec.sort_by(|a, b| a.foo().cmp(&b.foo()));
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// # struct A;
     /// # impl A { fn foo(&self) {} }
     /// # let mut vec: Vec<A> = Vec::new();
@@ -2996,12 +2996,12 @@ declare_clippy_lint! {
     /// This is probably an argument inversion mistake.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// vec!(1, 2, 3, 4, 5).resize(0, 5)
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// vec!(1, 2, 3, 4, 5).clear()
     /// ```
     #[clippy::version = "1.46.0"]
@@ -3016,10 +3016,10 @@ declare_clippy_lint! {
     ///
     /// ### Why is this bad?
     /// `fs::{read, read_to_string}` provide the same functionality when `buf` is empty with fewer imports and no intermediate values.
-    /// See also: [fs::read docs](https://doc.rust-lang.org/std/fs/fn.read.html), [fs::read_to_string docs](https://doc.rust-lang.org/std/fs/fn.read_to_string.html)
+    /// See also: [fs::read docs](https://doc.crablang.org/std/fs/fn.read.html), [fs::read_to_string docs](https://doc.crablang.org/std/fs/fn.read_to_string.html)
     ///
     /// ### Example
-    /// ```rust,no_run
+    /// ```crablang,no_run
     /// # use std::io::Read;
     /// # use std::fs::File;
     /// let mut f = File::open("foo.txt").unwrap();
@@ -3027,7 +3027,7 @@ declare_clippy_lint! {
     /// f.read_to_end(&mut bytes).unwrap();
     /// ```
     /// Can be written more concisely as
-    /// ```rust,no_run
+    /// ```crablang,no_run
     /// # use std::fs;
     /// let mut bytes = fs::read("foo.txt").unwrap();
     /// ```
@@ -3080,7 +3080,7 @@ declare_clippy_lint! {
     ///
     /// ### Example
     ///
-    /// ```rust,no_run
+    /// ```crablang,no_run
     /// use std::fs::File;
     /// use std::io::{self, Write, Seek, SeekFrom};
     ///
@@ -3093,7 +3093,7 @@ declare_clippy_lint! {
     /// }
     /// ```
     /// Use instead:
-    /// ```rust,no_run
+    /// ```crablang,no_run
     /// use std::fs::File;
     /// use std::io::{self, Write, Seek, SeekFrom};
     ///
@@ -3123,14 +3123,14 @@ declare_clippy_lint! {
     /// this exact scenario.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// # use std::io;
     /// fn foo<T: io::Seek>(t: &mut T) {
     ///     t.seek(io::SeekFrom::Start(0));
     /// }
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// # use std::io;
     /// fn foo<T: io::Seek>(t: &mut T) {
     ///     t.rewind();
@@ -3152,7 +3152,7 @@ declare_clippy_lint! {
     /// when this allocation may not be needed.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// # let iterator = vec![1].into_iter();
     /// let len = iterator.clone().collect::<Vec<_>>().len();
     /// // should be
@@ -3177,11 +3177,11 @@ declare_clippy_lint! {
     /// which is likely not what was intended.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// std::process::Command::new("echo").arg("-n hello").spawn().unwrap();
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// std::process::Command::new("echo").args(["-n", "hello"]).spawn().unwrap();
     /// ```
     #[clippy::version = "1.67.0"]
@@ -3853,7 +3853,7 @@ const FN_HEADER: hir::FnHeader = hir::FnHeader {
     unsafety: hir::Unsafety::Normal,
     constness: hir::Constness::NotConst,
     asyncness: hir::IsAsync::NotAsync,
-    abi: rustc_target::spec::abi::Abi::Rust,
+    abi: crablangc_target::spec::abi::Abi::CrabLang,
 };
 
 struct ShouldImplTraitCase {
@@ -3902,7 +3902,7 @@ impl ShouldImplTraitCase {
     }
 }
 
-#[rustfmt::skip]
+#[crablangfmt::skip]
 const TRAIT_METHODS: [ShouldImplTraitCase; 30] = [
     ShouldImplTraitCase::new("std::ops::Add", "add",  2,  FN_HEADER,  SelfKind::Value,  OutType::Any, true),
     ShouldImplTraitCase::new("std::convert::AsMut", "as_mut",  1,  FN_HEADER,  SelfKind::RefMut,  OutType::Ref, true),

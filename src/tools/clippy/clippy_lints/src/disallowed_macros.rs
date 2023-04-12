@@ -1,11 +1,11 @@
 use clippy_utils::diagnostics::span_lint_and_then;
 use clippy_utils::macros::macro_backtrace;
-use rustc_data_structures::fx::FxHashSet;
-use rustc_hir::def_id::DefIdMap;
-use rustc_hir::{Expr, ForeignItem, HirId, ImplItem, Item, Pat, Path, Stmt, TraitItem, Ty};
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_session::{declare_tool_lint, impl_lint_pass};
-use rustc_span::{ExpnId, Span};
+use crablangc_data_structures::fx::FxHashSet;
+use crablangc_hir::def_id::DefIdMap;
+use crablangc_hir::{Expr, ForeignItem, HirId, ImplItem, Item, Pat, Path, Stmt, TraitItem, Ty};
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_session::{declare_tool_lint, impl_lint_pass};
+use crablangc_span::{ExpnId, Span};
 
 use crate::utils::conf;
 

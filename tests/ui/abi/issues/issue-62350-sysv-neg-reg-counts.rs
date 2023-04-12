@@ -12,10 +12,10 @@ pub struct QuadFloats {
     d: f32,
 }
 
-mod rustrt {
+mod crablangrt {
     use super::QuadFloats;
 
-    #[link(name = "rust_test_helpers", kind = "static")]
+    #[link(name = "crablang_test_helpers", kind = "static")]
     extern "C" {
         pub fn get_c_exhaust_sysv64_ints(
             _: *const (),
@@ -35,7 +35,7 @@ fn test() {
         let null = std::ptr::null();
         let q = QuadFloats { a: 10.2, b: 20.3, c: 30.4, d: 40.5 };
         assert_eq!(
-            rustrt::get_c_exhaust_sysv64_ints(null, null, null, null, null, null, null, q),
+            crablangrt::get_c_exhaust_sysv64_ints(null, null, null, null, null, null, null, q),
             q.c,
         );
     }

@@ -4,4 +4,4 @@ error[E0602]: `warnings` lint group is not supported with ´--force-warn´
 
 error: aborting due to 2 previous errors
 
-For more information about this error, try `rustc --explain E0602`.
+For more information about this error, try `crablangc --explain E0602`.

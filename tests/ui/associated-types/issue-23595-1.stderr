@@ -10,4 +10,4 @@ LL |     type Children = dyn Index<Self::ChildKey, Output=dyn Hierarchy>;
 
 error: aborting due to previous error
 
-For more information about this error, try `rustc --explain E0191`.
+For more information about this error, try `crablangc --explain E0191`.

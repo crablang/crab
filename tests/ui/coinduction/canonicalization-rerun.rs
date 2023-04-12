@@ -31,8 +31,8 @@
 //     - OK (^0 = u32 -apply-> ?1 = u32)
 //   - OK (?0 = u32, ?1 = u32 -canonicalize-> ^0 = u32, ^1 = u32)
 //   - coinductive cycle with provisional result == final result, DONE
-#![feature(rustc_attrs)]
-#[rustc_coinductive]
+#![feature(crablangc_attrs)]
+#[crablangc_coinductive]
 trait Trait {}
 
 impl<T, U> Trait for (T, U)

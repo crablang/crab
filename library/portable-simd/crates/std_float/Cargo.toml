@@ -3,7 +3,7 @@ name = "std_float"
 version = "0.1.0"
 edition = "2021"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+# See more keys and their definitions at https://doc.crablang.org/cargo/reference/manifest.html
 
 [dependencies]
 core_simd = { path = "../core_simd", default-features = false }

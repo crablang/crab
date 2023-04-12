@@ -2,13 +2,13 @@
 //!
 //! ## The need for synchronization
 //!
-//! Conceptually, a Rust program is a series of operations which will
+//! Conceptually, a CrabLang program is a series of operations which will
 //! be executed on a computer. The timeline of events happening in the
 //! program is consistent with the order of the operations in the code.
 //!
 //! Consider the following code, operating on some global static variables:
 //!
-//! ```rust
+//! ```crablang
 //! static mut A: u32 = 0;
 //! static mut B: u32 = 0;
 //! static mut C: u32 = 0;
@@ -56,7 +56,7 @@
 //! compiler optimizations are disabled, and it is **still possible**
 //! to introduce synchronization bugs.
 //!
-//! Note that thanks to Rust's safety guarantees, accessing global (static)
+//! Note that thanks to CrabLang's safety guarantees, accessing global (static)
 //! variables requires `unsafe` code, assuming we don't use any of the
 //! synchronization primitives in this module.
 //!
@@ -152,32 +152,32 @@
 //! [`OnceLock`]: crate::sync::OnceLock
 //! [`RwLock`]: crate::sync::RwLock
 
-#![stable(feature = "rust1", since = "1.0.0")]
+#![stable(feature = "crablang1", since = "1.0.0")]
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub use alloc_crate::sync::{Arc, Weak};
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub use core::sync::atomic;
 #[unstable(feature = "exclusive_wrapper", issue = "98407")]
 pub use core::sync::Exclusive;
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub use self::barrier::{Barrier, BarrierWaitResult};
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub use self::condvar::{Condvar, WaitTimeoutResult};
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub use self::mutex::{Mutex, MutexGuard};
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[allow(deprecated)]
 pub use self::once::{Once, OnceState, ONCE_INIT};
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub use self::poison::{LockResult, PoisonError, TryLockError, TryLockResult};
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub use self::rwlock::{RwLock, RwLockReadGuard, RwLockWriteGuard};
 
 #[unstable(feature = "lazy_cell", issue = "109736")]
 pub use self::lazy_lock::LazyLock;
-#[stable(feature = "once_cell", since = "CURRENT_RUSTC_VERSION")]
+#[stable(feature = "once_cell", since = "CURRENT_CRABLANGC_VERSION")]
 pub use self::once_lock::OnceLock;
 
 pub(crate) use self::remutex::{ReentrantMutex, ReentrantMutexGuard};

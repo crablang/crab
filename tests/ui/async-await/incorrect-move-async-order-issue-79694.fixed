@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 // edition:2018
 
 // Regression test for issue 79694

@@ -7,7 +7,7 @@ LL | type Foo<Rhs> = dyn Add<Rhs> + Sub<Rhs> + X<Rhs> + Y<Rhs>;
    |                     first non-auto trait
    |
    = help: consider creating a new trait with all of these as supertraits and using that trait here instead: `trait NewTrait: Add<Rhs> + Sub<Rhs> + X<Rhs> + Y<Rhs> {}`
-   = note: auto-traits like `Send` and `Sync` are traits that have special properties; for more information on them, visit <https://doc.rust-lang.org/reference/special-types-and-traits.html#auto-traits>
+   = note: auto-traits like `Send` and `Sync` are traits that have special properties; for more information on them, visit <https://doc.crablang.org/reference/special-types-and-traits.html#auto-traits>
 
 error[E0191]: the value of the associated types `A` (from trait `Y`), `Output` (from trait `Add`), `Output` (from trait `Mul`), `Output` (from trait `Sub`) must be specified
   --> $DIR/missing-associated-types.rs:12:21
@@ -36,7 +36,7 @@ LL | type Bar<Rhs> = dyn Add<Rhs> + Sub<Rhs> + X<Rhs> + Z<Rhs>;
    |                     first non-auto trait
    |
    = help: consider creating a new trait with all of these as supertraits and using that trait here instead: `trait NewTrait: Add<Rhs> + Sub<Rhs> + X<Rhs> + Z<Rhs> {}`
-   = note: auto-traits like `Send` and `Sync` are traits that have special properties; for more information on them, visit <https://doc.rust-lang.org/reference/special-types-and-traits.html#auto-traits>
+   = note: auto-traits like `Send` and `Sync` are traits that have special properties; for more information on them, visit <https://doc.crablang.org/reference/special-types-and-traits.html#auto-traits>
 
 error[E0191]: the value of the associated types `A` (from trait `Z`), `B` (from trait `Z`), `Output` (from trait `Add`), `Output` (from trait `Div`), `Output` (from trait `Div`), `Output` (from trait `Mul`), `Output` (from trait `Sub`) must be specified
   --> $DIR/missing-associated-types.rs:15:21
@@ -72,7 +72,7 @@ LL | type Baz<Rhs> = dyn Add<Rhs> + Sub<Rhs> + Y<Rhs>;
    |                     first non-auto trait
    |
    = help: consider creating a new trait with all of these as supertraits and using that trait here instead: `trait NewTrait: Add<Rhs> + Sub<Rhs> + Y<Rhs> {}`
-   = note: auto-traits like `Send` and `Sync` are traits that have special properties; for more information on them, visit <https://doc.rust-lang.org/reference/special-types-and-traits.html#auto-traits>
+   = note: auto-traits like `Send` and `Sync` are traits that have special properties; for more information on them, visit <https://doc.crablang.org/reference/special-types-and-traits.html#auto-traits>
 
 error[E0191]: the value of the associated types `A` (from trait `Y`), `Output` (from trait `Add`), `Output` (from trait `Sub`) must be specified
   --> $DIR/missing-associated-types.rs:18:21
@@ -100,7 +100,7 @@ LL | type Bat<Rhs> = dyn Add<Rhs> + Sub<Rhs> + Fine<Rhs>;
    |                     first non-auto trait
    |
    = help: consider creating a new trait with all of these as supertraits and using that trait here instead: `trait NewTrait: Add<Rhs> + Sub<Rhs> + Fine<Rhs> {}`
-   = note: auto-traits like `Send` and `Sync` are traits that have special properties; for more information on them, visit <https://doc.rust-lang.org/reference/special-types-and-traits.html#auto-traits>
+   = note: auto-traits like `Send` and `Sync` are traits that have special properties; for more information on them, visit <https://doc.crablang.org/reference/special-types-and-traits.html#auto-traits>
 
 error[E0191]: the value of the associated types `Output` (from trait `Add`), `Output` (from trait `Sub`) must be specified
   --> $DIR/missing-associated-types.rs:21:21
@@ -126,4 +126,4 @@ LL | type Bal<Rhs> = dyn X<Rhs>;
 error: aborting due to 9 previous errors
 
 Some errors have detailed explanations: E0191, E0225.
-For more information about an error, try `rustc --explain E0191`.
+For more information about an error, try `crablangc --explain E0191`.

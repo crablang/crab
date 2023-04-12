@@ -1,5 +1,5 @@
 #![cfg_attr(feature = "deny-warnings", deny(warnings))]
-#![warn(rust_2018_idioms, unused_lifetimes)]
+#![warn(crablang_2018_idioms, unused_lifetimes)]
 #![allow(clippy::single_match_else)]
 
 use std::fs;
@@ -16,9 +16,9 @@ fn consistent_clippy_crate_versions() {
             .to_string()
     }
 
-    // do not run this test inside the upstream rustc repo:
-    // https://github.com/rust-lang/rust-clippy/issues/6683
-    if option_env!("RUSTC_TEST_SUITE").is_some() {
+    // do not run this test inside the upstream crablangc repo:
+    // https://github.com/crablang/crablang-clippy/issues/6683
+    if option_env!("CRABLANGC_TEST_SUITE").is_some() {
         return;
     }
 
@@ -36,31 +36,31 @@ fn consistent_clippy_crate_versions() {
 }
 
 #[test]
-fn check_that_clippy_has_the_same_major_version_as_rustc() {
-    // do not run this test inside the upstream rustc repo:
-    // https://github.com/rust-lang/rust-clippy/issues/6683
-    if option_env!("RUSTC_TEST_SUITE").is_some() {
+fn check_that_clippy_has_the_same_major_version_as_crablangc() {
+    // do not run this test inside the upstream crablangc repo:
+    // https://github.com/crablang/crablang-clippy/issues/6683
+    if option_env!("CRABLANGC_TEST_SUITE").is_some() {
         return;
     }
 
-    let clippy_version = rustc_tools_util::get_version_info!();
+    let clippy_version = crablangc_tools_util::get_version_info!();
     let clippy_major = clippy_version.major;
     let clippy_minor = clippy_version.minor;
     let clippy_patch = clippy_version.patch;
 
-    // get the rustc version either from the rustc installed with the toolchain file or from
-    // `RUSTC_REAL` if Clippy is build in the Rust repo with `./x.py`.
-    let rustc = std::env::var("RUSTC_REAL").unwrap_or_else(|_| "rustc".to_string());
-    let rustc_version = String::from_utf8(
-        std::process::Command::new(rustc)
+    // get the crablangc version either from the crablangc installed with the toolchain file or from
+    // `CRABLANGC_REAL` if Clippy is build in the CrabLang repo with `./x.py`.
+    let crablangc = std::env::var("CRABLANGC_REAL").unwrap_or_else(|_| "crablangc".to_string());
+    let crablangc_version = String::from_utf8(
+        std::process::Command::new(crablangc)
             .arg("--version")
             .output()
-            .expect("failed to run `rustc --version`")
+            .expect("failed to run `crablangc --version`")
             .stdout,
     )
     .unwrap();
-    // extract "1 XX 0" from "rustc 1.XX.0-nightly (<commit> <date>)"
-    let vsplit: Vec<&str> = rustc_version
+    // extract "1 XX 0" from "crablangc 1.XX.0-nightly (<commit> <date>)"
+    let vsplit: Vec<&str> = crablangc_version
         .split(' ')
         .nth(1)
         .unwrap()
@@ -70,24 +70,24 @@ fn check_that_clippy_has_the_same_major_version_as_rustc() {
         .split('.')
         .collect();
     match vsplit.as_slice() {
-        [rustc_major, rustc_minor, _rustc_patch] => {
-            // clippy 0.1.XX should correspond to rustc 1.XX.0
+        [crablangc_major, crablangc_minor, _crablangc_patch] => {
+            // clippy 0.1.XX should correspond to crablangc 1.XX.0
             assert_eq!(clippy_major, 0); // this will probably stay the same for a long time
             assert_eq!(
                 clippy_minor.to_string(),
-                *rustc_major,
-                "clippy minor version does not equal rustc major version"
+                *crablangc_major,
+                "clippy minor version does not equal crablangc major version"
             );
             assert_eq!(
                 clippy_patch.to_string(),
-                *rustc_minor,
-                "clippy patch version does not equal rustc minor version"
+                *crablangc_minor,
+                "clippy patch version does not equal crablangc minor version"
             );
-            // do not check rustc_patch because when a stable-patch-release is made (like 1.50.2),
+            // do not check crablangc_patch because when a stable-patch-release is made (like 1.50.2),
             // we don't want our tests failing suddenly
         },
         _ => {
-            panic!("Failed to parse rustc version: {vsplit:?}");
+            panic!("Failed to parse crablangc version: {vsplit:?}");
         },
     };
 }

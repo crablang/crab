@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 
 // Regression test for changes introduced while fixing #54505
 

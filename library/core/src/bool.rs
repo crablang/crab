@@ -31,7 +31,7 @@ impl bool {
     /// assert_eq!(a, 2);
     /// ```
     #[stable(feature = "bool_to_option", since = "1.62.0")]
-    #[rustc_const_unstable(feature = "const_bool_to_option", issue = "91917")]
+    #[crablangc_const_unstable(feature = "const_bool_to_option", issue = "91917")]
     #[inline]
     pub const fn then_some<T>(self, t: T) -> Option<T>
     where
@@ -61,7 +61,7 @@ impl bool {
     /// assert_eq!(a, 1);
     /// ```
     #[stable(feature = "lazy_bool_to_option", since = "1.50.0")]
-    #[rustc_const_unstable(feature = "const_bool_to_option", issue = "91917")]
+    #[crablangc_const_unstable(feature = "const_bool_to_option", issue = "91917")]
     #[inline]
     pub const fn then<T, F>(self, f: F) -> Option<T>
     where

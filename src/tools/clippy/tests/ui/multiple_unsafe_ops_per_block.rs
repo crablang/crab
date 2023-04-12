@@ -99,7 +99,7 @@ fn correct3() {
     }
 }
 
-// tests from the issue (https://github.com/rust-lang/rust-clippy/issues/10064)
+// tests from the issue (https://github.com/crablang/crablang-clippy/issues/10064)
 
 unsafe fn read_char_bad(ptr: *const u8) -> char {
     unsafe { char::from_u32_unchecked(*ptr.cast::<u32>()) }

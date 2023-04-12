@@ -1,5 +1,5 @@
 // check-fail
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 
 trait Parser<'s> {
     type Output;

@@ -1,5 +1,5 @@
 //run-pass
-#![deny(rust_2021_incompatible_closure_captures)]
+#![deny(crablang_2021_incompatible_closure_captures)]
 #![allow(unused_must_use)]
 
 fn filter_try_fold(

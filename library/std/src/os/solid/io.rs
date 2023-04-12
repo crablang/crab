@@ -74,7 +74,7 @@ impl FromRawFd for RawFd {
 
 macro_rules! impl_as_raw_fd {
     ($($t:ident)*) => {$(
-        #[stable(feature = "rust1", since = "1.0.0")]
+        #[stable(feature = "crablang1", since = "1.0.0")]
         impl AsRawFd for net::$t {
             #[inline]
             fn as_raw_fd(&self) -> RawFd {

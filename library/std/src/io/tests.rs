@@ -550,7 +550,7 @@ fn test_writer_read_from_multiple_bufs() {
 
 #[test]
 fn test_write_all_vectored() {
-    #[rustfmt::skip] // Becomes unreadable otherwise.
+    #[crablangfmt::skip] // Becomes unreadable otherwise.
     let tests: Vec<(_, &'static [u8])> = vec![
         (vec![], &[]),
         (vec![IoSlice::new(&[]), IoSlice::new(&[])], &[]),

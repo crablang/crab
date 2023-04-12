@@ -12,10 +12,10 @@ pub struct Quad {
     d: u64,
 }
 
-mod rustrt {
+mod crablangrt {
     use super::Quad;
 
-    #[link(name = "rust_test_helpers", kind = "static")]
+    #[link(name = "crablang_test_helpers", kind = "static")]
     extern "C" {
         pub fn get_c_many_params(
             _: *const (),
@@ -31,7 +31,7 @@ fn test() {
     unsafe {
         let null = std::ptr::null();
         let q = Quad { a: 1, b: 2, c: 3, d: 4 };
-        assert_eq!(rustrt::get_c_many_params(null, null, null, null, q), q.c);
+        assert_eq!(crablangrt::get_c_many_params(null, null, null, null, q), q.c);
     }
 }
 

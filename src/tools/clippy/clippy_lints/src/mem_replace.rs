@@ -4,14 +4,14 @@ use clippy_utils::source::{snippet, snippet_with_applicability};
 use clippy_utils::ty::is_non_aggregate_primitive_type;
 use clippy_utils::{is_default_equivalent, is_res_lang_ctor, path_res};
 use if_chain::if_chain;
-use rustc_errors::Applicability;
-use rustc_hir::LangItem::OptionNone;
-use rustc_hir::{BorrowKind, Expr, ExprKind, Mutability, QPath};
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_middle::lint::in_external_macro;
-use rustc_session::{declare_tool_lint, impl_lint_pass};
-use rustc_span::source_map::Span;
-use rustc_span::symbol::sym;
+use crablangc_errors::Applicability;
+use crablangc_hir::LangItem::OptionNone;
+use crablangc_hir::{BorrowKind, Expr, ExprKind, Mutability, QPath};
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_middle::lint::in_external_macro;
+use crablangc_session::{declare_tool_lint, impl_lint_pass};
+use crablangc_span::source_map::Span;
+use crablangc_span::symbol::sym;
 
 declare_clippy_lint! {
     /// ### What it does
@@ -24,14 +24,14 @@ declare_clippy_lint! {
     /// `None`.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// use std::mem;
     ///
     /// let mut an_option = Some(0);
     /// let replaced = mem::replace(&mut an_option, None);
     /// ```
     /// Is better expressed with:
-    /// ```rust
+    /// ```crablang
     /// let mut an_option = Some(0);
     /// let taken = an_option.take();
     /// ```
@@ -83,12 +83,12 @@ declare_clippy_lint! {
     /// take the current value and replace it with the default value of that type.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// let mut text = String::from("foo");
     /// let replaced = std::mem::replace(&mut text, String::default());
     /// ```
     /// Is better expressed with:
-    /// ```rust
+    /// ```crablang
     /// let mut text = String::from("foo");
     /// let taken = std::mem::take(&mut text);
     /// ```

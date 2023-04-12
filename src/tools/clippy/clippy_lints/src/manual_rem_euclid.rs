@@ -3,11 +3,11 @@ use clippy_utils::diagnostics::span_lint_and_sugg;
 use clippy_utils::msrvs::{self, Msrv};
 use clippy_utils::source::snippet_with_context;
 use clippy_utils::{in_constant, path_to_local};
-use rustc_errors::Applicability;
-use rustc_hir::{BinOpKind, Expr, ExprKind, Node, TyKind};
-use rustc_lint::{LateContext, LateLintPass, LintContext};
-use rustc_middle::lint::in_external_macro;
-use rustc_session::{declare_tool_lint, impl_lint_pass};
+use crablangc_errors::Applicability;
+use crablangc_hir::{BinOpKind, Expr, ExprKind, Node, TyKind};
+use crablangc_lint::{LateContext, LateLintPass, LintContext};
+use crablangc_middle::lint::in_external_macro;
+use crablangc_session::{declare_tool_lint, impl_lint_pass};
 
 declare_clippy_lint! {
     /// ### What it does
@@ -18,12 +18,12 @@ declare_clippy_lint! {
     /// It's simpler and more readable.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// let x: i32 = 24;
     /// let rem = ((x % 4) + 4) % 4;
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// let x: i32 = 24;
     /// let rem = x.rem_euclid(4);
     /// ```

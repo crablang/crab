@@ -11,7 +11,7 @@
 //! These values are then translated to file URLs if possible and then the
 //! destination is asserted to exist.
 //!
-//! A few exceptions are allowed as there's known bugs in rustdoc, but this
+//! A few exceptions are allowed as there's known bugs in crablangdoc, but this
 //! should catch the majority of "broken link" cases.
 
 use std::cell::RefCell;
@@ -30,10 +30,10 @@ use regex::Regex;
 // If at all possible you should use intra-doc links to avoid linkcheck issues. These
 // are cases where that does not work
 // [(generated_documentation_page, &[broken_links])]
-#[rustfmt::skip]
+#[crablangfmt::skip]
 const LINKCHECK_EXCEPTIONS: &[(&str, &[&str])] = &[
     // These try to link to std::collections, but are defined in alloc
-    // https://github.com/rust-lang/rust/issues/74481
+    // https://github.com/crablang/crablang/issues/74481
     ("std/collections/btree_map/struct.BTreeMap.html", &["#insert-and-complex-keys"]),
     ("std/collections/btree_set/struct.BTreeSet.html", &["#insert-and-complex-keys"]),
     ("alloc/collections/btree_map/struct.BTreeMap.html", &["#insert-and-complex-keys"]),
@@ -53,7 +53,7 @@ const LINKCHECK_EXCEPTIONS: &[(&str, &[&str])] = &[
                                     "#method.sort_by_cached_key"]),
 ];
 
-#[rustfmt::skip]
+#[crablangfmt::skip]
 const INTRA_DOC_LINK_EXCEPTIONS: &[(&str, &[&str])] = &[
     // This is being used in the sense of 'inclusive range', not a markdown link
     ("core/ops/struct.RangeInclusive.html", &["begin</code>, <code>end"]),
@@ -368,8 +368,8 @@ impl Checker {
         if self.root.ends_with("reference") || relative.starts_with("reference") {
             return;
         }
-        // Search for intra-doc links that rustdoc didn't warn about
-        // FIXME(#77199, 77200) Rustdoc should just warn about these directly.
+        // Search for intra-doc links that crablangdoc didn't warn about
+        // FIXME(#77199, 77200) CrabLangdoc should just warn about these directly.
         // NOTE: only looks at one line at a time; in practice this should find most links
         for (i, line) in source.lines().enumerate() {
             for broken_link in BROKEN_INTRA_DOC_LINK.captures_iter(line) {
@@ -482,7 +482,7 @@ fn is_exception(file: &Path, link: &str) -> bool {
 /// If the given HTML file contents is an HTML redirect, this returns the
 /// destination path given in the redirect.
 fn maybe_redirect(source: &str) -> Option<String> {
-    const REDIRECT_RUSTDOC: (usize, &str) = (7, "<p>Redirecting to <a href=");
+    const REDIRECT_CRABLANGDOC: (usize, &str) = (7, "<p>Redirecting to <a href=");
     const REDIRECT_MDBOOK: (usize, &str) = (8 - 7, "<p>Redirecting to... <a href=");
 
     let mut lines = source.lines();
@@ -497,7 +497,7 @@ fn maybe_redirect(source: &str) -> Option<String> {
         })
     };
 
-    find_redirect(REDIRECT_RUSTDOC).or_else(|| find_redirect(REDIRECT_MDBOOK))
+    find_redirect(REDIRECT_CRABLANGDOC).or_else(|| find_redirect(REDIRECT_MDBOOK))
 }
 
 fn with_attrs_in_source<F: FnMut(&str, usize, &str)>(source: &str, attr: &str, mut f: F) {

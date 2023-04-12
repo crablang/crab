@@ -2,13 +2,13 @@ use clippy_utils::diagnostics::span_lint_and_then;
 use clippy_utils::macros::{find_assert_eq_args, root_macro_call_first_node};
 use clippy_utils::sugg::Sugg;
 use clippy_utils::ty::{implements_trait, is_copy};
-use rustc_ast::ast::LitKind;
-use rustc_errors::Applicability;
-use rustc_hir::{Expr, ExprKind, Lit};
-use rustc_lint::{LateContext, LateLintPass, LintContext};
-use rustc_middle::ty::{self, Ty};
-use rustc_session::{declare_lint_pass, declare_tool_lint};
-use rustc_span::symbol::Ident;
+use crablangc_ast::ast::LitKind;
+use crablangc_errors::Applicability;
+use crablangc_hir::{Expr, ExprKind, Lit};
+use crablangc_lint::{LateContext, LateLintPass, LintContext};
+use crablangc_middle::ty::{self, Ty};
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_span::symbol::Ident;
 
 declare_clippy_lint! {
     /// ### What it does
@@ -18,13 +18,13 @@ declare_clippy_lint! {
     /// It is shorter to use the equivalent.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// assert_eq!("a".is_empty(), false);
     /// assert_ne!("a".is_empty(), true);
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// assert!(!"a".is_empty());
     /// ```
     #[clippy::version = "1.53.0"]

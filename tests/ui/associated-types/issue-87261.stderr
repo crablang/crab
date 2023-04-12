@@ -29,7 +29,7 @@ LL |     accepts_trait(b);
    = note:    expected unit type `()`
            found associated type `<B as Trait>::Associated`
    = help: consider constraining the associated type `<B as Trait>::Associated` to `()`
-   = note: for more information, visit https://doc.rust-lang.org/book/ch19-03-advanced-traits.html
+   = note: for more information, visit https://doc.crablang.org/book/ch19-03-advanced-traits.html
 note: required by a bound in `accepts_trait`
   --> $DIR/issue-87261.rs:43:27
    |
@@ -67,7 +67,7 @@ LL |     accepts_trait(d);
    = note:    expected unit type `()`
            found associated type `<D as Trait>::Associated`
    = help: consider constraining the associated type `<D as Trait>::Associated` to `()`
-   = note: for more information, visit https://doc.rust-lang.org/book/ch19-03-advanced-traits.html
+   = note: for more information, visit https://doc.crablang.org/book/ch19-03-advanced-traits.html
 note: required by a bound in `accepts_trait`
   --> $DIR/issue-87261.rs:43:27
    |
@@ -125,7 +125,7 @@ LL |     accepts_generic_trait(g);
    = note:    expected unit type `()`
            found associated type `<G as GenericTrait<()>>::Associated`
    = help: consider constraining the associated type `<G as GenericTrait<()>>::Associated` to `()`
-   = note: for more information, visit https://doc.rust-lang.org/book/ch19-03-advanced-traits.html
+   = note: for more information, visit https://doc.crablang.org/book/ch19-03-advanced-traits.html
 note: required by a bound in `accepts_generic_trait`
   --> $DIR/issue-87261.rs:44:46
    |
@@ -215,7 +215,7 @@ LL |     accepts_trait(returns_opaque_derived_foo());
    = note:    expected unit type `()`
            found associated type `<impl DerivedTrait + Foo as Trait>::Associated`
    = help: consider constraining the associated type `<impl DerivedTrait + Foo as Trait>::Associated` to `()`
-   = note: for more information, visit https://doc.rust-lang.org/book/ch19-03-advanced-traits.html
+   = note: for more information, visit https://doc.crablang.org/book/ch19-03-advanced-traits.html
 note: required by a bound in `accepts_trait`
   --> $DIR/issue-87261.rs:43:27
    |
@@ -282,7 +282,7 @@ LL |     accepts_generic_trait(returns_opaque_generic_duplicate());
    = note:    expected unit type `()`
            found associated type `<impl GenericTrait<()> + GenericTrait<u8> as GenericTrait<()>>::Associated`
    = help: consider constraining the associated type `<impl GenericTrait<()> + GenericTrait<u8> as GenericTrait<()>>::Associated` to `()`
-   = note: for more information, visit https://doc.rust-lang.org/book/ch19-03-advanced-traits.html
+   = note: for more information, visit https://doc.crablang.org/book/ch19-03-advanced-traits.html
 note: required by a bound in `accepts_generic_trait`
   --> $DIR/issue-87261.rs:44:46
    |
@@ -291,4 +291,4 @@ LL | fn accepts_generic_trait<T: GenericTrait<(), Associated = ()>>(_: T) {}
 
 error: aborting due to 14 previous errors
 
-For more information about this error, try `rustc --explain E0271`.
+For more information about this error, try `crablangc --explain E0271`.

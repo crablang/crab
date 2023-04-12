@@ -2,11 +2,11 @@
 // `#[oops]` is left dangling (that is, it is unattached, with no
 // formal binding following it).
 
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 
 struct RefIntPair<'a, 'b>(&'a u32, &'b u32);
 
-impl<#[rustc_dummy] 'a, 'b, #[oops]> RefIntPair<'a, 'b> {
+impl<#[crablangc_dummy] 'a, 'b, #[oops]> RefIntPair<'a, 'b> {
     //~^ ERROR trailing attribute after generic parameter
 }
 

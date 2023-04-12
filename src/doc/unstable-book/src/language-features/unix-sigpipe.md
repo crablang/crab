@@ -2,7 +2,7 @@
 
 The tracking issue for this feature is: [#97889]
 
-[#97889]: https://github.com/rust-lang/rust/issues/97889
+[#97889]: https://github.com/crablang/crablang/issues/97889
 
 ---
 
@@ -21,7 +21,7 @@ Set the `SIGPIPE` handler to `SIG_DFL`. This will result in your program getting
 
 ### Example
 
-```rust,no_run
+```crablang,no_run
 #![feature(unix_sigpipe)]
 #[unix_sigpipe = "sig_dfl"]
 fn main() { loop { println!("hello world"); } }
@@ -40,7 +40,7 @@ This is what libstd has done by default since 2014. (However, see the note on ch
 
 ### Example
 
-```rust,no_run
+```crablang,no_run
 #![feature(unix_sigpipe)]
 #[unix_sigpipe = "sig_ign"]
 fn main() { loop { println!("hello world"); } }
@@ -50,12 +50,12 @@ fn main() { loop { println!("hello world"); } }
 % ./main | head -n 1
 hello world
 thread 'main' panicked at 'failed printing to stdout: Broken pipe (os error 32)', library/std/src/io/stdio.rs:1016:9
-note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+note: run with `CRABLANG_BACKTRACE=1` environment variable to display a backtrace
 ```
 
 ### Note on child processes
 
-When spawning child processes, the legacy Rust behavior if `#[unix_sigpipe]` is not specified is to
+When spawning child processes, the legacy CrabLang behavior if `#[unix_sigpipe]` is not specified is to
 reset `SIGPIPE` to `SIG_DFL`.
 
 If `#[unix_sigpipe = "..."]` is specified, no matter what its value is, the signal disposition of

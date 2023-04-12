@@ -2,11 +2,11 @@
 include ../tools.mk
 
 all:
-	$(RUSTC) success.rs; [ $$? -eq 0 ]
-	$(RUSTC) --invalid-arg-foo; [ $$? -eq 1 ]
-	$(RUSTC) compile-error.rs; [ $$? -eq 1 ]
-	$(RUSTC) -Ztreat-err-as-bug compile-error.rs; [ $$? -eq 101 ]
-	$(RUSTDOC) -o $(TMPDIR)/exit-code success.rs; [ $$? -eq 0 ]
-	$(RUSTDOC) --invalid-arg-foo; [ $$? -eq 1 ]
-	$(RUSTDOC) compile-error.rs; [ $$? -eq 1 ]
-	$(RUSTDOC) lint-failure.rs; [ $$? -eq 1 ]
+	$(CRABLANGC) success.rs; [ $$? -eq 0 ]
+	$(CRABLANGC) --invalid-arg-foo; [ $$? -eq 1 ]
+	$(CRABLANGC) compile-error.rs; [ $$? -eq 1 ]
+	$(CRABLANGC) -Ztreat-err-as-bug compile-error.rs; [ $$? -eq 101 ]
+	$(CRABLANGDOC) -o $(TMPDIR)/exit-code success.rs; [ $$? -eq 0 ]
+	$(CRABLANGDOC) --invalid-arg-foo; [ $$? -eq 1 ]
+	$(CRABLANGDOC) compile-error.rs; [ $$? -eq 1 ]
+	$(CRABLANGDOC) lint-failure.rs; [ $$? -eq 1 ]

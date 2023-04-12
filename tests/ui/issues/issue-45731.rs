@@ -18,7 +18,7 @@ fn simple_test() {
             .open(&dsym_path).unwrap();
     }
 
-    env::set_var("RUST_BACKTRACE", "1");
+    env::set_var("CRABLANG_BACKTRACE", "1");
 
     // We don't need to die of panic, just trigger a backtrace
     let _ = panic::catch_unwind(|| {

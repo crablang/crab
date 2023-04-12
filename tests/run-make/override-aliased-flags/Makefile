@@ -8,16 +8,16 @@ include ../tools.mk
 all:
 	# Test that `-O` and `-C opt-level` can be specified multiple times.
 	# The rightmost flag will be used over any previous flags.
-	$(RUSTC) -O -O main.rs
-	$(RUSTC) -O -C opt-level=0 main.rs
-	$(RUSTC) -C opt-level=0 -O main.rs
-	$(RUSTC) -C opt-level=0 -C opt-level=2 main.rs
-	$(RUSTC) -C opt-level=2 -C opt-level=0 main.rs
+	$(CRABLANGC) -O -O main.rs
+	$(CRABLANGC) -O -C opt-level=0 main.rs
+	$(CRABLANGC) -C opt-level=0 -O main.rs
+	$(CRABLANGC) -C opt-level=0 -C opt-level=2 main.rs
+	$(CRABLANGC) -C opt-level=2 -C opt-level=0 main.rs
 
 	# Test that `-g` and `-C debuginfo` can be specified multiple times.
 	# The rightmost flag will be used over any previous flags.
-	$(RUSTC) -g -g main.rs
-	$(RUSTC) -g -C debuginfo=0 main.rs
-	$(RUSTC) -C debuginfo=0 -g main.rs
-	$(RUSTC) -C debuginfo=0 -C debuginfo=2 main.rs
-	$(RUSTC) -C debuginfo=2 -C debuginfo=0 main.rs
+	$(CRABLANGC) -g -g main.rs
+	$(CRABLANGC) -g -C debuginfo=0 main.rs
+	$(CRABLANGC) -C debuginfo=0 -g main.rs
+	$(CRABLANGC) -C debuginfo=0 -C debuginfo=2 main.rs
+	$(CRABLANGC) -C debuginfo=2 -C debuginfo=0 main.rs

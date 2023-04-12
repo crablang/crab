@@ -16,4 +16,4 @@ note: the module `sys` is defined here
 error: aborting due to 2 previous errors
 
 Some errors have detailed explanations: E0433, E0603.
-For more information about an error, try `rustc --explain E0433`.
+For more information about an error, try `crablangc --explain E0433`.

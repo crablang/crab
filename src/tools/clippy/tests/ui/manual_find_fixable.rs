@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 #![warn(clippy::manual_find)]
 #![allow(unused)]
 #![allow(clippy::needless_return, clippy::uninlined_format_args)]
@@ -185,7 +185,7 @@ fn mixed_binding_modes(arr: Vec<(i32, String)>) -> Option<i32> {
 }
 
 fn as_closure() {
-    #[rustfmt::skip]
+    #[crablangfmt::skip]
     let f = |arr: Vec<i32>| -> Option<i32> {
         for x in arr {
             if x < 1 {

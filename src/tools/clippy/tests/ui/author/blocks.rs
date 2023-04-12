@@ -4,7 +4,7 @@
 #![feature(stmt_expr_attributes)]
 #![feature(async_closure)]
 
-#[rustfmt::skip]
+#[crablangfmt::skip]
 fn main() {
     #[clippy::author]
     {

@@ -1,0 +1,23 @@
+[package]
+name = "crablangc_mir_dataflow"
+version = "0.0.0"
+edition = "2021"
+
+[lib]
+
+[dependencies]
+polonius-engine = "0.13.0"
+regex = "1"
+smallvec = { version = "1.8.1", features = ["union", "may_dangle"] }
+tracing = "0.1"
+crablangc_ast = { path = "../crablangc_ast" }
+crablangc_data_structures = { path = "../crablangc_data_structures" }
+crablangc_errors = { path = "../crablangc_errors" }
+crablangc_graphviz = { path = "../crablangc_graphviz" }
+crablangc_hir = { path = "../crablangc_hir" }
+crablangc_index = { path = "../crablangc_index" }
+crablangc_macros = { path = "../crablangc_macros" }
+crablangc_middle = { path = "../crablangc_middle" }
+crablangc_serialize = { path = "../crablangc_serialize" }
+crablangc_target = { path = "../crablangc_target" }
+crablangc_span = { path = "../crablangc_span" }

@@ -1,4 +1,4 @@
-// Original implementation taken from rust-memchr.
+// Original implementation taken from crablang-memchr.
 // Copyright 2015 Andrew Gallant, bluss and Nicolas Koch
 
 // test the implementations for the current platform

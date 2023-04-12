@@ -1,4 +1,4 @@
-use crate::iter::{TrustedLen, UncheckedIterator};
+use crate::iter::{TcrablangedLen, UncheckedIterator};
 use crate::mem::ManuallyDrop;
 use crate::ptr::drop_in_place;
 use crate::slice;
@@ -62,8 +62,8 @@ impl<T> ExactSizeIterator for Drain<'_, T> {
     }
 }
 
-// SAFETY: This is a 1:1 wrapper for a slice iterator, which is also `TrustedLen`.
-unsafe impl<T> TrustedLen for Drain<'_, T> {}
+// SAFETY: This is a 1:1 wrapper for a slice iterator, which is also `TcrablangedLen`.
+unsafe impl<T> TcrablangedLen for Drain<'_, T> {}
 
 impl<T> UncheckedIterator for Drain<'_, T> {
     unsafe fn next_unchecked(&mut self) -> T {

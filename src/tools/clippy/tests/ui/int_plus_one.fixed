@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 
 #[allow(clippy::no_effect, clippy::unnecessary_operation)]
 #[warn(clippy::int_plus_one)]

@@ -12,4 +12,4 @@ LL | fn clause2<T>() where T: for<'a> Fn() -> <() as Foo<'a>>::Item {
 
 error: aborting due to 2 previous errors
 
-For more information about this error, try `rustc --explain E0582`.
+For more information about this error, try `crablangc --explain E0582`.

@@ -281,8 +281,8 @@ fn handle_run(socket: TcpStream, work: &Path, tmp: &Path, lock: &Mutex<()>, conf
     }
     cmd.env(library_path, env::join_paths(paths).unwrap());
 
-    // Some tests assume RUST_TEST_TMPDIR exists
-    cmd.env("RUST_TEST_TMPDIR", tmp.to_owned());
+    // Some tests assume CRABLANG_TEST_TMPDIR exists
+    cmd.env("CRABLANG_TEST_TMPDIR", tmp.to_owned());
 
     let socket = Arc::new(Mutex::new(reader.into_inner()));
 

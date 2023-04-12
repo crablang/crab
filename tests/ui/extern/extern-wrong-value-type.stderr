@@ -16,4 +16,4 @@ LL | fn is_fn<F>(_: F) where F: Fn() {}
 
 error: aborting due to previous error
 
-For more information about this error, try `rustc --explain E0277`.
+For more information about this error, try `crablangc --explain E0277`.

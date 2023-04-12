@@ -1,4 +1,4 @@
-extern "Rust" {
+extern "CrabLang" {
     fn miri_get_backtrace(flags: u64) -> Box<[*mut ()]>;
     fn miri_resolve_frame(ptr: *mut (), flags: u64);
 }

@@ -1,11 +1,11 @@
 use clippy_utils::diagnostics::span_lint_and_then;
 use clippy_utils::source::snippet_with_applicability;
 use if_chain::if_chain;
-use rustc_ast::LitKind;
-use rustc_errors::Applicability;
-use rustc_hir::{Expr, ExprKind};
-use rustc_lint::LateContext;
-use rustc_middle::ty::{self, UintTy};
+use crablangc_ast::LitKind;
+use crablangc_errors::Applicability;
+use crablangc_hir::{Expr, ExprKind};
+use crablangc_lint::LateContext;
+use crablangc_middle::ty::{self, UintTy};
 
 use super::CHAR_LIT_AS_U8;
 

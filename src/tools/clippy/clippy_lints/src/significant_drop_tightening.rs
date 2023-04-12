@@ -3,16 +3,16 @@ use clippy_utils::{
     get_attr,
     source::{indent_of, snippet},
 };
-use rustc_data_structures::fx::{FxHashMap, FxHashSet};
-use rustc_errors::{Applicability, Diagnostic};
-use rustc_hir::{
+use crablangc_data_structures::fx::{FxHashMap, FxHashSet};
+use crablangc_errors::{Applicability, Diagnostic};
+use crablangc_hir::{
     self as hir,
     intravisit::{walk_expr, Visitor},
 };
-use rustc_lint::{LateContext, LateLintPass, LintContext};
-use rustc_middle::ty::{subst::GenericArgKind, Ty, TypeAndMut};
-use rustc_session::{declare_tool_lint, impl_lint_pass};
-use rustc_span::{symbol::Ident, Span, DUMMY_SP};
+use crablangc_lint::{LateContext, LateLintPass, LintContext};
+use crablangc_middle::ty::{subst::GenericArgKind, Ty, TypeAndMut};
+use crablangc_session::{declare_tool_lint, impl_lint_pass};
+use crablangc_span::{symbol::Ident, Span, DUMMY_SP};
 
 declare_clippy_lint! {
     /// ### What it does
@@ -29,7 +29,7 @@ declare_clippy_lint! {
     ///
     /// ### Example
     ///
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// fn main() {
     ///   let lock = some_sync_resource.lock();
     ///   let owned_rslt = lock.do_stuff_with_resource();
@@ -40,7 +40,7 @@ declare_clippy_lint! {
     ///
     /// Use instead:
     ///
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// fn main() {
     ///     let owned_rslt = some_sync_resource.lock().do_stuff_with_resource();
     ///     do_heavy_computation_that_takes_time(owned_rslt);
@@ -96,7 +96,7 @@ impl<'tcx> SignificantDropTightening<'tcx> {
         if let hir::ExprKind::Call(fun, args) = expr.kind
             && let hir::ExprKind::Path(hir::QPath::Resolved(_, fun_path)) = &fun.kind
             && let [fun_ident, ..] = fun_path.segments
-            && fun_ident.ident.name == rustc_span::sym::drop
+            && fun_ident.ident.name == crablangc_span::sym::drop
             && let [first_arg, ..] = args
             && let hir::ExprKind::Path(hir::QPath::Resolved(_, arg_path)) = &first_arg.kind
             && let [first_arg_ps, .. ] = arg_path.segments
@@ -326,7 +326,7 @@ impl<'cx, 'sdt, 'tcx> SigDropChecker<'cx, 'sdt, 'tcx> {
             }
         }
         match ty.kind() {
-            rustc_middle::ty::Adt(a, b) => {
+            crablangc_middle::ty::Adt(a, b) => {
                 for f in a.all_fields() {
                     let ty = f.ty(self.cx.tcx, b);
                     if !self.has_seen_ty(ty) && self.has_sig_drop_attr(ty) {
@@ -342,10 +342,10 @@ impl<'cx, 'sdt, 'tcx> SigDropChecker<'cx, 'sdt, 'tcx> {
                 }
                 false
             },
-            rustc_middle::ty::Array(ty, _)
-            | rustc_middle::ty::RawPtr(TypeAndMut { ty, .. })
-            | rustc_middle::ty::Ref(_, ty, _)
-            | rustc_middle::ty::Slice(ty) => self.has_sig_drop_attr(*ty),
+            crablangc_middle::ty::Array(ty, _)
+            | crablangc_middle::ty::RawPtr(TypeAndMut { ty, .. })
+            | crablangc_middle::ty::Ref(_, ty, _)
+            | crablangc_middle::ty::Slice(ty) => self.has_sig_drop_attr(*ty),
             _ => false,
         }
     }

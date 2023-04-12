@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 
 #![warn(clippy::manual_filter)]
 #![allow(unused_variables, dead_code)]
@@ -253,7 +253,7 @@ fn main() {
         },
     };
 
-    // Don't lint: https://github.com/rust-lang/rust-clippy/issues/10088
+    // Don't lint: https://github.com/crablang/crablang-clippy/issues/10088
     let result = if let Some(a) = maybe_some() {
         if let Some(b) = maybe_some() {
             Some(a + b)

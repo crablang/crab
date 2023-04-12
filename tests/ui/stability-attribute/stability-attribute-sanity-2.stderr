@@ -21,4 +21,4 @@ LL | #[unstable(feature = "a", issue = "no")]
 error: aborting due to 3 previous errors
 
 Some errors have detailed explanations: E0538, E0541, E0545.
-For more information about an error, try `rustc --explain E0538`.
+For more information about an error, try `crablangc --explain E0538`.

@@ -15,7 +15,7 @@ fn main() {
         //~^ ERROR cannot borrow `r` as mutable, as it is immutable for the pattern guard
                              false } => { &mut *r; },
         &mut true => { println!("You might think we should get here"); },
-        _ => panic!("surely we could never get here, since rustc warns it is unreachable."),
+        _ => panic!("surely we could never get here, since crablangc warns it is unreachable."),
     }
 
     let mut b = &mut true;

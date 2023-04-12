@@ -9,7 +9,7 @@
 //! new code should instead use the associated constants
 //! defined directly on the `f64` type.
 
-#![stable(feature = "rust1", since = "1.0.0")]
+#![stable(feature = "crablang1", since = "1.0.0")]
 
 use crate::convert::FloatToInt;
 #[cfg(not(test))]
@@ -22,7 +22,7 @@ use crate::num::FpCategory;
 ///
 /// # Examples
 ///
-/// ```rust
+/// ```crablang
 /// // deprecated way
 /// # #[allow(deprecated, deprecated_in_future)]
 /// let r = std::f64::RADIX;
@@ -30,7 +30,7 @@ use crate::num::FpCategory;
 /// // intended way
 /// let r = f64::RADIX;
 /// ```
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[deprecated(since = "TBD", note = "replaced by the `RADIX` associated constant on `f64`")]
 pub const RADIX: u32 = f64::RADIX;
 
@@ -39,7 +39,7 @@ pub const RADIX: u32 = f64::RADIX;
 ///
 /// # Examples
 ///
-/// ```rust
+/// ```crablang
 /// // deprecated way
 /// # #[allow(deprecated, deprecated_in_future)]
 /// let d = std::f64::MANTISSA_DIGITS;
@@ -47,7 +47,7 @@ pub const RADIX: u32 = f64::RADIX;
 /// // intended way
 /// let d = f64::MANTISSA_DIGITS;
 /// ```
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[deprecated(
     since = "TBD",
     note = "replaced by the `MANTISSA_DIGITS` associated constant on `f64`"
@@ -59,7 +59,7 @@ pub const MANTISSA_DIGITS: u32 = f64::MANTISSA_DIGITS;
 ///
 /// # Examples
 ///
-/// ```rust
+/// ```crablang
 /// // deprecated way
 /// # #[allow(deprecated, deprecated_in_future)]
 /// let d = std::f64::DIGITS;
@@ -67,7 +67,7 @@ pub const MANTISSA_DIGITS: u32 = f64::MANTISSA_DIGITS;
 /// // intended way
 /// let d = f64::DIGITS;
 /// ```
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[deprecated(since = "TBD", note = "replaced by the `DIGITS` associated constant on `f64`")]
 pub const DIGITS: u32 = f64::DIGITS;
 
@@ -80,7 +80,7 @@ pub const DIGITS: u32 = f64::DIGITS;
 ///
 /// # Examples
 ///
-/// ```rust
+/// ```crablang
 /// // deprecated way
 /// # #[allow(deprecated, deprecated_in_future)]
 /// let e = std::f64::EPSILON;
@@ -88,7 +88,7 @@ pub const DIGITS: u32 = f64::DIGITS;
 /// // intended way
 /// let e = f64::EPSILON;
 /// ```
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[deprecated(since = "TBD", note = "replaced by the `EPSILON` associated constant on `f64`")]
 pub const EPSILON: f64 = f64::EPSILON;
 
@@ -97,7 +97,7 @@ pub const EPSILON: f64 = f64::EPSILON;
 ///
 /// # Examples
 ///
-/// ```rust
+/// ```crablang
 /// // deprecated way
 /// # #[allow(deprecated, deprecated_in_future)]
 /// let min = std::f64::MIN;
@@ -105,7 +105,7 @@ pub const EPSILON: f64 = f64::EPSILON;
 /// // intended way
 /// let min = f64::MIN;
 /// ```
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[deprecated(since = "TBD", note = "replaced by the `MIN` associated constant on `f64`")]
 pub const MIN: f64 = f64::MIN;
 
@@ -114,7 +114,7 @@ pub const MIN: f64 = f64::MIN;
 ///
 /// # Examples
 ///
-/// ```rust
+/// ```crablang
 /// // deprecated way
 /// # #[allow(deprecated, deprecated_in_future)]
 /// let min = std::f64::MIN_POSITIVE;
@@ -122,7 +122,7 @@ pub const MIN: f64 = f64::MIN;
 /// // intended way
 /// let min = f64::MIN_POSITIVE;
 /// ```
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[deprecated(since = "TBD", note = "replaced by the `MIN_POSITIVE` associated constant on `f64`")]
 pub const MIN_POSITIVE: f64 = f64::MIN_POSITIVE;
 
@@ -131,7 +131,7 @@ pub const MIN_POSITIVE: f64 = f64::MIN_POSITIVE;
 ///
 /// # Examples
 ///
-/// ```rust
+/// ```crablang
 /// // deprecated way
 /// # #[allow(deprecated, deprecated_in_future)]
 /// let max = std::f64::MAX;
@@ -139,7 +139,7 @@ pub const MIN_POSITIVE: f64 = f64::MIN_POSITIVE;
 /// // intended way
 /// let max = f64::MAX;
 /// ```
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[deprecated(since = "TBD", note = "replaced by the `MAX` associated constant on `f64`")]
 pub const MAX: f64 = f64::MAX;
 
@@ -148,7 +148,7 @@ pub const MAX: f64 = f64::MAX;
 ///
 /// # Examples
 ///
-/// ```rust
+/// ```crablang
 /// // deprecated way
 /// # #[allow(deprecated, deprecated_in_future)]
 /// let min = std::f64::MIN_EXP;
@@ -156,7 +156,7 @@ pub const MAX: f64 = f64::MAX;
 /// // intended way
 /// let min = f64::MIN_EXP;
 /// ```
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[deprecated(since = "TBD", note = "replaced by the `MIN_EXP` associated constant on `f64`")]
 pub const MIN_EXP: i32 = f64::MIN_EXP;
 
@@ -165,7 +165,7 @@ pub const MIN_EXP: i32 = f64::MIN_EXP;
 ///
 /// # Examples
 ///
-/// ```rust
+/// ```crablang
 /// // deprecated way
 /// # #[allow(deprecated, deprecated_in_future)]
 /// let max = std::f64::MAX_EXP;
@@ -173,7 +173,7 @@ pub const MIN_EXP: i32 = f64::MIN_EXP;
 /// // intended way
 /// let max = f64::MAX_EXP;
 /// ```
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[deprecated(since = "TBD", note = "replaced by the `MAX_EXP` associated constant on `f64`")]
 pub const MAX_EXP: i32 = f64::MAX_EXP;
 
@@ -182,7 +182,7 @@ pub const MAX_EXP: i32 = f64::MAX_EXP;
 ///
 /// # Examples
 ///
-/// ```rust
+/// ```crablang
 /// // deprecated way
 /// # #[allow(deprecated, deprecated_in_future)]
 /// let min = std::f64::MIN_10_EXP;
@@ -190,7 +190,7 @@ pub const MAX_EXP: i32 = f64::MAX_EXP;
 /// // intended way
 /// let min = f64::MIN_10_EXP;
 /// ```
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[deprecated(since = "TBD", note = "replaced by the `MIN_10_EXP` associated constant on `f64`")]
 pub const MIN_10_EXP: i32 = f64::MIN_10_EXP;
 
@@ -199,7 +199,7 @@ pub const MIN_10_EXP: i32 = f64::MIN_10_EXP;
 ///
 /// # Examples
 ///
-/// ```rust
+/// ```crablang
 /// // deprecated way
 /// # #[allow(deprecated, deprecated_in_future)]
 /// let max = std::f64::MAX_10_EXP;
@@ -207,7 +207,7 @@ pub const MIN_10_EXP: i32 = f64::MIN_10_EXP;
 /// // intended way
 /// let max = f64::MAX_10_EXP;
 /// ```
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[deprecated(since = "TBD", note = "replaced by the `MAX_10_EXP` associated constant on `f64`")]
 pub const MAX_10_EXP: i32 = f64::MAX_10_EXP;
 
@@ -216,7 +216,7 @@ pub const MAX_10_EXP: i32 = f64::MAX_10_EXP;
 ///
 /// # Examples
 ///
-/// ```rust
+/// ```crablang
 /// // deprecated way
 /// # #[allow(deprecated, deprecated_in_future)]
 /// let nan = std::f64::NAN;
@@ -224,7 +224,7 @@ pub const MAX_10_EXP: i32 = f64::MAX_10_EXP;
 /// // intended way
 /// let nan = f64::NAN;
 /// ```
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[deprecated(since = "TBD", note = "replaced by the `NAN` associated constant on `f64`")]
 pub const NAN: f64 = f64::NAN;
 
@@ -233,7 +233,7 @@ pub const NAN: f64 = f64::NAN;
 ///
 /// # Examples
 ///
-/// ```rust
+/// ```crablang
 /// // deprecated way
 /// # #[allow(deprecated, deprecated_in_future)]
 /// let inf = std::f64::INFINITY;
@@ -241,7 +241,7 @@ pub const NAN: f64 = f64::NAN;
 /// // intended way
 /// let inf = f64::INFINITY;
 /// ```
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[deprecated(since = "TBD", note = "replaced by the `INFINITY` associated constant on `f64`")]
 pub const INFINITY: f64 = f64::INFINITY;
 
@@ -250,7 +250,7 @@ pub const INFINITY: f64 = f64::INFINITY;
 ///
 /// # Examples
 ///
-/// ```rust
+/// ```crablang
 /// // deprecated way
 /// # #[allow(deprecated, deprecated_in_future)]
 /// let ninf = std::f64::NEG_INFINITY;
@@ -258,17 +258,17 @@ pub const INFINITY: f64 = f64::INFINITY;
 /// // intended way
 /// let ninf = f64::NEG_INFINITY;
 /// ```
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[deprecated(since = "TBD", note = "replaced by the `NEG_INFINITY` associated constant on `f64`")]
 pub const NEG_INFINITY: f64 = f64::NEG_INFINITY;
 
 /// Basic mathematical constants.
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub mod consts {
     // FIXME: replace with mathematical constants from cmath.
 
     /// Archimedes' constant (π)
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub const PI: f64 = 3.14159265358979323846264338327950288_f64;
 
     /// The full circle constant (τ)
@@ -278,47 +278,47 @@ pub mod consts {
     pub const TAU: f64 = 6.28318530717958647692528676655900577_f64;
 
     /// π/2
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub const FRAC_PI_2: f64 = 1.57079632679489661923132169163975144_f64;
 
     /// π/3
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub const FRAC_PI_3: f64 = 1.04719755119659774615421446109316763_f64;
 
     /// π/4
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub const FRAC_PI_4: f64 = 0.785398163397448309615660845819875721_f64;
 
     /// π/6
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub const FRAC_PI_6: f64 = 0.52359877559829887307710723054658381_f64;
 
     /// π/8
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub const FRAC_PI_8: f64 = 0.39269908169872415480783042290993786_f64;
 
     /// 1/π
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub const FRAC_1_PI: f64 = 0.318309886183790671537767526745028724_f64;
 
     /// 2/π
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub const FRAC_2_PI: f64 = 0.636619772367581343075535053490057448_f64;
 
     /// 2/sqrt(π)
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub const FRAC_2_SQRT_PI: f64 = 1.12837916709551257389615890312154517_f64;
 
     /// sqrt(2)
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub const SQRT_2: f64 = 1.41421356237309504880168872420969808_f64;
 
     /// 1/sqrt(2)
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub const FRAC_1_SQRT_2: f64 = 0.707106781186547524400844362104849039_f64;
 
     /// Euler's number (e)
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub const E: f64 = 2.71828182845904523536028747135266250_f64;
 
     /// log<sub>2</sub>(10)
@@ -326,7 +326,7 @@ pub mod consts {
     pub const LOG2_10: f64 = 3.32192809488736234787031942948939018_f64;
 
     /// log<sub>2</sub>(e)
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub const LOG2_E: f64 = 1.44269504088896340735992468100189214_f64;
 
     /// log<sub>10</sub>(2)
@@ -334,15 +334,15 @@ pub mod consts {
     pub const LOG10_2: f64 = 0.301029995663981195213738894724493027_f64;
 
     /// log<sub>10</sub>(e)
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub const LOG10_E: f64 = 0.434294481903251827651128918916605082_f64;
 
     /// ln(2)
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub const LN_2: f64 = 0.693147180559945309417232121458176568_f64;
 
     /// ln(10)
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub const LN_10: f64 = 2.30258509299404568401799145468436421_f64;
 }
 
@@ -399,7 +399,7 @@ impl f64 {
     /// between a "signaling" and a "quiet" NaN,
     /// and allows inspecting its "payload" (the unspecified bits in the bit pattern).
     /// This constant isn't guaranteed to equal to any specific NaN bitpattern,
-    /// and the stability of its representation over Rust versions
+    /// and the stability of its representation over CrabLang versions
     /// and target platforms isn't guaranteed.
     #[stable(feature = "assoc_int_consts", since = "1.43.0")]
     pub const NAN: f64 = 0.0_f64 / 0.0_f64;
@@ -420,8 +420,8 @@ impl f64 {
     /// assert!(!f.is_nan());
     /// ```
     #[must_use]
-    #[stable(feature = "rust1", since = "1.0.0")]
-    #[rustc_const_unstable(feature = "const_float_classify", issue = "72505")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    #[crablangc_const_unstable(feature = "const_float_classify", issue = "72505")]
     #[inline]
     pub const fn is_nan(self) -> bool {
         self != self
@@ -431,7 +431,7 @@ impl f64 {
     // concerns about portability, so this implementation is for
     // private use internally.
     #[inline]
-    #[rustc_const_unstable(feature = "const_float_classify", issue = "72505")]
+    #[crablangc_const_unstable(feature = "const_float_classify", issue = "72505")]
     pub(crate) const fn abs_private(self) -> f64 {
         // SAFETY: This transmutation is fine. Probably. For the reasons std is using it.
         unsafe {
@@ -455,13 +455,13 @@ impl f64 {
     /// assert!(neg_inf.is_infinite());
     /// ```
     #[must_use]
-    #[stable(feature = "rust1", since = "1.0.0")]
-    #[rustc_const_unstable(feature = "const_float_classify", issue = "72505")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    #[crablangc_const_unstable(feature = "const_float_classify", issue = "72505")]
     #[inline]
     pub const fn is_infinite(self) -> bool {
         // Getting clever with transmutation can result in incorrect answers on some FPUs
-        // FIXME: alter the Rust <-> Rust calling convention to prevent this problem.
-        // See https://github.com/rust-lang/rust/issues/72327
+        // FIXME: alter the CrabLang <-> CrabLang calling convention to prevent this problem.
+        // See https://github.com/crablang/crablang/issues/72327
         (self == f64::INFINITY) | (self == f64::NEG_INFINITY)
     }
 
@@ -480,8 +480,8 @@ impl f64 {
     /// assert!(!neg_inf.is_finite());
     /// ```
     #[must_use]
-    #[stable(feature = "rust1", since = "1.0.0")]
-    #[rustc_const_unstable(feature = "const_float_classify", issue = "72505")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    #[crablangc_const_unstable(feature = "const_float_classify", issue = "72505")]
     #[inline]
     pub const fn is_finite(self) -> bool {
         // There's no need to handle NaN separately: if self is NaN,
@@ -509,7 +509,7 @@ impl f64 {
     /// [subnormal]: https://en.wikipedia.org/wiki/Denormal_number
     #[must_use]
     #[stable(feature = "is_subnormal", since = "1.53.0")]
-    #[rustc_const_unstable(feature = "const_float_classify", issue = "72505")]
+    #[crablangc_const_unstable(feature = "const_float_classify", issue = "72505")]
     #[inline]
     pub const fn is_subnormal(self) -> bool {
         matches!(self.classify(), FpCategory::Subnormal)
@@ -535,8 +535,8 @@ impl f64 {
     /// ```
     /// [subnormal]: https://en.wikipedia.org/wiki/Denormal_number
     #[must_use]
-    #[stable(feature = "rust1", since = "1.0.0")]
-    #[rustc_const_unstable(feature = "const_float_classify", issue = "72505")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    #[crablangc_const_unstable(feature = "const_float_classify", issue = "72505")]
     #[inline]
     pub const fn is_normal(self) -> bool {
         matches!(self.classify(), FpCategory::Normal)
@@ -555,8 +555,8 @@ impl f64 {
     /// assert_eq!(num.classify(), FpCategory::Normal);
     /// assert_eq!(inf.classify(), FpCategory::Infinite);
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
-    #[rustc_const_unstable(feature = "const_float_classify", issue = "72505")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    #[crablangc_const_unstable(feature = "const_float_classify", issue = "72505")]
     pub const fn classify(self) -> FpCategory {
         // A previous implementation tried to only use bitmask-based checks,
         // using f64::to_bits to transmute the float to its bit repr and match on that.
@@ -567,7 +567,7 @@ impl f64 {
         // in spite of a request for them using f32 and f64, to things like x87 operations.
         // These have an f64's mantissa, but can have a larger than normal exponent.
         // FIXME(jubilee): Using x87 operations is never necessary in order to function
-        // on x86 processors for Rust-to-Rust calls, so this issue should not happen.
+        // on x86 processors for CrabLang-to-CrabLang calls, so this issue should not happen.
         // Code generation should be adjusted to use non-C calling conventions, avoiding this.
         //
         // Thus, a value may compare unequal to infinity, despite having a "full" exponent mask.
@@ -591,7 +591,7 @@ impl f64 {
     // This doesn't actually return a right answer for NaN on purpose,
     // seeing as how it cannot correctly discern between a floating point NaN,
     // and some normal floating point numbers truncated from an x87 FPU.
-    #[rustc_const_unstable(feature = "const_float_classify", issue = "72505")]
+    #[crablangc_const_unstable(feature = "const_float_classify", issue = "72505")]
     const unsafe fn partial_classify(self) -> FpCategory {
         const EXP_MASK: u64 = 0x7ff0000000000000;
         const MAN_MASK: u64 = 0x000fffffffffffff;
@@ -609,7 +609,7 @@ impl f64 {
     // This operates on bits, and only bits, so it can ignore concerns about weird FPUs.
     // FIXME(jubilee): In a just world, this would be the entire impl for classify,
     // plus a transmute. We do not live in a just world, but we can make it more so.
-    #[rustc_const_unstable(feature = "const_float_classify", issue = "72505")]
+    #[crablangc_const_unstable(feature = "const_float_classify", issue = "72505")]
     const fn classify_bits(b: u64) -> FpCategory {
         const EXP_MASK: u64 = 0x7ff0000000000000;
         const MAN_MASK: u64 = 0x000fffffffffffff;
@@ -625,7 +625,7 @@ impl f64 {
 
     /// Returns `true` if `self` has a positive sign, including `+0.0`, NaNs with
     /// positive sign bit and positive infinity. Note that IEEE 754 doesn't assign any
-    /// meaning to the sign bit in case of a NaN, and as Rust doesn't guarantee that
+    /// meaning to the sign bit in case of a NaN, and as CrabLang doesn't guarantee that
     /// the bit pattern of NaNs are conserved over arithmetic operations, the result of
     /// `is_sign_positive` on a NaN might produce an unexpected result in some cases.
     /// See [explanation of NaN as a special value](f32) for more info.
@@ -638,15 +638,15 @@ impl f64 {
     /// assert!(!g.is_sign_positive());
     /// ```
     #[must_use]
-    #[stable(feature = "rust1", since = "1.0.0")]
-    #[rustc_const_unstable(feature = "const_float_classify", issue = "72505")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    #[crablangc_const_unstable(feature = "const_float_classify", issue = "72505")]
     #[inline]
     pub const fn is_sign_positive(self) -> bool {
         !self.is_sign_negative()
     }
 
     #[must_use]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[deprecated(since = "1.0.0", note = "renamed to is_sign_positive")]
     #[inline]
     #[doc(hidden)]
@@ -656,7 +656,7 @@ impl f64 {
 
     /// Returns `true` if `self` has a negative sign, including `-0.0`, NaNs with
     /// negative sign bit and negative infinity. Note that IEEE 754 doesn't assign any
-    /// meaning to the sign bit in case of a NaN, and as Rust doesn't guarantee that
+    /// meaning to the sign bit in case of a NaN, and as CrabLang doesn't guarantee that
     /// the bit pattern of NaNs are conserved over arithmetic operations, the result of
     /// `is_sign_negative` on a NaN might produce an unexpected result in some cases.
     /// See [explanation of NaN as a special value](f32) for more info.
@@ -669,8 +669,8 @@ impl f64 {
     /// assert!(g.is_sign_negative());
     /// ```
     #[must_use]
-    #[stable(feature = "rust1", since = "1.0.0")]
-    #[rustc_const_unstable(feature = "const_float_classify", issue = "72505")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    #[crablangc_const_unstable(feature = "const_float_classify", issue = "72505")]
     #[inline]
     pub const fn is_sign_negative(self) -> bool {
         // IEEE754 says: isSignMinus(x) is true if and only if x has negative sign. isSignMinus
@@ -680,7 +680,7 @@ impl f64 {
     }
 
     #[must_use]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[deprecated(since = "1.0.0", note = "renamed to is_sign_negative")]
     #[inline]
     #[doc(hidden)]
@@ -701,7 +701,7 @@ impl f64 {
     /// The identity `x.next_up() == -(-x).next_down()` holds for all non-NaN `x`. When `x`
     /// is finite `x == x.next_up().next_down()` also holds.
     ///
-    /// ```rust
+    /// ```crablang
     /// #![feature(float_next_up_down)]
     /// // f64::EPSILON is the difference between 1.0 and the next number up.
     /// assert_eq!(1.0f64.next_up(), 1.0 + f64::EPSILON);
@@ -715,7 +715,7 @@ impl f64 {
     /// [`MIN`]: Self::MIN
     /// [`MAX`]: Self::MAX
     #[unstable(feature = "float_next_up_down", issue = "91399")]
-    #[rustc_const_unstable(feature = "float_next_up_down", issue = "91399")]
+    #[crablangc_const_unstable(feature = "float_next_up_down", issue = "91399")]
     pub const fn next_up(self) -> Self {
         // We must use strictly integer arithmetic to prevent denormals from
         // flushing to zero after an arithmetic operation on some platforms.
@@ -751,7 +751,7 @@ impl f64 {
     /// The identity `x.next_down() == -(-x).next_up()` holds for all non-NaN `x`. When `x`
     /// is finite `x == x.next_down().next_up()` also holds.
     ///
-    /// ```rust
+    /// ```crablang
     /// #![feature(float_next_up_down)]
     /// let x = 1.0f64;
     /// // Clamp value into range [0, 1).
@@ -765,7 +765,7 @@ impl f64 {
     /// [`MIN`]: Self::MIN
     /// [`MAX`]: Self::MAX
     #[unstable(feature = "float_next_up_down", issue = "91399")]
-    #[rustc_const_unstable(feature = "float_next_up_down", issue = "91399")]
+    #[crablangc_const_unstable(feature = "float_next_up_down", issue = "91399")]
     pub const fn next_down(self) -> Self {
         // We must use strictly integer arithmetic to prevent denormals from
         // flushing to zero after an arithmetic operation on some platforms.
@@ -797,7 +797,7 @@ impl f64 {
     /// assert!(abs_difference < 1e-10);
     /// ```
     #[must_use = "this returns the result of the operation, without modifying the original"]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     pub fn recip(self) -> f64 {
         1.0 / self
@@ -814,7 +814,7 @@ impl f64 {
     /// ```
     #[must_use = "this returns the result of the operation, \
                   without modifying the original"]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     pub fn to_degrees(self) -> f64 {
         // The division here is correctly rounded with respect to the true
@@ -834,7 +834,7 @@ impl f64 {
     /// ```
     #[must_use = "this returns the result of the operation, \
                   without modifying the original"]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     pub fn to_radians(self) -> f64 {
         let value: f64 = consts::PI;
@@ -855,7 +855,7 @@ impl f64 {
     /// assert_eq!(x.max(y), y);
     /// ```
     #[must_use = "this returns the result of the comparison, without modifying either input"]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     pub fn max(self, other: f64) -> f64 {
         intrinsics::maxnumf64(self, other)
@@ -875,7 +875,7 @@ impl f64 {
     /// assert_eq!(x.min(y), x);
     /// ```
     #[must_use = "this returns the result of the comparison, without modifying either input"]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     pub fn min(self, other: f64) -> f64 {
         intrinsics::minnumf64(self, other)
@@ -1004,14 +1004,14 @@ impl f64 {
     #[must_use = "this returns the result of the operation, \
                   without modifying the original"]
     #[stable(feature = "float_bits_conv", since = "1.20.0")]
-    #[rustc_const_unstable(feature = "const_float_bits_conv", issue = "72447")]
+    #[crablangc_const_unstable(feature = "const_float_bits_conv", issue = "72447")]
     #[inline]
     pub const fn to_bits(self) -> u64 {
         // SAFETY: `u64` is a plain old datatype so we can always transmute to it.
         // ...sorta.
         //
         // See the SAFETY comment in f64::from_bits for more.
-        #[rustc_const_unstable(feature = "const_float_bits_conv", issue = "72447")]
+        #[crablangc_const_unstable(feature = "const_float_bits_conv", issue = "72447")]
         const fn ct_f64_to_u64(ct: f64) -> u64 {
             match ct.classify() {
                 FpCategory::Nan => {
@@ -1027,7 +1027,7 @@ impl f64 {
             }
         }
 
-        #[inline(always)] // See https://github.com/rust-lang/compiler-builtins/issues/491
+        #[inline(always)] // See https://github.com/crablang/compiler-builtins/issues/491
         fn rt_f64_to_u64(rt: f64) -> u64 {
             // SAFETY: `u64` is a plain old datatype so we can always... uh...
             // ...look, just pretend you forgot what you just read.
@@ -1075,7 +1075,7 @@ impl f64 {
     /// assert_eq!(v, 12.5);
     /// ```
     #[stable(feature = "float_bits_conv", since = "1.20.0")]
-    #[rustc_const_unstable(feature = "const_float_bits_conv", issue = "72447")]
+    #[crablangc_const_unstable(feature = "const_float_bits_conv", issue = "72447")]
     #[must_use]
     #[inline]
     pub const fn from_bits(v: u64) -> Self {
@@ -1086,7 +1086,7 @@ impl f64 {
         // It turns out that at runtime, it is possible for a floating point number
         // to be subject to floating point modes that alter nonzero subnormal numbers
         // to zero on reads and writes, aka "denormals are zero" and "flush to zero".
-        // This is not a problem usually, but at least one tier2 platform for Rust
+        // This is not a problem usually, but at least one tier2 platform for CrabLang
         // actually exhibits an FTZ behavior by default: thumbv7neon
         // aka "the Neon FPU in AArch32 state"
         //
@@ -1096,19 +1096,19 @@ impl f64 {
         // and other FPUs may do similar. Thus, it is wise to indulge luxuriously in caution.
         //
         // In addition, on x86 targets with SSE or SSE2 disabled and the x87 FPU enabled,
-        // i.e. not soft-float, the way Rust does parameter passing can actually alter
+        // i.e. not soft-float, the way CrabLang does parameter passing can actually alter
         // a number that is "not infinity" to have the same exponent as infinity,
         // in a slightly unpredictable manner.
         //
         // And, of course evaluating to a NaN value is fairly nondeterministic.
         // More precisely: when NaN should be returned is knowable, but which NaN?
-        // So far that's defined by a combination of LLVM and the CPU, not Rust.
+        // So far that's defined by a combination of LLVM and the CPU, not CrabLang.
         // This function, however, allows observing the bitstring of a NaN,
         // thus introspection on CTFE.
         //
         // In order to preserve, at least for the moment, const-to-runtime equivalence,
         // reject any of these possible situations from happening.
-        #[rustc_const_unstable(feature = "const_float_bits_conv", issue = "72447")]
+        #[crablangc_const_unstable(feature = "const_float_bits_conv", issue = "72447")]
         const fn ct_u64_to_f64(ct: u64) -> f64 {
             match f64::classify_bits(ct) {
                 FpCategory::Subnormal => {
@@ -1124,7 +1124,7 @@ impl f64 {
             }
         }
 
-        #[inline(always)] // See https://github.com/rust-lang/compiler-builtins/issues/491
+        #[inline(always)] // See https://github.com/crablang/compiler-builtins/issues/491
         fn rt_u64_to_f64(rt: u64) -> f64 {
             // SAFETY: `u64` is a plain old datatype so we can always... uh...
             // ...look, just pretend you forgot what you just read.
@@ -1150,7 +1150,7 @@ impl f64 {
     #[must_use = "this returns the result of the operation, \
                   without modifying the original"]
     #[stable(feature = "float_to_from_bytes", since = "1.40.0")]
-    #[rustc_const_unstable(feature = "const_float_bits_conv", issue = "72447")]
+    #[crablangc_const_unstable(feature = "const_float_bits_conv", issue = "72447")]
     #[inline]
     pub const fn to_be_bytes(self) -> [u8; 8] {
         self.to_bits().to_be_bytes()
@@ -1171,7 +1171,7 @@ impl f64 {
     #[must_use = "this returns the result of the operation, \
                   without modifying the original"]
     #[stable(feature = "float_to_from_bytes", since = "1.40.0")]
-    #[rustc_const_unstable(feature = "const_float_bits_conv", issue = "72447")]
+    #[crablangc_const_unstable(feature = "const_float_bits_conv", issue = "72447")]
     #[inline]
     pub const fn to_le_bytes(self) -> [u8; 8] {
         self.to_bits().to_le_bytes()
@@ -1205,7 +1205,7 @@ impl f64 {
     #[must_use = "this returns the result of the operation, \
                   without modifying the original"]
     #[stable(feature = "float_to_from_bytes", since = "1.40.0")]
-    #[rustc_const_unstable(feature = "const_float_bits_conv", issue = "72447")]
+    #[crablangc_const_unstable(feature = "const_float_bits_conv", issue = "72447")]
     #[inline]
     pub const fn to_ne_bytes(self) -> [u8; 8] {
         self.to_bits().to_ne_bytes()
@@ -1223,7 +1223,7 @@ impl f64 {
     /// assert_eq!(value, 12.5);
     /// ```
     #[stable(feature = "float_to_from_bytes", since = "1.40.0")]
-    #[rustc_const_unstable(feature = "const_float_bits_conv", issue = "72447")]
+    #[crablangc_const_unstable(feature = "const_float_bits_conv", issue = "72447")]
     #[must_use]
     #[inline]
     pub const fn from_be_bytes(bytes: [u8; 8]) -> Self {
@@ -1242,7 +1242,7 @@ impl f64 {
     /// assert_eq!(value, 12.5);
     /// ```
     #[stable(feature = "float_to_from_bytes", since = "1.40.0")]
-    #[rustc_const_unstable(feature = "const_float_bits_conv", issue = "72447")]
+    #[crablangc_const_unstable(feature = "const_float_bits_conv", issue = "72447")]
     #[must_use]
     #[inline]
     pub const fn from_le_bytes(bytes: [u8; 8]) -> Self {
@@ -1272,7 +1272,7 @@ impl f64 {
     /// assert_eq!(value, 12.5);
     /// ```
     #[stable(feature = "float_to_from_bytes", since = "1.40.0")]
-    #[rustc_const_unstable(feature = "const_float_bits_conv", issue = "72447")]
+    #[crablangc_const_unstable(feature = "const_float_bits_conv", issue = "72447")]
     #[must_use]
     #[inline]
     pub const fn from_ne_bytes(bytes: [u8; 8]) -> Self {

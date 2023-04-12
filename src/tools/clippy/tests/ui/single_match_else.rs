@@ -44,7 +44,7 @@ macro_rules! unwrap_addr {
     };
 }
 
-#[rustfmt::skip]
+#[crablangfmt::skip]
 fn main() {
     unwrap_addr!(ExprNode::Unicorns);
 

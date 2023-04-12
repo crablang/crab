@@ -1,5 +1,5 @@
 // only-x86_64
-// run-rustfix
+// run-crablangfix
 
 use std::arch::{asm, global_asm};
 

@@ -1,16 +1,16 @@
 // run-pass
 
 #![allow(non_upper_case_globals)]
-#![feature(rustc_private)]
-extern crate rustc_macros;
-extern crate rustc_serialize;
+#![feature(crablangc_private)]
+extern crate crablangc_macros;
+extern crate crablangc_serialize;
 
-use rustc_macros::{Decodable, Encodable};
+use crablangc_macros::{Decodable, Encodable};
 
-// Necessary to pull in object code as the rest of the rustc crates are shipped only as rmeta
+// Necessary to pull in object code as the rest of the crablangc crates are shipped only as rmeta
 // files.
 #[allow(unused_extern_crates)]
-extern crate rustc_driver;
+extern crate crablangc_driver;
 
 pub const other: u8 = 1;
 pub const f: u8 = 1;

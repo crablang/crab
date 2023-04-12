@@ -7,7 +7,7 @@
 // closure in the guard being codegened twice due to how match expressions are
 // handled.
 //
-// See https://github.com/rust-lang/rust/issues/34569 for details.
+// See https://github.com/crablang/crablang/issues/34569 for details.
 
 fn main() {
     match 0 {

@@ -128,7 +128,7 @@ fn main() {
         (false, false) => {}
         (false | true, false | true) => {}
     }
-    // https://github.com/rust-lang/rust/issues/76836
+    // https://github.com/crablang/crablang/issues/76836
     match None {
         Some(false) => {}
         None | Some(true

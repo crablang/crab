@@ -2,7 +2,7 @@
 #![allow(dead_code)]
 #![allow(unused_unsafe)]
 
-// https://github.com/rust-lang/rust/issues/48279
+// https://github.com/crablang/crablang/issues/48279
 
 #[derive(PartialEq, Eq)]
 pub struct NonZeroU32 {

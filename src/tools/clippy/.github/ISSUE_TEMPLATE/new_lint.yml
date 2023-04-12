@@ -58,13 +58,13 @@ body:
         Include a short example showing when the lint should trigger together
         with the improved code.
       value: |
-        ```rust
+        ```crablang
         <code>
         ```
 
         Could be written as:
 
-        ```rust
+        ```crablang
         <code>
         ```
     validations:

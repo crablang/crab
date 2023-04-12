@@ -1,9 +1,9 @@
 // --force-warn $LINT_GROUP causes $LINT to warn despite
 // $LINT_GROUP being allowed in module
-// compile-flags: --force-warn rust_2018_idioms
+// compile-flags: --force-warn crablang_2018_idioms
 // check-pass
 
-#![allow(rust_2018_idioms)]
+#![allow(crablang_2018_idioms)]
 
 pub trait SomeTrait {}
 

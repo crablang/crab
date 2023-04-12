@@ -72,4 +72,4 @@ LL |     !*n;
 error: aborting due to 5 previous errors
 
 Some errors have detailed explanations: E0382, E0505, E0507.
-For more information about an error, try `rustc --explain E0382`.
+For more information about an error, try `crablangc --explain E0382`.

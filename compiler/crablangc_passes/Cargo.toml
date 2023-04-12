@@ -1,0 +1,25 @@
+[package]
+name = "crablangc_passes"
+version = "0.0.0"
+edition = "2021"
+
+[dependencies]
+tracing = "0.1"
+itertools = "0.10.1"
+crablangc_middle = { path = "../crablangc_middle" }
+crablangc_attr = { path = "../crablangc_attr" }
+crablangc_data_structures = { path = "../crablangc_data_structures" }
+crablangc_errors = { path = "../crablangc_errors" }
+crablangc_expand = { path = "../crablangc_expand" }
+crablangc_hir = { path = "../crablangc_hir" }
+crablangc_index = { path = "../crablangc_index" }
+crablangc_session = { path = "../crablangc_session" }
+crablangc_target = { path = "../crablangc_target" }
+crablangc_macros = { path = "../crablangc_macros" }
+crablangc_ast = { path = "../crablangc_ast" }
+crablangc_serialize = { path = "../crablangc_serialize" }
+crablangc_span = { path = "../crablangc_span" }
+crablangc_lexer = { path = "../crablangc_lexer" }
+crablangc_ast_pretty = { path = "../crablangc_ast_pretty" }
+crablangc_feature = { path = "../crablangc_feature" }
+crablangc_trait_selection = { path = "../crablangc_trait_selection" }

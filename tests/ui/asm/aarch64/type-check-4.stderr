@@ -24,4 +24,4 @@ LL | global_asm!("{}", const const_bar(S));
 
 error: aborting due to 3 previous errors
 
-For more information about this error, try `rustc --explain E0013`.
+For more information about this error, try `crablangc --explain E0013`.

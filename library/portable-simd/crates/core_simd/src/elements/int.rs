@@ -46,7 +46,7 @@ pub trait SimdInt: Copy + Sealed {
     /// assert_eq!(sat, Simd::from_array([MIN, MIN, MIN, 0]));
     fn saturating_sub(self, second: Self) -> Self;
 
-    /// Lanewise absolute value, implemented in Rust.
+    /// Lanewise absolute value, implemented in CrabLang.
     /// Every lane becomes its absolute value.
     ///
     /// # Examples
@@ -61,7 +61,7 @@ pub trait SimdInt: Copy + Sealed {
     /// ```
     fn abs(self) -> Self;
 
-    /// Lanewise saturating absolute value, implemented in Rust.
+    /// Lanewise saturating absolute value, implemented in CrabLang.
     /// As abs(), except the MIN value becomes MAX instead of itself.
     ///
     /// # Examples
@@ -79,7 +79,7 @@ pub trait SimdInt: Copy + Sealed {
     /// ```
     fn saturating_abs(self) -> Self;
 
-    /// Lanewise saturating negation, implemented in Rust.
+    /// Lanewise saturating negation, implemented in CrabLang.
     /// As neg(), except the MIN value becomes MAX instead of itself.
     ///
     /// # Examples

@@ -32,8 +32,8 @@ def get(base, url, path, checksums, verbose=False):
         if url not in checksums:
             raise RuntimeError(("src/stage0.json doesn't contain a checksum for {}. "
                                 "Pre-built artifacts might not be available for this "
-                                "target at this time, see https://doc.rust-lang.org/nightly"
-                                "/rustc/platform-support.html for more information.")
+                                "target at this time, see https://doc.crablang.org/nightly"
+                                "/crablangc/platform-support.html for more information.")
                                 .format(url))
         sha256 = checksums[url]
         if os.path.exists(path):
@@ -205,22 +205,22 @@ def format_build_time(duration):
 
 def default_build_triple(verbose):
     """Build triple as in LLVM"""
-    # If the user already has a host build triple with an existing `rustc`
+    # If the user already has a host build triple with an existing `crablangc`
     # install, use their preference. This fixes most issues with Windows builds
     # being detected as GNU instead of MSVC.
     default_encoding = sys.getdefaultencoding()
     try:
-        version = subprocess.check_output(["rustc", "--version", "--verbose"],
+        version = subprocess.check_output(["crablangc", "--version", "--verbose"],
                 stderr=subprocess.DEVNULL)
         version = version.decode(default_encoding)
         host = next(x for x in version.split('\n') if x.startswith("host: "))
         triple = host.split("host: ")[1]
         if verbose:
-            print("detected default triple {} from pre-installed rustc".format(triple))
+            print("detected default triple {} from pre-installed crablangc".format(triple))
         return triple
     except Exception as e:
         if verbose:
-            print("pre-installed rustc not detected: {}".format(e))
+            print("pre-installed crablangc not detected: {}".format(e))
             print("falling back to auto-detect")
 
     required = sys.platform != 'win32'
@@ -391,8 +391,8 @@ class Stage0Toolchain:
         return self.version + "-" + self.date
 
 
-class RustBuild(object):
-    """Provide all the methods required to build Rust"""
+class CrabLangBuild(object):
+    """Provide all the methods required to build CrabLang"""
     def __init__(self):
         self.checksums_sha256 = {}
         self.stage0_compiler = None
@@ -401,7 +401,7 @@ class RustBuild(object):
         self.build_dir = ''
         self.clean = False
         self.config_toml = ''
-        self.rust_root = ''
+        self.crablang_root = ''
         self.use_locked_deps = False
         self.use_vendored_sources = False
         self.verbose = False
@@ -410,59 +410,59 @@ class RustBuild(object):
         self._should_fix_bins_and_dylibs = None
 
     def download_toolchain(self):
-        """Fetch the build system for Rust, written in Rust
+        """Fetch the build system for CrabLang, written in CrabLang
 
         This method will build a cache directory, then it will fetch the
-        tarball which has the stage0 compiler used to then bootstrap the Rust
+        tarball which has the stage0 compiler used to then bootstrap the CrabLang
         compiler itself.
 
         Each downloaded tarball is extracted, after that, the script
         will move all the content to the right place.
         """
-        rustc_channel = self.stage0_compiler.version
+        crablangc_channel = self.stage0_compiler.version
         bin_root = self.bin_root()
 
         key = self.stage0_compiler.date
-        if self.rustc().startswith(bin_root) and \
-                (not os.path.exists(self.rustc()) or
-                 self.program_out_of_date(self.rustc_stamp(), key)):
+        if self.crablangc().startswith(bin_root) and \
+                (not os.path.exists(self.crablangc()) or
+                 self.program_out_of_date(self.crablangc_stamp(), key)):
             if os.path.exists(bin_root):
                 shutil.rmtree(bin_root)
             tarball_suffix = '.tar.gz' if lzma is None else '.tar.xz'
-            filename = "rust-std-{}-{}{}".format(
-                rustc_channel, self.build, tarball_suffix)
-            pattern = "rust-std-{}".format(self.build)
+            filename = "crablang-std-{}-{}{}".format(
+                crablangc_channel, self.build, tarball_suffix)
+            pattern = "crablang-std-{}".format(self.build)
             self._download_component_helper(filename, pattern, tarball_suffix)
-            filename = "rustc-{}-{}{}".format(rustc_channel, self.build,
+            filename = "crablangc-{}-{}{}".format(crablangc_channel, self.build,
                                               tarball_suffix)
-            self._download_component_helper(filename, "rustc", tarball_suffix)
-            filename = "cargo-{}-{}{}".format(rustc_channel, self.build,
+            self._download_component_helper(filename, "crablangc", tarball_suffix)
+            filename = "cargo-{}-{}{}".format(crablangc_channel, self.build,
                                             tarball_suffix)
             self._download_component_helper(filename, "cargo", tarball_suffix)
             if self.should_fix_bins_and_dylibs():
                 self.fix_bin_or_dylib("{}/bin/cargo".format(bin_root))
 
-                self.fix_bin_or_dylib("{}/bin/rustc".format(bin_root))
-                self.fix_bin_or_dylib("{}/bin/rustdoc".format(bin_root))
-                self.fix_bin_or_dylib("{}/libexec/rust-analyzer-proc-macro-srv".format(bin_root))
+                self.fix_bin_or_dylib("{}/bin/crablangc".format(bin_root))
+                self.fix_bin_or_dylib("{}/bin/crablangdoc".format(bin_root))
+                self.fix_bin_or_dylib("{}/libexec/crablang-analyzer-proc-macro-srv".format(bin_root))
                 lib_dir = "{}/lib".format(bin_root)
                 for lib in os.listdir(lib_dir):
                     if lib.endswith(".so"):
                         self.fix_bin_or_dylib(os.path.join(lib_dir, lib))
 
-            with output(self.rustc_stamp()) as rust_stamp:
-                rust_stamp.write(key)
+            with output(self.crablangc_stamp()) as crablang_stamp:
+                crablang_stamp.write(key)
 
     def _download_component_helper(
         self, filename, pattern, tarball_suffix,
     ):
         key = self.stage0_compiler.date
         cache_dst = os.path.join(self.build_dir, "cache")
-        rustc_cache = os.path.join(cache_dst, key)
-        if not os.path.exists(rustc_cache):
-            os.makedirs(rustc_cache)
+        crablangc_cache = os.path.join(cache_dst, key)
+        if not os.path.exists(crablangc_cache):
+            os.makedirs(crablangc_cache)
 
-        tarball = os.path.join(rustc_cache, filename)
+        tarball = os.path.join(crablangc_cache, filename)
         if not os.path.exists(tarball):
             get(
                 self.download_url,
@@ -548,7 +548,7 @@ class RustBuild(object):
             nix_expr = '''
             with (import <nixpkgs> {});
             symlinkJoin {
-              name = "rust-stage0-dependencies";
+              name = "crablang-stage0-dependencies";
               paths = [
                 zlib
                 patchelf
@@ -584,15 +584,15 @@ class RustBuild(object):
             print("warning: failed to call patchelf:", reason)
             return
 
-    def rustc_stamp(self):
-        """Return the path for .rustc-stamp at the given stage
+    def crablangc_stamp(self):
+        """Return the path for .crablangc-stamp at the given stage
 
-        >>> rb = RustBuild()
+        >>> rb = CrabLangBuild()
         >>> rb.build_dir = "build"
-        >>> rb.rustc_stamp() == os.path.join("build", "stage0", ".rustc-stamp")
+        >>> rb.crablangc_stamp() == os.path.join("build", "stage0", ".crablangc-stamp")
         True
         """
-        return os.path.join(self.bin_root(), '.rustc-stamp')
+        return os.path.join(self.bin_root(), '.crablangc-stamp')
 
     def program_out_of_date(self, stamp_path, key):
         """Check if the given program stamp is out of date"""
@@ -604,7 +604,7 @@ class RustBuild(object):
     def bin_root(self):
         """Return the binary root directory for the given stage
 
-        >>> rb = RustBuild()
+        >>> rb = CrabLangBuild()
         >>> rb.build_dir = "build"
         >>> rb.bin_root() == os.path.join("build", "stage0")
         True
@@ -621,7 +621,7 @@ class RustBuild(object):
     def get_toml(self, key, section=None):
         """Returns the value of the given key in config.toml, otherwise returns None
 
-        >>> rb = RustBuild()
+        >>> rb = CrabLangBuild()
         >>> rb.config_toml = 'key1 = "value1"\\nkey2 = "value2"'
         >>> rb.get_toml("key2")
         'value2'
@@ -663,17 +663,17 @@ class RustBuild(object):
         """Return config path for cargo"""
         return self.program_config('cargo')
 
-    def rustc(self):
-        """Return config path for rustc"""
-        return self.program_config('rustc')
+    def crablangc(self):
+        """Return config path for crablangc"""
+        return self.program_config('crablangc')
 
     def program_config(self, program):
         """Return config path for the given program at the given stage
 
-        >>> rb = RustBuild()
-        >>> rb.config_toml = 'rustc = "rustc"\\n'
-        >>> rb.program_config('rustc')
-        'rustc'
+        >>> rb = CrabLangBuild()
+        >>> rb.config_toml = 'crablangc = "crablangc"\\n'
+        >>> rb.program_config('crablangc')
+        'crablangc'
         >>> rb.config_toml = ''
         >>> cargo_path = rb.program_config('cargo')
         >>> cargo_path.rstrip(".exe") == os.path.join(rb.bin_root(),
@@ -689,13 +689,13 @@ class RustBuild(object):
     def get_string(line):
         """Return the value between double quotes
 
-        >>> RustBuild.get_string('    "devel"   ')
+        >>> CrabLangBuild.get_string('    "devel"   ')
         'devel'
-        >>> RustBuild.get_string("    'devel'   ")
+        >>> CrabLangBuild.get_string("    'devel'   ")
         'devel'
-        >>> RustBuild.get_string('devel') is None
+        >>> CrabLangBuild.get_string('devel') is None
         True
-        >>> RustBuild.get_string('    "devel   ')
+        >>> CrabLangBuild.get_string('    "devel   ')
         ''
         """
         start = line.find('"')
@@ -711,7 +711,7 @@ class RustBuild(object):
     def bootstrap_binary(self):
         """Return the path of the bootstrap binary
 
-        >>> rb = RustBuild()
+        >>> rb = CrabLangBuild()
         >>> rb.build_dir = "build"
         >>> rb.bootstrap_binary() == os.path.join("build", "bootstrap",
         ... "debug", "bootstrap")
@@ -727,11 +727,11 @@ class RustBuild(object):
             shutil.rmtree(build_dir)
         env = os.environ.copy()
         # `CARGO_BUILD_TARGET` breaks bootstrap build.
-        # See also: <https://github.com/rust-lang/rust/issues/70208>.
+        # See also: <https://github.com/crablang/crablang/issues/70208>.
         if "CARGO_BUILD_TARGET" in env:
             del env["CARGO_BUILD_TARGET"]
         env["CARGO_TARGET_DIR"] = build_dir
-        env["RUSTC"] = self.rustc()
+        env["CRABLANGC"] = self.crablangc()
         env["LD_LIBRARY_PATH"] = os.path.join(self.bin_root(), "lib") + \
             (os.pathsep + env["LD_LIBRARY_PATH"]) \
             if "LD_LIBRARY_PATH" in env else ""
@@ -756,21 +756,21 @@ class RustBuild(object):
             if toml_val != None:
                 env["{}_{}".format(var_name, host_triple_sanitized)] = toml_val
 
-        # preserve existing RUSTFLAGS
-        env.setdefault("RUSTFLAGS", "")
+        # preserve existing CRABLANGFLAGS
+        env.setdefault("CRABLANGFLAGS", "")
         target_features = []
         if self.get_toml("crt-static", build_section) == "true":
             target_features += ["+crt-static"]
         elif self.get_toml("crt-static", build_section) == "false":
             target_features += ["-crt-static"]
         if target_features:
-            env["RUSTFLAGS"] += " -C target-feature=" + (",".join(target_features))
+            env["CRABLANGFLAGS"] += " -C target-feature=" + (",".join(target_features))
         target_linker = self.get_toml("linker", build_section)
         if target_linker is not None:
-            env["RUSTFLAGS"] += " -C linker=" + target_linker
-        env["RUSTFLAGS"] += " -Wrust_2018_idioms -Wunused_lifetimes"
-        if self.get_toml("deny-warnings", "rust") != "false":
-            env["RUSTFLAGS"] += " -Dwarnings"
+            env["CRABLANGFLAGS"] += " -C linker=" + target_linker
+        env["CRABLANGFLAGS"] += " -Wcrablang_2018_idioms -Wunused_lifetimes"
+        if self.get_toml("deny-warnings", "crablang") != "false":
+            env["CRABLANGFLAGS"] += " -Dwarnings"
 
         env["PATH"] = os.path.join(self.bin_root(), "bin") + \
             os.pathsep + env["PATH"]
@@ -778,7 +778,7 @@ class RustBuild(object):
             raise Exception("no cargo executable found at `{}`".format(
                 self.cargo()))
         args = [self.cargo(), "build", "--manifest-path",
-                os.path.join(self.rust_root, "src/bootstrap/Cargo.toml")]
+                os.path.join(self.crablang_root, "src/bootstrap/Cargo.toml")]
         args.extend("--verbose" for _ in range(verbose_count))
         if self.use_locked_deps:
             args.append("--locked")
@@ -795,7 +795,7 @@ class RustBuild(object):
             args.append("--color=never")
 
         # Run this from the source directory so cargo finds .cargo/config
-        run(args, env=env, verbose=self.verbose, cwd=self.rust_root)
+        run(args, env=env, verbose=self.verbose, cwd=self.crablang_root)
 
     def build_triple(self):
         """Build triple as in LLVM
@@ -808,8 +808,8 @@ class RustBuild(object):
 
     def check_vendored_status(self):
         """Check that vendoring is configured properly"""
-        # keep this consistent with the equivalent check in rustbuild:
-        # https://github.com/rust-lang/rust/blob/a8a33cf27166d3eabaffc58ed3799e054af3b0c6/src/bootstrap/lib.rs#L399-L405
+        # keep this consistent with the equivalent check in crablangbuild:
+        # https://github.com/crablang/crablang/blob/a8a33cf27166d3eabaffc58ed3799e054af3b0c6/src/bootstrap/lib.rs#L399-L405
         if 'SUDO_USER' in os.environ and not self.use_vendored_sources:
             if os.getuid() == 0:
                 self.use_vendored_sources = True
@@ -817,17 +817,17 @@ class RustBuild(object):
                 print('      and so in order to preserve your $HOME this will now')
                 print('      use vendored sources by default.')
 
-        cargo_dir = os.path.join(self.rust_root, '.cargo')
+        cargo_dir = os.path.join(self.crablang_root, '.cargo')
         if self.use_vendored_sources:
-            vendor_dir = os.path.join(self.rust_root, 'vendor')
+            vendor_dir = os.path.join(self.crablang_root, 'vendor')
             if not os.path.exists(vendor_dir):
-                sync_dirs = "--sync ./src/tools/rust-analyzer/Cargo.toml " \
-                            "--sync ./compiler/rustc_codegen_cranelift/Cargo.toml " \
+                sync_dirs = "--sync ./src/tools/crablang-analyzer/Cargo.toml " \
+                            "--sync ./compiler/crablangc_codegen_cranelift/Cargo.toml " \
                             "--sync ./src/bootstrap/Cargo.toml "
                 print('error: vendoring required, but vendor directory does not exist.')
                 print('       Run `cargo vendor {}` to initialize the '
                       'vendor directory.'.format(sync_dirs))
-                print('Alternatively, use the pre-vendored `rustc-src` dist component.')
+                print('Alternatively, use the pre-vendored `crablangc-src` dist component.')
                 raise Exception("{} not found".format(vendor_dir))
 
             if not os.path.exists(cargo_dir):
@@ -854,22 +854,22 @@ def parse_args():
 def bootstrap(args):
     """Configure, fetch, build and run the initial bootstrap"""
     # Configure initial bootstrap
-    build = RustBuild()
-    build.rust_root = os.path.abspath(os.path.join(__file__, '../../..'))
+    build = CrabLangBuild()
+    build.crablang_root = os.path.abspath(os.path.join(__file__, '../../..'))
     build.verbose = args.verbose != 0
     build.clean = args.clean
     build.json_output = args.json_output
 
-    # Read from `--config`, then `RUST_BOOTSTRAP_CONFIG`, then `./config.toml`,
+    # Read from `--config`, then `CRABLANG_BOOTSTRAP_CONFIG`, then `./config.toml`,
     # then `config.toml` in the root directory.
-    toml_path = args.config or os.getenv('RUST_BOOTSTRAP_CONFIG')
+    toml_path = args.config or os.getenv('CRABLANG_BOOTSTRAP_CONFIG')
     using_default_path = toml_path is None
     if using_default_path:
         toml_path = 'config.toml'
         if not os.path.exists(toml_path):
-            toml_path = os.path.join(build.rust_root, toml_path)
+            toml_path = os.path.join(build.crablang_root, toml_path)
 
-    # Give a hard error if `--config` or `RUST_BOOTSTRAP_CONFIG` are set to a missing path,
+    # Give a hard error if `--config` or `CRABLANG_BOOTSTRAP_CONFIG` are set to a missing path,
     # but not if `config.toml` hasn't been created.
     if not using_default_path or os.path.exists(toml_path):
         with open(toml_path) as config:
@@ -878,7 +878,7 @@ def bootstrap(args):
     profile = build.get_toml('profile')
     if profile is not None:
         include_file = 'config.{}.toml'.format(profile)
-        include_dir = os.path.join(build.rust_root, 'src', 'bootstrap', 'defaults')
+        include_dir = os.path.join(build.crablang_root, 'src', 'bootstrap', 'defaults')
         include_path = os.path.join(include_dir, include_file)
         # HACK: This works because `build.get_toml()` returns the first match it finds for a
         # specific key, so appending our defaults at the end allows the user to override them
@@ -898,11 +898,11 @@ def bootstrap(args):
     build_dir = args.build_dir or build.get_toml('build-dir', 'build') or 'build'
     build.build_dir = os.path.abspath(build_dir)
 
-    with open(os.path.join(build.rust_root, "src", "stage0.json")) as f:
+    with open(os.path.join(build.crablang_root, "src", "stage0.json")) as f:
         data = json.load(f)
     build.checksums_sha256 = data["checksums_sha256"]
     build.stage0_compiler = Stage0Toolchain(data["compiler"])
-    build.download_url = os.getenv("RUSTUP_DIST_SERVER") or data["config"]["dist_server"]
+    build.download_url = os.getenv("CRABLANGUP_DIST_SERVER") or data["config"]["dist_server"]
 
     build.build = args.build or build.build_triple()
 

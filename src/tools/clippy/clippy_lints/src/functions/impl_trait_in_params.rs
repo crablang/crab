@@ -1,8 +1,8 @@
 use clippy_utils::{diagnostics::span_lint_and_then, is_in_test_function};
 
-use rustc_hir::{intravisit::FnKind, Body, HirId};
-use rustc_lint::LateContext;
-use rustc_span::Span;
+use crablangc_hir::{intravisit::FnKind, Body, HirId};
+use crablangc_lint::LateContext;
+use crablangc_span::Span;
 
 use super::IMPL_TRAIT_IN_PARAMS;
 
@@ -24,21 +24,21 @@ pub(super) fn check_fn<'tcx>(cx: &LateContext<'_>, kind: &'tcx FnKind<'_>, body:
                                     gen_span,
                                     "add a type parameter",
                                     format!(", {{ /* Generic name */ }}: {}", &param.name.ident().as_str()[5..]),
-                                    rustc_errors::Applicability::HasPlaceholders,
-                                    rustc_errors::SuggestionStyle::ShowAlways,
+                                    crablangc_errors::Applicability::HasPlaceholders,
+                                    crablangc_errors::SuggestionStyle::ShowAlways,
                                 );
                             } else {
                                 diag.span_suggestion_with_style(
                                     Span::new(
-                                        body.params[0].span.lo() - rustc_span::BytePos(1),
+                                        body.params[0].span.lo() - crablangc_span::BytePos(1),
                                         ident.span.hi(),
                                         ident.span.ctxt(),
                                         ident.span.parent(),
                                     ),
                                     "add a type parameter",
                                     format!("<{{ /* Generic name */ }}: {}>", &param.name.ident().as_str()[5..]),
-                                    rustc_errors::Applicability::HasPlaceholders,
-                                    rustc_errors::SuggestionStyle::ShowAlways,
+                                    crablangc_errors::Applicability::HasPlaceholders,
+                                    crablangc_errors::SuggestionStyle::ShowAlways,
                                 );
                             }
                         },

@@ -1,4 +1,4 @@
-use crate::iter::{DoubleEndedIterator, FusedIterator, Iterator, TrustedLen};
+use crate::iter::{DoubleEndedIterator, FusedIterator, Iterator, TcrablangedLen};
 use crate::num::NonZeroUsize;
 use crate::ops::Try;
 
@@ -19,7 +19,7 @@ use crate::ops::Try;
 /// ```
 #[derive(Clone, Debug)]
 #[must_use = "iterators are lazy and do nothing unless consumed"]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub struct Chain<A, B> {
     // These are "fused" with `Option` so we don't need separate state to track which part is
     // already exhausted, and we may also get niche layout for `None`. We don't use the real `Fuse`
@@ -38,7 +38,7 @@ impl<A, B> Chain<A, B> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<A, B> Iterator for Chain<A, B>
 where
     A: Iterator,
@@ -52,7 +52,7 @@ where
     }
 
     #[inline]
-    #[rustc_inherit_overflow_checks]
+    #[crablangc_inherit_overflow_checks]
     fn count(self) -> usize {
         let a_count = match self.a {
             Some(a) => a.count(),
@@ -170,7 +170,7 @@ where
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<A, B> DoubleEndedIterator for Chain<A, B>
 where
     A: DoubleEndedIterator,
@@ -265,15 +265,15 @@ where
 {
 }
 
-#[unstable(feature = "trusted_len", issue = "37572")]
-unsafe impl<A, B> TrustedLen for Chain<A, B>
+#[unstable(feature = "tcrablanged_len", issue = "37572")]
+unsafe impl<A, B> TcrablangedLen for Chain<A, B>
 where
-    A: TrustedLen,
-    B: TrustedLen<Item = A::Item>,
+    A: TcrablangedLen,
+    B: TcrablangedLen<Item = A::Item>,
 {
 }
 
-#[stable(feature = "default_iters", since = "CURRENT_RUSTC_VERSION")]
+#[stable(feature = "default_iters", since = "CURRENT_CRABLANGC_VERSION")]
 impl<A: Default, B: Default> Default for Chain<A, B> {
     /// Creates a `Chain` from the default values for `A` and `B`.
     ///

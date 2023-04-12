@@ -1,10 +1,10 @@
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 
 trait Foo<A> {
     fn foo(self);
 }
 
-#[rustc_on_unimplemented = "an impl did not match: {A} {B} {C}"]
+#[crablangc_on_unimplemented = "an impl did not match: {A} {B} {C}"]
 impl<A, B, C> Foo<A> for (A, B, C) {
     fn foo(self) {}
 }

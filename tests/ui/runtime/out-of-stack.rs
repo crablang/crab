@@ -9,7 +9,7 @@
 // ignore-nto no stack overflow handler used (no alternate stack available)
 
 #![feature(core_intrinsics)]
-#![feature(rustc_private)]
+#![feature(crablangc_private)]
 
 #[cfg(unix)]
 extern crate libc;

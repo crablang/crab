@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 
 trait Foo {
     fn foo([a, b]: [i32; 2]) {}

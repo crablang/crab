@@ -16,5 +16,5 @@ semver = "1.0"
 termcolor = "1.1.3"
 
 [[bin]]
-name = "rust-tidy"
+name = "crablang-tidy"
 path = "src/main.rs"

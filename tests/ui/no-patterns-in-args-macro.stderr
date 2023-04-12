@@ -19,4 +19,4 @@ LL |     m!((bad, pat));
 error: aborting due to 3 previous errors
 
 Some errors have detailed explanations: E0130, E0561, E0642.
-For more information about an error, try `rustc --explain E0130`.
+For more information about an error, try `crablangc --explain E0130`.

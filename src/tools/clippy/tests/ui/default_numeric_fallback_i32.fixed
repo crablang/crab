@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 // aux-build:proc_macros.rs
 
 #![feature(lint_reasons)]

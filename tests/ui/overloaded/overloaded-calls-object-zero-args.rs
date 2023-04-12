@@ -1,6 +1,6 @@
 // run-pass
 // Tests calls to closure arguments where the closure takes 0 arguments.
-// This is a bit tricky due to rust-call ABI.
+// This is a bit tricky due to crablang-call ABI.
 
 
 fn foo(f: &mut dyn FnMut() -> isize) -> isize {

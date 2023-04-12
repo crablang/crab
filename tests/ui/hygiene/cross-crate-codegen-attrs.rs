@@ -8,5 +8,5 @@
 extern crate codegen_attrs;
 
 fn main() {
-    assert_eq!(codegen_attrs::rust_function_name(), 2);
+    assert_eq!(codegen_attrs::crablang_function_name(), 2);
 }

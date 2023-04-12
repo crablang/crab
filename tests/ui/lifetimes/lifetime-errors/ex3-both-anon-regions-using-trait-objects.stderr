@@ -26,4 +26,4 @@ LL | fn foo(x:Box<dyn Fn(&u8, &u8)> , mut y: Vec<&u8>, z: &u8) {
 
 error: aborting due to 2 previous errors
 
-For more information about this error, try `rustc --explain E0596`.
+For more information about this error, try `crablangc --explain E0596`.

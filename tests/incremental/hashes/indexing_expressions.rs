@@ -13,7 +13,7 @@
 // [cfail3]compile-flags: -Zincremental-ignore-spans
 
 #![allow(warnings)]
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 #![crate_type="rlib"]
 
 // Change simple index
@@ -23,10 +23,10 @@ fn change_simple_index(slice: &[u32]) -> u32 {
 }
 
 #[cfg(not(any(cfail1,cfail4)))]
-#[rustc_clean(except="hir_owner_nodes", cfg="cfail2")]
-#[rustc_clean(cfg="cfail3")]
-#[rustc_clean(except="hir_owner_nodes", cfg="cfail5")]
-#[rustc_clean(cfg="cfail6")]
+#[crablangc_clean(except="hir_owner_nodes", cfg="cfail2")]
+#[crablangc_clean(cfg="cfail3")]
+#[crablangc_clean(except="hir_owner_nodes", cfg="cfail5")]
+#[crablangc_clean(cfg="cfail6")]
 fn change_simple_index(slice: &[u32]) -> u32 {
     slice[4]
 }
@@ -40,10 +40,10 @@ fn change_lower_bound(slice: &[u32]) -> &[u32] {
 }
 
 #[cfg(not(any(cfail1,cfail4)))]
-#[rustc_clean(except="hir_owner_nodes", cfg="cfail2")]
-#[rustc_clean(cfg="cfail3")]
-#[rustc_clean(except="hir_owner_nodes", cfg="cfail5")]
-#[rustc_clean(cfg="cfail6")]
+#[crablangc_clean(except="hir_owner_nodes", cfg="cfail2")]
+#[crablangc_clean(cfg="cfail3")]
+#[crablangc_clean(except="hir_owner_nodes", cfg="cfail5")]
+#[crablangc_clean(cfg="cfail6")]
 fn change_lower_bound(slice: &[u32]) -> &[u32] {
     &slice[2..5]
 }
@@ -57,10 +57,10 @@ fn change_upper_bound(slice: &[u32]) -> &[u32] {
 }
 
 #[cfg(not(any(cfail1,cfail4)))]
-#[rustc_clean(except="hir_owner_nodes", cfg="cfail2")]
-#[rustc_clean(cfg="cfail3")]
-#[rustc_clean(except="hir_owner_nodes", cfg="cfail5")]
-#[rustc_clean(cfg="cfail6")]
+#[crablangc_clean(except="hir_owner_nodes", cfg="cfail2")]
+#[crablangc_clean(cfg="cfail3")]
+#[crablangc_clean(except="hir_owner_nodes", cfg="cfail5")]
+#[crablangc_clean(cfg="cfail6")]
 fn change_upper_bound(slice: &[u32]) -> &[u32] {
     &slice[3..7]
 }
@@ -74,10 +74,10 @@ fn add_lower_bound(slice: &[u32]) -> &[u32] {
 }
 
 #[cfg(not(any(cfail1,cfail4)))]
-#[rustc_clean(except="hir_owner,hir_owner_nodes,typeck", cfg="cfail2")]
-#[rustc_clean(cfg="cfail3")]
-#[rustc_clean(except="hir_owner,hir_owner_nodes,typeck", cfg="cfail5")]
-#[rustc_clean(cfg="cfail6")]
+#[crablangc_clean(except="hir_owner,hir_owner_nodes,typeck", cfg="cfail2")]
+#[crablangc_clean(cfg="cfail3")]
+#[crablangc_clean(except="hir_owner,hir_owner_nodes,typeck", cfg="cfail5")]
+#[crablangc_clean(cfg="cfail6")]
 fn add_lower_bound(slice: &[u32]) -> &[u32] {
     &slice[3..4]
 }
@@ -91,10 +91,10 @@ fn add_upper_bound(slice: &[u32]) -> &[u32] {
 }
 
 #[cfg(not(any(cfail1,cfail4)))]
-#[rustc_clean(except="hir_owner,hir_owner_nodes,typeck", cfg="cfail2")]
-#[rustc_clean(cfg="cfail3")]
-#[rustc_clean(except="hir_owner,hir_owner_nodes,typeck", cfg="cfail5")]
-#[rustc_clean(cfg="cfail6")]
+#[crablangc_clean(except="hir_owner,hir_owner_nodes,typeck", cfg="cfail2")]
+#[crablangc_clean(cfg="cfail3")]
+#[crablangc_clean(except="hir_owner,hir_owner_nodes,typeck", cfg="cfail5")]
+#[crablangc_clean(cfg="cfail6")]
 fn add_upper_bound(slice: &[u32]) -> &[u32] {
     &slice[3..7]
 }
@@ -108,10 +108,10 @@ fn change_mutability(slice: &mut [u32]) -> u32 {
 }
 
 #[cfg(not(any(cfail1,cfail4)))]
-#[rustc_clean(except="hir_owner_nodes,typeck", cfg="cfail2")]
-#[rustc_clean(cfg="cfail3")]
-#[rustc_clean(except="hir_owner_nodes,typeck", cfg="cfail5")]
-#[rustc_clean(cfg="cfail6")]
+#[crablangc_clean(except="hir_owner_nodes,typeck", cfg="cfail2")]
+#[crablangc_clean(cfg="cfail3")]
+#[crablangc_clean(except="hir_owner_nodes,typeck", cfg="cfail5")]
+#[crablangc_clean(cfg="cfail6")]
 fn change_mutability(slice: &mut [u32]) -> u32 {
     (&    slice[3..5])[0]
 }
@@ -125,10 +125,10 @@ fn exclusive_to_inclusive_range(slice: &[u32]) -> &[u32] {
 }
 
 #[cfg(not(any(cfail1,cfail4)))]
-#[rustc_clean(except="hir_owner,hir_owner_nodes,typeck", cfg="cfail2")]
-#[rustc_clean(cfg="cfail3")]
-#[rustc_clean(except="hir_owner,hir_owner_nodes,typeck", cfg="cfail5")]
-#[rustc_clean(cfg="cfail6")]
+#[crablangc_clean(except="hir_owner,hir_owner_nodes,typeck", cfg="cfail2")]
+#[crablangc_clean(cfg="cfail3")]
+#[crablangc_clean(except="hir_owner,hir_owner_nodes,typeck", cfg="cfail5")]
+#[crablangc_clean(cfg="cfail6")]
 fn exclusive_to_inclusive_range(slice: &[u32]) -> &[u32] {
     &slice[3..=7]
 }

@@ -1,5 +1,5 @@
 #![feature(custom_inner_attributes)]
-#![rustfmt::skip]
+#![crablangfmt::skip]
 #![warn(clippy::debug_assert_with_mut_call)]
 #![allow(clippy::redundant_closure_call, clippy::get_first)]
 

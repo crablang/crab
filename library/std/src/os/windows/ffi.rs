@@ -15,26 +15,26 @@
 //! While it is not always possible to convert such a string losslessly into
 //! a valid UTF-16 string (or even UTF-8), it is often desirable to be
 //! able to round-trip such a string from and to Windows APIs
-//! losslessly. For example, some Rust code may be "bridging" some
+//! losslessly. For example, some CrabLang code may be "bridging" some
 //! Windows APIs together, just passing `WCHAR` strings among those
 //! APIs without ever really looking into the strings.
 //!
-//! If Rust code *does* need to look into those strings, it can
+//! If CrabLang code *does* need to look into those strings, it can
 //! convert them to valid UTF-8, possibly lossily, by substituting
 //! invalid sequences with [`U+FFFD REPLACEMENT CHARACTER`][U+FFFD], as is
-//! conventionally done in other Rust APIs that deal with string
+//! conventionally done in other CrabLang APIs that deal with string
 //! encodings.
 //!
 //! # `OsStringExt` and `OsStrExt`
 //!
-//! [`OsString`] is the Rust wrapper for owned strings in the
+//! [`OsString`] is the CrabLang wrapper for owned strings in the
 //! preferred representation of the operating system. On Windows,
 //! this struct gets augmented with an implementation of the
 //! [`OsStringExt`] trait, which has an [`OsStringExt::from_wide`] method. This
 //! lets you create an [`OsString`] from a `&[u16]` slice; presumably
 //! you get such a slice out of a `WCHAR` Windows API.
 //!
-//! Similarly, [`OsStr`] is the Rust wrapper for borrowed strings from
+//! Similarly, [`OsStr`] is the CrabLang wrapper for borrowed strings from
 //! preferred representation of the operating system. On Windows, the
 //! [`OsStrExt`] trait provides the [`OsStrExt::encode_wide`] method, which
 //! outputs an [`EncodeWide`] iterator. You can [`collect`] this
@@ -51,7 +51,7 @@
 //! [U+FFFD]: crate::char::REPLACEMENT_CHARACTER
 //! [`std::ffi`]: crate::ffi
 
-#![stable(feature = "rust1", since = "1.0.0")]
+#![stable(feature = "crablang1", since = "1.0.0")]
 
 use crate::ffi::{OsStr, OsString};
 use crate::sealed::Sealed;
@@ -59,14 +59,14 @@ use crate::sys::os_str::Buf;
 use crate::sys_common::wtf8::Wtf8Buf;
 use crate::sys_common::{AsInner, FromInner};
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub use crate::sys_common::wtf8::EncodeWide;
 
 /// Windows-specific extensions to [`OsString`].
 ///
 /// This trait is sealed: it cannot be implemented outside the standard library.
 /// This is so that future additional methods are not breaking changes.
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub trait OsStringExt: Sealed {
     /// Creates an `OsString` from a potentially ill-formed UTF-16 slice of
     /// 16-bit code units.
@@ -85,11 +85,11 @@ pub trait OsStringExt: Sealed {
     ///
     /// let string = OsString::from_wide(&source[..]);
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     fn from_wide(wide: &[u16]) -> Self;
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl OsStringExt for OsString {
     fn from_wide(wide: &[u16]) -> OsString {
         FromInner::from_inner(Buf { inner: Wtf8Buf::from_wide(wide) })
@@ -100,7 +100,7 @@ impl OsStringExt for OsString {
 ///
 /// This trait is sealed: it cannot be implemented outside the standard library.
 /// This is so that future additional methods are not breaking changes.
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub trait OsStrExt: Sealed {
     /// Re-encodes an `OsStr` as a wide character sequence, i.e., potentially
     /// ill-formed UTF-16.
@@ -123,11 +123,11 @@ pub trait OsStrExt: Sealed {
     /// let result: Vec<u16> = string.encode_wide().collect();
     /// assert_eq!(&source[..], &result[..]);
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     fn encode_wide(&self) -> EncodeWide<'_>;
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl OsStrExt for OsStr {
     #[inline]
     fn encode_wide(&self) -> EncodeWide<'_> {

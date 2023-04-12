@@ -1,0 +1,8 @@
+[book]
+multilingual = false
+src = "src"
+title = "The crablangc book"
+
+[output.html]
+git-repository-url = "https://github.com/crablang/crablang/tree/master/src/doc/crablangc"
+edit-url-template = "https://github.com/crablang/crablang/edit/master/src/doc/crablangc/{path}"

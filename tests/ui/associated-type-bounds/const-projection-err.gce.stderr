@@ -4,7 +4,7 @@ warning: the feature `generic_const_exprs` is incomplete and may not be safe to 
 LL | #![cfg_attr(gce, feature(generic_const_exprs))]
    |                          ^^^^^^^^^^^^^^^^^^^
    |
-   = note: see issue #76560 <https://github.com/rust-lang/rust/issues/76560> for more information
+   = note: see issue #76560 <https://github.com/crablang/crablang/issues/76560> for more information
    = note: `#[warn(incomplete_features)]` on by default
 
 error[E0271]: type mismatch resolving `<T as TraitWAssocConst>::A == 1`
@@ -21,4 +21,4 @@ LL | fn foo<T: TraitWAssocConst<A = 1>>() {}
 
 error: aborting due to previous error; 1 warning emitted
 
-For more information about this error, try `rustc --explain E0271`.
+For more information about this error, try `crablangc --explain E0271`.

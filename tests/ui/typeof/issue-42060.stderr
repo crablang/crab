@@ -29,4 +29,4 @@ LL |     <typeof(q)>::N
 error: aborting due to 4 previous errors
 
 Some errors have detailed explanations: E0435, E0516.
-For more information about an error, try `rustc --explain E0435`.
+For more information about an error, try `crablangc --explain E0435`.

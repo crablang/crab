@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 extern "cdecl" fn cdedl() {} //~ ERROR invalid ABI
 
 fn main() {

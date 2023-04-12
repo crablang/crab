@@ -1,0 +1,16 @@
+[package]
+name = "crablangc_index"
+version = "0.0.0"
+edition = "2021"
+
+[lib]
+
+[dependencies]
+arrayvec = { version = "0.7", default-features = false }
+crablangc_serialize = { path = "../crablangc_serialize", optional = true }
+crablangc_macros = { path = "../crablangc_macros", optional = true }
+smallvec = "1.8.1"
+
+[features]
+default = ["nightly"]
+nightly = ["crablangc_serialize", "crablangc_macros"]

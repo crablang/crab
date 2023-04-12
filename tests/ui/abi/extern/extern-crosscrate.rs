@@ -2,7 +2,7 @@
 // aux-build:extern-crosscrate-source.rs
 // ignore-wasm32-bare no libc to test ffi with
 
-#![feature(rustc_private)]
+#![feature(crablangc_private)]
 
 extern crate externcallback;
 extern crate libc;
@@ -10,7 +10,7 @@ extern crate libc;
 fn fact(n: libc::uintptr_t) -> libc::uintptr_t {
     unsafe {
         println!("n = {}", n);
-        externcallback::rustrt::rust_dbg_call(externcallback::cb, n)
+        externcallback::crablangrt::crablang_dbg_call(externcallback::cb, n)
     }
 }
 

@@ -38,4 +38,4 @@ LL |     once::<&str>("str").fuse().filter(|a: &str| true).count();
 error: aborting due to 2 previous errors
 
 Some errors have detailed explanations: E0599, E0631.
-For more information about an error, try `rustc --explain E0599`.
+For more information about an error, try `crablangc --explain E0599`.

@@ -4,7 +4,7 @@
 #![allow(dead_code)]
 
 // Note that the following test works because all fields of the enum variants are of the same size.
-// If this test is modified and the reordering logic in librustc/ty/layout.rs kicks in, it fails.
+// If this test is modified and the reordering logic in libcrablangc/ty/layout.rs kicks in, it fails.
 
 enum Enum1 { }
 

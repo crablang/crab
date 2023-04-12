@@ -8,7 +8,7 @@
 
 extern crate extern_decl;
 
-// The `extern_decl` definitions are imported from a statically linked rust
+// The `extern_decl` definitions are imported from a statically linked crablang
 // crate, thus they are expected to be marked `dso_local` without `dllimport`.
 //
 // The `access_extern()` symbol is from this compilation unit, thus we expect

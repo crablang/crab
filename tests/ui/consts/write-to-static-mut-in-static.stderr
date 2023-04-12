@@ -31,4 +31,4 @@ LL | | fn main() {}
 error: aborting due to 2 previous errors
 
 Some errors have detailed explanations: E0080, E0391.
-For more information about an error, try `rustc --explain E0080`.
+For more information about an error, try `crablangc --explain E0080`.

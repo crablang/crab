@@ -1,4 +1,4 @@
-use rustc_middle::mir;
+use crablangc_middle::mir;
 
 use log::trace;
 

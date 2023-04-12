@@ -1,9 +1,9 @@
 // run-pass
 
-#![deny(rust_2021_incompatible_closure_captures)]
-#![feature(rustc_attrs)]
+#![deny(crablang_2021_incompatible_closure_captures)]
+#![feature(crablangc_attrs)]
 #![allow(unused)]
-#[rustc_insignificant_dtor]
+#[crablangc_insignificant_dtor]
 
 struct InsignificantDropPoint {
     x: i32,

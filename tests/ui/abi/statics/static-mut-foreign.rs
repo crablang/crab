@@ -5,14 +5,14 @@
 
 // ignore-wasm32-bare no libc to test ffi with
 
-#![feature(rustc_private)]
+#![feature(crablangc_private)]
 
 extern crate libc;
 
-#[link(name = "rust_test_helpers", kind = "static")]
+#[link(name = "crablang_test_helpers", kind = "static")]
 extern "C" {
-    static mut rust_dbg_static_mut: libc::c_int;
-    pub fn rust_dbg_static_mut_check_four();
+    static mut crablang_dbg_static_mut: libc::c_int;
+    pub fn crablang_dbg_static_mut_check_four();
 }
 
 unsafe fn static_bound(_: &'static libc::c_int) {}
@@ -22,18 +22,18 @@ fn static_bound_set(a: &'static mut libc::c_int) {
 }
 
 unsafe fn run() {
-    assert_eq!(rust_dbg_static_mut, 3);
-    rust_dbg_static_mut = 4;
-    assert_eq!(rust_dbg_static_mut, 4);
-    rust_dbg_static_mut_check_four();
-    rust_dbg_static_mut += 1;
-    assert_eq!(rust_dbg_static_mut, 5);
-    rust_dbg_static_mut *= 3;
-    assert_eq!(rust_dbg_static_mut, 15);
-    rust_dbg_static_mut = -3;
-    assert_eq!(rust_dbg_static_mut, -3);
-    static_bound(&rust_dbg_static_mut);
-    static_bound_set(&mut rust_dbg_static_mut);
+    assert_eq!(crablang_dbg_static_mut, 3);
+    crablang_dbg_static_mut = 4;
+    assert_eq!(crablang_dbg_static_mut, 4);
+    crablang_dbg_static_mut_check_four();
+    crablang_dbg_static_mut += 1;
+    assert_eq!(crablang_dbg_static_mut, 5);
+    crablang_dbg_static_mut *= 3;
+    assert_eq!(crablang_dbg_static_mut, 15);
+    crablang_dbg_static_mut = -3;
+    assert_eq!(crablang_dbg_static_mut, -3);
+    static_bound(&crablang_dbg_static_mut);
+    static_bound_set(&mut crablang_dbg_static_mut);
 }
 
 pub fn main() {

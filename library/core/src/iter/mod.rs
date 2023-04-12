@@ -2,7 +2,7 @@
 //!
 //! If you've found yourself with a collection of some kind, and needed to
 //! perform an operation on the elements of said collection, you'll quickly run
-//! into 'iterators'. Iterators are heavily used in idiomatic Rust code, so
+//! into 'iterators'. Iterators are heavily used in idiomatic CrabLang code, so
 //! it's worth becoming familiar with them.
 //!
 //! Before explaining more, let's talk about how this module is structured:
@@ -126,7 +126,7 @@
 //! assert_eq!(counter.next(), None);
 //! ```
 //!
-//! Calling [`next`] this way gets repetitive. Rust has a construct which can
+//! Calling [`next`] this way gets repetitive. CrabLang has a construct which can
 //! call [`next`] on your iterator, until it reaches `None`. Let's go over that
 //! next.
 //!
@@ -137,7 +137,7 @@
 //!
 //! # `for` loops and `IntoIterator`
 //!
-//! Rust's `for` loop syntax is actually sugar for iterators. Here's a basic
+//! CrabLang's `for` loop syntax is actually sugar for iterators. Here's a basic
 //! example of `for`:
 //!
 //! ```
@@ -168,7 +168,7 @@
 //! }
 //! ```
 //!
-//! Rust de-sugars this into:
+//! CrabLang de-sugars this into:
 //!
 //! ```
 //! let values = vec![1, 2, 3, 4, 5];
@@ -261,7 +261,7 @@
 //!
 //! If an iterator adapter panics, the iterator will be in an unspecified (but
 //! memory safe) state.  This state is also not guaranteed to stay the same
-//! across versions of Rust, so you should avoid relying on the exact values
+//! across versions of CrabLang, so you should avoid relying on the exact values
 //! returned by an iterator which panicked.
 //!
 //! [`map`]: Iterator::map
@@ -351,7 +351,7 @@
 //! [`take`]: Iterator::take
 //! [`min`]: Iterator::min
 
-#![stable(feature = "rust1", since = "1.0.0")]
+#![stable(feature = "crablang1", since = "1.0.0")]
 
 // This needs to be up here in order to be usable in the child modules
 macro_rules! impl_fold_via_try_fold {
@@ -374,7 +374,7 @@ macro_rules! impl_fold_via_try_fold {
     };
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub use self::traits::Iterator;
 
 #[unstable(
@@ -398,7 +398,7 @@ pub use self::sources::{from_fn, FromFn};
 pub use self::sources::{once, Once};
 #[stable(feature = "iter_once_with", since = "1.43.0")]
 pub use self::sources::{once_with, OnceWith};
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub use self::sources::{repeat, Repeat};
 #[unstable(feature = "iter_repeat_n", issue = "104434")]
 pub use self::sources::{repeat_n, RepeatN};
@@ -411,11 +411,11 @@ pub use self::sources::{successors, Successors};
 pub use self::traits::FusedIterator;
 #[unstable(issue = "none", feature = "inplace_iteration")]
 pub use self::traits::InPlaceIterable;
-#[unstable(feature = "trusted_len", issue = "37572")]
-pub use self::traits::TrustedLen;
-#[unstable(feature = "trusted_step", issue = "85731")]
-pub use self::traits::TrustedStep;
-#[stable(feature = "rust1", since = "1.0.0")]
+#[unstable(feature = "tcrablanged_len", issue = "37572")]
+pub use self::traits::TcrablangedLen;
+#[unstable(feature = "tcrablanged_step", issue = "85731")]
+pub use self::traits::TcrablangedStep;
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub use self::traits::{
     DoubleEndedIterator, ExactSizeIterator, Extend, FromIterator, IntoIterator, Product, Sum,
 };
@@ -438,11 +438,11 @@ pub use self::adapters::MapWhile;
 pub use self::adapters::SourceIter;
 #[stable(feature = "iterator_step_by", since = "1.28.0")]
 pub use self::adapters::StepBy;
-#[unstable(feature = "trusted_random_access", issue = "none")]
-pub use self::adapters::TrustedRandomAccess;
-#[unstable(feature = "trusted_random_access", issue = "none")]
-pub use self::adapters::TrustedRandomAccessNoCoerce;
-#[stable(feature = "rust1", since = "1.0.0")]
+#[unstable(feature = "tcrablanged_random_access", issue = "none")]
+pub use self::adapters::TcrablangedRandomAccess;
+#[unstable(feature = "tcrablanged_random_access", issue = "none")]
+pub use self::adapters::TcrablangedRandomAccessNoCoerce;
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub use self::adapters::{
     Chain, Cycle, Enumerate, Filter, FilterMap, FlatMap, Fuse, Inspect, Map, Peekable, Rev, Scan,
     Skip, SkipWhile, Take, TakeWhile, Zip,

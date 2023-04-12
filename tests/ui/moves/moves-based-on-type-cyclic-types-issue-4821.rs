@@ -1,6 +1,6 @@
 // Test for a subtle failure computing kinds of cyclic types, in which
 // temporary kinds wound up being stored in a cache and used later.
-// See rustc::ty::type_contents() for more information.
+// See crablangc::ty::type_contents() for more information.
 
 
 struct List { key: isize, next: Option<Box<List>> }

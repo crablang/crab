@@ -95,7 +95,7 @@ use crate::intrinsics;
 /// ```
 #[inline]
 #[stable(feature = "unreachable", since = "1.27.0")]
-#[rustc_const_stable(feature = "const_unreachable_unchecked", since = "1.57.0")]
+#[crablangc_const_stable(feature = "const_unreachable_unchecked", since = "1.57.0")]
 #[cfg_attr(miri, track_caller)] // even without panics, this helps for Miri backtraces
 pub const unsafe fn unreachable_unchecked() -> ! {
     // SAFETY: the safety contract for `intrinsics::unreachable` must
@@ -209,8 +209,8 @@ pub fn spin_loop() {
 /// An identity function that *__hints__* to the compiler to be maximally pessimistic about what
 /// `black_box` could do.
 ///
-/// Unlike [`std::convert::identity`], a Rust compiler is encouraged to assume that `black_box` can
-/// use `dummy` in any possible valid way that Rust code is allowed to without introducing undefined
+/// Unlike [`std::convert::identity`], a CrabLang compiler is encouraged to assume that `black_box` can
+/// use `dummy` in any possible valid way that CrabLang code is allowed to without introducing undefined
 /// behavior in the calling code. This property makes `black_box` useful for writing code in which
 /// certain optimizations are not desired, such as benchmarks.
 ///
@@ -291,7 +291,7 @@ pub fn spin_loop() {
 /// arguments are usually not known at compile time and the result is used in some way.
 #[inline]
 #[stable(feature = "bench_black_box", since = "1.66.0")]
-#[rustc_const_unstable(feature = "const_black_box", issue = "none")]
+#[crablangc_const_unstable(feature = "const_black_box", issue = "none")]
 pub const fn black_box<T>(dummy: T) -> T {
     crate::intrinsics::black_box(dummy)
 }
@@ -304,7 +304,7 @@ pub const fn black_box<T>(dummy: T) -> T {
 /// [`#[must_use]` attribute][must_use] either on a type or a function would not
 /// be convenient.
 ///
-/// [must_use]: https://doc.rust-lang.org/reference/attributes/diagnostics.html#the-must_use-attribute
+/// [must_use]: https://doc.crablang.org/reference/attributes/diagnostics.html#the-must_use-attribute
 ///
 /// # Example
 ///
@@ -339,7 +339,7 @@ pub const fn black_box<T>(dummy: T) -> T {
 ///     None
 /// }
 /// #
-/// # // Make rustdoc not wrap the whole snippet in fn main, so that $crate::make_error works
+/// # // Make crablangdoc not wrap the whole snippet in fn main, so that $crate::make_error works
 /// # fn main() {}
 /// ```
 ///
@@ -413,7 +413,7 @@ pub const fn black_box<T>(dummy: T) -> T {
 ///   # }
 ///   ```
 #[unstable(feature = "hint_must_use", issue = "94745")]
-#[rustc_const_unstable(feature = "hint_must_use", issue = "94745")]
+#[crablangc_const_unstable(feature = "hint_must_use", issue = "94745")]
 #[must_use] // <-- :)
 #[inline(always)]
 pub const fn must_use<T>(value: T) -> T {

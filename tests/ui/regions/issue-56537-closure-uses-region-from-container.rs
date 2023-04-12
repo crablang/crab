@@ -6,7 +6,7 @@
 //
 // This works today, which precludes changing things so that closures
 // follow the same lifetime-elision rules used elsewhere. See
-// rust-lang/rust#56537
+// crablang/crablang#56537
 
 // check-pass
 

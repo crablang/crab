@@ -48,7 +48,7 @@ fn bench_max_by_key(b: &mut Bencher) {
     })
 }
 
-// https://www.reddit.com/r/rust/comments/31syce/using_iterators_to_find_the_index_of_the_min_or/
+// https://www.reddit.com/r/crablang/comments/31syce/using_iterators_to_find_the_index_of_the_min_or/
 #[bench]
 fn bench_max_by_key2(b: &mut Bencher) {
     fn max_index_iter(array: &[i32]) -> usize {
@@ -305,7 +305,7 @@ bench_sums! {
 }
 
 // Checks whether Skip<Zip<A,B>> is as fast as Zip<Skip<A>, Skip<B>>, from
-// https://users.rust-lang.org/t/performance-difference-between-iterator-zip-and-skip-order/15743
+// https://users.crablang.org/t/performance-difference-between-iterator-zip-and-skip-order/15743
 #[bench]
 fn bench_zip_then_skip(b: &mut Bencher) {
     let v: Vec<_> = (0..100_000).collect();
@@ -379,7 +379,7 @@ fn bench_lt(b: &mut Bencher) {
 }
 
 #[bench]
-fn bench_trusted_random_access_adapters(b: &mut Bencher) {
+fn bench_tcrablanged_random_access_adapters(b: &mut Bencher) {
     let vec1: Vec<_> = (0usize..100000).collect();
     let vec2 = black_box(vec1.clone());
     b.iter(|| {
@@ -419,9 +419,9 @@ fn bench_copied_chunks(b: &mut Bencher) {
     })
 }
 
-/// Exercises the TrustedRandomAccess specialization in ArrayChunks
+/// Exercises the TcrablangedRandomAccess specialization in ArrayChunks
 #[bench]
-fn bench_trusted_random_access_chunks(b: &mut Bencher) {
+fn bench_tcrablanged_random_access_chunks(b: &mut Bencher) {
     let v = vec![1u8; 1024];
 
     b.iter(|| {

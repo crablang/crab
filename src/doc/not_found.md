@@ -52,12 +52,12 @@ Some things that might be helpful to you though:
 
 # Reference
 
- * [The Rust official site](https://www.rust-lang.org)
- * [The Rust reference](https://doc.rust-lang.org/reference/index.html)
+ * [The CrabLang official site](https://www.crablang.org)
+ * [The CrabLang reference](https://doc.crablang.org/reference/index.html)
 
 # Docs
 
-[The standard library](https://doc.rust-lang.org/std/)
+[The standard library](https://doc.crablang.org/std/)
 
 <script>
 function get_url_fragments() {
@@ -82,7 +82,7 @@ function on_submit(event) {
     event.preventDefault();
 
     if (form['from'].value === 'duckduckgo') {
-        document.location.href = form.action + '?q=' + encodeURIComponent(q + ' site:doc.rust-lang.org');
+        document.location.href = form.action + '?q=' + encodeURIComponent(q + ' site:doc.crablang.org');
     } else if (form['from'].value === 'library') {
         document.location.href = '/std/index.html?search=' + encodeURIComponent(q);
     }

@@ -22,8 +22,8 @@
 // lldbg-check:[...]$0 = { a = { 0 = '\x02' 1 = '\x02' } b = 514 }
 // lldbr-check:(union_smoke::U) u = { a = { 0 = '\x02' 1 = '\x02' } b = 514 }
 
-// Don't test this with rust-enabled lldb for now; see
-// https://github.com/rust-lang-nursery/lldb/issues/18
+// Don't test this with crablang-enabled lldb for now; see
+// https://github.com/crablang-nursery/lldb/issues/18
 // lldbg-command:print union_smoke::SU
 // lldbg-check:[...]$1 = { a = { 0 = '\x01' 1 = '\x01' } b = 257 }
 

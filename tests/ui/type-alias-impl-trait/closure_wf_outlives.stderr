@@ -61,4 +61,4 @@ LL |     type Opaque<T: 'static> = impl Sized;
 error: aborting due to 3 previous errors
 
 Some errors have detailed explanations: E0310, E0478, E0495.
-For more information about an error, try `rustc --explain E0310`.
+For more information about an error, try `crablangc --explain E0310`.

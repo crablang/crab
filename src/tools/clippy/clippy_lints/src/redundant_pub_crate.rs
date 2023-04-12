@@ -1,12 +1,12 @@
 use clippy_utils::diagnostics::span_lint_and_then;
-use rustc_errors::Applicability;
-use rustc_hir::def::{DefKind, Res};
-use rustc_hir::{Item, ItemKind};
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_middle::ty;
-use rustc_session::{declare_tool_lint, impl_lint_pass};
-use rustc_span::def_id::CRATE_DEF_ID;
-use rustc_span::hygiene::MacroKind;
+use crablangc_errors::Applicability;
+use crablangc_hir::def::{DefKind, Res};
+use crablangc_hir::{Item, ItemKind};
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_middle::ty;
+use crablangc_session::{declare_tool_lint, impl_lint_pass};
+use crablangc_span::def_id::CRATE_DEF_ID;
+use crablangc_span::hygiene::MacroKind;
 
 declare_clippy_lint! {
     /// ### What it does
@@ -18,14 +18,14 @@ declare_clippy_lint! {
     /// module's visibility.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// mod internal {
     ///     pub(crate) fn internal_fn() { }
     /// }
     /// ```
     /// This function is not visible outside the module and it can be declared with `pub` or
     /// private visibility
-    /// ```rust
+    /// ```crablang
     /// mod internal {
     ///     pub fn internal_fn() { }
     /// }

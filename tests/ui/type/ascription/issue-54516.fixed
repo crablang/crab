@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 use std::collections::BTreeMap;
 
 fn main() {

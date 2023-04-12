@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 
 struct _S(u32, Vec<i32>);
 

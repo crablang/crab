@@ -2,7 +2,7 @@
 
 The tracking issue for this feature is: [#84605]
 
-[#84605]: https://github.com/rust-lang/rust/issues/84605
+[#84605]: https://github.com/crablang/crablang/issues/84605
 
 ---
 
@@ -15,7 +15,7 @@ instrumentation in an annotated function. This might be useful to:
 
 ## Example
 
-```rust
+```crablang
 #![feature(no_coverage)]
 
 // `foo()` will get coverage instrumentation (by default)

@@ -4,7 +4,7 @@
 use std::mem;
 
 // This is the example from
-// <https://github.com/rust-lang/unsafe-code-guidelines/issues/286#issuecomment-1085144431>.
+// <https://github.com/crablang/unsafe-code-guidelines/issues/286#issuecomment-1085144431>.
 
 unsafe fn deref(left: *const u8, right: *const u8) {
     let left_int: usize = mem::transmute(left);

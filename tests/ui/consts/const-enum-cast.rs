@@ -11,7 +11,7 @@ enum Aligned {
     One = 1,
 }
 
-// regression test for https://github.com/rust-lang/rust/issues/96185
+// regression test for https://github.com/crablang/crablang/issues/96185
 const X: u8 = {
     let aligned = Aligned::Zero;
     aligned as u8

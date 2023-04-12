@@ -10,16 +10,16 @@
 //[arm] needs-llvm-components: arm
 // needs-asm-support
 
-#![feature(no_core, lang_items, rustc_attrs)]
+#![feature(no_core, lang_items, crablangc_attrs)]
 #![crate_type = "rlib"]
 #![no_core]
 #![cfg_attr(x86_64_allowed, allow(bad_asm_style))]
 
-#[rustc_builtin_macro]
+#[crablangc_builtin_macro]
 macro_rules! asm {
     () => {};
 }
-#[rustc_builtin_macro]
+#[crablangc_builtin_macro]
 macro_rules! global_asm {
     () => {};
 }

@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 
 #![warn(clippy::iter_nth_zero)]
 use std::collections::HashSet;

@@ -7,14 +7,14 @@ use clippy_utils::{
     peel_blocks, peel_blocks_with_stmt,
 };
 use if_chain::if_chain;
-use rustc_errors::Applicability;
-use rustc_hir::def::Res;
-use rustc_hir::LangItem::{OptionNone, OptionSome, ResultErr, ResultOk};
-use rustc_hir::{BindingAnnotation, ByRef, Expr, ExprKind, Node, PatKind, PathSegment, QPath};
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_middle::ty::Ty;
-use rustc_session::{declare_lint_pass, declare_tool_lint};
-use rustc_span::{sym, symbol::Symbol};
+use crablangc_errors::Applicability;
+use crablangc_hir::def::Res;
+use crablangc_hir::LangItem::{OptionNone, OptionSome, ResultErr, ResultOk};
+use crablangc_hir::{BindingAnnotation, ByRef, Expr, ExprKind, Node, PatKind, PathSegment, QPath};
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_middle::ty::Ty;
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_span::{sym, symbol::Symbol};
 
 declare_clippy_lint! {
     /// ### What it does

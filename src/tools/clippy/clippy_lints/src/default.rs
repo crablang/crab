@@ -5,16 +5,16 @@ use clippy_utils::{
     any_parent_is_automatically_derived, contains_name, get_parent_expr, is_from_proc_macro, match_def_path, paths,
 };
 use if_chain::if_chain;
-use rustc_data_structures::fx::FxHashSet;
-use rustc_errors::Applicability;
-use rustc_hir::def::Res;
-use rustc_hir::{Block, Expr, ExprKind, PatKind, QPath, Stmt, StmtKind};
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_middle::ty;
-use rustc_middle::ty::print::with_forced_trimmed_paths;
-use rustc_session::{declare_tool_lint, impl_lint_pass};
-use rustc_span::symbol::{Ident, Symbol};
-use rustc_span::Span;
+use crablangc_data_structures::fx::FxHashSet;
+use crablangc_errors::Applicability;
+use crablangc_hir::def::Res;
+use crablangc_hir::{Block, Expr, ExprKind, PatKind, QPath, Stmt, StmtKind};
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_middle::ty;
+use crablangc_middle::ty::print::with_forced_trimmed_paths;
+use crablangc_session::{declare_tool_lint, impl_lint_pass};
+use crablangc_span::symbol::{Ident, Symbol};
+use crablangc_span::Span;
 
 declare_clippy_lint! {
     /// ### What it does
@@ -25,12 +25,12 @@ declare_clippy_lint! {
     /// generic `Default`.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// let s: String = Default::default();
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// let s = String::default();
     /// ```
     #[clippy::version = "pre 1.29.0"]
@@ -45,7 +45,7 @@ declare_clippy_lint! {
     /// with Default::default().
     ///
     /// ### Why is this bad?
-    ///It's more idiomatic to use the [functional update syntax](https://doc.rust-lang.org/reference/expressions/struct-expr.html#functional-update-syntax).
+    ///It's more idiomatic to use the [functional update syntax](https://doc.crablang.org/reference/expressions/struct-expr.html#functional-update-syntax).
     ///
     /// ### Known problems
     /// Assignments to patterns that are of tuple type are not linted.

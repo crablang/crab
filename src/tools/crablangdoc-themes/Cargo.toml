@@ -1,0 +1,8 @@
+[package]
+name = "crablangdoc-themes"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name = "crablangdoc-themes"
+path = "main.rs"

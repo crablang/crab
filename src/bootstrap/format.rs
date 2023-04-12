@@ -1,4 +1,4 @@
-//! Runs rustfmt on the repository.
+//! Runs crablangfmt on the repository.
 
 use crate::builder::Builder;
 use crate::util::{output, program_out_of_date, t};
@@ -10,8 +10,8 @@ use std::path::{Path, PathBuf};
 use std::process::{Command, Stdio};
 use std::sync::mpsc::SyncSender;
 
-fn rustfmt(src: &Path, rustfmt: &Path, paths: &[PathBuf], check: bool) -> impl FnMut(bool) -> bool {
-    let mut cmd = Command::new(&rustfmt);
+fn crablangfmt(src: &Path, crablangfmt: &Path, paths: &[PathBuf], check: bool) -> impl FnMut(bool) -> bool {
+    let mut cmd = Command::new(&crablangfmt);
     // avoid the submodule config paths from coming into play,
     // we only allow a single global config for the workspace for now
     cmd.arg("--config-path").arg(&src.canonicalize().unwrap());
@@ -23,8 +23,8 @@ fn rustfmt(src: &Path, rustfmt: &Path, paths: &[PathBuf], check: bool) -> impl F
     }
     cmd.args(paths);
     let cmd_debug = format!("{:?}", cmd);
-    let mut cmd = cmd.spawn().expect("running rustfmt");
-    // poor man's async: return a closure that'll wait for rustfmt's completion
+    let mut cmd = cmd.spawn().expect("running crablangfmt");
+    // poor man's async: return a closure that'll wait for crablangfmt's completion
     move |block: bool| -> bool {
         if !block {
             match cmd.try_wait() {
@@ -46,10 +46,10 @@ fn rustfmt(src: &Path, rustfmt: &Path, paths: &[PathBuf], check: bool) -> impl F
     }
 }
 
-fn get_rustfmt_version(build: &Builder<'_>) -> Option<(String, PathBuf)> {
-    let stamp_file = build.out.join("rustfmt.stamp");
+fn get_crablangfmt_version(build: &Builder<'_>) -> Option<(String, PathBuf)> {
+    let stamp_file = build.out.join("crablangfmt.stamp");
 
-    let mut cmd = Command::new(match build.initial_rustfmt() {
+    let mut cmd = Command::new(match build.initial_crablangfmt() {
         Some(p) => p,
         None => return None,
     });
@@ -65,23 +65,23 @@ fn get_rustfmt_version(build: &Builder<'_>) -> Option<(String, PathBuf)> {
 }
 
 /// Return whether the format cache can be reused.
-fn verify_rustfmt_version(build: &Builder<'_>) -> bool {
-    let Some((version, stamp_file)) = get_rustfmt_version(build) else {return false;};
+fn verify_crablangfmt_version(build: &Builder<'_>) -> bool {
+    let Some((version, stamp_file)) = get_crablangfmt_version(build) else {return false;};
     !program_out_of_date(&stamp_file, &version)
 }
 
-/// Updates the last rustfmt version used
-fn update_rustfmt_version(build: &Builder<'_>) {
-    let Some((version, stamp_file)) = get_rustfmt_version(build) else {return;};
+/// Updates the last crablangfmt version used
+fn update_crablangfmt_version(build: &Builder<'_>) {
+    let Some((version, stamp_file)) = get_crablangfmt_version(build) else {return;};
     t!(std::fs::write(stamp_file, version))
 }
 
-/// Returns the Rust files modified between the `merge-base` of HEAD and
-/// rust-lang/master and what is now on the disk.
+/// Returns the CrabLang files modified between the `merge-base` of HEAD and
+/// crablang/master and what is now on the disk.
 ///
 /// Returns `None` if all files should be formatted.
 fn get_modified_rs_files(build: &Builder<'_>) -> Result<Option<Vec<String>>, String> {
-    if !verify_rustfmt_version(build) {
+    if !verify_crablangfmt_version(build) {
         return Ok(None);
     }
 
@@ -89,7 +89,7 @@ fn get_modified_rs_files(build: &Builder<'_>) -> Result<Option<Vec<String>>, Str
 }
 
 #[derive(serde_derive::Deserialize)]
-struct RustfmtConfig {
+struct CrabLangfmtConfig {
     ignore: Vec<String>,
 }
 
@@ -99,18 +99,18 @@ pub fn format(build: &Builder<'_>, check: bool, paths: &[PathBuf]) {
     }
     let mut builder = ignore::types::TypesBuilder::new();
     builder.add_defaults();
-    builder.select("rust");
+    builder.select("crablang");
     let matcher = builder.build().unwrap();
-    let rustfmt_config = build.src.join("rustfmt.toml");
-    if !rustfmt_config.exists() {
-        eprintln!("Not running formatting checks; rustfmt.toml does not exist.");
+    let crablangfmt_config = build.src.join("crablangfmt.toml");
+    if !crablangfmt_config.exists() {
+        eprintln!("Not running formatting checks; crablangfmt.toml does not exist.");
         eprintln!("This may happen in distributed tarballs.");
         return;
     }
-    let rustfmt_config = t!(std::fs::read_to_string(&rustfmt_config));
-    let rustfmt_config: RustfmtConfig = t!(toml::from_str(&rustfmt_config));
+    let crablangfmt_config = t!(std::fs::read_to_string(&crablangfmt_config));
+    let crablangfmt_config: CrabLangfmtConfig = t!(toml::from_str(&crablangfmt_config));
     let mut ignore_fmt = ignore::overrides::OverrideBuilder::new(&build.src);
-    for ignore in rustfmt_config.ignore {
+    for ignore in crablangfmt_config.ignore {
         ignore_fmt.add(&format!("!{}", ignore)).expect(&ignore);
     }
     let git_available = match Command::new("git")
@@ -151,11 +151,11 @@ pub fn format(build: &Builder<'_>, check: bool, paths: &[PathBuf]) {
                     path.ends_with(".rs").then_some(path)
                 });
             for untracked_path in untracked_paths {
-                println!("skip untracked path {} during rustfmt invocations", untracked_path);
+                println!("skip untracked path {} during crablangfmt invocations", untracked_path);
                 // The leading `/` makes it an exact match against the
                 // repository root, rather than a glob. Without that, if you
                 // have `foo.rs` in the repository root it will also match
-                // against anything like `compiler/rustc_foo/src/foo.rs`,
+                // against anything like `compiler/crablangc_foo/src/foo.rs`,
                 // preventing the latter from being formatted.
                 ignore_fmt.add(&format!("!/{}", untracked_path)).expect(&untracked_path);
             }
@@ -196,11 +196,11 @@ pub fn format(build: &Builder<'_>, check: bool, paths: &[PathBuf]) {
 
     let ignore_fmt = ignore_fmt.build().unwrap();
 
-    let rustfmt_path = build.initial_rustfmt().unwrap_or_else(|| {
+    let crablangfmt_path = build.initial_crablangfmt().unwrap_or_else(|| {
         eprintln!("./x.py fmt is not supported on this channel");
         crate::detail_exit(1);
     });
-    assert!(rustfmt_path.exists(), "{}", rustfmt_path.display());
+    assert!(crablangfmt_path.exists(), "{}", crablangfmt_path.display());
     let src = build.src.clone();
     let (tx, rx): (SyncSender<PathBuf>, _) = std::sync::mpsc::sync_channel(128);
     let walker = match paths.get(0) {
@@ -264,7 +264,7 @@ pub fn format(build: &Builder<'_>, check: bool, paths: &[PathBuf]) {
             // try getting a few more paths from the channel to amortize the overhead of spawning processes
             let paths: Vec<_> = rx.try_iter().take(7).chain(std::iter::once(path)).collect();
 
-            let child = rustfmt(&src, &rustfmt_path, paths.as_slice(), check);
+            let child = crablangfmt(&src, &crablangfmt_path, paths.as_slice(), check);
             children.push_back(child);
 
             // poll completion before waiting
@@ -302,6 +302,6 @@ pub fn format(build: &Builder<'_>, check: bool, paths: &[PathBuf]) {
 
     thread.join().unwrap();
     if !check {
-        update_rustfmt_version(build);
+        update_crablangfmt_version(build);
     }
 }

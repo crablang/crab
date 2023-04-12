@@ -1,0 +1,32 @@
+[package]
+name = "crablangc_metadata"
+version = "0.0.0"
+edition = "2021"
+
+[lib]
+
+[dependencies]
+bitflags = "1.2.1"
+libloading = "0.7.1"
+odht = { version = "0.3.1", features = ["nightly"] }
+snap = "1"
+tracing = "0.1"
+smallvec = { version = "1.8.1", features = ["union", "may_dangle"] }
+tempfile = "3.2"
+crablangc_middle = { path = "../crablangc_middle" }
+crablangc_attr = { path = "../crablangc_attr" }
+crablangc_data_structures = { path = "../crablangc_data_structures" }
+crablangc_errors = { path = "../crablangc_errors" }
+crablangc_feature = { path = "../crablangc_feature" }
+crablangc_fs_util = { path = "../crablangc_fs_util" }
+crablangc_hir = { path = "../crablangc_hir" }
+crablangc_hir_pretty = { path = "../crablangc_hir_pretty" }
+crablangc_target = { path = "../crablangc_target" }
+crablangc_index = { path = "../crablangc_index" }
+crablangc_macros = { path = "../crablangc_macros" }
+crablangc_serialize = { path = "../crablangc_serialize" }
+crablangc_ast = { path = "../crablangc_ast" }
+crablangc_expand = { path = "../crablangc_expand" }
+crablangc_span = { path = "../crablangc_span" }
+crablangc_session = { path = "../crablangc_session" }
+crablangc_type_ir = { path = "../crablangc_type_ir" }

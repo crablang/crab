@@ -4,7 +4,7 @@ error[E0562]: `impl Trait` only allowed in function and inherent method return t
 LL |     fn bar() -> impl Sized;
    |                 ^^^^^^^^^^
    |
-   = note: see issue #91611 <https://github.com/rust-lang/rust/issues/91611> for more information
+   = note: see issue #91611 <https://github.com/crablang/crablang/issues/91611> for more information
    = help: add `#![feature(return_position_impl_trait_in_trait)]` to the crate attributes to enable
 
 error[E0562]: `impl Trait` only allowed in function and inherent method return types, not in trait method return types
@@ -13,7 +13,7 @@ error[E0562]: `impl Trait` only allowed in function and inherent method return t
 LL |     fn baz() -> Box<impl std::fmt::Display>;
    |                     ^^^^^^^^^^^^^^^^^^^^^^
    |
-   = note: see issue #91611 <https://github.com/rust-lang/rust/issues/91611> for more information
+   = note: see issue #91611 <https://github.com/crablang/crablang/issues/91611> for more information
    = help: add `#![feature(return_position_impl_trait_in_trait)]` to the crate attributes to enable
 
 error[E0562]: `impl Trait` only allowed in function and inherent method return types, not in trait method return types
@@ -22,9 +22,9 @@ error[E0562]: `impl Trait` only allowed in function and inherent method return t
 LL |     async fn bar() -> impl Sized;
    |                       ^^^^^^^^^^
    |
-   = note: see issue #91611 <https://github.com/rust-lang/rust/issues/91611> for more information
+   = note: see issue #91611 <https://github.com/crablang/crablang/issues/91611> for more information
    = help: add `#![feature(return_position_impl_trait_in_trait)]` to the crate attributes to enable
 
 error: aborting due to 3 previous errors
 
-For more information about this error, try `rustc --explain E0562`.
+For more information about this error, try `crablangc --explain E0562`.

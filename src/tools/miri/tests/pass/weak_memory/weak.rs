@@ -71,7 +71,7 @@ fn seq_cst() -> bool {
 
 fn initialization_write(add_fence: bool) -> bool {
     let x = static_atomic(11);
-    assert_eq!(x.load(Relaxed), 11); // work around https://github.com/rust-lang/miri/issues/2164
+    assert_eq!(x.load(Relaxed), 11); // work around https://github.com/crablang/miri/issues/2164
 
     let wait = static_atomic(0);
 
@@ -109,11 +109,11 @@ fn faa_replaced_by_load() -> bool {
     }
 
     let x = static_atomic(0);
-    assert_eq!(x.load(Relaxed), 0); // work around https://github.com/rust-lang/miri/issues/2164
+    assert_eq!(x.load(Relaxed), 0); // work around https://github.com/crablang/miri/issues/2164
     let y = static_atomic(0);
-    assert_eq!(y.load(Relaxed), 0); // work around https://github.com/rust-lang/miri/issues/2164
+    assert_eq!(y.load(Relaxed), 0); // work around https://github.com/crablang/miri/issues/2164
     let z = static_atomic(0);
-    assert_eq!(z.load(Relaxed), 0); // work around https://github.com/rust-lang/miri/issues/2164
+    assert_eq!(z.load(Relaxed), 0); // work around https://github.com/crablang/miri/issues/2164
 
     // Since each thread is so short, we need to make sure that they truely run at the same time
     // Otherwise t1 will finish before t2 even starts

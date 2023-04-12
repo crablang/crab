@@ -1,7 +1,7 @@
 error: unnecessary allocation, use `&` instead
   --> $DIR/unused-allocation.rs:5:9
    |
-LL |     _ = (#[rustc_box] Box::new([1])).len();
+LL |     _ = (#[crablangc_box] Box::new([1])).len();
    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
    |
 note: the lint level is defined here

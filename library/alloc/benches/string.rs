@@ -158,7 +158,7 @@ fn bench_insert_str_long(b: &mut Bencher) {
     let s = "Hello, World!";
     b.iter(|| {
         let mut x = String::from(s);
-        black_box(&mut x).insert_str(6, black_box(" rustic "));
+        black_box(&mut x).insert_str(6, black_box(" crablangic "));
         x
     })
 }

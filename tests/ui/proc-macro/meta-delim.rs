@@ -3,7 +3,7 @@
 // run-pass
 
 // Tests that we can properly deserialize a macro with strange delimiters
-// See https://github.com/rust-lang/rust/pull/73569#issuecomment-650860457
+// See https://github.com/crablang/crablang/pull/73569#issuecomment-650860457
 
 extern crate meta_delim;
 

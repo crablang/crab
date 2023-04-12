@@ -1,5 +1,5 @@
-// run-rustfix
-#![feature(rustc_private)]
+// run-crablangfix
+#![feature(crablangc_private)]
 #![deny(clippy::internal)]
 #![allow(
     clippy::borrow_deref_ref,
@@ -8,9 +8,9 @@
     clippy::missing_clippy_version_attribute
 )]
 
-extern crate rustc_span;
+extern crate crablangc_span;
 
-use rustc_span::symbol::{Ident, Symbol};
+use crablangc_span::symbol::{Ident, Symbol};
 
 fn main() {
     Symbol::intern("foo").as_str() == "clippy";

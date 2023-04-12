@@ -2,16 +2,16 @@ use clippy_utils::diagnostics::span_lint_and_sugg;
 use clippy_utils::is_test_module_or_function;
 use clippy_utils::source::{snippet, snippet_with_applicability};
 use if_chain::if_chain;
-use rustc_errors::Applicability;
-use rustc_hir::{
+use crablangc_errors::Applicability;
+use crablangc_hir::{
     def::{DefKind, Res},
     Item, ItemKind, PathSegment, UseKind,
 };
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_middle::ty;
-use rustc_session::{declare_tool_lint, impl_lint_pass};
-use rustc_span::symbol::kw;
-use rustc_span::{sym, BytePos};
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_middle::ty;
+use crablangc_session::{declare_tool_lint, impl_lint_pass};
+use crablangc_span::symbol::kw;
+use crablangc_span::{sym, BytePos};
 
 declare_clippy_lint! {
     /// ### What it does
@@ -26,7 +26,7 @@ declare_clippy_lint! {
     /// still around.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// use std::cmp::Ordering::*;
     ///
     /// # fn foo(_: std::cmp::Ordering) {}
@@ -34,7 +34,7 @@ declare_clippy_lint! {
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// use std::cmp::Ordering;
     ///
     /// # fn foo(_: Ordering) {}
@@ -55,7 +55,7 @@ declare_clippy_lint! {
     /// you try to import something through a wildcard, that already has been imported by name from
     /// a different source:
     ///
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// use crate1::foo; // Imports a function named foo
     /// use crate2::*; // Has a function named foo
     ///
@@ -80,14 +80,14 @@ declare_clippy_lint! {
     /// exist, may result in `unused_imports` warnings.
     ///
     /// ### Example
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// use crate1::*;
     ///
     /// foo();
     /// ```
     ///
     /// Use instead:
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// use crate1::foo;
     ///
     /// foo();

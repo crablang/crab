@@ -3,12 +3,12 @@ use clippy_utils::diagnostics::span_lint_and_sugg;
 use clippy_utils::source::snippet_with_context;
 use clippy_utils::sugg::has_enclosing_paren;
 use if_chain::if_chain;
-use rustc_ast::util::parser::PREC_PREFIX;
-use rustc_errors::Applicability;
-use rustc_hir::{BinOpKind, Expr, ExprKind, UnOp};
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_session::{declare_lint_pass, declare_tool_lint};
-use rustc_span::source_map::Span;
+use crablangc_ast::util::parser::PREC_PREFIX;
+use crablangc_errors::Applicability;
+use crablangc_hir::{BinOpKind, Expr, ExprKind, UnOp};
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_span::source_map::Span;
 
 declare_clippy_lint! {
     /// ### What it does
@@ -21,12 +21,12 @@ declare_clippy_lint! {
     /// This only catches integers (for now).
     ///
     /// ### Example
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// let a = x * -1;
     /// ```
     ///
     /// Use instead:
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// let a = -x;
     /// ```
     #[clippy::version = "pre 1.29.0"]

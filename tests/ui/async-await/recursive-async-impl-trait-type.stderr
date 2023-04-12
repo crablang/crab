@@ -9,4 +9,4 @@ LL | async fn recursive_async_function() -> () {
 
 error: aborting due to previous error
 
-For more information about this error, try `rustc --explain E0733`.
+For more information about this error, try `crablangc --explain E0733`.

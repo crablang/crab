@@ -50,7 +50,7 @@ pub enum Alignment {
     Unknown,
 }
 
-/// Used by [width](https://doc.rust-lang.org/std/fmt/#width) and [precision](https://doc.rust-lang.org/std/fmt/#precision) specifiers.
+/// Used by [width](https://doc.crablang.org/std/fmt/#width) and [precision](https://doc.crablang.org/std/fmt/#precision) specifiers.
 #[lang = "format_count"]
 #[derive(Copy, Clone)]
 pub enum Count {

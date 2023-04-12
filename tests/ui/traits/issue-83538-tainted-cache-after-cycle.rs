@@ -6,7 +6,7 @@
 //
 // But our caching mechanism was blending both cycles and giving the incorrect result.
 
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 #![allow(bad_style)]
 
 struct First {
@@ -37,7 +37,7 @@ struct Sixth {
     p: Box<Ty>,
 }
 
-#[rustc_evaluate_where_clauses]
+#[crablangc_evaluate_where_clauses]
 fn forward<'a>()
 where
     Vec<First>: Unpin,
@@ -45,7 +45,7 @@ where
 {
 }
 
-#[rustc_evaluate_where_clauses]
+#[crablangc_evaluate_where_clauses]
 fn reverse<'a>()
 where
     Third<'a, Ty>: Unpin,

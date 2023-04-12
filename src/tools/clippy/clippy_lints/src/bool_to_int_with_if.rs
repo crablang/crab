@@ -1,11 +1,11 @@
 use clippy_utils::higher::If;
-use rustc_ast::LitKind;
-use rustc_hir::{Block, ExprKind};
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_ast::LitKind;
+use crablangc_hir::{Block, ExprKind};
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
 
 use clippy_utils::{diagnostics::span_lint_and_then, in_constant, is_else_clause, is_integer_literal, sugg::Sugg};
-use rustc_errors::Applicability;
+use crablangc_errors::Applicability;
 
 declare_clippy_lint! {
     /// ### What it does
@@ -16,10 +16,10 @@ declare_clippy_lint! {
     /// Coercion or `from()` is another way to convert bool to a number.
     /// Both methods are guaranteed to return 1 for true, and 0 for false.
     ///
-    /// See https://doc.rust-lang.org/std/primitive.bool.html#impl-From%3Cbool%3E
+    /// See https://doc.crablang.org/std/primitive.bool.html#impl-From%3Cbool%3E
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// # let condition = false;
     /// if condition {
     ///     1_i64
@@ -28,12 +28,12 @@ declare_clippy_lint! {
     /// };
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// # let condition = false;
     /// i64::from(condition);
     /// ```
     /// or
-    /// ```rust
+    /// ```crablang
     /// # let condition = false;
     /// condition as i64;
     /// ```
@@ -45,14 +45,14 @@ declare_clippy_lint! {
 declare_lint_pass!(BoolToIntWithIf => [BOOL_TO_INT_WITH_IF]);
 
 impl<'tcx> LateLintPass<'tcx> for BoolToIntWithIf {
-    fn check_expr(&mut self, cx: &LateContext<'tcx>, expr: &'tcx rustc_hir::Expr<'tcx>) {
+    fn check_expr(&mut self, cx: &LateContext<'tcx>, expr: &'tcx crablangc_hir::Expr<'tcx>) {
         if !expr.span.from_expansion() && !in_constant(cx, expr.hir_id) {
             check_if_else(cx, expr);
         }
     }
 }
 
-fn check_if_else<'tcx>(cx: &LateContext<'tcx>, expr: &'tcx rustc_hir::Expr<'tcx>) {
+fn check_if_else<'tcx>(cx: &LateContext<'tcx>, expr: &'tcx crablangc_hir::Expr<'tcx>) {
     if let Some(If { cond, then, r#else: Some(r#else) }) = If::hir(expr)
         && let Some(then_lit) = int_literal(then)
         && let Some(else_lit) = int_literal(r#else)
@@ -105,7 +105,7 @@ fn check_if_else<'tcx>(cx: &LateContext<'tcx>, expr: &'tcx rustc_hir::Expr<'tcx>
 }
 
 // If block contains only a int literal expression, return literal expression
-fn int_literal<'tcx>(expr: &'tcx rustc_hir::Expr<'tcx>) -> Option<&'tcx rustc_hir::Expr<'tcx>> {
+fn int_literal<'tcx>(expr: &'tcx crablangc_hir::Expr<'tcx>) -> Option<&'tcx crablangc_hir::Expr<'tcx>> {
     if let ExprKind::Block(block, _) = expr.kind
         && let Block {
             stmts: [],       // Shouldn't lint if statements with side effects

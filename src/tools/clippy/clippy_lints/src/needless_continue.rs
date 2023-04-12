@@ -2,7 +2,7 @@
 //!
 //! For example, the lint would catch
 //!
-//! ```rust
+//! ```crablang
 //! let mut a = 1;
 //! let x = true;
 //!
@@ -19,7 +19,7 @@
 //!
 //! And suggest something like this:
 //!
-//! ```rust
+//! ```crablang
 //! let mut a = 1;
 //! let x = true;
 //!
@@ -35,10 +35,10 @@
 //! This lint is **warn** by default.
 use clippy_utils::diagnostics::span_lint_and_help;
 use clippy_utils::source::{indent_of, snippet, snippet_block};
-use rustc_ast::ast;
-use rustc_lint::{EarlyContext, EarlyLintPass, LintContext};
-use rustc_session::{declare_lint_pass, declare_tool_lint};
-use rustc_span::Span;
+use crablangc_ast::ast;
+use crablangc_lint::{EarlyContext, EarlyLintPass, LintContext};
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_span::Span;
 
 declare_clippy_lint! {
     /// ### What it does
@@ -55,7 +55,7 @@ declare_clippy_lint! {
     /// statement within the THEN block and omitting the else block completely.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// # fn condition() -> bool { false }
     /// # fn update_condition() {}
     /// # let x = false;
@@ -72,7 +72,7 @@ declare_clippy_lint! {
     ///
     /// Could be rewritten as
     ///
-    /// ```rust
+    /// ```crablang
     /// # fn condition() -> bool { false }
     /// # fn update_condition() {}
     /// # let x = false;
@@ -87,7 +87,7 @@ declare_clippy_lint! {
     ///
     /// As another example, the following code
     ///
-    /// ```rust
+    /// ```crablang
     /// # fn waiting() -> bool { false }
     /// loop {
     ///     if waiting() {
@@ -100,7 +100,7 @@ declare_clippy_lint! {
     /// ```
     /// Could be rewritten as
     ///
-    /// ```rust
+    /// ```crablang
     /// # fn waiting() -> bool { false }
     /// loop {
     ///     if waiting() {
@@ -408,7 +408,7 @@ fn check_and_warn(cx: &EarlyContext<'_>, expr: &ast::Expr) {
 /// till a non-whitespace character is found.  e.g., the string. If no closing `}` is present, the
 /// string will be preserved.
 ///
-/// ```rust
+/// ```crablang
 /// {
 ///     let x = 5;
 /// }
@@ -442,7 +442,7 @@ mod test {
     use super::erode_from_back;
 
     #[test]
-    #[rustfmt::skip]
+    #[crablangfmt::skip]
     fn test_erode_from_back() {
         let input = "\
 {
@@ -460,7 +460,7 @@ mod test {
     }
 
     #[test]
-    #[rustfmt::skip]
+    #[crablangfmt::skip]
     fn test_erode_from_back_no_brace() {
         let input = "\
 let x = 5;

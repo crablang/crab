@@ -1,6 +1,6 @@
 // check-pass
 //
-// Taken from https://github.com/rust-lang/rust/blob/6cc0a764e082d9c0abcf37a768d5889247ba13e2/compiler/rustc_typeck/src/check/_match.rs#L445-L462
+// Taken from https://github.com/crablang/crablang/blob/6cc0a764e082d9c0abcf37a768d5889247ba13e2/compiler/crablangc_typeck/src/check/_match.rs#L445-L462
 //
 // We attempt to `let Bar::Present(_): &mut Bar = foo else { ... }` where foo is meant to
 // Deref/DerefMut to Bar. You can do this with an irrefutable binding, so it should work with

@@ -1,10 +1,10 @@
 // compile-flags: --target armv7-unknown-linux-gnueabihf
 // needs-llvm-components: arm
 
-#![feature(no_core, lang_items, rustc_attrs)]
+#![feature(no_core, lang_items, crablangc_attrs)]
 #![no_core]
 
-#[rustc_builtin_macro]
+#[crablangc_builtin_macro]
 macro_rules! asm {
     () => {};
 }

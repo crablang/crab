@@ -1,6 +1,6 @@
 // run-pass
 
-// https://github.com/rust-lang/rust/issues/48821
+// https://github.com/crablang/crablang/issues/48821
 
 const fn foo(i: usize) -> usize {
     let x = i;

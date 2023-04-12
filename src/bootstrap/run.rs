@@ -66,7 +66,7 @@ impl Step for BuildManifest {
 
     fn run(self, builder: &Builder<'_>) {
         // This gets called by `promote-release`
-        // (https://github.com/rust-lang/promote-release).
+        // (https://github.com/crablang/promote-release).
         let mut cmd = builder.tool_cmd(Tool::BuildManifest);
         let sign = builder.config.dist_sign_folder.as_ref().unwrap_or_else(|| {
             panic!("\n\nfailed to specify `dist.sign-folder` in `config.toml`\n\n")
@@ -168,20 +168,20 @@ impl Step for Miri {
 
         // # Run miri.
         // Running it via `cargo run` as that figures out the right dylib path.
-        // add_rustc_lib_path does not add the path that contains librustc_driver-<...>.so.
+        // add_crablangc_lib_path does not add the path that contains libcrablangc_driver-<...>.so.
         let mut miri = tool::prepare_tool_cargo(
             builder,
             compiler,
-            Mode::ToolRustc,
+            Mode::ToolCrabLangc,
             host,
             "run",
             "src/tools/miri",
             SourceType::InTree,
             &[],
         );
-        miri.add_rustc_lib_path(builder, compiler);
+        miri.add_crablangc_lib_path(builder, compiler);
         // Forward arguments.
-        miri.arg("--").arg("--target").arg(target.rustc_target_arg());
+        miri.arg("--").arg("--target").arg(target.crablangc_target_arg());
         miri.args(builder.config.cmd.args());
         miri.args(&builder.config.free_args);
 

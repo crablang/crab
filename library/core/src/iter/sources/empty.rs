@@ -1,5 +1,5 @@
 use crate::fmt;
-use crate::iter::{FusedIterator, TrustedLen};
+use crate::iter::{FusedIterator, TcrablangedLen};
 use crate::marker;
 
 /// Creates an iterator that yields nothing.
@@ -17,7 +17,7 @@ use crate::marker;
 /// assert_eq!(None, nope.next());
 /// ```
 #[stable(feature = "iter_empty", since = "1.2.0")]
-#[rustc_const_stable(feature = "const_iter_empty", since = "1.32.0")]
+#[crablangc_const_stable(feature = "const_iter_empty", since = "1.32.0")]
 pub const fn empty<T>() -> Empty<T> {
     Empty(marker::PhantomData)
 }
@@ -63,8 +63,8 @@ impl<T> ExactSizeIterator for Empty<T> {
     }
 }
 
-#[unstable(feature = "trusted_len", issue = "37572")]
-unsafe impl<T> TrustedLen for Empty<T> {}
+#[unstable(feature = "tcrablanged_len", issue = "37572")]
+unsafe impl<T> TcrablangedLen for Empty<T> {}
 
 #[stable(feature = "fused", since = "1.26.0")]
 impl<T> FusedIterator for Empty<T> {}
@@ -81,7 +81,7 @@ impl<T> Clone for Empty<T> {
 // not #[derive] because that adds a Default bound on T,
 // which isn't necessary.
 #[stable(feature = "iter_empty", since = "1.2.0")]
-#[rustc_const_unstable(feature = "const_default_impls", issue = "87864")]
+#[crablangc_const_unstable(feature = "const_default_impls", issue = "87864")]
 impl<T> const Default for Empty<T> {
     fn default() -> Empty<T> {
         Empty(marker::PhantomData)

@@ -1,8 +1,8 @@
 // compile-flags: --edition=2021 --crate-type=lib
-// rustc-env:RUST_BACKTRACE=0
+// crablangc-env:CRABLANG_BACKTRACE=0
 // check-pass
 
-// tracked in https://github.com/rust-lang/rust/issues/96572
+// tracked in https://github.com/crablang/crablang/issues/96572
 
 #![feature(type_alias_impl_trait)]
 

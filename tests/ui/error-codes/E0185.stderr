@@ -9,4 +9,4 @@ LL |     fn foo(&self) {}
 
 error: aborting due to previous error
 
-For more information about this error, try `rustc --explain E0185`.
+For more information about this error, try `crablangc --explain E0185`.

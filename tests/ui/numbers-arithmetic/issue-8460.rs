@@ -2,7 +2,7 @@
 #![allow(unused_must_use)]
 // ignore-emscripten no threads support
 // needs-unwind
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 
 use std::thread;
 

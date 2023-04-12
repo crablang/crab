@@ -5,7 +5,7 @@
 // exploit integer information for alignment, so here we test that this is
 // indeed the case.
 //
-// See https://github.com/rust-lang/miri/issues/1074.
+// See https://github.com/crablang/miri/issues/1074.
 fn main() {
     let x = &mut [0u8; 3];
     let base_addr = x as *mut _ as usize;

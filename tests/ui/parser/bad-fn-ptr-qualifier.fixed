@@ -1,6 +1,6 @@
-// run-rustfix
+// run-crablangfix
 // edition:2018
-// Most of items are taken from ./recover-const-async-fn-ptr.rs but this is able to apply rustfix.
+// Most of items are taken from ./recover-const-async-fn-ptr.rs but this is able to apply crablangfix.
 
 pub type T0 =  fn(); //~ ERROR an `fn` pointer type cannot be `const`
 pub type T1 =  extern "C" fn(); //~ ERROR an `fn` pointer type cannot be `const`

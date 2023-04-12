@@ -121,4 +121,4 @@ LL | fn require_fn(_: impl Fn() -> i32) {}
 error: aborting due to 8 previous errors
 
 Some errors have detailed explanations: E0271, E0277.
-For more information about an error, try `rustc --explain E0271`.
+For more information about an error, try `crablangc --explain E0271`.

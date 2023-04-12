@@ -45,7 +45,7 @@ fn foo() -> i64 {
 }
 
 #[must_use] //~ ERROR `#[must_use]` has no effect
-extern "Rust" {
+extern "CrabLang" {
     #[link_name = "STATIC"]
     #[must_use] //~ ERROR `#[must_use]` has no effect
     static FOREIGN_STATIC: usize;

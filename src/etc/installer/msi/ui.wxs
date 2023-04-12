@@ -11,7 +11,7 @@
         <WixVariable Id="WixUIDialogBmp" Value="dialogbg.bmp" />
         <WixVariable Id="WixUIBannerBmp" Value="banner.bmp" />
 
-        <UI Id="RustUI">
+        <UI Id="CrabLangUI">
             <TextStyle Id="WixUI_Font_Normal" FaceName="!(loc.Advanced_Font_FaceName)" Size="!(loc.Advanced_Font_Normal_Size)" />
             <TextStyle Id="WixUI_Font_Bigger" FaceName="!(loc.Advanced_Font_FaceName)" Size="!(loc.Advanced_Font_Bigger_Size)" />
             <TextStyle Id="WixUI_Font_Title" FaceName="!(loc.Advanced_Font_FaceName)" Size="!(loc.Advanced_Font_Title_Size)" Bold="yes" />
@@ -37,9 +37,9 @@
             <Publish Dialog="BrowseDlg" Control="OK" Event="DoAction" Value="WixUIValidatePath" Order="1">1</Publish>
             <Publish Dialog="BrowseDlg" Control="OK" Event="SpawnDialog" Value="InvalidDirDlg" Order="2"><![CDATA[WIXUI_INSTALLDIR_VALID<>"1"]]></Publish>
 
-            <Publish Dialog="RustWelcomeDlg" Control="Advanced" Event="NewDialog" Value="InstallScopeDlg" Order="1" />
+            <Publish Dialog="CrabLangWelcomeDlg" Control="Advanced" Event="NewDialog" Value="InstallScopeDlg" Order="1" />
 
-            <Publish Dialog="InstallScopeDlg" Control="Back" Event="NewDialog" Value="RustWelcomeDlg">1</Publish>
+            <Publish Dialog="InstallScopeDlg" Control="Back" Event="NewDialog" Value="CrabLangWelcomeDlg">1</Publish>
             <!-- override default WixAppFolder of WixPerMachineFolder as standard user won't be shown the radio group to set WixAppFolder -->
             <Publish Dialog="InstallScopeDlg" Control="Next" Property="WixAppFolder" Value="WixPerUserFolder" Order="1">!(wix.WixUISupportPerUser) AND NOT Privileged</Publish>
             <Publish Dialog="InstallScopeDlg" Control="Next" Property="ALLUSERS" Value="{}" Order="2">WixAppFolder = "WixPerUserFolder"</Publish>
@@ -74,7 +74,7 @@
         </UI>
 
         <InstallUISequence>
-            <Show Dialog="WelcomeDlg" Before="RustWelcomeDlg" >Installed AND PATCH</Show>
+            <Show Dialog="WelcomeDlg" Before="CrabLangWelcomeDlg" >Installed AND PATCH</Show>
         </InstallUISequence>
 
         <Property Id="WIXUI_INSTALLDIR" Value="INSTALLDIR" />

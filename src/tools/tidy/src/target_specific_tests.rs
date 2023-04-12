@@ -4,7 +4,7 @@
 use std::collections::BTreeMap;
 use std::path::Path;
 
-use crate::walk::filter_not_rust;
+use crate::walk::filter_not_crablang;
 
 const COMMENT: &str = "//";
 const LLVM_COMPONENTS_HEADER: &str = "needs-llvm-components:";
@@ -37,7 +37,7 @@ struct RevisionInfo<'a> {
 }
 
 pub fn check(path: &Path, bad: &mut bool) {
-    crate::walk::walk(path, |path, _is_dir| filter_not_rust(path), &mut |entry, content| {
+    crate::walk::walk(path, |path, _is_dir| filter_not_crablang(path), &mut |entry, content| {
         let file = entry.path().display();
         let mut header_map = BTreeMap::new();
         iter_header(content, &mut |cfg, directive| {

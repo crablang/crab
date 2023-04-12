@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT OR Apache-2.0
-// SPDX-FileCopyrightText: The Rust Project Developers (see https://thanks.rust-lang.org)
+// SPDX-FileCopyrightText: The CrabLang Project Developers (see https://thanks.crablang.org)
 
 #![feature(core_intrinsics)]
 use std::intrinsics::*;

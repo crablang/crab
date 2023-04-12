@@ -18,4 +18,4 @@ LL |     fn simd_mul<T, const N: usize>(x: T, y: T);
 
 error: aborting due to 3 previous errors
 
-For more information about this error, try `rustc --explain E0094`.
+For more information about this error, try `crablangc --explain E0094`.

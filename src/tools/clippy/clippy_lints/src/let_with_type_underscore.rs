@@ -1,8 +1,8 @@
 use clippy_utils::diagnostics::span_lint_and_help;
-use rustc_hir::{Local, TyKind};
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_middle::lint::in_external_macro;
-use rustc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_hir::{Local, TyKind};
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_middle::lint::in_external_macro;
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
 
 declare_clippy_lint! {
     /// ### What it does
@@ -10,11 +10,11 @@ declare_clippy_lint! {
     /// ### Why is this bad?
     /// It adds noise, `: _` provides zero clarity or utility.
     /// ### Example
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// let my_number: _ = 1;
     /// ```
     /// Use instead:
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// let my_number = 1;
     /// ```
     #[clippy::version = "1.69.0"]

@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 #![feature(lint_reasons)]
 #![feature(async_closure)]
 #![warn(clippy::async_yields_async)]
@@ -28,7 +28,7 @@ async fn f() -> CustomFutureType {
     CustomFutureType
 }
 
-#[rustfmt::skip]
+#[crablangfmt::skip]
 fn main() {
     let _f = {
         3
@@ -67,7 +67,7 @@ fn main() {
     let _o = async || f();
 }
 
-#[rustfmt::skip]
+#[crablangfmt::skip]
 #[allow(dead_code)]
 fn check_expect_suppression() {
     #[expect(clippy::async_yields_async)]

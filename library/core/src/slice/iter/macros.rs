@@ -103,7 +103,7 @@ macro_rules! iterator {
             }
         }
 
-        #[stable(feature = "rust1", since = "1.0.0")]
+        #[stable(feature = "crablang1", since = "1.0.0")]
         impl<T> ExactSizeIterator for $name<'_, T> {
             #[inline(always)]
             fn len(&self) -> usize {
@@ -116,7 +116,7 @@ macro_rules! iterator {
             }
         }
 
-        #[stable(feature = "rust1", since = "1.0.0")]
+        #[stable(feature = "crablang1", since = "1.0.0")]
         impl<'a, T> Iterator for $name<'a, T> {
             type Item = $elem;
 
@@ -274,7 +274,7 @@ macro_rules! iterator {
             // because this simple implementation generates less LLVM IR and is
             // faster to compile. Also, the `assume` avoids a bounds check.
             #[inline]
-            #[rustc_inherit_overflow_checks]
+            #[crablangc_inherit_overflow_checks]
             fn position<P>(&mut self, mut predicate: P) -> Option<usize> where
                 Self: Sized,
                 P: FnMut(Self::Item) -> bool,
@@ -333,7 +333,7 @@ macro_rules! iterator {
             $($extra)*
         }
 
-        #[stable(feature = "rust1", since = "1.0.0")]
+        #[stable(feature = "crablang1", since = "1.0.0")]
         impl<'a, T> DoubleEndedIterator for $name<'a, T> {
             #[inline]
             fn next_back(&mut self) -> Option<$elem> {
@@ -382,8 +382,8 @@ macro_rules! iterator {
         #[stable(feature = "fused", since = "1.26.0")]
         impl<T> FusedIterator for $name<'_, T> {}
 
-        #[unstable(feature = "trusted_len", issue = "37572")]
-        unsafe impl<T> TrustedLen for $name<'_, T> {}
+        #[unstable(feature = "tcrablanged_len", issue = "37572")]
+        unsafe impl<T> TcrablangedLen for $name<'_, T> {}
 
         impl<'a, T> UncheckedIterator for $name<'a, T> {
             unsafe fn next_unchecked(&mut self) -> $elem {
@@ -394,7 +394,7 @@ macro_rules! iterator {
             }
         }
 
-        #[stable(feature = "default_iters", since = "CURRENT_RUSTC_VERSION")]
+        #[stable(feature = "default_iters", since = "CURRENT_CRABLANGC_VERSION")]
         impl<T> Default for $name<'_, T> {
             /// Creates an empty slice iterator.
             ///
@@ -412,7 +412,7 @@ macro_rules! iterator {
 
 macro_rules! forward_iterator {
     ($name:ident: $elem:ident, $iter_of:ty) => {
-        #[stable(feature = "rust1", since = "1.0.0")]
+        #[stable(feature = "crablang1", since = "1.0.0")]
         impl<'a, $elem, P> Iterator for $name<'a, $elem, P>
         where
             P: FnMut(&T) -> bool,

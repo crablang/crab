@@ -1,7 +1,7 @@
 // revisions: cfail1 cfail2
 // build-pass
 
-// rust-lang/rust#69798:
+// crablang/crablang#69798:
 //
 // This is analogous to cgu_invalidated_when_import_added, but it covers a
 // problem uncovered where a change to the *export* set caused a link failure

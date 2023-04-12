@@ -6,7 +6,7 @@ collect-metadata = "test --test dogfood --features internal -- run_metadata_coll
 
 [build]
 # -Zbinary-dep-depinfo allows us to track which rlib files to use for compiling UI tests
-rustflags = ["-Zunstable-options", "-Zbinary-dep-depinfo"]
+crablangflags = ["-Zunstable-options", "-Zbinary-dep-depinfo"]
 target-dir = "target"
 
 [unstable]

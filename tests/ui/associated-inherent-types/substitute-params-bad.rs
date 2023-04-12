@@ -1,5 +1,5 @@
 // Regression test for issue #105305 and for
-// https://github.com/rust-lang/rust/issues/107468#issuecomment-1409096700
+// https://github.com/crablang/crablang/issues/107468#issuecomment-1409096700
 
 #![feature(inherent_associated_types)]
 #![allow(incomplete_features)]

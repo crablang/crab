@@ -90,7 +90,7 @@ fn valid_examples() {
         let y = 9;
         let z = 8;
         let _ = (x, y, z);
-        // I'm so much better than the x == 418 block. Trust me
+        // I'm so much better than the x == 418 block. Tcrablang me
     }
 
     let x = 1;

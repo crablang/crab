@@ -1,25 +1,25 @@
 use clippy_utils::diagnostics::{span_lint, span_lint_and_then};
 use clippy_utils::trait_ref_of_method;
-use rustc_data_structures::fx::{FxHashMap, FxHashSet};
-use rustc_errors::Applicability;
-use rustc_hir::intravisit::nested_filter::{self as hir_nested_filter, NestedFilter};
-use rustc_hir::intravisit::{
+use crablangc_data_structures::fx::{FxHashMap, FxHashSet};
+use crablangc_errors::Applicability;
+use crablangc_hir::intravisit::nested_filter::{self as hir_nested_filter, NestedFilter};
+use crablangc_hir::intravisit::{
     walk_fn_decl, walk_generic_param, walk_generics, walk_impl_item_ref, walk_item, walk_param_bound,
     walk_poly_trait_ref, walk_trait_ref, walk_ty, Visitor,
 };
-use rustc_hir::FnRetTy::Return;
-use rustc_hir::{
+use crablangc_hir::FnRetTy::Return;
+use crablangc_hir::{
     lang_items, BareFnTy, BodyId, FnDecl, FnSig, GenericArg, GenericBound, GenericParam, GenericParamKind, Generics,
     Impl, ImplItem, ImplItemKind, Item, ItemKind, Lifetime, LifetimeName, LifetimeParamKind, Node, PolyTraitRef,
     PredicateOrigin, TraitFn, TraitItem, TraitItemKind, Ty, TyKind, WherePredicate,
 };
-use rustc_lint::{LateContext, LateLintPass, LintContext};
-use rustc_middle::hir::nested_filter as middle_nested_filter;
-use rustc_middle::lint::in_external_macro;
-use rustc_session::{declare_lint_pass, declare_tool_lint};
-use rustc_span::def_id::LocalDefId;
-use rustc_span::source_map::Span;
-use rustc_span::symbol::{kw, Ident, Symbol};
+use crablangc_lint::{LateContext, LateLintPass, LintContext};
+use crablangc_middle::hir::nested_filter as middle_nested_filter;
+use crablangc_middle::lint::in_external_macro;
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_span::def_id::LocalDefId;
+use crablangc_span::source_map::Span;
+use crablangc_span::symbol::{kw, Ident, Symbol};
 
 declare_clippy_lint! {
     /// ### What it does
@@ -36,7 +36,7 @@ declare_clippy_lint! {
     /// are mentioned due to potential false positives.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// // Unnecessary lifetime annotations
     /// fn in_and_out<'a>(x: &'a u8, y: u8) -> &'a u8 {
     ///     x
@@ -44,7 +44,7 @@ declare_clippy_lint! {
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// fn elided(x: &u8, y: u8) -> &u8 {
     ///     x
     /// }
@@ -67,7 +67,7 @@ declare_clippy_lint! {
     /// them leads to more readable code.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// // unnecessary lifetimes
     /// fn unused_lifetime<'a>(x: u8) {
     ///     // ..
@@ -75,7 +75,7 @@ declare_clippy_lint! {
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// fn no_lifetime(x: u8) {
     ///     // ...
     /// }
@@ -294,7 +294,7 @@ fn elision_suggestions(
     Some(suggestions)
 }
 
-// elision doesn't work for explicit self types, see rust-lang/rust#69064
+// elision doesn't work for explicit self types, see crablang/crablang#69064
 fn explicit_self_type<'tcx>(cx: &LateContext<'tcx>, func: &FnDecl<'tcx>, ident: Option<Ident>) -> bool {
     if_chain! {
         if let Some(ident) = ident;
@@ -607,7 +607,7 @@ impl<'cx, 'tcx, F> Visitor<'tcx> for LifetimeChecker<'cx, 'tcx, F>
 where
     F: NestedFilter<'tcx>,
 {
-    type Map = rustc_middle::hir::map::Map<'tcx>;
+    type Map = crablangc_middle::hir::map::Map<'tcx>;
     type NestedFilter = F;
 
     // for lifetimes as parameters of generics

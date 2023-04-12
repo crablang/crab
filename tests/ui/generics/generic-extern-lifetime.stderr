@@ -12,7 +12,7 @@ error[E0261]: use of undeclared lifetime name `'a`
 LL |     pub fn life4<'b>(x: for<'c> fn(&'a i32));
    |                                     ^^ undeclared lifetime
    |
-   = note: for more information on higher-ranked polymorphism, visit https://doc.rust-lang.org/nomicon/hrtb.html
+   = note: for more information on higher-ranked polymorphism, visit https://doc.crablang.org/nomicon/hrtb.html
 help: consider making the type lifetime-generic with a new `'a` lifetime
    |
 LL |     pub fn life4<'b>(x: for<'a, 'c> fn(&'a i32));
@@ -39,4 +39,4 @@ LL |     pub fn life7<'a, 'b>() -> for<'c> fn(&'a i32);
 
 error: aborting due to 3 previous errors
 
-For more information about this error, try `rustc --explain E0261`.
+For more information about this error, try `crablangc --explain E0261`.

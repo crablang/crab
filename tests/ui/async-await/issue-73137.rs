@@ -1,4 +1,4 @@
-// Regression test for <https://github.com/rust-lang/rust/issues/73137>
+// Regression test for <https://github.com/crablang/crablang/issues/73137>
 
 // run-pass
 // edition:2018

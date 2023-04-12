@@ -1,10 +1,10 @@
 // ignore-wasm32-bare compiled with panic=abort by default
 
-#![feature(rustc_attrs, stmt_expr_attributes)]
+#![feature(crablangc_attrs, stmt_expr_attributes)]
 
 // EMIT_MIR box_expr.main.ElaborateDrops.before.mir
 fn main() {
-    let x = #[rustc_box]
+    let x = #[crablangc_box]
     Box::new(S::new());
     drop(x);
 }

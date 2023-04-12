@@ -1,10 +1,10 @@
 use clippy_utils::diagnostics::span_lint_and_help;
 use clippy_utils::ty::implements_trait;
 use clippy_utils::{if_sequence, in_constant, is_else_clause, SpanlessEq};
-use rustc_hir::{BinOpKind, Expr, ExprKind};
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_session::{declare_lint_pass, declare_tool_lint};
-use rustc_span::sym;
+use crablangc_hir::{BinOpKind, Expr, ExprKind};
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_span::sym;
 
 declare_clippy_lint! {
     /// ### What it does
@@ -17,10 +17,10 @@ declare_clippy_lint! {
     ///
     /// ### Known problems
     /// The match statement may be slower due to the compiler
-    /// not inlining the call to cmp. See issue [#5354](https://github.com/rust-lang/rust-clippy/issues/5354)
+    /// not inlining the call to cmp. See issue [#5354](https://github.com/crablang/crablang-clippy/issues/5354)
     ///
     /// ### Example
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// # fn a() {}
     /// # fn b() {}
     /// # fn c() {}
@@ -36,7 +36,7 @@ declare_clippy_lint! {
     /// ```
     ///
     /// Use instead:
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// use std::cmp::Ordering;
     /// # fn a() {}
     /// # fn b() {}

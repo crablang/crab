@@ -1,7 +1,7 @@
-// run-rustfix
+// run-crablangfix
 
 #![deny(unused_parens)]
-#![allow(while_true)] // for rustfix
+#![allow(while_true)] // for crablangfix
 
 #[derive(Eq, PartialEq)]
 struct X { y: bool }

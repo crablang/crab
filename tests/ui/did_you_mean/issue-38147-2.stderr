@@ -22,4 +22,4 @@ LL |     longer_name:   &   'a mut Vec<u8>
 
 error: aborting due to 2 previous errors
 
-For more information about this error, try `rustc --explain E0596`.
+For more information about this error, try `crablangc --explain E0596`.

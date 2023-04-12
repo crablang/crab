@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT OR Apache-2.0
-// SPDX-FileCopyrightText: The Rust Project Developers (see https://thanks.rust-lang.org)
+// SPDX-FileCopyrightText: The CrabLang Project Developers (see https://thanks.crablang.org)
 
 // Regression test for Issue #30530: alloca's created for storing
 // intermediate scratch values during brace-less match arms need to be

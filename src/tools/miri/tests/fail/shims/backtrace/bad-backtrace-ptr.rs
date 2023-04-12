@@ -1,4 +1,4 @@
-extern "Rust" {
+extern "CrabLang" {
     fn miri_resolve_frame(ptr: *mut (), flags: u64);
 }
 

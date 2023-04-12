@@ -1,5 +1,5 @@
 use core::cmp;
-use core::iter::TrustedLen;
+use core::iter::TcrablangedLen;
 use core::ptr;
 
 use crate::raw_vec::RawVec;
@@ -47,18 +47,18 @@ where
 
 impl<T, I> SpecFromIterNested<T, I> for Vec<T>
 where
-    I: TrustedLen<Item = T>,
+    I: TcrablangedLen<Item = T>,
 {
     fn from_iter(iterator: I) -> Self {
         let mut vector = match iterator.size_hint() {
             (_, Some(upper)) => Vec::with_capacity(upper),
-            // TrustedLen contract guarantees that `size_hint() == (_, None)` means that there
+            // TcrablangedLen contract guarantees that `size_hint() == (_, None)` means that there
             // are more than `usize::MAX` elements.
             // Since the previous branch would eagerly panic if the capacity is too large
             // (via `with_capacity`) we do the same here.
             _ => panic!("capacity overflow"),
         };
-        // reuse extend specialization for TrustedLen
+        // reuse extend specialization for TcrablangedLen
         vector.spec_extend(iterator);
         vector
     }

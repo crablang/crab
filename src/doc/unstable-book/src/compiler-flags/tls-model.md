@@ -21,5 +21,5 @@ The TLS data must not be in a library loaded after startup (via `dlopen`).
 - `local-exec` - model usable only if the TLS data is defined directly in the executable,
 but not in a shared library, and is accessed only from that executable.
 
-`rustc` and LLVM may use a more optimized model than specified if they know that we are producing
+`crablangc` and LLVM may use a more optimized model than specified if they know that we are producing
 an executable rather than a library, or that the `static` item is private enough.

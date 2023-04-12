@@ -1,9 +1,9 @@
 // run-pass
 // compile-flags: --test
 
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 
 #![deny(dead_code)]
 
-#[rustc_main]
+#[crablangc_main]
 fn foo() { panic!(); }

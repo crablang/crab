@@ -7,17 +7,17 @@
 // ignore-beta
 // ignore-stable
 
-#![feature(rustc_private)]
+#![feature(crablangc_private)]
 #![crate_type = "lib"]
 
-extern crate rustc_errors;
-extern crate rustc_macros;
-extern crate rustc_session;
-extern crate rustc_span;
+extern crate crablangc_errors;
+extern crate crablangc_macros;
+extern crate crablangc_session;
+extern crate crablangc_span;
 
-use rustc_errors::{Applicability, DiagnosticMessage, SubdiagnosticMessage};
-use rustc_macros::{fluent_messages, Subdiagnostic};
-use rustc_span::Span;
+use crablangc_errors::{Applicability, DiagnosticMessage, SubdiagnosticMessage};
+use crablangc_macros::{fluent_messages, Subdiagnostic};
+use crablangc_span::Span;
 
 fluent_messages! { "./example.ftl" }
 

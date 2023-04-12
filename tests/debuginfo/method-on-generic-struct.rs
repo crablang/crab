@@ -1,6 +1,6 @@
-// Some versions of the non-rust-enabled LLDB print the wrong generic
+// Some versions of the non-crablang-enabled LLDB print the wrong generic
 // parameter type names in this test.
-// rust-lldb
+// crablang-lldb
 
 // compile-flags:-g
 

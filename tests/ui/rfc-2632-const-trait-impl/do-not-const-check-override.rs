@@ -1,9 +1,9 @@
 // check-pass
-#![feature(const_trait_impl, rustc_attrs)]
+#![feature(const_trait_impl, crablangc_attrs)]
 
 #[const_trait]
 trait Foo {
-    #[rustc_do_not_const_check]
+    #[crablangc_do_not_const_check]
     fn into_iter(&self) { println!("FEAR ME!") }
 }
 

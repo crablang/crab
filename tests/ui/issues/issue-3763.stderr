@@ -37,4 +37,4 @@ LL |     let nope = my_struct.priv_field;
 error: aborting due to 5 previous errors
 
 Some errors have detailed explanations: E0616, E0624.
-For more information about an error, try `rustc --explain E0616`.
+For more information about an error, try `crablangc --explain E0616`.

@@ -1,4 +1,4 @@
-//! # The Rust core allocation and collections library
+//! # The CrabLang core allocation and collections library
 //!
 //! This library provides smart pointers and collections for managing
 //! heap-allocated values.
@@ -59,8 +59,8 @@
 #![allow(unused_attributes)]
 #![stable(feature = "alloc", since = "1.36.0")]
 #![doc(
-    html_playground_url = "https://play.rust-lang.org/",
-    issue_tracker_base_url = "https://github.com/rust-lang/rust/issues/",
+    html_playground_url = "https://play.crablang.org/",
+    issue_tracker_base_url = "https://github.com/crablang/crablang/issues/",
     test(no_crate_inject, attr(allow(unused_variables), deny(warnings)))
 )]
 #![doc(cfg_hide(
@@ -76,8 +76,8 @@
 #![no_std]
 #![needs_allocator]
 // To run alloc tests without x.py without ending up with two copies of alloc, Miri needs to be
-// able to "empty" this crate. See <https://github.com/rust-lang/miri-test-libstd/issues/4>.
-// rustc itself never sets the feature, so this line has no affect there.
+// able to "empty" this crate. See <https://github.com/crablang/miri-test-libstd/issues/4>.
+// crablangc itself never sets the feature, so this line has no affect there.
 #![cfg(any(not(feature = "miri-test-libstd"), test, doctest))]
 //
 // Lints:
@@ -152,8 +152,8 @@
 #![feature(slice_range)]
 #![feature(str_internals)]
 #![feature(strict_provenance)]
-#![feature(trusted_len)]
-#![feature(trusted_random_access)]
+#![feature(tcrablanged_len)]
+#![feature(tcrablanged_random_access)]
 #![feature(try_trait_v2)]
 #![feature(tuple_trait)]
 #![feature(unchecked_math)]
@@ -182,8 +182,8 @@
 #![feature(min_specialization)]
 #![feature(negative_impls)]
 #![feature(never_type)]
-#![feature(rustc_allow_const_fn_unstable)]
-#![feature(rustc_attrs)]
+#![feature(crablangc_allow_const_fn_unstable)]
+#![feature(crablangc_attrs)]
 #![feature(pointer_is_aligned)]
 #![feature(slice_internals)]
 #![feature(staged_api)]
@@ -196,10 +196,10 @@
 #![cfg_attr(test, feature(panic_update_hook))]
 #![feature(multiple_supertrait_upcastable)]
 //
-// Rustdoc features:
+// CrabLangdoc features:
 #![feature(doc_cfg)]
 #![feature(doc_cfg_hide)]
-// Technically, this is a bug in rustdoc: rustdoc sees the documentation on `#[lang = slice_alloc]`
+// Technically, this is a bug in crablangdoc: crablangdoc sees the documentation on `#[lang = slice_alloc]`
 // blocks is for `&[T]`, which also has documentation using this feature in `core`, and gets mad
 // that the feature-gate isn't enabled. Ideally, it wouldn't check for the feature gate for docs
 // from other crates, but since this can only appear for lang items, it doesn't seem worth fixing.

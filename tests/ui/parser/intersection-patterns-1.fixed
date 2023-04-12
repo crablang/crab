@@ -6,7 +6,7 @@
 // to suggest either switching the order or note that intersection
 // patterns are not allowed.
 
-// run-rustfix
+// run-crablangfix
 
 #![allow(unused_variables)]
 

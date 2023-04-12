@@ -1,5 +1,5 @@
 use crate::cmp;
-use crate::iter::{adapters::SourceIter, FusedIterator, InPlaceIterable, TrustedLen};
+use crate::iter::{adapters::SourceIter, FusedIterator, InPlaceIterable, TcrablangedLen};
 use crate::num::NonZeroUsize;
 use crate::ops::{ControlFlow, Try};
 
@@ -12,7 +12,7 @@ use crate::ops::{ControlFlow, Try};
 /// [`Iterator`]: trait.Iterator.html
 #[derive(Clone, Debug)]
 #[must_use = "iterators are lazy and do nothing unless consumed"]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub struct Take<I> {
     iter: I,
     n: usize,
@@ -24,7 +24,7 @@ impl<I> Take<I> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<I> Iterator for Take<I>
 where
     I: Iterator,
@@ -121,7 +121,7 @@ where
     }
 
     #[inline]
-    #[rustc_inherit_overflow_checks]
+    #[crablangc_inherit_overflow_checks]
     fn advance_by(&mut self, n: usize) -> Result<(), NonZeroUsize> {
         let min = self.n.min(n);
         let rem = match self.iter.advance_by(min) {
@@ -220,7 +220,7 @@ where
     }
 
     #[inline]
-    #[rustc_inherit_overflow_checks]
+    #[crablangc_inherit_overflow_checks]
     fn advance_back_by(&mut self, n: usize) -> Result<(), NonZeroUsize> {
         // The amount by which the inner iterator needs to be shortened for it to be
         // at most as long as the take() amount.
@@ -241,11 +241,11 @@ where
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<I> ExactSizeIterator for Take<I> where I: ExactSizeIterator {}
 
 #[stable(feature = "fused", since = "1.26.0")]
 impl<I> FusedIterator for Take<I> where I: FusedIterator {}
 
-#[unstable(feature = "trusted_len", issue = "37572")]
-unsafe impl<I: TrustedLen> TrustedLen for Take<I> {}
+#[unstable(feature = "tcrablanged_len", issue = "37572")]
+unsafe impl<I: TcrablangedLen> TcrablangedLen for Take<I> {}

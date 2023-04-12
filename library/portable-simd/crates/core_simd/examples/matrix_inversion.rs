@@ -5,7 +5,7 @@
 use core_simd::simd::*;
 use Which::*;
 
-// Gotta define our own 4x4 matrix since Rust doesn't ship multidim arrays yet :^)
+// Gotta define our own 4x4 matrix since CrabLang doesn't ship multidim arrays yet :^)
 #[derive(Copy, Clone, Debug, PartialEq, PartialOrd)]
 pub struct Matrix4x4([[f32; 4]; 4]);
 
@@ -13,7 +13,7 @@ pub struct Matrix4x4([[f32; 4]; 4]);
 pub fn scalar_inv4x4(m: Matrix4x4) -> Option<Matrix4x4> {
     let m = m.0;
 
-    #[rustfmt::skip]
+    #[crablangfmt::skip]
     let mut inv = [
         // row 0:
         [
@@ -256,7 +256,7 @@ pub fn simd_inv4x4(m: Matrix4x4) -> Option<Matrix4x4> {
 }
 
 #[cfg(test)]
-#[rustfmt::skip]
+#[crablangfmt::skip]
 mod tests {
     use super::*;
 

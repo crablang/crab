@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 // see also issue-38371-unfixable.rs
 #![allow(dead_code)]
 

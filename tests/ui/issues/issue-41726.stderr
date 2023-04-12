@@ -12,4 +12,4 @@ LL |         things.get_mut(src.as_str()).map(|val| val.sort());
 
 error: aborting due to previous error
 
-For more information about this error, try `rustc --explain E0596`.
+For more information about this error, try `crablangc --explain E0596`.

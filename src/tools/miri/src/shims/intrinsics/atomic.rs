@@ -1,4 +1,4 @@
-use rustc_middle::{mir, mir::BinOp, ty};
+use crablangc_middle::{mir, mir::BinOp, ty};
 
 use crate::*;
 use helpers::check_arg_count;

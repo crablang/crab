@@ -26,4 +26,4 @@ LL |     fn shadow_in_provided<T>(&self) {}
 
 error: aborting due to 3 previous errors
 
-For more information about this error, try `rustc --explain E0403`.
+For more information about this error, try `crablangc --explain E0403`.

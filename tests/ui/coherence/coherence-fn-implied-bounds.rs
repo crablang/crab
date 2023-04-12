@@ -4,7 +4,7 @@
 // bounds we ought to know that, in fact, `'a = 'b` must always hold,
 // and hence they are.
 //
-// Rustc can't figure this out and hence it accepts the impls but
+// CrabLangc can't figure this out and hence it accepts the impls but
 // gives a future-compatibility warning (because we'd like to make
 // this an error someday).
 //

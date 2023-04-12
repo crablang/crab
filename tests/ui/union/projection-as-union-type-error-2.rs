@@ -1,5 +1,5 @@
 // Test to ensure that there is no ICE when normalizing a projection
-// which is invalid (from <https://github.com/rust-lang/rust/pull/106938>).
+// which is invalid (from <https://github.com/crablang/crablang/pull/106938>).
 
 #![crate_type = "lib"]
 

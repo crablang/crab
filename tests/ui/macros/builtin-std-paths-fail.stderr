@@ -1,26 +1,26 @@
-error[E0433]: failed to resolve: could not find `RustcDecodable` in `core`
+error[E0433]: failed to resolve: could not find `CrabLangcDecodable` in `core`
   --> $DIR/builtin-std-paths-fail.rs:2:11
    |
-LL |     core::RustcDecodable,
-   |           ^^^^^^^^^^^^^^ could not find `RustcDecodable` in `core`
+LL |     core::CrabLangcDecodable,
+   |           ^^^^^^^^^^^^^^ could not find `CrabLangcDecodable` in `core`
 
-error[E0433]: failed to resolve: could not find `RustcDecodable` in `core`
+error[E0433]: failed to resolve: could not find `CrabLangcDecodable` in `core`
   --> $DIR/builtin-std-paths-fail.rs:4:11
    |
-LL |     core::RustcDecodable,
-   |           ^^^^^^^^^^^^^^ could not find `RustcDecodable` in `core`
+LL |     core::CrabLangcDecodable,
+   |           ^^^^^^^^^^^^^^ could not find `CrabLangcDecodable` in `core`
 
-error[E0433]: failed to resolve: could not find `RustcDecodable` in `core`
+error[E0433]: failed to resolve: could not find `CrabLangcDecodable` in `core`
   --> $DIR/builtin-std-paths-fail.rs:2:11
    |
-LL |     core::RustcDecodable,
-   |           ^^^^^^^^^^^^^^ could not find `RustcDecodable` in `core`
+LL |     core::CrabLangcDecodable,
+   |           ^^^^^^^^^^^^^^ could not find `CrabLangcDecodable` in `core`
 
-error[E0433]: failed to resolve: could not find `RustcDecodable` in `core`
+error[E0433]: failed to resolve: could not find `CrabLangcDecodable` in `core`
   --> $DIR/builtin-std-paths-fail.rs:4:11
    |
-LL |     core::RustcDecodable,
-   |           ^^^^^^^^^^^^^^ could not find `RustcDecodable` in `core`
+LL |     core::CrabLangcDecodable,
+   |           ^^^^^^^^^^^^^^ could not find `CrabLangcDecodable` in `core`
 
 error[E0433]: failed to resolve: could not find `bench` in `core`
   --> $DIR/builtin-std-paths-fail.rs:7:9
@@ -46,29 +46,29 @@ error[E0433]: failed to resolve: could not find `test` in `core`
 LL | #[core::test]
    |         ^^^^ could not find `test` in `core`
 
-error[E0433]: failed to resolve: could not find `RustcDecodable` in `std`
+error[E0433]: failed to resolve: could not find `CrabLangcDecodable` in `std`
   --> $DIR/builtin-std-paths-fail.rs:14:10
    |
-LL |     std::RustcDecodable,
-   |          ^^^^^^^^^^^^^^ could not find `RustcDecodable` in `std`
+LL |     std::CrabLangcDecodable,
+   |          ^^^^^^^^^^^^^^ could not find `CrabLangcDecodable` in `std`
 
-error[E0433]: failed to resolve: could not find `RustcDecodable` in `std`
+error[E0433]: failed to resolve: could not find `CrabLangcDecodable` in `std`
   --> $DIR/builtin-std-paths-fail.rs:16:10
    |
-LL |     std::RustcDecodable,
-   |          ^^^^^^^^^^^^^^ could not find `RustcDecodable` in `std`
+LL |     std::CrabLangcDecodable,
+   |          ^^^^^^^^^^^^^^ could not find `CrabLangcDecodable` in `std`
 
-error[E0433]: failed to resolve: could not find `RustcDecodable` in `std`
+error[E0433]: failed to resolve: could not find `CrabLangcDecodable` in `std`
   --> $DIR/builtin-std-paths-fail.rs:14:10
    |
-LL |     std::RustcDecodable,
-   |          ^^^^^^^^^^^^^^ could not find `RustcDecodable` in `std`
+LL |     std::CrabLangcDecodable,
+   |          ^^^^^^^^^^^^^^ could not find `CrabLangcDecodable` in `std`
 
-error[E0433]: failed to resolve: could not find `RustcDecodable` in `std`
+error[E0433]: failed to resolve: could not find `CrabLangcDecodable` in `std`
   --> $DIR/builtin-std-paths-fail.rs:16:10
    |
-LL |     std::RustcDecodable,
-   |          ^^^^^^^^^^^^^^ could not find `RustcDecodable` in `std`
+LL |     std::CrabLangcDecodable,
+   |          ^^^^^^^^^^^^^^ could not find `CrabLangcDecodable` in `std`
 
 error[E0433]: failed to resolve: could not find `bench` in `std`
   --> $DIR/builtin-std-paths-fail.rs:19:8
@@ -96,4 +96,4 @@ LL | #[std::test]
 
 error: aborting due to 16 previous errors
 
-For more information about this error, try `rustc --explain E0433`.
+For more information about this error, try `crablangc --explain E0433`.

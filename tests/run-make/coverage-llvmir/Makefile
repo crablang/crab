@@ -1,6 +1,6 @@
 # needs-profiler-support
 
-# Rust coverage maps support LLVM Coverage Mapping Format versions 5 and 6,
+# CrabLang coverage maps support LLVM Coverage Mapping Format versions 5 and 6,
 # corresponding with LLVM versions 12 and 13, respectively.
 # When upgrading LLVM versions, consider whether to enforce a minimum LLVM
 # version during testing, with an additional directive at the top of this file
@@ -56,7 +56,7 @@ all: test_llvm_ir
 
 test_llvm_ir:
 	# Compile the test program with non-experimental coverage instrumentation, and generate LLVM IR
-	$(RUSTC) $(BASEDIR)/testprog.rs \
+	$(CRABLANGC) $(BASEDIR)/testprog.rs \
 			-Cinstrument-coverage \
 			--emit=llvm-ir
 

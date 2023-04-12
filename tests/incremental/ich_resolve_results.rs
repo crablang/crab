@@ -4,7 +4,7 @@
 // revisions: rpass1 rpass2 rpass3
 // compile-flags: -Z query-dep-graph
 
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 
 fn test<T>() { }
 
@@ -29,14 +29,14 @@ mod mod3 {
     #[cfg(rpass3)]
     use mod2::Foo;
 
-    #[rustc_clean(cfg="rpass2")]
-    #[rustc_clean(except="hir_owner_nodes,typeck", cfg="rpass3")]
+    #[crablangc_clean(cfg="rpass2")]
+    #[crablangc_clean(except="hir_owner_nodes,typeck", cfg="rpass3")]
     fn in_expr() {
         Foo(0);
     }
 
-    #[rustc_clean(cfg="rpass2")]
-    #[rustc_clean(except="hir_owner_nodes,typeck", cfg="rpass3")]
+    #[crablangc_clean(cfg="rpass2")]
+    #[crablangc_clean(except="hir_owner_nodes,typeck", cfg="rpass3")]
     fn in_type() {
         test::<Foo>();
     }

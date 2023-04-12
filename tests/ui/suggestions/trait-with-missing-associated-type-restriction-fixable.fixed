@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 #![allow(unused)] // for the fixed file
 
 trait Trait<T = Self> {

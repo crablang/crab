@@ -2,7 +2,7 @@
 
 #![feature(staged_api)]
 
-#![stable(feature = "rust1", since = "1.0.0")]
+#![stable(feature = "crablang1", since = "1.0.0")]
 
 mod bogus_attribute_types_1 {
     #[stable(feature = "a", since = "b", reason)] //~ ERROR unknown meta item 'reason' [E0541]
@@ -60,8 +60,8 @@ fn multiple3() { }
 #[stable(feature = "a", since = "b")] //~ ERROR invalid stability version found
 #[deprecated(since = "b", note = "text")]
 #[deprecated(since = "b", note = "text")] //~ ERROR multiple `deprecated` attributes
-#[rustc_const_unstable(feature = "c", issue = "none")]
-#[rustc_const_unstable(feature = "d", issue = "none")] //~ ERROR multiple stability levels
+#[crablangc_const_unstable(feature = "c", issue = "none")]
+#[crablangc_const_unstable(feature = "d", issue = "none")] //~ ERROR multiple stability levels
 pub const fn multiple4() { }
 
 #[stable(feature = "a", since = "1.0.0")] //~ ERROR invalid deprecation version found

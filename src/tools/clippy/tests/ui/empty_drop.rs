@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 #![warn(clippy::empty_drop)]
 #![allow(unused)]
 

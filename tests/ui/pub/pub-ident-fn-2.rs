@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 
 pub foo(_s: usize) { bar() }
 //~^ ERROR missing `fn` for function definition

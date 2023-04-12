@@ -2,15 +2,15 @@ use clippy_utils::diagnostics::span_lint_and_then;
 use clippy_utils::msrvs::{self, Msrv};
 use clippy_utils::source::indent_of;
 use clippy_utils::{is_default_equivalent, peel_blocks};
-use rustc_errors::Applicability;
-use rustc_hir::{
+use crablangc_errors::Applicability;
+use crablangc_hir::{
     def::{CtorKind, CtorOf, DefKind, Res},
     Body, Expr, ExprKind, GenericArg, Impl, ImplItemKind, Item, ItemKind, Node, PathSegment, QPath, Ty, TyKind,
 };
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_middle::ty::{Adt, AdtDef, SubstsRef};
-use rustc_session::{declare_tool_lint, impl_lint_pass};
-use rustc_span::sym;
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_middle::ty::{Adt, AdtDef, SubstsRef};
+use crablangc_session::{declare_tool_lint, impl_lint_pass};
+use crablangc_span::sym;
 
 declare_clippy_lint! {
     /// ### What it does
@@ -20,7 +20,7 @@ declare_clippy_lint! {
     /// It is less concise.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// struct Foo {
     ///     bar: bool
     /// }
@@ -35,7 +35,7 @@ declare_clippy_lint! {
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// #[derive(Default)]
     /// struct Foo {
     ///     bar: bool
@@ -43,7 +43,7 @@ declare_clippy_lint! {
     /// ```
     ///
     /// ### Known problems
-    /// Derive macros [sometimes use incorrect bounds](https://github.com/rust-lang/rust/issues/26925)
+    /// Derive macros [sometimes use incorrect bounds](https://github.com/crablang/crablang/issues/26925)
     /// in generic types and the user defined `impl` may be more generalized or
     /// specialized than what derive will produce. This lint can't detect the manual `impl`
     /// has exactly equal bounds, and therefore this lint is disabled for types with

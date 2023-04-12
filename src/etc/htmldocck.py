@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 r"""
-htmldocck.py is a custom checker script for Rustdoc HTML outputs.
+htmldocck.py is a custom checker script for CrabLangdoc HTML outputs.
 
 # How and why?
 
@@ -11,12 +11,12 @@ documentation and a "template" script, which has a series of check
 commands like `@has` or `@matches`. Each command is used to check if
 some pattern is present or not present in the particular file or in
 a particular node of the HTML tree. In many cases, the template script
-happens to be the source code given to rustdoc.
+happens to be the source code given to crablangdoc.
 
 While it indeed is possible to test in smaller portions, it has been
 hard to construct tests in this fashion and major rendering errors were
 discovered much later. This script is designed to make black-box and
-regression testing of Rustdoc easy. This does not preclude the needs for
+regression testing of CrabLangdoc easy. This does not preclude the needs for
 unit testing, but can be used to complement related tests by quickly
 showing the expected renderings.
 
@@ -149,17 +149,17 @@ except NameError:
     unichr = chr
 
 
-channel = os.environ["DOC_RUST_LANG_ORG_CHANNEL"]
+channel = os.environ["DOC_CRABLANG_LANG_ORG_CHANNEL"]
 
 # Initialized in main
-rust_test_path = None
+crablang_test_path = None
 bless = None
 
 class CustomHTMLParser(HTMLParser):
     """simplified HTML parser.
 
     this is possible because we are dealing with very regular HTML from
-    rustdoc; we only have to deal with i) void elements and ii) empty
+    crablangdoc; we only have to deal with i) void elements and ii) empty
     attributes."""
     def __init__(self, target=None):
         HTMLParser.__init__(self)
@@ -413,8 +413,8 @@ def get_tree_count(tree, path):
 
 
 def check_snapshot(snapshot_name, actual_tree, normalize_to_text):
-    assert rust_test_path.endswith('.rs')
-    snapshot_path = '{}.{}.{}'.format(rust_test_path[:-3], snapshot_name, 'html')
+    assert crablang_test_path.endswith('.rs')
+    snapshot_path = '{}.{}.{}'.format(crablang_test_path[:-3], snapshot_name, 'html')
     try:
         with open(snapshot_path, 'r') as snapshot_file:
             expected_str = snapshot_file.read().replace("{{channel}}", channel)
@@ -645,7 +645,7 @@ if __name__ == '__main__':
         stderr('Usage: {} <doc dir> <template> [--bless]'.format(sys.argv[0]))
         raise SystemExit(1)
 
-    rust_test_path = sys.argv[2]
+    crablang_test_path = sys.argv[2]
     if len(sys.argv) > 3 and sys.argv[3] == '--bless':
         bless = True
     else:
@@ -653,7 +653,7 @@ if __name__ == '__main__':
         # This assert is to prevent silent failures.
         assert '--bless' not in sys.argv
         bless = False
-    check(sys.argv[1], get_commands(rust_test_path))
+    check(sys.argv[1], get_commands(crablang_test_path))
     if ERR_COUNT:
         stderr("\nEncountered {} errors".format(ERR_COUNT))
         raise SystemExit(1)

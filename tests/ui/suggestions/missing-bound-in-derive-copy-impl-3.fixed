@@ -1,4 +1,4 @@
-//run-rustfix
+//run-crablangfix
 use std::fmt::Debug;
 
 #[derive(Debug, Copy, Clone)]

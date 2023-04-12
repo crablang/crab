@@ -1,5 +1,5 @@
 //! This test ensures that code from doctests is properly re-mapped.
-//! See <https://github.com/rust-lang/rust/issues/79417> for more info.
+//! See <https://github.com/crablang/crablang/issues/79417> for more info.
 //!
 //! Just some random code:
 //! ```
@@ -36,7 +36,7 @@
 //!     }
 //!     res = Ok(0);
 //! }
-//! // need to be explicit because rustdoc cant infer the return type
+//! // need to be explicit because crablangdoc cant infer the return type
 //! Ok::<(), SomeError>(())
 //! ```
 //!

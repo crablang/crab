@@ -1,19 +1,19 @@
 use clippy_utils::diagnostics::span_lint_and_help;
 use clippy_utils::has_repr_attr;
-use rustc_hir::{Item, ItemKind};
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_middle::ty::Const;
-use rustc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_hir::{Item, ItemKind};
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_middle::ty::Const;
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
 
 declare_clippy_lint! {
     /// ### What it does
     /// Displays a warning when a struct with a trailing zero-sized array is declared without a `repr` attribute.
     ///
     /// ### Why is this bad?
-    /// Zero-sized arrays aren't very useful in Rust itself, so such a struct is likely being created to pass to C code or in some other situation where control over memory layout matters (for example, in conjunction with manual allocation to make it easy to compute the offset of the array). Either way, `#[repr(C)]` (or another `repr` attribute) is needed.
+    /// Zero-sized arrays aren't very useful in CrabLang itself, so such a struct is likely being created to pass to C code or in some other situation where control over memory layout matters (for example, in conjunction with manual allocation to make it easy to compute the offset of the array). Either way, `#[repr(C)]` (or another `repr` attribute) is needed.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// struct RarelyUseful {
     ///     some_field: u32,
     ///     last: [u32; 0],
@@ -21,7 +21,7 @@ declare_clippy_lint! {
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// #[repr(C)]
     /// struct MoreOftenUseful {
     ///     some_field: usize,
@@ -58,7 +58,7 @@ fn is_struct_with_trailing_zero_sized_array(cx: &LateContext<'_>, item: &Item<'_
         // First check if last field is an array
         if let ItemKind::Struct(data, _) = &item.kind;
         if let Some(last_field) = data.fields().last();
-        if let rustc_hir::TyKind::Array(_, rustc_hir::ArrayLen::Body(length)) = last_field.ty.kind;
+        if let crablangc_hir::TyKind::Array(_, crablangc_hir::ArrayLen::Body(length)) = last_field.ty.kind;
 
         // Then check if that that array zero-sized
         let length = Const::from_anon_const(cx.tcx, length.def_id);

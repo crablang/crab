@@ -4,7 +4,7 @@
 // revisions: rpass1 rpass2
 // compile-flags: -Z query-dep-graph
 
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 
 fn test<T>() { }
 
@@ -26,12 +26,12 @@ mod mod3 {
     #[cfg(rpass2)]
     use Trait2;
 
-    #[rustc_clean(except="typeck", cfg="rpass2")]
+    #[crablangc_clean(except="typeck", cfg="rpass2")]
     fn bar() {
         ().method();
     }
 
-    #[rustc_clean(cfg="rpass2")]
+    #[crablangc_clean(cfg="rpass2")]
     fn baz() {
         22; // no method call, traits in scope don't matter
     }

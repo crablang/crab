@@ -69,7 +69,7 @@ impl<T> Poll<T> {
     /// assert_eq!(x.is_ready(), false);
     /// ```
     #[inline]
-    #[rustc_const_stable(feature = "const_poll", since = "1.49.0")]
+    #[crablangc_const_stable(feature = "const_poll", since = "1.49.0")]
     #[stable(feature = "futures_api", since = "1.36.0")]
     pub const fn is_ready(&self) -> bool {
         matches!(*self, Poll::Ready(_))
@@ -90,7 +90,7 @@ impl<T> Poll<T> {
     /// assert_eq!(x.is_pending(), true);
     /// ```
     #[inline]
-    #[rustc_const_stable(feature = "const_poll", since = "1.49.0")]
+    #[crablangc_const_stable(feature = "const_poll", since = "1.49.0")]
     #[stable(feature = "futures_api", since = "1.36.0")]
     pub const fn is_pending(&self) -> bool {
         !self.is_ready()
@@ -104,7 +104,7 @@ impl<T> Poll<T> {
     ///
     /// # Examples
     ///
-    /// ```rust
+    /// ```crablang
     /// #![feature(poll_ready)]
     ///
     /// use std::task::{Context, Poll};
@@ -247,7 +247,7 @@ impl<T, E> Poll<Option<Result<T, E>>> {
 }
 
 #[stable(feature = "futures_api", since = "1.36.0")]
-#[rustc_const_unstable(feature = "const_convert", issue = "88674")]
+#[crablangc_const_unstable(feature = "const_convert", issue = "88674")]
 impl<T> const From<T> for Poll<T> {
     /// Moves the value into a [`Poll::Ready`] to make a `Poll<T>`.
     ///

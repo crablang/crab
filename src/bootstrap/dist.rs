@@ -5,8 +5,8 @@
 //! everyone as well.
 //!
 //! No tarball is actually created literally in this file, but rather we shell
-//! out to `rust-installer` still. This may one day be replaced with bits and
-//! pieces of `rustup.rs`!
+//! out to `crablang-installer` still. This may one day be replaced with bits and
+//! pieces of `crablangup.rs`!
 
 use std::collections::HashSet;
 use std::env;
@@ -34,7 +34,7 @@ use crate::util::{exe, is_dylib, output, t, timeit};
 use crate::{Compiler, DependencyType, Mode, LLVM_TOOLS};
 
 pub fn pkgname(builder: &Builder<'_>, component: &str) -> String {
-    format!("{}-{}", component, builder.rust_package_vers())
+    format!("{}-{}", component, builder.crablang_package_vers())
 }
 
 pub(crate) fn distdir(builder: &Builder<'_>) -> PathBuf {
@@ -63,22 +63,22 @@ impl Step for Docs {
 
     fn should_run(run: ShouldRun<'_>) -> ShouldRun<'_> {
         let default = run.builder.config.docs;
-        run.alias("rust-docs").default_condition(default)
+        run.alias("crablang-docs").default_condition(default)
     }
 
     fn make_run(run: RunConfig<'_>) {
         run.builder.ensure(Docs { host: run.target });
     }
 
-    /// Builds the `rust-docs` installer component.
+    /// Builds the `crablang-docs` installer component.
     fn run(self, builder: &Builder<'_>) -> Option<GeneratedTarball> {
         let host = self.host;
         builder.default_doc(&[]);
 
-        let dest = "share/doc/rust/html";
+        let dest = "share/doc/crablang/html";
 
-        let mut tarball = Tarball::new(builder, "rust-docs", &host.triple);
-        tarball.set_product_name("Rust Documentation");
+        let mut tarball = Tarball::new(builder, "crablang-docs", &host.triple);
+        tarball.set_product_name("CrabLang Documentation");
         tarball.add_bulk_dir(&builder.doc_out(host), dest);
         tarball.add_file(&builder.src.join("src/doc/robots.txt"), dest, 0o644);
         Some(tarball.generate())
@@ -96,14 +96,14 @@ impl Step for JsonDocs {
 
     fn should_run(run: ShouldRun<'_>) -> ShouldRun<'_> {
         let default = run.builder.config.docs;
-        run.alias("rust-docs-json").default_condition(default)
+        run.alias("crablang-docs-json").default_condition(default)
     }
 
     fn make_run(run: RunConfig<'_>) {
         run.builder.ensure(JsonDocs { host: run.target });
     }
 
-    /// Builds the `rust-docs-json` installer component.
+    /// Builds the `crablang-docs-json` installer component.
     fn run(self, builder: &Builder<'_>) -> Option<GeneratedTarball> {
         let host = self.host;
         builder.ensure(crate::doc::Std {
@@ -112,10 +112,10 @@ impl Step for JsonDocs {
             format: DocumentationFormat::JSON,
         });
 
-        let dest = "share/doc/rust/json";
+        let dest = "share/doc/crablang/json";
 
-        let mut tarball = Tarball::new(builder, "rust-docs-json", &host.triple);
-        tarball.set_product_name("Rust Documentation In JSON Format");
+        let mut tarball = Tarball::new(builder, "crablang-docs-json", &host.triple);
+        tarball.set_product_name("CrabLang Documentation In JSON Format");
         tarball.is_preview(true);
         tarball.add_bulk_dir(&builder.json_doc_out(host), dest);
         Some(tarball.generate())
@@ -123,31 +123,31 @@ impl Step for JsonDocs {
 }
 
 #[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
-pub struct RustcDocs {
+pub struct CrabLangcDocs {
     pub host: TargetSelection,
 }
 
-impl Step for RustcDocs {
+impl Step for CrabLangcDocs {
     type Output = Option<GeneratedTarball>;
     const DEFAULT: bool = true;
 
     fn should_run(run: ShouldRun<'_>) -> ShouldRun<'_> {
         let builder = run.builder;
-        run.alias("rustc-docs").default_condition(builder.config.compiler_docs)
+        run.alias("crablangc-docs").default_condition(builder.config.compiler_docs)
     }
 
     fn make_run(run: RunConfig<'_>) {
-        run.builder.ensure(RustcDocs { host: run.target });
+        run.builder.ensure(CrabLangcDocs { host: run.target });
     }
 
-    /// Builds the `rustc-docs` installer component.
+    /// Builds the `crablangc-docs` installer component.
     fn run(self, builder: &Builder<'_>) -> Option<GeneratedTarball> {
         let host = self.host;
         builder.default_doc(&[]);
 
-        let mut tarball = Tarball::new(builder, "rustc-docs", &host.triple);
-        tarball.set_product_name("Rustc Documentation");
-        tarball.add_bulk_dir(&builder.compiler_doc_out(host), "share/doc/rust/html/rustc");
+        let mut tarball = Tarball::new(builder, "crablangc-docs", &host.triple);
+        tarball.set_product_name("CrabLangc Documentation");
+        tarball.add_bulk_dir(&builder.compiler_doc_out(host), "share/doc/crablang/html/crablangc");
         Some(tarball.generate())
     }
 }
@@ -169,7 +169,7 @@ fn find_files(files: &[&str], path: &[PathBuf]) -> Vec<PathBuf> {
 }
 
 fn make_win_dist(
-    rust_root: &Path,
+    crablang_root: &Path,
     plat_root: &Path,
     target: TargetSelection,
     builder: &Builder<'_>,
@@ -203,11 +203,11 @@ fn make_win_dist(
         "gcc.exe"
     };
     let target_tools = [compiler, "ld.exe", "dlltool.exe", "libwinpthread-1.dll"];
-    let mut rustc_dlls = vec!["libwinpthread-1.dll"];
+    let mut crablangc_dlls = vec!["libwinpthread-1.dll"];
     if target.starts_with("i686-") {
-        rustc_dlls.push("libgcc_s_dw2-1.dll");
+        crablangc_dlls.push("libgcc_s_dw2-1.dll");
     } else {
-        rustc_dlls.push("libgcc_s_seh-1.dll");
+        crablangc_dlls.push("libgcc_s_seh-1.dll");
     }
 
     // Libraries necessary to link the windows-gnu toolchains.
@@ -262,20 +262,20 @@ fn make_win_dist(
 
     //Find mingw artifacts we want to bundle
     let target_tools = find_files(&target_tools, &bin_path);
-    let rustc_dlls = find_files(&rustc_dlls, &bin_path);
+    let crablangc_dlls = find_files(&crablangc_dlls, &bin_path);
     let target_libs = find_files(&target_libs, &lib_path);
 
-    // Copy runtime dlls next to rustc.exe
-    let dist_bin_dir = rust_root.join("bin/");
+    // Copy runtime dlls next to crablangc.exe
+    let dist_bin_dir = crablang_root.join("bin/");
     fs::create_dir_all(&dist_bin_dir).expect("creating dist_bin_dir failed");
-    for src in rustc_dlls {
+    for src in crablangc_dlls {
         builder.copy_to_folder(&src, &dist_bin_dir);
     }
 
     //Copy platform tools to platform-specific bin directory
     let target_bin_dir = plat_root
         .join("lib")
-        .join("rustlib")
+        .join("crablanglib")
         .join(target.triple)
         .join("bin")
         .join("self-contained");
@@ -295,7 +295,7 @@ fn make_win_dist(
     //Copy platform libs to platform-specific lib directory
     let target_lib_dir = plat_root
         .join("lib")
-        .join("rustlib")
+        .join("crablanglib")
         .join(target.triple)
         .join("lib")
         .join("self-contained");
@@ -315,14 +315,14 @@ impl Step for Mingw {
     const DEFAULT: bool = true;
 
     fn should_run(run: ShouldRun<'_>) -> ShouldRun<'_> {
-        run.alias("rust-mingw")
+        run.alias("crablang-mingw")
     }
 
     fn make_run(run: RunConfig<'_>) {
         run.builder.ensure(Mingw { host: run.target });
     }
 
-    /// Builds the `rust-mingw` installer component.
+    /// Builds the `crablang-mingw` installer component.
     ///
     /// This contains all the bits and pieces to run the MinGW Windows targets
     /// without any extra installed software (e.g., we bundle gcc, libraries, etc).
@@ -332,11 +332,11 @@ impl Step for Mingw {
             return None;
         }
 
-        let mut tarball = Tarball::new(builder, "rust-mingw", &host.triple);
-        tarball.set_product_name("Rust MinGW");
+        let mut tarball = Tarball::new(builder, "crablang-mingw", &host.triple);
+        tarball.set_product_name("CrabLang MinGW");
 
         // The first argument is a "temporary directory" which is just
-        // thrown away (this contains the runtime DLLs included in the rustc package
+        // thrown away (this contains the runtime DLLs included in the crablangc package
         // above) and the second argument is where to place all the MinGW components
         // (which is what we want).
         make_win_dist(&tmpdir(builder), tarball.image_dir(), host, &builder);
@@ -346,32 +346,32 @@ impl Step for Mingw {
 }
 
 #[derive(Debug, PartialOrd, Ord, Copy, Clone, Hash, PartialEq, Eq)]
-pub struct Rustc {
+pub struct CrabLangc {
     pub compiler: Compiler,
 }
 
-impl Step for Rustc {
+impl Step for CrabLangc {
     type Output = GeneratedTarball;
     const DEFAULT: bool = true;
     const ONLY_HOSTS: bool = true;
 
     fn should_run(run: ShouldRun<'_>) -> ShouldRun<'_> {
-        run.alias("rustc")
+        run.alias("crablangc")
     }
 
     fn make_run(run: RunConfig<'_>) {
         run.builder
-            .ensure(Rustc { compiler: run.builder.compiler(run.builder.top_stage, run.target) });
+            .ensure(CrabLangc { compiler: run.builder.compiler(run.builder.top_stage, run.target) });
     }
 
-    /// Creates the `rustc` installer component.
+    /// Creates the `crablangc` installer component.
     fn run(self, builder: &Builder<'_>) -> GeneratedTarball {
         let compiler = self.compiler;
         let host = self.compiler.host;
 
-        let tarball = Tarball::new(builder, "rustc", &host.triple);
+        let tarball = Tarball::new(builder, "crablangc", &host.triple);
 
-        // Prepare the rustc "image", what will actually end up getting installed
+        // Prepare the crablangc "image", what will actually end up getting installed
         prepare_image(builder, compiler, tarball.image_dir());
 
         // On MinGW we've got a few runtime DLL dependencies that we need to
@@ -382,7 +382,7 @@ impl Step for Rustc {
         // On 32-bit MinGW we're always including a DLL which needs some extra
         // licenses to distribute. On 64-bit MinGW we don't actually distribute
         // anything requiring us to distribute a license, but it's likely the
-        // install will *also* include the rust-mingw package, which also needs
+        // install will *also* include the crablang-mingw package, which also needs
         // licenses, so to be safe we just include it here in all MinGW packages.
         if host.ends_with("pc-windows-gnu") && builder.config.dist_include_mingw_linker {
             make_win_dist(tarball.image_dir(), &tmpdir(builder), host, builder);
@@ -395,7 +395,7 @@ impl Step for Rustc {
             let host = compiler.host;
             let src = builder.sysroot(compiler);
 
-            // Copy rustc/rustdoc binaries
+            // Copy crablangc/crablangdoc binaries
             t!(fs::create_dir_all(image.join("bin")));
             builder.cp_r(&src.join("bin"), &image.join("bin"));
 
@@ -403,14 +403,14 @@ impl Step for Rustc {
                 .config
                 .tools
                 .as_ref()
-                .map_or(true, |tools| tools.iter().any(|tool| tool == "rustdoc"))
+                .map_or(true, |tools| tools.iter().any(|tool| tool == "crablangdoc"))
             {
-                let rustdoc = builder.rustdoc(compiler);
-                builder.install(&rustdoc, &image.join("bin"), 0o755);
+                let crablangdoc = builder.crablangdoc(compiler);
+                builder.install(&crablangdoc, &image.join("bin"), 0o755);
             }
 
             if let Some(ra_proc_macro_srv) = builder.ensure_if_default(
-                tool::RustAnalyzerProcMacroSrv {
+                tool::CrabLangAnalyzerProcMacroSrv {
                     compiler: builder.compiler_for(
                         compiler.stage,
                         builder.config.build,
@@ -427,7 +427,7 @@ impl Step for Rustc {
 
             // Copy runtime DLLs needed by the compiler
             if libdir_relative.to_str() != Some("bin") {
-                let libdir = builder.rustc_libdir(compiler);
+                let libdir = builder.crablangc_libdir(compiler);
                 for entry in builder.read_dir(&libdir) {
                     let name = entry.file_name();
                     if let Some(s) = name.to_str() {
@@ -454,20 +454,20 @@ impl Step for Rustc {
             builder.cp_r(&backends_src, &backends_dst);
 
             // Copy libLLVM.so to the lib dir as well, if needed. While not
-            // technically needed by rustc itself it's needed by lots of other
+            // technically needed by crablangc itself it's needed by lots of other
             // components like the llvm tools and LLD. LLD is included below and
-            // tools/LLDB come later, so let's just throw it in the rustc
+            // tools/LLDB come later, so let's just throw it in the crablangc
             // component for now.
             maybe_install_llvm_runtime(builder, host, image);
 
-            let dst_dir = image.join("lib/rustlib").join(&*host.triple).join("bin");
+            let dst_dir = image.join("lib/crablanglib").join(&*host.triple).join("bin");
             t!(fs::create_dir_all(&dst_dir));
 
             // Copy over lld if it's there
             if builder.config.lld_enabled {
                 let src_dir = builder.sysroot_libdir(compiler, host).parent().unwrap().join("bin");
-                let rust_lld = exe("rust-lld", compiler.host);
-                builder.copy(&src_dir.join(&rust_lld), &dst_dir.join(&rust_lld));
+                let crablang_lld = exe("crablang-lld", compiler.host);
+                builder.copy(&src_dir.join(&crablang_lld), &dst_dir.join(&crablang_lld));
                 // for `-Z gcc-ld=lld`
                 let gcc_lld_src_dir = src_dir.join("gcc-ld");
                 let gcc_lld_dst_dir = dst_dir.join("gcc-ld");
@@ -501,7 +501,7 @@ impl Step for Rustc {
 
             // Misc license info
             let cp = |file: &str| {
-                builder.install(&builder.src.join(file), &image.join("share/doc/rust"), 0o644);
+                builder.install(&builder.src.join(file), &image.join("share/doc/crablang"), 0o644);
             };
             cp("COPYRIGHT");
             cp("LICENSE-APACHE");
@@ -528,7 +528,7 @@ impl Step for DebuggerScripts {
     fn run(self, builder: &Builder<'_>) {
         let host = self.host;
         let sysroot = self.sysroot;
-        let dst = sysroot.join("lib/rustlib/etc");
+        let dst = sysroot.join("lib/crablanglib/etc");
         t!(fs::create_dir_all(&dst));
         let cp_debugger_script = |file: &str| {
             builder.install(&builder.src.join("src/etc/").join(file), &dst, 0o644);
@@ -536,7 +536,7 @@ impl Step for DebuggerScripts {
         if host.contains("windows-msvc") {
             // windbg debugger scripts
             builder.install(
-                &builder.src.join("src/etc/rust-windbg.cmd"),
+                &builder.src.join("src/etc/crablang-windbg.cmd"),
                 &sysroot.join("bin"),
                 0o755,
             );
@@ -546,18 +546,18 @@ impl Step for DebuggerScripts {
             cp_debugger_script("natvis/libcore.natvis");
             cp_debugger_script("natvis/libstd.natvis");
         } else {
-            cp_debugger_script("rust_types.py");
+            cp_debugger_script("crablang_types.py");
 
             // gdb debugger scripts
-            builder.install(&builder.src.join("src/etc/rust-gdb"), &sysroot.join("bin"), 0o755);
-            builder.install(&builder.src.join("src/etc/rust-gdbgui"), &sysroot.join("bin"), 0o755);
+            builder.install(&builder.src.join("src/etc/crablang-gdb"), &sysroot.join("bin"), 0o755);
+            builder.install(&builder.src.join("src/etc/crablang-gdbgui"), &sysroot.join("bin"), 0o755);
 
-            cp_debugger_script("gdb_load_rust_pretty_printers.py");
+            cp_debugger_script("gdb_load_crablang_pretty_printers.py");
             cp_debugger_script("gdb_lookup.py");
             cp_debugger_script("gdb_providers.py");
 
             // lldb debugger scripts
-            builder.install(&builder.src.join("src/etc/rust-lldb"), &sysroot.join("bin"), 0o755);
+            builder.install(&builder.src.join("src/etc/crablang-lldb"), &sysroot.join("bin"), 0o755);
 
             cp_debugger_script("lldb_lookup.py");
             cp_debugger_script("lldb_providers.py");
@@ -612,7 +612,7 @@ fn verify_uefi_rlib_format(builder: &Builder<'_>, target: TargetSelection, stamp
 
 /// Copy stamped files into an image's `target/lib` directory.
 fn copy_target_libs(builder: &Builder<'_>, target: TargetSelection, image: &Path, stamp: &Path) {
-    let dst = image.join("lib/rustlib").join(target.triple).join("lib");
+    let dst = image.join("lib/crablanglib").join(target.triple).join("lib");
     let self_contained_dst = dst.join("self-contained");
     t!(fs::create_dir_all(&dst));
     t!(fs::create_dir_all(&self_contained_dst));
@@ -636,7 +636,7 @@ impl Step for Std {
     const DEFAULT: bool = true;
 
     fn should_run(run: ShouldRun<'_>) -> ShouldRun<'_> {
-        run.alias("rust-std")
+        run.alias("crablang-std")
     }
 
     fn make_run(run: RunConfig<'_>) {
@@ -660,7 +660,7 @@ impl Step for Std {
 
         builder.ensure(compile::Std::new(compiler, target));
 
-        let mut tarball = Tarball::new(builder, "rust-std", &target.triple);
+        let mut tarball = Tarball::new(builder, "crablang-std", &target.triple);
         tarball.include_target_in_component_name(true);
 
         let compiler_to_use = builder.compiler_for(compiler.stage, compiler.host, target);
@@ -673,22 +673,22 @@ impl Step for Std {
 }
 
 #[derive(Debug, PartialOrd, Ord, Copy, Clone, Hash, PartialEq, Eq)]
-pub struct RustcDev {
+pub struct CrabLangcDev {
     pub compiler: Compiler,
     pub target: TargetSelection,
 }
 
-impl Step for RustcDev {
+impl Step for CrabLangcDev {
     type Output = Option<GeneratedTarball>;
     const DEFAULT: bool = true;
     const ONLY_HOSTS: bool = true;
 
     fn should_run(run: ShouldRun<'_>) -> ShouldRun<'_> {
-        run.alias("rustc-dev")
+        run.alias("crablangc-dev")
     }
 
     fn make_run(run: RunConfig<'_>) {
-        run.builder.ensure(RustcDev {
+        run.builder.ensure(CrabLangcDev {
             compiler: run.builder.compiler_for(
                 run.builder.top_stage,
                 run.builder.config.build,
@@ -705,26 +705,26 @@ impl Step for RustcDev {
             return None;
         }
 
-        builder.ensure(compile::Rustc::new(compiler, target));
+        builder.ensure(compile::CrabLangc::new(compiler, target));
 
-        let tarball = Tarball::new(builder, "rustc-dev", &target.triple);
+        let tarball = Tarball::new(builder, "crablangc-dev", &target.triple);
 
         let compiler_to_use = builder.compiler_for(compiler.stage, compiler.host, target);
-        let stamp = compile::librustc_stamp(builder, compiler_to_use, target);
+        let stamp = compile::libcrablangc_stamp(builder, compiler_to_use, target);
         copy_target_libs(builder, target, tarball.image_dir(), &stamp);
 
         let src_files = &["Cargo.lock"];
-        // This is the reduced set of paths which will become the rustc-dev component
+        // This is the reduced set of paths which will become the crablangc-dev component
         // (essentially the compiler crates and all of their path dependencies).
         copy_src_dirs(
             builder,
             &builder.src,
             &["compiler"],
             &[],
-            &tarball.image_dir().join("lib/rustlib/rustc-src/rust"),
+            &tarball.image_dir().join("lib/crablanglib/crablangc-src/crablang"),
         );
         for file in src_files {
-            tarball.add_file(builder.src.join(file), "lib/rustlib/rustc-src/rust", 0o644);
+            tarball.add_file(builder.src.join(file), "lib/crablanglib/crablangc-src/crablang", 0o644);
         }
 
         Some(tarball.generate())
@@ -743,7 +743,7 @@ impl Step for Analysis {
 
     fn should_run(run: ShouldRun<'_>) -> ShouldRun<'_> {
         let default = should_build_extended_tool(&run.builder, "analysis");
-        run.alias("rust-analysis").default_condition(default)
+        run.alias("crablang-analysis").default_condition(default)
     }
 
     fn make_run(run: RunConfig<'_>) {
@@ -780,11 +780,11 @@ impl Step for Analysis {
         let mut removed = src.clone();
         removed.push("removed.json");
         let mut f = t!(std::fs::File::create(removed));
-        t!(write!(f, r#"{{ "warning": "The `rust-analysis` component has been removed." }}"#));
+        t!(write!(f, r#"{{ "warning": "The `crablang-analysis` component has been removed." }}"#));
 
-        let mut tarball = Tarball::new(builder, "rust-analysis", &target.triple);
+        let mut tarball = Tarball::new(builder, "crablang-analysis", &target.triple);
         tarball.include_target_in_component_name(true);
-        tarball.add_dir(src, format!("lib/rustlib/{}/analysis", target.triple));
+        tarball.add_dir(src, format!("lib/crablanglib/{}/analysis", target.triple));
         Some(tarball.generate())
     }
 }
@@ -886,35 +886,35 @@ impl Step for Src {
     const ONLY_HOSTS: bool = true;
 
     fn should_run(run: ShouldRun<'_>) -> ShouldRun<'_> {
-        run.alias("rust-src")
+        run.alias("crablang-src")
     }
 
     fn make_run(run: RunConfig<'_>) {
         run.builder.ensure(Src);
     }
 
-    /// Creates the `rust-src` installer component
+    /// Creates the `crablang-src` installer component
     fn run(self, builder: &Builder<'_>) -> GeneratedTarball {
-        let tarball = Tarball::new_targetless(builder, "rust-src");
+        let tarball = Tarball::new_targetless(builder, "crablang-src");
 
-        // A lot of tools expect the rust-src component to be entirely in this directory, so if you
-        // change that (e.g. by adding another directory `lib/rustlib/src/foo` or
-        // `lib/rustlib/src/rust/foo`), you will need to go around hunting for implicit assumptions
+        // A lot of tools expect the crablang-src component to be entirely in this directory, so if you
+        // change that (e.g. by adding another directory `lib/crablanglib/src/foo` or
+        // `lib/crablanglib/src/crablang/foo`), you will need to go around hunting for implicit assumptions
         // and fix them...
         //
         // NOTE: if you update the paths here, you also should update the "virtual" path
-        // translation code in `imported_source_files` in `src/librustc_metadata/rmeta/decoder.rs`
-        let dst_src = tarball.image_dir().join("lib/rustlib/src/rust");
+        // translation code in `imported_source_files` in `src/libcrablangc_metadata/rmeta/decoder.rs`
+        let dst_src = tarball.image_dir().join("lib/crablanglib/src/crablang");
 
         let src_files = ["Cargo.lock"];
-        // This is the reduced set of paths which will become the rust-src component
+        // This is the reduced set of paths which will become the crablang-src component
         // (essentially libstd and all of its path dependencies).
         copy_src_dirs(
             builder,
             &builder.src,
             &["library", "src/llvm-project/libunwind"],
             &[
-                // not needed and contains symlinks which rustup currently
+                // not needed and contains symlinks which crablangup currently
                 // chokes on when unpacking.
                 "library/backtrace/crates",
                 // these are 30MB combined and aren't necessary for building
@@ -944,7 +944,7 @@ impl Step for PlainSourceTarball {
 
     fn should_run(run: ShouldRun<'_>) -> ShouldRun<'_> {
         let builder = run.builder;
-        run.alias("rustc-src").default_condition(builder.config.rust_dist_src)
+        run.alias("crablangc-src").default_condition(builder.config.crablang_dist_src)
     }
 
     fn make_run(run: RunConfig<'_>) {
@@ -954,10 +954,10 @@ impl Step for PlainSourceTarball {
     /// Creates the plain source tarball
     fn run(self, builder: &Builder<'_>) -> GeneratedTarball {
         // NOTE: This is a strange component in a lot of ways. It uses `src` as the target, which
-        // means neither rustup nor rustup-toolchain-install-master know how to download it.
+        // means neither crablangup nor crablangup-toolchain-install-master know how to download it.
         // It also contains symbolic links, unlike other any other dist tarball.
-        // It's used for distros building rustc from source in a pre-vendored environment.
-        let mut tarball = Tarball::new(builder, "rustc", "src");
+        // It's used for distros building crablangc from source in a pre-vendored environment.
+        let mut tarball = Tarball::new(builder, "crablangc", "src");
         tarball.permit_symlinks(true);
         let plain_dst_src = tarball.image_dir();
 
@@ -985,24 +985,24 @@ impl Step for PlainSourceTarball {
         }
 
         // Create the version file
-        builder.create(&plain_dst_src.join("version"), &builder.rust_version());
-        if let Some(info) = builder.rust_info().info() {
+        builder.create(&plain_dst_src.join("version"), &builder.crablang_version());
+        if let Some(info) = builder.crablang_info().info() {
             channel::write_commit_hash_file(&plain_dst_src, &info.sha);
             channel::write_commit_info_file(&plain_dst_src, info);
         }
 
         // If we're building from git sources, we need to vendor a complete distribution.
-        if builder.rust_info().is_managed_git_subrepository() {
+        if builder.crablang_info().is_managed_git_subrepository() {
             // Ensure we have the submodules checked out.
-            builder.update_submodule(Path::new("src/tools/rust-analyzer"));
+            builder.update_submodule(Path::new("src/tools/crablang-analyzer"));
 
             // Vendor all Cargo dependencies
             let mut cmd = Command::new(&builder.initial_cargo);
             cmd.arg("vendor")
                 .arg("--sync")
-                .arg(builder.src.join("./src/tools/rust-analyzer/Cargo.toml"))
+                .arg(builder.src.join("./src/tools/crablang-analyzer/Cargo.toml"))
                 .arg("--sync")
-                .arg(builder.src.join("./compiler/rustc_codegen_cranelift/Cargo.toml"))
+                .arg(builder.src.join("./compiler/crablangc_codegen_cranelift/Cargo.toml"))
                 .arg("--sync")
                 .arg(builder.src.join("./src/bootstrap/Cargo.toml"))
                 .current_dir(&plain_dst_src);
@@ -1123,23 +1123,23 @@ impl Step for Rls {
 }
 
 #[derive(Debug, PartialOrd, Ord, Copy, Clone, Hash, PartialEq, Eq)]
-pub struct RustAnalyzer {
+pub struct CrabLangAnalyzer {
     pub compiler: Compiler,
     pub target: TargetSelection,
 }
 
-impl Step for RustAnalyzer {
+impl Step for CrabLangAnalyzer {
     type Output = Option<GeneratedTarball>;
     const DEFAULT: bool = true;
     const ONLY_HOSTS: bool = true;
 
     fn should_run(run: ShouldRun<'_>) -> ShouldRun<'_> {
-        let default = should_build_extended_tool(&run.builder, "rust-analyzer");
-        run.alias("rust-analyzer").default_condition(default)
+        let default = should_build_extended_tool(&run.builder, "crablang-analyzer");
+        run.alias("crablang-analyzer").default_condition(default)
     }
 
     fn make_run(run: RunConfig<'_>) {
-        run.builder.ensure(RustAnalyzer {
+        run.builder.ensure(CrabLangAnalyzer {
             compiler: run.builder.compiler_for(
                 run.builder.top_stage,
                 run.builder.config.build,
@@ -1153,15 +1153,15 @@ impl Step for RustAnalyzer {
         let compiler = self.compiler;
         let target = self.target;
 
-        let rust_analyzer = builder
-            .ensure(tool::RustAnalyzer { compiler, target })
-            .expect("rust-analyzer always builds");
+        let crablang_analyzer = builder
+            .ensure(tool::CrabLangAnalyzer { compiler, target })
+            .expect("crablang-analyzer always builds");
 
-        let mut tarball = Tarball::new(builder, "rust-analyzer", &target.triple);
-        tarball.set_overlay(OverlayKind::RustAnalyzer);
+        let mut tarball = Tarball::new(builder, "crablang-analyzer", &target.triple);
+        tarball.set_overlay(OverlayKind::CrabLangAnalyzer);
         tarball.is_preview(true);
-        tarball.add_file(rust_analyzer, "bin", 0o755);
-        tarball.add_legal_and_readme_to("share/doc/rust-analyzer");
+        tarball.add_file(crablang_analyzer, "bin", 0o755);
+        tarball.add_legal_and_readme_to("share/doc/crablang-analyzer");
         Some(tarball.generate())
     }
 }
@@ -1269,23 +1269,23 @@ impl Step for Miri {
 }
 
 #[derive(Debug, PartialOrd, Ord, Copy, Clone, Hash, PartialEq, Eq)]
-pub struct Rustfmt {
+pub struct CrabLangfmt {
     pub compiler: Compiler,
     pub target: TargetSelection,
 }
 
-impl Step for Rustfmt {
+impl Step for CrabLangfmt {
     type Output = Option<GeneratedTarball>;
     const DEFAULT: bool = true;
     const ONLY_HOSTS: bool = true;
 
     fn should_run(run: ShouldRun<'_>) -> ShouldRun<'_> {
-        let default = should_build_extended_tool(&run.builder, "rustfmt");
-        run.alias("rustfmt").default_condition(default)
+        let default = should_build_extended_tool(&run.builder, "crablangfmt");
+        run.alias("crablangfmt").default_condition(default)
     }
 
     fn make_run(run: RunConfig<'_>) {
-        run.builder.ensure(Rustfmt {
+        run.builder.ensure(CrabLangfmt {
             compiler: run.builder.compiler_for(
                 run.builder.top_stage,
                 run.builder.config.build,
@@ -1299,45 +1299,45 @@ impl Step for Rustfmt {
         let compiler = self.compiler;
         let target = self.target;
 
-        let rustfmt = builder
-            .ensure(tool::Rustfmt { compiler, target, extra_features: Vec::new() })
-            .expect("rustfmt expected to build - essential tool");
+        let crablangfmt = builder
+            .ensure(tool::CrabLangfmt { compiler, target, extra_features: Vec::new() })
+            .expect("crablangfmt expected to build - essential tool");
         let cargofmt = builder
             .ensure(tool::Cargofmt { compiler, target, extra_features: Vec::new() })
             .expect("cargo fmt expected to build - essential tool");
-        let mut tarball = Tarball::new(builder, "rustfmt", &target.triple);
-        tarball.set_overlay(OverlayKind::Rustfmt);
+        let mut tarball = Tarball::new(builder, "crablangfmt", &target.triple);
+        tarball.set_overlay(OverlayKind::CrabLangfmt);
         tarball.is_preview(true);
-        tarball.add_file(rustfmt, "bin", 0o755);
+        tarball.add_file(crablangfmt, "bin", 0o755);
         tarball.add_file(cargofmt, "bin", 0o755);
-        tarball.add_legal_and_readme_to("share/doc/rustfmt");
+        tarball.add_legal_and_readme_to("share/doc/crablangfmt");
         Some(tarball.generate())
     }
 }
 
 #[derive(Debug, PartialOrd, Ord, Copy, Clone, Hash, PartialEq, Eq)]
-pub struct RustDemangler {
+pub struct CrabLangDemangler {
     pub compiler: Compiler,
     pub target: TargetSelection,
 }
 
-impl Step for RustDemangler {
+impl Step for CrabLangDemangler {
     type Output = Option<GeneratedTarball>;
     const DEFAULT: bool = true;
     const ONLY_HOSTS: bool = true;
 
     fn should_run(run: ShouldRun<'_>) -> ShouldRun<'_> {
         // While other tools use `should_build_extended_tool` to decide whether to be run by
-        // default or not, `rust-demangler` must be build when *either* it's enabled as a tool like
+        // default or not, `crablang-demangler` must be build when *either* it's enabled as a tool like
         // the other ones or if `profiler = true`. Because we don't know the target at this stage
         // we run the step by default when only `extended = true`, and decide whether to actually
         // run it or not later.
         let default = run.builder.config.extended;
-        run.alias("rust-demangler").default_condition(default)
+        run.alias("crablang-demangler").default_condition(default)
     }
 
     fn make_run(run: RunConfig<'_>) {
-        run.builder.ensure(RustDemangler {
+        run.builder.ensure(CrabLangDemangler {
             compiler: run.builder.compiler_for(
                 run.builder.top_stage,
                 run.builder.config.build,
@@ -1352,22 +1352,22 @@ impl Step for RustDemangler {
         let target = self.target;
 
         // Only build this extended tool if explicitly included in `tools`, or if `profiler = true`
-        let condition = should_build_extended_tool(builder, "rust-demangler")
+        let condition = should_build_extended_tool(builder, "crablang-demangler")
             || builder.config.profiler_enabled(target);
         if builder.config.extended && !condition {
             return None;
         }
 
-        let rust_demangler = builder
-            .ensure(tool::RustDemangler { compiler, target, extra_features: Vec::new() })
-            .expect("rust-demangler expected to build - in-tree tool");
+        let crablang_demangler = builder
+            .ensure(tool::CrabLangDemangler { compiler, target, extra_features: Vec::new() })
+            .expect("crablang-demangler expected to build - in-tree tool");
 
         // Prepare the image directory
-        let mut tarball = Tarball::new(builder, "rust-demangler", &target.triple);
-        tarball.set_overlay(OverlayKind::RustDemangler);
+        let mut tarball = Tarball::new(builder, "crablang-demangler", &target.triple);
+        tarball.set_overlay(OverlayKind::CrabLangDemangler);
         tarball.is_preview(true);
-        tarball.add_file(&rust_demangler, "bin", 0o755);
-        tarball.add_legal_and_readme_to("share/doc/rust-demangler");
+        tarball.add_file(&crablang_demangler, "bin", 0o755);
+        tarball.add_legal_and_readme_to("share/doc/crablang-demangler");
         Some(tarball.generate())
     }
 }
@@ -1416,24 +1416,24 @@ impl Step for Extended {
             };
         }
 
-        // When rust-std package split from rustc, we needed to ensure that during
-        // upgrades rustc was upgraded before rust-std. To avoid rustc clobbering
-        // the std files during uninstall. To do this ensure that rustc comes
-        // before rust-std in the list below.
-        tarballs.push(builder.ensure(Rustc { compiler: builder.compiler(stage, target) }));
+        // When crablang-std package split from crablangc, we needed to ensure that during
+        // upgrades crablangc was upgraded before crablang-std. To avoid crablangc clobbering
+        // the std files during uninstall. To do this ensure that crablangc comes
+        // before crablang-std in the list below.
+        tarballs.push(builder.ensure(CrabLangc { compiler: builder.compiler(stage, target) }));
         tarballs.push(builder.ensure(Std { compiler, target }).expect("missing std"));
 
         if target.ends_with("windows-gnu") {
             tarballs.push(builder.ensure(Mingw { host: target }).expect("missing mingw"));
         }
 
-        add_component!("rust-docs" => Docs { host: target });
-        add_component!("rust-json-docs" => JsonDocs { host: target });
-        add_component!("rust-demangler"=> RustDemangler { compiler, target });
+        add_component!("crablang-docs" => Docs { host: target });
+        add_component!("crablang-json-docs" => JsonDocs { host: target });
+        add_component!("crablang-demangler"=> CrabLangDemangler { compiler, target });
         add_component!("cargo" => Cargo { compiler, target });
-        add_component!("rustfmt" => Rustfmt { compiler, target });
+        add_component!("crablangfmt" => CrabLangfmt { compiler, target });
         add_component!("rls" => Rls { compiler, target });
-        add_component!("rust-analyzer" => RustAnalyzer { compiler, target });
+        add_component!("crablang-analyzer" => CrabLangAnalyzer { compiler, target });
         add_component!("llvm-components" => LlvmTools { target });
         add_component!("clippy" => Clippy { compiler, target });
         add_component!("miri" => Miri { compiler, target });
@@ -1446,7 +1446,7 @@ impl Step for Extended {
             return;
         }
 
-        let tarball = Tarball::new(builder, "rust", &target.triple);
+        let tarball = Tarball::new(builder, "crablang", &target.triple);
         let generated = tarball.combine(&tarballs);
 
         let tmp = tmpdir(builder).join("combined-tarball");
@@ -1488,7 +1488,7 @@ impl Step for Extended {
 
         let xform = |p: &Path| {
             let mut contents = t!(fs::read_to_string(p));
-            for tool in &["rust-demangler", "miri", "rust-docs"] {
+            for tool in &["crablang-demangler", "miri", "crablang-docs"] {
                 if !built_tools.contains(tool) {
                     contents = filter(&contents, tool);
                 }
@@ -1506,7 +1506,7 @@ impl Step for Extended {
             let pkgbuild = |component: &str| {
                 let mut cmd = Command::new("pkgbuild");
                 cmd.arg("--identifier")
-                    .arg(format!("org.rust-lang.{}", component))
+                    .arg(format!("org.crablang.{}", component))
                     .arg("--scripts")
                     .arg(pkg.join(component))
                     .arg("--nopayload")
@@ -1523,13 +1523,13 @@ impl Step for Extended {
                 builder.install(&etc.join("pkg/postinstall"), &pkg.join(name), 0o755);
                 pkgbuild(name);
             };
-            prepare("rustc");
+            prepare("crablangc");
             prepare("cargo");
-            prepare("rust-std");
-            prepare("rust-analysis");
+            prepare("crablang-std");
+            prepare("crablang-analysis");
             prepare("clippy");
-            prepare("rust-analyzer");
-            for tool in &["rust-docs", "rust-demangler", "miri"] {
+            prepare("crablang-analyzer");
+            for tool in &["crablang-docs", "crablang-demangler", "miri"] {
                 if built_tools.contains(tool) {
                     prepare(tool);
                 }
@@ -1540,7 +1540,7 @@ impl Step for Extended {
 
             builder.create_dir(&pkg.join("res"));
             builder.create(&pkg.join("res/LICENSE.txt"), &license);
-            builder.install(&etc.join("gfx/rust-logo.png"), &pkg.join("res"), 0o644);
+            builder.install(&etc.join("gfx/crablang-logo.png"), &pkg.join("res"), 0o644);
             let mut cmd = Command::new("productbuild");
             cmd.arg("--distribution")
                 .arg(xform(&etc.join("pkg/Distribution.xml")))
@@ -1548,7 +1548,7 @@ impl Step for Extended {
                 .arg(pkg.join("res"))
                 .arg(distdir(builder).join(format!(
                     "{}-{}.pkg",
-                    pkgname(builder, "rust"),
+                    pkgname(builder, "crablang"),
                     target.triple
                 )))
                 .arg("--package-path")
@@ -1563,14 +1563,14 @@ impl Step for Extended {
 
             let prepare = |name: &str| {
                 builder.create_dir(&exe.join(name));
-                let dir = if name == "rust-std" || name == "rust-analysis" {
+                let dir = if name == "crablang-std" || name == "crablang-analysis" {
                     format!("{}-{}", name, target.triple)
-                } else if name == "rust-analyzer" {
-                    "rust-analyzer-preview".to_string()
+                } else if name == "crablang-analyzer" {
+                    "crablang-analyzer-preview".to_string()
                 } else if name == "clippy" {
                     "clippy-preview".to_string()
-                } else if name == "rust-demangler" {
-                    "rust-demangler-preview".to_string()
+                } else if name == "crablang-demangler" {
+                    "crablang-demangler-preview".to_string()
                 } else if name == "miri" {
                     "miri-preview".to_string()
                 } else {
@@ -1582,22 +1582,22 @@ impl Step for Extended {
                 );
                 builder.remove(&exe.join(name).join("manifest.in"));
             };
-            prepare("rustc");
+            prepare("crablangc");
             prepare("cargo");
-            prepare("rust-analysis");
-            prepare("rust-std");
+            prepare("crablang-analysis");
+            prepare("crablang-std");
             prepare("clippy");
-            prepare("rust-analyzer");
-            for tool in &["rust-docs", "rust-demangler", "miri"] {
+            prepare("crablang-analyzer");
+            for tool in &["crablang-docs", "crablang-demangler", "miri"] {
                 if built_tools.contains(tool) {
                     prepare(tool);
                 }
             }
             if target.ends_with("windows-gnu") {
-                prepare("rust-mingw");
+                prepare("crablang-mingw");
             }
 
-            builder.install(&etc.join("gfx/rust-logo.ico"), &exe, 0o644);
+            builder.install(&etc.join("gfx/crablang-logo.ico"), &exe, 0o644);
 
             // Generate msi installer
             let wix_path = env::var_os("WIX")
@@ -1612,23 +1612,23 @@ impl Step for Extended {
                 Command::new(&heat)
                     .current_dir(&exe)
                     .arg("dir")
-                    .arg("rustc")
+                    .arg("crablangc")
                     .args(&heat_flags)
                     .arg("-cg")
-                    .arg("RustcGroup")
+                    .arg("CrabLangcGroup")
                     .arg("-dr")
-                    .arg("Rustc")
+                    .arg("CrabLangc")
                     .arg("-var")
-                    .arg("var.RustcDir")
+                    .arg("var.CrabLangcDir")
                     .arg("-out")
-                    .arg(exe.join("RustcGroup.wxs")),
+                    .arg(exe.join("CrabLangcGroup.wxs")),
             );
-            if built_tools.contains("rust-docs") {
+            if built_tools.contains("crablang-docs") {
                 builder.run(
                     Command::new(&heat)
                         .current_dir(&exe)
                         .arg("dir")
-                        .arg("rust-docs")
+                        .arg("crablang-docs")
                         .args(&heat_flags)
                         .arg("-cg")
                         .arg("DocsGroup")
@@ -1663,7 +1663,7 @@ impl Step for Extended {
                 Command::new(&heat)
                     .current_dir(&exe)
                     .arg("dir")
-                    .arg("rust-std")
+                    .arg("crablang-std")
                     .args(&heat_flags)
                     .arg("-cg")
                     .arg("StdGroup")
@@ -1678,16 +1678,16 @@ impl Step for Extended {
                 Command::new(&heat)
                     .current_dir(&exe)
                     .arg("dir")
-                    .arg("rust-analyzer")
+                    .arg("crablang-analyzer")
                     .args(&heat_flags)
                     .arg("-cg")
-                    .arg("RustAnalyzerGroup")
+                    .arg("CrabLangAnalyzerGroup")
                     .arg("-dr")
-                    .arg("RustAnalyzer")
+                    .arg("CrabLangAnalyzer")
                     .arg("-var")
-                    .arg("var.RustAnalyzerDir")
+                    .arg("var.CrabLangAnalyzerDir")
                     .arg("-out")
-                    .arg(exe.join("RustAnalyzerGroup.wxs"))
+                    .arg(exe.join("CrabLangAnalyzerGroup.wxs"))
                     .arg("-t")
                     .arg(etc.join("msi/remove-duplicates.xsl")),
             );
@@ -1708,21 +1708,21 @@ impl Step for Extended {
                     .arg("-t")
                     .arg(etc.join("msi/remove-duplicates.xsl")),
             );
-            if built_tools.contains("rust-demangler") {
+            if built_tools.contains("crablang-demangler") {
                 builder.run(
                     Command::new(&heat)
                         .current_dir(&exe)
                         .arg("dir")
-                        .arg("rust-demangler")
+                        .arg("crablang-demangler")
                         .args(&heat_flags)
                         .arg("-cg")
-                        .arg("RustDemanglerGroup")
+                        .arg("CrabLangDemanglerGroup")
                         .arg("-dr")
-                        .arg("RustDemangler")
+                        .arg("CrabLangDemangler")
                         .arg("-var")
-                        .arg("var.RustDemanglerDir")
+                        .arg("var.CrabLangDemanglerDir")
                         .arg("-out")
-                        .arg(exe.join("RustDemanglerGroup.wxs"))
+                        .arg(exe.join("CrabLangDemanglerGroup.wxs"))
                         .arg("-t")
                         .arg(etc.join("msi/remove-duplicates.xsl")),
                 );
@@ -1750,7 +1750,7 @@ impl Step for Extended {
                 Command::new(&heat)
                     .current_dir(&exe)
                     .arg("dir")
-                    .arg("rust-analysis")
+                    .arg("crablang-analysis")
                     .args(&heat_flags)
                     .arg("-cg")
                     .arg("AnalysisGroup")
@@ -1768,7 +1768,7 @@ impl Step for Extended {
                     Command::new(&heat)
                         .current_dir(&exe)
                         .arg("dir")
-                        .arg("rust-mingw")
+                        .arg("crablang-mingw")
                         .args(&heat_flags)
                         .arg("-cg")
                         .arg("GccGroup")
@@ -1787,10 +1787,10 @@ impl Step for Extended {
                 let mut cmd = Command::new(&candle);
                 cmd.current_dir(&exe)
                     .arg("-nologo")
-                    .arg("-dRustcDir=rustc")
+                    .arg("-dCrabLangcDir=crablangc")
                     .arg("-dCargoDir=cargo")
-                    .arg("-dStdDir=rust-std")
-                    .arg("-dAnalysisDir=rust-analysis")
+                    .arg("-dStdDir=crablang-std")
+                    .arg("-dAnalysisDir=crablang-analysis")
                     .arg("-dClippyDir=clippy")
                     .arg("-arch")
                     .arg(&arch)
@@ -1799,28 +1799,28 @@ impl Step for Extended {
                     .arg(&input);
                 add_env(builder, &mut cmd, target);
 
-                if built_tools.contains("rust-docs") {
-                    cmd.arg("-dDocsDir=rust-docs");
+                if built_tools.contains("crablang-docs") {
+                    cmd.arg("-dDocsDir=crablang-docs");
                 }
-                if built_tools.contains("rust-demangler") {
-                    cmd.arg("-dRustDemanglerDir=rust-demangler");
+                if built_tools.contains("crablang-demangler") {
+                    cmd.arg("-dCrabLangDemanglerDir=crablang-demangler");
                 }
-                if built_tools.contains("rust-analyzer") {
-                    cmd.arg("-dRustAnalyzerDir=rust-analyzer");
+                if built_tools.contains("crablang-analyzer") {
+                    cmd.arg("-dCrabLangAnalyzerDir=crablang-analyzer");
                 }
                 if built_tools.contains("miri") {
                     cmd.arg("-dMiriDir=miri");
                 }
                 if target.ends_with("windows-gnu") {
-                    cmd.arg("-dGccDir=rust-mingw");
+                    cmd.arg("-dGccDir=crablang-mingw");
                 }
                 builder.run(&mut cmd);
             };
-            candle(&xform(&etc.join("msi/rust.wxs")));
+            candle(&xform(&etc.join("msi/crablang.wxs")));
             candle(&etc.join("msi/ui.wxs"));
-            candle(&etc.join("msi/rustwelcomedlg.wxs"));
-            candle("RustcGroup.wxs".as_ref());
-            if built_tools.contains("rust-docs") {
+            candle(&etc.join("msi/crablangwelcomedlg.wxs"));
+            candle("CrabLangcGroup.wxs".as_ref());
+            if built_tools.contains("crablang-docs") {
                 candle("DocsGroup.wxs".as_ref());
             }
             candle("CargoGroup.wxs".as_ref());
@@ -1829,11 +1829,11 @@ impl Step for Extended {
             if built_tools.contains("miri") {
                 candle("MiriGroup.wxs".as_ref());
             }
-            if built_tools.contains("rust-demangler") {
-                candle("RustDemanglerGroup.wxs".as_ref());
+            if built_tools.contains("crablang-demangler") {
+                candle("CrabLangDemanglerGroup.wxs".as_ref());
             }
-            if built_tools.contains("rust-analyzer") {
-                candle("RustAnalyzerGroup.wxs".as_ref());
+            if built_tools.contains("crablang-analyzer") {
+                candle("CrabLangAnalyzerGroup.wxs".as_ref());
             }
             candle("AnalysisGroup.wxs".as_ref());
 
@@ -1846,7 +1846,7 @@ impl Step for Extended {
             builder.install(&etc.join("gfx/dialogbg.bmp"), &exe, 0o644);
 
             builder.info(&format!("building `msi` installer with {:?}", light));
-            let filename = format!("{}-{}.msi", pkgname(builder, "rust"), target.triple);
+            let filename = format!("{}-{}.msi", pkgname(builder, "crablang"), target.triple);
             let mut cmd = Command::new(&light);
             cmd.arg("-nologo")
                 .arg("-ext")
@@ -1855,10 +1855,10 @@ impl Step for Extended {
                 .arg("WixUtilExtension")
                 .arg("-out")
                 .arg(exe.join(&filename))
-                .arg("rust.wixobj")
+                .arg("crablang.wixobj")
                 .arg("ui.wixobj")
-                .arg("rustwelcomedlg.wixobj")
-                .arg("RustcGroup.wixobj")
+                .arg("crablangwelcomedlg.wixobj")
+                .arg("CrabLangcGroup.wixobj")
                 .arg("CargoGroup.wixobj")
                 .arg("StdGroup.wixobj")
                 .arg("AnalysisGroup.wixobj")
@@ -1868,13 +1868,13 @@ impl Step for Extended {
             if built_tools.contains("miri") {
                 cmd.arg("MiriGroup.wixobj");
             }
-            if built_tools.contains("rust-analyzer") {
-                cmd.arg("RustAnalyzerGroup.wixobj");
+            if built_tools.contains("crablang-analyzer") {
+                cmd.arg("CrabLangAnalyzerGroup.wixobj");
             }
-            if built_tools.contains("rust-demangler") {
-                cmd.arg("RustDemanglerGroup.wixobj");
+            if built_tools.contains("crablang-demangler") {
+                cmd.arg("CrabLangDemanglerGroup.wixobj");
             }
-            if built_tools.contains("rust-docs") {
+            if built_tools.contains("crablang-docs") {
                 cmd.arg("DocsGroup.wixobj");
             }
 
@@ -1896,15 +1896,15 @@ impl Step for Extended {
 
 fn add_env(builder: &Builder<'_>, cmd: &mut Command, target: TargetSelection) {
     let mut parts = builder.version.split('.');
-    cmd.env("CFG_RELEASE_INFO", builder.rust_version())
+    cmd.env("CFG_RELEASE_INFO", builder.crablang_version())
         .env("CFG_RELEASE_NUM", &builder.version)
-        .env("CFG_RELEASE", builder.rust_release())
+        .env("CFG_RELEASE", builder.crablang_release())
         .env("CFG_VER_MAJOR", parts.next().unwrap())
         .env("CFG_VER_MINOR", parts.next().unwrap())
         .env("CFG_VER_PATCH", parts.next().unwrap())
         .env("CFG_VER_BUILD", "0") // just needed to build
-        .env("CFG_PACKAGE_VERS", builder.rust_package_vers())
-        .env("CFG_PACKAGE_NAME", pkgname(builder, "rust"))
+        .env("CFG_PACKAGE_VERS", builder.crablang_package_vers())
+        .env("CFG_PACKAGE_NAME", pkgname(builder, "crablang"))
         .env("CFG_BUILD", target.triple)
         .env("CFG_CHANNEL", &builder.config.channel);
 
@@ -1960,8 +1960,8 @@ fn maybe_install_llvm(builder: &Builder<'_>, target: TargetSelection, dst_libdir
         }
     }
 
-    // On macOS, rustc (and LLVM tools) link to an unversioned libLLVM.dylib
-    // instead of libLLVM-11-rust-....dylib, as on linux. It's not entirely
+    // On macOS, crablangc (and LLVM tools) link to an unversioned libLLVM.dylib
+    // instead of libLLVM-11-crablang-....dylib, as on linux. It's not entirely
     // clear why this is the case, though. llvm-config will emit the versioned
     // paths and we don't want those in the sysroot (as we're expecting
     // unversioned paths).
@@ -1998,21 +1998,21 @@ fn maybe_install_llvm(builder: &Builder<'_>, target: TargetSelection, dst_libdir
 
 /// Maybe add libLLVM.so to the target lib-dir for linking.
 pub fn maybe_install_llvm_target(builder: &Builder<'_>, target: TargetSelection, sysroot: &Path) {
-    let dst_libdir = sysroot.join("lib/rustlib").join(&*target.triple).join("lib");
+    let dst_libdir = sysroot.join("lib/crablanglib").join(&*target.triple).join("lib");
     // We do not need to copy LLVM files into the sysroot if it is not
-    // dynamically linked; it is already included into librustc_llvm
+    // dynamically linked; it is already included into libcrablangc_llvm
     // statically.
     if builder.llvm_link_shared() {
         maybe_install_llvm(builder, target, &dst_libdir);
     }
 }
 
-/// Maybe add libLLVM.so to the runtime lib-dir for rustc itself.
+/// Maybe add libLLVM.so to the runtime lib-dir for crablangc itself.
 pub fn maybe_install_llvm_runtime(builder: &Builder<'_>, target: TargetSelection, sysroot: &Path) {
     let dst_libdir =
         sysroot.join(builder.sysroot_libdir_relative(Compiler { stage: 1, host: target }));
     // We do not need to copy LLVM files into the sysroot if it is not
-    // dynamically linked; it is already included into librustc_llvm
+    // dynamically linked; it is already included into libcrablangc_llvm
     // statically.
     if builder.llvm_link_shared() {
         maybe_install_llvm(builder, target, &dst_libdir);
@@ -2169,7 +2169,7 @@ impl Step for LlvmTools {
 
         // Prepare the image directory
         let src_bindir = builder.llvm_out(target).join("bin");
-        let dst_bindir = format!("lib/rustlib/{}/bin", target.triple);
+        let dst_bindir = format!("lib/crablanglib/{}/bin", target.triple);
         for tool in LLVM_TOOLS {
             let exe = src_bindir.join(exe(tool, target));
             tarball.add_file(&exe, &dst_bindir, 0o755);
@@ -2177,7 +2177,7 @@ impl Step for LlvmTools {
 
         // Copy libLLVM.so to the target lib dir as well, so the RPATH like
         // `$ORIGIN/../lib` can find it. It may also be used as a dependency
-        // of `rustc-dev` to support the inherited `-lLLVM` when using the
+        // of `crablangc-dev` to support the inherited `-lLLVM` when using the
         // compiler libraries.
         maybe_install_llvm_target(builder, target, tarball.image_dir());
 
@@ -2185,25 +2185,25 @@ impl Step for LlvmTools {
     }
 }
 
-// Tarball intended for internal consumption to ease rustc/std development.
+// Tarball intended for internal consumption to ease crablangc/std development.
 //
 // Should not be considered stable by end users.
 #[derive(Clone, Debug, Eq, Hash, PartialEq)]
-pub struct RustDev {
+pub struct CrabLangDev {
     pub target: TargetSelection,
 }
 
-impl Step for RustDev {
+impl Step for CrabLangDev {
     type Output = Option<GeneratedTarball>;
     const DEFAULT: bool = true;
     const ONLY_HOSTS: bool = true;
 
     fn should_run(run: ShouldRun<'_>) -> ShouldRun<'_> {
-        run.alias("rust-dev")
+        run.alias("crablang-dev")
     }
 
     fn make_run(run: RunConfig<'_>) {
-        run.builder.ensure(RustDev { target: run.target });
+        run.builder.ensure(CrabLangDev { target: run.target });
     }
 
     fn run(self, builder: &Builder<'_>) -> Option<GeneratedTarball> {
@@ -2212,12 +2212,12 @@ impl Step for RustDev {
         /* run only if llvm-config isn't used */
         if let Some(config) = builder.config.target_config.get(&target) {
             if let Some(ref _s) = config.llvm_config {
-                builder.info(&format!("Skipping RustDev ({}): external LLVM", target));
+                builder.info(&format!("Skipping CrabLangDev ({}): external LLVM", target));
                 return None;
             }
         }
 
-        let mut tarball = Tarball::new(builder, "rust-dev", &target.triple);
+        let mut tarball = Tarball::new(builder, "crablang-dev", &target.triple);
         tarball.set_overlay(OverlayKind::LLVM);
 
         builder.ensure(crate::llvm::Llvm { target });
@@ -2254,13 +2254,13 @@ impl Step for RustDev {
         tarball.add_file(&builder.llvm_filecheck(target), "bin", 0o755);
 
         // Copy the include directory as well; needed mostly to build
-        // librustc_llvm properly (e.g., llvm-config.h is in here). But also
+        // libcrablangc_llvm properly (e.g., llvm-config.h is in here). But also
         // just broadly useful to be able to link against the bundled LLVM.
         tarball.add_dir(&builder.llvm_out(target).join("include"), "include");
 
         // Copy libLLVM.so to the target lib dir as well, so the RPATH like
         // `$ORIGIN/../lib` can find it. It may also be used as a dependency
-        // of `rustc-dev` to support the inherited `-lLLVM` when using the
+        // of `crablangc-dev` to support the inherited `-lLLVM` when using the
         // compiler libraries.
         let dst_libdir = tarball.image_dir().join("lib");
         maybe_install_llvm(builder, target, &dst_libdir);
@@ -2271,7 +2271,7 @@ impl Step for RustDev {
     }
 }
 
-// Tarball intended for internal consumption to ease rustc/std development.
+// Tarball intended for internal consumption to ease crablangc/std development.
 //
 // Should not be considered stable by end users.
 #[derive(Clone, Debug, Eq, Hash, PartialEq)]
@@ -2298,7 +2298,7 @@ impl Step for Bootstrap {
         let tarball = Tarball::new(builder, "bootstrap", &target.triple);
 
         let bootstrap_outdir = &builder.bootstrap_out;
-        for file in &["bootstrap", "rustc", "rustdoc", "sccache-plus-cl"] {
+        for file in &["bootstrap", "crablangc", "crablangdoc", "sccache-plus-cl"] {
             tarball.add_file(bootstrap_outdir.join(exe(file, target)), "bootstrap/bin", 0o755);
         }
 
@@ -2337,7 +2337,7 @@ impl Step for BuildManifest {
     }
 }
 
-/// Tarball containing artifacts necessary to reproduce the build of rustc.
+/// Tarball containing artifacts necessary to reproduce the build of crablangc.
 ///
 /// Currently this is the PGO profile data.
 ///
@@ -2363,7 +2363,7 @@ impl Step for ReproducibleArtifacts {
     fn run(self, builder: &Builder<'_>) -> Self::Output {
         let mut added_anything = false;
         let tarball = Tarball::new(builder, "reproducible-artifacts", &self.target.triple);
-        if let Some(path) = builder.config.rust_profile_use.as_ref() {
+        if let Some(path) = builder.config.crablang_profile_use.as_ref() {
             tarball.add_file(path, ".", 0o644);
             added_anything = true;
         }

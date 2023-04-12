@@ -1,5 +1,5 @@
 // compile-flags: --edition=2021
-// run-rustfix
+// run-crablangfix
 
 pub struct Struct<T> {
     pub p: T,

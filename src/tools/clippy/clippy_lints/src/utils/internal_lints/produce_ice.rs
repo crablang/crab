@@ -1,8 +1,8 @@
-use rustc_ast::ast::NodeId;
-use rustc_ast::visit::FnKind;
-use rustc_lint::{EarlyContext, EarlyLintPass};
-use rustc_session::{declare_lint_pass, declare_tool_lint};
-use rustc_span::Span;
+use crablangc_ast::ast::NodeId;
+use crablangc_ast::visit::FnKind;
+use crablangc_lint::{EarlyContext, EarlyLintPass};
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_span::Span;
 
 declare_clippy_lint! {
     /// ### What it does
@@ -13,7 +13,7 @@ declare_clippy_lint! {
     /// ICE in large quantities can damage your teeth
     ///
     /// ### Example
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// 🍦🍦🍦🍦🍦
     /// ```
     pub PRODUCE_ICE,

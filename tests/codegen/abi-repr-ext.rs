@@ -34,11 +34,11 @@ pub enum Type {
     Type2 = 1
 }
 
-// To accommodate rust#97800, one might consider writing the below as:
+// To accommodate crablang#97800, one might consider writing the below as:
 //
 // `define{{( dso_local)?}} noundef{{( signext)?}} i8 @test()`
 //
-// but based on rust#80556, it seems important to actually check for the
+// but based on crablang#80556, it seems important to actually check for the
 // presence of the `signext` for those targets where we expect it.
 
 // CHECK: define{{( dso_local)?}} noundef

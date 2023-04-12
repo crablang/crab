@@ -1,4 +1,4 @@
-// rust-lang/rust#83309: The compiler tries to suggest potential
+// crablang/crablang#83309: The compiler tries to suggest potential
 // methods that return `&mut` items. However, when it doesn't
 // find such methods, it still tries to add suggestions
 // which then fails an assertion later because there was

@@ -7,37 +7,37 @@ If you want to help with updating the [changelog], you're in the right place.
 Typos and other small fixes/additions are _always_ welcome.
 
 Special care needs to be taken when it comes to updating the changelog for a new
-Rust release. For that purpose, the changelog is ideally updated during the week
-before an upcoming stable release. You can find the release dates on the [Rust
+CrabLang release. For that purpose, the changelog is ideally updated during the week
+before an upcoming stable release. You can find the release dates on the [CrabLang
 Forge][forge].
 
-Most of the time we only need to update the changelog for minor Rust releases.
+Most of the time we only need to update the changelog for minor CrabLang releases.
 It's been very rare that Clippy changes were included in a patch release.
 
 ## Changelog update walkthrough
 
 ### 1. Finding the relevant Clippy commits
 
-Each Rust release ships with its own version of Clippy. The Clippy subtree can
-be found in the `tools` directory of the Rust repository.
+Each CrabLang release ships with its own version of Clippy. The Clippy subtree can
+be found in the `tools` directory of the CrabLang repository.
 
 Depending on the current time and what exactly you want to update, the following
 bullet points might be helpful:
 
 * When writing the release notes for the **upcoming stable release** you need to
-  check out the Clippy commit of the current Rust `beta` branch.
-  [Link][rust_beta_tools]
+  check out the Clippy commit of the current CrabLang `beta` branch.
+  [Link][crablang_beta_tools]
 * When writing the release notes for the **upcoming beta release**, you need to
-  check out the Clippy commit of the current Rust `master`.
-  [Link][rust_master_tools]
+  check out the Clippy commit of the current CrabLang `master`.
+  [Link][crablang_master_tools]
 * When writing the (forgotten) release notes for a **past stable release**, you
-  need to check out the Rust release tag of the stable release.
-  [Link][rust_stable_tools]
+  need to check out the CrabLang release tag of the stable release.
+  [Link][crablang_stable_tools]
 
 Usually you want to write the changelog of the **upcoming stable release**. Make
-sure though, that `beta` was already branched in the Rust repository.
+sure though, that `beta` was already branched in the CrabLang repository.
 
-To find the commit hash, issue the following command when in a `rust-lang/rust`
+To find the commit hash, issue the following command when in a `crablang/crablang`
 checkout:
 ```
 git log --oneline -- src/tools/clippy/ | grep -o "Merge commit '[a-f0-9]*' into .*" | head -1 | sed -e "s/Merge commit '\([a-f0-9]*\)' into .*/\1/g"
@@ -109,9 +109,9 @@ that label in the changelog. If you can, remove the `beta-accepted` labels
 Next, make sure to check that the `#[clippy::version]` attributes for the added
 lints contain the correct version.
 
-[changelog]: https://github.com/rust-lang/rust-clippy/blob/master/CHANGELOG.md
-[forge]: https://forge.rust-lang.org/
-[rust_master_tools]: https://github.com/rust-lang/rust/tree/master/src/tools/clippy
-[rust_beta_tools]: https://github.com/rust-lang/rust/tree/beta/src/tools/clippy
-[rust_stable_tools]: https://github.com/rust-lang/rust/releases
-[`beta-accepted`]: https://github.com/rust-lang/rust-clippy/issues?q=label%3Abeta-accepted+
+[changelog]: https://github.com/crablang/crablang-clippy/blob/master/CHANGELOG.md
+[forge]: https://forge.crablang.org/
+[crablang_master_tools]: https://github.com/crablang/crablang/tree/master/src/tools/clippy
+[crablang_beta_tools]: https://github.com/crablang/crablang/tree/beta/src/tools/clippy
+[crablang_stable_tools]: https://github.com/crablang/crablang/releases
+[`beta-accepted`]: https://github.com/crablang/crablang-clippy/issues?q=label%3Abeta-accepted+

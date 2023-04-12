@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 
 trait T {
     unsafe fn foo(a: &usize, b: &usize) -> usize;

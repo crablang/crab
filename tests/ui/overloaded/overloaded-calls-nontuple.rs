@@ -9,8 +9,8 @@ struct S {
 
 impl FnMut<isize> for S {
     //~^ ERROR type parameter to bare `FnMut` trait must be a tuple
-    extern "rust-call" fn call_mut(&mut self, z: isize) -> isize {
-        //~^ ERROR functions with the "rust-call" ABI must take a single non-self tuple argument
+    extern "crablang-call" fn call_mut(&mut self, z: isize) -> isize {
+        //~^ ERROR functions with the "crablang-call" ABI must take a single non-self tuple argument
         self.x + self.y + z
     }
 }
@@ -18,8 +18,8 @@ impl FnMut<isize> for S {
 impl FnOnce<isize> for S {
     //~^ ERROR type parameter to bare `FnOnce` trait must be a tuple
     type Output = isize;
-    extern "rust-call" fn call_once(mut self, z: isize) -> isize {
-        //~^ ERROR functions with the "rust-call" ABI must take a single non-self tuple argument
+    extern "crablang-call" fn call_once(mut self, z: isize) -> isize {
+        //~^ ERROR functions with the "crablang-call" ABI must take a single non-self tuple argument
         self.call_mut(z)
     }
 }

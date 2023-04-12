@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 // aux-build:proc_macros.rs
 
 #![warn(clippy::manual_rem_euclid)]

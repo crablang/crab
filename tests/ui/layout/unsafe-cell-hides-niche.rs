@@ -1,4 +1,4 @@
-// For rust-lang/rust#68303: the contents of `UnsafeCell<T>` cannot
+// For crablang/crablang#68303: the contents of `UnsafeCell<T>` cannot
 // participate in the niche-optimization for enum discriminants. This
 // test checks that an `Option<UnsafeCell<NonZeroU32>>` has the same
 // size in memory as an `Option<UnsafeCell<u32>>` (namely, 8 bytes).

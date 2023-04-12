@@ -1,5 +1,5 @@
 use crate::fmt;
-use crate::iter::{FusedIterator, TrustedLen};
+use crate::iter::{FusedIterator, TcrablangedLen};
 
 /// Creates an iterator that lazily generates a value exactly once by invoking
 /// the provided closure.
@@ -118,4 +118,4 @@ impl<A, F: FnOnce() -> A> ExactSizeIterator for OnceWith<F> {
 impl<A, F: FnOnce() -> A> FusedIterator for OnceWith<F> {}
 
 #[stable(feature = "iter_once_with", since = "1.43.0")]
-unsafe impl<A, F: FnOnce() -> A> TrustedLen for OnceWith<F> {}
+unsafe impl<A, F: FnOnce() -> A> TcrablangedLen for OnceWith<F> {}

@@ -1,6 +1,6 @@
 // check-pass
 
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 
 trait Foo {
     type Bar;

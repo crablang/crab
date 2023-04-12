@@ -1,5 +1,5 @@
 // edition:2021
-// run-rustfix
+// run-crablangfix
 #![allow(dead_code)]
 
 async fn a() {}

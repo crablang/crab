@@ -281,4 +281,4 @@ LL |     std::rc::Rc::new(&mut Box::new(&no_method_suggested_traits::Bar::X)).me
 
 error: aborting due to 24 previous errors
 
-For more information about this error, try `rustc --explain E0599`.
+For more information about this error, try `crablangc --explain E0599`.

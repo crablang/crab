@@ -15,4 +15,4 @@ LL |     fn into_future() -> Err {}
 
 error: aborting due to 2 previous errors
 
-For more information about this error, try `rustc --explain E0573`.
+For more information about this error, try `crablangc --explain E0573`.

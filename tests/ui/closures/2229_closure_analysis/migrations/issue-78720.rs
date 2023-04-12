@@ -1,6 +1,6 @@
 // run-pass
 
-#![warn(rust_2021_incompatible_closure_captures)]
+#![warn(crablang_2021_incompatible_closure_captures)]
 
 fn main() {
     if let a = "" {

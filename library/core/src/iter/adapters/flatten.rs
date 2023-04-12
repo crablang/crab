@@ -1,5 +1,5 @@
 use crate::fmt;
-use crate::iter::{DoubleEndedIterator, Fuse, FusedIterator, Iterator, Map, TrustedLen};
+use crate::iter::{DoubleEndedIterator, Fuse, FusedIterator, Iterator, Map, TcrablangedLen};
 use crate::num::NonZeroUsize;
 use crate::ops::{ControlFlow, Try};
 
@@ -9,7 +9,7 @@ use crate::ops::{ControlFlow, Try};
 /// This `struct` is created by [`Iterator::flat_map`]. See its documentation
 /// for more.
 #[must_use = "iterators are lazy and do nothing unless consumed"]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub struct FlatMap<I, U: IntoIterator, F> {
     inner: FlattenCompat<Map<I, F>, <U as IntoIterator>::IntoIter>,
 }
@@ -20,7 +20,7 @@ impl<I: Iterator, U: IntoIterator, F: FnMut(I::Item) -> U> FlatMap<I, U, F> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<I: Clone, U, F: Clone> Clone for FlatMap<I, U, F>
 where
     U: Clone + IntoIterator<IntoIter: Clone>,
@@ -40,7 +40,7 @@ where
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<I: Iterator, U: IntoIterator, F> Iterator for FlatMap<I, U, F>
 where
     F: FnMut(I::Item) -> U,
@@ -91,7 +91,7 @@ where
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<I: DoubleEndedIterator, U, F> DoubleEndedIterator for FlatMap<I, U, F>
 where
     F: FnMut(I::Item) -> U,
@@ -135,26 +135,26 @@ where
 {
 }
 
-#[unstable(feature = "trusted_len", issue = "37572")]
-unsafe impl<T, I, F, const N: usize> TrustedLen for FlatMap<I, [T; N], F>
+#[unstable(feature = "tcrablanged_len", issue = "37572")]
+unsafe impl<T, I, F, const N: usize> TcrablangedLen for FlatMap<I, [T; N], F>
 where
-    I: TrustedLen,
+    I: TcrablangedLen,
     F: FnMut(I::Item) -> [T; N],
 {
 }
 
-#[unstable(feature = "trusted_len", issue = "37572")]
-unsafe impl<'a, T, I, F, const N: usize> TrustedLen for FlatMap<I, &'a [T; N], F>
+#[unstable(feature = "tcrablanged_len", issue = "37572")]
+unsafe impl<'a, T, I, F, const N: usize> TcrablangedLen for FlatMap<I, &'a [T; N], F>
 where
-    I: TrustedLen,
+    I: TcrablangedLen,
     F: FnMut(I::Item) -> &'a [T; N],
 {
 }
 
-#[unstable(feature = "trusted_len", issue = "37572")]
-unsafe impl<'a, T, I, F, const N: usize> TrustedLen for FlatMap<I, &'a mut [T; N], F>
+#[unstable(feature = "tcrablanged_len", issue = "37572")]
+unsafe impl<'a, T, I, F, const N: usize> TcrablangedLen for FlatMap<I, &'a mut [T; N], F>
 where
-    I: TrustedLen,
+    I: TcrablangedLen,
     F: FnMut(I::Item) -> &'a mut [T; N],
 {
 }
@@ -295,15 +295,15 @@ where
 {
 }
 
-#[unstable(feature = "trusted_len", issue = "37572")]
-unsafe impl<I> TrustedLen for Flatten<I>
+#[unstable(feature = "tcrablanged_len", issue = "37572")]
+unsafe impl<I> TcrablangedLen for Flatten<I>
 where
-    I: TrustedLen,
-    <I as Iterator>::Item: TrustedConstSize,
+    I: TcrablangedLen,
+    <I as Iterator>::Item: TcrablangedConstSize,
 {
 }
 
-#[stable(feature = "default_iters", since = "CURRENT_RUSTC_VERSION")]
+#[stable(feature = "default_iters", since = "CURRENT_CRABLANGC_VERSION")]
 impl<I> Default for Flatten<I>
 where
     I: Default + Iterator<Item: IntoIterator>,
@@ -552,10 +552,10 @@ where
     }
 
     #[inline]
-    #[rustc_inherit_overflow_checks]
+    #[crablangc_inherit_overflow_checks]
     fn advance_by(&mut self, n: usize) -> Result<(), NonZeroUsize> {
         #[inline]
-        #[rustc_inherit_overflow_checks]
+        #[crablangc_inherit_overflow_checks]
         fn advance<U: Iterator>(n: usize, iter: &mut U) -> ControlFlow<(), usize> {
             match iter.advance_by(n) {
                 Ok(()) => ControlFlow::Break(()),
@@ -572,7 +572,7 @@ where
     #[inline]
     fn count(self) -> usize {
         #[inline]
-        #[rustc_inherit_overflow_checks]
+        #[crablangc_inherit_overflow_checks]
         fn count<U: Iterator>(acc: usize, iter: U) -> usize {
             acc + iter.count()
         }
@@ -642,10 +642,10 @@ where
     }
 
     #[inline]
-    #[rustc_inherit_overflow_checks]
+    #[crablangc_inherit_overflow_checks]
     fn advance_back_by(&mut self, n: usize) -> Result<(), NonZeroUsize> {
         #[inline]
-        #[rustc_inherit_overflow_checks]
+        #[crablangc_inherit_overflow_checks]
         fn advance<U: DoubleEndedIterator>(n: usize, iter: &mut U) -> ControlFlow<(), usize> {
             match iter.advance_back_by(n) {
                 Ok(()) => ControlFlow::Break(()),
@@ -698,16 +698,16 @@ impl<T, const N: usize> ConstSizeIntoIterator for &mut [T; N] {
 
 #[doc(hidden)]
 #[unstable(feature = "std_internals", issue = "none")]
-// FIXME(#20400): Instead of this helper trait there should be multiple impl TrustedLen for Flatten<>
+// FIXME(#20400): Instead of this helper trait there should be multiple impl TcrablangedLen for Flatten<>
 //   blocks with different bounds on Iterator::Item but the compiler erroneously considers them overlapping
-pub unsafe trait TrustedConstSize: IntoIterator {}
+pub unsafe trait TcrablangedConstSize: IntoIterator {}
 
 #[unstable(feature = "std_internals", issue = "none")]
-unsafe impl<T, const N: usize> TrustedConstSize for [T; N] {}
+unsafe impl<T, const N: usize> TcrablangedConstSize for [T; N] {}
 #[unstable(feature = "std_internals", issue = "none")]
-unsafe impl<T, const N: usize> TrustedConstSize for &'_ [T; N] {}
+unsafe impl<T, const N: usize> TcrablangedConstSize for &'_ [T; N] {}
 #[unstable(feature = "std_internals", issue = "none")]
-unsafe impl<T, const N: usize> TrustedConstSize for &'_ mut [T; N] {}
+unsafe impl<T, const N: usize> TcrablangedConstSize for &'_ mut [T; N] {}
 
 #[inline]
 fn and_then_or_clear<T, U>(opt: &mut Option<T>, f: impl FnOnce(&mut T) -> Option<U>) -> Option<U> {

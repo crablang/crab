@@ -1,0 +1,19 @@
+[package]
+name = "crablangc_ty_utils"
+version = "0.0.0"
+edition = "2021"
+
+[dependencies]
+tracing = "0.1"
+crablangc_middle = { path = "../crablangc_middle" }
+crablangc_data_structures = { path = "../crablangc_data_structures" }
+crablangc_errors = { path = "../crablangc_errors" }
+crablangc_hir = { path = "../crablangc_hir" }
+crablangc_infer = { path = "../crablangc_infer" }
+crablangc_macros = { path = "../crablangc_macros" }
+crablangc_span = { path = "../crablangc_span" }
+crablangc_session = { path = "../crablangc_session" }
+crablangc_target = { path = "../crablangc_target" }
+crablangc_trait_selection = { path = "../crablangc_trait_selection" }
+crablangc_type_ir = { path = "../crablangc_type_ir" }
+crablangc_index = { path = "../crablangc_index" }

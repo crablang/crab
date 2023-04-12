@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 
 // Testing that semicolon tokens are printed correctly in errors
 

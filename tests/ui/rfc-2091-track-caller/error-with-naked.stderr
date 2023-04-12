@@ -10,13 +10,13 @@ error[E0736]: cannot use `#[track_caller]` with `#[naked]`
 LL |     #[track_caller]
    |     ^^^^^^^^^^^^^^^
 
-error[E0737]: `#[track_caller]` requires Rust ABI
+error[E0737]: `#[track_caller]` requires CrabLang ABI
   --> $DIR/error-with-naked.rs:6:1
    |
 LL | #[track_caller]
    | ^^^^^^^^^^^^^^^
 
-error[E0737]: `#[track_caller]` requires Rust ABI
+error[E0737]: `#[track_caller]` requires CrabLang ABI
   --> $DIR/error-with-naked.rs:16:5
    |
 LL |     #[track_caller]
@@ -25,4 +25,4 @@ LL |     #[track_caller]
 error: aborting due to 4 previous errors
 
 Some errors have detailed explanations: E0736, E0737.
-For more information about an error, try `rustc --explain E0736`.
+For more information about an error, try `crablangc --explain E0736`.

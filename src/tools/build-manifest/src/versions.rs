@@ -38,24 +38,24 @@ macro_rules! pkg_type {
 }
 
 pkg_type! {
-    Rust = "rust",
-    RustSrc = "rust-src",
-    Rustc = "rustc",
-    RustcDev = "rustc-dev",
-    RustcDocs = "rustc-docs",
+    CrabLang = "crablang",
+    CrabLangSrc = "crablang-src",
+    CrabLangc = "crablangc",
+    CrabLangcDev = "crablangc-dev",
+    CrabLangcDocs = "crablangc-docs",
     ReproducibleArtifacts = "reproducible-artifacts",
-    RustMingw = "rust-mingw",
-    RustStd = "rust-std",
+    CrabLangMingw = "crablang-mingw",
+    CrabLangStd = "crablang-std",
     Cargo = "cargo",
-    HtmlDocs = "rust-docs",
-    RustAnalysis = "rust-analysis",
+    HtmlDocs = "crablang-docs",
+    CrabLangAnalysis = "crablang-analysis",
     Rls = "rls"; preview = true,
-    RustAnalyzer = "rust-analyzer"; preview = true,
+    CrabLangAnalyzer = "crablang-analyzer"; preview = true,
     Clippy = "clippy"; preview = true,
-    Rustfmt = "rustfmt"; preview = true,
+    CrabLangfmt = "crablangfmt"; preview = true,
     LlvmTools = "llvm-tools"; preview = true,
     Miri = "miri"; preview = true,
-    JsonDocs = "rust-docs-json"; preview = true,
+    JsonDocs = "crablang-docs-json"; preview = true,
 }
 
 impl PkgType {
@@ -68,29 +68,29 @@ impl PkgType {
         }
     }
 
-    /// Whether this package has the same version as Rust itself, or has its own `version` and
+    /// Whether this package has the same version as CrabLang itself, or has its own `version` and
     /// `git-commit-hash` files inside the tarball.
-    fn should_use_rust_version(&self) -> bool {
+    fn should_use_crablang_version(&self) -> bool {
         match self {
             PkgType::Cargo => false,
             PkgType::Rls => false,
-            PkgType::RustAnalyzer => false,
+            PkgType::CrabLangAnalyzer => false,
             PkgType::Clippy => false,
-            PkgType::Rustfmt => false,
+            PkgType::CrabLangfmt => false,
             PkgType::LlvmTools => false,
             PkgType::Miri => false,
 
-            PkgType::Rust => true,
-            PkgType::RustStd => true,
-            PkgType::RustSrc => true,
-            PkgType::Rustc => true,
+            PkgType::CrabLang => true,
+            PkgType::CrabLangStd => true,
+            PkgType::CrabLangSrc => true,
+            PkgType::CrabLangc => true,
             PkgType::JsonDocs => true,
             PkgType::HtmlDocs => true,
-            PkgType::RustcDev => true,
-            PkgType::RustcDocs => true,
+            PkgType::CrabLangcDev => true,
+            PkgType::CrabLangcDocs => true,
             PkgType::ReproducibleArtifacts => true,
-            PkgType::RustMingw => true,
-            PkgType::RustAnalysis => true,
+            PkgType::CrabLangMingw => true,
+            PkgType::CrabLangAnalysis => true,
         }
     }
 
@@ -99,30 +99,30 @@ impl PkgType {
         use PkgType::*;
 
         match self {
-            Rust => HOSTS, // doesn't matter in practice, but return something to avoid panicking
-            Rustc => HOSTS,
-            RustcDev => HOSTS,
+            CrabLang => HOSTS, // doesn't matter in practice, but return something to avoid panicking
+            CrabLangc => HOSTS,
+            CrabLangcDev => HOSTS,
             ReproducibleArtifacts => HOSTS,
-            RustcDocs => HOSTS,
+            CrabLangcDocs => HOSTS,
             Cargo => HOSTS,
-            RustMingw => MINGW,
-            RustStd => TARGETS,
+            CrabLangMingw => MINGW,
+            CrabLangStd => TARGETS,
             HtmlDocs => HOSTS,
             JsonDocs => HOSTS,
-            RustSrc => &["*"],
+            CrabLangSrc => &["*"],
             Rls => HOSTS,
-            RustAnalyzer => HOSTS,
+            CrabLangAnalyzer => HOSTS,
             Clippy => HOSTS,
             Miri => HOSTS,
-            Rustfmt => HOSTS,
-            RustAnalysis => TARGETS,
+            CrabLangfmt => HOSTS,
+            CrabLangAnalysis => TARGETS,
             LlvmTools => TARGETS,
         }
     }
 
     /// Whether this package is target-independent or not.
     fn target_independent(&self) -> bool {
-        *self == PkgType::RustSrc
+        *self == PkgType::CrabLangSrc
     }
 
     /// Whether to package these target-specific docs for another similar target.
@@ -157,15 +157,15 @@ impl Versions {
     }
 
     pub(crate) fn version(&mut self, mut package: &PkgType) -> Result<VersionInfo, Error> {
-        if package.should_use_rust_version() {
-            package = &PkgType::Rust;
+        if package.should_use_crablang_version() {
+            package = &PkgType::CrabLang;
         }
 
         match self.versions.get(package) {
             Some(version) => Ok(version.clone()),
             None => {
                 let version_info = self.load_version_from_tarball(package)?;
-                if *package == PkgType::Rust && version_info.version.is_none() {
+                if *package == PkgType::CrabLang && version_info.version.is_none() {
                     panic!("missing version info for toolchain");
                 }
                 self.versions.insert(package.clone(), version_info.clone());
@@ -221,10 +221,10 @@ impl Versions {
     ) -> Result<String, Error> {
         let component_name = package.tarball_component_name();
         let version = match self.channel.as_str() {
-            "stable" => self.rustc_version().into(),
+            "stable" => self.crablangc_version().into(),
             "beta" => "beta".into(),
             "nightly" => "nightly".into(),
-            _ => format!("{}-dev", self.rustc_version()),
+            _ => format!("{}-dev", self.crablangc_version()),
         };
 
         if package.target_independent() {
@@ -238,8 +238,8 @@ impl Versions {
         self.archive_name(package, target, "tar.gz")
     }
 
-    pub(crate) fn rustc_version(&self) -> &str {
-        const RUSTC_VERSION: &str = include_str!("../../../version");
-        RUSTC_VERSION.trim()
+    pub(crate) fn crablangc_version(&self) -> &str {
+        const CRABLANGC_VERSION: &str = include_str!("../../../version");
+        CRABLANGC_VERSION.trim()
     }
 }

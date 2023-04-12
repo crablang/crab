@@ -49,7 +49,7 @@ use crate::mem::MaybeUninit;
 /// Note that platform-specific behavior [may change in the future][changes].
 ///
 /// [changes]: crate::io#platform-specific-behavior
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub fn copy<R: ?Sized, W: ?Sized>(reader: &mut R, writer: &mut W) -> Result<u64>
 where
     R: Read,

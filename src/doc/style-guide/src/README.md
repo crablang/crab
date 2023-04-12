@@ -1,4 +1,4 @@
-# Rust Style Guide
+# CrabLang Style Guide
 
 ## Motivation - why use a formatting tool?
 
@@ -12,11 +12,11 @@ debate with other programmers what style rules should be used, saving time,
 communication overhead, and mental energy.
 
 Humans comprehend information through pattern matching. By ensuring that all
-Rust code has similar formatting, less mental effort is required to comprehend a
+CrabLang code has similar formatting, less mental effort is required to comprehend a
 new project, lowering the barrier to entry for new developers.
 
 Thus, there are productivity benefits to using a formatting tool (such as
-rustfmt), and even larger benefits by using a community-consistent formatting,
+crablangfmt), and even larger benefits by using a community-consistent formatting,
 typically by using a formatting tool's default settings.
 
 
@@ -36,7 +36,7 @@ typically by using a formatting tool's default settings.
 Separate items and statements by either zero or one blank lines (i.e., one or
 two newlines). E.g,
 
-```rust
+```crablang
 fn foo() {
     let x = ...;
 
@@ -79,7 +79,7 @@ should be surrounding whitespace as if it were an identifier or keyword. There
 should be no trailing whitespace after a comment or at the end of any line in a
 multi-line comment. Examples:
 
-```rust
+```crablang
 // A comment on an item.
 struct Foo { ... }
 
@@ -97,7 +97,7 @@ in length (including comment sigils, but excluding indentation) or the maximum
 width of the line (including comment sigils and indentation), whichever is
 smaller:
 
-```rust
+```crablang
 // This comment goes up to the ................................. 80 char margin.
 
 {
@@ -136,7 +136,7 @@ the item. Prefer outer attributes, where possible.
 
 For attributes with argument lists, format like functions.
 
-```rust
+```crablang
 #[repr(C)]
 #[foo(foo, bar)]
 struct CRepr {
@@ -159,7 +159,7 @@ struct Baz;` should be formatted to `#[derive(bar, foo)] struct Baz;`.
 In many places in this guide we specify that a formatter may format an item
 differently if it is *small*, for example struct literals:
 
-```rust
+```crablang
 // Normal formatting
 Foo {
     f1: an_expression,
@@ -177,7 +177,7 @@ circumstances.
 Some suitable heuristics are the size of the item (in characters) or the
 complexity of an item (for example, that all components must be simple names,
 not more complex sub-expressions). For more discussion on suitable heuristics,
-see [this issue](https://github.com/rust-lang-nursery/fmt-rfcs/issues/47).
+see [this issue](https://github.com/crablang-nursery/fmt-rfcs/issues/47).
 
 Tools should give the user an option to ignore such heuristics and always use
 the normal formatting.

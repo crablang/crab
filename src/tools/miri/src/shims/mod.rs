@@ -19,8 +19,8 @@ pub mod tls;
 
 use log::trace;
 
-use rustc_middle::{mir, ty};
-use rustc_target::spec::abi::Abi;
+use crablangc_middle::{mir, ty};
+use crablangc_target::spec::abi::Abi;
 
 use crate::*;
 use helpers::check_arg_count;

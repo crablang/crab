@@ -12,7 +12,7 @@ struct CallMe;
 
 impl FnOnce<(Ishmael,)> for CallMe {
     type Output = Ishmael;
-    extern "rust-call" fn call_once(self, _args: (Ishmael,)) -> Ishmael {
+    extern "crablang-call" fn call_once(self, _args: (Ishmael,)) -> Ishmael {
         println!("Split your lungs with blood and thunder!");
         Ishmael
     }
@@ -20,7 +20,7 @@ impl FnOnce<(Ishmael,)> for CallMe {
 
 impl FnOnce<(Maybe,)> for CallMe {
     type Output = Maybe;
-    extern "rust-call" fn call_once(self, _args: (Maybe,)) -> Maybe {
+    extern "crablang-call" fn call_once(self, _args: (Maybe,)) -> Maybe {
         println!("So we just met, and this is crazy");
         Maybe
     }

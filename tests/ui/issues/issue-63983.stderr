@@ -16,4 +16,4 @@ LL |         MyEnum::Struct => "",
 error: aborting due to 2 previous errors
 
 Some errors have detailed explanations: E0532, E0533.
-For more information about an error, try `rustc --explain E0532`.
+For more information about an error, try `crablangc --explain E0532`.

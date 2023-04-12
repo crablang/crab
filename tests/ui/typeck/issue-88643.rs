@@ -1,7 +1,7 @@
 // Regression test for the ICE described in #88643. Specifically:
-// https://github.com/rust-lang/rust/issues/88643#issuecomment-913128893
-// and https://github.com/rust-lang/rust/issues/88643#issuecomment-913171935
-// and https://github.com/rust-lang/rust/issues/88643#issuecomment-913765984
+// https://github.com/crablang/crablang/issues/88643#issuecomment-913128893
+// and https://github.com/crablang/crablang/issues/88643#issuecomment-913171935
+// and https://github.com/crablang/crablang/issues/88643#issuecomment-913765984
 
 use std::collections::HashMap;
 

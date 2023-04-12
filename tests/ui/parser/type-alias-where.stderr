@@ -4,7 +4,7 @@ error: where clauses are not allowed after the type for type aliases
 LL | type Bar = () where u32: Copy;
    |               ^^^^^^^^^^^^^^^
    |
-   = note: see issue #89122 <https://github.com/rust-lang/rust/issues/89122> for more information
+   = note: see issue #89122 <https://github.com/crablang/crablang/issues/89122> for more information
 
 error: where clauses are not allowed after the type for type aliases
   --> $DIR/type-alias-where.rs:8:15
@@ -12,7 +12,7 @@ error: where clauses are not allowed after the type for type aliases
 LL | type Baz = () where;
    |               ^^^^^
    |
-   = note: see issue #89122 <https://github.com/rust-lang/rust/issues/89122> for more information
+   = note: see issue #89122 <https://github.com/crablang/crablang/issues/89122> for more information
 
 error: aborting due to 2 previous errors
 

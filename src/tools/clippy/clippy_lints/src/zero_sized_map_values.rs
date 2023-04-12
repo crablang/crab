@@ -1,13 +1,13 @@
 use clippy_utils::diagnostics::span_lint_and_help;
 use clippy_utils::ty::{is_normalizable, is_type_diagnostic_item};
 use if_chain::if_chain;
-use rustc_hir::{self as hir, HirId, ItemKind, Node};
-use rustc_hir_analysis::hir_ty_to_ty;
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_middle::ty::layout::LayoutOf as _;
-use rustc_middle::ty::{Adt, Ty, TypeVisitableExt};
-use rustc_session::{declare_lint_pass, declare_tool_lint};
-use rustc_span::sym;
+use crablangc_hir::{self as hir, HirId, ItemKind, Node};
+use crablangc_hir_analysis::hir_ty_to_ty;
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_middle::ty::layout::LayoutOf as _;
+use crablangc_middle::ty::{Adt, Ty, TypeVisitableExt};
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_span::sym;
 
 declare_clippy_lint! {
     /// ### What it does
@@ -23,14 +23,14 @@ declare_clippy_lint! {
     /// * This lints the signature of public items
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// # use std::collections::HashMap;
     /// fn unique_words(text: &str) -> HashMap<&str, ()> {
     ///     todo!();
     /// }
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// # use std::collections::HashSet;
     /// fn unique_words(text: &str) -> HashSet<&str> {
     ///     todo!();
@@ -53,8 +53,8 @@ impl LateLintPass<'_> for ZeroSizedMapValues {
             if is_type_diagnostic_item(cx, ty, sym::HashMap) || is_type_diagnostic_item(cx, ty, sym::BTreeMap);
             if let Adt(_, substs) = ty.kind();
             let ty = substs.type_at(1);
-            // Fixes https://github.com/rust-lang/rust-clippy/issues/7447 because of
-            // https://github.com/rust-lang/rust/blob/master/compiler/rustc_middle/src/ty/sty.rs#L968
+            // Fixes https://github.com/crablang/crablang-clippy/issues/7447 because of
+            // https://github.com/crablang/crablang/blob/master/compiler/crablangc_middle/src/ty/sty.rs#L968
             if !ty.has_escaping_bound_vars();
             // Do this to prevent `layout_of` crashing, being unable to fully normalize `ty`.
             if is_normalizable(cx, cx.param_env, ty);

@@ -296,4 +296,4 @@ LL | fn three_arg_repeat(_a: i32, _b: i32, _c: &str) {}
 
 error: aborting due to 21 previous errors
 
-For more information about this error, try `rustc --explain E0308`.
+For more information about this error, try `crablangc --explain E0308`.

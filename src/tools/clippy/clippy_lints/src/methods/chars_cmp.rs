@@ -2,11 +2,11 @@ use clippy_utils::diagnostics::span_lint_and_sugg;
 use clippy_utils::source::snippet_with_applicability;
 use clippy_utils::{method_chain_args, path_def_id};
 use if_chain::if_chain;
-use rustc_errors::Applicability;
-use rustc_hir as hir;
-use rustc_lint::LateContext;
-use rustc_lint::Lint;
-use rustc_middle::ty;
+use crablangc_errors::Applicability;
+use crablangc_hir as hir;
+use crablangc_lint::LateContext;
+use crablangc_lint::Lint;
+use crablangc_middle::ty;
 
 /// Wrapper fn for `CHARS_NEXT_CMP` and `CHARS_LAST_CMP` lints.
 pub(super) fn check(

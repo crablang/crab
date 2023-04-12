@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 #![warn(clippy::case_sensitive_file_extension_comparisons)]
 
 use std::string::String;
@@ -10,7 +10,7 @@ impl TestStruct {
 }
 
 #[allow(dead_code)]
-fn is_rust_file(filename: &str) -> bool {
+fn is_crablang_file(filename: &str) -> bool {
     filename.ends_with(".rs")
 }
 

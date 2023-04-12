@@ -3,11 +3,11 @@ use clippy_utils::get_parent_node;
 use clippy_utils::source::snippet_with_context;
 use clippy_utils::sugg;
 use clippy_utils::ty::is_copy;
-use rustc_errors::Applicability;
-use rustc_hir::{BindingAnnotation, ByRef, Expr, ExprKind, MatchSource, Node, PatKind, QPath};
-use rustc_lint::LateContext;
-use rustc_middle::ty::{self, adjustment::Adjust, print::with_forced_trimmed_paths};
-use rustc_span::symbol::{sym, Symbol};
+use crablangc_errors::Applicability;
+use crablangc_hir::{BindingAnnotation, ByRef, Expr, ExprKind, MatchSource, Node, PatKind, QPath};
+use crablangc_lint::LateContext;
+use crablangc_middle::ty::{self, adjustment::Adjust, print::with_forced_trimmed_paths};
+use crablangc_span::symbol::{sym, Symbol};
 
 use super::CLONE_DOUBLE_REF;
 use super::CLONE_ON_COPY;
@@ -95,7 +95,7 @@ pub(super) fn check(
                 // ? is a Call, makes sure not to rec *x?, but rather (*x)?
                 ExprKind::Call(hir_callee, _) => matches!(
                     hir_callee.kind,
-                    ExprKind::Path(QPath::LangItem(rustc_hir::LangItem::TryTraitBranch, _, _))
+                    ExprKind::Path(QPath::LangItem(crablangc_hir::LangItem::TryTraitBranch, _, _))
                 ),
                 ExprKind::MethodCall(_, self_arg, ..) if expr.hir_id == self_arg.hir_id => true,
                 ExprKind::Match(_, _, MatchSource::TryDesugar | MatchSource::AwaitDesugar)

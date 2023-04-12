@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 
 pub struct Foo {
     pub first: bool,

@@ -8,7 +8,7 @@ labels: C-feature-request
 
   We are very interested in any feature requests you may have.
 
-  However, please be aware that core::simd exists to address concerns with creating a portable SIMD API for Rust.
+  However, please be aware that core::simd exists to address concerns with creating a portable SIMD API for CrabLang.
   Requests for extensions to compiler features, such as `target_feature`, binary versioning for SIMD APIs, or
-  improving specific compilation issues in general should be discussed at https://internals.rust-lang.org/
+  improving specific compilation issues in general should be discussed at https://internals.crablang.org/
 -->

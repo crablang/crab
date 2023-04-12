@@ -1,23 +1,23 @@
 // build-fail
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 
-#[rustc_dump_vtable]
+#[crablangc_dump_vtable]
 trait A {
     fn foo_a(&self) {}
 }
 
-#[rustc_dump_vtable]
+#[crablangc_dump_vtable]
 trait B: A {
     fn foo_b(&self) {}
 }
 
-#[rustc_dump_vtable]
+#[crablangc_dump_vtable]
 trait C: A {
     //~^ error vtable
     fn foo_c(&self) {}
 }
 
-#[rustc_dump_vtable]
+#[crablangc_dump_vtable]
 trait D: B + C {
     //~^ error vtable
     fn foo_d(&self) {}

@@ -97,4 +97,4 @@ LL |         let mut v: Spair = Spair { x: S(0), y: 0 };
 error: aborting due to 9 previous errors
 
 Some errors have detailed explanations: E0382, E0594.
-For more information about an error, try `rustc --explain E0382`.
+For more information about an error, try `crablangc --explain E0382`.

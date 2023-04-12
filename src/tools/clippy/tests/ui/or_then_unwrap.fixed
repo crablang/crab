@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 
 #![warn(clippy::or_then_unwrap)]
 #![allow(clippy::map_identity, clippy::let_unit_value)]

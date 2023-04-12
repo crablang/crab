@@ -1,5 +1,5 @@
 // aux-build:proc_macro_derive.rs
-// run-rustfix
+// run-crablangfix
 
 #![warn(clippy::nonstandard_macro_braces)]
 
@@ -13,14 +13,14 @@ pub struct S;
 
 proc_macro_derive::foo_bar!();
 
-#[rustfmt::skip]
+#[crablangfmt::skip]
 macro_rules! test {
     () => {
         vec![0, 0, 0]
     };
 }
 
-#[rustfmt::skip]
+#[crablangfmt::skip]
 macro_rules! test2 {
     ($($arg:tt)*) => {
         format_args!($($arg)*)
@@ -39,7 +39,7 @@ macro_rules! printlnfoo {
     };
 }
 
-#[rustfmt::skip]
+#[crablangfmt::skip]
 fn main() {
     let _ = vec![1, 2, 3];
     let _ = format!("ugh {} stop being such a good compiler", "hello");

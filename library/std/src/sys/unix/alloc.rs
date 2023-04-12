@@ -8,8 +8,8 @@ unsafe impl GlobalAlloc for System {
     unsafe fn alloc(&self, layout: Layout) -> *mut u8 {
         // jemalloc provides alignment less than MIN_ALIGN for small allocations.
         // So only rely on MIN_ALIGN if size >= align.
-        // Also see <https://github.com/rust-lang/rust/issues/45955> and
-        // <https://github.com/rust-lang/rust/issues/62251#issuecomment-507580914>.
+        // Also see <https://github.com/crablang/crablang/issues/45955> and
+        // <https://github.com/crablang/crablang/issues/62251#issuecomment-507580914>.
         if layout.align() <= MIN_ALIGN && layout.align() <= layout.size() {
             libc::malloc(layout.size()) as *mut u8
         } else {

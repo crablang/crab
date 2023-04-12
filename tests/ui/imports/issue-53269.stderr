@@ -28,4 +28,4 @@ LL |     use nonexistent_module::mac;
 error: aborting due to 2 previous errors
 
 Some errors have detailed explanations: E0432, E0659.
-For more information about an error, try `rustc --explain E0432`.
+For more information about an error, try `crablangc --explain E0432`.

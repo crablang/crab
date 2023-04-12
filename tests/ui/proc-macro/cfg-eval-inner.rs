@@ -5,7 +5,7 @@
 #![feature(cfg_eval)]
 #![feature(custom_inner_attributes)]
 #![feature(stmt_expr_attributes)]
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 
 #![no_std] // Don't load unnecessary hygiene information from std
 extern crate std;
@@ -16,11 +16,11 @@ extern crate test_macros;
 struct Foo<T>(T);
 
 impl Foo<[u8; {
-    #![cfg_attr(not(FALSE), rustc_dummy(cursed_inner))]
+    #![cfg_attr(not(FALSE), crablangc_dummy(cursed_inner))]
     #![allow(unused)]
     struct Inner {
         field: [u8; {
-            #![cfg_attr(not(FALSE), rustc_dummy(another_cursed_inner))]
+            #![cfg_attr(not(FALSE), crablangc_dummy(another_cursed_inner))]
             1
         }]
     }
@@ -29,7 +29,7 @@ impl Foo<[u8; {
 }]> {
     #![cfg_eval]
     #![print_attr]
-    #![cfg_attr(not(FALSE), rustc_dummy(evaluated_attr))]
+    #![cfg_attr(not(FALSE), crablangc_dummy(evaluated_attr))]
 
     fn bar() {
         #[cfg(FALSE)] let a = 1;

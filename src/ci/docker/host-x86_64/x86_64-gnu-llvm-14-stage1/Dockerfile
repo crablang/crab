@@ -33,11 +33,11 @@ RUN sh /scripts/sccache.sh
 ENV NO_DOWNLOAD_CI_LLVM 1
 
 # Using llvm-link-shared due to libffi issues -- see #34486
-ENV RUST_CONFIGURE_ARGS \
+ENV CRABLANG_CONFIGURE_ARGS \
       --build=x86_64-unknown-linux-gnu \
       --llvm-root=/usr/lib/llvm-14 \
       --enable-llvm-link-shared \
-      --set rust.thin-lto-import-instr-limit=10
+      --set crablang.thin-lto-import-instr-limit=10
 
 ENV SCRIPT ../x.py --stage 1 test --exclude src/tools/tidy && \
            # Run the `mir-opt` tests again but this time for a 32-bit target.

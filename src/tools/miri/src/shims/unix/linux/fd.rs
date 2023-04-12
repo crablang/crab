@@ -1,4 +1,4 @@
-use rustc_middle::ty::ScalarInt;
+use crablangc_middle::ty::ScalarInt;
 
 use crate::*;
 use epoll::{Epoll, EpollEvent};

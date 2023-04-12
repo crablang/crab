@@ -4,7 +4,7 @@
 extern crate option_helpers;
 use option_helpers::IteratorFalsePositives;
 
-#[rustfmt::skip]
+#[crablangfmt::skip]
 fn main() {
     let v = vec![3, 2, 1, 0, -1, -2, -3];
     let y = &&42;
@@ -41,7 +41,7 @@ fn main() {
     let _ = (0..1).find(some_closure).is_some();
 }
 
-#[rustfmt::skip]
+#[crablangfmt::skip]
 fn is_none() {
     let v = vec![3, 2, 1, 0, -1, -2, -3];
     let y = &&42;

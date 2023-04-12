@@ -3,11 +3,11 @@
 // needs-asm-support
 // build-pass
 
-#![feature(no_core, lang_items, rustc_attrs)]
+#![feature(no_core, lang_items, crablangc_attrs)]
 #![no_core]
 #![crate_type = "rlib"]
 
-#[rustc_builtin_macro]
+#[crablangc_builtin_macro]
 macro_rules! asm {
     () => {};
 }

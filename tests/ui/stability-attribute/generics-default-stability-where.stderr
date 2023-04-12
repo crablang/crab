@@ -8,4 +8,4 @@ LL | impl<T> Trait3<usize> for T where T: Trait2<usize> {
 
 error: aborting due to previous error
 
-For more information about this error, try `rustc --explain E0658`.
+For more information about this error, try `crablangc --explain E0658`.

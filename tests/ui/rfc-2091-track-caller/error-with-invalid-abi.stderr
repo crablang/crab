@@ -1,10 +1,10 @@
-error[E0737]: `#[track_caller]` requires Rust ABI
+error[E0737]: `#[track_caller]` requires CrabLang ABI
   --> $DIR/error-with-invalid-abi.rs:1:1
    |
 LL | #[track_caller]
    | ^^^^^^^^^^^^^^^
 
-error[E0737]: `#[track_caller]` requires Rust ABI
+error[E0737]: `#[track_caller]` requires CrabLang ABI
   --> $DIR/error-with-invalid-abi.rs:6:5
    |
 LL |     #[track_caller]
@@ -12,4 +12,4 @@ LL |     #[track_caller]
 
 error: aborting due to 2 previous errors
 
-For more information about this error, try `rustc --explain E0737`.
+For more information about this error, try `crablangc --explain E0737`.

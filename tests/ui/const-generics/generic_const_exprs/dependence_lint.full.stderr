@@ -23,7 +23,7 @@ LL |     [0; size_of::<*mut T>()]; // lint on stable, error with `generic_const_
    |         ^^^^^^^^^^^^^^^^^^^
    |
    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
-   = note: for more information, see issue #76200 <https://github.com/rust-lang/rust/issues/76200>
+   = note: for more information, see issue #76200 <https://github.com/crablang/crablang/issues/76200>
    = note: `#[warn(const_evaluatable_unchecked)]` on by default
 
 warning: cannot use constants which depend on generic parameters in types
@@ -33,7 +33,7 @@ LL |     [0; if false { size_of::<T>() } else { 3 }]; // lint on stable, error w
    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
    |
    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
-   = note: for more information, see issue #76200 <https://github.com/rust-lang/rust/issues/76200>
+   = note: for more information, see issue #76200 <https://github.com/crablang/crablang/issues/76200>
 
 error: aborting due to 2 previous errors; 2 warnings emitted
 

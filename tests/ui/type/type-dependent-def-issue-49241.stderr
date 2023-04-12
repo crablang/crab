@@ -14,4 +14,4 @@ LL |     let s: [u32; l] = v.into_iter().collect();
 
 error: aborting due to previous error
 
-For more information about this error, try `rustc --explain E0435`.
+For more information about this error, try `crablangc --explain E0435`.

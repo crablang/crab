@@ -55,4 +55,4 @@ LL |             x += 1;
 
 error: aborting due to 5 previous errors
 
-For more information about this error, try `rustc --explain E0384`.
+For more information about this error, try `crablangc --explain E0384`.

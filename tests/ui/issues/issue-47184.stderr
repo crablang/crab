@@ -9,4 +9,4 @@ LL |     let _vec: Vec<&'static String> = vec![&String::new()];
 
 error: aborting due to previous error
 
-For more information about this error, try `rustc --explain E0716`.
+For more information about this error, try `crablangc --explain E0716`.

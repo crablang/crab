@@ -6,12 +6,12 @@
 // This test case makes sure that we detect if paths emitted into debuginfo
 // are changed, even when the change happens in an external crate.
 
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 
-#![rustc_partition_reused(module="main", cfg="rpass2")]
-#![rustc_partition_reused(module="main-some_mod", cfg="rpass2")]
-#![rustc_partition_reused(module="main", cfg="rpass3")]
-#![rustc_partition_codegened(module="main-some_mod", cfg="rpass3")]
+#![crablangc_partition_reused(module="main", cfg="rpass2")]
+#![crablangc_partition_reused(module="main-some_mod", cfg="rpass2")]
+#![crablangc_partition_reused(module="main", cfg="rpass3")]
+#![crablangc_partition_codegened(module="main-some_mod", cfg="rpass3")]
 
 extern crate extern_crate;
 

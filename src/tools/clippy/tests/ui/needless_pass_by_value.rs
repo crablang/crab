@@ -156,6 +156,6 @@ where
 
 fn main() {
     // This should not cause an ICE either
-    // https://github.com/rust-lang/rust-clippy/issues/3144
+    // https://github.com/crablang/crablang-clippy/issues/3144
     is_sync(HashSet::<usize>::new());
 }

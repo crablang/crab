@@ -45,4 +45,4 @@ LL | |         while let Some(_) = None { break };
 
 error: aborting due to 4 previous errors; 1 warning emitted
 
-For more information about this error, try `rustc --explain E0308`.
+For more information about this error, try `crablangc --explain E0308`.

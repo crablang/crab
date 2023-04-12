@@ -10,10 +10,10 @@ FIRST_FIELD = "__1"
 
 
 def unwrap_unique_or_non_null(unique_or_nonnull):
-    # BACKCOMPAT: rust 1.32
-    # https://github.com/rust-lang/rust/commit/7a0911528058e87d22ea305695f4047572c5e067
-    # BACKCOMPAT: rust 1.60
-    # https://github.com/rust-lang/rust/commit/2a91eeac1a2d27dd3de1bf55515d765da20fd86f
+    # BACKCOMPAT: crablang 1.32
+    # https://github.com/crablang/crablang/commit/7a0911528058e87d22ea305695f4047572c5e067
+    # BACKCOMPAT: crablang 1.60
+    # https://github.com/crablang/crablang/commit/2a91eeac1a2d27dd3de1bf55515d765da20fd86f
     ptr = unique_or_nonnull["pointer"]
     return ptr if ptr.type.code == gdb.TYPE_CODE_PTR else ptr[ptr.type.fields()[0]]
 
@@ -93,7 +93,7 @@ def _enumerate_array_elements(element_ptrs):
         element = element_ptr.dereference()
 
         try:
-            # rust-lang/rust#64343: passing deref expr to `str` allows
+            # crablang/crablang#64343: passing deref expr to `str` allows
             # catching exception on garbage pointer
             str(element)
         except RuntimeError:
@@ -248,7 +248,7 @@ def children_of_btree_map(map):
             return node.cast(internal_type.pointer())
 
         if node_ptr.type.name.startswith("alloc::collections::btree::node::BoxedNode<"):
-            # BACKCOMPAT: rust 1.49
+            # BACKCOMPAT: crablang 1.49
             node_ptr = node_ptr["ptr"]
         node_ptr = unwrap_unique_or_non_null(node_ptr)
         leaf = node_ptr.dereference()
@@ -314,7 +314,7 @@ class StdBTreeMapProvider:
         return "map"
 
 
-# BACKCOMPAT: rust 1.35
+# BACKCOMPAT: crablang 1.35
 class StdOldHashMapProvider:
     def __init__(self, valobj, show_values=True):
         self.valobj = valobj
@@ -406,7 +406,7 @@ class StdHashMapProvider:
         if self.show_values:
             hashbrown_hashmap = self.valobj["base"]
         elif self.valobj.type.fields()[0].name == "map":
-            # BACKCOMPAT: rust 1.47
+            # BACKCOMPAT: crablang 1.47
             # HashSet wraps std::collections::HashMap, which wraps hashbrown::HashMap
             hashbrown_hashmap = self.valobj["map"]["base"]
         else:

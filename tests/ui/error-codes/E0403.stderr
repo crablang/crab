@@ -8,4 +8,4 @@ LL | fn foo<T, T>(s: T, u: T) {}
 
 error: aborting due to previous error
 
-For more information about this error, try `rustc --explain E0403`.
+For more information about this error, try `crablangc --explain E0403`.

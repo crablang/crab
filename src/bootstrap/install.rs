@@ -57,7 +57,7 @@ fn install_sh(
     let prefix = default_path(&builder.config.prefix, "/usr/local");
     let sysconfdir = prefix.join(default_path(&builder.config.sysconfdir, "/etc"));
     let datadir = prefix.join(default_path(&builder.config.datadir, "share"));
-    let docdir = prefix.join(default_path(&builder.config.docdir, "share/doc/rust"));
+    let docdir = prefix.join(default_path(&builder.config.docdir, "share/doc/crablang"));
     let mandir = prefix.join(default_path(&builder.config.mandir, "share/man"));
     let libdir = prefix.join(default_path(&builder.config.libdir, "lib"));
     let bindir = prefix.join(&builder.config.bindir); // Default in config.rs
@@ -182,14 +182,14 @@ install!((self, builder, _config),
             .expect("missing cargo");
         install_sh(builder, "cargo", self.compiler.stage, Some(self.target), &tarball);
     };
-    RustAnalyzer, alias = "rust-analyzer", Self::should_build(_config), only_hosts: true, {
+    CrabLangAnalyzer, alias = "crablang-analyzer", Self::should_build(_config), only_hosts: true, {
         if let Some(tarball) =
-            builder.ensure(dist::RustAnalyzer { compiler: self.compiler, target: self.target })
+            builder.ensure(dist::CrabLangAnalyzer { compiler: self.compiler, target: self.target })
         {
-            install_sh(builder, "rust-analyzer", self.compiler.stage, Some(self.target), &tarball);
+            install_sh(builder, "crablang-analyzer", self.compiler.stage, Some(self.target), &tarball);
         } else {
             builder.info(
-                &format!("skipping Install rust-analyzer stage{} ({})", self.compiler.stage, self.target),
+                &format!("skipping Install crablang-analyzer stage{} ({})", self.compiler.stage, self.target),
             );
         }
     };
@@ -218,39 +218,39 @@ install!((self, builder, _config),
             );
         }
     };
-    Rustfmt, alias = "rustfmt", Self::should_build(_config), only_hosts: true, {
-        if let Some(tarball) = builder.ensure(dist::Rustfmt {
+    CrabLangfmt, alias = "crablangfmt", Self::should_build(_config), only_hosts: true, {
+        if let Some(tarball) = builder.ensure(dist::CrabLangfmt {
             compiler: self.compiler,
             target: self.target
         }) {
-            install_sh(builder, "rustfmt", self.compiler.stage, Some(self.target), &tarball);
+            install_sh(builder, "crablangfmt", self.compiler.stage, Some(self.target), &tarball);
         } else {
             builder.info(
-                &format!("skipping Install Rustfmt stage{} ({})", self.compiler.stage, self.target),
+                &format!("skipping Install CrabLangfmt stage{} ({})", self.compiler.stage, self.target),
             );
         }
     };
-    RustDemangler, alias = "rust-demangler", Self::should_build(_config), only_hosts: true, {
+    CrabLangDemangler, alias = "crablang-demangler", Self::should_build(_config), only_hosts: true, {
         // Note: Even though `should_build` may return true for `extended` default tools,
-        // dist::RustDemangler may still return None, unless the target-dependent `profiler` config
-        // is also true, or the `tools` array explicitly includes "rust-demangler".
-        if let Some(tarball) = builder.ensure(dist::RustDemangler {
+        // dist::CrabLangDemangler may still return None, unless the target-dependent `profiler` config
+        // is also true, or the `tools` array explicitly includes "crablang-demangler".
+        if let Some(tarball) = builder.ensure(dist::CrabLangDemangler {
             compiler: self.compiler,
             target: self.target
         }) {
-            install_sh(builder, "rust-demangler", self.compiler.stage, Some(self.target), &tarball);
+            install_sh(builder, "crablang-demangler", self.compiler.stage, Some(self.target), &tarball);
         } else {
             builder.info(
-                &format!("skipping Install RustDemangler stage{} ({})",
+                &format!("skipping Install CrabLangDemangler stage{} ({})",
                          self.compiler.stage, self.target),
             );
         }
     };
-    Rustc, path = "compiler/rustc", true, only_hosts: true, {
-        let tarball = builder.ensure(dist::Rustc {
+    CrabLangc, path = "compiler/crablangc", true, only_hosts: true, {
+        let tarball = builder.ensure(dist::CrabLangc {
             compiler: builder.compiler(builder.top_stage, self.target),
         });
-        install_sh(builder, "rustc", self.compiler.stage, Some(self.target), &tarball);
+        install_sh(builder, "crablangc", self.compiler.stage, Some(self.target), &tarball);
     };
 );
 

@@ -25,7 +25,7 @@ cd netbsd
 
 mkdir -p /x-tools/x86_64-unknown-netbsd/sysroot
 
-# URL=https://ci-mirrors.rust-lang.org/rustc
+# URL=https://ci-mirrors.crablang.org/crablangc
 
 SOURCE_URL=https://cdn.netbsd.org/pub/NetBSD/NetBSD-9.0/source/sets
 curl $SOURCE_URL/src.tgz | tar xzf -

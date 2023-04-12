@@ -19,6 +19,6 @@ fn main() {
     assert_eq!(a.load(Ordering::Relaxed), 1);
     // The fence is useless, since it did not happen-after the `store` in the other thread.
     // Hence this is a data race.
-    // Also see https://github.com/rust-lang/miri/issues/2192.
+    // Also see https://github.com/crablang/miri/issues/2192.
     unsafe { V = 2 } //~ERROR: Data race detected between (1) Write on thread `<unnamed>` and (2) Write on thread `main`
 }

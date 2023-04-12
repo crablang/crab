@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 
 #![feature(async_closure)]
 #![warn(clippy::redundant_closure_call)]

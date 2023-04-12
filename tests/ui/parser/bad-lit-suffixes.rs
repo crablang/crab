@@ -1,4 +1,4 @@
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 
 extern
     "C"suffix //~ ERROR suffixes on string literals are invalid
@@ -27,7 +27,7 @@ fn main() {
     1.0e10suffix; //~ ERROR invalid suffix `suffix` for float literal
 }
 
-#[rustc_dummy = "string"suffix]
+#[crablangc_dummy = "string"suffix]
 //~^ ERROR unexpected expression: `"string"suffix`
 fn f() {}
 
@@ -39,6 +39,6 @@ fn g() {}
 //~^ ERROR suffixes on string literals are invalid
 extern "C" {}
 
-#[rustc_layout_scalar_valid_range_start(0suffix)]
+#[crablangc_layout_scalar_valid_range_start(0suffix)]
 //~^ ERROR invalid suffix `suffix` for number literal
 struct S;

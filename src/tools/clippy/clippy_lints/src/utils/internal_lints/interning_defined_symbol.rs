@@ -4,16 +4,16 @@ use clippy_utils::source::snippet;
 use clippy_utils::ty::match_type;
 use clippy_utils::{def_path_def_ids, is_expn_of, match_def_path, paths};
 use if_chain::if_chain;
-use rustc_data_structures::fx::FxHashMap;
-use rustc_errors::Applicability;
-use rustc_hir::def::{DefKind, Res};
-use rustc_hir::def_id::DefId;
-use rustc_hir::{BinOpKind, Expr, ExprKind, UnOp};
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_middle::mir::interpret::ConstValue;
-use rustc_middle::ty;
-use rustc_session::{declare_tool_lint, impl_lint_pass};
-use rustc_span::symbol::Symbol;
+use crablangc_data_structures::fx::FxHashMap;
+use crablangc_errors::Applicability;
+use crablangc_hir::def::{DefKind, Res};
+use crablangc_hir::def_id::DefId;
+use crablangc_hir::{BinOpKind, Expr, ExprKind, UnOp};
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_middle::mir::interpret::ConstValue;
+use crablangc_middle::ty;
+use crablangc_session::{declare_tool_lint, impl_lint_pass};
+use crablangc_span::symbol::Symbol;
 
 use std::borrow::Cow;
 
@@ -25,12 +25,12 @@ declare_clippy_lint! {
     /// It's faster and easier to use the symbol constant.
     ///
     /// ### Example
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// let _ = sym!(f32);
     /// ```
     ///
     /// Use instead:
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// let _ = sym::f32;
     /// ```
     pub INTERNING_DEFINED_SYMBOL,
@@ -46,12 +46,12 @@ declare_clippy_lint! {
     /// It's faster use symbols directly instead of strings.
     ///
     /// ### Example
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// symbol.as_str() == "clippy";
     /// ```
     ///
     /// Use instead:
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// symbol == sym::clippy;
     /// ```
     pub UNNECESSARY_SYMBOL_STR,

@@ -6,12 +6,12 @@
 // ignore-asmjs wasm2js does not support source maps yet
 // compile-flags: -g -Z query-dep-graph
 
-#![feature(rustc_attrs)]
-#![rustc_partition_codegened(module = "spans_significant_w_debuginfo", cfg = "rpass2")]
+#![feature(crablangc_attrs)]
+#![crablangc_partition_codegened(module = "spans_significant_w_debuginfo", cfg = "rpass2")]
 
 #[cfg(rpass1)]
 pub fn main() {}
 
 #[cfg(rpass2)]
-#[rustc_clean(cfg = "rpass2")]
+#[crablangc_clean(cfg = "rpass2")]
 pub fn main() {}

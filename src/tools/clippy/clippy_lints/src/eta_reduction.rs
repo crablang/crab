@@ -5,15 +5,15 @@ use clippy_utils::ty::{implements_trait, is_type_diagnostic_item};
 use clippy_utils::usage::local_used_after_expr;
 use clippy_utils::{higher, is_adjusted, path_to_local, path_to_local_id};
 use if_chain::if_chain;
-use rustc_errors::Applicability;
-use rustc_hir::def_id::DefId;
-use rustc_hir::{Closure, Expr, ExprKind, Param, PatKind, Unsafety};
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_middle::ty::adjustment::{Adjust, Adjustment, AutoBorrow};
-use rustc_middle::ty::binding::BindingMode;
-use rustc_middle::ty::{self, EarlyBinder, SubstsRef, Ty, TypeVisitableExt};
-use rustc_session::{declare_lint_pass, declare_tool_lint};
-use rustc_span::symbol::sym;
+use crablangc_errors::Applicability;
+use crablangc_hir::def_id::DefId;
+use crablangc_hir::{Closure, Expr, ExprKind, Param, PatKind, Unsafety};
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_middle::ty::adjustment::{Adjust, Adjustment, AutoBorrow};
+use crablangc_middle::ty::binding::BindingMode;
+use crablangc_middle::ty::{self, EarlyBinder, SubstsRef, Ty, TypeVisitableExt};
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_span::symbol::sym;
 
 declare_clippy_lint! {
     /// ### What it does
@@ -29,15 +29,15 @@ declare_clippy_lint! {
     /// If creating the closure inside the closure has a side-
     /// effect then moving the closure creation out will change when that side-
     /// effect runs.
-    /// See [#1439](https://github.com/rust-lang/rust-clippy/issues/1439) for more details.
+    /// See [#1439](https://github.com/crablang/crablang-clippy/issues/1439) for more details.
     ///
     /// ### Example
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// xs.map(|x| foo(x))
     /// ```
     ///
     /// Use instead:
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// // where `foo(_)` is a plain function that takes the exact argument type of `x`.
     /// xs.map(foo)
     /// ```
@@ -56,11 +56,11 @@ declare_clippy_lint! {
     /// It's unnecessary to create the closure.
     ///
     /// ### Example
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// Some('a').map(|s| s.to_uppercase());
     /// ```
     /// may be rewritten as
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// Some('a').map(char::to_uppercase);
     /// ```
     #[clippy::version = "1.35.0"]
@@ -114,7 +114,7 @@ impl<'tcx> LateLintPass<'tcx> for EtaReduction {
             // This fixes some false positives that I don't entirely understand
             if substs.is_empty() || !cx.typeck_results().expr_ty(expr).has_late_bound_regions();
             // A type param function ref like `T::f` is not 'static, however
-            // it is if cast like `T::f as fn()`. This seems like a rustc bug.
+            // it is if cast like `T::f as fn()`. This seems like a crablangc bug.
             if !substs.types().any(|t| matches!(t.kind(), ty::Param(_)));
             let callee_ty_unadjusted = cx.typeck_results().expr_ty(callee).peel_refs();
             if !is_type_diagnostic_item(cx, callee_ty_unadjusted, sym::Arc);

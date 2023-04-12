@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 
 #![allow(unused)]
 #![warn(clippy::manual_main_separator_str)]

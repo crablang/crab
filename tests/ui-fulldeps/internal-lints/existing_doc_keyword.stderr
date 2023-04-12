@@ -8,7 +8,7 @@ LL | #[doc(keyword = "tadam")]
 note: the lint level is defined here
   --> $DIR/existing_doc_keyword.rs:8:9
    |
-LL | #![deny(rustc::existing_doc_keyword)]
+LL | #![deny(crablangc::existing_doc_keyword)]
    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 error: aborting due to previous error

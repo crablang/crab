@@ -6,22 +6,22 @@
 // pretty-expanded FIXME #23616
 
 mod a {
-    pub type rust_task = usize;
-    pub mod rustrt {
-        use super::rust_task;
+    pub type crablang_task = usize;
+    pub mod crablangrt {
+        use super::crablang_task;
         extern "C" {
-            pub fn rust_task_is_unwinding(rt: *const rust_task) -> bool;
+            pub fn crablang_task_is_unwinding(rt: *const crablang_task) -> bool;
         }
     }
 }
 
 mod b {
-    pub type rust_task = bool;
-    pub mod rustrt {
-        use super::rust_task;
+    pub type crablang_task = bool;
+    pub mod crablangrt {
+        use super::crablang_task;
         extern "C" {
-            pub fn rust_task_is_unwinding(rt: *const rust_task) -> bool;
-        //~^ WARN `rust_task_is_unwinding` redeclared with a different signature
+            pub fn crablang_task_is_unwinding(rt: *const crablang_task) -> bool;
+        //~^ WARN `crablang_task_is_unwinding` redeclared with a different signature
         }
     }
 }

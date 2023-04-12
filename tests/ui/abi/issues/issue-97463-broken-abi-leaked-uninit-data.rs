@@ -3,7 +3,7 @@
 #![allow(dead_code)]
 #![allow(improper_ctypes)]
 
-#[link(name = "rust_test_helpers", kind = "static")]
+#[link(name = "crablang_test_helpers", kind = "static")]
 extern "C" {
     pub fn issue_97463_leak_uninit_data(a: u32, b: u32, c: u32) -> u16;
 }

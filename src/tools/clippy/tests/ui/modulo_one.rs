@@ -8,7 +8,7 @@ fn main() {
     10 % 1;
     10 % -1;
     10 % 2;
-    i32::MIN % (-1); // also caught by rustc
+    i32::MIN % (-1); // also caught by crablangc
 
     const ONE: u32 = 1 * 1;
     const NEG_ONE: i64 = 1 - 2;
@@ -18,6 +18,6 @@ fn main() {
     5 % STATIC_ONE; // NOT caught by lint
     2 % NEG_ONE;
     5 % STATIC_NEG_ONE; // NOT caught by lint
-    INT_MIN % NEG_ONE; // also caught by rustc
-    INT_MIN % STATIC_NEG_ONE; // ONLY caught by rustc
+    INT_MIN % NEG_ONE; // also caught by crablangc
+    INT_MIN % STATIC_NEG_ONE; // ONLY caught by crablangc
 }

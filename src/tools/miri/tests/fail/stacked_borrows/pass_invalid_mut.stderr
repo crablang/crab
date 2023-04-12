@@ -8,7 +8,7 @@ LL |     foo(xref);
    |         this error occurs as part of two-phase retag at ALLOC[0x0..0x4]
    |
    = help: this indicates a potential bug in the program: it performed an invalid operation, but the Stacked Borrows rules it violated are still experimental
-   = help: see https://github.com/rust-lang/unsafe-code-guidelines/blob/master/wip/stacked-borrows.md for further information
+   = help: see https://github.com/crablang/unsafe-code-guidelines/blob/master/wip/stacked-borrows.md for further information
 help: <TAG> was created by a Unique retag at offsets [0x0..0x4]
   --> $DIR/pass_invalid_mut.rs:LL:CC
    |

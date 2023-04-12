@@ -1,18 +1,18 @@
-// run-rustfix
+// run-crablangfix
 // aux-build:proc_macro_derive.rs
 
 #![allow(unused)]
 #![warn(clippy::useless_attribute)]
 #![warn(unreachable_pub)]
-#![feature(rustc_private)]
+#![feature(crablangc_private)]
 
 #[allow(dead_code)]
 #[cfg_attr(feature = "cargo-clippy", allow(dead_code))]
-#[rustfmt::skip]
+#[crablangfmt::skip]
 #[allow(unused_imports)]
 #[allow(unused_extern_crates)]
 #[macro_use]
-extern crate rustc_middle;
+extern crate crablangc_middle;
 
 #[macro_use]
 extern crate proc_macro_derive;
@@ -71,13 +71,13 @@ mod c {
     pub(crate) struct S;
 }
 
-// https://github.com/rust-lang/rust-clippy/issues/7511
+// https://github.com/crablang/crablang-clippy/issues/7511
 pub mod split {
     #[allow(clippy::module_name_repetitions)]
     pub use regex::SplitN;
 }
 
-// https://github.com/rust-lang/rust-clippy/issues/8768
+// https://github.com/crablang/crablang-clippy/issues/8768
 #[allow(clippy::single_component_path_imports)]
 use regex;
 

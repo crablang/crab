@@ -1,11 +1,11 @@
 use clippy_utils::diagnostics::span_lint_and_sugg;
 use clippy_utils::source::{snippet_opt, snippet_with_applicability};
 use if_chain::if_chain;
-use rustc_ast::ast::{Expr, ExprKind, Mutability, UnOp};
-use rustc_errors::Applicability;
-use rustc_lint::{EarlyContext, EarlyLintPass};
-use rustc_session::{declare_lint_pass, declare_tool_lint};
-use rustc_span::BytePos;
+use crablangc_ast::ast::{Expr, ExprKind, Mutability, UnOp};
+use crablangc_errors::Applicability;
+use crablangc_lint::{EarlyContext, EarlyLintPass};
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_span::BytePos;
 
 declare_clippy_lint! {
     /// ### What it does
@@ -20,13 +20,13 @@ declare_clippy_lint! {
     /// the suggested fix for `x = **&&y` is `x = *&y`, which is still incorrect.
     ///
     /// ### Example
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// let a = f(*&mut b);
     /// let c = *&d;
     /// ```
     ///
     /// Use instead:
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// let a = f(b);
     /// let c = d;
     /// ```

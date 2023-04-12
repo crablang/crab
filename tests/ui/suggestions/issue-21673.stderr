@@ -26,4 +26,4 @@ LL | fn call_method_2<T: Foo>(x: T) {
 
 error: aborting due to 2 previous errors
 
-For more information about this error, try `rustc --explain E0599`.
+For more information about this error, try `crablangc --explain E0599`.

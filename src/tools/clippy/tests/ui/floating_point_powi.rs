@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 #![warn(clippy::suboptimal_flops)]
 #![allow(clippy::unnecessary_cast)]
 

@@ -1,7 +1,7 @@
-error: expected one of `!`, `.`, `::`, `;`, `?`, `{`, `}`, or an operator, found `rust`
+error: expected one of `!`, `.`, `::`, `;`, `?`, `{`, `}`, or an operator, found `crablang`
   --> $DIR/type-ascription-and-other-error.rs:2:9
    |
-LL |     not rust;
+LL |     not crablang;
    |         ^^^^ expected one of 8 possible tokens
 
 error: aborting due to previous error

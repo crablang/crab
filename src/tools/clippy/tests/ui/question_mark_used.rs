@@ -1,4 +1,4 @@
-// non rustfixable
+// non crablangfixable
 #![allow(unreachable_code)]
 #![allow(dead_code)]
 #![warn(clippy::question_mark_used)]

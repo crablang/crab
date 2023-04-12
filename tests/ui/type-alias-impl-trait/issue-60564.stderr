@@ -9,4 +9,4 @@ LL |         (0u8..n).rev().map(move |shift| ((self >> T::from(shift)) & T::from
 
 error: aborting due to previous error
 
-For more information about this error, try `rustc --explain E0792`.
+For more information about this error, try `crablangc --explain E0792`.

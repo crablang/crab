@@ -16,4 +16,4 @@ LL | static CANT_REPR_THIS: u32 = 0;
 
 error: aborting due to 2 previous errors
 
-For more information about this error, try `rustc --explain E0517`.
+For more information about this error, try `crablangc --explain E0517`.

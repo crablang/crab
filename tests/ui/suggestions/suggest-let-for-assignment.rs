@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 
 fn main() {
     demo = 1; //~ ERROR cannot find value `demo` in this scope

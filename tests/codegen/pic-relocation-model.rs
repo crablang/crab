@@ -11,7 +11,7 @@ pub fn call_foreign_fn() -> u8 {
 }
 
 // (Allow but do not require `zeroext` here, because it is not worth effort to
-// spell out which targets have it and which ones do not; see rust#97800.)
+// spell out which targets have it and which ones do not; see crablang#97800.)
 
 // CHECK: declare{{( zeroext)?}} i8 @foreign_fn()
 extern "C" {fn foreign_fn() -> u8;}

@@ -11,11 +11,11 @@ use crate::mem;
 use crate::ptr::{Alignment, NonNull};
 
 // While this function is used in one place and its implementation
-// could be inlined, the previous attempts to do so made rustc
+// could be inlined, the previous attempts to do so made crablangc
 // slower:
 //
-// * https://github.com/rust-lang/rust/pull/72189
-// * https://github.com/rust-lang/rust/pull/79827
+// * https://github.com/crablang/crablang/pull/72189
+// * https://github.com/crablang/crablang/pull/79827
 const fn size_align<T>() -> (usize, usize) {
     (mem::size_of::<T>(), mem::align_of::<T>())
 }
@@ -62,9 +62,9 @@ impl Layout {
     ///    must not overflow isize (i.e., the rounded value must be
     ///    less than or equal to `isize::MAX`).
     #[stable(feature = "alloc_layout", since = "1.28.0")]
-    #[rustc_const_stable(feature = "const_alloc_layout_size_align", since = "1.50.0")]
+    #[crablangc_const_stable(feature = "const_alloc_layout_size_align", since = "1.50.0")]
     #[inline]
-    #[rustc_allow_const_fn_unstable(ptr_alignment_type)]
+    #[crablangc_allow_const_fn_unstable(ptr_alignment_type)]
     pub const fn from_size_align(size: usize, align: usize) -> Result<Self, LayoutError> {
         if !align.is_power_of_two() {
             return Err(LayoutError);
@@ -111,10 +111,10 @@ impl Layout {
     /// This function is unsafe as it does not verify the preconditions from
     /// [`Layout::from_size_align`].
     #[stable(feature = "alloc_layout", since = "1.28.0")]
-    #[rustc_const_stable(feature = "const_alloc_layout_unchecked", since = "1.36.0")]
+    #[crablangc_const_stable(feature = "const_alloc_layout_unchecked", since = "1.36.0")]
     #[must_use]
     #[inline]
-    #[rustc_allow_const_fn_unstable(ptr_alignment_type)]
+    #[crablangc_allow_const_fn_unstable(ptr_alignment_type)]
     pub const unsafe fn from_size_align_unchecked(size: usize, align: usize) -> Self {
         // SAFETY: the caller is required to uphold the preconditions.
         unsafe { Layout { size, align: Alignment::new_unchecked(align) } }
@@ -122,7 +122,7 @@ impl Layout {
 
     /// The minimum size in bytes for a memory block of this layout.
     #[stable(feature = "alloc_layout", since = "1.28.0")]
-    #[rustc_const_stable(feature = "const_alloc_layout_size_align", since = "1.50.0")]
+    #[crablangc_const_stable(feature = "const_alloc_layout_size_align", since = "1.50.0")]
     #[must_use]
     #[inline]
     pub const fn size(&self) -> usize {
@@ -131,23 +131,23 @@ impl Layout {
 
     /// The minimum byte alignment for a memory block of this layout.
     #[stable(feature = "alloc_layout", since = "1.28.0")]
-    #[rustc_const_stable(feature = "const_alloc_layout_size_align", since = "1.50.0")]
+    #[crablangc_const_stable(feature = "const_alloc_layout_size_align", since = "1.50.0")]
     #[must_use = "this returns the minimum alignment, \
                   without modifying the layout"]
     #[inline]
-    #[rustc_allow_const_fn_unstable(ptr_alignment_type)]
+    #[crablangc_allow_const_fn_unstable(ptr_alignment_type)]
     pub const fn align(&self) -> usize {
         self.align.as_usize()
     }
 
     /// Constructs a `Layout` suitable for holding a value of type `T`.
     #[stable(feature = "alloc_layout", since = "1.28.0")]
-    #[rustc_const_stable(feature = "alloc_layout_const_new", since = "1.42.0")]
+    #[crablangc_const_stable(feature = "alloc_layout_const_new", since = "1.42.0")]
     #[must_use]
     #[inline]
     pub const fn new<T>() -> Self {
         let (size, align) = size_align::<T>();
-        // SAFETY: if the type is instantiated, rustc already ensures that its
+        // SAFETY: if the type is instantiated, crablangc already ensures that its
         // layout is valid. Use the unchecked constructor to avoid inserting a
         // panicking codepath that needs to be optimized out.
         unsafe { Layout::from_size_align_unchecked(size, align) }
@@ -157,7 +157,7 @@ impl Layout {
     /// allocate backing structure for `T` (which could be a trait
     /// or other unsized type like a slice).
     #[stable(feature = "alloc_layout", since = "1.28.0")]
-    #[rustc_const_unstable(feature = "const_alloc_layout", issue = "67521")]
+    #[crablangc_const_unstable(feature = "const_alloc_layout", issue = "67521")]
     #[must_use]
     #[inline]
     pub const fn for_value<T: ?Sized>(t: &T) -> Self {
@@ -192,7 +192,7 @@ impl Layout {
     /// [trait object]: ../../book/ch17-02-trait-objects.html
     /// [extern type]: ../../unstable-book/language-features/extern-types.html
     #[unstable(feature = "layout_for_ptr", issue = "69835")]
-    #[rustc_const_unstable(feature = "const_alloc_layout", issue = "67521")]
+    #[crablangc_const_unstable(feature = "const_alloc_layout", issue = "67521")]
     #[must_use]
     pub const unsafe fn for_value_raw<T: ?Sized>(t: *const T) -> Self {
         // SAFETY: we pass along the prerequisites of these functions to the caller
@@ -208,7 +208,7 @@ impl Layout {
     /// sentinel value. Types that lazily allocate must track initialization by
     /// some other means.
     #[unstable(feature = "alloc_layout_extra", issue = "55724")]
-    #[rustc_const_unstable(feature = "alloc_layout_extra", issue = "55724")]
+    #[crablangc_const_unstable(feature = "alloc_layout_extra", issue = "55724")]
     #[must_use]
     #[inline]
     pub const fn dangling(&self) -> NonNull<u8> {
@@ -231,7 +231,7 @@ impl Layout {
     /// Returns an error if the combination of `self.size()` and the given
     /// `align` violates the conditions listed in [`Layout::from_size_align`].
     #[stable(feature = "alloc_layout_manipulation", since = "1.44.0")]
-    #[rustc_const_unstable(feature = "const_alloc_layout", issue = "67521")]
+    #[crablangc_const_unstable(feature = "const_alloc_layout", issue = "67521")]
     #[inline]
     pub const fn align_to(&self, align: usize) -> Result<Self, LayoutError> {
         Layout::from_size_align(self.size(), cmp::max(self.align(), align))
@@ -254,7 +254,7 @@ impl Layout {
     /// address for the whole allocated block of memory. One way to
     /// satisfy this constraint is to ensure `align <= self.align()`.
     #[unstable(feature = "alloc_layout_extra", issue = "55724")]
-    #[rustc_const_unstable(feature = "const_alloc_layout", issue = "67521")]
+    #[crablangc_const_unstable(feature = "const_alloc_layout", issue = "67521")]
     #[must_use = "this returns the padding needed, \
                   without modifying the `Layout`"]
     #[inline]
@@ -290,7 +290,7 @@ impl Layout {
     /// This is equivalent to adding the result of `padding_needed_for`
     /// to the layout's current size.
     #[stable(feature = "alloc_layout_manipulation", since = "1.44.0")]
-    #[rustc_const_unstable(feature = "const_alloc_layout", issue = "67521")]
+    #[crablangc_const_unstable(feature = "const_alloc_layout", issue = "67521")]
     #[must_use = "this returns a new `Layout`, \
                   without modifying the original"]
     #[inline]
@@ -315,7 +315,7 @@ impl Layout {
     ///
     /// On arithmetic overflow, returns `LayoutError`.
     #[unstable(feature = "alloc_layout_extra", issue = "55724")]
-    #[rustc_const_unstable(feature = "const_alloc_layout", issue = "67521")]
+    #[crablangc_const_unstable(feature = "const_alloc_layout", issue = "67521")]
     #[inline]
     pub const fn repeat(&self, n: usize) -> Result<(Self, usize), LayoutError> {
         // This cannot overflow. Quoting from the invariant of Layout:
@@ -336,8 +336,8 @@ impl Layout {
     ///
     /// In order to match C representation layout `repr(C)`, you should
     /// call `pad_to_align` after extending the layout with all fields.
-    /// (There is no way to match the default Rust representation
-    /// layout `repr(Rust)`, as it is unspecified.)
+    /// (There is no way to match the default CrabLang representation
+    /// layout `repr(CrabLang)`, as it is unspecified.)
     ///
     /// Note that the alignment of the resulting layout will be the maximum of
     /// those of `self` and `next`, in order to ensure alignment of both parts.
@@ -354,7 +354,7 @@ impl Layout {
     /// To calculate the layout of a `#[repr(C)]` structure and the offsets of
     /// the fields from its fields' layouts:
     ///
-    /// ```rust
+    /// ```crablang
     /// # use std::alloc::{Layout, LayoutError};
     /// pub fn repr_c(fields: &[Layout]) -> Result<(Layout, Vec<usize>), LayoutError> {
     ///     let mut offsets = Vec::new();
@@ -376,7 +376,7 @@ impl Layout {
     /// # assert_eq!(repr_c(&[u64, u32, u16, u32]), Ok((s, vec![0, 8, 12, 16])));
     /// ```
     #[stable(feature = "alloc_layout_manipulation", since = "1.44.0")]
-    #[rustc_const_unstable(feature = "const_alloc_layout", issue = "67521")]
+    #[crablangc_const_unstable(feature = "const_alloc_layout", issue = "67521")]
     #[inline]
     pub const fn extend(&self, next: Self) -> Result<(Self, usize), LayoutError> {
         let new_align = cmp::max(self.align, next.align);
@@ -403,7 +403,7 @@ impl Layout {
     ///
     /// On arithmetic overflow, returns `LayoutError`.
     #[unstable(feature = "alloc_layout_extra", issue = "55724")]
-    #[rustc_const_unstable(feature = "const_alloc_layout", issue = "67521")]
+    #[crablangc_const_unstable(feature = "const_alloc_layout", issue = "67521")]
     #[inline]
     pub const fn repeat_packed(&self, n: usize) -> Result<Self, LayoutError> {
         let size = self.size().checked_mul(n).ok_or(LayoutError)?;
@@ -418,7 +418,7 @@ impl Layout {
     ///
     /// On arithmetic overflow, returns `LayoutError`.
     #[unstable(feature = "alloc_layout_extra", issue = "55724")]
-    #[rustc_const_unstable(feature = "const_alloc_layout", issue = "67521")]
+    #[crablangc_const_unstable(feature = "const_alloc_layout", issue = "67521")]
     #[inline]
     pub const fn extend_packed(&self, next: Self) -> Result<Self, LayoutError> {
         let new_size = self.size().checked_add(next.size()).ok_or(LayoutError)?;
@@ -431,7 +431,7 @@ impl Layout {
     /// On arithmetic overflow or when the total size would exceed
     /// `isize::MAX`, returns `LayoutError`.
     #[stable(feature = "alloc_layout_manipulation", since = "1.44.0")]
-    #[rustc_const_unstable(feature = "const_alloc_layout", issue = "67521")]
+    #[crablangc_const_unstable(feature = "const_alloc_layout", issue = "67521")]
     #[inline]
     pub const fn array<T>(n: usize) -> Result<Self, LayoutError> {
         // Reduce the amount of code we need to monomorphize per `T`.

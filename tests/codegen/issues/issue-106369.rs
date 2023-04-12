@@ -3,7 +3,7 @@
 
 #![crate_type = "lib"]
 
-// From <https://github.com/rust-lang/rust/issues/106369#issuecomment-1369095304>
+// From <https://github.com/crablang/crablang/issues/106369#issuecomment-1369095304>
 
 // CHECK-LABEL: @issue_106369(
 #[no_mangle]

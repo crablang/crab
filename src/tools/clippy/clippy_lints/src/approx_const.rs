@@ -1,35 +1,35 @@
 use clippy_utils::diagnostics::span_lint_and_help;
 use clippy_utils::msrvs::{self, Msrv};
-use rustc_ast::ast::{FloatTy, LitFloatType, LitKind};
-use rustc_hir::{Expr, ExprKind};
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_semver::RustcVersion;
-use rustc_session::{declare_tool_lint, impl_lint_pass};
-use rustc_span::symbol;
+use crablangc_ast::ast::{FloatTy, LitFloatType, LitKind};
+use crablangc_hir::{Expr, ExprKind};
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_semver::CrabLangcVersion;
+use crablangc_session::{declare_tool_lint, impl_lint_pass};
+use crablangc_span::symbol;
 use std::f64::consts as f64;
 
 declare_clippy_lint! {
     /// ### What it does
     /// Checks for floating point literals that approximate
     /// constants which are defined in
-    /// [`std::f32::consts`](https://doc.rust-lang.org/stable/std/f32/consts/#constants)
+    /// [`std::f32::consts`](https://doc.crablang.org/stable/std/f32/consts/#constants)
     /// or
-    /// [`std::f64::consts`](https://doc.rust-lang.org/stable/std/f64/consts/#constants),
+    /// [`std::f64::consts`](https://doc.crablang.org/stable/std/f64/consts/#constants),
     /// respectively, suggesting to use the predefined constant.
     ///
     /// ### Why is this bad?
     /// Usually, the definition in the standard library is more
     /// precise than what people come up with. If you find that your definition is
-    /// actually more precise, please [file a Rust
-    /// issue](https://github.com/rust-lang/rust/issues).
+    /// actually more precise, please [file a CrabLang
+    /// issue](https://github.com/crablang/crablang/issues).
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// let x = 3.14;
     /// let y = 1_f64 / x;
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// let x = std::f32::consts::PI;
     /// let y = std::f64::consts::FRAC_1_PI;
     /// ```
@@ -40,7 +40,7 @@ declare_clippy_lint! {
 }
 
 // Tuples are of the form (constant, name, min_digits, msrv)
-const KNOWN_CONSTS: [(f64, &str, usize, Option<RustcVersion>); 19] = [
+const KNOWN_CONSTS: [(f64, &str, usize, Option<CrabLangcVersion>); 19] = [
     (f64::E, "E", 4, None),
     (f64::FRAC_1_PI, "FRAC_1_PI", 4, None),
     (f64::FRAC_1_SQRT_2, "FRAC_1_SQRT_2", 5, None),

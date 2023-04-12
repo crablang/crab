@@ -27,4 +27,4 @@ LL |     fn less(&self, x: u8, y: u8, z: u8) { }
 
 error: aborting due to 3 previous errors
 
-For more information about this error, try `rustc --explain E0050`.
+For more information about this error, try `crablangc --explain E0050`.

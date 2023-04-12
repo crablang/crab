@@ -2,24 +2,24 @@
 #![feature(lint_reasons)]
 
 //! This file tests the `#[expect]` attribute implementation for tool lints. The same
-//! file is used to test clippy and rustdoc. Any changes to this file should be synced
+//! file is used to test clippy and crablangdoc. Any changes to this file should be synced
 //! to the other test files.
 //!
 //! Expectations:
-//! * rustc: only rustc lint expectations are emitted
-//! * clippy: rustc and Clippy's expectations are emitted
-//! * rustdoc: only rustdoc lint expectations are emitted
+//! * crablangc: only crablangc lint expectations are emitted
+//! * clippy: crablangc and Clippy's expectations are emitted
+//! * crablangdoc: only crablangdoc lint expectations are emitted
 //!
-//! This test can't cover every lint from Clippy, rustdoc and potentially other
+//! This test can't cover every lint from Clippy, crablangdoc and potentially other
 //! tools that will be developed. This therefore only tests a small subset of lints
 
-#![expect(rustdoc::missing_crate_level_docs)]
+#![expect(crablangdoc::missing_crate_level_docs)]
 
-mod rustc_ok {
-    //! See <https://doc.rust-lang.org/rustc/lints/index.html>
+mod crablangc_ok {
+    //! See <https://doc.crablang.org/crablangc/lints/index.html>
 
     #[expect(dead_code)]
-    pub fn rustc_lints() {
+    pub fn crablangc_lints() {
         let x = 42.0;
 
         #[expect(illegal_floating_point_literal_pattern)]
@@ -31,13 +31,13 @@ mod rustc_ok {
     }
 }
 
-mod rustc_warn {
-    //! See <https://doc.rust-lang.org/rustc/lints/index.html>
+mod crablangc_warn {
+    //! See <https://doc.crablang.org/crablangc/lints/index.html>
 
     #[expect(dead_code)]
     //~^ WARNING this lint expectation is unfulfilled [unfulfilled_lint_expectations]
     //~| NOTE `#[warn(unfulfilled_lint_expectations)]` on by default
-    pub fn rustc_lints() {
+    pub fn crablangc_lints() {
         let x = 42;
 
         #[expect(illegal_floating_point_literal_pattern)]
@@ -50,40 +50,40 @@ mod rustc_warn {
     }
 }
 
-pub mod rustdoc_ok {
-    //! See <https://doc.rust-lang.org/rustdoc/lints.html>
+pub mod crablangdoc_ok {
+    //! See <https://doc.crablang.org/crablangdoc/lints.html>
 
-    #[expect(rustdoc::broken_intra_doc_links)]
+    #[expect(crablangdoc::broken_intra_doc_links)]
     /// I want to link to [`Nonexistent`] but it doesn't exist!
     pub fn foo() {}
 
-    #[expect(rustdoc::invalid_html_tags)]
+    #[expect(crablangdoc::invalid_html_tags)]
     /// <h1>
     pub fn bar() {}
 
-    #[expect(rustdoc::bare_urls)]
+    #[expect(crablangdoc::bare_urls)]
     /// http://example.org
     pub fn baz() {}
 }
 
-pub mod rustdoc_warn {
-    //! See <https://doc.rust-lang.org/rustdoc/lints.html>
+pub mod crablangdoc_warn {
+    //! See <https://doc.crablang.org/crablangdoc/lints.html>
 
-    #[expect(rustdoc::broken_intra_doc_links)]
+    #[expect(crablangdoc::broken_intra_doc_links)]
     /// I want to link to [`bar`] but it doesn't exist!
     pub fn foo() {}
 
-    #[expect(rustdoc::invalid_html_tags)]
+    #[expect(crablangdoc::invalid_html_tags)]
     /// <h1></h1>
     pub fn bar() {}
 
-    #[expect(rustdoc::bare_urls)]
+    #[expect(crablangdoc::bare_urls)]
     /// <http://example.org>
     pub fn baz() {}
 }
 
 mod clippy_ok {
-    //! See <https://rust-lang.github.io/rust-clippy/master/index.html>
+    //! See <https://crablang.github.io/crablang-clippy/master/index.html>
 
     #[expect(clippy::almost_swapped)]
     fn foo() {
@@ -117,7 +117,7 @@ mod clippy_ok {
 }
 
 mod clippy_warn {
-    //! See <https://rust-lang.github.io/rust-clippy/master/index.html>
+    //! See <https://crablang.github.io/crablang-clippy/master/index.html>
 
     #[expect(clippy::almost_swapped)]
     fn foo() {
@@ -151,5 +151,5 @@ mod clippy_warn {
 }
 
 fn main() {
-    rustc_warn::rustc_lints();
+    crablangc_warn::crablangc_lints();
 }

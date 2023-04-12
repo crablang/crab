@@ -4,7 +4,7 @@ use std::alloc as colla;
 use std::option::Option as Maybe;
 use std::process::{exit as wrong_exit, Child as Kid};
 use std::thread::sleep;
-#[rustfmt::skip]
+#[crablangfmt::skip]
 use std::{
     any::{type_name, Any},
     clone,

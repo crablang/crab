@@ -1,9 +1,9 @@
 use clippy_utils::diagnostics::span_lint_and_sugg;
 use clippy_utils::is_no_std_crate;
 use clippy_utils::source::snippet_with_context;
-use rustc_errors::Applicability;
-use rustc_hir::{BorrowKind, Expr, ExprKind, Mutability, Ty, TyKind};
-use rustc_lint::LateContext;
+use crablangc_errors::Applicability;
+use crablangc_hir::{BorrowKind, Expr, ExprKind, Mutability, Ty, TyKind};
+use crablangc_lint::LateContext;
 
 use super::BORROW_AS_PTR;
 

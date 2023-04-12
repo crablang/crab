@@ -11,4 +11,4 @@ LL | type A = <<S as Tr>::A as Example>::f;
 
 error: aborting due to previous error
 
-For more information about this error, try `rustc --explain E0223`.
+For more information about this error, try `crablangc --explain E0223`.

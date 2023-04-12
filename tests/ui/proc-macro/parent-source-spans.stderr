@@ -72,18 +72,18 @@ error: first final: "yay"
 LL |     three!($a, $b);
    |            ^^
 ...
-LL |     two!("yay", "rust");
+LL |     two!("yay", "crablang");
    |     ------------------- in this macro invocation
    |
    = note: this error originates in the macro `two` (in Nightly builds, run with -Z macro-backtrace for more info)
 
-error: second final: "rust"
+error: second final: "crablang"
   --> $DIR/parent-source-spans.rs:16:16
    |
 LL |     three!($a, $b);
    |                ^^
 ...
-LL |     two!("yay", "rust");
+LL |     two!("yay", "crablang");
    |     ------------------- in this macro invocation
    |
    = note: this error originates in the macro `two` (in Nightly builds, run with -Z macro-backtrace for more info)
@@ -91,25 +91,25 @@ LL |     two!("yay", "rust");
 error: first parent: "yay"
   --> $DIR/parent-source-spans.rs:42:5
    |
-LL |     two!("yay", "rust");
+LL |     two!("yay", "crablang");
    |     ^^^^^^^^^^^^^^^^^^^
 
-error: second parent: "rust"
+error: second parent: "crablang"
   --> $DIR/parent-source-spans.rs:42:5
    |
-LL |     two!("yay", "rust");
+LL |     two!("yay", "crablang");
    |     ^^^^^^^^^^^^^^^^^^^
 
 error: first source: "yay"
   --> $DIR/parent-source-spans.rs:42:5
    |
-LL |     two!("yay", "rust");
+LL |     two!("yay", "crablang");
    |     ^^^^^^^^^^^^^^^^^^^
 
-error: second source: "rust"
+error: second source: "crablang"
   --> $DIR/parent-source-spans.rs:42:5
    |
-LL |     two!("yay", "rust");
+LL |     two!("yay", "crablang");
    |     ^^^^^^^^^^^^^^^^^^^
 
 error: first final: "hip"
@@ -156,7 +156,7 @@ error[E0425]: cannot find value `ok` in this scope
 LL |     parent_source_spans!($($tokens)*);
    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ help: a tuple variant with a similar name exists: `Ok`
 ...
-LL |     two!("yay", "rust");
+LL |     two!("yay", "crablang");
    |     ------------------- in this macro invocation
   --> $SRC_DIR/core/src/result.rs:LL:COL
    |
@@ -180,4 +180,4 @@ LL |     three!("hip", "hop");
 
 error: aborting due to 21 previous errors
 
-For more information about this error, try `rustc --explain E0425`.
+For more information about this error, try `crablangc --explain E0425`.

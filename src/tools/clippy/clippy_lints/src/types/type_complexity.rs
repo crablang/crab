@@ -1,9 +1,9 @@
 use clippy_utils::diagnostics::span_lint;
-use rustc_hir as hir;
-use rustc_hir::intravisit::{walk_inf, walk_ty, Visitor};
-use rustc_hir::{GenericParamKind, TyKind};
-use rustc_lint::LateContext;
-use rustc_target::spec::abi::Abi;
+use crablangc_hir as hir;
+use crablangc_hir::intravisit::{walk_inf, walk_ty, Visitor};
+use crablangc_hir::{GenericParamKind, TyKind};
+use crablangc_lint::LateContext;
+use crablangc_target::spec::abi::Abi;
 
 use super::TYPE_COMPLEXITY;
 
@@ -50,7 +50,7 @@ impl<'tcx> Visitor<'tcx> for TypeComplexityVisitor {
             TyKind::Path(..) | TyKind::Slice(..) | TyKind::Tup(..) | TyKind::Array(..) => (10 * self.nest, 1),
 
             // function types bring a lot of overhead
-            TyKind::BareFn(bare) if bare.abi == Abi::Rust => (50 * self.nest, 1),
+            TyKind::BareFn(bare) if bare.abi == Abi::CrabLang => (50 * self.nest, 1),
 
             TyKind::TraitObject(param_bounds, _, _) => {
                 let has_lifetime_parameters = param_bounds.iter().any(|bound| {

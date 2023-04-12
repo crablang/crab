@@ -1,5 +1,5 @@
-use rustc_hash::FxHashMap;
-use rustdoc_json_types::{Crate, Item, ItemKind, ItemSummary, Visibility, FORMAT_VERSION};
+use crablangc_hash::FxHashMap;
+use crablangdoc_json_types::{Crate, Item, ItemKind, ItemSummary, Visibility, FORMAT_VERSION};
 
 use crate::json_find::SelectorPart;
 
@@ -47,7 +47,7 @@ fn errors_on_missing_links() {
         )]),
         paths: FxHashMap::default(),
         external_crates: FxHashMap::default(),
-        format_version: rustdoc_json_types::FORMAT_VERSION,
+        format_version: crablangdoc_json_types::FORMAT_VERSION,
     };
 
     check(
@@ -65,7 +65,7 @@ fn errors_on_missing_links() {
 }
 
 // Test we would catch
-// https://github.com/rust-lang/rust/issues/104064#issuecomment-1368589718
+// https://github.com/crablang/crablang/issues/104064#issuecomment-1368589718
 #[test]
 fn errors_on_local_in_paths_and_not_index() {
     let krate = Crate {
@@ -117,7 +117,7 @@ fn errors_on_local_in_paths_and_not_index() {
             },
         )]),
         external_crates: FxHashMap::default(),
-        format_version: rustdoc_json_types::FORMAT_VERSION,
+        format_version: crablangdoc_json_types::FORMAT_VERSION,
     };
 
     check(

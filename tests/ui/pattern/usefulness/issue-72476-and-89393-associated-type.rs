@@ -1,7 +1,7 @@
 // check-pass
 
-// From https://github.com/rust-lang/rust/issues/72476
-// and https://github.com/rust-lang/rust/issues/89393
+// From https://github.com/crablang/crablang/issues/72476
+// and https://github.com/crablang/crablang/issues/89393
 
 trait Trait {
     type Projection;

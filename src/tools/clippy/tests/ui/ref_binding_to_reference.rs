@@ -1,4 +1,4 @@
-// FIXME: run-rustfix waiting on multi-span suggestions
+// FIXME: run-crablangfix waiting on multi-span suggestions
 
 #![feature(lint_reasons)]
 #![warn(clippy::ref_binding_to_reference)]

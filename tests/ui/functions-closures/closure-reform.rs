@@ -21,7 +21,7 @@ fn call_bare(f: fn(&str)) {
     f("Hello world!")
 }
 
-fn call_bare_again(f: extern "Rust" fn(&str)) {
+fn call_bare_again(f: extern "CrabLang" fn(&str)) {
     f("Goodbye world!")
 }
 

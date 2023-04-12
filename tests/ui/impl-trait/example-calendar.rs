@@ -7,7 +7,7 @@
 
 //! Derived from: <https://raw.githubusercontent.com/quickfur/dcal/master/dcal.d>.
 //!
-//! Originally converted to Rust by [Daniel Keep](https://github.com/DanielKeep).
+//! Originally converted to CrabLang by [Daniel Keep](https://github.com/DanielKeep).
 
 use std::fmt::Write;
 
@@ -693,7 +693,7 @@ where It: Iterator {
     n: usize,
 }
 
-// Note: `chunks` in Rust is more-or-less impossible without overhead of some kind.
+// Note: `chunks` in CrabLang is more-or-less impossible without overhead of some kind.
 // Aliasing rules mean you need to add dynamic borrow checking, and the design of
 // `Iterator` means that you need to have the iterator's state kept in an allocation
 // that is jointly owned by the iterator itself and the sub-iterator.

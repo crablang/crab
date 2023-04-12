@@ -9,7 +9,7 @@
 // ignore-vxworks no SIGWINCH in user space
 // ignore-nto no SA_ONSTACK
 
-#![feature(rustc_private)]
+#![feature(crablangc_private)]
 extern crate libc;
 
 use libc::*;

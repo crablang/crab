@@ -16,9 +16,9 @@ LL |     Box::new(1..=10) as Box<dyn Iterator>
    = note: expected associated type `<dyn Iterator as Iterator>::Item`
                          found type `u32`
    = help: consider constraining the associated type `<dyn Iterator as Iterator>::Item` to `u32` or calling a method that returns `<dyn Iterator as Iterator>::Item`
-   = note: for more information, visit https://doc.rust-lang.org/book/ch19-03-advanced-traits.html
+   = note: for more information, visit https://doc.crablang.org/book/ch19-03-advanced-traits.html
 
 error: aborting due to 2 previous errors
 
 Some errors have detailed explanations: E0191, E0271.
-For more information about an error, try `rustc --explain E0191`.
+For more information about an error, try `crablangc --explain E0191`.

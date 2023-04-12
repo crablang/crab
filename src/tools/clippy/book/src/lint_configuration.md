@@ -71,9 +71,9 @@ arithmetic-side-effects-allowed = ["SomeType", "AnotherType"]
 A type, say `SomeType`, listed in this configuration has the same behavior of
 `["SomeType" , "*"], ["*", "SomeType"]` in `arithmetic_side_effects_allowed_binary`.
 
-**Default Value:** `{}` (`rustc_data_structures::fx::FxHashSet<String>`)
+**Default Value:** `{}` (`crablangc_data_structures::fx::FxHashSet<String>`)
 
-* [arithmetic_side_effects](https://rust-lang.github.io/rust-clippy/master/index.html#arithmetic_side_effects)
+* [arithmetic_side_effects](https://crablang.github.io/crablang-clippy/master/index.html#arithmetic_side_effects)
 
 
 ### arithmetic-side-effects-allowed-binary
@@ -94,7 +94,7 @@ arithmetic-side-effects-allowed-binary = [["SomeType" , "f32"], ["AnotherType", 
 
 **Default Value:** `[]` (`Vec<[String; 2]>`)
 
-* [arithmetic_side_effects](https://rust-lang.github.io/rust-clippy/master/index.html#arithmetic_side_effects)
+* [arithmetic_side_effects](https://crablang.github.io/crablang-clippy/master/index.html#arithmetic_side_effects)
 
 
 ### arithmetic-side-effects-allowed-unary
@@ -106,9 +106,9 @@ Suppress checking of the passed type names in unary operations like "negation" (
 arithmetic-side-effects-allowed-unary = ["SomeType", "AnotherType"]
 ```
 
-**Default Value:** `{}` (`rustc_data_structures::fx::FxHashSet<String>`)
+**Default Value:** `{}` (`crablangc_data_structures::fx::FxHashSet<String>`)
 
-* [arithmetic_side_effects](https://rust-lang.github.io/rust-clippy/master/index.html#arithmetic_side_effects)
+* [arithmetic_side_effects](https://crablang.github.io/crablang-clippy/master/index.html#arithmetic_side_effects)
 
 
 ### avoid-breaking-exported-api
@@ -116,70 +116,70 @@ Suppress lints whenever the suggested change would cause breakage for other crat
 
 **Default Value:** `true` (`bool`)
 
-* [enum_variant_names](https://rust-lang.github.io/rust-clippy/master/index.html#enum_variant_names)
-* [large_types_passed_by_value](https://rust-lang.github.io/rust-clippy/master/index.html#large_types_passed_by_value)
-* [trivially_copy_pass_by_ref](https://rust-lang.github.io/rust-clippy/master/index.html#trivially_copy_pass_by_ref)
-* [unnecessary_wraps](https://rust-lang.github.io/rust-clippy/master/index.html#unnecessary_wraps)
-* [unused_self](https://rust-lang.github.io/rust-clippy/master/index.html#unused_self)
-* [upper_case_acronyms](https://rust-lang.github.io/rust-clippy/master/index.html#upper_case_acronyms)
-* [wrong_self_convention](https://rust-lang.github.io/rust-clippy/master/index.html#wrong_self_convention)
-* [box_collection](https://rust-lang.github.io/rust-clippy/master/index.html#box_collection)
-* [redundant_allocation](https://rust-lang.github.io/rust-clippy/master/index.html#redundant_allocation)
-* [rc_buffer](https://rust-lang.github.io/rust-clippy/master/index.html#rc_buffer)
-* [vec_box](https://rust-lang.github.io/rust-clippy/master/index.html#vec_box)
-* [option_option](https://rust-lang.github.io/rust-clippy/master/index.html#option_option)
-* [linkedlist](https://rust-lang.github.io/rust-clippy/master/index.html#linkedlist)
-* [rc_mutex](https://rust-lang.github.io/rust-clippy/master/index.html#rc_mutex)
+* [enum_variant_names](https://crablang.github.io/crablang-clippy/master/index.html#enum_variant_names)
+* [large_types_passed_by_value](https://crablang.github.io/crablang-clippy/master/index.html#large_types_passed_by_value)
+* [trivially_copy_pass_by_ref](https://crablang.github.io/crablang-clippy/master/index.html#trivially_copy_pass_by_ref)
+* [unnecessary_wraps](https://crablang.github.io/crablang-clippy/master/index.html#unnecessary_wraps)
+* [unused_self](https://crablang.github.io/crablang-clippy/master/index.html#unused_self)
+* [upper_case_acronyms](https://crablang.github.io/crablang-clippy/master/index.html#upper_case_acronyms)
+* [wrong_self_convention](https://crablang.github.io/crablang-clippy/master/index.html#wrong_self_convention)
+* [box_collection](https://crablang.github.io/crablang-clippy/master/index.html#box_collection)
+* [redundant_allocation](https://crablang.github.io/crablang-clippy/master/index.html#redundant_allocation)
+* [rc_buffer](https://crablang.github.io/crablang-clippy/master/index.html#rc_buffer)
+* [vec_box](https://crablang.github.io/crablang-clippy/master/index.html#vec_box)
+* [option_option](https://crablang.github.io/crablang-clippy/master/index.html#option_option)
+* [linkedlist](https://crablang.github.io/crablang-clippy/master/index.html#linkedlist)
+* [rc_mutex](https://crablang.github.io/crablang-clippy/master/index.html#rc_mutex)
 
 
 ### msrv
-The minimum rust version that the project supports
+The minimum crablang version that the project supports
 
 **Default Value:** `None` (`Option<String>`)
 
-* [manual_split_once](https://rust-lang.github.io/rust-clippy/master/index.html#manual_split_once)
-* [manual_str_repeat](https://rust-lang.github.io/rust-clippy/master/index.html#manual_str_repeat)
-* [cloned_instead_of_copied](https://rust-lang.github.io/rust-clippy/master/index.html#cloned_instead_of_copied)
-* [redundant_field_names](https://rust-lang.github.io/rust-clippy/master/index.html#redundant_field_names)
-* [redundant_static_lifetimes](https://rust-lang.github.io/rust-clippy/master/index.html#redundant_static_lifetimes)
-* [filter_map_next](https://rust-lang.github.io/rust-clippy/master/index.html#filter_map_next)
-* [checked_conversions](https://rust-lang.github.io/rust-clippy/master/index.html#checked_conversions)
-* [manual_range_contains](https://rust-lang.github.io/rust-clippy/master/index.html#manual_range_contains)
-* [use_self](https://rust-lang.github.io/rust-clippy/master/index.html#use_self)
-* [mem_replace_with_default](https://rust-lang.github.io/rust-clippy/master/index.html#mem_replace_with_default)
-* [manual_non_exhaustive](https://rust-lang.github.io/rust-clippy/master/index.html#manual_non_exhaustive)
-* [option_as_ref_deref](https://rust-lang.github.io/rust-clippy/master/index.html#option_as_ref_deref)
-* [map_unwrap_or](https://rust-lang.github.io/rust-clippy/master/index.html#map_unwrap_or)
-* [match_like_matches_macro](https://rust-lang.github.io/rust-clippy/master/index.html#match_like_matches_macro)
-* [manual_strip](https://rust-lang.github.io/rust-clippy/master/index.html#manual_strip)
-* [missing_const_for_fn](https://rust-lang.github.io/rust-clippy/master/index.html#missing_const_for_fn)
-* [unnested_or_patterns](https://rust-lang.github.io/rust-clippy/master/index.html#unnested_or_patterns)
-* [from_over_into](https://rust-lang.github.io/rust-clippy/master/index.html#from_over_into)
-* [ptr_as_ptr](https://rust-lang.github.io/rust-clippy/master/index.html#ptr_as_ptr)
-* [if_then_some_else_none](https://rust-lang.github.io/rust-clippy/master/index.html#if_then_some_else_none)
-* [approx_constant](https://rust-lang.github.io/rust-clippy/master/index.html#approx_constant)
-* [deprecated_cfg_attr](https://rust-lang.github.io/rust-clippy/master/index.html#deprecated_cfg_attr)
-* [index_refutable_slice](https://rust-lang.github.io/rust-clippy/master/index.html#index_refutable_slice)
-* [map_clone](https://rust-lang.github.io/rust-clippy/master/index.html#map_clone)
-* [borrow_as_ptr](https://rust-lang.github.io/rust-clippy/master/index.html#borrow_as_ptr)
-* [manual_bits](https://rust-lang.github.io/rust-clippy/master/index.html#manual_bits)
-* [err_expect](https://rust-lang.github.io/rust-clippy/master/index.html#err_expect)
-* [cast_abs_to_unsigned](https://rust-lang.github.io/rust-clippy/master/index.html#cast_abs_to_unsigned)
-* [uninlined_format_args](https://rust-lang.github.io/rust-clippy/master/index.html#uninlined_format_args)
-* [manual_clamp](https://rust-lang.github.io/rust-clippy/master/index.html#manual_clamp)
-* [manual_let_else](https://rust-lang.github.io/rust-clippy/master/index.html#manual_let_else)
-* [unchecked_duration_subtraction](https://rust-lang.github.io/rust-clippy/master/index.html#unchecked_duration_subtraction)
-* [collapsible_str_replace](https://rust-lang.github.io/rust-clippy/master/index.html#collapsible_str_replace)
-* [seek_from_current](https://rust-lang.github.io/rust-clippy/master/index.html#seek_from_current)
-* [seek_rewind](https://rust-lang.github.io/rust-clippy/master/index.html#seek_rewind)
-* [unnecessary_lazy_evaluations](https://rust-lang.github.io/rust-clippy/master/index.html#unnecessary_lazy_evaluations)
-* [transmute_ptr_to_ref](https://rust-lang.github.io/rust-clippy/master/index.html#transmute_ptr_to_ref)
-* [almost_complete_range](https://rust-lang.github.io/rust-clippy/master/index.html#almost_complete_range)
-* [needless_borrow](https://rust-lang.github.io/rust-clippy/master/index.html#needless_borrow)
-* [derivable_impls](https://rust-lang.github.io/rust-clippy/master/index.html#derivable_impls)
-* [manual_is_ascii_check](https://rust-lang.github.io/rust-clippy/master/index.html#manual_is_ascii_check)
-* [manual_rem_euclid](https://rust-lang.github.io/rust-clippy/master/index.html#manual_rem_euclid)
-* [manual_retain](https://rust-lang.github.io/rust-clippy/master/index.html#manual_retain)
+* [manual_split_once](https://crablang.github.io/crablang-clippy/master/index.html#manual_split_once)
+* [manual_str_repeat](https://crablang.github.io/crablang-clippy/master/index.html#manual_str_repeat)
+* [cloned_instead_of_copied](https://crablang.github.io/crablang-clippy/master/index.html#cloned_instead_of_copied)
+* [redundant_field_names](https://crablang.github.io/crablang-clippy/master/index.html#redundant_field_names)
+* [redundant_static_lifetimes](https://crablang.github.io/crablang-clippy/master/index.html#redundant_static_lifetimes)
+* [filter_map_next](https://crablang.github.io/crablang-clippy/master/index.html#filter_map_next)
+* [checked_conversions](https://crablang.github.io/crablang-clippy/master/index.html#checked_conversions)
+* [manual_range_contains](https://crablang.github.io/crablang-clippy/master/index.html#manual_range_contains)
+* [use_self](https://crablang.github.io/crablang-clippy/master/index.html#use_self)
+* [mem_replace_with_default](https://crablang.github.io/crablang-clippy/master/index.html#mem_replace_with_default)
+* [manual_non_exhaustive](https://crablang.github.io/crablang-clippy/master/index.html#manual_non_exhaustive)
+* [option_as_ref_deref](https://crablang.github.io/crablang-clippy/master/index.html#option_as_ref_deref)
+* [map_unwrap_or](https://crablang.github.io/crablang-clippy/master/index.html#map_unwrap_or)
+* [match_like_matches_macro](https://crablang.github.io/crablang-clippy/master/index.html#match_like_matches_macro)
+* [manual_strip](https://crablang.github.io/crablang-clippy/master/index.html#manual_strip)
+* [missing_const_for_fn](https://crablang.github.io/crablang-clippy/master/index.html#missing_const_for_fn)
+* [unnested_or_patterns](https://crablang.github.io/crablang-clippy/master/index.html#unnested_or_patterns)
+* [from_over_into](https://crablang.github.io/crablang-clippy/master/index.html#from_over_into)
+* [ptr_as_ptr](https://crablang.github.io/crablang-clippy/master/index.html#ptr_as_ptr)
+* [if_then_some_else_none](https://crablang.github.io/crablang-clippy/master/index.html#if_then_some_else_none)
+* [approx_constant](https://crablang.github.io/crablang-clippy/master/index.html#approx_constant)
+* [deprecated_cfg_attr](https://crablang.github.io/crablang-clippy/master/index.html#deprecated_cfg_attr)
+* [index_refutable_slice](https://crablang.github.io/crablang-clippy/master/index.html#index_refutable_slice)
+* [map_clone](https://crablang.github.io/crablang-clippy/master/index.html#map_clone)
+* [borrow_as_ptr](https://crablang.github.io/crablang-clippy/master/index.html#borrow_as_ptr)
+* [manual_bits](https://crablang.github.io/crablang-clippy/master/index.html#manual_bits)
+* [err_expect](https://crablang.github.io/crablang-clippy/master/index.html#err_expect)
+* [cast_abs_to_unsigned](https://crablang.github.io/crablang-clippy/master/index.html#cast_abs_to_unsigned)
+* [uninlined_format_args](https://crablang.github.io/crablang-clippy/master/index.html#uninlined_format_args)
+* [manual_clamp](https://crablang.github.io/crablang-clippy/master/index.html#manual_clamp)
+* [manual_let_else](https://crablang.github.io/crablang-clippy/master/index.html#manual_let_else)
+* [unchecked_duration_subtraction](https://crablang.github.io/crablang-clippy/master/index.html#unchecked_duration_subtraction)
+* [collapsible_str_replace](https://crablang.github.io/crablang-clippy/master/index.html#collapsible_str_replace)
+* [seek_from_current](https://crablang.github.io/crablang-clippy/master/index.html#seek_from_current)
+* [seek_rewind](https://crablang.github.io/crablang-clippy/master/index.html#seek_rewind)
+* [unnecessary_lazy_evaluations](https://crablang.github.io/crablang-clippy/master/index.html#unnecessary_lazy_evaluations)
+* [transmute_ptr_to_ref](https://crablang.github.io/crablang-clippy/master/index.html#transmute_ptr_to_ref)
+* [almost_complete_range](https://crablang.github.io/crablang-clippy/master/index.html#almost_complete_range)
+* [needless_borrow](https://crablang.github.io/crablang-clippy/master/index.html#needless_borrow)
+* [derivable_impls](https://crablang.github.io/crablang-clippy/master/index.html#derivable_impls)
+* [manual_is_ascii_check](https://crablang.github.io/crablang-clippy/master/index.html#manual_is_ascii_check)
+* [manual_rem_euclid](https://crablang.github.io/crablang-clippy/master/index.html#manual_rem_euclid)
+* [manual_retain](https://crablang.github.io/crablang-clippy/master/index.html#manual_retain)
 
 
 ### cognitive-complexity-threshold
@@ -187,7 +187,7 @@ The maximum cognitive complexity a function can have
 
 **Default Value:** `25` (`u64`)
 
-* [cognitive_complexity](https://rust-lang.github.io/rust-clippy/master/index.html#cognitive_complexity)
+* [cognitive_complexity](https://crablang.github.io/crablang-clippy/master/index.html#cognitive_complexity)
 
 
 ### disallowed-names
@@ -197,7 +197,7 @@ default configuration of Clippy. By default any configuration will replace the d
 
 **Default Value:** `["foo", "baz", "quux"]` (`Vec<String>`)
 
-* [disallowed_names](https://rust-lang.github.io/rust-clippy/master/index.html#disallowed_names)
+* [disallowed_names](https://crablang.github.io/crablang-clippy/master/index.html#disallowed_names)
 
 
 ### doc-valid-idents
@@ -211,7 +211,7 @@ Default list:
 
 **Default Value:** `["KiB", "MiB", "GiB", "TiB", "PiB", "EiB", "DirectX", "ECMAScript", "GPLv2", "GPLv3", "GitHub", "GitLab", "IPv4", "IPv6", "ClojureScript", "CoffeeScript", "JavaScript", "PureScript", "TypeScript", "NaN", "NaNs", "OAuth", "GraphQL", "OCaml", "OpenGL", "OpenMP", "OpenSSH", "OpenSSL", "OpenStreetMap", "OpenDNS", "WebGL", "TensorFlow", "TrueType", "iOS", "macOS", "FreeBSD", "TeX", "LaTeX", "BibTeX", "BibLaTeX", "MinGW", "CamelCase"]` (`Vec<String>`)
 
-* [doc_markdown](https://rust-lang.github.io/rust-clippy/master/index.html#doc_markdown)
+* [doc_markdown](https://crablang.github.io/crablang-clippy/master/index.html#doc_markdown)
 
 
 ### too-many-arguments-threshold
@@ -219,7 +219,7 @@ The maximum number of argument a function or method can have
 
 **Default Value:** `7` (`u64`)
 
-* [too_many_arguments](https://rust-lang.github.io/rust-clippy/master/index.html#too_many_arguments)
+* [too_many_arguments](https://crablang.github.io/crablang-clippy/master/index.html#too_many_arguments)
 
 
 ### type-complexity-threshold
@@ -227,7 +227,7 @@ The maximum complexity a type can have
 
 **Default Value:** `250` (`u64`)
 
-* [type_complexity](https://rust-lang.github.io/rust-clippy/master/index.html#type_complexity)
+* [type_complexity](https://crablang.github.io/crablang-clippy/master/index.html#type_complexity)
 
 
 ### single-char-binding-names-threshold
@@ -235,7 +235,7 @@ The maximum number of single char bindings a scope may have
 
 **Default Value:** `4` (`u64`)
 
-* [many_single_char_names](https://rust-lang.github.io/rust-clippy/master/index.html#many_single_char_names)
+* [many_single_char_names](https://crablang.github.io/crablang-clippy/master/index.html#many_single_char_names)
 
 
 ### too-large-for-stack
@@ -243,8 +243,8 @@ The maximum size of objects (in bytes) that will be linted. Larger objects are o
 
 **Default Value:** `200` (`u64`)
 
-* [boxed_local](https://rust-lang.github.io/rust-clippy/master/index.html#boxed_local)
-* [useless_vec](https://rust-lang.github.io/rust-clippy/master/index.html#useless_vec)
+* [boxed_local](https://crablang.github.io/crablang-clippy/master/index.html#boxed_local)
+* [useless_vec](https://crablang.github.io/crablang-clippy/master/index.html#useless_vec)
 
 
 ### enum-variant-name-threshold
@@ -252,7 +252,7 @@ The minimum number of enum variants for the lints about variant names to trigger
 
 **Default Value:** `3` (`u64`)
 
-* [enum_variant_names](https://rust-lang.github.io/rust-clippy/master/index.html#enum_variant_names)
+* [enum_variant_names](https://crablang.github.io/crablang-clippy/master/index.html#enum_variant_names)
 
 
 ### enum-variant-size-threshold
@@ -260,7 +260,7 @@ The maximum size of an enum's variant to avoid box suggestion
 
 **Default Value:** `200` (`u64`)
 
-* [large_enum_variant](https://rust-lang.github.io/rust-clippy/master/index.html#large_enum_variant)
+* [large_enum_variant](https://crablang.github.io/crablang-clippy/master/index.html#large_enum_variant)
 
 
 ### verbose-bit-mask-threshold
@@ -268,7 +268,7 @@ The maximum allowed size of a bit mask before suggesting to use 'trailing_zeros'
 
 **Default Value:** `1` (`u64`)
 
-* [verbose_bit_mask](https://rust-lang.github.io/rust-clippy/master/index.html#verbose_bit_mask)
+* [verbose_bit_mask](https://crablang.github.io/crablang-clippy/master/index.html#verbose_bit_mask)
 
 
 ### literal-representation-threshold
@@ -276,7 +276,7 @@ The lower bound for linting decimal literals
 
 **Default Value:** `16384` (`u64`)
 
-* [decimal_literal_representation](https://rust-lang.github.io/rust-clippy/master/index.html#decimal_literal_representation)
+* [decimal_literal_representation](https://crablang.github.io/crablang-clippy/master/index.html#decimal_literal_representation)
 
 
 ### trivial-copy-size-limit
@@ -284,7 +284,7 @@ The maximum size (in bytes) to consider a `Copy` type for passing by value inste
 
 **Default Value:** `None` (`Option<u64>`)
 
-* [trivially_copy_pass_by_ref](https://rust-lang.github.io/rust-clippy/master/index.html#trivially_copy_pass_by_ref)
+* [trivially_copy_pass_by_ref](https://crablang.github.io/crablang-clippy/master/index.html#trivially_copy_pass_by_ref)
 
 
 ### pass-by-value-size-limit
@@ -292,7 +292,7 @@ The minimum size (in bytes) to consider a type for passing by reference instead 
 
 **Default Value:** `256` (`u64`)
 
-* [large_types_passed_by_value](https://rust-lang.github.io/rust-clippy/master/index.html#large_types_passed_by_value)
+* [large_types_passed_by_value](https://crablang.github.io/crablang-clippy/master/index.html#large_types_passed_by_value)
 
 
 ### too-many-lines-threshold
@@ -300,7 +300,7 @@ The maximum number of lines a function or method can have
 
 **Default Value:** `100` (`u64`)
 
-* [too_many_lines](https://rust-lang.github.io/rust-clippy/master/index.html#too_many_lines)
+* [too_many_lines](https://crablang.github.io/crablang-clippy/master/index.html#too_many_lines)
 
 
 ### array-size-threshold
@@ -308,8 +308,8 @@ The maximum allowed size for arrays on the stack
 
 **Default Value:** `512000` (`u64`)
 
-* [large_stack_arrays](https://rust-lang.github.io/rust-clippy/master/index.html#large_stack_arrays)
-* [large_const_arrays](https://rust-lang.github.io/rust-clippy/master/index.html#large_const_arrays)
+* [large_stack_arrays](https://crablang.github.io/crablang-clippy/master/index.html#large_stack_arrays)
+* [large_const_arrays](https://crablang.github.io/crablang-clippy/master/index.html#large_const_arrays)
 
 
 ### vec-box-size-threshold
@@ -317,7 +317,7 @@ The size of the boxed type in bytes, where boxing in a `Vec` is allowed
 
 **Default Value:** `4096` (`u64`)
 
-* [vec_box](https://rust-lang.github.io/rust-clippy/master/index.html#vec_box)
+* [vec_box](https://crablang.github.io/crablang-clippy/master/index.html#vec_box)
 
 
 ### max-trait-bounds
@@ -325,7 +325,7 @@ The maximum number of bounds a trait can have to be linted
 
 **Default Value:** `3` (`u64`)
 
-* [type_repetition_in_bounds](https://rust-lang.github.io/rust-clippy/master/index.html#type_repetition_in_bounds)
+* [type_repetition_in_bounds](https://crablang.github.io/crablang-clippy/master/index.html#type_repetition_in_bounds)
 
 
 ### max-struct-bools
@@ -333,7 +333,7 @@ The maximum number of bool fields a struct can have
 
 **Default Value:** `3` (`u64`)
 
-* [struct_excessive_bools](https://rust-lang.github.io/rust-clippy/master/index.html#struct_excessive_bools)
+* [struct_excessive_bools](https://crablang.github.io/crablang-clippy/master/index.html#struct_excessive_bools)
 
 
 ### max-fn-params-bools
@@ -341,7 +341,7 @@ The maximum number of bool parameters a function can have
 
 **Default Value:** `3` (`u64`)
 
-* [fn_params_excessive_bools](https://rust-lang.github.io/rust-clippy/master/index.html#fn_params_excessive_bools)
+* [fn_params_excessive_bools](https://crablang.github.io/crablang-clippy/master/index.html#fn_params_excessive_bools)
 
 
 ### warn-on-all-wildcard-imports
@@ -349,7 +349,7 @@ Whether to allow certain wildcard imports (prelude, super in tests).
 
 **Default Value:** `false` (`bool`)
 
-* [wildcard_imports](https://rust-lang.github.io/rust-clippy/master/index.html#wildcard_imports)
+* [wildcard_imports](https://crablang.github.io/crablang-clippy/master/index.html#wildcard_imports)
 
 
 ### disallowed-macros
@@ -357,7 +357,7 @@ The list of disallowed macros, written as fully qualified paths.
 
 **Default Value:** `[]` (`Vec<crate::utils::conf::DisallowedPath>`)
 
-* [disallowed_macros](https://rust-lang.github.io/rust-clippy/master/index.html#disallowed_macros)
+* [disallowed_macros](https://crablang.github.io/crablang-clippy/master/index.html#disallowed_macros)
 
 
 ### disallowed-methods
@@ -365,7 +365,7 @@ The list of disallowed methods, written as fully qualified paths.
 
 **Default Value:** `[]` (`Vec<crate::utils::conf::DisallowedPath>`)
 
-* [disallowed_methods](https://rust-lang.github.io/rust-clippy/master/index.html#disallowed_methods)
+* [disallowed_methods](https://crablang.github.io/crablang-clippy/master/index.html#disallowed_methods)
 
 
 ### disallowed-types
@@ -373,7 +373,7 @@ The list of disallowed types, written as fully qualified paths.
 
 **Default Value:** `[]` (`Vec<crate::utils::conf::DisallowedPath>`)
 
-* [disallowed_types](https://rust-lang.github.io/rust-clippy/master/index.html#disallowed_types)
+* [disallowed_types](https://crablang.github.io/crablang-clippy/master/index.html#disallowed_types)
 
 
 ### unreadable-literal-lint-fractions
@@ -381,7 +381,7 @@ Should the fraction of a decimal be linted to include separators.
 
 **Default Value:** `true` (`bool`)
 
-* [unreadable_literal](https://rust-lang.github.io/rust-clippy/master/index.html#unreadable_literal)
+* [unreadable_literal](https://crablang.github.io/crablang-clippy/master/index.html#unreadable_literal)
 
 
 ### upper-case-acronyms-aggressive
@@ -389,7 +389,7 @@ Enables verbose mode. Triggers if there is more than one uppercase char next to 
 
 **Default Value:** `false` (`bool`)
 
-* [upper_case_acronyms](https://rust-lang.github.io/rust-clippy/master/index.html#upper_case_acronyms)
+* [upper_case_acronyms](https://crablang.github.io/crablang-clippy/master/index.html#upper_case_acronyms)
 
 
 ### matches-for-let-else
@@ -398,7 +398,7 @@ be filtering for common types.
 
 **Default Value:** `WellKnownTypes` (`crate::manual_let_else::MatchLintBehaviour`)
 
-* [manual_let_else](https://rust-lang.github.io/rust-clippy/master/index.html#manual_let_else)
+* [manual_let_else](https://crablang.github.io/crablang-clippy/master/index.html#manual_let_else)
 
 
 ### cargo-ignore-publish
@@ -406,7 +406,7 @@ For internal testing only, ignores the current `publish` settings in the Cargo m
 
 **Default Value:** `false` (`bool`)
 
-* [_cargo_common_metadata](https://rust-lang.github.io/rust-clippy/master/index.html#_cargo_common_metadata)
+* [_cargo_common_metadata](https://crablang.github.io/crablang-clippy/master/index.html#_cargo_common_metadata)
 
 
 ### standard-macro-braces
@@ -418,7 +418,7 @@ is could be used with a full path two `MacroMatcher`s have to be added one with 
 
 **Default Value:** `[]` (`Vec<crate::nonstandard_macro_braces::MacroMatcher>`)
 
-* [nonstandard_macro_braces](https://rust-lang.github.io/rust-clippy/master/index.html#nonstandard_macro_braces)
+* [nonstandard_macro_braces](https://crablang.github.io/crablang-clippy/master/index.html#nonstandard_macro_braces)
 
 
 ### enforced-import-renames
@@ -426,7 +426,7 @@ The list of imports to always rename, a fully qualified path followed by the ren
 
 **Default Value:** `[]` (`Vec<crate::utils::conf::Rename>`)
 
-* [missing_enforced_import_renames](https://rust-lang.github.io/rust-clippy/master/index.html#missing_enforced_import_renames)
+* [missing_enforced_import_renames](https://crablang.github.io/crablang-clippy/master/index.html#missing_enforced_import_renames)
 
 
 ### allowed-scripts
@@ -434,7 +434,7 @@ The list of unicode scripts allowed to be used in the scope.
 
 **Default Value:** `["Latin"]` (`Vec<String>`)
 
-* [disallowed_script_idents](https://rust-lang.github.io/rust-clippy/master/index.html#disallowed_script_idents)
+* [disallowed_script_idents](https://crablang.github.io/crablang-clippy/master/index.html#disallowed_script_idents)
 
 
 ### enable-raw-pointer-heuristic-for-send
@@ -442,7 +442,7 @@ Whether to apply the raw pointer heuristic to determine if a type is `Send`.
 
 **Default Value:** `true` (`bool`)
 
-* [non_send_fields_in_send_ty](https://rust-lang.github.io/rust-clippy/master/index.html#non_send_fields_in_send_ty)
+* [non_send_fields_in_send_ty](https://crablang.github.io/crablang-clippy/master/index.html#non_send_fields_in_send_ty)
 
 
 ### max-suggested-slice-pattern-length
@@ -452,7 +452,7 @@ For example, `[_, _, _, e, ..]` is a slice pattern with 4 elements.
 
 **Default Value:** `3` (`u64`)
 
-* [index_refutable_slice](https://rust-lang.github.io/rust-clippy/master/index.html#index_refutable_slice)
+* [index_refutable_slice](https://crablang.github.io/crablang-clippy/master/index.html#index_refutable_slice)
 
 
 ### await-holding-invalid-types
@@ -460,7 +460,7 @@ For example, `[_, _, _, e, ..]` is a slice pattern with 4 elements.
 
 **Default Value:** `[]` (`Vec<crate::utils::conf::DisallowedPath>`)
 
-* [await_holding_invalid_type](https://rust-lang.github.io/rust-clippy/master/index.html#await_holding_invalid_type)
+* [await_holding_invalid_type](https://crablang.github.io/crablang-clippy/master/index.html#await_holding_invalid_type)
 
 
 ### max-include-file-size
@@ -468,7 +468,7 @@ The maximum size of a file included via `include_bytes!()` or `include_str!()`, 
 
 **Default Value:** `1000000` (`u64`)
 
-* [large_include_file](https://rust-lang.github.io/rust-clippy/master/index.html#large_include_file)
+* [large_include_file](https://crablang.github.io/crablang-clippy/master/index.html#large_include_file)
 
 
 ### allow-expect-in-tests
@@ -476,7 +476,7 @@ Whether `expect` should be allowed in test functions or `#[cfg(test)]`
 
 **Default Value:** `false` (`bool`)
 
-* [expect_used](https://rust-lang.github.io/rust-clippy/master/index.html#expect_used)
+* [expect_used](https://crablang.github.io/crablang-clippy/master/index.html#expect_used)
 
 
 ### allow-unwrap-in-tests
@@ -484,7 +484,7 @@ Whether `unwrap` should be allowed in test functions or `#[cfg(test)]`
 
 **Default Value:** `false` (`bool`)
 
-* [unwrap_used](https://rust-lang.github.io/rust-clippy/master/index.html#unwrap_used)
+* [unwrap_used](https://crablang.github.io/crablang-clippy/master/index.html#unwrap_used)
 
 
 ### allow-dbg-in-tests
@@ -492,7 +492,7 @@ Whether `dbg!` should be allowed in test functions or `#[cfg(test)]`
 
 **Default Value:** `false` (`bool`)
 
-* [dbg_macro](https://rust-lang.github.io/rust-clippy/master/index.html#dbg_macro)
+* [dbg_macro](https://crablang.github.io/crablang-clippy/master/index.html#dbg_macro)
 
 
 ### allow-print-in-tests
@@ -500,8 +500,8 @@ Whether print macros (ex. `println!`) should be allowed in test functions or `#[
 
 **Default Value:** `false` (`bool`)
 
-* [print_stdout](https://rust-lang.github.io/rust-clippy/master/index.html#print_stdout)
-* [print_stderr](https://rust-lang.github.io/rust-clippy/master/index.html#print_stderr)
+* [print_stdout](https://crablang.github.io/crablang-clippy/master/index.html#print_stdout)
+* [print_stderr](https://crablang.github.io/crablang-clippy/master/index.html#print_stderr)
 
 
 ### large-error-threshold
@@ -509,7 +509,7 @@ The maximum size of the `Err`-variant in a `Result` returned from a function
 
 **Default Value:** `128` (`u64`)
 
-* [result_large_err](https://rust-lang.github.io/rust-clippy/master/index.html#result_large_err)
+* [result_large_err](https://crablang.github.io/crablang-clippy/master/index.html#result_large_err)
 
 
 ### ignore-interior-mutability
@@ -518,8 +518,8 @@ for the generic parameters for determining interior mutability
 
 **Default Value:** `["bytes::Bytes"]` (`Vec<String>`)
 
-* [mutable_key_type](https://rust-lang.github.io/rust-clippy/master/index.html#mutable_key_type)
-* [ifs_same_cond](https://rust-lang.github.io/rust-clippy/master/index.html#ifs_same_cond)
+* [mutable_key_type](https://crablang.github.io/crablang-clippy/master/index.html#mutable_key_type)
+* [ifs_same_cond](https://crablang.github.io/crablang-clippy/master/index.html#ifs_same_cond)
 
 
 ### allow-mixed-uninlined-format-args
@@ -527,7 +527,7 @@ Whether to allow mixed uninlined format args, e.g. `format!("{} {}", a, foo.bar)
 
 **Default Value:** `true` (`bool`)
 
-* [uninlined_format_args](https://rust-lang.github.io/rust-clippy/master/index.html#uninlined_format_args)
+* [uninlined_format_args](https://crablang.github.io/crablang-clippy/master/index.html#uninlined_format_args)
 
 
 ### suppress-restriction-lint-in-const
@@ -539,7 +539,7 @@ if no suggestion can be made.
 
 **Default Value:** `false` (`bool`)
 
-* [indexing_slicing](https://rust-lang.github.io/rust-clippy/master/index.html#indexing_slicing)
+* [indexing_slicing](https://crablang.github.io/crablang-clippy/master/index.html#indexing_slicing)
 
 
 ### missing-docs-in-crate-items
@@ -548,7 +548,7 @@ crate. For example, `pub(crate)` items.
 
 **Default Value:** `false` (`bool`)
 
-* [missing_docs_in_private_items](https://rust-lang.github.io/rust-clippy/master/index.html#missing_docs_in_private_items)
+* [missing_docs_in_private_items](https://crablang.github.io/crablang-clippy/master/index.html#missing_docs_in_private_items)
 
 
 

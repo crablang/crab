@@ -1,5 +1,5 @@
 use clippy_utils::ty::{read_explicit_enum_value, EnumValue};
-use rustc_middle::ty::{self, AdtDef, IntTy, Ty, TyCtxt, UintTy, VariantDiscr};
+use crablangc_middle::ty::{self, AdtDef, IntTy, Ty, TyCtxt, UintTy, VariantDiscr};
 
 /// Returns the size in bits of an integral type.
 /// Will return 0 if the type is not an int or uint variant

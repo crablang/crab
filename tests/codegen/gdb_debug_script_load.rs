@@ -9,7 +9,7 @@
 #![feature(start)]
 
 // CHECK-LABEL: @main
-// CHECK: load volatile i8, {{.+}} @__rustc_debug_gdb_scripts_section__
+// CHECK: load volatile i8, {{.+}} @__crablangc_debug_gdb_scripts_section__
 
 #[start]
 fn start(_: isize, _: *const *const u8) -> isize {

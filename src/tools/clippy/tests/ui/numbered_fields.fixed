@@ -1,4 +1,4 @@
-//run-rustfix
+//run-crablangfix
 #![warn(clippy::init_numbered_fields)]
 #![allow(unused_tuple_struct_fields)]
 

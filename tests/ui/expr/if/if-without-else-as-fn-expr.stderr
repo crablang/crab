@@ -80,4 +80,4 @@ LL | |     }
 
 error: aborting due to 6 previous errors
 
-For more information about this error, try `rustc --explain E0317`.
+For more information about this error, try `crablangc --explain E0317`.

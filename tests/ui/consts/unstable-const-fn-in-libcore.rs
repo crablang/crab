@@ -12,8 +12,8 @@ enum Opt<T> {
 }
 
 impl<T> Opt<T> {
-    #[rustc_const_unstable(feature = "foo", issue = "none")]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[crablangc_const_unstable(feature = "foo", issue = "none")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     const fn unwrap_or_else<F: ~const FnOnce() -> T>(self, f: F) -> T {
     //~^ ERROR destructor of
     //~| ERROR destructor of

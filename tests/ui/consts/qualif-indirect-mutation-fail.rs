@@ -54,7 +54,7 @@ pub const fn address_of_mut() {
 }
 
 // Const raw reference to a Drop type. Conservatively assumed to allow mutation
-// until resolution of https://github.com/rust-lang/rust/issues/56604.
+// until resolution of https://github.com/crablang/crablang/issues/56604.
 pub const fn address_of_const() {
     let x: Option<String> = None; //~ ERROR destructor of
     &raw const x;

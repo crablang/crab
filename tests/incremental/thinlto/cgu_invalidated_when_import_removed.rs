@@ -2,7 +2,7 @@
 // compile-flags: -O -Zhuman-readable-cgu-names -Cllvm-args=-import-instr-limit=10
 // build-pass
 
-// rust-lang/rust#59535:
+// crablang/crablang#59535:
 //
 // Consider a call-graph like `[A] -> [B -> D] <- [C]` (where the letters are
 // functions and the modules are enclosed in `[]`)
@@ -16,13 +16,13 @@
 //
 // The change between incremental builds was that the call `D <- C` was removed.
 //
-// That change, coupled with other decisions within `rustc`, made the compiler
+// That change, coupled with other decisions within `crablangc`, made the compiler
 // decide to make `D` an internal symbol (since it was no longer accessed from
 // other codegen units, this makes sense locally). And then the definition of
 // `D` was inlined into `B` and `D` itself was eliminated entirely.
 //
 // The current LTO import information reported that `B` alone is imported into
-// `[A]` for the *current compilation*. So when the Rust compiler surveyed the
+// `[A]` for the *current compilation*. So when the CrabLang compiler surveyed the
 // dependence graph, it determined that nothing `[A]` imports changed since the
 // last build (and `[A]` itself has not changed either), so it chooses to reuse
 // the object code generated during the previous compilation.

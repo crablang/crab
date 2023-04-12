@@ -1,6 +1,6 @@
 // build-fail
 // compile-flags:-Zpolymorphize=on -Zinline-mir=off
-#![feature(generic_const_exprs, generators, generator_trait, rustc_attrs)]
+#![feature(generic_const_exprs, generators, generator_trait, crablangc_attrs)]
 //~^ WARN the feature `generic_const_exprs` is incomplete
 
 use std::marker::Unpin;
@@ -30,7 +30,7 @@ where
 
 // This test checks that the polymorphization analysis functions on generators.
 
-#[rustc_polymorphize_error]
+#[crablangc_polymorphize_error]
 pub fn unused_type<T>() -> impl Generator<(), Yield = u32, Return = u32> + Unpin {
     || {
         //~^ ERROR item has unused generic parameters
@@ -39,7 +39,7 @@ pub fn unused_type<T>() -> impl Generator<(), Yield = u32, Return = u32> + Unpin
     }
 }
 
-#[rustc_polymorphize_error]
+#[crablangc_polymorphize_error]
 pub fn used_type_in_yield<Y: Default>() -> impl Generator<(), Yield = Y, Return = u32> + Unpin {
     || {
         yield Y::default();
@@ -47,7 +47,7 @@ pub fn used_type_in_yield<Y: Default>() -> impl Generator<(), Yield = Y, Return 
     }
 }
 
-#[rustc_polymorphize_error]
+#[crablangc_polymorphize_error]
 pub fn used_type_in_return<R: Default>() -> impl Generator<(), Yield = u32, Return = R> + Unpin {
     || {
         yield 3;
@@ -55,7 +55,7 @@ pub fn used_type_in_return<R: Default>() -> impl Generator<(), Yield = u32, Retu
     }
 }
 
-#[rustc_polymorphize_error]
+#[crablangc_polymorphize_error]
 pub fn unused_const<const T: u32>() -> impl Generator<(), Yield = u32, Return = u32> + Unpin {
     || {
         //~^ ERROR item has unused generic parameters
@@ -64,7 +64,7 @@ pub fn unused_const<const T: u32>() -> impl Generator<(), Yield = u32, Return = 
     }
 }
 
-#[rustc_polymorphize_error]
+#[crablangc_polymorphize_error]
 pub fn used_const_in_yield<const Y: u32>() -> impl Generator<(), Yield = u32, Return = u32> + Unpin
 {
     || {
@@ -73,7 +73,7 @@ pub fn used_const_in_yield<const Y: u32>() -> impl Generator<(), Yield = u32, Re
     }
 }
 
-#[rustc_polymorphize_error]
+#[crablangc_polymorphize_error]
 pub fn used_const_in_return<const R: u32>() -> impl Generator<(), Yield = u32, Return = u32> + Unpin
 {
     || {

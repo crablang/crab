@@ -35,9 +35,9 @@ macro_rules! dump_and_die {
         // in libstd without going further. Presumably the addition of frame
         // pointers and/or debuginfo fixes this since tests always work with
         // nightly compilers (which have debuginfo). In general though this test
-        // is replicated in rust-lang/backtrace-rs and has extensive coverage
+        // is replicated in crablang/backtrace-rs and has extensive coverage
         // there, even on i686-pc-windows-msvc. We do the best we can in
-        // rust-lang/rust to test it as well, but sometimes we just gotta keep
+        // crablang/crablang to test it as well, but sometimes we just gotta keep
         // landing PRs.
         if cfg!(any(target_os = "android",
                     all(target_os = "linux", target_arch = "arm"),
@@ -151,7 +151,7 @@ fn run_test(me: &str) {
     let mut errors = Vec::new();
     loop {
         let out = Command::new(me)
-                          .env("RUST_BACKTRACE", "full")
+                          .env("CRABLANG_BACKTRACE", "full")
                           .arg(i.to_string()).output().unwrap();
         let output = str::from_utf8(&out.stdout).unwrap();
         let error = str::from_utf8(&out.stderr).unwrap();

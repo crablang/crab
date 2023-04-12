@@ -4,7 +4,7 @@
 // i.e. the capture doesn't deref the raw ptr.
 
 
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 
 #[derive(Debug)]
 struct S {
@@ -22,9 +22,9 @@ fn unsafe_imm() {
     let p : *const S = Box::into_raw(my_speed);
     let t = T(p);
 
-    let c = #[rustc_capture_analysis]
+    let c = #[crablangc_capture_analysis]
     //~^ ERROR: attributes on expressions are experimental
-    //~| NOTE: see issue #15701 <https://github.com/rust-lang/rust/issues/15701>
+    //~| NOTE: see issue #15701 <https://github.com/crablang/crablang/issues/15701>
      || unsafe {
     //~^ ERROR: First Pass analysis includes:
     //~| ERROR: Min Capture analysis includes:
@@ -42,9 +42,9 @@ fn unsafe_mut() {
     let mut my_speed: Box<S> = Box::new(S { s, t });
     let p : *mut S = &mut *my_speed;
 
-    let c = #[rustc_capture_analysis]
+    let c = #[crablangc_capture_analysis]
     //~^ ERROR: attributes on expressions are experimental
-    //~| NOTE: see issue #15701 <https://github.com/rust-lang/rust/issues/15701>
+    //~| NOTE: see issue #15701 <https://github.com/crablang/crablang/issues/15701>
     || {
     //~^ ERROR: First Pass analysis includes:
     //~| ERROR: Min Capture analysis includes:

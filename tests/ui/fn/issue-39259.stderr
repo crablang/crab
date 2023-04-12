@@ -12,4 +12,4 @@ LL | impl Fn(u32) -> u32 for S {
 
 error: aborting due to previous error
 
-For more information about this error, try `rustc --explain E0229`.
+For more information about this error, try `crablangc --explain E0229`.

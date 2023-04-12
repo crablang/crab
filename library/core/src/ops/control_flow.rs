@@ -80,7 +80,7 @@ use crate::{convert, ops};
 /// [`Continue`]: ControlFlow::Continue
 #[stable(feature = "control_flow_enum_type", since = "1.55.0")]
 // ControlFlow should not implement PartialOrd or Ord, per RFC 3058:
-// https://rust-lang.github.io/rfcs/3058-try-trait-v2.html#traits-for-controlflow
+// https://crablang.github.io/rfcs/3058-try-trait-v2.html#traits-for-controlflow
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum ControlFlow<B, C = ()> {
     /// Move on to the next phase of the operation as normal.
@@ -97,7 +97,7 @@ pub enum ControlFlow<B, C = ()> {
 }
 
 #[unstable(feature = "try_trait_v2", issue = "84277")]
-#[rustc_const_unstable(feature = "const_convert", issue = "88674")]
+#[crablangc_const_unstable(feature = "const_convert", issue = "88674")]
 impl<B, C> const ops::Try for ControlFlow<B, C> {
     type Output = C;
     type Residual = ControlFlow<B, convert::Infallible>;
@@ -117,7 +117,7 @@ impl<B, C> const ops::Try for ControlFlow<B, C> {
 }
 
 #[unstable(feature = "try_trait_v2", issue = "84277")]
-#[rustc_const_unstable(feature = "const_convert", issue = "88674")]
+#[crablangc_const_unstable(feature = "const_convert", issue = "88674")]
 impl<B, C> const ops::FromResidual for ControlFlow<B, C> {
     #[inline]
     fn from_residual(residual: ControlFlow<B, convert::Infallible>) -> Self {
@@ -128,7 +128,7 @@ impl<B, C> const ops::FromResidual for ControlFlow<B, C> {
 }
 
 #[unstable(feature = "try_trait_v2_residual", issue = "91285")]
-#[rustc_const_unstable(feature = "const_try", issue = "74935")]
+#[crablangc_const_unstable(feature = "const_try", issue = "74935")]
 impl<B, C> const ops::Residual<C> for ControlFlow<B, convert::Infallible> {
     type TryType = ControlFlow<B, C>;
 }

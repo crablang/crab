@@ -3,14 +3,14 @@ use clippy_utils::msrvs::{self, Msrv};
 use clippy_utils::source::snippet;
 use clippy_utils::ty::{is_type_diagnostic_item, is_type_lang_item};
 use clippy_utils::{get_parent_expr, match_def_path, paths, SpanlessEq};
-use rustc_errors::Applicability;
-use rustc_hir as hir;
-use rustc_hir::def_id::DefId;
-use rustc_hir::ExprKind::Assign;
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_semver::RustcVersion;
-use rustc_session::{declare_tool_lint, impl_lint_pass};
-use rustc_span::symbol::sym;
+use crablangc_errors::Applicability;
+use crablangc_hir as hir;
+use crablangc_hir::def_id::DefId;
+use crablangc_hir::ExprKind::Assign;
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_semver::CrabLangcVersion;
+use crablangc_session::{declare_tool_lint, impl_lint_pass};
+use crablangc_span::symbol::sym;
 
 const ACCEPTABLE_METHODS: [&[&str]; 4] = [
     &paths::HASHSET_ITER,
@@ -18,7 +18,7 @@ const ACCEPTABLE_METHODS: [&[&str]; 4] = [
     &paths::SLICE_INTO,
     &paths::VEC_DEQUE_ITER,
 ];
-const ACCEPTABLE_TYPES: [(rustc_span::Symbol, Option<RustcVersion>); 6] = [
+const ACCEPTABLE_TYPES: [(crablangc_span::Symbol, Option<CrabLangcVersion>); 6] = [
     (sym::BTreeSet, Some(msrvs::BTREE_SET_RETAIN)),
     (sym::BTreeMap, Some(msrvs::BTREE_MAP_RETAIN)),
     (sym::HashSet, Some(msrvs::HASH_SET_RETAIN)),
@@ -33,13 +33,13 @@ declare_clippy_lint! {
     /// ### Why is this bad?
     /// `.retain()` is simpler and avoids needless allocation.
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// let mut vec = vec![0, 1, 2];
     /// vec = vec.iter().filter(|&x| x % 2 == 0).copied().collect();
     /// vec = vec.into_iter().filter(|x| x % 2 == 0).collect();
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// let mut vec = vec![0, 1, 2];
     /// vec.retain(|x| x % 2 == 0);
     /// ```
@@ -183,8 +183,8 @@ fn suggest(cx: &LateContext<'_>, parent_expr: &hir::Expr<'_>, left_expr: &hir::E
 
 fn make_sugg(
     cx: &LateContext<'_>,
-    key_pat: &rustc_hir::Pat<'_>,
-    value_pat: &rustc_hir::Pat<'_>,
+    key_pat: &crablangc_hir::Pat<'_>,
+    value_pat: &crablangc_hir::Pat<'_>,
     left_expr: &hir::Expr<'_>,
     filter_body: &hir::Body<'_>,
 ) -> Option<String> {

@@ -144,4 +144,4 @@ LL | #[link(name = "...", modifiers = "+verbatim,+verbatim")]
 
 error: aborting due to 24 previous errors
 
-For more information about this error, try `rustc --explain E0459`.
+For more information about this error, try `crablangc --explain E0459`.

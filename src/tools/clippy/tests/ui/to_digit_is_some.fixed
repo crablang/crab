@@ -1,4 +1,4 @@
-//run-rustfix
+//run-crablangfix
 
 #![warn(clippy::to_digit_is_some)]
 

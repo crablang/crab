@@ -1,4 +1,4 @@
-error[E0277]: expected a `FnOnce<(&str,)>` closure, found `unsafe extern "rust-intrinsic" fn(_) -> _ {transmute::<_, _>}`
+error[E0277]: expected a `FnOnce<(&str,)>` closure, found `unsafe extern "crablang-intrinsic" fn(_) -> _ {transmute::<_, _>}`
   --> $DIR/coerce-unsafe-to-closure.rs:2:44
    |
 LL |     let x: Option<&[u8]> = Some("foo").map(std::mem::transmute);
@@ -6,11 +6,11 @@ LL |     let x: Option<&[u8]> = Some("foo").map(std::mem::transmute);
    |                                        |
    |                                        required by a bound introduced by this call
    |
-   = help: the trait `FnOnce<(&str,)>` is not implemented for fn item `unsafe extern "rust-intrinsic" fn(_) -> _ {transmute::<_, _>}`
+   = help: the trait `FnOnce<(&str,)>` is not implemented for fn item `unsafe extern "crablang-intrinsic" fn(_) -> _ {transmute::<_, _>}`
    = note: unsafe function cannot be called generically without an unsafe block
 note: required by a bound in `Option::<T>::map`
   --> $SRC_DIR/core/src/option.rs:LL:COL
 
 error: aborting due to previous error
 
-For more information about this error, try `rustc --explain E0277`.
+For more information about this error, try `crablangc --explain E0277`.

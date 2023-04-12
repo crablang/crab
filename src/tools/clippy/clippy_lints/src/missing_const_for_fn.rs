@@ -3,16 +3,16 @@ use clippy_utils::msrvs::{self, Msrv};
 use clippy_utils::qualify_min_const_fn::is_min_const_fn;
 use clippy_utils::ty::has_drop;
 use clippy_utils::{fn_has_unsatisfiable_preds, is_entrypoint_fn, is_from_proc_macro, trait_ref_of_method};
-use rustc_hir as hir;
-use rustc_hir::def_id::CRATE_DEF_ID;
-use rustc_hir::intravisit::FnKind;
-use rustc_hir::{Body, Constness, FnDecl, GenericParamKind};
-use rustc_hir_analysis::hir_ty_to_ty;
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_middle::lint::in_external_macro;
-use rustc_session::{declare_tool_lint, impl_lint_pass};
-use rustc_span::def_id::LocalDefId;
-use rustc_span::Span;
+use crablangc_hir as hir;
+use crablangc_hir::def_id::CRATE_DEF_ID;
+use crablangc_hir::intravisit::FnKind;
+use crablangc_hir::{Body, Constness, FnDecl, GenericParamKind};
+use crablangc_hir_analysis::hir_ty_to_ty;
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_middle::lint::in_external_macro;
+use crablangc_session::{declare_tool_lint, impl_lint_pass};
+use crablangc_span::def_id::LocalDefId;
+use crablangc_span::Span;
 
 declare_clippy_lint! {
     /// ### What it does
@@ -28,7 +28,7 @@ declare_clippy_lint! {
     ///
     /// Also, the lint only runs one pass over the code. Consider these two non-const functions:
     ///
-    /// ```rust
+    /// ```crablang
     /// fn a() -> i32 {
     ///     0
     /// }
@@ -42,7 +42,7 @@ declare_clippy_lint! {
     /// will suggest to make `b` const, too.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// # struct Foo {
     /// #     random_number: usize,
     /// # }
@@ -55,7 +55,7 @@ declare_clippy_lint! {
     ///
     /// Could be a const fn:
     ///
-    /// ```rust
+    /// ```crablang
     /// # struct Foo {
     /// #     random_number: usize,
     /// # }

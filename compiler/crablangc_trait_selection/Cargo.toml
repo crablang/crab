@@ -1,0 +1,27 @@
+[package]
+name = "crablangc_trait_selection"
+version = "0.0.0"
+edition = "2021"
+
+[lib]
+
+[dependencies]
+crablangc_parse_format = { path = "../crablangc_parse_format" }
+tracing = "0.1"
+crablangc_attr = { path = "../crablangc_attr" }
+crablangc_middle = { path = "../crablangc_middle" }
+crablangc_ast = { path = "../crablangc_ast" }
+crablangc_data_structures = { path = "../crablangc_data_structures" }
+crablangc_errors = { path = "../crablangc_errors" }
+crablangc_hir = { path = "../crablangc_hir" }
+crablangc_index = { path = "../crablangc_index" }
+crablangc_infer = { path = "../crablangc_infer" }
+crablangc_macros = { path = "../crablangc_macros" }
+crablangc_query_system = { path = "../crablangc_query_system" }
+crablangc_serialize = { path = "../crablangc_serialize" }
+crablangc_session = { path = "../crablangc_session" }
+crablangc_span = { path = "../crablangc_span" }
+crablangc_target = { path = "../crablangc_target" }
+crablangc_transmute = { path = "../crablangc_transmute", features = ["crablangc"] }
+smallvec = { version = "1.8.1", features = ["union", "may_dangle"] }
+itertools = "0.10.1"

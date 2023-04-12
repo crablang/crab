@@ -1,4 +1,4 @@
-// does not test any rustfixable lints
+// does not test any crablangfixable lints
 
 #![warn(clippy::float_cmp_const)]
 #![allow(clippy::float_cmp)]

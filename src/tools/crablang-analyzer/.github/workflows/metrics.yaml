@@ -1,0 +1,30 @@
+name: metrics
+on:
+  push:
+   branches:
+   - master
+
+env:
+  CARGO_INCREMENTAL: 0
+  CARGO_NET_RETRY: 10
+  CRABLANGFLAGS: "-D warnings -W unreachable-pub"
+  CRABLANGUP_MAX_RETRIES: 10
+
+jobs:
+  metrics:
+    if: github.repository == 'crablang/crablang-analyzer'
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Install CrabLang toolchain
+      run: |
+        crablangup update --no-self-update stable
+        crablangup component add crablangfmt crablang-src
+
+    - name: Collect metrics
+      run: cargo xtask metrics
+      env:
+        METRICS_TOKEN: ${{ secrets.METRICS_TOKEN }}

@@ -1,4 +1,4 @@
-PRINT-ATTR INPUT (DISPLAY): #[deny(unused_attributes)] mod module_with_attrs { #! [rustfmt :: skip] }
+PRINT-ATTR INPUT (DISPLAY): #[deny(unused_attributes)] mod module_with_attrs { #! [crablangfmt :: skip] }
 PRINT-ATTR INPUT (DEBUG): TokenStream [
     Punct {
         ch: '#',
@@ -50,7 +50,7 @@ PRINT-ATTR INPUT (DEBUG): TokenStream [
                 delimiter: Bracket,
                 stream: TokenStream [
                     Ident {
-                        ident: "rustfmt",
+                        ident: "crablangfmt",
                         span: $DIR/inner-attr-non-inline-mod.rs:14:1: 14:23 (#0),
                     },
                     Punct {

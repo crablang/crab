@@ -8,4 +8,4 @@ LL |     field1: i32,
 
 error: aborting due to previous error
 
-For more information about this error, try `rustc --explain E0124`.
+For more information about this error, try `crablangc --explain E0124`.

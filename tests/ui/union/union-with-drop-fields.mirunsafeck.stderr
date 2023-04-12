@@ -36,4 +36,4 @@ LL |     a: std::mem::ManuallyDrop<T>,
 
 error: aborting due to 3 previous errors
 
-For more information about this error, try `rustc --explain E0740`.
+For more information about this error, try `crablangc --explain E0740`.

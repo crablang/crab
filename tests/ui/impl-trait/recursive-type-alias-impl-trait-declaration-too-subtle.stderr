@@ -46,4 +46,4 @@ LL |         fn eq(&self, _other: &(Bar, i32)) -> bool {
 
 error: aborting due to 4 previous errors
 
-For more information about this error, try `rustc --explain E0053`.
+For more information about this error, try `crablangc --explain E0053`.

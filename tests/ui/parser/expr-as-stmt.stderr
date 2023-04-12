@@ -245,4 +245,4 @@ LL |     unsafe { return 1; } + unsafe { 1 }
 error: aborting due to 22 previous errors
 
 Some errors have detailed explanations: E0308, E0600, E0614.
-For more information about an error, try `rustc --explain E0308`.
+For more information about an error, try `crablangc --explain E0308`.

@@ -2,7 +2,7 @@ error[E0308]: mismatched types
   --> $DIR/issue-10764.rs:4:15
    |
 LL | fn main() { f(bar) }
-   |             - ^^^ expected "Rust" fn, found "C" fn
+   |             - ^^^ expected "CrabLang" fn, found "C" fn
    |             |
    |             arguments to this function are incorrect
    |
@@ -12,9 +12,9 @@ LL | fn main() { f(bar) }
 note: function defined here
   --> $DIR/issue-10764.rs:1:4
    |
-LL | fn f(_: extern "Rust" fn()) {}
+LL | fn f(_: extern "CrabLang" fn()) {}
    |    ^ ---------------------
 
 error: aborting due to previous error
 
-For more information about this error, try `rustc --explain E0308`.
+For more information about this error, try `crablangc --explain E0308`.

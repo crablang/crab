@@ -1,4 +1,4 @@
-//! Implementation of `make clean` in rustbuild.
+//! Implementation of `make clean` in crablangbuild.
 //!
 //! Responsible for cleaning out a build directory of all old and stale
 //! artifacts to prepare for a fresh build. Currently doesn't remove the
@@ -80,7 +80,7 @@ macro_rules! clean_crate_tree {
 }
 
 clean_crate_tree! {
-    Rustc, Mode::Rustc, "rustc-main";
+    CrabLangc, Mode::CrabLangc, "crablangc-main";
     Std, Mode::Std, "test";
 }
 
@@ -93,7 +93,7 @@ fn clean_default(build: &Build, all: bool) {
         rm_rf(&build.out.join("tmp"));
         rm_rf(&build.out.join("dist"));
         rm_rf(&build.out.join("bootstrap"));
-        rm_rf(&build.out.join("rustfmt.stamp"));
+        rm_rf(&build.out.join("crablangfmt.stamp"));
 
         for host in &build.hosts {
             let entries = match build.out.join(host.triple).read_dir() {

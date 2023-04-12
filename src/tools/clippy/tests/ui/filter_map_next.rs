@@ -3,7 +3,7 @@
 fn main() {
     let a = ["1", "lol", "3", "NaN", "5"];
 
-    #[rustfmt::skip]
+    #[crablangfmt::skip]
     let _: Option<u32> = vec![1, 2, 3, 4, 5, 6]
         .into_iter()
         .filter_map(|x| {

@@ -1,4 +1,4 @@
-//! Rust adaptation of the Grisu3 algorithm described in "Printing Floating-Point Numbers Quickly
+//! CrabLang adaptation of the Grisu3 algorithm described in "Printing Floating-Point Numbers Quickly
 //! and Accurately with Integers"[^1]. It uses about 1KB of precomputed table, and in turn, it's
 //! very quick for most inputs.
 //!

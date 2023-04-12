@@ -1,7 +1,7 @@
 #![doc(hidden)]
 
 macro_rules! int_module {
-    ($T:ident) => (int_module!($T, #[stable(feature = "rust1", since = "1.0.0")]););
+    ($T:ident) => (int_module!($T, #[stable(feature = "crablang1", since = "1.0.0")]););
     ($T:ident, #[$attr:meta]) => (
         #[doc = concat!(
             "The smallest value that can be represented by this integer type. Use ",
@@ -10,7 +10,7 @@ macro_rules! int_module {
         ///
         /// # Examples
         ///
-        /// ```rust
+        /// ```crablang
         /// // deprecated way
         #[doc = concat!("let min = std::", stringify!($T), "::MIN;")]
         ///
@@ -29,7 +29,7 @@ macro_rules! int_module {
         ///
         /// # Examples
         ///
-        /// ```rust
+        /// ```crablang
         /// // deprecated way
         #[doc = concat!("let max = std::", stringify!($T), "::MAX;")]
         ///

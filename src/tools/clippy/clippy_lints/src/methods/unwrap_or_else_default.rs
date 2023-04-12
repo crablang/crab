@@ -5,11 +5,11 @@ use clippy_utils::{
     diagnostics::span_lint_and_sugg, is_default_equivalent_call, source::snippet_with_applicability,
     ty::is_type_diagnostic_item,
 };
-use rustc_ast::ast::LitKind;
-use rustc_errors::Applicability;
-use rustc_hir as hir;
-use rustc_lint::LateContext;
-use rustc_span::{sym, symbol};
+use crablangc_ast::ast::LitKind;
+use crablangc_errors::Applicability;
+use crablangc_hir as hir;
+use crablangc_lint::LateContext;
+use crablangc_span::{sym, symbol};
 
 pub(super) fn check<'tcx>(
     cx: &LateContext<'tcx>,

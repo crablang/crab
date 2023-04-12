@@ -12,7 +12,7 @@ pub mod v1;
 ///
 /// See the [module-level documentation](self) for more.
 #[stable(feature = "prelude_2015", since = "1.55.0")]
-pub mod rust_2015 {
+pub mod crablang_2015 {
     #[stable(feature = "prelude_2015", since = "1.55.0")]
     #[doc(no_inline)]
     pub use super::v1::*;
@@ -22,7 +22,7 @@ pub mod rust_2015 {
 ///
 /// See the [module-level documentation](self) for more.
 #[stable(feature = "prelude_2018", since = "1.55.0")]
-pub mod rust_2018 {
+pub mod crablang_2018 {
     #[stable(feature = "prelude_2018", since = "1.55.0")]
     #[doc(no_inline)]
     pub use super::v1::*;
@@ -32,7 +32,7 @@ pub mod rust_2018 {
 ///
 /// See the [module-level documentation](self) for more.
 #[stable(feature = "prelude_2021", since = "1.55.0")]
-pub mod rust_2021 {
+pub mod crablang_2021 {
     #[stable(feature = "prelude_2021", since = "1.55.0")]
     #[doc(no_inline)]
     pub use super::v1::*;
@@ -50,8 +50,8 @@ pub mod rust_2021 {
 ///
 /// See the [module-level documentation](self) for more.
 #[unstable(feature = "prelude_2024", issue = "none")]
-pub mod rust_2024 {
+pub mod crablang_2024 {
     #[unstable(feature = "prelude_2024", issue = "none")]
     #[doc(no_inline)]
-    pub use super::rust_2021::*;
+    pub use super::crablang_2021::*;
 }

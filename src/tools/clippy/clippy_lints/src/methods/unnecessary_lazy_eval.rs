@@ -2,10 +2,10 @@ use clippy_utils::diagnostics::span_lint_and_then;
 use clippy_utils::source::snippet;
 use clippy_utils::ty::is_type_diagnostic_item;
 use clippy_utils::{eager_or_lazy, is_from_proc_macro, usage};
-use rustc_errors::Applicability;
-use rustc_hir as hir;
-use rustc_lint::LateContext;
-use rustc_span::sym;
+use crablangc_errors::Applicability;
+use crablangc_hir as hir;
+use crablangc_lint::LateContext;
+use crablangc_span::sym;
 
 use super::UNNECESSARY_LAZY_EVALUATIONS;
 

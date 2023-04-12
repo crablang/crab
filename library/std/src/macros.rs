@@ -7,10 +7,10 @@
 
 #[doc = include_str!("../../core/src/macros/panic.md")]
 #[macro_export]
-#[rustc_builtin_macro(std_panic)]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[crablangc_builtin_macro(std_panic)]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[allow_internal_unstable(edition_panic)]
-#[cfg_attr(not(test), rustc_diagnostic_item = "std_panic_macro")]
+#[cfg_attr(not(test), crablangc_diagnostic_item = "std_panic_macro")]
 macro_rules! panic {
     // Expands to either `$crate::panic::panic_2015` or `$crate::panic::panic_2021`
     // depending on the edition of the caller.
@@ -73,8 +73,8 @@ macro_rules! panic {
 /// io::stdout().flush().unwrap();
 /// ```
 #[macro_export]
-#[stable(feature = "rust1", since = "1.0.0")]
-#[cfg_attr(not(test), rustc_diagnostic_item = "print_macro")]
+#[stable(feature = "crablang1", since = "1.0.0")]
+#[cfg_attr(not(test), crablangc_diagnostic_item = "print_macro")]
 #[allow_internal_unstable(print_internals)]
 macro_rules! print {
     ($($arg:tt)*) => {{
@@ -126,8 +126,8 @@ macro_rules! print {
 /// println!("format {local_variable} arguments");
 /// ```
 #[macro_export]
-#[stable(feature = "rust1", since = "1.0.0")]
-#[cfg_attr(not(test), rustc_diagnostic_item = "println_macro")]
+#[stable(feature = "crablang1", since = "1.0.0")]
+#[cfg_attr(not(test), crablangc_diagnostic_item = "println_macro")]
 #[allow_internal_unstable(print_internals, format_args_nl)]
 macro_rules! println {
     () => {
@@ -164,7 +164,7 @@ macro_rules! println {
 /// ```
 #[macro_export]
 #[stable(feature = "eprint", since = "1.19.0")]
-#[cfg_attr(not(test), rustc_diagnostic_item = "eprint_macro")]
+#[cfg_attr(not(test), crablangc_diagnostic_item = "eprint_macro")]
 #[allow_internal_unstable(print_internals)]
 macro_rules! eprint {
     ($($arg:tt)*) => {{
@@ -199,7 +199,7 @@ macro_rules! eprint {
 /// ```
 #[macro_export]
 #[stable(feature = "eprint", since = "1.19.0")]
-#[cfg_attr(not(test), rustc_diagnostic_item = "eprintln_macro")]
+#[cfg_attr(not(test), crablangc_diagnostic_item = "eprintln_macro")]
 #[allow_internal_unstable(print_internals, format_args_nl)]
 macro_rules! eprintln {
     () => {
@@ -215,7 +215,7 @@ macro_rules! eprintln {
 ///
 /// An example:
 ///
-/// ```rust
+/// ```crablang
 /// let a = 2;
 /// let b = dbg!(a * 2) + 1;
 /// //      ^-- prints: [src/main.rs:2] a * 2 = 4
@@ -256,7 +256,7 @@ macro_rules! eprintln {
 ///
 /// With a method call:
 ///
-/// ```rust
+/// ```crablang
 /// fn foo(n: usize) {
 ///     if let Some(_) = dbg!(n.checked_sub(4)) {
 ///         // ...
@@ -274,7 +274,7 @@ macro_rules! eprintln {
 ///
 /// Naive factorial implementation:
 ///
-/// ```rust
+/// ```crablang
 /// fn factorial(n: u32) -> u32 {
 ///     if dbg!(n <= 1) {
 ///         dbg!(1)
@@ -335,7 +335,7 @@ macro_rules! eprintln {
 /// [`debug!`]: https://docs.rs/log/*/log/macro.debug.html
 /// [`log`]: https://crates.io/crates/log
 #[macro_export]
-#[cfg_attr(not(test), rustc_diagnostic_item = "dbg_macro")]
+#[cfg_attr(not(test), crablangc_diagnostic_item = "dbg_macro")]
 #[stable(feature = "dbg_macro", since = "1.32.0")]
 macro_rules! dbg {
     // NOTE: We cannot use `concat!` to make a static string as a format argument

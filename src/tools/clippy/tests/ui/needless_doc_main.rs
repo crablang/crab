@@ -17,7 +17,7 @@
 /// ```
 ///
 /// This should, too.
-/// ```rust
+/// ```crablang
 /// fn main() {
 ///     unimplemented!();
 /// }
@@ -114,13 +114,13 @@ fn bad_doctests() {}
 /// ```
 ///
 /// We should not lint ignored examples:
-/// ```rust,ignore
+/// ```crablang,ignore
 /// fn main() {
 ///     unimplemented!();
 /// }
 /// ```
 ///
-/// Or even non-rust examples:
+/// Or even non-crablang examples:
 /// ```text
 /// fn main() {
 ///     is what starts the program
@@ -128,7 +128,7 @@ fn bad_doctests() {}
 /// ```
 fn no_false_positives() {}
 
-/// Yields a parse error when interpreted as rust code:
+/// Yields a parse error when interpreted as crablang code:
 /// ```
 /// r#"hi"
 /// ```

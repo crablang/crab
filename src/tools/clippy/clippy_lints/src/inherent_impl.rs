@@ -2,11 +2,11 @@
 
 use clippy_utils::diagnostics::span_lint_and_note;
 use clippy_utils::is_lint_allowed;
-use rustc_data_structures::fx::FxHashMap;
-use rustc_hir::{def_id::LocalDefId, Item, ItemKind, Node};
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_session::{declare_lint_pass, declare_tool_lint};
-use rustc_span::Span;
+use crablangc_data_structures::fx::FxHashMap;
+use crablangc_hir::{def_id::LocalDefId, Item, ItemKind, Node};
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_span::Span;
 use std::collections::hash_map::Entry;
 
 declare_clippy_lint! {
@@ -17,7 +17,7 @@ declare_clippy_lint! {
     /// Splitting the implementation of a type makes the code harder to navigate.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// struct X;
     /// impl X {
     ///     fn one() {}
@@ -29,7 +29,7 @@ declare_clippy_lint! {
     ///
     /// Could be written:
     ///
-    /// ```rust
+    /// ```crablang
     /// struct X;
     /// impl X {
     ///     fn one() {}

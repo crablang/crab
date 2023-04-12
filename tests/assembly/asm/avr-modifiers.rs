@@ -2,16 +2,16 @@
 // compile-flags: --target avr-unknown-gnu-atmega328
 // needs-llvm-components: avr
 
-#![feature(no_core, lang_items, rustc_attrs, asm_experimental_arch)]
+#![feature(no_core, lang_items, crablangc_attrs, asm_experimental_arch)]
 #![crate_type = "rlib"]
 #![no_core]
 #![allow(non_camel_case_types)]
 
-#[rustc_builtin_macro]
+#[crablangc_builtin_macro]
 macro_rules! asm {
     () => {};
 }
-#[rustc_builtin_macro]
+#[crablangc_builtin_macro]
 macro_rules! concat {
     () => {};
 }

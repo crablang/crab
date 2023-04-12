@@ -1,0 +1,22 @@
+error: could not parse code block as CrabLang code
+  --> $DIR/doctest-edition.rs:7:5
+   |
+LL |   //! ```
+   |  _____^
+LL | | //! foo'b'
+LL | | //! ```
+   | |_______^
+   |
+   = note: error from crablangc: prefix `foo` is unknown
+note: the lint level is defined here
+  --> $DIR/doctest-edition.rs:3:9
+   |
+LL | #![deny(crablangdoc::invalid_crablang_codeblocks)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+help: mark blocks that do not contain CrabLang code as text
+   |
+LL | //! ```text
+   |        ++++
+
+error: aborting due to previous error
+

@@ -6,7 +6,7 @@
 // The test uses include!() to include a source file that is also part of
 // an upstream crate.
 //
-// This is a regression test for https://github.com/rust-lang/rust/issues/85955.
+// This is a regression test for https://github.com/crablang/crablang/issues/85955.
 
 // check-pass
 // compile-flags: --crate-type=rlib

@@ -3,10 +3,10 @@ use clippy_utils::diagnostics::{span_lint_and_sugg, span_lint_and_then};
 use clippy_utils::source::snippet;
 use clippy_utils::sugg;
 use if_chain::if_chain;
-use rustc_errors::Applicability;
-use rustc_hir::{Expr, Mutability};
-use rustc_lint::LateContext;
-use rustc_middle::ty::{self, Ty};
+use crablangc_errors::Applicability;
+use crablangc_hir::{Expr, Mutability};
+use crablangc_lint::LateContext;
+use crablangc_middle::ty::{self, Ty};
 
 /// Checks for `transmute_bytes_to_str` and `transmute_ptr_to_ptr` lints.
 /// Returns `true` if either one triggered, otherwise returns `false`.

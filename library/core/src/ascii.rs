@@ -1,6 +1,6 @@
 //! Operations on ASCII strings and characters.
 //!
-//! Most string operations in Rust act on UTF-8 strings. However, at times it
+//! Most string operations in CrabLang act on UTF-8 strings. However, at times it
 //! makes more sense to only consider the ASCII character set for a specific
 //! operation.
 //!
@@ -19,7 +19,7 @@ use crate::str::from_utf8_unchecked;
 /// This `struct` is created by the [`escape_default`] function. See its
 /// documentation for more.
 #[must_use = "iterators are lazy and do nothing unless consumed"]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[derive(Clone)]
 pub struct EscapeDefault {
     range: Range<u8>,
@@ -88,7 +88,7 @@ pub struct EscapeDefault {
 /// assert_eq!(b'9', escaped.next().unwrap());
 /// assert_eq!(b'd', escaped.next().unwrap());
 /// ```
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub fn escape_default(c: u8) -> EscapeDefault {
     let (data, len) = match c {
         b'\t' => ([b'\\', b't', 0, 0], 2),
@@ -107,7 +107,7 @@ pub fn escape_default(c: u8) -> EscapeDefault {
     return EscapeDefault { range: 0..len, data };
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl Iterator for EscapeDefault {
     type Item = u8;
 
@@ -122,13 +122,13 @@ impl Iterator for EscapeDefault {
         self.next_back()
     }
 }
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl DoubleEndedIterator for EscapeDefault {
     fn next_back(&mut self) -> Option<u8> {
         self.range.next_back().map(|i| self.data[i as usize])
     }
 }
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl ExactSizeIterator for EscapeDefault {}
 #[stable(feature = "fused", since = "1.26.0")]
 impl FusedIterator for EscapeDefault {}

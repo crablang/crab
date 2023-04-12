@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 
 #[derive(Debug)]
 struct Foo {

@@ -1,8 +1,8 @@
-// Test that rustc doesn't ICE as in #90024.
+// Test that crablangc doesn't ICE as in #90024.
 // check-pass
 // edition=2018
 
-#![warn(rust_2021_incompatible_closure_captures)]
+#![warn(crablang_2021_incompatible_closure_captures)]
 
 // Checks there's no double-subst into the generic args, otherwise we get OOB
 // MCVE by @lqd

@@ -3,12 +3,12 @@ use clippy_utils::get_parent_node;
 use clippy_utils::source::snippet_with_context;
 use clippy_utils::visitors::{for_each_local_assignment, for_each_value_source};
 use core::ops::ControlFlow;
-use rustc_errors::Applicability;
-use rustc_hir::def::{DefKind, Res};
-use rustc_hir::{Expr, ExprKind, HirId, HirIdSet, Local, MatchSource, Node, PatKind, QPath, TyKind};
-use rustc_lint::{LateContext, LintContext};
-use rustc_middle::lint::in_external_macro;
-use rustc_middle::ty;
+use crablangc_errors::Applicability;
+use crablangc_hir::def::{DefKind, Res};
+use crablangc_hir::{Expr, ExprKind, HirId, HirIdSet, Local, MatchSource, Node, PatKind, QPath, TyKind};
+use crablangc_lint::{LateContext, LintContext};
+use crablangc_middle::lint::in_external_macro;
+use crablangc_middle::ty;
 
 use super::LET_UNIT_VALUE;
 
@@ -72,7 +72,7 @@ pub(super) fn check<'tcx>(cx: &LateContext<'tcx>, local: &'tcx Local<'_>) {
 /// at this point.
 ///
 /// e.g.
-/// ```rust,ignore
+/// ```crablang,ignore
 /// let bar = foo();
 /// let x: u32 = if true { baz() } else { bar };
 /// ```

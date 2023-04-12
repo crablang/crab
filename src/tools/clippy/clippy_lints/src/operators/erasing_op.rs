@@ -2,9 +2,9 @@ use clippy_utils::consts::{constant_simple, Constant};
 use clippy_utils::diagnostics::span_lint;
 use clippy_utils::ty::same_type_and_consts;
 
-use rustc_hir::{BinOpKind, Expr};
-use rustc_lint::LateContext;
-use rustc_middle::ty::TypeckResults;
+use crablangc_hir::{BinOpKind, Expr};
+use crablangc_lint::LateContext;
+use crablangc_middle::ty::TypeckResults;
 
 use super::ERASING_OP;
 

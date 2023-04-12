@@ -67,7 +67,7 @@ mod outer_arc {
     }
 }
 
-// https://github.com/rust-lang/rust-clippy/issues/7487
+// https://github.com/crablang/crablang-clippy/issues/7487
 mod box_dyn {
     use std::boxed::Box;
     use std::rc::Rc;
@@ -87,7 +87,7 @@ mod box_dyn {
     pub fn test_rc_box(_: Rc<Box<Box<dyn T>>>) {}
 }
 
-// https://github.com/rust-lang/rust-clippy/issues/8604
+// https://github.com/crablang/crablang-clippy/issues/8604
 mod box_fat_ptr {
     use std::boxed::Box;
     use std::path::Path;

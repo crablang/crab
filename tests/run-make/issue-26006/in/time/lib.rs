@@ -1,4 +1,4 @@
-#![feature(rustc_private)]
+#![feature(crablangc_private)]
 extern crate libc;
 
 fn main(){}

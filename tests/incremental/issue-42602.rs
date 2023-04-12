@@ -10,7 +10,7 @@
 // compile-flags:-Zquery-dep-graph
 // build-pass (FIXME(62277): could be check-pass?)
 
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 
 fn main() {
     a::foo();
@@ -34,8 +34,8 @@ mod a {
 }
 
 mod b {
-    #[rustc_clean(cfg="cfail2")]
-    #[rustc_clean(cfg="cfail3")]
+    #[crablangc_clean(cfg="cfail2")]
+    #[crablangc_clean(cfg="cfail3")]
     pub fn bar() {
         let x = vec![1, 2, 3];
         let v = || ::std::mem::drop(x);

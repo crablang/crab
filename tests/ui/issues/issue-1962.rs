@@ -1,5 +1,5 @@
 // compile-flags: -D while-true
-// run-rustfix
+// run-crablangfix
 
 fn main() {
     let mut i = 0;

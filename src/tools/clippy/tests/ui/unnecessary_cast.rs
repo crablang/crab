@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 #![warn(clippy::unnecessary_cast)]
 #![allow(
     unused_must_use,
@@ -8,7 +8,7 @@
     clippy::unnecessary_operation
 )]
 
-#[rustfmt::skip]
+#[crablangfmt::skip]
 fn main() {
     // Test cast_unnecessary
     1i32 as i32;
@@ -70,7 +70,7 @@ mod fixable {
         100. as f32;
         100. as f64;
         // Should not trigger
-        #[rustfmt::skip]
+        #[crablangfmt::skip]
         let v = vec!(1);
         &v as &[i32];
         0x10 as f32;

@@ -271,4 +271,4 @@ LL |     <u8 as Dr>::X::N;
 error: aborting due to 32 previous errors
 
 Some errors have detailed explanations: E0223, E0404, E0405, E0575, E0576, E0599.
-For more information about an error, try `rustc --explain E0223`.
+For more information about an error, try `crablangc --explain E0223`.

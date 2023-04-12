@@ -1,5 +1,5 @@
-// FIXME: Ideally these suggestions would be fixed via rustfix. Blocked by rust-lang/rust#53934
-// // run-rustfix
+// FIXME: Ideally these suggestions would be fixed via crablangfix. Blocked by crablang/crablang#53934
+// // run-crablangfix
 
 #![allow(clippy::write_literal)]
 #![warn(clippy::write_with_newline)]

@@ -1,7 +1,7 @@
 use log::trace;
 
-use rustc_middle::{mir, ty::Ty};
-use rustc_target::abi::Size;
+use crablangc_middle::{mir, ty::Ty};
+use crablangc_target::abi::Size;
 
 use crate::*;
 
@@ -21,7 +21,7 @@ impl<'mir, 'tcx> EvalContextExt<'tcx> for super::MiriInterpCx<'mir, 'tcx> {
         left: &ImmTy<'tcx, Provenance>,
         right: &ImmTy<'tcx, Provenance>,
     ) -> InterpResult<'tcx, (Scalar<Provenance>, bool, Ty<'tcx>)> {
-        use rustc_middle::mir::BinOp::*;
+        use crablangc_middle::mir::BinOp::*;
 
         trace!("ptr_op: {:?} {:?} {:?}", *left, bin_op, *right);
 

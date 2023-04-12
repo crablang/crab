@@ -2,10 +2,10 @@ use clippy_utils::consts::{constant, Constant};
 use clippy_utils::diagnostics::span_lint_and_sugg;
 use clippy_utils::source::snippet_with_applicability;
 use clippy_utils::ty::is_type_diagnostic_item;
-use rustc_errors::Applicability;
-use rustc_hir::{BinOpKind, Expr, ExprKind};
-use rustc_lint::LateContext;
-use rustc_span::sym;
+use crablangc_errors::Applicability;
+use crablangc_hir::{BinOpKind, Expr, ExprKind};
+use crablangc_lint::LateContext;
+use crablangc_span::sym;
 
 use super::DURATION_SUBSEC;
 

@@ -1,7 +1,7 @@
 use crate::cmp;
 use crate::fmt::{self, Debug};
 use crate::iter::{DoubleEndedIterator, ExactSizeIterator, FusedIterator, Iterator};
-use crate::iter::{InPlaceIterable, SourceIter, TrustedLen, UncheckedIterator};
+use crate::iter::{InPlaceIterable, SourceIter, TcrablangedLen, UncheckedIterator};
 
 /// An iterator that iterates two other iterators simultaneously.
 ///
@@ -9,7 +9,7 @@ use crate::iter::{InPlaceIterable, SourceIter, TrustedLen, UncheckedIterator};
 /// See their documentation for more.
 #[derive(Clone)]
 #[must_use = "iterators are lazy and do nothing unless consumed"]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub struct Zip<A, B> {
     a: A,
     b: B,
@@ -71,7 +71,7 @@ where
     ZipImpl::new(a.into_iter(), b.into_iter())
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<A, B> Iterator for Zip<A, B>
 where
     A: Iterator,
@@ -97,7 +97,7 @@ where
     #[inline]
     unsafe fn __iterator_get_unchecked(&mut self, idx: usize) -> Self::Item
     where
-        Self: TrustedRandomAccessNoCoerce,
+        Self: TcrablangedRandomAccessNoCoerce,
     {
         // SAFETY: `ZipImpl::__iterator_get_unchecked` has same safety
         // requirements as `Iterator::__iterator_get_unchecked`.
@@ -105,7 +105,7 @@ where
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<A, B> DoubleEndedIterator for Zip<A, B>
 where
     A: DoubleEndedIterator + ExactSizeIterator,
@@ -132,7 +132,7 @@ trait ZipImpl<A, B> {
     // This has the same safety requirements as `Iterator::__iterator_get_unchecked`
     unsafe fn get_unchecked(&mut self, idx: usize) -> <Self as Iterator>::Item
     where
-        Self: Iterator + TrustedRandomAccessNoCoerce;
+        Self: Iterator + TcrablangedRandomAccessNoCoerce;
 }
 
 // Work around limitations of specialization, requiring `default` impls to be repeated
@@ -169,7 +169,7 @@ macro_rules! zip_impl_general_defaults {
         {
             // The function body below only uses `self.a/b.len()` and `self.a/b.next_back()`
             // and doesn’t call `next_back` too often, so this implementation is safe in
-            // the `TrustedRandomAccessNoCoerce` specialization
+            // the `TcrablangedRandomAccessNoCoerce` specialization
 
             let a_sz = self.a.len();
             let b_sz = self.b.len();
@@ -224,7 +224,7 @@ where
 
     default unsafe fn get_unchecked(&mut self, _idx: usize) -> <Self as Iterator>::Item
     where
-        Self: TrustedRandomAccessNoCoerce,
+        Self: TcrablangedRandomAccessNoCoerce,
     {
         unreachable!("Always specialized");
     }
@@ -233,8 +233,8 @@ where
 #[doc(hidden)]
 impl<A, B> ZipImpl<A, B> for Zip<A, B>
 where
-    A: TrustedRandomAccessNoCoerce + Iterator,
-    B: TrustedRandomAccessNoCoerce + Iterator,
+    A: TcrablangedRandomAccessNoCoerce + Iterator,
+    B: TcrablangedRandomAccessNoCoerce + Iterator,
 {
     zip_impl_general_defaults! {}
 
@@ -256,8 +256,8 @@ where
 #[doc(hidden)]
 impl<A, B> ZipImpl<A, B> for Zip<A, B>
 where
-    A: TrustedRandomAccess + Iterator,
-    B: TrustedRandomAccess + Iterator,
+    A: TcrablangedRandomAccess + Iterator,
+    B: TcrablangedRandomAccess + Iterator,
 {
     fn new(a: A, b: B) -> Self {
         let a_len = a.size();
@@ -270,7 +270,7 @@ where
         if self.index < self.len {
             let i = self.index;
             // since get_unchecked executes code which can panic we increment the counters beforehand
-            // so that the same index won't be accessed twice, as required by TrustedRandomAccess
+            // so that the same index won't be accessed twice, as required by TcrablangedRandomAccess
             self.index += 1;
             // SAFETY: `i` is smaller than `self.len`, thus smaller than `self.a.len()` and `self.b.len()`
             unsafe {
@@ -305,7 +305,7 @@ where
         while self.index < end {
             let i = self.index;
             // since get_unchecked executes code which can panic we increment the counters beforehand
-            // so that the same index won't be accessed twice, as required by TrustedRandomAccess
+            // so that the same index won't be accessed twice, as required by TcrablangedRandomAccess
             self.index += 1;
             if A::MAY_HAVE_SIDE_EFFECT {
                 // SAFETY: the usage of `cmp::min` to calculate `delta`
@@ -359,7 +359,7 @@ where
         }
         if self.index < self.len {
             // since get_unchecked executes code which can panic we increment the counters beforehand
-            // so that the same index won't be accessed twice, as required by TrustedRandomAccess
+            // so that the same index won't be accessed twice, as required by TcrablangedRandomAccess
             self.len -= 1;
             self.a_len -= 1;
             let i = self.len;
@@ -374,7 +374,7 @@ where
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<A, B> ExactSizeIterator for Zip<A, B>
 where
     A: ExactSizeIterator,
@@ -383,20 +383,20 @@ where
 }
 
 #[doc(hidden)]
-#[unstable(feature = "trusted_random_access", issue = "none")]
-unsafe impl<A, B> TrustedRandomAccess for Zip<A, B>
+#[unstable(feature = "tcrablanged_random_access", issue = "none")]
+unsafe impl<A, B> TcrablangedRandomAccess for Zip<A, B>
 where
-    A: TrustedRandomAccess,
-    B: TrustedRandomAccess,
+    A: TcrablangedRandomAccess,
+    B: TcrablangedRandomAccess,
 {
 }
 
 #[doc(hidden)]
-#[unstable(feature = "trusted_random_access", issue = "none")]
-unsafe impl<A, B> TrustedRandomAccessNoCoerce for Zip<A, B>
+#[unstable(feature = "tcrablanged_random_access", issue = "none")]
+unsafe impl<A, B> TcrablangedRandomAccessNoCoerce for Zip<A, B>
 where
-    A: TrustedRandomAccessNoCoerce,
-    B: TrustedRandomAccessNoCoerce,
+    A: TcrablangedRandomAccessNoCoerce,
+    B: TcrablangedRandomAccessNoCoerce,
 {
     const MAY_HAVE_SIDE_EFFECT: bool = A::MAY_HAVE_SIDE_EFFECT || B::MAY_HAVE_SIDE_EFFECT;
 }
@@ -409,11 +409,11 @@ where
 {
 }
 
-#[unstable(feature = "trusted_len", issue = "37572")]
-unsafe impl<A, B> TrustedLen for Zip<A, B>
+#[unstable(feature = "tcrablanged_len", issue = "37572")]
+unsafe impl<A, B> TcrablangedLen for Zip<A, B>
 where
-    A: TrustedLen,
-    B: TrustedLen,
+    A: TcrablangedLen,
+    B: TcrablangedLen,
 {
 }
 
@@ -444,7 +444,7 @@ where
 #[unstable(issue = "none", feature = "inplace_iteration")]
 unsafe impl<A: InPlaceIterable, B: Iterator> InPlaceIterable for Zip<A, B> {}
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<A: Debug, B: Debug> Debug for Zip<A, B> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         ZipFmt::fmt(self, f)
@@ -461,7 +461,7 @@ impl<A: Debug, B: Debug> ZipFmt<A, B> for Zip<A, B> {
     }
 }
 
-impl<A: Debug + TrustedRandomAccessNoCoerce, B: Debug + TrustedRandomAccessNoCoerce> ZipFmt<A, B>
+impl<A: Debug + TcrablangedRandomAccessNoCoerce, B: Debug + TcrablangedRandomAccessNoCoerce> ZipFmt<A, B>
     for Zip<A, B>
 {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
@@ -477,11 +477,11 @@ impl<A: Debug + TrustedRandomAccessNoCoerce, B: Debug + TrustedRandomAccessNoCoe
 ///
 /// The iterator's `size_hint` must be exact and cheap to call.
 ///
-/// `TrustedRandomAccessNoCoerce::size` may not be overridden.
+/// `TcrablangedRandomAccessNoCoerce::size` may not be overridden.
 ///
-/// All subtypes and all supertypes of `Self` must also implement `TrustedRandomAccess`.
+/// All subtypes and all supertypes of `Self` must also implement `TcrablangedRandomAccess`.
 /// In particular, this means that types with non-invariant parameters usually can not have
-/// an impl for `TrustedRandomAccess` that depends on any trait bounds on such parameters, except
+/// an impl for `TcrablangedRandomAccess` that depends on any trait bounds on such parameters, except
 /// for bounds that come from the respective struct/enum definition itself, or bounds involving
 /// traits that themselves come with a guarantee similar to this one.
 ///
@@ -505,7 +505,7 @@ impl<A: Debug + TrustedRandomAccessNoCoerce, B: Debug + TrustedRandomAccessNoCoe
 ///     * `std::iter::DoubleEndedIterator::next_back`
 ///     * `std::iter::ExactSizeIterator::len`
 ///     * `std::iter::Iterator::__iterator_get_unchecked`
-///     * `std::iter::TrustedRandomAccessNoCoerce::size`
+///     * `std::iter::TcrablangedRandomAccessNoCoerce::size`
 /// 5. If `T` is a subtype of `Self`, then `self` is allowed to be coerced
 ///    to `T`. If `self` is coerced to `T` after `self.__iterator_get_unchecked(idx)` has already
 ///    been called, then no methods except for the ones listed under 4. are allowed to be called
@@ -525,22 +525,22 @@ impl<A: Debug + TrustedRandomAccessNoCoerce, B: Debug + TrustedRandomAccessNoCoe
 // FIXME: Clarify interaction with SourceIter/InPlaceIterable. Calling `SourceIter::as_inner`
 // after `__iterator_get_unchecked` is supposed to be allowed.
 #[doc(hidden)]
-#[unstable(feature = "trusted_random_access", issue = "none")]
-#[rustc_specialization_trait]
-pub unsafe trait TrustedRandomAccess: TrustedRandomAccessNoCoerce {}
+#[unstable(feature = "tcrablanged_random_access", issue = "none")]
+#[crablangc_specialization_trait]
+pub unsafe trait TcrablangedRandomAccess: TcrablangedRandomAccessNoCoerce {}
 
-/// Like [`TrustedRandomAccess`] but without any of the requirements / guarantees around
+/// Like [`TcrablangedRandomAccess`] but without any of the requirements / guarantees around
 /// coercions to subtypes after `__iterator_get_unchecked` (they aren’t allowed here!), and
-/// without the requirement that subtypes / supertypes implement `TrustedRandomAccessNoCoerce`.
+/// without the requirement that subtypes / supertypes implement `TcrablangedRandomAccessNoCoerce`.
 ///
 /// This trait was created in PR #85874 to fix soundness issue #85873 without performance regressions.
 /// It is subject to change as we might want to build a more generally useful (for performance
 /// optimizations) and more sophisticated trait or trait hierarchy that replaces or extends
-/// [`TrustedRandomAccess`] and `TrustedRandomAccessNoCoerce`.
+/// [`TcrablangedRandomAccess`] and `TcrablangedRandomAccessNoCoerce`.
 #[doc(hidden)]
-#[unstable(feature = "trusted_random_access", issue = "none")]
-#[rustc_specialization_trait]
-pub unsafe trait TrustedRandomAccessNoCoerce: Sized {
+#[unstable(feature = "tcrablanged_random_access", issue = "none")]
+#[crablangc_specialization_trait]
+pub unsafe trait TcrablangedRandomAccessNoCoerce: Sized {
     // Convenience method.
     fn size(&self) -> usize
     where
@@ -554,7 +554,7 @@ pub unsafe trait TrustedRandomAccessNoCoerce: Sized {
 }
 
 /// Like `Iterator::__iterator_get_unchecked`, but doesn't require the compiler to
-/// know that `U: TrustedRandomAccess`.
+/// know that `U: TcrablangedRandomAccess`.
 ///
 /// ## Safety
 ///
@@ -570,19 +570,19 @@ where
     unsafe { it.try_get_unchecked(idx) }
 }
 
-unsafe trait SpecTrustedRandomAccess: Iterator {
-    /// If `Self: TrustedRandomAccess`, it must be safe to call
+unsafe trait SpecTcrablangedRandomAccess: Iterator {
+    /// If `Self: TcrablangedRandomAccess`, it must be safe to call
     /// `Iterator::__iterator_get_unchecked(self, index)`.
     unsafe fn try_get_unchecked(&mut self, index: usize) -> Self::Item;
 }
 
-unsafe impl<I: Iterator> SpecTrustedRandomAccess for I {
+unsafe impl<I: Iterator> SpecTcrablangedRandomAccess for I {
     default unsafe fn try_get_unchecked(&mut self, _: usize) -> Self::Item {
-        panic!("Should only be called on TrustedRandomAccess iterators");
+        panic!("Should only be called on TcrablangedRandomAccess iterators");
     }
 }
 
-unsafe impl<I: Iterator + TrustedRandomAccessNoCoerce> SpecTrustedRandomAccess for I {
+unsafe impl<I: Iterator + TcrablangedRandomAccessNoCoerce> SpecTcrablangedRandomAccess for I {
     #[inline]
     unsafe fn try_get_unchecked(&mut self, index: usize) -> Self::Item {
         // SAFETY: the caller must uphold the contract for

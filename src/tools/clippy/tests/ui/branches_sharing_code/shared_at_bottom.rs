@@ -180,7 +180,7 @@ fn added_note_for_expression_use() -> u32 {
     }
 }
 
-#[rustfmt::skip]
+#[crablangfmt::skip]
 fn test_suggestion_with_weird_formatting() {
     let x = 9;
     let mut a = 0;

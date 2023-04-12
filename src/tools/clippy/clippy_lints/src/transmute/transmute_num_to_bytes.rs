@@ -1,10 +1,10 @@
 use super::TRANSMUTE_NUM_TO_BYTES;
 use clippy_utils::diagnostics::span_lint_and_then;
 use clippy_utils::sugg;
-use rustc_errors::Applicability;
-use rustc_hir::Expr;
-use rustc_lint::LateContext;
-use rustc_middle::ty::{self, Ty, UintTy};
+use crablangc_errors::Applicability;
+use crablangc_hir::Expr;
+use crablangc_lint::LateContext;
+use crablangc_middle::ty::{self, Ty, UintTy};
 
 /// Checks for `transmute_int_to_float` lint.
 /// Returns `true` if it's triggered, otherwise returns `false`.
@@ -23,7 +23,7 @@ pub(super) fn check<'tcx>(
             }
             if matches!(from_ty.kind(), ty::Float(_)) && const_context {
                 // TODO: Remove when const_float_bits_conv is stabilized
-                // rust#72447
+                // crablang#72447
                 return false;
             }
 

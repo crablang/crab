@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 
 #![feature(staged_api)]
 #![feature(deprecated_suggestion)]

@@ -77,4 +77,4 @@ LL |     let x: *mut S = &S;
 
 error: aborting due to 7 previous errors
 
-For more information about this error, try `rustc --explain E0308`.
+For more information about this error, try `crablangc --explain E0308`.

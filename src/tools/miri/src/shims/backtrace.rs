@@ -1,9 +1,9 @@
 use crate::*;
-use rustc_ast::ast::Mutability;
-use rustc_middle::ty::layout::LayoutOf as _;
-use rustc_middle::ty::{self, Instance};
-use rustc_span::{BytePos, Loc, Symbol};
-use rustc_target::{abi::Size, spec::abi::Abi};
+use crablangc_ast::ast::Mutability;
+use crablangc_middle::ty::layout::LayoutOf as _;
+use crablangc_middle::ty::{self, Instance};
+use crablangc_span::{BytePos, Loc, Symbol};
+use crablangc_target::{abi::Size, spec::abi::Abi};
 
 impl<'mir, 'tcx: 'mir> EvalContextExt<'mir, 'tcx> for crate::MiriInterpCx<'mir, 'tcx> {}
 pub trait EvalContextExt<'mir, 'tcx: 'mir>: crate::MiriInterpCxExt<'mir, 'tcx> {
@@ -15,7 +15,7 @@ pub trait EvalContextExt<'mir, 'tcx: 'mir>: crate::MiriInterpCxExt<'mir, 'tcx> {
         dest: &PlaceTy<'tcx, Provenance>,
     ) -> InterpResult<'tcx> {
         let this = self.eval_context_mut();
-        let [flags] = this.check_shim(abi, Abi::Rust, link_name, args)?;
+        let [flags] = this.check_shim(abi, Abi::CrabLang, link_name, args)?;
 
         let flags = this.read_scalar(flags)?.to_u64()?;
         if flags != 0 {
@@ -49,7 +49,7 @@ pub trait EvalContextExt<'mir, 'tcx: 'mir>: crate::MiriInterpCxExt<'mir, 'tcx> {
             // Match the behavior of runtime backtrace spans
             // by using a non-macro span in our backtrace. See `FunctionCx::debug_loc`.
             if span.from_expansion() && !tcx.sess.opts.unstable_opts.debug_macros {
-                span = rustc_span::hygiene::walk_chain(span, frame.body.span.ctxt())
+                span = crablangc_span::hygiene::walk_chain(span, frame.body.span.ctxt())
             }
             data.push((frame.instance, span.lo()));
         }
@@ -77,9 +77,9 @@ pub trait EvalContextExt<'mir, 'tcx: 'mir>: crate::MiriInterpCxExt<'mir, 'tcx> {
             // storage for pointers is allocated by miri
             // deallocating the slice is undefined behavior with a custom global allocator
             0 => {
-                let [_flags] = this.check_shim(abi, Abi::Rust, link_name, args)?;
+                let [_flags] = this.check_shim(abi, Abi::CrabLang, link_name, args)?;
 
-                let alloc = this.allocate(array_layout, MiriMemoryKind::Rust.into())?;
+                let alloc = this.allocate(array_layout, MiriMemoryKind::CrabLang.into())?;
 
                 // Write pointers into array
                 for (i, ptr) in ptrs.into_iter().enumerate() {
@@ -95,7 +95,7 @@ pub trait EvalContextExt<'mir, 'tcx: 'mir>: crate::MiriInterpCxExt<'mir, 'tcx> {
             }
             // storage for pointers is allocated by the caller
             1 => {
-                let [_flags, buf] = this.check_shim(abi, Abi::Rust, link_name, args)?;
+                let [_flags, buf] = this.check_shim(abi, Abi::CrabLang, link_name, args)?;
 
                 let buf_place = this.deref_operand(buf)?;
 
@@ -151,7 +151,7 @@ pub trait EvalContextExt<'mir, 'tcx: 'mir>: crate::MiriInterpCxExt<'mir, 'tcx> {
         dest: &PlaceTy<'tcx, Provenance>,
     ) -> InterpResult<'tcx> {
         let this = self.eval_context_mut();
-        let [ptr, flags] = this.check_shim(abi, Abi::Rust, link_name, args)?;
+        let [ptr, flags] = this.check_shim(abi, Abi::CrabLang, link_name, args)?;
 
         let flags = this.read_scalar(flags)?.to_u64()?;
 
@@ -190,9 +190,9 @@ pub trait EvalContextExt<'mir, 'tcx: 'mir>: crate::MiriInterpCxExt<'mir, 'tcx> {
             0 => {
                 // These are "mutable" allocations as we consider them to be owned by the callee.
                 let name_alloc =
-                    this.allocate_str(&name, MiriMemoryKind::Rust.into(), Mutability::Mut)?;
+                    this.allocate_str(&name, MiriMemoryKind::CrabLang.into(), Mutability::Mut)?;
                 let filename_alloc =
-                    this.allocate_str(&filename, MiriMemoryKind::Rust.into(), Mutability::Mut)?;
+                    this.allocate_str(&filename, MiriMemoryKind::CrabLang.into(), Mutability::Mut)?;
 
                 this.write_immediate(
                     name_alloc.to_ref(this),
@@ -237,7 +237,7 @@ pub trait EvalContextExt<'mir, 'tcx: 'mir>: crate::MiriInterpCxExt<'mir, 'tcx> {
         let this = self.eval_context_mut();
 
         let [ptr, flags, name_ptr, filename_ptr] =
-            this.check_shim(abi, Abi::Rust, link_name, args)?;
+            this.check_shim(abi, Abi::CrabLang, link_name, args)?;
 
         let flags = this.read_scalar(flags)?.to_u64()?;
         if flags != 0 {

@@ -28,8 +28,8 @@ impl<T: ?Sized> *const T {
     /// let ptr: *const u8 = s.as_ptr();
     /// assert!(!ptr.is_null());
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
-    #[rustc_const_unstable(feature = "const_ptr_is_null", issue = "74939")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    #[crablangc_const_unstable(feature = "const_ptr_is_null", issue = "74939")]
     #[inline]
     pub const fn is_null(self) -> bool {
         #[inline]
@@ -53,7 +53,7 @@ impl<T: ?Sized> *const T {
 
     /// Casts to a pointer of another type.
     #[stable(feature = "ptr_cast", since = "1.38.0")]
-    #[rustc_const_stable(feature = "const_ptr_cast", since = "1.38.0")]
+    #[crablangc_const_stable(feature = "const_ptr_cast", since = "1.38.0")]
     #[inline(always)]
     pub const fn cast<U>(self) -> *const U {
         self as _
@@ -88,7 +88,7 @@ impl<T: ?Sized> *const T {
     /// }
     /// ```
     #[unstable(feature = "set_ptr_value", issue = "75091")]
-    #[rustc_const_unstable(feature = "set_ptr_value", issue = "75091")]
+    #[crablangc_const_unstable(feature = "set_ptr_value", issue = "75091")]
     #[must_use = "returns a new pointer rather than modifying its argument"]
     #[inline]
     pub const fn with_metadata_of<U>(self, meta: *const U) -> *const U
@@ -103,7 +103,7 @@ impl<T: ?Sized> *const T {
     /// This is a bit safer than `as` because it wouldn't silently change the type if the code is
     /// refactored.
     #[stable(feature = "ptr_const_cast", since = "1.65.0")]
-    #[rustc_const_stable(feature = "ptr_const_cast", since = "1.65.0")]
+    #[crablangc_const_stable(feature = "ptr_const_cast", since = "1.65.0")]
     #[inline(always)]
     pub const fn cast_mut(self) -> *mut T {
         self as _
@@ -185,7 +185,7 @@ impl<T: ?Sized> *const T {
     /// If using those APIs is not possible because there is no way to preserve a pointer with the
     /// required provenance, use [`expose_addr`][pointer::expose_addr] and
     /// [`from_exposed_addr`][from_exposed_addr] instead. However, note that this makes
-    /// your code less portable and less amenable to tools that check for compliance with the Rust
+    /// your code less portable and less amenable to tools that check for compliance with the CrabLang
     /// memory model.
     ///
     /// On most platforms this will produce a value with the same bytes as the original
@@ -218,7 +218,7 @@ impl<T: ?Sized> *const T {
     ///
     /// Using this method means that code is *not* following Strict Provenance rules. Supporting
     /// [`from_exposed_addr`][] complicates specification and reasoning and may not be supported by
-    /// tools that help you to stay conformant with the Rust memory model, so it is recommended to
+    /// tools that help you to stay conformant with the CrabLang memory model, so it is recommended to
     /// use [`addr`][pointer::addr] wherever possible.
     ///
     /// On most platforms this will produce a value with the same bytes as the original pointer,
@@ -285,7 +285,7 @@ impl<T: ?Sized> *const T {
     ///
     /// The pointer can be later reconstructed with [`from_raw_parts`].
     #[unstable(feature = "ptr_metadata", issue = "81513")]
-    #[rustc_const_unstable(feature = "ptr_metadata", issue = "81513")]
+    #[crablangc_const_unstable(feature = "ptr_metadata", issue = "81513")]
     #[inline]
     pub const fn to_raw_parts(self) -> (*const (), <T as super::Pointee>::Metadata) {
         (self.cast(), metadata(self))
@@ -308,7 +308,7 @@ impl<T: ?Sized> *const T {
     ///
     /// * The pointer must point to an initialized instance of `T`.
     ///
-    /// * You must enforce Rust's aliasing rules, since the returned lifetime `'a` is
+    /// * You must enforce CrabLang's aliasing rules, since the returned lifetime `'a` is
     ///   arbitrarily chosen and does not necessarily reflect the actual lifetime of the data.
     ///   In particular, while this reference exists, the memory the pointer points to must
     ///   not get mutated (except inside `UnsafeCell`).
@@ -346,7 +346,7 @@ impl<T: ?Sized> *const T {
     /// }
     /// ```
     #[stable(feature = "ptr_as_ref", since = "1.9.0")]
-    #[rustc_const_unstable(feature = "const_ptr_as_ref", issue = "91822")]
+    #[crablangc_const_unstable(feature = "const_ptr_as_ref", issue = "91822")]
     #[inline]
     pub const unsafe fn as_ref<'a>(self) -> Option<&'a T> {
         // SAFETY: the caller must guarantee that `self` is valid
@@ -369,7 +369,7 @@ impl<T: ?Sized> *const T {
     ///
     /// * It must be "dereferenceable" in the sense defined in [the module documentation].
     ///
-    /// * You must enforce Rust's aliasing rules, since the returned lifetime `'a` is
+    /// * You must enforce CrabLang's aliasing rules, since the returned lifetime `'a` is
     ///   arbitrarily chosen and does not necessarily reflect the actual lifetime of the data.
     ///   In particular, while this reference exists, the memory the pointer points to must
     ///   not get mutated (except inside `UnsafeCell`).
@@ -393,7 +393,7 @@ impl<T: ?Sized> *const T {
     /// ```
     #[inline]
     #[unstable(feature = "ptr_as_uninit", issue = "75402")]
-    #[rustc_const_unstable(feature = "const_ptr_as_ref", issue = "91822")]
+    #[crablangc_const_unstable(feature = "const_ptr_as_ref", issue = "91822")]
     pub const unsafe fn as_uninit_ref<'a>(self) -> Option<&'a MaybeUninit<T>>
     where
         T: Sized,
@@ -452,9 +452,9 @@ impl<T: ?Sized> *const T {
     ///     println!("{}", *ptr.offset(2) as char);
     /// }
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[must_use = "returns a new pointer rather than modifying its argument"]
-    #[rustc_const_stable(feature = "const_ptr_offset", since = "1.61.0")]
+    #[crablangc_const_stable(feature = "const_ptr_offset", since = "1.61.0")]
     #[inline(always)]
     #[cfg_attr(miri, track_caller)] // even without panics, this helps for Miri backtraces
     pub const unsafe fn offset(self, count: isize) -> *const T
@@ -478,7 +478,7 @@ impl<T: ?Sized> *const T {
     #[must_use]
     #[inline(always)]
     #[unstable(feature = "pointer_byte_offsets", issue = "96283")]
-    #[rustc_const_unstable(feature = "const_pointer_byte_offsets", issue = "96283")]
+    #[crablangc_const_unstable(feature = "const_pointer_byte_offsets", issue = "96283")]
     #[cfg_attr(miri, track_caller)] // even without panics, this helps for Miri backtraces
     pub const unsafe fn byte_offset(self, count: isize) -> Self {
         // SAFETY: the caller must uphold the safety contract for `offset`.
@@ -535,7 +535,7 @@ impl<T: ?Sized> *const T {
     /// ```
     #[stable(feature = "ptr_wrapping_offset", since = "1.16.0")]
     #[must_use = "returns a new pointer rather than modifying its argument"]
-    #[rustc_const_stable(feature = "const_ptr_offset", since = "1.61.0")]
+    #[crablangc_const_stable(feature = "const_ptr_offset", since = "1.61.0")]
     #[inline(always)]
     pub const fn wrapping_offset(self, count: isize) -> *const T
     where
@@ -558,7 +558,7 @@ impl<T: ?Sized> *const T {
     #[must_use]
     #[inline(always)]
     #[unstable(feature = "pointer_byte_offsets", issue = "96283")]
-    #[rustc_const_unstable(feature = "const_pointer_byte_offsets", issue = "96283")]
+    #[crablangc_const_unstable(feature = "const_pointer_byte_offsets", issue = "96283")]
     pub const fn wrapping_byte_offset(self, count: isize) -> Self {
         self.cast::<u8>().wrapping_offset(count).with_metadata_of(self)
     }
@@ -626,8 +626,8 @@ impl<T: ?Sized> *const T {
     ///
     /// * The distance being in bounds cannot rely on "wrapping around" the address space.
     ///
-    /// Rust types are never larger than `isize::MAX` and Rust allocations never wrap around the
-    /// address space, so two pointers within some value of any Rust type `T` will always satisfy
+    /// CrabLang types are never larger than `isize::MAX` and CrabLang allocations never wrap around the
+    /// address space, so two pointers within some value of any CrabLang type `T` will always satisfy
     /// the last two conditions. The standard library also generally ensures that allocations
     /// never reach a size where an offset is a concern. For instance, `Vec` and `Box` ensure they
     /// never allocate more than `isize::MAX` bytes, so `ptr_into_vec.offset_from(vec.as_ptr())`
@@ -668,7 +668,7 @@ impl<T: ?Sized> *const T {
     ///
     /// *Incorrect* usage:
     ///
-    /// ```rust,no_run
+    /// ```crablang,no_run
     /// let ptr1 = Box::into_raw(Box::new(0u8)) as *const u8;
     /// let ptr2 = Box::into_raw(Box::new(1u8)) as *const u8;
     /// let diff = (ptr2 as isize).wrapping_sub(ptr1 as isize);
@@ -683,7 +683,7 @@ impl<T: ?Sized> *const T {
     /// }
     /// ```
     #[stable(feature = "ptr_offset_from", since = "1.47.0")]
-    #[rustc_const_stable(feature = "const_ptr_offset_from", since = "1.65.0")]
+    #[crablangc_const_stable(feature = "const_ptr_offset_from", since = "1.65.0")]
     #[inline]
     #[cfg_attr(miri, track_caller)] // even without panics, this helps for Miri backtraces
     pub const unsafe fn offset_from(self, origin: *const T) -> isize
@@ -707,7 +707,7 @@ impl<T: ?Sized> *const T {
     /// ignoring the metadata.
     #[inline(always)]
     #[unstable(feature = "pointer_byte_offsets", issue = "96283")]
-    #[rustc_const_unstable(feature = "const_pointer_byte_offsets", issue = "96283")]
+    #[crablangc_const_unstable(feature = "const_pointer_byte_offsets", issue = "96283")]
     #[cfg_attr(miri, track_caller)] // even without panics, this helps for Miri backtraces
     pub const unsafe fn byte_offset_from<U: ?Sized>(self, origin: *const U) -> isize {
         // SAFETY: the caller must uphold the safety contract for `offset_from`.
@@ -729,7 +729,7 @@ impl<T: ?Sized> *const T {
     /// to [`add`](#method.add) (or, with the parameters in the other order,
     /// to [`sub`](#method.sub)).  The following are all equivalent, assuming
     /// that their safety preconditions are met:
-    /// ```rust
+    /// ```crablang
     /// # #![feature(ptr_sub_ptr)]
     /// # unsafe fn blah(ptr: *const i32, origin: *const i32, count: usize) -> bool {
     /// ptr.sub_ptr(origin) == count
@@ -775,7 +775,7 @@ impl<T: ?Sized> *const T {
     /// // ptr1.sub_ptr(ptr2)
     /// ```
     #[unstable(feature = "ptr_sub_ptr", issue = "95892")]
-    #[rustc_const_unstable(feature = "const_ptr_sub_ptr", issue = "95892")]
+    #[crablangc_const_unstable(feature = "const_ptr_sub_ptr", issue = "95892")]
     #[inline]
     #[cfg_attr(miri, track_caller)] // even without panics, this helps for Miri backtraces
     pub const unsafe fn sub_ptr(self, origin: *const T) -> usize
@@ -816,7 +816,7 @@ impl<T: ?Sized> *const T {
     /// differences, and it should also not be stabilized before we have a better understanding
     /// of this issue.
     #[unstable(feature = "const_raw_ptr_comparison", issue = "53020")]
-    #[rustc_const_unstable(feature = "const_raw_ptr_comparison", issue = "53020")]
+    #[crablangc_const_unstable(feature = "const_raw_ptr_comparison", issue = "53020")]
     #[inline]
     pub const fn guaranteed_eq(self, other: *const T) -> Option<bool>
     where
@@ -846,7 +846,7 @@ impl<T: ?Sized> *const T {
     /// differences, and it should also not be stabilized before we have a better understanding
     /// of this issue.
     #[unstable(feature = "const_raw_ptr_comparison", issue = "53020")]
-    #[rustc_const_unstable(feature = "const_raw_ptr_comparison", issue = "53020")]
+    #[crablangc_const_unstable(feature = "const_raw_ptr_comparison", issue = "53020")]
     #[inline]
     pub const fn guaranteed_ne(self, other: *const T) -> Option<bool>
     where
@@ -909,7 +909,7 @@ impl<T: ?Sized> *const T {
     /// ```
     #[stable(feature = "pointer_methods", since = "1.26.0")]
     #[must_use = "returns a new pointer rather than modifying its argument"]
-    #[rustc_const_stable(feature = "const_ptr_offset", since = "1.61.0")]
+    #[crablangc_const_stable(feature = "const_ptr_offset", since = "1.61.0")]
     #[inline(always)]
     #[cfg_attr(miri, track_caller)] // even without panics, this helps for Miri backtraces
     pub const unsafe fn add(self, count: usize) -> Self
@@ -933,7 +933,7 @@ impl<T: ?Sized> *const T {
     #[must_use]
     #[inline(always)]
     #[unstable(feature = "pointer_byte_offsets", issue = "96283")]
-    #[rustc_const_unstable(feature = "const_pointer_byte_offsets", issue = "96283")]
+    #[crablangc_const_unstable(feature = "const_pointer_byte_offsets", issue = "96283")]
     #[cfg_attr(miri, track_caller)] // even without panics, this helps for Miri backtraces
     pub const unsafe fn byte_add(self, count: usize) -> Self {
         // SAFETY: the caller must uphold the safety contract for `add`.
@@ -992,7 +992,7 @@ impl<T: ?Sized> *const T {
     /// ```
     #[stable(feature = "pointer_methods", since = "1.26.0")]
     #[must_use = "returns a new pointer rather than modifying its argument"]
-    #[rustc_const_stable(feature = "const_ptr_offset", since = "1.61.0")]
+    #[crablangc_const_stable(feature = "const_ptr_offset", since = "1.61.0")]
     #[inline(always)]
     #[cfg_attr(miri, track_caller)] // even without panics, this helps for Miri backtraces
     pub const unsafe fn sub(self, count: usize) -> Self
@@ -1017,7 +1017,7 @@ impl<T: ?Sized> *const T {
     #[must_use]
     #[inline(always)]
     #[unstable(feature = "pointer_byte_offsets", issue = "96283")]
-    #[rustc_const_unstable(feature = "const_pointer_byte_offsets", issue = "96283")]
+    #[crablangc_const_unstable(feature = "const_pointer_byte_offsets", issue = "96283")]
     #[cfg_attr(miri, track_caller)] // even without panics, this helps for Miri backtraces
     pub const unsafe fn byte_sub(self, count: usize) -> Self {
         // SAFETY: the caller must uphold the safety contract for `sub`.
@@ -1075,7 +1075,7 @@ impl<T: ?Sized> *const T {
     /// ```
     #[stable(feature = "pointer_methods", since = "1.26.0")]
     #[must_use = "returns a new pointer rather than modifying its argument"]
-    #[rustc_const_stable(feature = "const_ptr_offset", since = "1.61.0")]
+    #[crablangc_const_stable(feature = "const_ptr_offset", since = "1.61.0")]
     #[inline(always)]
     pub const fn wrapping_add(self, count: usize) -> Self
     where
@@ -1097,7 +1097,7 @@ impl<T: ?Sized> *const T {
     #[must_use]
     #[inline(always)]
     #[unstable(feature = "pointer_byte_offsets", issue = "96283")]
-    #[rustc_const_unstable(feature = "const_pointer_byte_offsets", issue = "96283")]
+    #[crablangc_const_unstable(feature = "const_pointer_byte_offsets", issue = "96283")]
     pub const fn wrapping_byte_add(self, count: usize) -> Self {
         self.cast::<u8>().wrapping_add(count).with_metadata_of(self)
     }
@@ -1153,7 +1153,7 @@ impl<T: ?Sized> *const T {
     /// ```
     #[stable(feature = "pointer_methods", since = "1.26.0")]
     #[must_use = "returns a new pointer rather than modifying its argument"]
-    #[rustc_const_stable(feature = "const_ptr_offset", since = "1.61.0")]
+    #[crablangc_const_stable(feature = "const_ptr_offset", since = "1.61.0")]
     #[inline(always)]
     pub const fn wrapping_sub(self, count: usize) -> Self
     where
@@ -1175,7 +1175,7 @@ impl<T: ?Sized> *const T {
     #[must_use]
     #[inline(always)]
     #[unstable(feature = "pointer_byte_offsets", issue = "96283")]
-    #[rustc_const_unstable(feature = "const_pointer_byte_offsets", issue = "96283")]
+    #[crablangc_const_unstable(feature = "const_pointer_byte_offsets", issue = "96283")]
     pub const fn wrapping_byte_sub(self, count: usize) -> Self {
         self.cast::<u8>().wrapping_sub(count).with_metadata_of(self)
     }
@@ -1187,7 +1187,7 @@ impl<T: ?Sized> *const T {
     ///
     /// [`ptr::read`]: crate::ptr::read()
     #[stable(feature = "pointer_methods", since = "1.26.0")]
-    #[rustc_const_unstable(feature = "const_ptr_read", issue = "80377")]
+    #[crablangc_const_unstable(feature = "const_ptr_read", issue = "80377")]
     #[inline]
     #[cfg_attr(miri, track_caller)] // even without panics, this helps for Miri backtraces
     pub const unsafe fn read(self) -> T
@@ -1228,7 +1228,7 @@ impl<T: ?Sized> *const T {
     ///
     /// [`ptr::read_unaligned`]: crate::ptr::read_unaligned()
     #[stable(feature = "pointer_methods", since = "1.26.0")]
-    #[rustc_const_unstable(feature = "const_ptr_read", issue = "80377")]
+    #[crablangc_const_unstable(feature = "const_ptr_read", issue = "80377")]
     #[inline]
     #[cfg_attr(miri, track_caller)] // even without panics, this helps for Miri backtraces
     pub const unsafe fn read_unaligned(self) -> T
@@ -1247,7 +1247,7 @@ impl<T: ?Sized> *const T {
     /// See [`ptr::copy`] for safety concerns and examples.
     ///
     /// [`ptr::copy`]: crate::ptr::copy()
-    #[rustc_const_stable(feature = "const_intrinsic_copy", since = "1.63.0")]
+    #[crablangc_const_stable(feature = "const_intrinsic_copy", since = "1.63.0")]
     #[stable(feature = "pointer_methods", since = "1.26.0")]
     #[inline]
     #[cfg_attr(miri, track_caller)] // even without panics, this helps for Miri backtraces
@@ -1267,7 +1267,7 @@ impl<T: ?Sized> *const T {
     /// See [`ptr::copy_nonoverlapping`] for safety concerns and examples.
     ///
     /// [`ptr::copy_nonoverlapping`]: crate::ptr::copy_nonoverlapping()
-    #[rustc_const_stable(feature = "const_intrinsic_copy", since = "1.63.0")]
+    #[crablangc_const_stable(feature = "const_intrinsic_copy", since = "1.63.0")]
     #[stable(feature = "pointer_methods", since = "1.26.0")]
     #[inline]
     #[cfg_attr(miri, track_caller)] // even without panics, this helps for Miri backtraces
@@ -1322,7 +1322,7 @@ impl<T: ?Sized> *const T {
     #[must_use]
     #[inline]
     #[stable(feature = "align_offset", since = "1.36.0")]
-    #[rustc_const_unstable(feature = "const_align_offset", issue = "90962")]
+    #[crablangc_const_unstable(feature = "const_align_offset", issue = "90962")]
     pub const fn align_offset(self, align: usize) -> usize
     where
         T: Sized,
@@ -1440,11 +1440,11 @@ impl<T: ?Sized> *const T {
     /// };
     /// ```
     ///
-    /// [tracking issue]: https://github.com/rust-lang/rust/issues/104203
+    /// [tracking issue]: https://github.com/crablang/crablang/issues/104203
     #[must_use]
     #[inline]
     #[unstable(feature = "pointer_is_aligned", issue = "96284")]
-    #[rustc_const_unstable(feature = "const_pointer_is_aligned", issue = "104203")]
+    #[crablangc_const_unstable(feature = "const_pointer_is_aligned", issue = "104203")]
     pub const fn is_aligned(self) -> bool
     where
         T: Sized,
@@ -1556,11 +1556,11 @@ impl<T: ?Sized> *const T {
     /// };
     /// ```
     ///
-    /// [tracking issue]: https://github.com/rust-lang/rust/issues/104203
+    /// [tracking issue]: https://github.com/crablang/crablang/issues/104203
     #[must_use]
     #[inline]
     #[unstable(feature = "pointer_is_aligned", issue = "96284")]
-    #[rustc_const_unstable(feature = "const_pointer_is_aligned", issue = "104203")]
+    #[crablangc_const_unstable(feature = "const_pointer_is_aligned", issue = "104203")]
     pub const fn is_aligned_to(self, align: usize) -> bool {
         if !align.is_power_of_two() {
             panic!("is_aligned_to: align is not a power-of-two");
@@ -1595,7 +1595,7 @@ impl<T> *const [T] {
     ///
     /// # Examples
     ///
-    /// ```rust
+    /// ```crablang
     /// #![feature(slice_ptr_len)]
     ///
     /// use std::ptr;
@@ -1605,7 +1605,7 @@ impl<T> *const [T] {
     /// ```
     #[inline]
     #[unstable(feature = "slice_ptr_len", issue = "71146")]
-    #[rustc_const_unstable(feature = "const_slice_ptr_len", issue = "71146")]
+    #[crablangc_const_unstable(feature = "const_slice_ptr_len", issue = "71146")]
     pub const fn len(self) -> usize {
         metadata(self)
     }
@@ -1616,7 +1616,7 @@ impl<T> *const [T] {
     ///
     /// # Examples
     ///
-    /// ```rust
+    /// ```crablang
     /// #![feature(slice_ptr_get)]
     /// use std::ptr;
     ///
@@ -1625,7 +1625,7 @@ impl<T> *const [T] {
     /// ```
     #[inline]
     #[unstable(feature = "slice_ptr_get", issue = "74265")]
-    #[rustc_const_unstable(feature = "slice_ptr_get", issue = "74265")]
+    #[crablangc_const_unstable(feature = "slice_ptr_get", issue = "74265")]
     pub const fn as_ptr(self) -> *const T {
         self as *const T
     }
@@ -1636,7 +1636,7 @@ impl<T> *const [T] {
     /// Calling this method with an out-of-bounds index or when `self` is not dereferenceable
     /// is *[undefined behavior]* even if the resulting pointer is not used.
     ///
-    /// [undefined behavior]: https://doc.rust-lang.org/reference/behavior-considered-undefined.html
+    /// [undefined behavior]: https://doc.crablang.org/reference/behavior-considered-undefined.html
     ///
     /// # Examples
     ///
@@ -1650,7 +1650,7 @@ impl<T> *const [T] {
     /// }
     /// ```
     #[unstable(feature = "slice_ptr_get", issue = "74265")]
-    #[rustc_const_unstable(feature = "const_slice_index", issue = "none")]
+    #[crablangc_const_unstable(feature = "const_slice_index", issue = "none")]
     #[inline]
     pub const unsafe fn get_unchecked<I>(self, index: I) -> *const I::Output
     where
@@ -1686,7 +1686,7 @@ impl<T> *const [T] {
     /// * The total size `ptr.len() * mem::size_of::<T>()` of the slice must be no larger than `isize::MAX`.
     ///   See the safety documentation of [`pointer::offset`].
     ///
-    /// * You must enforce Rust's aliasing rules, since the returned lifetime `'a` is
+    /// * You must enforce CrabLang's aliasing rules, since the returned lifetime `'a` is
     ///   arbitrarily chosen and does not necessarily reflect the actual lifetime of the data.
     ///   In particular, while this reference exists, the memory the pointer points to must
     ///   not get mutated (except inside `UnsafeCell`).
@@ -1699,7 +1699,7 @@ impl<T> *const [T] {
     /// [allocated object]: crate::ptr#allocated-object
     #[inline]
     #[unstable(feature = "ptr_as_uninit", issue = "75402")]
-    #[rustc_const_unstable(feature = "const_ptr_as_ref", issue = "91822")]
+    #[crablangc_const_unstable(feature = "const_ptr_as_ref", issue = "91822")]
     pub const unsafe fn as_uninit_slice<'a>(self) -> Option<&'a [MaybeUninit<T>]> {
         if self.is_null() {
             None
@@ -1711,7 +1711,7 @@ impl<T> *const [T] {
 }
 
 // Equality for pointers
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: ?Sized> PartialEq for *const T {
     #[inline]
     fn eq(&self, other: &*const T) -> bool {
@@ -1719,11 +1719,11 @@ impl<T: ?Sized> PartialEq for *const T {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: ?Sized> Eq for *const T {}
 
 // Comparison for pointers
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: ?Sized> Ord for *const T {
     #[inline]
     fn cmp(&self, other: &*const T) -> Ordering {
@@ -1737,7 +1737,7 @@ impl<T: ?Sized> Ord for *const T {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: ?Sized> PartialOrd for *const T {
     #[inline]
     fn partial_cmp(&self, other: &*const T) -> Option<Ordering> {

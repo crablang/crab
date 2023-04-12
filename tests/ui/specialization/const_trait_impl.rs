@@ -1,13 +1,13 @@
 // check-pass
-#![feature(const_trait_impl, min_specialization, rustc_attrs)]
+#![feature(const_trait_impl, min_specialization, crablangc_attrs)]
 
-#[rustc_specialization_trait]
+#[crablangc_specialization_trait]
 #[const_trait]
 pub unsafe trait Sup {
     fn foo() -> u32;
 }
 
-#[rustc_specialization_trait]
+#[crablangc_specialization_trait]
 #[const_trait]
 pub unsafe trait Sub: ~const Sup {}
 

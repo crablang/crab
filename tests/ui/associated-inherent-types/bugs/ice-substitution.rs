@@ -1,8 +1,8 @@
 // known-bug: unknown
 // failure-status: 101
 // normalize-stderr-test "note: .*\n\n" -> ""
-// normalize-stderr-test "thread 'rustc' panicked.*\n" -> ""
-// rustc-env:RUST_BACKTRACE=0
+// normalize-stderr-test "thread 'crablangc' panicked.*\n" -> ""
+// crablangc-env:CRABLANG_BACKTRACE=0
 
 // FIXME: I presume a type variable that couldn't be solved by `resolve_vars_if_possible`
 //        escapes the InferCtxt snapshot.

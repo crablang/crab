@@ -1,6 +1,6 @@
 // edition:2021
 
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 
 struct Filter {
     div: i32,
@@ -20,7 +20,7 @@ impl Data {
         // The closure passed to filter only captures self.filter,
         // therefore mutating self.list is allowed.
         self.list.retain(
-            #[rustc_capture_analysis]
+            #[crablangc_capture_analysis]
             |v| self.filter.allowed(*v),
             //~^ ERROR: First Pass analysis includes:
             //~| ERROR: Min Capture analysis includes:

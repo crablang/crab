@@ -1,6 +1,6 @@
 #![feature(extern_types)]
 
-extern "Rust" {
+extern "CrabLang" {
     type OpaqueListContents;
 }
 

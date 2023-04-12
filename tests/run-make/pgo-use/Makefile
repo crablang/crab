@@ -28,7 +28,7 @@ endif
 
 all:
 	# Compile the test program with instrumentation
-	$(RUSTC) $(COMMON_FLAGS) -Cprofile-generate="$(TMPDIR)" main.rs
+	$(CRABLANGC) $(COMMON_FLAGS) -Cprofile-generate="$(TMPDIR)" main.rs
 	# Run it in order to generate some profiling data
 	$(call RUN,main some-argument) || exit 1
 	# Postprocess the profiling data so it can be used by the compiler
@@ -36,7 +36,7 @@ all:
 		-o "$(TMPDIR)"/merged.profdata \
 		"$(TMPDIR)"/default_*.profraw
 	# Compile the test program again, making use of the profiling data
-	$(RUSTC) $(COMMON_FLAGS) -Cprofile-use="$(TMPDIR)"/merged.profdata --emit=llvm-ir main.rs
+	$(CRABLANGC) $(COMMON_FLAGS) -Cprofile-use="$(TMPDIR)"/merged.profdata --emit=llvm-ir main.rs
 	# Check that the generate IR contains some things that we expect
 	#
 	# We feed the file into LLVM FileCheck tool *in reverse* so that we see the

@@ -107,4 +107,4 @@ LL | fn bar2<'b, 'a, T : Sized + 'a + 'b>(d: T, p: &'b mut ()) -> impl Sized + '
 error: aborting due to 6 previous errors
 
 Some errors have detailed explanations: E0309, E0311.
-For more information about an error, try `rustc --explain E0309`.
+For more information about an error, try `crablangc --explain E0309`.

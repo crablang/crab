@@ -9,7 +9,7 @@
 
 // build-fail
 
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 
 fn black_box<T>(_: T) {
     unimplemented!()

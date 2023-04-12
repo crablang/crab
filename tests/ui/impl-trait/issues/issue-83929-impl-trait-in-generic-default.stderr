@@ -12,4 +12,4 @@ LL | type Result<T, E = impl std::error::Error> = std::result::Result<T, E>;
 
 error: aborting due to 2 previous errors
 
-For more information about this error, try `rustc --explain E0562`.
+For more information about this error, try `crablangc --explain E0562`.

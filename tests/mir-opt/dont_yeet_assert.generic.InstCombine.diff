@@ -11,7 +11,7 @@
                                            // mir::Constant
                                            // + span: $DIR/dont_yeet_assert.rs:10:5: 10:59
                                            // + user_ty: UserType(0)
-                                           // + literal: Const { ty: extern "rust-intrinsic" fn() {assert_mem_uninitialized_valid::<&T>}, val: Value(<ZST>) }
+                                           // + literal: Const { ty: extern "crablang-intrinsic" fn() {assert_mem_uninitialized_valid::<&T>}, val: Value(<ZST>) }
       }
   
       bb1: {

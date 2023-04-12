@@ -60,7 +60,7 @@ use crate::sys::thread_local_key as imp;
 /// use-after-deallocation or use-during-deallocation.
 ///
 /// The actual OS-TLS key is lazily allocated when this is used for the first
-/// time. The key is also deallocated when the Rust runtime exits or `destroy`
+/// time. The key is also deallocated when the CrabLang runtime exits or `destroy`
 /// is called, whichever comes first.
 ///
 /// # Examples
@@ -128,7 +128,7 @@ const KEY_SENTVAL: usize = 0;
 const KEY_SENTVAL: usize = libc::PTHREAD_KEYS_MAX + 1;
 
 impl StaticKey {
-    #[rustc_const_unstable(feature = "thread_local_internals", issue = "none")]
+    #[crablangc_const_unstable(feature = "thread_local_internals", issue = "none")]
     pub const fn new(dtor: Option<unsafe extern "C" fn(*mut u8)>) -> StaticKey {
         StaticKey { key: atomic::AtomicUsize::new(KEY_SENTVAL), dtor }
     }

@@ -8,7 +8,7 @@ use crate::sys_common::{FromInner, IntoInner};
 #[stable(feature = "ip_addr", since = "1.7.0")]
 pub use core::net::IpAddr;
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub use core::net::{Ipv4Addr, Ipv6Addr};
 
 #[unstable(feature = "ip", issue = "27709")]

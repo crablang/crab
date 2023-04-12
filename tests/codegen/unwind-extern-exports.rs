@@ -11,6 +11,6 @@
 // "C" ABI
 pub extern "C-unwind" fn foo_unwind() {}
 
-// "Rust"
-// (`extern "Rust"` could be removed as all `fn` get it implicitly; we leave it in for clarity.)
+// "CrabLang"
+// (`extern "CrabLang"` could be removed as all `fn` get it implicitly; we leave it in for clarity.)
 pub fn bar() {}

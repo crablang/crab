@@ -19,4 +19,4 @@ LL | impl<'a: 'b, 'b, 'c> Anything<'a, 'b> for FailStruct {
 
 error: aborting due to previous error
 
-For more information about this error, try `rustc --explain E0308`.
+For more information about this error, try `crablangc --explain E0308`.

@@ -4,7 +4,7 @@ warning: the feature `unsized_locals` is incomplete and may not be safe to use a
 LL | #![feature(unsized_locals)]
    |            ^^^^^^^^^^^^^^
    |
-   = note: see issue #48055 <https://github.com/rust-lang/rust/issues/48055> for more information
+   = note: see issue #48055 <https://github.com/crablang/crablang/issues/48055> for more information
    = note: `#[warn(incomplete_features)]` on by default
 
 error[E0277]: the size for values of type `[i32]` cannot be known at compilation time
@@ -19,4 +19,4 @@ LL |     let _x: fn(_) -> Test = Test;
 
 error: aborting due to previous error; 1 warning emitted
 
-For more information about this error, try `rustc --explain E0277`.
+For more information about this error, try `crablangc --explain E0277`.

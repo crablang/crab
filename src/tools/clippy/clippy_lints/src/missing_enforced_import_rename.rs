@@ -1,11 +1,11 @@
 use clippy_utils::{diagnostics::span_lint_and_sugg, source::snippet_opt};
 
-use rustc_data_structures::fx::FxHashMap;
-use rustc_errors::Applicability;
-use rustc_hir::{def::Res, def_id::DefId, Item, ItemKind, UseKind};
-use rustc_lint::{LateContext, LateLintPass, LintContext};
-use rustc_session::{declare_tool_lint, impl_lint_pass};
-use rustc_span::Symbol;
+use crablangc_data_structures::fx::FxHashMap;
+use crablangc_errors::Applicability;
+use crablangc_hir::{def::Res, def_id::DefId, Item, ItemKind, UseKind};
+use crablangc_lint::{LateContext, LateLintPass, LintContext};
+use crablangc_session::{declare_tool_lint, impl_lint_pass};
+use crablangc_span::Symbol;
 
 use crate::utils::conf::Rename;
 
@@ -26,11 +26,11 @@ declare_clippy_lint! {
     /// enforced-import-renames = [ { path = "serde_json::Value", rename = "JsonValue" }]
     /// ```
     ///
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// use serde_json::Value;
     /// ```
     /// Use instead:
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// use serde_json::Value as JsonValue;
     /// ```
     #[clippy::version = "1.55.0"]

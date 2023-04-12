@@ -1,7 +1,7 @@
 //! Client-side interner used for symbols.
 //!
-//! This is roughly based on the symbol interner from `rustc_span` and the
-//! DroplessArena from `rustc_arena`. It is unfortunately a complete
+//! This is roughly based on the symbol interner from `crablangc_span` and the
+//! DroplessArena from `crablangc_arena`. It is unfortunately a complete
 //! copy/re-implementation rather than a dependency as it is difficult to depend
 //! on crates from within `proc_macro`, due to it being built at the same time
 //! as `std`.
@@ -76,7 +76,7 @@ impl Symbol {
                 .all(|b| matches!(b, b'_' | b'a'..=b'z' | b'A'..=b'Z' | b'0'..=b'9'))
     }
 
-    // Mimics the behaviour of `Symbol::can_be_raw` from `rustc_span`
+    // Mimics the behaviour of `Symbol::can_be_raw` from `crablangc_span`
     fn can_be_raw(string: &str) -> bool {
         match string {
             "_" | "super" | "self" | "Self" | "crate" => false,
@@ -141,7 +141,7 @@ thread_local! {
     });
 }
 
-/// Basic interner for a `Symbol`, inspired by the one in `rustc_span`.
+/// Basic interner for a `Symbol`, inspired by the one in `crablangc_span`.
 struct Interner {
     arena: arena::Arena,
     // SAFETY: These `'static` lifetimes are actually references to data owned

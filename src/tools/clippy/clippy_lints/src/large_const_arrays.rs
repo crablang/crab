@@ -1,13 +1,13 @@
 use clippy_utils::diagnostics::span_lint_and_then;
 use if_chain::if_chain;
-use rustc_errors::Applicability;
-use rustc_hir::{Item, ItemKind};
-use rustc_hir_analysis::hir_ty_to_ty;
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_middle::ty::layout::LayoutOf;
-use rustc_middle::ty::{self, ConstKind};
-use rustc_session::{declare_tool_lint, impl_lint_pass};
-use rustc_span::{BytePos, Pos, Span};
+use crablangc_errors::Applicability;
+use crablangc_hir::{Item, ItemKind};
+use crablangc_hir_analysis::hir_ty_to_ty;
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_middle::ty::layout::LayoutOf;
+use crablangc_middle::ty::{self, ConstKind};
+use crablangc_session::{declare_tool_lint, impl_lint_pass};
+use crablangc_span::{BytePos, Pos, Span};
 
 declare_clippy_lint! {
     /// ### What it does
@@ -19,12 +19,12 @@ declare_clippy_lint! {
     /// Static items result in only one instance and has a fixed location in memory.
     ///
     /// ### Example
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// pub const a = [0u32; 1_000_000];
     /// ```
     ///
     /// Use instead:
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// pub static a = [0u32; 1_000_000];
     /// ```
     #[clippy::version = "1.44.0"]

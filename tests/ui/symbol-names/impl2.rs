@@ -1,6 +1,6 @@
 // build-fail
 
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 #![allow(dead_code)]
 
 trait Foo {
@@ -8,7 +8,7 @@ trait Foo {
 }
 
 impl Foo for [u8; 1 + 2] {
-    #[rustc_def_path] //~ ERROR def-path(<[u8; 1 + 2] as Foo>::baz)
+    #[crablangc_def_path] //~ ERROR def-path(<[u8; 1 + 2] as Foo>::baz)
     fn baz() {}
 }
 

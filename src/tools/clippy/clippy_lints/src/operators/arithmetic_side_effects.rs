@@ -4,13 +4,13 @@ use clippy_utils::{
     diagnostics::span_lint,
     is_lint_allowed, peel_hir_expr_refs, peel_hir_expr_unary,
 };
-use rustc_ast as ast;
-use rustc_data_structures::fx::{FxHashMap, FxHashSet};
-use rustc_hir as hir;
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_middle::ty::Ty;
-use rustc_session::impl_lint_pass;
-use rustc_span::source_map::{Span, Spanned};
+use crablangc_ast as ast;
+use crablangc_data_structures::fx::{FxHashMap, FxHashSet};
+use crablangc_hir as hir;
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_middle::ty::Ty;
+use crablangc_session::impl_lint_pass;
+use crablangc_span::source_map::{Span, Spanned};
 
 const HARD_CODED_ALLOWED_BINARY: &[[&str; 2]] = &[
     ["f32", "f32"],

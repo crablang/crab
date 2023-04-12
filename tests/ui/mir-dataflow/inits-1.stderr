@@ -1,19 +1,19 @@
-error: rustc_peek: bit not set
+error: crablangc_peek: bit not set
   --> $DIR/inits-1.rs:14:5
    |
-LL |     rustc_peek(&ret);
+LL |     crablangc_peek(&ret);
    |     ^^^^^^^^^^^^^^^^
 
-error: rustc_peek: bit not set
+error: crablangc_peek: bit not set
   --> $DIR/inits-1.rs:34:5
    |
-LL |     rustc_peek(&y);
+LL |     crablangc_peek(&y);
    |     ^^^^^^^^^^^^^^
 
-error: rustc_peek: bit not set
+error: crablangc_peek: bit not set
   --> $DIR/inits-1.rs:42:5
    |
-LL |     rustc_peek(&x);
+LL |     crablangc_peek(&x);
    |     ^^^^^^^^^^^^^^
 
 error: stop_after_dataflow ended compilation

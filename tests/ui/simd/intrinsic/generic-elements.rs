@@ -1,6 +1,6 @@
 // build-fail
 
-#![feature(repr_simd, platform_intrinsics, rustc_attrs)]
+#![feature(repr_simd, platform_intrinsics, crablangc_attrs)]
 
 #[repr(simd)]
 #[derive(Copy, Clone)]

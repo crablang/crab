@@ -61,4 +61,4 @@ LL |     fn bad(x: impl Into<u32>) -> impl Into<impl Debug> { x }
 error: aborting due to 7 previous errors
 
 Some errors have detailed explanations: E0277, E0562, E0666.
-For more information about an error, try `rustc --explain E0277`.
+For more information about an error, try `crablangc --explain E0277`.

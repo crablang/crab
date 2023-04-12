@@ -2,7 +2,7 @@
 
 /// Should not trigger an ICE in `SpanlessHash` / `consts::constant`
 ///
-/// Issue: https://github.com/rust-lang/rust-clippy/issues/2499
+/// Issue: https://github.com/crablang/crablang-clippy/issues/2499
 
 fn f(s: &[u8]) -> bool {
     let t = s[0] as char;

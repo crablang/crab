@@ -1,5 +1,5 @@
 // run-pass
-// See https://github.com/rust-lang/rust/issues/38942
+// See https://github.com/crablang/crablang/issues/38942
 
 #[repr(u64)]
 pub enum NSEventType {

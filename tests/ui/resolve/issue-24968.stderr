@@ -54,4 +54,4 @@ LL | static FOO_S2: u32 = Self::bar();
 error: aborting due to 7 previous errors
 
 Some errors have detailed explanations: E0411, E0433.
-For more information about an error, try `rustc --explain E0411`.
+For more information about an error, try `crablangc --explain E0411`.

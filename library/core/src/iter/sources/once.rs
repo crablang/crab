@@ -1,4 +1,4 @@
-use crate::iter::{FusedIterator, TrustedLen};
+use crate::iter::{FusedIterator, TcrablangedLen};
 
 /// Creates an iterator that yields an element exactly once.
 ///
@@ -92,8 +92,8 @@ impl<T> ExactSizeIterator for Once<T> {
     }
 }
 
-#[unstable(feature = "trusted_len", issue = "37572")]
-unsafe impl<T> TrustedLen for Once<T> {}
+#[unstable(feature = "tcrablanged_len", issue = "37572")]
+unsafe impl<T> TcrablangedLen for Once<T> {}
 
 #[stable(feature = "fused", since = "1.26.0")]
 impl<T> FusedIterator for Once<T> {}

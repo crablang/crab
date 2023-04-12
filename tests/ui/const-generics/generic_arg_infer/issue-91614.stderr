@@ -20,4 +20,4 @@ LL |     let y: Mask<_, LANES> = Mask::<_, _>::splat(false);
 
 error: aborting due to previous error
 
-For more information about this error, try `rustc --explain E0283`.
+For more information about this error, try `crablangc --explain E0283`.

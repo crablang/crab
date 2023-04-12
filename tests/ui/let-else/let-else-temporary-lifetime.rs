@@ -30,7 +30,7 @@ fn main() {
     println!("Should have dropped 👆");
 
     {
-        // cf. https://github.com/rust-lang/rust/pull/99518#issuecomment-1191520030
+        // cf. https://github.com/crablang/crablang/pull/99518#issuecomment-1191520030
         struct Foo<'a>(&'a mut u32);
 
         impl<'a> Drop for Foo<'a> {

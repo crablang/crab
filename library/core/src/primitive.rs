@@ -5,7 +5,7 @@
 //!
 //! An example of this is when generating a new struct and an impl for it:
 //!
-//! ```rust,compile_fail
+//! ```crablang,compile_fail
 //! pub struct bool;
 //!
 //! impl QueryId for bool {
@@ -20,7 +20,7 @@
 //!
 //! A correct implementation could look like:
 //!
-//! ```rust
+//! ```crablang
 //! # #[allow(non_camel_case_types)]
 //! pub struct bool;
 //!

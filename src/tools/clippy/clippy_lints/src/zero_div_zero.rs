@@ -1,9 +1,9 @@
 use clippy_utils::consts::{constant_simple, Constant};
 use clippy_utils::diagnostics::span_lint_and_help;
 use if_chain::if_chain;
-use rustc_hir::{BinOpKind, Expr, ExprKind};
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_hir::{BinOpKind, Expr, ExprKind};
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
 
 declare_clippy_lint! {
     /// ### What it does
@@ -13,12 +13,12 @@ declare_clippy_lint! {
     /// It's less readable than `f32::NAN` or `f64::NAN`.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// let nan = 0.0f32 / 0.0;
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// let nan = f32::NAN;
     /// ```
     #[clippy::version = "pre 1.29.0"]

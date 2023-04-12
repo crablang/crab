@@ -1,10 +1,10 @@
 use clippy_utils::diagnostics::{span_lint, span_lint_and_sugg};
 use clippy_utils::source::snippet_opt;
-use rustc_errors::Applicability;
-use rustc_hir::{Expr, ExprKind};
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_session::{declare_lint_pass, declare_tool_lint};
-use rustc_span::sym;
+use crablangc_errors::Applicability;
+use crablangc_hir::{Expr, ExprKind};
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_span::sym;
 use std::fmt;
 
 declare_clippy_lint! {
@@ -17,7 +17,7 @@ declare_clippy_lint! {
     /// cast by using the `add` method instead.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// let vec = vec![b'a', b'b', b'c'];
     /// let ptr = vec.as_ptr();
     /// let offset = 1_usize;
@@ -29,7 +29,7 @@ declare_clippy_lint! {
     ///
     /// Could be written:
     ///
-    /// ```rust
+    /// ```crablang
     /// let vec = vec![b'a', b'b', b'c'];
     /// let ptr = vec.as_ptr();
     /// let offset = 1_usize;

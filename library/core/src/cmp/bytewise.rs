@@ -17,7 +17,7 @@ use crate::num::{NonZeroU128, NonZeroU16, NonZeroU32, NonZeroU64, NonZeroU8, Non
 /// - `Self` and `Rhs` have the same layout (size and alignment).
 /// - Neither `Self` nor `Rhs` have provenance, so integer comparisons are correct.
 /// - `<Self as PartialEq<Rhs>>::{eq,ne}` are equivalent to comparing the bytes.
-#[rustc_specialization_trait]
+#[crablangc_specialization_trait]
 pub(crate) unsafe trait BytewiseEq<Rhs = Self>: PartialEq<Rhs> + Sized {}
 
 macro_rules! is_bytewise_comparable {
@@ -77,7 +77,7 @@ macro_rules! is_bytewise_comparable_array_length {
     )+};
 }
 
-// Frustratingly, this can't be made const-generic as it gets
+// Fcrablangratingly, this can't be made const-generic as it gets
 //    error: specializing impl repeats parameter `N`
 // so just do it for a couple of plausibly-common ones.
 is_bytewise_comparable_array_length!(0, 1, 2, 3, 4, 6, 8, 12, 16, 24, 32, 48, 64);

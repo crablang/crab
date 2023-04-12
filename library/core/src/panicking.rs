@@ -47,44 +47,44 @@ const _: () = assert!(cfg!(panic = "abort"), "panic_immediate_abort requires -C 
 #[cfg_attr(feature = "panic_immediate_abort", inline)]
 #[track_caller]
 #[lang = "panic_fmt"] // needed for const-evaluated panics
-#[rustc_do_not_const_check] // hooked by const-eval
-#[rustc_const_unstable(feature = "core_panic", issue = "none")]
+#[crablangc_do_not_const_check] // hooked by const-eval
+#[crablangc_const_unstable(feature = "core_panic", issue = "none")]
 pub const fn panic_fmt(fmt: fmt::Arguments<'_>) -> ! {
     if cfg!(feature = "panic_immediate_abort") {
         super::intrinsics::abort()
     }
 
-    // NOTE This function never crosses the FFI boundary; it's a Rust-to-Rust call
+    // NOTE This function never crosses the FFI boundary; it's a CrabLang-to-CrabLang call
     // that gets resolved to the `#[panic_handler]` function.
-    extern "Rust" {
+    extern "CrabLang" {
         #[lang = "panic_impl"]
         fn panic_impl(pi: &PanicInfo<'_>) -> !;
     }
 
     let pi = PanicInfo::internal_constructor(Some(&fmt), Location::caller(), true);
 
-    // SAFETY: `panic_impl` is defined in safe Rust code and thus is safe to call.
+    // SAFETY: `panic_impl` is defined in safe CrabLang code and thus is safe to call.
     unsafe { panic_impl(&pi) }
 }
 
 /// Like `panic_fmt`, but for non-unwinding panics.
 ///
-/// Has to be a separate function so that it can carry the `rustc_nounwind` attribute.
+/// Has to be a separate function so that it can carry the `crablangc_nounwind` attribute.
 #[cfg_attr(not(feature = "panic_immediate_abort"), inline(never), cold)]
 #[cfg_attr(feature = "panic_immediate_abort", inline)]
 #[track_caller]
 // This attribute has the key side-effect that if the panic handler ignores `can_unwind`
 // and unwinds anyway, we will hit the "unwinding out of nounwind function" guard,
 // which causes a "panic in a function that cannot unwind".
-#[rustc_nounwind]
+#[crablangc_nounwind]
 pub fn panic_nounwind_fmt(fmt: fmt::Arguments<'_>) -> ! {
     if cfg!(feature = "panic_immediate_abort") {
         super::intrinsics::abort()
     }
 
-    // NOTE This function never crosses the FFI boundary; it's a Rust-to-Rust call
+    // NOTE This function never crosses the FFI boundary; it's a CrabLang-to-CrabLang call
     // that gets resolved to the `#[panic_handler]` function.
-    extern "Rust" {
+    extern "CrabLang" {
         #[lang = "panic_impl"]
         fn panic_impl(pi: &PanicInfo<'_>) -> !;
     }
@@ -92,7 +92,7 @@ pub fn panic_nounwind_fmt(fmt: fmt::Arguments<'_>) -> ! {
     // PanicInfo with the `can_unwind` flag set to false forces an abort.
     let pi = PanicInfo::internal_constructor(Some(&fmt), Location::caller(), false);
 
-    // SAFETY: `panic_impl` is defined in safe Rust code and thus is safe to call.
+    // SAFETY: `panic_impl` is defined in safe CrabLang code and thus is safe to call.
     unsafe { panic_impl(&pi) }
 }
 
@@ -105,7 +105,7 @@ pub fn panic_nounwind_fmt(fmt: fmt::Arguments<'_>) -> ! {
 #[cfg_attr(not(feature = "panic_immediate_abort"), inline(never), cold)]
 #[cfg_attr(feature = "panic_immediate_abort", inline)]
 #[track_caller]
-#[rustc_const_unstable(feature = "core_panic", issue = "none")]
+#[crablangc_const_unstable(feature = "core_panic", issue = "none")]
 #[lang = "panic"] // needed by codegen for panic on overflow and other `Assert` MIR terminators
 pub const fn panic(expr: &'static str) -> ! {
     // Use Arguments::new_v1 instead of format_args!("{expr}") to potentially
@@ -121,22 +121,22 @@ pub const fn panic(expr: &'static str) -> ! {
 #[cfg_attr(not(feature = "panic_immediate_abort"), inline(never), cold)]
 #[cfg_attr(feature = "panic_immediate_abort", inline)]
 #[lang = "panic_nounwind"] // needed by codegen for non-unwinding panics
-#[rustc_nounwind]
+#[crablangc_nounwind]
 pub fn panic_nounwind(expr: &'static str) -> ! {
     panic_nounwind_fmt(fmt::Arguments::new_const(&[expr]));
 }
 
 #[inline]
 #[track_caller]
-#[rustc_diagnostic_item = "panic_str"]
-#[rustc_const_unstable(feature = "core_panic", issue = "none")]
+#[crablangc_diagnostic_item = "panic_str"]
+#[crablangc_const_unstable(feature = "core_panic", issue = "none")]
 pub const fn panic_str(expr: &str) -> ! {
     panic_display(&expr);
 }
 
 #[inline]
 #[track_caller]
-#[rustc_diagnostic_item = "unreachable_display"] // needed for `non-fmt-panics` lint
+#[crablangc_diagnostic_item = "unreachable_display"] // needed for `non-fmt-panics` lint
 pub fn unreachable_display<T: fmt::Display>(x: &T) -> ! {
     panic_fmt(format_args!("internal error: entered unreachable code: {}", *x));
 }
@@ -144,8 +144,8 @@ pub fn unreachable_display<T: fmt::Display>(x: &T) -> ! {
 #[inline]
 #[track_caller]
 #[lang = "panic_display"] // needed for const-evaluated panics
-#[rustc_do_not_const_check] // hooked by const-eval
-#[rustc_const_unstable(feature = "core_panic", issue = "none")]
+#[crablangc_do_not_const_check] // hooked by const-eval
+#[crablangc_const_unstable(feature = "core_panic", issue = "none")]
 pub const fn panic_display<T: fmt::Display>(x: &T) -> ! {
     panic_fmt(format_args!("{}", *x));
 }
@@ -183,14 +183,14 @@ fn panic_misaligned_pointer_dereference(required: usize, found: usize) -> ! {
 #[cfg_attr(not(feature = "panic_immediate_abort"), inline(never), cold)]
 #[cfg_attr(feature = "panic_immediate_abort", inline)]
 #[lang = "panic_cannot_unwind"] // needed by codegen for panic in nounwind function
-#[rustc_nounwind]
+#[crablangc_nounwind]
 fn panic_cannot_unwind() -> ! {
     panic_nounwind("panic in a function that cannot unwind")
 }
 
 /// This function is used instead of panic_fmt in const eval.
 #[lang = "const_panic_fmt"]
-#[rustc_const_unstable(feature = "core_panic", issue = "none")]
+#[crablangc_const_unstable(feature = "core_panic", issue = "none")]
 pub const fn const_panic_fmt(fmt: fmt::Arguments<'_>) -> ! {
     if let Some(msg) = fmt.as_str() {
         panic_str(msg);

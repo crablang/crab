@@ -1,11 +1,11 @@
 // This test enumerates various cases of interest where an ADT or tuple is
 // partially initialized and then used in some way that is wrong *even*
-// after rust-lang/rust#54987 is implemented.
+// after crablang/crablang#54987 is implemented.
 //
-// See rust-lang/rust#21232, rust-lang/rust#54986, and rust-lang/rust#54987.
+// See crablang/crablang#21232, crablang/crablang#54986, and crablang/crablang#54987.
 //
 // See issue-21232-partial-init-and-use.rs for cases of tests that are
-// meant to compile and run successfully once rust-lang/rust#54987 is
+// meant to compile and run successfully once crablang/crablang#54987 is
 // implemented.
 
 struct D {

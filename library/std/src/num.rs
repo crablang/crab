@@ -3,7 +3,7 @@
 //! This module provides some extra types that are useful when doing numerical
 //! work. See the individual documentation for each piece for more information.
 
-#![stable(feature = "rust1", since = "1.0.0")]
+#![stable(feature = "crablang1", since = "1.0.0")]
 #![allow(missing_docs)]
 
 #[cfg(test)]
@@ -14,9 +14,9 @@ mod benches;
 
 #[unstable(feature = "saturating_int_impl", issue = "87920")]
 pub use core::num::Saturating;
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub use core::num::Wrapping;
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub use core::num::{FpCategory, ParseFloatError, ParseIntError, TryFromIntError};
 
 #[stable(feature = "signed_nonzero", since = "1.34.0")]

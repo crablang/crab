@@ -1,4 +1,4 @@
-#![feature(generators, generator_trait, rustc_attrs)]
+#![feature(generators, generator_trait, crablangc_attrs)]
 #![feature(type_alias_impl_trait)]
 
 use std::ops::Generator;
@@ -15,5 +15,5 @@ const fn const_generator<Y, R>(yielding: Y, returning: R) -> GenOnce<Y, R> {
 
 const FOO: GenOnce<usize, usize> = const_generator(10, 100);
 
-#[rustc_error]
+#[crablangc_error]
 fn main() {} //~ ERROR

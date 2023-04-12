@@ -6,11 +6,11 @@ use clippy_utils::source::{snippet, snippet_with_applicability};
 use clippy_utils::sugg;
 use clippy_utils::ty::is_type_diagnostic_item;
 use clippy_utils::visitors::is_local_used;
-use rustc_hir::{BindingAnnotation, Body, BorrowKind, ByRef, Expr, ExprKind, Mutability, Pat, PatKind};
-use rustc_lint::{LateContext, LintContext};
-use rustc_middle::ty;
-use rustc_span::sym;
-use rustc_span::Span;
+use crablangc_hir::{BindingAnnotation, Body, BorrowKind, ByRef, Expr, ExprKind, Mutability, Pat, PatKind};
+use crablangc_lint::{LateContext, LintContext};
+use crablangc_middle::ty;
+use crablangc_span::sym;
+use crablangc_span::Span;
 
 /// lint use of:
 /// - `hashmap.iter().map(|(_, v)| v)`
@@ -40,12 +40,12 @@ pub(super) fn check<'tcx>(
         if is_type_diagnostic_item(cx, ty, sym::HashMap) || is_type_diagnostic_item(cx, ty, sym::BTreeMap);
 
         then {
-            let mut applicability = rustc_errors::Applicability::MachineApplicable;
+            let mut applicability = crablangc_errors::Applicability::MachineApplicable;
             let recv_snippet = snippet_with_applicability(cx, recv.span, "map", &mut applicability);
             let into_prefix = if map_type == "into_iter" {"into_"} else {""};
 
             if_chain! {
-                if let ExprKind::Path(rustc_hir::QPath::Resolved(_, path)) = body_expr.kind;
+                if let ExprKind::Path(crablangc_hir::QPath::Resolved(_, path)) = body_expr.kind;
                 if let [local_ident] = path.segments;
                 if local_ident.ident.as_str() == bound_ident.as_str();
 

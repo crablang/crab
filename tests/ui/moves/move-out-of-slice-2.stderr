@@ -4,7 +4,7 @@ warning: the feature `unsized_locals` is incomplete and may not be safe to use a
 LL | #![feature(unsized_locals)]
    |            ^^^^^^^^^^^^^^
    |
-   = note: see issue #48055 <https://github.com/rust-lang/rust/issues/48055> for more information
+   = note: see issue #48055 <https://github.com/crablang/crablang/issues/48055> for more information
    = note: `#[warn(incomplete_features)]` on by default
 
 error[E0508]: cannot move out of type `[A]`, a non-copy slice
@@ -77,4 +77,4 @@ LL |         [_, _, ref d @ .., _] => {}
 
 error: aborting due to 4 previous errors; 1 warning emitted
 
-For more information about this error, try `rustc --explain E0508`.
+For more information about this error, try `crablangc --explain E0508`.

@@ -7,13 +7,13 @@ use hir::{
     def::{DefKind, Res},
     BlockCheckMode, ExprKind, QPath, UnOp, Unsafety,
 };
-use rustc_ast::Mutability;
-use rustc_hir as hir;
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_middle::lint::in_external_macro;
-use rustc_middle::ty;
-use rustc_session::{declare_lint_pass, declare_tool_lint};
-use rustc_span::Span;
+use crablangc_ast::Mutability;
+use crablangc_hir as hir;
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_middle::lint::in_external_macro;
+use crablangc_middle::ty;
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_span::Span;
 
 declare_clippy_lint! {
     /// ### What it does
@@ -26,7 +26,7 @@ declare_clippy_lint! {
     /// elimination of unnecessary unsafe blocks through refactoring.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// /// Reads a `char` from the given pointer.
     /// ///
     /// /// # Safety
@@ -40,7 +40,7 @@ declare_clippy_lint! {
     /// }
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// /// Reads a `char` from the given pointer.
     /// ///
     /// /// # Safety

@@ -1,4 +1,4 @@
-#![allow(dead_code)] // see https://github.com/rust-lang/rust/issues/46379
+#![allow(dead_code)] // see https://github.com/crablang/crablang/issues/46379
 
 use std::path::PathBuf;
 use std::sync::LazyLock;
@@ -10,4 +10,4 @@ pub static CARGO_CLIPPY_PATH: LazyLock<PathBuf> = LazyLock::new(|| {
     path
 });
 
-pub const IS_RUSTC_TEST_SUITE: bool = option_env!("RUSTC_TEST_SUITE").is_some();
+pub const IS_CRABLANGC_TEST_SUITE: bool = option_env!("CRABLANGC_TEST_SUITE").is_some();

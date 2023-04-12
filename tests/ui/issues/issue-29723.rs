@@ -1,4 +1,4 @@
-// test for https://github.com/rust-lang/rust/issues/29723
+// test for https://github.com/crablang/crablang/issues/29723
 
 #![feature(if_let_guard)]
 

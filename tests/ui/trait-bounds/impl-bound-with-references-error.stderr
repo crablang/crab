@@ -21,4 +21,4 @@ LL | impl<T> From<T> for LabelText
 error: aborting due to 2 previous errors
 
 Some errors have detailed explanations: E0119, E0412.
-For more information about an error, try `rustc --explain E0119`.
+For more information about an error, try `crablangc --explain E0119`.

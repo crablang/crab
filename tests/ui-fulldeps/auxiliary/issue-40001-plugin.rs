@@ -1,26 +1,26 @@
-#![feature(plugin, rustc_private)]
+#![feature(plugin, crablangc_private)]
 #![crate_type = "dylib"]
 
-extern crate rustc_ast_pretty;
-extern crate rustc_driver;
-extern crate rustc_hir;
-extern crate rustc_lint;
+extern crate crablangc_ast_pretty;
+extern crate crablangc_driver;
+extern crate crablangc_hir;
+extern crate crablangc_lint;
 #[macro_use]
-extern crate rustc_session;
-extern crate rustc_ast;
-extern crate rustc_span;
+extern crate crablangc_session;
+extern crate crablangc_ast;
+extern crate crablangc_span;
 
-use rustc_ast_pretty::pprust;
-use rustc_driver::plugin::Registry;
-use rustc_hir as hir;
-use rustc_hir::intravisit;
-use rustc_hir::Node;
-use rustc_lint::{LateContext, LateLintPass, LintContext};
-use rustc_span::def_id::LocalDefId;
-use rustc_span::source_map;
+use crablangc_ast_pretty::ppcrablang;
+use crablangc_driver::plugin::Registry;
+use crablangc_hir as hir;
+use crablangc_hir::intravisit;
+use crablangc_hir::Node;
+use crablangc_lint::{LateContext, LateLintPass, LintContext};
+use crablangc_span::def_id::LocalDefId;
+use crablangc_span::source_map;
 
 #[no_mangle]
-fn __rustc_plugin_registrar(reg: &mut Registry) {
+fn __crablangc_plugin_registrar(reg: &mut Registry) {
     reg.lint_store.register_lints(&[&MISSING_ALLOWED_ATTR]);
     reg.lint_store.register_late_pass(|_| Box::new(MissingAllowedAttrPass));
 }
@@ -49,7 +49,7 @@ impl<'tcx> LateLintPass<'tcx> for MissingAllowedAttrPass {
             _ => cx.tcx.hir().expect_item(cx.tcx.hir().get_parent_item(id).def_id),
         };
 
-        let allowed = |attr| pprust::attribute_to_string(attr).contains("allowed_attr");
+        let allowed = |attr| ppcrablang::attribute_to_string(attr).contains("allowed_attr");
         if !cx.tcx.hir().attrs(item.hir_id()).iter().any(allowed) {
             cx.lint(
                 MISSING_ALLOWED_ATTR,

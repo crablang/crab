@@ -31,7 +31,7 @@ macro_rules! proc_macro_expr_impl {
             $( #[$attr] )*
             #[proc_macro_derive($func)]
             pub fn $func(input: proc_macro_tokenstream!()) -> proc_macro_tokenstream!() {
-                unsafe { rust_dbg_extern_identity_u64(0); }
+                unsafe { crablang_dbg_extern_identity_u64(0); }
                 panic!()
             }
         )+
@@ -44,7 +44,7 @@ proc_macro_expr_impl! {
     }
 }
 
-#[link(name="rust_test_helpers")]
+#[link(name="crablang_test_helpers")]
 extern "C" {
-    pub fn rust_dbg_extern_identity_u64(v: u64) -> u64;
+    pub fn crablang_dbg_extern_identity_u64(v: u64) -> u64;
 }

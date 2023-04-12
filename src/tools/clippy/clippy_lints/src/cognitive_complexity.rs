@@ -6,14 +6,14 @@ use clippy_utils::ty::is_type_diagnostic_item;
 use clippy_utils::visitors::for_each_expr;
 use clippy_utils::{get_async_fn_body, is_async_fn, LimitStack};
 use core::ops::ControlFlow;
-use rustc_ast::ast::Attribute;
-use rustc_hir::intravisit::FnKind;
-use rustc_hir::{Body, Expr, ExprKind, FnDecl};
-use rustc_lint::{LateContext, LateLintPass, LintContext};
-use rustc_session::{declare_tool_lint, impl_lint_pass};
-use rustc_span::def_id::LocalDefId;
-use rustc_span::source_map::Span;
-use rustc_span::{sym, BytePos};
+use crablangc_ast::ast::Attribute;
+use crablangc_hir::intravisit::FnKind;
+use crablangc_hir::{Body, Expr, ExprKind, FnDecl};
+use crablangc_lint::{LateContext, LateLintPass, LintContext};
+use crablangc_session::{declare_tool_lint, impl_lint_pass};
+use crablangc_span::def_id::LocalDefId;
+use crablangc_span::source_map::Span;
+use crablangc_span::{sym, BytePos};
 
 declare_clippy_lint! {
     /// ### What it does

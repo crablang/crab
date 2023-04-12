@@ -4,7 +4,7 @@
 //! by layout optimizations.
 
 const OVERFLOW: usize = {
-    // Tests for https://github.com/rust-lang/rust/issues/62138.
+    // Tests for https://github.com/crablang/crablang/issues/62138.
     #[repr(u8)]
     #[allow(dead_code)]
     enum WithWraparoundInvalidValues {

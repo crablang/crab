@@ -15,7 +15,7 @@ begingroup "Building Miri"
 
 # Determine configuration for installed build
 echo "Installing release version of Miri"
-export RUSTFLAGS="-D warnings"
+export CRABLANGFLAGS="-D warnings"
 export CARGO_INCREMENTAL=0
 ./miri install # implicitly locked
 
@@ -64,15 +64,15 @@ function run_tests {
   if [ "$HOST_TARGET" = x86_64-unknown-linux-gnu ]; then
     # These act up on Windows (`which miri` produces a filename that does not exist?!?),
     # so let's do this only on Linux. Also makes sure things work without these set.
-    export RUSTC=$(which rustc) # Produces a warning unless we also set MIRI
-    export MIRI=$(rustc +miri --print sysroot)/bin/miri
+    export CRABLANGC=$(which crablangc) # Produces a warning unless we also set MIRI
+    export MIRI=$(crablangc +miri --print sysroot)/bin/miri
   fi
   mkdir -p .cargo
-  echo 'build.rustc-wrapper = "thisdoesnotexist"' > .cargo/config.toml
+  echo 'build.crablangc-wrapper = "thisdoesnotexist"' > .cargo/config.toml
   # Run the actual test
   ${PYTHON} test-cargo-miri/run-test.py
   # Clean up
-  unset RUSTC MIRI
+  unset CRABLANGC MIRI
   rm -rf .cargo
 
   # Ensure that our benchmarks all work, but only on Linux hosts.

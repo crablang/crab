@@ -70,4 +70,4 @@ LL |     <Impl1 as MyTrait2>::my_fn();
 
 error: aborting due to 5 previous errors
 
-For more information about this error, try `rustc --explain E0790`.
+For more information about this error, try `crablangc --explain E0790`.

@@ -1,12 +1,12 @@
 //! Shareable mutable containers.
 //!
-//! Rust memory safety is based on this rule: Given an object `T`, it is only possible to
+//! CrabLang memory safety is based on this rule: Given an object `T`, it is only possible to
 //! have one of the following:
 //!
 //! - Having several immutable references (`&T`) to the object (also known as **aliasing**).
 //! - Having one mutable reference (`&mut T`) to the object (also known as **mutability**).
 //!
-//! This is enforced by the Rust compiler. However, there are situations where this rule is not
+//! This is enforced by the CrabLang compiler. However, there are situations where this rule is not
 //! flexible enough. Sometimes it is required to have multiple references to an object and yet
 //! mutate it.
 //!
@@ -17,9 +17,9 @@
 //! types are the correct data structures to do so).
 //!
 //! Values of the `Cell<T>`, `RefCell<T>`, and `OnceCell<T>` types may be mutated through shared
-//! references (i.e. the common `&T` type), whereas most Rust types can only be mutated through
+//! references (i.e. the common `&T` type), whereas most CrabLang types can only be mutated through
 //! unique (`&mut T`) references. We say these cell types provide 'interior mutability'
-//! (mutable via `&T`), in contrast with typical Rust types that exhibit 'inherited mutability'
+//! (mutable via `&T`), in contrast with typical CrabLang types that exhibit 'inherited mutability'
 //! (mutable only via `&mut T`).
 //!
 //! Cell types come in three flavors: `Cell<T>`, `RefCell<T>`, and `OnceCell<T>`. Each provides
@@ -50,15 +50,15 @@
 //!
 //! ## `RefCell<T>`
 //!
-//! [`RefCell<T>`] uses Rust's lifetimes to implement "dynamic borrowing", a process whereby one can
+//! [`RefCell<T>`] uses CrabLang's lifetimes to implement "dynamic borrowing", a process whereby one can
 //! claim temporary, exclusive, mutable access to the inner value. Borrows for `RefCell<T>`s are
-//! tracked at _runtime_, unlike Rust's native reference types which are entirely tracked
+//! tracked at _runtime_, unlike CrabLang's native reference types which are entirely tracked
 //! statically, at compile time.
 //!
 //! An immutable reference to a `RefCell`'s inner value (`&T`) can be obtained with
 //! [`borrow`](`RefCell::borrow`), and a mutable borrow (`&mut T`) can be obtained with
 //! [`borrow_mut`](`RefCell::borrow_mut`). When these functions are called, they first verify that
-//! Rust's borrow rules will be satisfied: any number of immutable borrows are allowed or a
+//! CrabLang's borrow rules will be satisfied: any number of immutable borrows are allowed or a
 //! single immutable borrow is allowed, but never both. If a borrow is attempted that would violate
 //! these rules, the thread will panic.
 //!
@@ -86,7 +86,7 @@
 //! # When to choose interior mutability
 //!
 //! The more common inherited mutability, where one must have unique access to mutate a value, is
-//! one of the key language elements that enables Rust to reason strongly about pointer aliasing,
+//! one of the key language elements that enables CrabLang to reason strongly about pointer aliasing,
 //! statically preventing crash bugs. Because of that, inherited mutability is preferred, and
 //! interior mutability is something of a last resort. Since cell types enable mutation where it
 //! would otherwise be disallowed though, there are occasions when interior mutability might be
@@ -233,7 +233,7 @@
 //! [`Sync`]: ../../std/marker/trait.Sync.html
 //! [`atomic`]: crate::sync::atomic
 
-#![stable(feature = "rust1", since = "1.0.0")]
+#![stable(feature = "crablang1", since = "1.0.0")]
 
 use crate::cmp::Ordering;
 use crate::fmt::{self, Debug, Display};
@@ -247,7 +247,7 @@ mod once;
 
 #[unstable(feature = "lazy_cell", issue = "109736")]
 pub use lazy::LazyCell;
-#[stable(feature = "once_cell", since = "CURRENT_RUSTC_VERSION")]
+#[stable(feature = "once_cell", since = "CURRENT_CRABLANGC_VERSION")]
 pub use once::OnceCell;
 
 /// A mutable memory location.
@@ -288,13 +288,13 @@ pub use once::OnceCell;
 /// ```
 ///
 /// See the [module-level documentation](self) for more.
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[repr(transparent)]
 pub struct Cell<T: ?Sized> {
     value: UnsafeCell<T>,
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 unsafe impl<T: ?Sized> Send for Cell<T> where T: Send {}
 
 // Note that this negative impl isn't strictly necessary for correctness,
@@ -302,10 +302,10 @@ unsafe impl<T: ?Sized> Send for Cell<T> where T: Send {}
 // However, given how important `Cell`'s `!Sync`-ness is,
 // having an explicit negative impl is nice for documentation purposes
 // and results in nicer error messages.
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: ?Sized> !Sync for Cell<T> {}
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: Copy> Clone for Cell<T> {
     #[inline]
     fn clone(&self) -> Cell<T> {
@@ -313,7 +313,7 @@ impl<T: Copy> Clone for Cell<T> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: Default> Default for Cell<T> {
     /// Creates a `Cell<T>`, with the `Default` value for T.
     #[inline]
@@ -322,7 +322,7 @@ impl<T: Default> Default for Cell<T> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: PartialEq + Copy> PartialEq for Cell<T> {
     #[inline]
     fn eq(&self, other: &Cell<T>) -> bool {
@@ -370,7 +370,7 @@ impl<T: Ord + Copy> Ord for Cell<T> {
 }
 
 #[stable(feature = "cell_from", since = "1.12.0")]
-#[rustc_const_unstable(feature = "const_convert", issue = "88674")]
+#[crablangc_const_unstable(feature = "const_convert", issue = "88674")]
 impl<T> const From<T> for Cell<T> {
     /// Creates a new `Cell<T>` containing the given value.
     fn from(t: T) -> Cell<T> {
@@ -388,8 +388,8 @@ impl<T> Cell<T> {
     ///
     /// let c = Cell::new(5);
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
-    #[rustc_const_stable(feature = "const_cell_new", since = "1.24.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    #[crablangc_const_stable(feature = "const_cell_new", since = "1.24.0")]
     #[inline]
     pub const fn new(value: T) -> Cell<T> {
         Cell { value: UnsafeCell::new(value) }
@@ -407,7 +407,7 @@ impl<T> Cell<T> {
     /// c.set(10);
     /// ```
     #[inline]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn set(&self, val: T) {
         let old = self.replace(val);
         drop(old);
@@ -475,7 +475,7 @@ impl<T> Cell<T> {
     /// assert_eq!(five, 5);
     /// ```
     #[stable(feature = "move_cell", since = "1.17.0")]
-    #[rustc_const_unstable(feature = "const_cell_into_inner", issue = "78729")]
+    #[crablangc_const_unstable(feature = "const_cell_into_inner", issue = "78729")]
     pub const fn into_inner(self) -> T {
         self.value.into_inner()
     }
@@ -494,7 +494,7 @@ impl<T: Copy> Cell<T> {
     /// let five = c.get();
     /// ```
     #[inline]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn get(&self) -> T {
         // SAFETY: This can cause data races if called from a separate thread,
         // but `Cell` is `!Sync` so this won't happen.
@@ -543,7 +543,7 @@ impl<T: ?Sized> Cell<T> {
     /// ```
     #[inline]
     #[stable(feature = "cell_as_ptr", since = "1.12.0")]
-    #[rustc_const_stable(feature = "const_cell_as_ptr", since = "1.32.0")]
+    #[crablangc_const_stable(feature = "const_cell_as_ptr", since = "1.32.0")]
     pub const fn as_ptr(&self) -> *mut T {
         self.value.get()
     }
@@ -674,8 +674,8 @@ impl<T, const N: usize> Cell<[T; N]> {
 /// A mutable memory location with dynamically checked borrow rules
 ///
 /// See the [module-level documentation](self) for more.
-#[cfg_attr(not(test), rustc_diagnostic_item = "RefCell")]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[cfg_attr(not(test), crablangc_diagnostic_item = "RefCell")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub struct RefCell<T: ?Sized> {
     borrow: Cell<BorrowFlag>,
     // Stores the location of the earliest currently active borrow.
@@ -777,8 +777,8 @@ impl<T> RefCell<T> {
     ///
     /// let c = RefCell::new(5);
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
-    #[rustc_const_stable(feature = "const_refcell_new", since = "1.24.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    #[crablangc_const_stable(feature = "const_refcell_new", since = "1.24.0")]
     #[inline]
     pub const fn new(value: T) -> RefCell<T> {
         RefCell {
@@ -800,8 +800,8 @@ impl<T> RefCell<T> {
     ///
     /// let five = c.into_inner();
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
-    #[rustc_const_unstable(feature = "const_cell_into_inner", issue = "78729")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    #[crablangc_const_unstable(feature = "const_cell_into_inner", issue = "78729")]
     #[inline]
     pub const fn into_inner(self) -> T {
         // Since this function takes `self` (the `RefCell`) by value, the
@@ -918,7 +918,7 @@ impl<T: ?Sized> RefCell<T> {
     /// let m = c.borrow_mut();
     /// let b = c.borrow(); // this causes a panic
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     #[track_caller]
     pub fn borrow(&self) -> Ref<'_, T> {
@@ -1011,7 +1011,7 @@ impl<T: ?Sized> RefCell<T> {
     ///
     /// let b = c.borrow_mut(); // this causes a panic
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     #[track_caller]
     pub fn borrow_mut(&self) -> RefMut<'_, T> {
@@ -1213,13 +1213,13 @@ impl<T: Default> RefCell<T> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 unsafe impl<T: ?Sized> Send for RefCell<T> where T: Send {}
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: ?Sized> !Sync for RefCell<T> {}
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: Clone> Clone for RefCell<T> {
     /// # Panics
     ///
@@ -1240,7 +1240,7 @@ impl<T: Clone> Clone for RefCell<T> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: Default> Default for RefCell<T> {
     /// Creates a `RefCell<T>`, with the `Default` value for T.
     #[inline]
@@ -1249,7 +1249,7 @@ impl<T: Default> Default for RefCell<T> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: ?Sized + PartialEq> PartialEq for RefCell<T> {
     /// # Panics
     ///
@@ -1318,7 +1318,7 @@ impl<T: ?Sized + Ord> Ord for RefCell<T> {
 }
 
 #[stable(feature = "cell_from", since = "1.12.0")]
-#[rustc_const_unstable(feature = "const_convert", issue = "88674")]
+#[crablangc_const_unstable(feature = "const_convert", issue = "88674")]
 impl<T> const From<T> for RefCell<T> {
     /// Creates a new `RefCell<T>` containing the given value.
     fn from(t: T) -> RefCell<T> {
@@ -1340,7 +1340,7 @@ impl<'b> BorrowRef<'b> {
         if !is_reading(b) {
             // Incrementing borrow can result in a non-reading value (<= 0) in these cases:
             // 1. It was < 0, i.e. there are writing borrows, so we can't allow a read borrow
-            //    due to Rust's reference aliasing rules
+            //    due to CrabLang's reference aliasing rules
             // 2. It was isize::MAX (the max amount of reading borrows) and it overflowed
             //    into isize::MIN (the max amount of writing borrows) so we can't allow
             //    an additional read borrow because isize can't represent so many read borrows
@@ -1386,7 +1386,7 @@ impl Clone for BorrowRef<'_> {
 /// A wrapper type for an immutably borrowed value from a `RefCell<T>`.
 ///
 /// See the [module-level documentation](self) for more.
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[must_not_suspend = "holding a Ref across suspend points can cause BorrowErrors"]
 pub struct Ref<'b, T: ?Sized + 'b> {
     // NB: we use a pointer instead of `&'b T` to avoid `noalias` violations, because a
@@ -1396,7 +1396,7 @@ pub struct Ref<'b, T: ?Sized + 'b> {
     borrow: BorrowRef<'b>,
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: ?Sized> Deref for Ref<'_, T> {
     type Target = T;
 
@@ -1767,7 +1767,7 @@ impl<'b> BorrowRefMut<'b> {
 /// A wrapper type for a mutably borrowed value from a `RefCell<T>`.
 ///
 /// See the [module-level documentation](self) for more.
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[must_not_suspend = "holding a RefMut across suspend points can cause BorrowErrors"]
 pub struct RefMut<'b, T: ?Sized + 'b> {
     // NB: we use a pointer instead of `&'b mut T` to avoid `noalias` violations, because a
@@ -1778,7 +1778,7 @@ pub struct RefMut<'b, T: ?Sized + 'b> {
     marker: PhantomData<&'b mut T>,
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: ?Sized> Deref for RefMut<'_, T> {
     type Target = T;
 
@@ -1789,7 +1789,7 @@ impl<T: ?Sized> Deref for RefMut<'_, T> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: ?Sized> DerefMut for RefMut<'_, T> {
     #[inline]
     fn deref_mut(&mut self) -> &mut T {
@@ -1808,9 +1808,9 @@ impl<T: ?Sized + fmt::Display> fmt::Display for RefMut<'_, T> {
     }
 }
 
-/// The core primitive for interior mutability in Rust.
+/// The core primitive for interior mutability in CrabLang.
 ///
-/// If you have a reference `&T`, then normally in Rust the compiler performs optimizations based on
+/// If you have a reference `&T`, then normally in CrabLang the compiler performs optimizations based on
 /// the knowledge that `&T` points to immutable data. Mutating that data, for example through an
 /// alias or by transmuting an `&T` into an `&mut T`, is considered undefined behavior.
 /// `UnsafeCell<T>` opts-out of the immutability guarantee for `&T`: a shared reference
@@ -1829,7 +1829,7 @@ impl<T: ?Sized + fmt::Display> fmt::Display for RefMut<'_, T> {
 ///
 /// [`.get()`]: `UnsafeCell::get`
 ///
-/// The precise Rust aliasing rules are somewhat in flux, but the main points are not contentious:
+/// The precise CrabLang aliasing rules are somewhat in flux, but the main points are not contentious:
 ///
 /// - If you create a safe reference with lifetime `'a` (either a `&T` or `&mut T` reference), then
 /// you must not access the data in any way that contradicts that reference for the remainder of
@@ -1895,7 +1895,7 @@ impl<T: ?Sized + fmt::Display> fmt::Display for RefMut<'_, T> {
 /// on an _exclusive_ `UnsafeCell<T>`. Even though `T` and `UnsafeCell<T>` have the
 /// same memory layout, the following is not allowed and undefined behavior:
 ///
-/// ```rust,no_run
+/// ```crablang,no_run
 /// # use std::cell::UnsafeCell;
 /// unsafe fn not_allowed<T>(ptr: &UnsafeCell<T>) -> &mut T {
 ///   let t = ptr as *const UnsafeCell<T> as *mut T;
@@ -1907,7 +1907,7 @@ impl<T: ?Sized + fmt::Display> fmt::Display for RefMut<'_, T> {
 ///
 /// Instead, do this:
 ///
-/// ```rust
+/// ```crablang
 /// # use std::cell::UnsafeCell;
 /// // Safety: the caller must ensure that there are no references that
 /// // point to the *contents* of the `UnsafeCell`.
@@ -1919,7 +1919,7 @@ impl<T: ?Sized + fmt::Display> fmt::Display for RefMut<'_, T> {
 /// Converting in the other direction from a `&mut T`
 /// to an `&UnsafeCell<T>` is allowed:
 ///
-/// ```rust
+/// ```crablang
 /// # use std::cell::UnsafeCell;
 /// fn get_shared<T>(ptr: &mut T) -> &UnsafeCell<T> {
 ///   let t = ptr as *mut T as *const UnsafeCell<T>;
@@ -1928,7 +1928,7 @@ impl<T: ?Sized + fmt::Display> fmt::Display for RefMut<'_, T> {
 /// }
 /// ```
 ///
-/// [niche]: https://rust-lang.github.io/unsafe-code-guidelines/glossary.html#niche
+/// [niche]: https://crablang.github.io/unsafe-code-guidelines/glossary.html#niche
 /// [`.raw_get()`]: `UnsafeCell::raw_get`
 ///
 /// # Examples
@@ -1963,7 +1963,7 @@ impl<T: ?Sized + fmt::Display> fmt::Display for RefMut<'_, T> {
 /// The following example showcases the fact that exclusive access to an `UnsafeCell<T>`
 /// implies exclusive access to its `T`:
 ///
-/// ```rust
+/// ```crablang
 /// #![forbid(unsafe_code)] // with exclusive accesses,
 ///                         // `UnsafeCell` is a transparent no-op wrapper,
 ///                         // so no need for `unsafe` here.
@@ -1983,13 +1983,13 @@ impl<T: ?Sized + fmt::Display> fmt::Display for RefMut<'_, T> {
 /// assert_eq!(contents, 0);
 /// ```
 #[lang = "unsafe_cell"]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[repr(transparent)]
 pub struct UnsafeCell<T: ?Sized> {
     value: T,
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: ?Sized> !Sync for UnsafeCell<T> {}
 
 impl<T> UnsafeCell<T> {
@@ -2005,8 +2005,8 @@ impl<T> UnsafeCell<T> {
     ///
     /// let uc = UnsafeCell::new(5);
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
-    #[rustc_const_stable(feature = "const_unsafe_cell_new", since = "1.32.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    #[crablangc_const_stable(feature = "const_unsafe_cell_new", since = "1.32.0")]
     #[inline(always)]
     pub const fn new(value: T) -> UnsafeCell<T> {
         UnsafeCell { value }
@@ -2024,8 +2024,8 @@ impl<T> UnsafeCell<T> {
     /// let five = uc.into_inner();
     /// ```
     #[inline(always)]
-    #[stable(feature = "rust1", since = "1.0.0")]
-    #[rustc_const_unstable(feature = "const_cell_into_inner", issue = "78729")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    #[crablangc_const_unstable(feature = "const_cell_into_inner", issue = "78729")]
     pub const fn into_inner(self) -> T {
         self.value
     }
@@ -2049,8 +2049,8 @@ impl<T: ?Sized> UnsafeCell<T> {
     /// let five = uc.get();
     /// ```
     #[inline(always)]
-    #[stable(feature = "rust1", since = "1.0.0")]
-    #[rustc_const_stable(feature = "const_unsafecell_get", since = "1.32.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    #[crablangc_const_stable(feature = "const_unsafecell_get", since = "1.32.0")]
     pub const fn get(&self) -> *mut T {
         // We can just cast the pointer from `UnsafeCell<T>` to `T` because of
         // #[repr(transparent)]. This exploits std's special status, there is
@@ -2075,7 +2075,7 @@ impl<T: ?Sized> UnsafeCell<T> {
     /// ```
     #[inline(always)]
     #[stable(feature = "unsafe_cell_get_mut", since = "1.50.0")]
-    #[rustc_const_unstable(feature = "const_unsafecell_get_mut", issue = "88836")]
+    #[crablangc_const_unstable(feature = "const_unsafecell_get_mut", issue = "88836")]
     pub const fn get_mut(&mut self) -> &mut T {
         &mut self.value
     }
@@ -2108,7 +2108,7 @@ impl<T: ?Sized> UnsafeCell<T> {
     /// ```
     #[inline(always)]
     #[stable(feature = "unsafe_cell_raw_get", since = "1.56.0")]
-    #[rustc_const_stable(feature = "unsafe_cell_raw_get", since = "1.56.0")]
+    #[crablangc_const_stable(feature = "unsafe_cell_raw_get", since = "1.56.0")]
     pub const fn raw_get(this: *const Self) -> *mut T {
         // We can just cast the pointer from `UnsafeCell<T>` to `T` because of
         // #[repr(transparent)]. This exploits std's special status, there is
@@ -2126,7 +2126,7 @@ impl<T: Default> Default for UnsafeCell<T> {
 }
 
 #[stable(feature = "cell_from", since = "1.12.0")]
-#[rustc_const_unstable(feature = "const_convert", issue = "88674")]
+#[crablangc_const_unstable(feature = "const_convert", issue = "88674")]
 impl<T> const From<T> for UnsafeCell<T> {
     /// Creates a new `UnsafeCell<T>` containing the given value.
     fn from(t: T) -> UnsafeCell<T> {
@@ -2226,7 +2226,7 @@ impl<T: Default> Default for SyncUnsafeCell<T> {
 }
 
 #[unstable(feature = "sync_unsafe_cell", issue = "95439")]
-#[rustc_const_unstable(feature = "const_convert", issue = "88674")]
+#[crablangc_const_unstable(feature = "const_convert", issue = "88674")]
 impl<T> const From<T> for SyncUnsafeCell<T> {
     /// Creates a new `SyncUnsafeCell<T>` containing the given value.
     fn from(t: T) -> SyncUnsafeCell<T> {

@@ -1,11 +1,11 @@
 use clippy_utils::diagnostics::span_lint_and_then;
 use clippy_utils::source::indent_of;
 use if_chain::if_chain;
-use rustc_errors::Applicability;
-use rustc_hir::{Item, ItemKind};
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_session::{declare_lint_pass, declare_tool_lint};
-use rustc_span::sym;
+use crablangc_errors::Applicability;
+use crablangc_hir::{Item, ItemKind};
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_span::sym;
 
 declare_clippy_lint! {
     /// ### What it does
@@ -17,14 +17,14 @@ declare_clippy_lint! {
     /// disable them by default.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// enum Foo {
     ///     Bar,
     ///     Baz
     /// }
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// #[non_exhaustive]
     /// enum Foo {
     ///     Bar,
@@ -47,14 +47,14 @@ declare_clippy_lint! {
     /// disable them by default.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// struct Foo {
     ///     bar: u8,
     ///     baz: String,
     /// }
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// #[non_exhaustive]
     /// struct Foo {
     ///     bar: u8,

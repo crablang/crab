@@ -1,9 +1,9 @@
-use rustc_errors::Diagnostic;
-use rustc_hir as hir;
-use rustc_lint::{LateContext, LintContext};
-use rustc_middle::lint::in_external_macro;
-use rustc_middle::ty::{self, Adt, Ty};
-use rustc_span::{sym, Span};
+use crablangc_errors::Diagnostic;
+use crablangc_hir as hir;
+use crablangc_lint::{LateContext, LintContext};
+use crablangc_middle::lint::in_external_macro;
+use crablangc_middle::ty::{self, Adt, Ty};
+use crablangc_span::{sym, Span};
 
 use clippy_utils::diagnostics::{span_lint_and_help, span_lint_and_then};
 use clippy_utils::trait_ref_of_method;

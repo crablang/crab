@@ -1,6 +1,6 @@
 // Regression test for issue #91210.
 
-// run-rustfix
+// run-crablangfix
 
 #![allow(unused)]
 

@@ -42,4 +42,4 @@ LL |     format!("\x7Ba\x7D \x7Bb\x7D");
 
 error: aborting due to 7 previous errors
 
-For more information about this error, try `rustc --explain E0425`.
+For more information about this error, try `crablangc --explain E0425`.

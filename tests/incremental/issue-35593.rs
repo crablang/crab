@@ -4,8 +4,8 @@
 // revisions:rpass1 rpass2
 // compile-flags: -Z query-dep-graph
 
-#![feature(rustc_attrs)]
-#![rustc_partition_reused(module="issue_35593", cfg="rpass2")]
+#![feature(crablangc_attrs)]
+#![crablangc_partition_reused(module="issue_35593", cfg="rpass2")]
 
 fn main() {
     println!("hello world");

@@ -2,10 +2,10 @@ use std::ffi::OsStr;
 
 use log::trace;
 
-use rustc_middle::ty::layout::LayoutOf;
-use rustc_span::Symbol;
-use rustc_target::abi::{Align, Size};
-use rustc_target::spec::abi::Abi;
+use crablangc_middle::ty::layout::LayoutOf;
+use crablangc_span::Symbol;
+use crablangc_target::abi::{Align, Size};
+use crablangc_target::spec::abi::Abi;
 
 use crate::*;
 use shims::foreign_items::EmulateByNameResult;
@@ -25,7 +25,7 @@ pub trait EvalContextExt<'mir, 'tcx: 'mir>: crate::MiriInterpCxExt<'mir, 'tcx> {
         let this = self.eval_context_mut();
 
         // See `fn emulate_foreign_item_by_name` in `shims/foreign_items.rs` for the general pattern.
-        #[rustfmt::skip]
+        #[crablangfmt::skip]
         match link_name.as_str() {
             // Environment related shims
             "getenv" => {

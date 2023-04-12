@@ -1,6 +1,6 @@
 # `location-detail`
 
-The tracking issue for this feature is: [#70580](https://github.com/rust-lang/rust/issues/70580).
+The tracking issue for this feature is: [#70580](https://github.com/crablang/crablang/issues/70580).
 
 ------------------------
 

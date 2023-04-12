@@ -11,7 +11,7 @@ fn main() {}
 // we can test whether a file not included in the error message affects it (more specifically
 // whether the line number of the excluded file affects the indentation of the other line numbers).
 //
-// To test this we're simulating a remap of the rust src base (so that library/std/src/error.rs
+// To test this we're simulating a remap of the crablang src base (so that library/std/src/error.rs
 // does not point to a local file) *and* we're disabling the code to try mapping a remapped path to
 // a local file (which would defeat the purpose of the former flag).
 //

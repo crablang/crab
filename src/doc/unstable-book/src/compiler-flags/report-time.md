@@ -2,7 +2,7 @@
 
 The tracking issue for this feature is: [#64888]
 
-[#64888]: https://github.com/rust-lang/rust/issues/64888
+[#64888]: https://github.com/crablang/crablang/issues/64888
 
 ------------------------
 
@@ -25,9 +25,9 @@ Available options:
                 Show execution time of each test.
                 Threshold values for colorized output can be
                 configured via
-                `RUST_TEST_TIME_UNIT`, `RUST_TEST_TIME_INTEGRATION`
+                `CRABLANG_TEST_TIME_UNIT`, `CRABLANG_TEST_TIME_INTEGRATION`
                 and
-                `RUST_TEST_TIME_DOCTEST` environment variables.
+                `CRABLANG_TEST_TIME_DOCTEST` environment variables.
                 Expected format of environment variable is
                 `VARIABLE=WARN_TIME,CRITICAL_TIME`.
                 Not available for --format=terse
@@ -35,9 +35,9 @@ Available options:
                 Treat excess of the test execution time limit as
                 error.
                 Threshold values for this option can be configured via
-                `RUST_TEST_TIME_UNIT`, `RUST_TEST_TIME_INTEGRATION`
+                `CRABLANG_TEST_TIME_UNIT`, `CRABLANG_TEST_TIME_INTEGRATION`
                 and
-                `RUST_TEST_TIME_DOCTEST` environment variables.
+                `CRABLANG_TEST_TIME_DOCTEST` environment variables.
                 Expected format of environment variable is
                 `VARIABLE=WARN_TIME,CRITICAL_TIME`.
                 `CRITICAL_TIME` here means the limit that should not be
@@ -47,7 +47,7 @@ Available options:
 Example of the environment variable format:
 
 ```sh
-RUST_TEST_TIME_UNIT=100,200
+CRABLANG_TEST_TIME_UNIT=100,200
 ```
 
 where 100 stands for warn time, and 200 stands for critical time.

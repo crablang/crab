@@ -9,7 +9,7 @@
 
 If you have two methods in an impl block, each containing an enum
 (with the same name), each containing at least one value with the same
-name, rustc gives the same LLVM symbol for the two of them and fails,
+name, crablangc gives the same LLVM symbol for the two of them and fails,
 as it does not include the method name in the symbol name.
 
 */

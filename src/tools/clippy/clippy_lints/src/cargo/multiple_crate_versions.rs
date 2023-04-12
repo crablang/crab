@@ -4,9 +4,9 @@ use cargo_metadata::{DependencyKind, Metadata, Node, Package, PackageId};
 use clippy_utils::diagnostics::span_lint;
 use if_chain::if_chain;
 use itertools::Itertools;
-use rustc_hir::def_id::LOCAL_CRATE;
-use rustc_lint::LateContext;
-use rustc_span::source_map::DUMMY_SP;
+use crablangc_hir::def_id::LOCAL_CRATE;
+use crablangc_lint::LateContext;
+use crablangc_span::source_map::DUMMY_SP;
 
 use super::MULTIPLE_CRATE_VERSIONS;
 

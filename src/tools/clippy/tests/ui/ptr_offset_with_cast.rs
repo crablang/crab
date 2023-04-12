@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 #![allow(clippy::unnecessary_cast)]
 
 fn main() {

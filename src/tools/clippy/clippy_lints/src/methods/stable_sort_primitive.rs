@@ -1,9 +1,9 @@
 use clippy_utils::diagnostics::span_lint_and_then;
 use clippy_utils::is_slice_of_primitives;
 use clippy_utils::source::snippet_with_context;
-use rustc_errors::Applicability;
-use rustc_hir::Expr;
-use rustc_lint::LateContext;
+use crablangc_errors::Applicability;
+use crablangc_hir::Expr;
+use crablangc_lint::LateContext;
 
 use super::STABLE_SORT_PRIMITIVE;
 

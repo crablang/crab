@@ -6,4 +6,4 @@ LL |     if let (Some(Foo::Bar(ref mut val)), _) = (&arr.get(0), 0) {
 
 error: aborting due to previous error
 
-For more information about this error, try `rustc --explain E0596`.
+For more information about this error, try `crablangc --explain E0596`.

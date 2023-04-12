@@ -1,0 +1,10 @@
+warning: lint `crablangdoc` has been removed: use `crablangdoc::all` instead
+  --> $DIR/crablangdoc-group.rs:3:9
+   |
+LL | #![deny(crablangdoc)]
+   |         ^^^^^^^
+   |
+   = note: `#[warn(renamed_and_removed_lints)]` on by default
+
+warning: 1 warning emitted
+

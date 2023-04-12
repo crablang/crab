@@ -1,4 +1,4 @@
-// rust-lang/rust#47215: at one time, the compiler categorized
+// crablang/crablang#47215: at one time, the compiler categorized
 // thread-local statics as a temporary rvalue, as a way to enforce
 // that they are only valid for a given lifetime.
 //

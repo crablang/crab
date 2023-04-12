@@ -1,9 +1,9 @@
 use std::fmt;
 
 use clippy_utils::diagnostics::span_lint_and_help;
-use rustc_ast::ast::{Expr, ExprKind, InlineAsmOptions};
-use rustc_lint::{EarlyContext, EarlyLintPass, Lint};
-use rustc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_ast::ast::{Expr, ExprKind, InlineAsmOptions};
+use crablangc_lint::{EarlyContext, EarlyLintPass, Lint};
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
 
 #[derive(Clone, Copy, PartialEq, Eq)]
 enum AsmStyle {
@@ -62,7 +62,7 @@ declare_clippy_lint! {
     ///
     /// ### Example
     ///
-    /// ```rust,no_run
+    /// ```crablang,no_run
     /// # #![feature(asm)]
     /// # #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
     /// # unsafe { let ptr = "".as_ptr();
@@ -71,7 +71,7 @@ declare_clippy_lint! {
     /// # }
     /// ```
     /// Use instead:
-    /// ```rust,no_run
+    /// ```crablang,no_run
     /// # #![feature(asm)]
     /// # #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
     /// # unsafe { let ptr = "".as_ptr();
@@ -103,7 +103,7 @@ declare_clippy_lint! {
     ///
     /// ### Example
     ///
-    /// ```rust,no_run
+    /// ```crablang,no_run
     /// # #![feature(asm)]
     /// # #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
     /// # unsafe { let ptr = "".as_ptr();
@@ -112,7 +112,7 @@ declare_clippy_lint! {
     /// # }
     /// ```
     /// Use instead:
-    /// ```rust,no_run
+    /// ```crablang,no_run
     /// # #![feature(asm)]
     /// # #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
     /// # unsafe { let ptr = "".as_ptr();

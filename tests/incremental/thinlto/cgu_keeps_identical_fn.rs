@@ -7,20 +7,20 @@
 // compile-flags: -Z query-dep-graph -O
 // build-pass (FIXME(62277): could be check-pass?)
 
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 #![crate_type = "rlib"]
-#![rustc_expected_cgu_reuse(module = "cgu_keeps_identical_fn-foo", cfg = "cfail2", kind = "no")]
-#![rustc_expected_cgu_reuse(
+#![crablangc_expected_cgu_reuse(module = "cgu_keeps_identical_fn-foo", cfg = "cfail2", kind = "no")]
+#![crablangc_expected_cgu_reuse(
     module = "cgu_keeps_identical_fn-foo",
     cfg = "cfail3",
     kind = "post-lto"
 )]
-#![rustc_expected_cgu_reuse(
+#![crablangc_expected_cgu_reuse(
     module = "cgu_keeps_identical_fn-bar",
     cfg = "cfail2",
     kind = "post-lto"
 )]
-#![rustc_expected_cgu_reuse(
+#![crablangc_expected_cgu_reuse(
     module = "cgu_keeps_identical_fn-bar",
     cfg = "cfail3",
     kind = "post-lto"

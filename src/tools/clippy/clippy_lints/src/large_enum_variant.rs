@@ -5,13 +5,13 @@ use clippy_utils::{
     diagnostics::span_lint_and_then,
     ty::{approx_ty_size, is_copy, AdtVariantInfo},
 };
-use rustc_errors::Applicability;
-use rustc_hir::{Item, ItemKind};
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_middle::lint::in_external_macro;
-use rustc_middle::ty::{Adt, Ty};
-use rustc_session::{declare_tool_lint, impl_lint_pass};
-use rustc_span::source_map::Span;
+use crablangc_errors::Applicability;
+use crablangc_hir::{Item, ItemKind};
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_middle::lint::in_external_macro;
+use crablangc_middle::ty::{Adt, Ty};
+use crablangc_session::{declare_tool_lint, impl_lint_pass};
+use crablangc_span::source_map::Span;
 
 declare_clippy_lint! {
     /// ### What it does
@@ -40,7 +40,7 @@ declare_clippy_lint! {
     /// this may lead to a false positive.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// enum Test {
     ///     A(i32),
     ///     B([i32; 8000]),
@@ -48,7 +48,7 @@ declare_clippy_lint! {
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// // Possibly better
     /// enum Test2 {
     ///     A(i32),

@@ -30,10 +30,10 @@ impl LazyInit for AllocatedRwLock {
 // Check at compile time that RwLock's size and alignment matches the C definition
 // in libunwind (see also `test_c_rwlock_initializer` in `tests`).
 const _: () = {
-    let rust = Layout::new::<RwLock>();
+    let crablang = Layout::new::<RwLock>();
     let c = Layout::new::<*mut ()>();
-    assert!(rust.size() == c.size());
-    assert!(rust.align() == c.align());
+    assert!(crablang.size() == c.size());
+    assert!(crablang.align() == c.align());
 };
 
 impl RwLock {
@@ -171,7 +171,7 @@ impl RwLock {
         unsafe { self.__write_unlock(rguard, wguard) };
     }
 
-    // only used by __rust_rwlock_unlock below
+    // only used by __crablang_rwlock_unlock below
     #[inline]
     #[cfg_attr(test, allow(dead_code))]
     unsafe fn unlock(&self) {
@@ -193,7 +193,7 @@ const EINVAL: i32 = 22;
 
 #[cfg(not(test))]
 #[no_mangle]
-pub unsafe extern "C" fn __rust_rwlock_rdlock(p: *mut RwLock) -> i32 {
+pub unsafe extern "C" fn __crablang_rwlock_rdlock(p: *mut RwLock) -> i32 {
     if p.is_null() {
         return EINVAL;
     }
@@ -203,7 +203,7 @@ pub unsafe extern "C" fn __rust_rwlock_rdlock(p: *mut RwLock) -> i32 {
 
 #[cfg(not(test))]
 #[no_mangle]
-pub unsafe extern "C" fn __rust_rwlock_wrlock(p: *mut RwLock) -> i32 {
+pub unsafe extern "C" fn __crablang_rwlock_wrlock(p: *mut RwLock) -> i32 {
     if p.is_null() {
         return EINVAL;
     }
@@ -213,7 +213,7 @@ pub unsafe extern "C" fn __rust_rwlock_wrlock(p: *mut RwLock) -> i32 {
 
 #[cfg(not(test))]
 #[no_mangle]
-pub unsafe extern "C" fn __rust_rwlock_unlock(p: *mut RwLock) -> i32 {
+pub unsafe extern "C" fn __crablang_rwlock_unlock(p: *mut RwLock) -> i32 {
     if p.is_null() {
         return EINVAL;
     }

@@ -6,20 +6,20 @@
 // compile-flags: -Z query-dep-graph -O
 // build-pass (FIXME(62277): could be check-pass?)
 
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 #![crate_type="rlib"]
 
-#![rustc_expected_cgu_reuse(module="cgu_invalidated_via_import-foo",
+#![crablangc_expected_cgu_reuse(module="cgu_invalidated_via_import-foo",
                             cfg="cfail2",
                             kind="no")]
-#![rustc_expected_cgu_reuse(module="cgu_invalidated_via_import-foo",
+#![crablangc_expected_cgu_reuse(module="cgu_invalidated_via_import-foo",
                             cfg="cfail3",
                             kind="post-lto")]
 
-#![rustc_expected_cgu_reuse(module="cgu_invalidated_via_import-bar",
+#![crablangc_expected_cgu_reuse(module="cgu_invalidated_via_import-bar",
                             cfg="cfail2",
                             kind="pre-lto")]
-#![rustc_expected_cgu_reuse(module="cgu_invalidated_via_import-bar",
+#![crablangc_expected_cgu_reuse(module="cgu_invalidated_via_import-bar",
                             cfg="cfail3",
                             kind="post-lto")]
 

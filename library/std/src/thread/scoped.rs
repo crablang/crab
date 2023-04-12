@@ -284,7 +284,7 @@ impl<'scope, T> ScopedJoinHandle<'scope, T> {
     /// In terms of [atomic memory orderings], the completion of the associated
     /// thread synchronizes with this function returning.
     /// In other words, all operations performed by that thread
-    /// [happen before](https://doc.rust-lang.org/nomicon/atomics.html#data-accesses)
+    /// [happen before](https://doc.crablang.org/nomicon/atomics.html#data-accesses)
     /// all operations that happen after `join` returns.
     ///
     /// If the associated thread panics, [`Err`] is returned with the panic payload.

@@ -1,0 +1,77 @@
+sudo: false
+language: crablang
+crablang: nightly
+os: linux
+cache:
+ directories:
+  - $HOME/.cargo
+
+addons:
+  apt:
+    packages:
+    - libcurl4-openssl-dev
+    - libelf-dev
+    - libdw-dev
+
+matrix:
+  include:
+    - env: DEPLOY=LINUX
+    - env: CFG_RELEASE_CHANNEL=beta
+    - os: osx
+    - env: INTEGRATION=bitflags
+    - env: INTEGRATION=chalk
+    - env: INTEGRATION=crater
+    - env: INTEGRATION=error-chain
+    - env: INTEGRATION=glob
+    - env: INTEGRATION=log
+    - env: INTEGRATION=mdbook
+    - env: INTEGRATION=packed_simd
+    - env: INTEGRATION=crablang-semverver
+    - env: INTEGRATION=stdsimd TARGET=x86_64-unknown-linux-gnu
+    - env: INTEGRATION=tempdir
+    - env: INTEGRATION=futures-rs
+  allow_failures:
+    # Using old configuration option
+    - env: INTEGRATION=rand
+    # Doesn't build - keep this in allow_failures as it's fragile to breaking changes of crablangc.
+    - env: INTEGRATION=crablang-clippy
+    # Doesn't build - seems to be because of an option
+    - env: INTEGRATION=packed_simd
+    # Doesn't build - a temporal build failure due to breaking changes in the nightly compilre
+    - env: INTEGRATION=crablang-semverver
+    # can be moved back to include section after https://github.com/crablang-nursery/failure/pull/298 is merged
+    - env: INTEGRATION=failure
+    # `cargo test` doesn't finish - disabling for now.
+    # - env: INTEGRATION=cargo
+
+script:
+  - |
+    if [ -z ${INTEGRATION} ]; then
+      export CFG_RELEASE_CHANNEL=nightly
+      export CFG_RELEASE=nightly
+      cargo build
+      cargo test
+      cargo test -- --ignored
+    else
+      ./ci/integration.sh
+    fi
+
+after_success:
+- if [ -z ${INTEGRATION} ]; then travis-cargo coveralls --no-sudo; fi
+
+before_deploy:
+  # TODO: cross build
+ - cargo build --release --target=x86_64-unknown-linux-gnu
+ - tar czf crablangfmt-x86_64-unknown-linux-gnu.tar.gz Contributing.md Design.md README.md -C target/x86_64-unknown-linux-gnu/release/crablangfmt crablangfmt
+
+deploy:
+  provider: releases
+  api_key:
+    secure: "your own encrypted key"
+  file:
+  - crablangfmt-x86_64-unknown-linux-gnu.tar.gz
+  on:
+    repo: nrc/crablangfmt
+    tags: true
+    condition: "$DEPLOY = LINUX"
+  skip_cleanup: true

@@ -2,7 +2,7 @@
 
 // Macro to help ensure CONST_ERR lint errors
 // are not silenced in external macros.
-// https://github.com/rust-lang/rust/issues/65300
+// https://github.com/crablang/crablang/issues/65300
 
 #[macro_export]
 #[allow_internal_unstable(type_ascription)]

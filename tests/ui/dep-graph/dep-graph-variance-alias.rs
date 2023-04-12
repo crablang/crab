@@ -4,19 +4,19 @@
 // incremental
 // compile-flags: -Z query-dep-graph
 
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 #![allow(dead_code)]
 #![allow(unused_variables)]
 fn main() {}
 
-#[rustc_if_this_changed]
+#[crablangc_if_this_changed]
 struct Foo<T> {
     f: T,
 }
 
 type TypeAlias<T> = Foo<T>;
 
-#[rustc_then_this_would_need(variances_of)] //~ ERROR OK
+#[crablangc_then_this_would_need(variances_of)] //~ ERROR OK
 struct Use<T> {
     x: TypeAlias<T>,
 }

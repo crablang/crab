@@ -1,7 +1,7 @@
 // Various utilities for working with dylib paths.
 //
 // This file is meant to be included directly to avoid a dependency on the bootstrap library from
-// the rustc and rustdoc wrappers. This improves compilation time by reducing the linking time.
+// the crablangc and crablangdoc wrappers. This improves compilation time by reducing the linking time.
 
 /// Returns the environment variable which the dynamic library lookup path
 /// resides in for this platform.

@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 fn main () {
     #[allow(non_upper_case_globals)]
     let foo: usize = 42;

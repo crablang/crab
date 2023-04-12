@@ -18,7 +18,7 @@ use crate::ptr;
 ///
 /// # `ManuallyDrop` and drop order.
 ///
-/// Rust has a well-defined [drop order] of values. To make sure that fields or
+/// CrabLang has a well-defined [drop order] of values. To make sure that fields or
 /// locals are dropped in a specific order, reorder the declarations such that
 /// the implicit drop order is the correct one.
 ///
@@ -35,12 +35,12 @@ use crate::ptr;
 /// struct Widget {
 ///     children: Vec<Widget>,
 ///     // `context` will be dropped after `children`.
-///     // Rust guarantees that fields are dropped in the order of declaration.
+///     // CrabLang guarantees that fields are dropped in the order of declaration.
 ///     context: Context,
 /// }
 /// ```
 ///
-/// [drop order]: https://doc.rust-lang.org/reference/destructors.html
+/// [drop order]: https://doc.crablang.org/reference/destructors.html
 /// [`mem::zeroed`]: crate::mem::zeroed
 /// [`MaybeUninit<T>`]: crate::mem::MaybeUninit
 #[stable(feature = "manually_drop", since = "1.20.0")]
@@ -56,7 +56,7 @@ impl<T> ManuallyDrop<T> {
     ///
     /// # Examples
     ///
-    /// ```rust
+    /// ```crablang
     /// use std::mem::ManuallyDrop;
     /// let mut x = ManuallyDrop::new(String::from("Hello World!"));
     /// x.truncate(5); // You can still safely operate on the value
@@ -65,7 +65,7 @@ impl<T> ManuallyDrop<T> {
     /// ```
     #[must_use = "if you don't need the wrapper, you can use `mem::forget` instead"]
     #[stable(feature = "manually_drop", since = "1.20.0")]
-    #[rustc_const_stable(feature = "const_manually_drop", since = "1.32.0")]
+    #[crablangc_const_stable(feature = "const_manually_drop", since = "1.32.0")]
     #[inline(always)]
     pub const fn new(value: T) -> ManuallyDrop<T> {
         ManuallyDrop { value }
@@ -77,13 +77,13 @@ impl<T> ManuallyDrop<T> {
     ///
     /// # Examples
     ///
-    /// ```rust
+    /// ```crablang
     /// use std::mem::ManuallyDrop;
     /// let x = ManuallyDrop::new(Box::new(()));
     /// let _: Box<()> = ManuallyDrop::into_inner(x); // This drops the `Box`.
     /// ```
     #[stable(feature = "manually_drop", since = "1.20.0")]
-    #[rustc_const_stable(feature = "const_manually_drop", since = "1.32.0")]
+    #[crablangc_const_stable(feature = "const_manually_drop", since = "1.32.0")]
     #[inline(always)]
     pub const fn into_inner(slot: ManuallyDrop<T>) -> T {
         slot.value
@@ -146,7 +146,7 @@ impl<T: ?Sized> ManuallyDrop<T> {
 }
 
 #[stable(feature = "manually_drop", since = "1.20.0")]
-#[rustc_const_unstable(feature = "const_deref", issue = "88955")]
+#[crablangc_const_unstable(feature = "const_deref", issue = "88955")]
 impl<T: ?Sized> const Deref for ManuallyDrop<T> {
     type Target = T;
     #[inline(always)]
@@ -156,7 +156,7 @@ impl<T: ?Sized> const Deref for ManuallyDrop<T> {
 }
 
 #[stable(feature = "manually_drop", since = "1.20.0")]
-#[rustc_const_unstable(feature = "const_deref", issue = "88955")]
+#[crablangc_const_unstable(feature = "const_deref", issue = "88955")]
 impl<T: ?Sized> const DerefMut for ManuallyDrop<T> {
     #[inline(always)]
     fn deref_mut(&mut self) -> &mut T {

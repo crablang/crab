@@ -1,7 +1,7 @@
 // revisions: func object clause
 
 #![allow(dead_code)]
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 
 trait Foo<'a> {
     type Item;
@@ -44,5 +44,5 @@ fn clause2<T>() where T: for<'a> Fn() -> <() as Foo<'a>>::Item {
     //[clause]~^ ERROR `Output` references lifetime `'a`
 }
 
-#[rustc_error]
-fn main() { } //[ok]~ ERROR fatal error triggered by #[rustc_error]
+#[crablangc_error]
+fn main() { } //[ok]~ ERROR fatal error triggered by #[crablangc_error]

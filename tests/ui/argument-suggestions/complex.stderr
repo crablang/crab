@@ -16,4 +16,4 @@ LL |   complex(/* u32 */, &"", /* E */, F::X2, G{}, X {}, Y {}, Z {});
 
 error: aborting due to previous error
 
-For more information about this error, try `rustc --explain E0308`.
+For more information about this error, try `crablangc --explain E0308`.

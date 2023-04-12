@@ -75,17 +75,17 @@ use crate::sys::locks as sys;
 /// ```
 ///
 /// [`Mutex`]: super::Mutex
-#[stable(feature = "rust1", since = "1.0.0")]
-#[cfg_attr(not(test), rustc_diagnostic_item = "RwLock")]
+#[stable(feature = "crablang1", since = "1.0.0")]
+#[cfg_attr(not(test), crablangc_diagnostic_item = "RwLock")]
 pub struct RwLock<T: ?Sized> {
     inner: sys::RwLock,
     poison: poison::Flag,
     data: UnsafeCell<T>,
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 unsafe impl<T: ?Sized + Send> Send for RwLock<T> {}
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 unsafe impl<T: ?Sized + Send + Sync> Sync for RwLock<T> {}
 
 /// RAII structure used to release the shared read access of a lock when
@@ -100,9 +100,9 @@ unsafe impl<T: ?Sized + Send + Sync> Sync for RwLock<T> {}
 #[must_not_suspend = "holding a RwLockReadGuard across suspend \
                       points can cause deadlocks, delays, \
                       and cause Futures to not implement `Send`"]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[clippy::has_significant_drop]
-#[cfg_attr(not(test), rustc_diagnostic_item = "RwLockReadGuard")]
+#[cfg_attr(not(test), crablangc_diagnostic_item = "RwLockReadGuard")]
 pub struct RwLockReadGuard<'a, T: ?Sized + 'a> {
     // NB: we use a pointer instead of `&'a T` to avoid `noalias` violations, because a
     // `Ref` argument doesn't hold immutability for its whole scope, only until it drops.
@@ -112,7 +112,7 @@ pub struct RwLockReadGuard<'a, T: ?Sized + 'a> {
     inner_lock: &'a sys::RwLock,
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: ?Sized> !Send for RwLockReadGuard<'_, T> {}
 
 #[stable(feature = "rwlock_guard_sync", since = "1.23.0")]
@@ -130,15 +130,15 @@ unsafe impl<T: ?Sized + Sync> Sync for RwLockReadGuard<'_, T> {}
 #[must_not_suspend = "holding a RwLockWriteGuard across suspend \
                       points can cause deadlocks, delays, \
                       and cause Future's to not implement `Send`"]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[clippy::has_significant_drop]
-#[cfg_attr(not(test), rustc_diagnostic_item = "RwLockWriteGuard")]
+#[cfg_attr(not(test), crablangc_diagnostic_item = "RwLockWriteGuard")]
 pub struct RwLockWriteGuard<'a, T: ?Sized + 'a> {
     lock: &'a RwLock<T>,
     poison: poison::Guard,
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: ?Sized> !Send for RwLockWriteGuard<'_, T> {}
 
 #[stable(feature = "rwlock_guard_sync", since = "1.23.0")]
@@ -154,8 +154,8 @@ impl<T> RwLock<T> {
     ///
     /// let lock = RwLock::new(5);
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
-    #[rustc_const_stable(feature = "const_locks", since = "1.63.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    #[crablangc_const_stable(feature = "const_locks", since = "1.63.0")]
     #[inline]
     pub const fn new(t: T) -> RwLock<T> {
         RwLock { inner: sys::RwLock::new(), poison: poison::Flag::new(), data: UnsafeCell::new(t) }
@@ -204,7 +204,7 @@ impl<T: ?Sized> RwLock<T> {
     /// }).join().unwrap();
     /// ```
     #[inline]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn read(&self) -> LockResult<RwLockReadGuard<'_, T>> {
         unsafe {
             self.inner.read();
@@ -249,7 +249,7 @@ impl<T: ?Sized> RwLock<T> {
     /// };
     /// ```
     #[inline]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn try_read(&self) -> TryLockResult<RwLockReadGuard<'_, T>> {
         unsafe {
             if self.inner.try_read() {
@@ -292,7 +292,7 @@ impl<T: ?Sized> RwLock<T> {
     /// assert!(lock.try_read().is_err());
     /// ```
     #[inline]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn write(&self) -> LockResult<RwLockWriteGuard<'_, T>> {
         unsafe {
             self.inner.write();
@@ -338,7 +338,7 @@ impl<T: ?Sized> RwLock<T> {
     /// assert!(lock.try_write().is_err());
     /// ```
     #[inline]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn try_write(&self) -> TryLockResult<RwLockWriteGuard<'_, T>> {
         unsafe {
             if self.inner.try_write() {
@@ -352,7 +352,7 @@ impl<T: ?Sized> RwLock<T> {
     /// Determines whether the lock is poisoned.
     ///
     /// If another thread is active, the lock can still become poisoned at any
-    /// time. You should not trust a `false` value for program correctness
+    /// time. You should not tcrablang a `false` value for program correctness
     /// without additional synchronization.
     ///
     /// # Examples
@@ -473,7 +473,7 @@ impl<T: ?Sized> RwLock<T> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: ?Sized + fmt::Debug> fmt::Debug for RwLock<T> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let mut d = f.debug_struct("RwLock");
@@ -565,7 +565,7 @@ impl<T: ?Sized + fmt::Display> fmt::Display for RwLockWriteGuard<'_, T> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: ?Sized> Deref for RwLockReadGuard<'_, T> {
     type Target = T;
 
@@ -575,7 +575,7 @@ impl<T: ?Sized> Deref for RwLockReadGuard<'_, T> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: ?Sized> Deref for RwLockWriteGuard<'_, T> {
     type Target = T;
 
@@ -585,7 +585,7 @@ impl<T: ?Sized> Deref for RwLockWriteGuard<'_, T> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: ?Sized> DerefMut for RwLockWriteGuard<'_, T> {
     fn deref_mut(&mut self) -> &mut T {
         // SAFETY: the conditions of `RwLockWriteGuard::new` were satisfied when created.
@@ -593,7 +593,7 @@ impl<T: ?Sized> DerefMut for RwLockWriteGuard<'_, T> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: ?Sized> Drop for RwLockReadGuard<'_, T> {
     fn drop(&mut self) {
         // SAFETY: the conditions of `RwLockReadGuard::new` were satisfied when created.
@@ -603,7 +603,7 @@ impl<T: ?Sized> Drop for RwLockReadGuard<'_, T> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: ?Sized> Drop for RwLockWriteGuard<'_, T> {
     fn drop(&mut self) {
         self.lock.poison.done(&self.poison);

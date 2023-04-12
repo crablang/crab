@@ -2,5 +2,5 @@
 include ../tools.mk
 
 all:
-	$(RUSTC) lib.rs
-	$(RUSTC) test.rs --extern foo=$(TMPDIR)/libbar.rlib
+	$(CRABLANGC) lib.rs
+	$(CRABLANGC) test.rs --extern foo=$(TMPDIR)/libbar.rlib

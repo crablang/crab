@@ -1,21 +1,21 @@
-error: expected derive macro, found tool attribute `rustfmt::skip`
+error: expected derive macro, found tool attribute `crablangfmt::skip`
   --> $DIR/tool-attributes-misplaced-2.rs:1:10
    |
-LL | #[derive(rustfmt::skip)]
+LL | #[derive(crablangfmt::skip)]
    |          ^^^^^^^^^^^^^ not a derive macro
    |
 help: remove from the surrounding `derive()`
   --> $DIR/tool-attributes-misplaced-2.rs:1:10
    |
-LL | #[derive(rustfmt::skip)]
+LL | #[derive(crablangfmt::skip)]
    |          ^^^^^^^^^^^^^
    = help: add as non-Derive macro
-           `#[rustfmt::skip]`
+           `#[crablangfmt::skip]`
 
-error: expected macro, found tool attribute `rustfmt::skip`
+error: expected macro, found tool attribute `crablangfmt::skip`
   --> $DIR/tool-attributes-misplaced-2.rs:5:5
    |
-LL |     rustfmt::skip!();
+LL |     crablangfmt::skip!();
    |     ^^^^^^^^^^^^^ not a macro
 
 error: aborting due to 2 previous errors

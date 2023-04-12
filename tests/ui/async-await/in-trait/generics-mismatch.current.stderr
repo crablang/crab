@@ -13,4 +13,4 @@ LL |     async fn foo<const N: usize>() {}
 
 error: aborting due to previous error
 
-For more information about this error, try `rustc --explain E0053`.
+For more information about this error, try `crablangc --explain E0053`.

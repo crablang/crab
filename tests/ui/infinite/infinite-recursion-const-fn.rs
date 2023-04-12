@@ -1,4 +1,4 @@
-//https://github.com/rust-lang/rust/issues/31364
+//https://github.com/crablang/crablang/issues/31364
 
 const fn a() -> usize {
     b() //~ ERROR evaluation of constant value failed [E0080]

@@ -7,7 +7,7 @@ terminal `}`. Any qualifier before the block (e.g., `unsafe`) should always be
 on the same line as the opening brace, and separated with a single space. The
 contents of the block should be block indented:
 
-```rust
+```crablang
 fn block_as_stmt() {
     a_call();
 
@@ -42,7 +42,7 @@ fn unsafe_block_as_stmt() {
 
 If a block has an attribute, it should be on its own line:
 
-```rust
+```crablang
 fn block_as_stmt() {
     #[an_attribute]
     {
@@ -70,7 +70,7 @@ closing brace.
 
 Examples:
 
-```rust
+```crablang
 fn main() {
     // Single line
     let _ = { a_call() };
@@ -126,7 +126,7 @@ a return type, when there are statements, there are comments in the body, or the
 body expression spans multiple lines and is a control-flow expression. If using
 braces, follow the rules above for blocks. Examples:
 
-```rust
+```crablang
 |arg1, arg2| expr
 
 move |arg1: i32, arg2: i32| -> i32 {
@@ -163,7 +163,7 @@ colon only.
 There should be a space before the opening brace. In the single-line form there
 should be spaces after the opening brace and before the closing brace.
 
-```rust
+```crablang
 Foo { field1, field2: 0 }
 let f = Foo {
     field1,
@@ -186,7 +186,7 @@ Use a single-line form where possible. There should not be spaces around the
 parentheses. Where a single-line form is not possible, each element of the tuple
 should be on its own block-indented line and there should be a trailing comma.
 
-```rust
+```crablang
 (a, b, c)
 
 let x = (
@@ -207,7 +207,7 @@ Otherwise, follow the rules for tuple literals, e.g., `Foo(a, b)`.
 Follow the formatting rules for the various struct literals. Prefer using the
 name of the enum as a qualifying name, unless the enum is in the prelude. E.g.,
 
-```rust
+```crablang
 Foo::Bar(a, b)
 Foo::Baz {
     field1,
@@ -225,7 +225,7 @@ using the repeating initialiser, there should be a space after the semicolon
 only. Apply the same rules if using the `vec!` or similar macros (always use
 square brackets here). Examples:
 
-```rust
+```crablang
 fn main() {
     [1, 2, 3];
     vec![a, b, c, d];
@@ -238,7 +238,7 @@ Otherwise, follow the rules below for function calls. In any case, the contents
 of the initialiser should be block indented and there should be line breaks
 after the opening bracket and before the closing bracket:
 
-```rust
+```crablang
 fn main() {
     [
         a_long_expression();
@@ -263,7 +263,7 @@ bracket. However, this should be avoided where possible.
 
 Examples:
 
-```rust
+```crablang
 fn main() {
     foo[42];
     &foo[..10];
@@ -297,7 +297,7 @@ to indicate precedence.
 If line-breaking, put the operator on a new line and block indent. Put each
 sub-expression on its own line. E.g.,
 
-```rust
+```crablang
 foo_bar
     + bar
     + baz
@@ -312,14 +312,14 @@ than at other binary operators.
 
 Do not include extraneous parentheses for `if` and `while` expressions.
 
-```rust
+```crablang
 if true {
 }
 ```
 
 is better than
 
-```rust
+```crablang
 if (true) {
 }
 ```
@@ -344,7 +344,7 @@ paren and the first argument, or between the last argument and the close paren.
 
 Do not put a comma after the last argument.
 
-```rust
+```crablang
 foo(x, y, z)
 ```
 
@@ -356,7 +356,7 @@ across multiple lines. In this case, each argument should be on it's own block-
 indented line, there should be a newline after the opening parenthesis and
 before the closing parenthesis, and there should be a trailing comma. E.g.,
 
-```rust
+```crablang
 a_function_call(
     arg1,
     a_nested_call(a, b),
@@ -370,7 +370,7 @@ Follow the function rules for calling.
 
 Do not put any spaces around the `.`.
 
-```rust
+```crablang
 x.foo().bar().baz(x, y, z);
 ```
 
@@ -389,7 +389,7 @@ be formatted with arguments before and after the format string on a single line
 and the format string on its own line, rather than putting each argument on its
 own line. For example,
 
-```rust
+```crablang
 println!(
     "Hello {} and {}",
     name1, name2,
@@ -407,7 +407,7 @@ assert_eq!(
 
 Put spaces before and after `as`:
 
-```rust
+```crablang
 let cstr = "Hi\0" as *const str as *const [u8] as *const std::os::raw::c_char;
 ```
 
@@ -422,7 +422,7 @@ formatting on multiple lines, each field access or method call in the chain
 should be on its own line with the line-break before the `.` and after any `?`.
 Each line should be block-indented. E.g.,
 
-```rust
+```crablang
 let foo = bar
     .baz?
     .qux();
@@ -432,7 +432,7 @@ If the length of the last line of the first element plus its indentation is
 less than or equal to the indentation of the second line (and there is space),
 then combine the first and second lines, e.g.,
 
-```rust
+```crablang
 x.baz?
     .qux()
 
@@ -453,7 +453,7 @@ If any element in a chain is formatted across multiple lines, then that element
 and any later elements must be on their own line. Earlier elements may be kept
 on a single line. E.g.,
 
-```rust
+```crablang
 a.b.c()?.d
     .foo(
         an_expr,
@@ -470,7 +470,7 @@ Prefer formatting the whole chain in multi-line style and each element on one
 line, rather than putting some elements on multiple lines and some on a single
 line, e.g.,
 
-```rust
+```crablang
 // Better
 self.pre_comment
     .as_ref()
@@ -496,7 +496,7 @@ If there is an `else` component, then the closing brace, `else`, any following
 clause, and the opening brace should all be on the same line. There should be a
 single space before and after the `else` keyword. For example:
 
-```rust
+```crablang
 if ... {
     ...
 } else {
@@ -517,7 +517,7 @@ If the control line needs to be broken, then prefer to break before the `=` in
 should be block indented. If the control line is broken for any reason, then the
 opening brace should be on its own line and not indented. Examples:
 
-```rust
+```crablang
 while let Some(foo)
     = a_long_expression
 {
@@ -544,7 +544,7 @@ and that line is not indented beyond the indent on the first line of the control
 flow expression, then the opening brace of the block should be put on the same
 line with a preceding space. For example:
 
-```rust
+```crablang
 if !self.config.file_lines().intersects(
     &self.codemap.lookup_line_range(
         stmt.span,
@@ -561,7 +561,7 @@ Formatters may place an `if else` or `if let else` on a single line if it occurs
 in expression context (i.e., is not a standalone statement), it contains a
 single `else` clause, and is *small*. For example:
 
-```rust
+```crablang
 let y = if x { 0 } else { 1 };
 
 // Examples that must be multi-line.
@@ -585,7 +585,7 @@ Prefer not to line-break inside the discriminant expression. There must always
 be a line break after the opening brace and before the closing brace. The match
 arms must be block indented once:
 
-```rust
+```crablang
 match foo {
     // arms
 }
@@ -599,7 +599,7 @@ Use a trailing comma for a match arm if and only if not using a block.
 
 Never start a match arm pattern with `|`, e.g.,
 
-```rust
+```crablang
 match foo {
     // Don't do this.
     | foo => bar,
@@ -616,7 +616,7 @@ match foo {
 Prefer
 
 
-```rust
+```crablang
 match foo {
     foo => bar,
     a_very_long_pattern
@@ -640,7 +640,7 @@ The body of a block arm should be block indented once.
 
 Examples:
 
-```rust
+```crablang
 match foo {
     foo => bar,
     a_very_long_patten | another_pattern if an_expression() => {
@@ -664,7 +664,7 @@ If the body is a single expression with no line comments and not a control flow
 expression, then it may be started on the same line as the right-hand side. If
 not, then it must be in a block. Example,
 
-```rust
+```crablang
 match foo {
     // A combinable expression.
     foo => a_function_call(another_call(
@@ -689,7 +689,7 @@ match foo {
 Where it is possible to use a block form on the right-hand side and avoid
 breaking the left-hand side, do that. E.g.
 
-```rust
+```crablang
     // Assuming the following line does done fit in the max width
     a_very_long_pattern | another_pattern => ALongStructName {
         ...
@@ -709,7 +709,7 @@ If the left-hand side must be split and there is an `if` clause, break before
 the `if` and block indent. In this case, always use a block body and start the
 body on a new line:
 
-```rust
+```crablang
     a_very_long_pattern | another_pattern
         if expr =>
     {
@@ -721,7 +721,7 @@ If required to break the pattern, put each clause of the pattern on its own
 line with no additional indent, breaking before the `|`. If there is an `if`
 clause, then you must use the above form:
 
-```rust
+```crablang
     a_very_long_pattern
     | another_pattern
     | yet_another_pattern
@@ -741,7 +741,7 @@ clause, then you must use the above form:
 If the pattern is multi-line, and the last line is less wide than the indent, do
 not put the `if` clause on a newline. E.g.,
 
-```rust
+```crablang
     Token::Dimension {
          value,
          ref unit,
@@ -755,7 +755,7 @@ If every clause in a pattern is *small*, but does not fit on one line, then the
 pattern may be formatted across multiple lines with as many clauses per line as
 possible. Again break before a `|`:
 
-```rust
+```crablang
     foo | bar | baz
     | qux => {
         ...
@@ -786,7 +786,7 @@ line call. The same combining behaviour may be applied to any similar
 expressions which have multi-line, block-indented lists of sub-expressions
 delimited by parentheses (e.g., macros or tuple struct literals). E.g.,
 
-```rust
+```crablang
 foo(bar(
     an_expr,
     another_expr,
@@ -810,7 +810,7 @@ this combining behaviour may be used where there are other arguments, as long as
 all the arguments and the first line of the closure fit on the first line, the
 closure is the last argument, and there is only one closure argument:
 
-```rust
+```crablang
 foo(first_arg, x, |param| {
     action();
     foo(param)
@@ -825,7 +825,7 @@ Do not put spaces in ranges, e.g., `0..10`, `x..=y`, `..x.len()`, `foo..`.
 When writing a range with both upper and lower bounds, if the line must be
 broken, break before the range operator and block indent the second line:
 
-```rust
+```crablang
 a_long_expression
     ..another_long_expression
 ```

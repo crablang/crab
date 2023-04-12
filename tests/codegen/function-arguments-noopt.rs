@@ -4,7 +4,7 @@
 // while lacking attributes used for optimization, still have ABI-affecting attributes.
 
 #![crate_type = "lib"]
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 
 pub struct S {
   _field: [i32; 8],

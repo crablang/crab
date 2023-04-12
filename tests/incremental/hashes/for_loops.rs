@@ -13,7 +13,7 @@
 // [cfail3]compile-flags: -Zincremental-ignore-spans
 
 #![allow(warnings)]
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 #![crate_type="rlib"]
 
 
@@ -28,10 +28,10 @@ pub fn change_loop_body() {
 }
 
 #[cfg(not(any(cfail1,cfail4)))]
-#[rustc_clean(cfg="cfail2", except="hir_owner_nodes")]
-#[rustc_clean(cfg="cfail3")]
-#[rustc_clean(cfg="cfail5", except="hir_owner_nodes")]
-#[rustc_clean(cfg="cfail6")]
+#[crablangc_clean(cfg="cfail2", except="hir_owner_nodes")]
+#[crablangc_clean(cfg="cfail3")]
+#[crablangc_clean(cfg="cfail5", except="hir_owner_nodes")]
+#[crablangc_clean(cfg="cfail6")]
 pub fn change_loop_body() {
     let mut _x = 0;
     for _ in 0..1 {
@@ -53,10 +53,10 @@ pub fn change_iteration_variable_name() {
 }
 
 #[cfg(not(any(cfail1,cfail4)))]
-#[rustc_clean(cfg="cfail2", except="hir_owner_nodes, optimized_mir")]
-#[rustc_clean(cfg="cfail3")]
-#[rustc_clean(cfg="cfail5", except="hir_owner_nodes, optimized_mir")]
-#[rustc_clean(cfg="cfail6")]
+#[crablangc_clean(cfg="cfail2", except="hir_owner_nodes, optimized_mir")]
+#[crablangc_clean(cfg="cfail3")]
+#[crablangc_clean(cfg="cfail5", except="hir_owner_nodes, optimized_mir")]
+#[crablangc_clean(cfg="cfail6")]
 pub fn change_iteration_variable_name() {
     let mut _x = 0;
     for _a in 0..1 {
@@ -78,10 +78,10 @@ pub fn change_iteration_variable_pattern() {
 }
 
 #[cfg(not(any(cfail1,cfail4)))]
-#[rustc_clean(cfg="cfail2", except="hir_owner_nodes, optimized_mir, typeck")]
-#[rustc_clean(cfg="cfail3")]
-#[rustc_clean(cfg="cfail5", except="hir_owner_nodes, optimized_mir, typeck")]
-#[rustc_clean(cfg="cfail6")]
+#[crablangc_clean(cfg="cfail2", except="hir_owner_nodes, optimized_mir, typeck")]
+#[crablangc_clean(cfg="cfail3")]
+#[crablangc_clean(cfg="cfail5", except="hir_owner_nodes, optimized_mir, typeck")]
+#[crablangc_clean(cfg="cfail6")]
 pub fn change_iteration_variable_pattern() {
     let mut _x = 0;
     for &_i in &[0, 1, 2] {
@@ -103,10 +103,10 @@ pub fn change_iterable() {
 }
 
 #[cfg(not(any(cfail1,cfail4)))]
-#[rustc_clean(cfg="cfail2", except="hir_owner_nodes, promoted_mir")]
-#[rustc_clean(cfg="cfail3")]
-#[rustc_clean(cfg="cfail5", except="hir_owner_nodes, promoted_mir")]
-#[rustc_clean(cfg="cfail6")]
+#[crablangc_clean(cfg="cfail2", except="hir_owner_nodes, promoted_mir")]
+#[crablangc_clean(cfg="cfail3")]
+#[crablangc_clean(cfg="cfail5", except="hir_owner_nodes, promoted_mir")]
+#[crablangc_clean(cfg="cfail6")]
 pub fn change_iterable() {
     let mut _x = 0;
     for _ in &[0, 1, 3] {
@@ -128,10 +128,10 @@ pub fn add_break() {
 }
 
 #[cfg(not(any(cfail1,cfail4)))]
-#[rustc_clean(cfg="cfail2", except="hir_owner_nodes, optimized_mir, typeck")]
-#[rustc_clean(cfg="cfail3")]
-#[rustc_clean(cfg="cfail5", except="hir_owner_nodes, optimized_mir, typeck")]
-#[rustc_clean(cfg="cfail6")]
+#[crablangc_clean(cfg="cfail2", except="hir_owner_nodes, optimized_mir, typeck")]
+#[crablangc_clean(cfg="cfail3")]
+#[crablangc_clean(cfg="cfail5", except="hir_owner_nodes, optimized_mir, typeck")]
+#[crablangc_clean(cfg="cfail6")]
 pub fn add_break() {
     let mut _x = 0;
     for _ in 0..1 {
@@ -153,10 +153,10 @@ pub fn add_loop_label() {
 }
 
 #[cfg(not(any(cfail1,cfail4)))]
-#[rustc_clean(cfg="cfail2", except="hir_owner_nodes")]
-#[rustc_clean(cfg="cfail3")]
-#[rustc_clean(cfg="cfail5", except="hir_owner_nodes, optimized_mir")]
-#[rustc_clean(cfg="cfail6")]
+#[crablangc_clean(cfg="cfail2", except="hir_owner_nodes")]
+#[crablangc_clean(cfg="cfail3")]
+#[crablangc_clean(cfg="cfail5", except="hir_owner_nodes, optimized_mir")]
+#[crablangc_clean(cfg="cfail6")]
 pub fn add_loop_label() {
     let mut _x = 0;
     'label: for _ in 0..1 {
@@ -178,10 +178,10 @@ pub fn add_loop_label_to_break() {
 }
 
 #[cfg(not(any(cfail1,cfail4)))]
-#[rustc_clean(cfg="cfail2", except="hir_owner_nodes")]
-#[rustc_clean(cfg="cfail3")]
-#[rustc_clean(cfg="cfail5", except="hir_owner_nodes")]
-#[rustc_clean(cfg="cfail6")]
+#[crablangc_clean(cfg="cfail2", except="hir_owner_nodes")]
+#[crablangc_clean(cfg="cfail3")]
+#[crablangc_clean(cfg="cfail5", except="hir_owner_nodes")]
+#[crablangc_clean(cfg="cfail6")]
 pub fn add_loop_label_to_break() {
     let mut _x = 0;
     'label: for _ in 0..1 {
@@ -205,10 +205,10 @@ pub fn change_break_label() {
 }
 
 #[cfg(not(any(cfail1,cfail4)))]
-#[rustc_clean(cfg="cfail2", except="hir_owner_nodes, optimized_mir")]
-#[rustc_clean(cfg="cfail3")]
-#[rustc_clean(cfg="cfail5", except="hir_owner_nodes, optimized_mir")]
-#[rustc_clean(cfg="cfail6")]
+#[crablangc_clean(cfg="cfail2", except="hir_owner_nodes, optimized_mir")]
+#[crablangc_clean(cfg="cfail3")]
+#[crablangc_clean(cfg="cfail5", except="hir_owner_nodes, optimized_mir")]
+#[crablangc_clean(cfg="cfail6")]
 pub fn change_break_label() {
     let mut _x = 0;
     'outer: for _ in 0..1 {
@@ -232,10 +232,10 @@ pub fn add_loop_label_to_continue() {
 }
 
 #[cfg(not(any(cfail1,cfail4)))]
-#[rustc_clean(cfg="cfail2", except="hir_owner_nodes")]
-#[rustc_clean(cfg="cfail3")]
-#[rustc_clean(cfg="cfail5", except="hir_owner_nodes")]
-#[rustc_clean(cfg="cfail6")]
+#[crablangc_clean(cfg="cfail2", except="hir_owner_nodes")]
+#[crablangc_clean(cfg="cfail3")]
+#[crablangc_clean(cfg="cfail5", except="hir_owner_nodes")]
+#[crablangc_clean(cfg="cfail6")]
 pub fn add_loop_label_to_continue() {
     let mut _x = 0;
     'label: for _ in 0..1 {
@@ -259,10 +259,10 @@ pub fn change_continue_label() {
 }
 
 #[cfg(not(any(cfail1,cfail4)))]
-#[rustc_clean(cfg="cfail2", except="hir_owner_nodes, optimized_mir")]
-#[rustc_clean(cfg="cfail3")]
-#[rustc_clean(cfg="cfail5", except="hir_owner_nodes, optimized_mir")]
-#[rustc_clean(cfg="cfail6")]
+#[crablangc_clean(cfg="cfail2", except="hir_owner_nodes, optimized_mir")]
+#[crablangc_clean(cfg="cfail3")]
+#[crablangc_clean(cfg="cfail5", except="hir_owner_nodes, optimized_mir")]
+#[crablangc_clean(cfg="cfail6")]
 pub fn change_continue_label() {
     let mut _x = 0;
     'outer: for _ in 0..1 {
@@ -286,10 +286,10 @@ pub fn change_continue_to_break() {
 }
 
 #[cfg(not(any(cfail1,cfail4)))]
-#[rustc_clean(cfg="cfail2", except="hir_owner_nodes, optimized_mir")]
-#[rustc_clean(cfg="cfail3")]
-#[rustc_clean(cfg="cfail5", except="hir_owner_nodes, optimized_mir")]
-#[rustc_clean(cfg="cfail6")]
+#[crablangc_clean(cfg="cfail2", except="hir_owner_nodes, optimized_mir")]
+#[crablangc_clean(cfg="cfail3")]
+#[crablangc_clean(cfg="cfail5", except="hir_owner_nodes, optimized_mir")]
+#[crablangc_clean(cfg="cfail6")]
 pub fn change_continue_to_break() {
     let mut _x = 0;
     for _ in 0..1 {

@@ -1,4 +1,4 @@
-// This test can't work with run-rustfix because it needs two passes of test+fix
+// This test can't work with run-crablangfix because it needs two passes of test+fix
 
 #[warn(clippy::deref_addrof)]
 #[allow(unused_variables, unused_mut)]

@@ -8,17 +8,17 @@ use std::time::Duration;
 
 use log::trace;
 
-use rustc_hir::def::{DefKind, Namespace};
-use rustc_hir::def_id::{DefId, CRATE_DEF_INDEX};
-use rustc_middle::mir;
-use rustc_middle::ty::{
+use crablangc_hir::def::{DefKind, Namespace};
+use crablangc_hir::def_id::{DefId, CRATE_DEF_INDEX};
+use crablangc_middle::mir;
+use crablangc_middle::ty::{
     self,
     layout::{LayoutOf, TyAndLayout},
     List, TyCtxt,
 };
-use rustc_span::{def_id::CrateNum, sym, Span, Symbol};
-use rustc_target::abi::{Align, FieldsShape, Size, Variants};
-use rustc_target::spec::abi::Abi;
+use crablangc_span::{def_id::CrateNum, sym, Span, Symbol};
+use crablangc_target::abi::{Align, FieldsShape, Size, Variants};
+use crablangc_target::spec::abi::Abi;
 
 use rand::RngCore;
 
@@ -43,7 +43,7 @@ impl<T: Any> AsAny for T {
 }
 
 // This mapping should match `decode_error_kind` in
-// <https://github.com/rust-lang/rust/blob/master/library/std/src/sys/unix/mod.rs>.
+// <https://github.com/crablang/crablang/blob/master/library/std/src/sys/unix/mod.rs>.
 const UNIX_IO_ERROR_TABLE: &[(&str, std::io::ErrorKind)] = {
     use std::io::ErrorKind::*;
     &[
@@ -153,7 +153,7 @@ pub trait EvalContextExt<'mir, 'tcx: 'mir>: crate::MiriInterpCxExt<'mir, 'tcx> {
     /// Gets an instance for a path.
     fn resolve_path(&self, path: &[&str], namespace: Namespace) -> ty::Instance<'tcx> {
         self.try_resolve_path(path, namespace)
-            .unwrap_or_else(|| panic!("failed to find required Rust item: {path:?}"))
+            .unwrap_or_else(|| panic!("failed to find required CrabLang item: {path:?}"))
     }
 
     /// Evaluates the scalar at the specified path.
@@ -164,9 +164,9 @@ pub trait EvalContextExt<'mir, 'tcx: 'mir>: crate::MiriInterpCxExt<'mir, 'tcx> {
         // We don't give a span -- this isn't actually used directly by the program anyway.
         let const_val = this
             .eval_global(cid, None)
-            .unwrap_or_else(|err| panic!("failed to evaluate required Rust item: {path:?}\n{err}"));
+            .unwrap_or_else(|err| panic!("failed to evaluate required CrabLang item: {path:?}\n{err}"));
         this.read_scalar(&const_val.into())
-            .unwrap_or_else(|err| panic!("failed to read required Rust item: {path:?}\n{err}"))
+            .unwrap_or_else(|err| panic!("failed to read required CrabLang item: {path:?}\n{err}"))
     }
 
     /// Helper function to get a `libc` constant as a `Scalar`.
@@ -934,7 +934,7 @@ pub trait EvalContextExt<'mir, 'tcx: 'mir>: crate::MiriInterpCxExt<'mir, 'tcx> {
         let instance = instance.unwrap_or(frame.instance);
         // Now check if this is in the same crate as start_fn.
         // As a special exception we also allow unit tests from
-        // <https://github.com/rust-lang/miri-test-libstd/tree/master/std_miri_test> to call these
+        // <https://github.com/crablang/miri-test-libstd/tree/master/std_miri_test> to call these
         // shims.
         let frame_crate = this.tcx.def_path(instance.def_id()).krate;
         frame_crate == this.tcx.def_path(start_fn).krate
@@ -1022,7 +1022,7 @@ impl<'mir, 'tcx> MiriMachine<'mir, 'tcx> {
     pub fn current_span(&self) -> Span {
         self.top_user_relevant_frame()
             .map(|frame_idx| self.stack()[frame_idx].current_span())
-            .unwrap_or(rustc_span::DUMMY_SP)
+            .unwrap_or(crablangc_span::DUMMY_SP)
     }
 
     /// Returns the span of the *caller* of the current operation, again

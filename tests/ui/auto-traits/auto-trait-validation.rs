@@ -1,6 +1,6 @@
 #![feature(auto_traits)]
 
-// run-rustfix
+// run-crablangfix
 
 auto trait Generic<T> {}
 //~^ auto traits cannot have generic parameters [E0567]

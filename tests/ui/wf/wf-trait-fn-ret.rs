@@ -1,6 +1,6 @@
 // Check that we test WF conditions for fn return types in a trait definition.
 
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 #![allow(dead_code)]
 #![allow(unused_variables)]
 

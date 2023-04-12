@@ -30,4 +30,4 @@ LL | fn hide_rc_refcell<'a, 'b: 'a, T: 'static>(x: Rc<RefCell<&'b T>>) -> impl S
 
 error: aborting due to 2 previous errors
 
-For more information about this error, try `rustc --explain E0700`.
+For more information about this error, try `crablangc --explain E0700`.

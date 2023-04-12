@@ -10,7 +10,7 @@ error[E0658]: attributes on expressions are experimental
 LL |     /// useless doc comment
    |     ^^^^^^^^^^^^^^^^^^^^^^^
    |
-   = note: see issue #15701 <https://github.com/rust-lang/rust/issues/15701> for more information
+   = note: see issue #15701 <https://github.com/crablang/crablang/issues/15701> for more information
    = help: add `#![feature(stmt_expr_attributes)]` to the crate attributes to enable
    = help: `///` is for documentation comments. For a plain comment, use `//`.
 
@@ -21,7 +21,7 @@ LL |         /// useless doc comment
    |         ^^^^^^^^^^^^^^^^^^^^^^^
 LL |
 LL |         _ => false,
-   |         ---------- rustdoc does not generate documentation for match arms
+   |         ---------- crablangdoc does not generate documentation for match arms
    |
    = help: use `//` for a plain comment
 note: the lint level is defined here
@@ -37,7 +37,7 @@ LL |     /// useless doc comment
    |     ^^^^^^^^^^^^^^^^^^^^^^^
 ...
 LL |     num == 3
-   |     --- rustdoc does not generate documentation for expressions
+   |     --- crablangdoc does not generate documentation for expressions
    |
    = help: use `//` for a plain comment
 
@@ -45,7 +45,7 @@ error: unused doc comment
   --> $DIR/unused-doc-comments-edge-cases.rs:29:27
    |
 LL | fn doc_comment_on_generic<#[doc = "x"] T>(val: T) {}
-   |                           ^^^^^^^^^^^^ - rustdoc does not generate documentation for generic parameters
+   |                           ^^^^^^^^^^^^ - crablangdoc does not generate documentation for generic parameters
    |
    = help: use `//` for a plain comment
 
@@ -58,7 +58,7 @@ LL |
 LL | /     {
 LL | |         let x = 12;
 LL | |     }
-   | |_____- rustdoc does not generate documentation for expressions
+   | |_____- crablangdoc does not generate documentation for expressions
    |
    = help: use `//` for a plain comment
 
@@ -71,7 +71,7 @@ LL |
 LL | / extern "C" {
 LL | |     fn foo();
 LL | | }
-   | |_- rustdoc does not generate documentation for extern blocks
+   | |_- crablangdoc does not generate documentation for extern blocks
    |
    = help: use `//` for a plain comment
 
@@ -92,4 +92,4 @@ LL |         return true;
 error: aborting due to 8 previous errors
 
 Some errors have detailed explanations: E0308, E0658.
-For more information about an error, try `rustc --explain E0308`.
+For more information about an error, try `crablangc --explain E0308`.

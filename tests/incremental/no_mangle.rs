@@ -5,6 +5,6 @@
 #![deny(unused_attributes)]
 
 #[no_mangle]
-pub extern "C" fn rust_no_mangle() -> i32 {
+pub extern "C" fn crablang_no_mangle() -> i32 {
     42
 }

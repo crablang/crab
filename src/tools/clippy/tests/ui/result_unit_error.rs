@@ -34,7 +34,7 @@ impl UnitErrorHolder {
     }
 }
 
-// https://github.com/rust-lang/rust-clippy/issues/6546
+// https://github.com/crablang/crablang-clippy/issues/6546
 pub mod issue_6546 {
     type ResInv<A, B> = Result<B, A>;
 

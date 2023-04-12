@@ -1,6 +1,6 @@
 // run-pass
 #![feature(arbitrary_self_types)]
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 
 use std::{
     rc::Rc,

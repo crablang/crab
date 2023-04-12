@@ -1,4 +1,4 @@
-// rust-lang/rust#22323: regression test demonstrating that NLL
+// crablang/crablang#22323: regression test demonstrating that NLL
 // precisely tracks temporary destruction order.
 
 // check-pass

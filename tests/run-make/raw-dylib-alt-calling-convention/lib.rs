@@ -91,7 +91,7 @@ pub fn library_function(run_msvc_only: bool) {
             fastcall_fn_10_renamed(19);
         } else {
             // FIXME: 91167
-            // rustc generates incorrect code for the calls to fastcall_fn_5 and fastcall_fn_7
+            // crablangc generates incorrect code for the calls to fastcall_fn_5 and fastcall_fn_7
             // on i686-pc-windows-gnu; disabling these until the indicated issue is fixed.
             fastcall_fn_5(S { x: 1, y: 2 }, 16);
             fastcall_fn_7(S2 { x: 15, y: 16 }, 3);

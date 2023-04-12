@@ -1,5 +1,5 @@
 // run-pass
-// rustc --test match_borrowed_str.rs.rs && ./match_borrowed_str.rs
+// crablangc --test match_borrowed_str.rs.rs && ./match_borrowed_str.rs
 
 
 fn compare(x: &str, y: &str) -> bool {

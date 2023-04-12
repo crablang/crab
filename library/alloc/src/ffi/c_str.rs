@@ -25,7 +25,7 @@ use crate::sync::Arc;
 /// middle.
 ///
 /// This type serves the purpose of being able to safely generate a
-/// C-compatible string from a Rust byte slice or vector. An instance of this
+/// C-compatible string from a CrabLang byte slice or vector. An instance of this
 /// type is a static guarantee that the underlying bytes contain no interior 0
 /// bytes ("nul characters") and that the final byte is 0 ("nul terminator").
 ///
@@ -107,7 +107,7 @@ use crate::sync::Arc;
 /// of `CString` instances can lead to invalid memory accesses, memory leaks,
 /// and other memory errors.
 #[derive(PartialEq, PartialOrd, Eq, Ord, Hash, Clone)]
-#[cfg_attr(not(test), rustc_diagnostic_item = "cstring_type")]
+#[cfg_attr(not(test), crablangc_diagnostic_item = "cstring_type")]
 #[stable(feature = "alloc_c_string", since = "1.64.0")]
 pub struct CString {
     // Invariant 1: the slice ends with a zero byte and has a length of at least one.
@@ -118,7 +118,7 @@ pub struct CString {
 
 /// An error indicating that an interior nul byte was found.
 ///
-/// While Rust strings may contain nul bytes in the middle, C strings
+/// While CrabLang strings may contain nul bytes in the middle, C strings
 /// can't, as that byte would effectively truncate the string.
 ///
 /// This error is created by the [`new`][`CString::new`] method on
@@ -257,7 +257,7 @@ impl CString {
     /// This function will return an error if the supplied bytes contain an
     /// internal 0 byte. The [`NulError`] returned will contain the bytes as well as
     /// the position of the nul byte.
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn new<T: Into<Vec<u8>>>(t: T) -> Result<CString, NulError> {
         trait SpecNewImpl {
             fn spec_new_impl(self) -> Result<CString, NulError>;
@@ -336,7 +336,7 @@ impl CString {
     /// }
     /// ```
     #[must_use]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub unsafe fn from_vec_unchecked(v: Vec<u8>) -> Self {
         debug_assert!(memchr::memchr(0, &v).is_none());
         unsafe { Self::_from_vec_unchecked(v) }
@@ -398,7 +398,7 @@ impl CString {
         // SAFETY: This is called with a pointer that was obtained from a call
         // to `CString::into_raw` and the length has not been modified. As such,
         // we know there is a NUL byte (and only one) at the end and that the
-        // information about the size of the allocation is correct on Rust's
+        // information about the size of the allocation is correct on CrabLang's
         // side.
         unsafe {
             extern "C" {
@@ -413,7 +413,7 @@ impl CString {
 
     /// Consumes the `CString` and transfers ownership of the string to a C caller.
     ///
-    /// The pointer which this function returns must be returned to Rust and reconstituted using
+    /// The pointer which this function returns must be returned to CrabLang and reconstituted using
     /// [`CString::from_raw`] to be properly deallocated. Specifically, one
     /// should *not* use the standard C `free()` function to deallocate
     /// this string.
@@ -422,7 +422,7 @@ impl CString {
     ///
     /// The C side must **not** modify the length of the string (by writing a
     /// `null` somewhere inside the string or removing the final one) before
-    /// it makes it back into Rust using [`CString::from_raw`]. See the safety section
+    /// it makes it back into CrabLang using [`CString::from_raw`]. See the safety section
     /// in [`CString::from_raw`].
     ///
     /// # Examples
@@ -537,7 +537,7 @@ impl CString {
     /// ```
     #[inline]
     #[must_use]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn as_bytes(&self) -> &[u8] {
         // SAFETY: CString has a length at least 1
         unsafe { self.inner.get_unchecked(..self.inner.len() - 1) }
@@ -557,7 +557,7 @@ impl CString {
     /// ```
     #[inline]
     #[must_use]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn as_bytes_with_nul(&self) -> &[u8] {
         &self.inner
     }
@@ -605,7 +605,7 @@ impl CString {
         // Rationale: `mem::forget(self)` invalidates the previous call to `ptr::read(&self.inner)`
         // so we use `ManuallyDrop` to ensure `self` is not dropped.
         // Then we can return the box directly without invalidating it.
-        // See https://github.com/rust-lang/rust/issues/62553.
+        // See https://github.com/crablang/crablang/issues/62553.
         let this = mem::ManuallyDrop::new(self);
         unsafe { ptr::read(&this.inner) }
     }
@@ -705,7 +705,7 @@ impl Drop for CString {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl ops::Deref for CString {
     type Target = CStr;
 
@@ -715,7 +715,7 @@ impl ops::Deref for CString {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl fmt::Debug for CString {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         fmt::Debug::fmt(&**self, f)
@@ -932,7 +932,7 @@ impl NulError {
     /// assert_eq!(nul_error.nul_position(), 7);
     /// ```
     #[must_use]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn nul_position(&self) -> usize {
         self.0
     }
@@ -949,13 +949,13 @@ impl NulError {
     /// assert_eq!(nul_error.into_vec(), b"foo\0bar");
     /// ```
     #[must_use = "`self` will be dropped if the result is not used"]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn into_vec(self) -> Vec<u8> {
         self.1
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl fmt::Display for NulError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "nul byte found in provided data at position: {}", self.0)
@@ -1089,7 +1089,7 @@ impl CStr {
     ///     Cow::Owned(String::from("Hello �World")) as Cow<'_, str>
     /// );
     /// ```
-    #[rustc_allow_incoherent_impl]
+    #[crablangc_allow_incoherent_impl]
     #[must_use = "this returns the result of the operation, \
                   without modifying the original"]
     #[stable(feature = "cstr_to_str", since = "1.4.0")]
@@ -1108,7 +1108,7 @@ impl CStr {
     /// let boxed = c_string.into_boxed_c_str();
     /// assert_eq!(boxed.into_c_string(), CString::new("foo").expect("CString::new failed"));
     /// ```
-    #[rustc_allow_incoherent_impl]
+    #[crablangc_allow_incoherent_impl]
     #[must_use = "`self` will be dropped if the result is not used"]
     #[stable(feature = "into_boxed_c_str", since = "1.20.0")]
     pub fn into_c_string(self: Box<Self>) -> CString {
@@ -1116,7 +1116,7 @@ impl CStr {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl core::error::Error for NulError {
     #[allow(deprecated)]
     fn description(&self) -> &str {

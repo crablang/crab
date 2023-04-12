@@ -10,14 +10,14 @@
 // [aarch64_thirunsafeck] needs-llvm-components: aarch64
 // [aarch64_mirunsafeck] needs-llvm-components: aarch64
 
-#![feature(no_core, lang_items, rustc_attrs, asm_const)]
+#![feature(no_core, lang_items, crablangc_attrs, asm_const)]
 #![no_core]
 
-#[rustc_builtin_macro]
+#[crablangc_builtin_macro]
 macro_rules! asm {
     () => {};
 }
-#[rustc_builtin_macro]
+#[crablangc_builtin_macro]
 macro_rules! global_asm {
     () => {};
 }

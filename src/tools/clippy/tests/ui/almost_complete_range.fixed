@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 // edition:2018
 // aux-build:proc_macros.rs
 
@@ -14,7 +14,7 @@ use proc_macros::{external, inline_macros};
 
 #[inline_macros]
 fn main() {
-    #[rustfmt::skip]
+    #[crablangfmt::skip]
     {
         let _ = ('a') ..='z';
         let _ = 'A' ..= ('Z');

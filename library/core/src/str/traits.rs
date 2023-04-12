@@ -15,7 +15,7 @@ use super::ParseBoolError;
 /// "alphabetical" order, which varies by language and locale. Sorting strings according to
 /// culturally-accepted standards requires locale-specific data that is outside the scope of
 /// the `str` type.
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl Ord for str {
     #[inline]
     fn cmp(&self, other: &str) -> Ordering {
@@ -23,7 +23,7 @@ impl Ord for str {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl PartialEq for str {
     #[inline]
     fn eq(&self, other: &str) -> bool {
@@ -31,7 +31,7 @@ impl PartialEq for str {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl Eq for str {}
 
 /// Implements comparison operations on strings.
@@ -41,7 +41,7 @@ impl Eq for str {}
 /// "alphabetical" order, which varies by language and locale. Comparing strings according to
 /// culturally-accepted standards requires locale-specific data that is outside the scope of
 /// the `str` type.
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl PartialOrd for str {
     #[inline]
     fn partial_cmp(&self, other: &str) -> Option<Ordering> {
@@ -49,8 +49,8 @@ impl PartialOrd for str {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
-#[rustc_const_unstable(feature = "const_slice_index", issue = "none")]
+#[stable(feature = "crablang1", since = "1.0.0")]
+#[crablangc_const_unstable(feature = "const_slice_index", issue = "none")]
 impl<I> const ops::Index<I> for str
 where
     I: ~const SliceIndex<str>,
@@ -63,8 +63,8 @@ where
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
-#[rustc_const_unstable(feature = "const_slice_index", issue = "none")]
+#[stable(feature = "crablang1", since = "1.0.0")]
+#[crablangc_const_unstable(feature = "const_slice_index", issue = "none")]
 impl<I> const ops::IndexMut<I> for str
 where
     I: ~const SliceIndex<str>,
@@ -95,7 +95,7 @@ const fn str_index_overflow_fail() -> ! {
 ///
 /// Equivalent to `&self[0 .. len]` or `&mut self[0 .. len]`.
 #[stable(feature = "str_checked_slicing", since = "1.20.0")]
-#[rustc_const_unstable(feature = "const_slice_index", issue = "none")]
+#[crablangc_const_unstable(feature = "const_slice_index", issue = "none")]
 unsafe impl const SliceIndex<str> for ops::RangeFull {
     type Output = str;
     #[inline]
@@ -160,7 +160,7 @@ unsafe impl const SliceIndex<str> for ops::RangeFull {
 /// // &s[3 .. 100];
 /// ```
 #[stable(feature = "str_checked_slicing", since = "1.20.0")]
-#[rustc_const_unstable(feature = "const_slice_index", issue = "none")]
+#[crablangc_const_unstable(feature = "const_slice_index", issue = "none")]
 unsafe impl const SliceIndex<str> for ops::Range<usize> {
     type Output = str;
     #[inline]
@@ -270,7 +270,7 @@ unsafe impl const SliceIndex<str> for ops::Range<usize> {
 /// Panics if `end` does not point to the starting byte offset of a
 /// character (as defined by `is_char_boundary`), or if `end > len`.
 #[stable(feature = "str_checked_slicing", since = "1.20.0")]
-#[rustc_const_unstable(feature = "const_slice_index", issue = "none")]
+#[crablangc_const_unstable(feature = "const_slice_index", issue = "none")]
 unsafe impl const SliceIndex<str> for ops::RangeTo<usize> {
     type Output = str;
     #[inline]
@@ -339,7 +339,7 @@ unsafe impl const SliceIndex<str> for ops::RangeTo<usize> {
 /// Panics if `begin` does not point to the starting byte offset of
 /// a character (as defined by `is_char_boundary`), or if `begin > len`.
 #[stable(feature = "str_checked_slicing", since = "1.20.0")]
-#[rustc_const_unstable(feature = "const_slice_index", issue = "none")]
+#[crablangc_const_unstable(feature = "const_slice_index", issue = "none")]
 unsafe impl const SliceIndex<str> for ops::RangeFrom<usize> {
     type Output = str;
     #[inline]
@@ -411,7 +411,7 @@ unsafe impl const SliceIndex<str> for ops::RangeFrom<usize> {
 /// to the ending byte offset of a character (`end + 1` is either a starting
 /// byte offset or equal to `len`), if `begin > end`, or if `end >= len`.
 #[stable(feature = "inclusive_range", since = "1.26.0")]
-#[rustc_const_unstable(feature = "const_slice_index", issue = "none")]
+#[crablangc_const_unstable(feature = "const_slice_index", issue = "none")]
 unsafe impl const SliceIndex<str> for ops::RangeInclusive<usize> {
     type Output = str;
     #[inline]
@@ -463,7 +463,7 @@ unsafe impl const SliceIndex<str> for ops::RangeInclusive<usize> {
 /// (`end + 1` is either a starting byte offset as defined by
 /// `is_char_boundary`, or equal to `len`), or if `end >= len`.
 #[stable(feature = "inclusive_range", since = "1.26.0")]
-#[rustc_const_unstable(feature = "const_slice_index", issue = "none")]
+#[crablangc_const_unstable(feature = "const_slice_index", issue = "none")]
 unsafe impl const SliceIndex<str> for ops::RangeToInclusive<usize> {
     type Output = str;
     #[inline]
@@ -549,10 +549,10 @@ unsafe impl const SliceIndex<str> for ops::RangeToInclusive<usize> {
 /// // Invalid input string
 /// assert!(Point::from_str("(1 2)").is_err());
 /// ```
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub trait FromStr: Sized {
     /// The associated error which can be returned from parsing.
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     type Err;
 
     /// Parses a string `s` to return a value of this type.
@@ -573,11 +573,11 @@ pub trait FromStr: Sized {
     ///
     /// assert_eq!(5, x);
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     fn from_str(s: &str) -> Result<Self, Self::Err>;
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl FromStr for bool {
     type Err = ParseBoolError;
 

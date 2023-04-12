@@ -8,7 +8,7 @@ LL |     type Target = dyn A;
    |     -------------------- target type is set here
    |
    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
-   = note: for more information, see issue #89460 <https://github.com/rust-lang/rust/issues/89460>
+   = note: for more information, see issue #89460 <https://github.com/crablang/crablang/issues/89460>
 note: the lint level is defined here
   --> $DIR/migrate-lint-deny.rs:1:9
    |

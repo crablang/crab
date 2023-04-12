@@ -47,4 +47,4 @@ LL |     let self = "self";
 
 error: aborting due to 4 previous errors
 
-For more information about this error, try `rustc --explain E0424`.
+For more information about this error, try `crablangc --explain E0424`.

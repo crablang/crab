@@ -3,7 +3,7 @@
 // compile-flags: -Z span-debug
 
 #![feature(proc_macro_hygiene)]
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 
 #![no_std] // Don't load unnecessary hygiene information from std
 extern crate std;
@@ -30,7 +30,7 @@ fn print_str(string: &'static str) {
 macro_rules! make_stmt {
     ($stmt:stmt) => {
         #[print_attr]
-        #[rustc_dummy]
+        #[crablangc_dummy]
         $stmt
     }
 }
@@ -56,7 +56,7 @@ fn main() {
     second_make_stmt!(#[allow(dead_code)] struct Bar {});
 
     #[print_attr]
-    #[rustc_dummy]
+    #[crablangc_dummy]
     struct Other {}
 
     #[expect_expr]

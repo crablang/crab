@@ -5,7 +5,7 @@ use std::{
     mem::ManuallyDrop,
 };
 
-extern "Rust" {
+extern "CrabLang" {
     fn miri_get_alloc_id(ptr: *const u8) -> u64;
     fn miri_print_borrow_state(alloc_id: u64, show_unnamed: bool);
 }

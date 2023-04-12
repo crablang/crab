@@ -36,4 +36,4 @@ LL |     fn foo() {}
 
 error: aborting due to 6 previous errors
 
-For more information about this error, try `rustc --explain E0714`.
+For more information about this error, try `crablangc --explain E0714`.

@@ -4,8 +4,8 @@ warning: type annotations needed
 LL |     if data.is_null() {}
    |             ^^^^^^^
    |
-   = warning: this is accepted in the current edition (Rust 2015) but is a hard error in Rust 2018!
-   = note: for more information, see issue #46906 <https://github.com/rust-lang/rust/issues/46906>
+   = warning: this is accepted in the current edition (CrabLang 2015) but is a hard error in CrabLang 2018!
+   = note: for more information, see issue #46906 <https://github.com/crablang/crablang/issues/46906>
    = note: `#[warn(tyvar_behind_raw_pointer)]` on by default
 
 warning: 1 warning emitted

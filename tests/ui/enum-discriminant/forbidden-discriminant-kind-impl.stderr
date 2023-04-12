@@ -6,4 +6,4 @@ LL | impl DiscriminantKind for NewType {
 
 error: aborting due to previous error
 
-For more information about this error, try `rustc --explain E0322`.
+For more information about this error, try `crablangc --explain E0322`.

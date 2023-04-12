@@ -16,4 +16,4 @@ LL |     let val = map.entry(&0).or_insert(1);
 
 error: aborting due to previous error
 
-For more information about this error, try `rustc --explain E0594`.
+For more information about this error, try `crablangc --explain E0594`.

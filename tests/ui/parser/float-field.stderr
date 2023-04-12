@@ -346,4 +346,4 @@ LL |     s.1.1e1f32;
 
 error: aborting due to 55 previous errors
 
-For more information about this error, try `rustc --explain E0609`.
+For more information about this error, try `crablangc --explain E0609`.

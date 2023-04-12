@@ -3,10 +3,10 @@
 include ../tools.mk
 
 all:
-	$(RUSTC) depa.rs
-	$(RUSTC) depb.rs
-	$(RUSTC) depc.rs
-	$(RUSTC) empty.rs --cfg bar 2>&1 | $(CGREP) '"-ltesta" "-ltestb" "-ltesta"'
-	$(RUSTC) empty.rs 2>&1 | $(CGREP) '"-ltesta"'
-	$(RUSTC) empty.rs 2>&1 | $(CGREP) -v '"-ltestb"'
-	$(RUSTC) empty.rs 2>&1 | $(CGREP) -v '"-ltesta" "-ltesta" "-ltesta"'
+	$(CRABLANGC) depa.rs
+	$(CRABLANGC) depb.rs
+	$(CRABLANGC) depc.rs
+	$(CRABLANGC) empty.rs --cfg bar 2>&1 | $(CGREP) '"-ltesta" "-ltestb" "-ltesta"'
+	$(CRABLANGC) empty.rs 2>&1 | $(CGREP) '"-ltesta"'
+	$(CRABLANGC) empty.rs 2>&1 | $(CGREP) -v '"-ltestb"'
+	$(CRABLANGC) empty.rs 2>&1 | $(CGREP) -v '"-ltesta" "-ltesta" "-ltesta"'

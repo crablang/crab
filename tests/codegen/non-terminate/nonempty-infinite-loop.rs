@@ -2,7 +2,7 @@
 
 #![crate_type = "lib"]
 
-// Verify that we don't miscompile this even if rustc didn't apply the trivial loop detection to
+// Verify that we don't miscompile this even if crablangc didn't apply the trivial loop detection to
 // insert the sideeffect intrinsic.
 
 fn infinite_loop() -> u8 {

@@ -5,7 +5,7 @@ LL |         FOO => {},
    |         ^^^
    |
    = note: the traits must be derived, manual `impl`s are not sufficient
-   = note: see https://doc.rust-lang.org/stable/std/marker/trait.StructuralEq.html for details
+   = note: see https://doc.crablang.org/stable/std/marker/trait.StructuralEq.html for details
 
 error: unreachable pattern
   --> $DIR/issue-78057.rs:14:9

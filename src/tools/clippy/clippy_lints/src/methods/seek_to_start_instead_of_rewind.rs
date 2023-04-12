@@ -1,11 +1,11 @@
 use clippy_utils::diagnostics::span_lint_and_then;
 use clippy_utils::ty::implements_trait;
 use clippy_utils::{get_trait_def_id, is_expr_used_or_unified, match_def_path, paths};
-use rustc_ast::ast::{LitIntType, LitKind};
-use rustc_errors::Applicability;
-use rustc_hir::{Expr, ExprKind};
-use rustc_lint::LateContext;
-use rustc_span::Span;
+use crablangc_ast::ast::{LitIntType, LitKind};
+use crablangc_errors::Applicability;
+use crablangc_hir::{Expr, ExprKind};
+use crablangc_lint::LateContext;
+use crablangc_span::Span;
 
 use super::SEEK_TO_START_INSTEAD_OF_REWIND;
 

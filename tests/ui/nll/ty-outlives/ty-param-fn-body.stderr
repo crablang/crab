@@ -11,4 +11,4 @@ LL | fn region_static<'a, T: 'a>(cell: Cell<&'a usize>, t: T) {
 
 error: aborting due to previous error
 
-For more information about this error, try `rustc --explain E0309`.
+For more information about this error, try `crablangc --explain E0309`.

@@ -6,9 +6,9 @@ RUN sh /scripts/cross-apt-packages.sh
 COPY scripts/crosstool-ng-1.24.sh /scripts/
 RUN sh /scripts/crosstool-ng-1.24.sh
 
-COPY scripts/rustbuild-setup.sh /scripts/
-RUN sh /scripts/rustbuild-setup.sh
-USER rustbuild
+COPY scripts/crablangbuild-setup.sh /scripts/
+RUN sh /scripts/crablangbuild-setup.sh
+USER crablangbuild
 WORKDIR /tmp
 
 COPY host-x86_64/dist-riscv64-linux/build-toolchains.sh host-x86_64/dist-riscv64-linux/riscv64-unknown-linux-gnu.config /tmp/
@@ -27,5 +27,5 @@ ENV CC_riscv64gc_unknown_linux_gnu=riscv64-unknown-linux-gnu-gcc \
 
 ENV HOSTS=riscv64gc-unknown-linux-gnu
 
-ENV RUST_CONFIGURE_ARGS --enable-extended --enable-profiler --disable-docs
+ENV CRABLANG_CONFIGURE_ARGS --enable-extended --enable-profiler --disable-docs
 ENV SCRIPT python3 ../x.py dist --target $HOSTS --host $HOSTS

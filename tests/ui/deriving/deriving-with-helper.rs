@@ -4,14 +4,14 @@
 #![feature(decl_macro)]
 #![feature(lang_items)]
 #![feature(no_core)]
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 
 #![no_core]
 
-#[rustc_builtin_macro]
+#[crablangc_builtin_macro]
 macro derive() {}
 
-#[rustc_builtin_macro(Default, attributes(default))]
+#[crablangc_builtin_macro(Default, attributes(default))]
 macro Default() {}
 
 mod default {

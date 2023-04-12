@@ -67,10 +67,10 @@ fn is_test_test() {
 
 #[test]
 fn test_extract_llvm_version() {
-    assert_eq!(extract_llvm_version("8.1.2-rust"), Some(80102));
-    assert_eq!(extract_llvm_version("9.0.1-rust-1.43.0-dev"), Some(90001));
-    assert_eq!(extract_llvm_version("9.3.1-rust-1.43.0-dev"), Some(90301));
-    assert_eq!(extract_llvm_version("10.0.0-rust"), Some(100000));
+    assert_eq!(extract_llvm_version("8.1.2-crablang"), Some(80102));
+    assert_eq!(extract_llvm_version("9.0.1-crablang-1.43.0-dev"), Some(90001));
+    assert_eq!(extract_llvm_version("9.3.1-crablang-1.43.0-dev"), Some(90301));
+    assert_eq!(extract_llvm_version("10.0.0-crablang"), Some(100000));
     assert_eq!(extract_llvm_version("11.1.0"), Some(110100));
     assert_eq!(extract_llvm_version("12.0.0libcxx"), Some(120000));
     assert_eq!(extract_llvm_version("12.0.0-rc3"), Some(120000));

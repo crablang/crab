@@ -8,7 +8,7 @@
 // no-prefer-dynamic
 // compile-flags: -Ctarget-feature=+crt-static -Crpath=no -Crelocation-model=static
 #![feature(exit_status_error)]
-#![feature(rustc_private)]
+#![feature(crablangc_private)]
 extern crate libc;
 
 use std::os::unix::process::CommandExt;

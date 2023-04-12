@@ -3,12 +3,12 @@ use clippy_utils::macros::FormatArgsExpn;
 use clippy_utils::source::snippet_with_applicability;
 use clippy_utils::{is_expn_of, match_function_call, paths};
 use if_chain::if_chain;
-use rustc_errors::Applicability;
-use rustc_hir::def::Res;
-use rustc_hir::{BindingAnnotation, Block, BlockCheckMode, Expr, ExprKind, Node, PatKind, QPath, Stmt, StmtKind};
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_session::{declare_lint_pass, declare_tool_lint};
-use rustc_span::sym;
+use crablangc_errors::Applicability;
+use crablangc_hir::def::Res;
+use crablangc_hir::{BindingAnnotation, Block, BlockCheckMode, Expr, ExprKind, Node, PatKind, QPath, Stmt, StmtKind};
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_span::sym;
 
 declare_clippy_lint! {
     /// ### What it does
@@ -19,7 +19,7 @@ declare_clippy_lint! {
     /// Using `(e)println! is clearer and more concise
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// # use std::io::Write;
     /// # let bar = "furchtbar";
     /// writeln!(&mut std::io::stderr(), "foo: {:?}", bar).unwrap();
@@ -27,7 +27,7 @@ declare_clippy_lint! {
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// # use std::io::Write;
     /// # let bar = "furchtbar";
     /// eprintln!("foo: {:?}", bar);

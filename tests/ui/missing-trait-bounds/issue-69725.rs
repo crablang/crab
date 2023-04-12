@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 // aux-build:issue-69725.rs
 #![allow(dead_code)]
 

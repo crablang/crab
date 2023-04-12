@@ -2,7 +2,7 @@
 
 The tracking issue for this feature is [#60405]
 
-[#60405]: https://github.com/rust-lang/rust/issues/60405
+[#60405]: https://github.com/crablang/crablang/issues/60405
 
 ----
 
@@ -12,7 +12,7 @@ same conditions in which a `struct` may be `#[repr(transparent)]` (generally,
 this means the `union` must have exactly one non-zero-sized field). Some
 concrete illustrations follow.
 
-```rust
+```crablang
 #![feature(transparent_unions)]
 
 // This union has the same representation as `f32`.
@@ -33,10 +33,10 @@ For consistency with transparent `struct`s, `union`s must have exactly one
 non-zero-sized field. If all fields are zero-sized, the `union` must not be
 `#[repr(transparent)]`:
 
-```rust
+```crablang
 #![feature(transparent_unions)]
 
-// This (non-transparent) union is already valid in stable Rust:
+// This (non-transparent) union is already valid in stable CrabLang:
 pub union GoodUnion {
     pub nothing: (),
 }
@@ -51,7 +51,7 @@ pub union GoodUnion {
 The one exception is if the `union` is generic over `T` and has a field of type
 `T`, it may be `#[repr(transparent)]` even if `T` is a zero-sized type:
 
-```rust
+```crablang
 #![feature(transparent_unions)]
 
 // This union has the same representation as `T`.
@@ -78,6 +78,6 @@ A `union` may not be eligible for the same nonnull-style optimizations that a
 `#[repr(transparent)]` to  `union` does not change this. To give a more concrete
 example, it is unspecified whether `size_of::<T>()` is equal to
 `size_of::<Option<T>>()`, where `T` is a `union` (regardless of whether or not
-it is transparent). The Rust compiler is free to perform this optimization if
+it is transparent). The CrabLang compiler is free to perform this optimization if
 possible, but is not required to, and different compiler versions may differ in
 their application of these optimizations.

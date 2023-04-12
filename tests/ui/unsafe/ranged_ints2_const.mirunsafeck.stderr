@@ -4,7 +4,7 @@ error[E0658]: mutable references are not allowed in constant functions
 LL |     let y = &mut x.0;
    |             ^^^^^^^^
    |
-   = note: see issue #57349 <https://github.com/rust-lang/rust/issues/57349> for more information
+   = note: see issue #57349 <https://github.com/crablang/crablang/issues/57349> for more information
    = help: add `#![feature(const_mut_refs)]` to the crate attributes to enable
 
 error[E0658]: mutable references are not allowed in constant functions
@@ -13,7 +13,7 @@ error[E0658]: mutable references are not allowed in constant functions
 LL |     let y = unsafe { &mut x.0 };
    |                      ^^^^^^^^
    |
-   = note: see issue #57349 <https://github.com/rust-lang/rust/issues/57349> for more information
+   = note: see issue #57349 <https://github.com/crablang/crablang/issues/57349> for more information
    = help: add `#![feature(const_mut_refs)]` to the crate attributes to enable
 
 error[E0658]: mutable references are not allowed in constant functions
@@ -22,7 +22,7 @@ error[E0658]: mutable references are not allowed in constant functions
 LL |     unsafe { let y = &mut x.0; }
    |                      ^^^^^^^^
    |
-   = note: see issue #57349 <https://github.com/rust-lang/rust/issues/57349> for more information
+   = note: see issue #57349 <https://github.com/crablang/crablang/issues/57349> for more information
    = help: add `#![feature(const_mut_refs)]` to the crate attributes to enable
 
 error[E0133]: mutation of layout constrained field is unsafe and requires unsafe function or block
@@ -36,4 +36,4 @@ LL |     let y = &mut x.0;
 error: aborting due to 4 previous errors
 
 Some errors have detailed explanations: E0133, E0658.
-For more information about an error, try `rustc --explain E0133`.
+For more information about an error, try `crablangc --explain E0133`.

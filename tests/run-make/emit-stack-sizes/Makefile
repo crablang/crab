@@ -8,5 +8,5 @@ include ../tools.mk
 
 # check that the .stack_sizes section is generated
 all:
-	$(RUSTC) -C opt-level=3 -Z emit-stack-sizes --emit=obj foo.rs
+	$(CRABLANGC) -C opt-level=3 -Z emit-stack-sizes --emit=obj foo.rs
 	size -A $(TMPDIR)/foo.o | $(CGREP) .stack_sizes

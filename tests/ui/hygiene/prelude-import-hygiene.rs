@@ -4,8 +4,8 @@
 // check-pass
 // aux-build:not-libstd.rs
 
-//revisions: rust2015 rust2018
-//[rust2018] edition:2018
+//revisions: crablang2015 crablang2018
+//[crablang2018] edition:2018
 
 // The prelude import shouldn't see these as candidates for when it's trying to
 // use the built-in macros.
@@ -15,10 +15,10 @@ use core::prelude::v1::test as macro_use;
 
 // Should not be used for the prelude import - not a concern in the 2015 edition
 // because `std` is already declared in the crate root.
-#[cfg(rust2018)]
+#[cfg(crablang2018)]
 extern crate not_libstd as std;
 
-#[cfg(rust2018)]
+#[cfg(crablang2018)]
 mod x {
     // The extern crate item should override `std` in the extern prelude.
     fn f() {

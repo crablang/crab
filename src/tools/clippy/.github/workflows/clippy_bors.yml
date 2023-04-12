@@ -7,7 +7,7 @@ on:
       - try
 
 env:
-  RUST_BACKTRACE: 1
+  CRABLANG_BACKTRACE: 1
   CARGO_TARGET_DIR: '${{ github.workspace }}/target'
   NO_FMT_TEST: 1
   CARGO_INCREMENTAL: 0
@@ -22,7 +22,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: rust-lang/simpleinfra/github-actions/cancel-outdated-builds@master
+    - uses: crablang/simpleinfra/github-actions/cancel-outdated-builds@master
       with:
         github_token: "${{ secrets.github_token }}"
 
@@ -36,7 +36,7 @@ jobs:
       run: |
         MESSAGE=$(git log --format=%B -n 1)
         PR=$(echo "$MESSAGE" | grep -o "#[0-9]*" | head -1 | sed -e 's/^#//')
-        body=$(curl -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" -s "https://api.github.com/repos/rust-lang/rust-clippy/pulls/$PR" | \
+        body=$(curl -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" -s "https://api.github.com/repos/crablang/crablang-clippy/pulls/$PR" | \
           python -c "import sys, json; print(json.load(sys.stdin)['body'])")
         output=$(grep "^changelog:\s*\S" <<< "$body" | sed "s/changelog:\s*//g") || {
           echo "ERROR: PR body must contain 'changelog: ...'"
@@ -78,7 +78,7 @@ jobs:
     # NOTE: If you modify this job, make sure you copy the changes to clippy.yml
     steps:
     # Setup
-    - uses: rust-lang/simpleinfra/github-actions/cancel-outdated-builds@master
+    - uses: crablang/simpleinfra/github-actions/cancel-outdated-builds@master
       with:
         github_token: "${{ secrets.github_token }}"
 
@@ -86,24 +86,24 @@ jobs:
       uses: actions/checkout@v3.0.2
 
     - name: Install toolchain
-      run: rustup show active-toolchain
+      run: crablangup show active-toolchain
 
     # Run
     - name: Set LD_LIBRARY_PATH (Linux)
       if: runner.os == 'Linux'
       run: |
-        SYSROOT=$(rustc --print sysroot)
+        SYSROOT=$(crablangc --print sysroot)
         echo "LD_LIBRARY_PATH=${SYSROOT}/lib${LD_LIBRARY_PATH+:${LD_LIBRARY_PATH}}" >> $GITHUB_ENV
-    - name: Link rustc dylib (MacOS)
+    - name: Link crablangc dylib (MacOS)
       if: runner.os == 'macOS'
       run: |
-        SYSROOT=$(rustc --print sysroot)
+        SYSROOT=$(crablangc --print sysroot)
         sudo mkdir -p /usr/local/lib
         sudo find "${SYSROOT}/lib" -maxdepth 1 -name '*dylib' -exec ln -s {} /usr/local/lib \;
     - name: Set PATH (Windows)
       if: runner.os == 'Windows'
       run: |
-        SYSROOT=$(rustc --print sysroot)
+        SYSROOT=$(crablangc --print sysroot)
         echo "$SYSROOT/bin" >> $GITHUB_PATH
 
     - name: Build
@@ -125,9 +125,9 @@ jobs:
       run: cargo test --features deny-warnings,internal
       working-directory: clippy_utils
 
-    - name: Test rustc_tools_util
+    - name: Test crablangc_tools_util
       run: cargo test --features deny-warnings
-      working-directory: rustc_tools_util
+      working-directory: crablangc_tools_util
 
     - name: Test clippy_dev
       run: cargo test --features deny-warnings
@@ -144,7 +144,7 @@ jobs:
 
     steps:
      # Setup
-    - uses: rust-lang/simpleinfra/github-actions/cancel-outdated-builds@master
+    - uses: crablang/simpleinfra/github-actions/cancel-outdated-builds@master
       with:
         github_token: "${{ secrets.github_token }}"
 
@@ -152,7 +152,7 @@ jobs:
       uses: actions/checkout@v3.0.2
 
     - name: Install toolchain
-      run: rustup show active-toolchain
+      run: crablangup show active-toolchain
 
     - name: Test metadata collection
       run: cargo collect-metadata
@@ -168,7 +168,7 @@ jobs:
 
     steps:
     # Setup
-    - uses: rust-lang/simpleinfra/github-actions/cancel-outdated-builds@master
+    - uses: crablang/simpleinfra/github-actions/cancel-outdated-builds@master
       with:
         github_token: "${{ secrets.github_token }}"
 
@@ -176,7 +176,7 @@ jobs:
       uses: actions/checkout@v3.0.2
 
     - name: Install toolchain
-      run: rustup show active-toolchain
+      run: crablangup show active-toolchain
 
     # Run
     - name: Build Integration Test
@@ -204,29 +204,29 @@ jobs:
       max-parallel: 6
       matrix:
         integration:
-        - 'rust-lang/cargo'
+        - 'crablang/cargo'
         # FIXME: re-enable once fmt_macros is renamed in RLS
-        # - 'rust-lang/rls'
-        - 'rust-lang/chalk'
-        - 'rust-lang/rustfmt'
+        # - 'crablang/rls'
+        - 'crablang/chalk'
+        - 'crablang/crablangfmt'
         - 'Marwes/combine'
         - 'Geal/nom'
-        - 'rust-lang/stdarch'
+        - 'crablang/stdarch'
         - 'serde-rs/serde'
         # FIXME: chrono currently cannot be compiled with `--all-targets`
         # - 'chronotope/chrono'
         - 'hyperium/hyper'
-        - 'rust-random/rand'
-        - 'rust-lang/futures-rs'
-        - 'rust-itertools/itertools'
-        - 'rust-lang-nursery/failure'
-        - 'rust-lang/log'
+        - 'crablang-random/rand'
+        - 'crablang/futures-rs'
+        - 'crablang-itertools/itertools'
+        - 'crablang-nursery/failure'
+        - 'crablang/log'
 
     runs-on: ubuntu-latest
 
     steps:
     # Setup
-    - uses: rust-lang/simpleinfra/github-actions/cancel-outdated-builds@master
+    - uses: crablang/simpleinfra/github-actions/cancel-outdated-builds@master
       with:
         github_token: "${{ secrets.github_token }}"
 
@@ -234,7 +234,7 @@ jobs:
       uses: actions/checkout@v3.0.2
 
     - name: Install toolchain
-      run: rustup show active-toolchain
+      run: crablangup show active-toolchain
 
     # Download
     - name: Download target dir
@@ -249,7 +249,7 @@ jobs:
     # Run
     - name: Test ${{ matrix.integration }}
       run: |
-        RUSTUP_TOOLCHAIN="$(rustup show active-toolchain | grep -o -E "nightly-[0-9]{4}-[0-9]{2}-[0-9]{2}")" \
+        CRABLANGUP_TOOLCHAIN="$(crablangup show active-toolchain | grep -o -E "nightly-[0-9]{4}-[0-9]{2}-[0-9]{2}")" \
           $CARGO_TARGET_DIR/debug/integration
       env:
         INTEGRATION: ${{ matrix.integration }}

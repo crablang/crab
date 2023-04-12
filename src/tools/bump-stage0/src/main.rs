@@ -5,8 +5,8 @@ use std::collections::HashMap;
 use std::convert::TryInto;
 
 const PATH: &str = "src/stage0.json";
-const COMPILER_COMPONENTS: &[&str] = &["rustc", "rust-std", "cargo"];
-const RUSTFMT_COMPONENTS: &[&str] = &["rustfmt-preview", "rustc"];
+const COMPILER_COMPONENTS: &[&str] = &["crablangc", "crablang-std", "cargo"];
+const CRABLANGFMT_COMPONENTS: &[&str] = &["crablangfmt-preview", "crablangc"];
 
 struct Tool {
     config: Config,
@@ -55,7 +55,7 @@ impl Tool {
                 "{}\n",
                 serde_json::to_string_pretty(&Stage0 {
                     compiler: self.detect_compiler()?,
-                    rustfmt: self.detect_rustfmt()?,
+                    crablangfmt: self.detect_crablangfmt()?,
                     checksums_sha256: {
                         // Keys are sorted here instead of beforehand because values in this map
                         // are added while filling the other struct fields just above this block.
@@ -70,7 +70,7 @@ impl Tool {
         Ok(())
     }
 
-    // Currently Rust always bootstraps from the previous stable release, and in our train model
+    // Currently CrabLang always bootstraps from the previous stable release, and in our train model
     // this means that the master branch bootstraps from beta, beta bootstraps from current stable,
     // and stable bootstraps from the previous stable release.
     //
@@ -94,7 +94,7 @@ impl Tool {
                 "beta".to_string()
             } else {
                 // The version field is like "1.42.0 (abcdef1234 1970-01-01)"
-                manifest.pkg["rust"]
+                manifest.pkg["crablang"]
                     .version
                     .split_once(' ')
                     .expect("invalid version field")
@@ -104,16 +104,16 @@ impl Tool {
         })
     }
 
-    /// We use a nightly rustfmt to format the source because it solves some bootstrapping issues
-    /// with use of new syntax in this repo. For the beta/stable channels rustfmt is not provided,
-    /// as we don't want to depend on rustfmt from nightly there.
-    fn detect_rustfmt(&mut self) -> Result<Option<Stage0Toolchain>, Error> {
+    /// We use a nightly crablangfmt to format the source because it solves some bootstrapping issues
+    /// with use of new syntax in this repo. For the beta/stable channels crablangfmt is not provided,
+    /// as we don't want to depend on crablangfmt from nightly there.
+    fn detect_crablangfmt(&mut self) -> Result<Option<Stage0Toolchain>, Error> {
         if self.channel != Channel::Nightly {
             return Ok(None);
         }
 
         let manifest = fetch_manifest(&self.config, "nightly", self.date.as_deref())?;
-        self.collect_checksums(&manifest, RUSTFMT_COMPONENTS)?;
+        self.collect_checksums(&manifest, CRABLANGFMT_COMPONENTS)?;
         Ok(Some(Stage0Toolchain { date: manifest.date, version: "nightly".into() }))
     }
 
@@ -150,9 +150,9 @@ fn main() -> Result<(), Error> {
 
 fn fetch_manifest(config: &Config, channel: &str, date: Option<&str>) -> Result<Manifest, Error> {
     let url = if let Some(date) = date {
-        format!("{}/dist/{}/channel-rust-{}.toml", config.dist_server, date, channel)
+        format!("{}/dist/{}/channel-crablang-{}.toml", config.dist_server, date, channel)
     } else {
-        format!("{}/dist/channel-rust-{}.toml", config.dist_server, channel)
+        format!("{}/dist/channel-crablang-{}.toml", config.dist_server, channel)
     };
 
     Ok(toml::from_slice(&http_get(&url)?)?)
@@ -196,7 +196,7 @@ struct Stage0 {
     #[serde(rename = "__comments")]
     comments: Vec<String>,
     compiler: Stage0Toolchain,
-    rustfmt: Option<Stage0Toolchain>,
+    crablangfmt: Option<Stage0Toolchain>,
     checksums_sha256: IndexMap<String, String>,
 }
 

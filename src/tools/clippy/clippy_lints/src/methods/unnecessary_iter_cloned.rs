@@ -4,10 +4,10 @@ use clippy_utils::higher::ForLoop;
 use clippy_utils::source::snippet_opt;
 use clippy_utils::ty::{get_iterator_item_ty, implements_trait};
 use clippy_utils::{fn_def_id, get_parent_expr};
-use rustc_errors::Applicability;
-use rustc_hir::{def_id::DefId, Expr, ExprKind};
-use rustc_lint::LateContext;
-use rustc_span::{sym, Symbol};
+use crablangc_errors::Applicability;
+use crablangc_hir::{def_id::DefId, Expr, ExprKind};
+use crablangc_lint::LateContext;
+use crablangc_span::{sym, Symbol};
 
 use super::UNNECESSARY_TO_OWNED;
 
@@ -74,7 +74,7 @@ pub fn check_for_loop_iter(
                     // a `to_owned`-like function was removed, then the next suggestion may be
                     // incorrect. This is because the iterator that results from the call's removal
                     // could hold a reference to a resource that is used mutably. See
-                    // https://github.com/rust-lang/rust-clippy/issues/8148.
+                    // https://github.com/crablang/crablang-clippy/issues/8148.
                     let applicability = if cloned_before_iter {
                         Applicability::MaybeIncorrect
                     } else {

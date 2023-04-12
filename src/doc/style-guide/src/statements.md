@@ -3,7 +3,7 @@
 There should be spaces after the `:` and on both sides of the `=` (if they are
 present). No space before the semi-colon.
 
-```rust
+```crablang
 // A comment.
 let pattern: Type = expr;
 
@@ -16,7 +16,7 @@ If possible the declaration should be formatted on a single line. If this is not
 possible, then try splitting after the `=`, if the declaration can fit on two
 lines. The expression should be block indented.
 
-```rust
+```crablang
 let pattern: Type =
     expr;
 ```
@@ -24,10 +24,10 @@ let pattern: Type =
 If the first line does not fit on a single line, then split after the colon,
 using block indentation. If the type covers multiple lines, even after line-
 breaking after the `:`, then the first line may be placed on the same line as
-the `:`, subject to the [combining rules](https://github.com/rust-lang-nursery/fmt-rfcs/issues/61) (WIP).
+the `:`, subject to the [combining rules](https://github.com/crablang-nursery/fmt-rfcs/issues/61) (WIP).
 
 
-```rust
+```crablang
 let pattern:
     Type =
     expr;
@@ -35,7 +35,7 @@ let pattern:
 
 e.g,
 
-```rust
+```crablang
 let Foo {
     f: abcd,
     g: qwer,
@@ -58,7 +58,7 @@ block from the type), otherwise the opening brace follows the `=`.
 
 Examples:
 
-```rust
+```crablang
 let foo = Foo {
     f: abcd,
     g: qwer,
@@ -120,7 +120,7 @@ expression with a preceding space if all the following are true:
 
 For example:
 
-```rust
+```crablang
 let Some(x) = y.foo(
     "abc",
     fairly_long_identifier,
@@ -137,7 +137,7 @@ Otherwise, the `else` keyword and opening brace should be placed on the next lin
 
 For example:
 
-```rust
+```crablang
 let Some(x) = abcdef()
     .foo(
         "abc",
@@ -162,7 +162,7 @@ The entire let-else statement may be formatted on a single line if all the follo
 * the `else` block contains no comments
 * the let statement components preceding the `else` block can be formatted on a single line
 
-```rust
+```crablang
 let Some(1) = opt else { return };
 
 let Some(1) = opt else {
@@ -184,7 +184,7 @@ A macro use in statement position should use parentheses or square brackets as
 delimiters and should be terminated with a semi-colon. There should be no spaces
 between the name, `!`, the delimiters, or the `;`.
 
-```rust
+```crablang
 // A comment.
 a_macro!(...);
 ```
@@ -203,7 +203,7 @@ unless they end with a block or are used as the value for a block.
 
 E.g.,
 
-```rust
+```crablang
 {
     an_expression();
     expr_as_value()
@@ -219,7 +219,7 @@ loop {
 Use a semi-colon where an expression has void type, even if it could be
 propagated. E.g.,
 
-```rust
+```crablang
 fn foo() { ... }
 
 fn bar() {

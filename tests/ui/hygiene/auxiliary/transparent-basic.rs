@@ -1,6 +1,6 @@
-#![feature(decl_macro, rustc_attrs)]
+#![feature(decl_macro, crablangc_attrs)]
 
-#[rustc_macro_transparency = "transparent"]
+#[crablangc_macro_transparency = "transparent"]
 pub macro dollar_crate() {
     let s = $crate::S;
 }

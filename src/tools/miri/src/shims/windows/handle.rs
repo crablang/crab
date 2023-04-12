@@ -1,4 +1,4 @@
-use rustc_target::abi::HasDataLayout;
+use crablangc_target::abi::HasDataLayout;
 use std::mem::variant_count;
 
 use crate::*;

@@ -53,7 +53,7 @@ union TransparentUnion<T: Copy> {
     field: T,
 }
 
-struct Rust<T>(T);
+struct CrabLang<T>(T);
 
 extern "C" {
    fn zf(x: Z);
@@ -85,7 +85,7 @@ extern "C" {
    fn transparent_enum(x: Option<TransparentEnum<num::NonZeroU8>>);
    fn transparent_union(x: Option<TransparentUnion<num::NonZeroU8>>);
    //~^ ERROR `extern` block uses type
-   fn repr_rust(x: Option<Rust<num::NonZeroU8>>); //~ ERROR `extern` block uses type
+   fn repr_crablang(x: Option<CrabLang<num::NonZeroU8>>); //~ ERROR `extern` block uses type
    fn no_result(x: Result<(), num::NonZeroI32>); //~ ERROR `extern` block uses type
 }
 

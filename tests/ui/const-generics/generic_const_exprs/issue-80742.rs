@@ -1,6 +1,6 @@
 // check-fail
 
-// This test used to cause an ICE in rustc_mir::interpret::step::eval_rvalue_into_place
+// This test used to cause an ICE in crablangc_mir::interpret::step::eval_rvalue_into_place
 
 #![allow(incomplete_features)]
 #![feature(generic_const_exprs)]

@@ -1,6 +1,6 @@
 // These are all the possible variations of this error I could think of for.
 // `trait-with-missing-associated-type-restriction-fixable.rs` contains the subset of these that
-// can be fixed with `rustfix`.
+// can be fixed with `crablangfix`.
 
 trait Trait<T = Self> {
     type A;

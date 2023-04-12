@@ -1,4 +1,4 @@
-#![feature(decl_macro, rustc_attrs)]
+#![feature(decl_macro, crablangc_attrs)]
 #![deny(single_use_lifetimes)]
 
 mod type_params {
@@ -8,7 +8,7 @@ mod type_params {
         }
     }
 
-    #[rustc_macro_transparency = "semitransparent"]
+    #[crablangc_macro_transparency = "semitransparent"]
     macro n($T:ident) {
         fn g<$T: Clone>(t1: $T, t2: T) -> (T, $T) {
             (t1.clone(), t2.clone())
@@ -18,7 +18,7 @@ mod type_params {
         }
     }
 
-    #[rustc_macro_transparency = "transparent"]
+    #[crablangc_macro_transparency = "transparent"]
     macro p($T:ident) {
         fn j<$T: Clone>(t1: $T, t2: T) -> (T, $T) {
             (t1.clone(), t2.clone())
@@ -40,7 +40,7 @@ mod lifetime_params {
         }
     }
 
-    #[rustc_macro_transparency = "semitransparent"]
+    #[crablangc_macro_transparency = "semitransparent"]
     macro n($a:lifetime) {
         fn g<$a>(t1: &$a(), t2: &'a ()) -> (&'a (), &$a ()) {
             (t1, t2)
@@ -50,7 +50,7 @@ mod lifetime_params {
         }
     }
 
-    #[rustc_macro_transparency = "transparent"]
+    #[crablangc_macro_transparency = "transparent"]
     macro p($a:lifetime) {
         fn j<$a>(t1: &$a(), t2: &'a ()) -> (&'a (), &$a ()) {
             (t1, t2)
@@ -72,7 +72,7 @@ mod const_params {
         }
     }
 
-    #[rustc_macro_transparency = "semitransparent"]
+    #[crablangc_macro_transparency = "semitransparent"]
     macro n($C:ident) {
         fn g<const $C: usize>(t1: [(); $C], t2: [(); C]) -> ([(); C], [(); $C]) {
             (t1, t2)
@@ -82,7 +82,7 @@ mod const_params {
         }
     }
 
-    #[rustc_macro_transparency = "transparent"]
+    #[crablangc_macro_transparency = "transparent"]
     macro p($C:ident) {
         fn j<const $C: usize>(t1: [(); $C], t2: [(); C]) -> ([(); C], [(); $C]) {
             (t1, t2)

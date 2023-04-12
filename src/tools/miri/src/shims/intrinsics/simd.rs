@@ -1,7 +1,7 @@
-use rustc_apfloat::Float;
-use rustc_middle::ty::layout::{HasParamEnv, LayoutOf};
-use rustc_middle::{mir, ty, ty::FloatTy};
-use rustc_target::abi::{Endian, HasDataLayout, Size};
+use crablangc_apfloat::Float;
+use crablangc_middle::ty::layout::{HasParamEnv, LayoutOf};
+use crablangc_middle::{mir, ty, ty::FloatTy};
+use crablangc_target::abi::{Endian, HasDataLayout, Size};
 
 use crate::*;
 use helpers::check_arg_count;
@@ -17,7 +17,7 @@ pub trait EvalContextExt<'mir, 'tcx: 'mir>: crate::MiriInterpCxExt<'mir, 'tcx> {
     ) -> InterpResult<'tcx> {
         let this = self.eval_context_mut();
         match intrinsic_name {
-            #[rustfmt::skip]
+            #[crablangfmt::skip]
             | "neg"
             | "fabs"
             | "ceil"
@@ -107,7 +107,7 @@ pub trait EvalContextExt<'mir, 'tcx: 'mir>: crate::MiriInterpCxExt<'mir, 'tcx> {
                     this.write_scalar(val, &dest.into())?;
                 }
             }
-            #[rustfmt::skip]
+            #[crablangfmt::skip]
             | "add"
             | "sub"
             | "mul"
@@ -180,7 +180,7 @@ pub trait EvalContextExt<'mir, 'tcx: 'mir>: crate::MiriInterpCxExt<'mir, 'tcx> {
                             let (val, overflowed, ty) = this.overflowing_binary_op(mir_op, &left, &right)?;
                             if matches!(mir_op, BinOp::Shl | BinOp::Shr) {
                                 // Shifts have extra UB as SIMD operations that the MIR binop does not have.
-                                // See <https://github.com/rust-lang/rust/issues/91237>.
+                                // See <https://github.com/crablang/crablang/issues/91237>.
                                 if overflowed {
                                     let r_val = right.to_scalar().to_bits(right.layout.size)?;
                                     throw_ub_format!("overflowing shift by {r_val} in `simd_{intrinsic_name}` in SIMD lane {i}");
@@ -238,7 +238,7 @@ pub trait EvalContextExt<'mir, 'tcx: 'mir>: crate::MiriInterpCxExt<'mir, 'tcx> {
                     let dest = this.mplace_index(&dest, i)?;
 
                     // Works for f32 and f64.
-                    // FIXME: using host floats to work around https://github.com/rust-lang/miri/issues/2468.
+                    // FIXME: using host floats to work around https://github.com/crablang/miri/issues/2468.
                     let ty::Float(float_ty) = dest.layout.ty.kind() else {
                         span_bug!(this.cur_span(), "{} operand is not a float", intrinsic_name)
                     };
@@ -261,7 +261,7 @@ pub trait EvalContextExt<'mir, 'tcx: 'mir>: crate::MiriInterpCxExt<'mir, 'tcx> {
                     this.write_scalar(val, &dest.into())?;
                 }
             }
-            #[rustfmt::skip]
+            #[crablangfmt::skip]
             | "reduce_and"
             | "reduce_or"
             | "reduce_xor"
@@ -338,7 +338,7 @@ pub trait EvalContextExt<'mir, 'tcx: 'mir>: crate::MiriInterpCxExt<'mir, 'tcx> {
                 }
                 this.write_immediate(*res, dest)?;
             }
-            #[rustfmt::skip]
+            #[crablangfmt::skip]
             | "reduce_add_ordered"
             | "reduce_mul_ordered" => {
                 use mir::BinOp;
@@ -420,7 +420,7 @@ pub trait EvalContextExt<'mir, 'tcx: 'mir>: crate::MiriInterpCxExt<'mir, 'tcx> {
                     }
                 }
             }
-            #[rustfmt::skip]
+            #[crablangfmt::skip]
             "cast" | "as" => {
                 let [op] = check_arg_count(args)?;
                 let (op, op_len) = this.operand_to_simd(op)?;

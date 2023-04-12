@@ -13,4 +13,4 @@ LL |     *(&mut Foo) += ();
 
 error: aborting due to previous error
 
-For more information about this error, try `rustc --explain E0067`.
+For more information about this error, try `crablangc --explain E0067`.

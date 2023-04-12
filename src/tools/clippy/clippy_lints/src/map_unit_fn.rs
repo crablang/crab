@@ -3,13 +3,13 @@ use clippy_utils::source::{snippet, snippet_with_applicability, snippet_with_con
 use clippy_utils::ty::is_type_diagnostic_item;
 use clippy_utils::{iter_input_pats, method_chain_args};
 use if_chain::if_chain;
-use rustc_errors::Applicability;
-use rustc_hir as hir;
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_middle::ty::{self, Ty};
-use rustc_session::{declare_lint_pass, declare_tool_lint};
-use rustc_span::source_map::Span;
-use rustc_span::sym;
+use crablangc_errors::Applicability;
+use crablangc_hir as hir;
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_middle::ty::{self, Ty};
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_span::source_map::Span;
+use crablangc_span::sym;
 
 declare_clippy_lint! {
     /// ### What it does
@@ -21,7 +21,7 @@ declare_clippy_lint! {
     /// an if let statement
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// # fn do_stuff() -> Option<String> { Some(String::new()) }
     /// # fn log_err_msg(foo: String) -> Option<String> { Some(foo) }
     /// # fn format_msg(foo: String) -> String { String::new() }
@@ -33,7 +33,7 @@ declare_clippy_lint! {
     ///
     /// The correct use would be:
     ///
-    /// ```rust
+    /// ```crablang
     /// # fn do_stuff() -> Option<String> { Some(String::new()) }
     /// # fn log_err_msg(foo: String) -> Option<String> { Some(foo) }
     /// # fn format_msg(foo: String) -> String { String::new() }
@@ -63,7 +63,7 @@ declare_clippy_lint! {
     /// an if let statement
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// # fn do_stuff() -> Result<String, String> { Ok(String::new()) }
     /// # fn log_err_msg(foo: String) -> Result<String, String> { Ok(foo) }
     /// # fn format_msg(foo: String) -> String { String::new() }
@@ -75,7 +75,7 @@ declare_clippy_lint! {
     ///
     /// The correct use would be:
     ///
-    /// ```rust
+    /// ```crablang
     /// # fn do_stuff() -> Result<String, String> { Ok(String::new()) }
     /// # fn log_err_msg(foo: String) -> Result<String, String> { Ok(foo) }
     /// # fn format_msg(foo: String) -> String { String::new() }

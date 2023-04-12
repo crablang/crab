@@ -1,0 +1,15 @@
+[package]
+name = "crablangc_lint_defs"
+version = "0.0.0"
+edition = "2021"
+
+[dependencies]
+serde = { version = "1.0.125", features = ["derive"] }
+crablangc_ast = { path = "../crablangc_ast" }
+crablangc_data_structures = { path = "../crablangc_data_structures" }
+crablangc_error_messages = { path = "../crablangc_error_messages" }
+crablangc_span = { path = "../crablangc_span" }
+crablangc_serialize = { path = "../crablangc_serialize" }
+crablangc_macros = { path = "../crablangc_macros" }
+crablangc_target = { path = "../crablangc_target" }
+crablangc_hir = { path = "../crablangc_hir" }

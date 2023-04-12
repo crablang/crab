@@ -1,13 +1,13 @@
 use clippy_utils::diagnostics::span_lint_and_then;
 use clippy_utils::{match_def_path, paths, sugg};
 use if_chain::if_chain;
-use rustc_ast::util::parser::AssocOp;
-use rustc_errors::Applicability;
-use rustc_hir::def::{DefKind, Res};
-use rustc_hir::{BinOpKind, Expr, ExprKind};
-use rustc_lint::LateContext;
-use rustc_middle::ty;
-use rustc_span::source_map::Spanned;
+use crablangc_ast::util::parser::AssocOp;
+use crablangc_errors::Applicability;
+use crablangc_hir::def::{DefKind, Res};
+use crablangc_hir::{BinOpKind, Expr, ExprKind};
+use crablangc_lint::LateContext;
+use crablangc_middle::ty;
+use crablangc_span::source_map::Spanned;
 
 use super::FLOAT_EQUALITY_WITHOUT_ABS;
 

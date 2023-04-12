@@ -5,18 +5,18 @@ use crate::visitors::{for_each_expr, Descend};
 
 use arrayvec::ArrayVec;
 use itertools::{izip, Either, Itertools};
-use rustc_ast::ast::LitKind;
-use rustc_ast::FormatArgs;
-use rustc_data_structures::fx::FxHashMap;
-use rustc_hir::intravisit::{walk_expr, Visitor};
-use rustc_hir::{self as hir, Expr, ExprField, ExprKind, HirId, LangItem, Node, QPath, TyKind};
-use rustc_lexer::unescape::unescape_literal;
-use rustc_lexer::{tokenize, unescape, LiteralKind, TokenKind};
-use rustc_lint::LateContext;
-use rustc_parse_format::{self as rpf, Alignment};
-use rustc_span::def_id::DefId;
-use rustc_span::hygiene::{self, MacroKind, SyntaxContext};
-use rustc_span::{sym, BytePos, ExpnData, ExpnId, ExpnKind, Pos, Span, SpanData, Symbol};
+use crablangc_ast::ast::LitKind;
+use crablangc_ast::FormatArgs;
+use crablangc_data_structures::fx::FxHashMap;
+use crablangc_hir::intravisit::{walk_expr, Visitor};
+use crablangc_hir::{self as hir, Expr, ExprField, ExprKind, HirId, LangItem, Node, QPath, TyKind};
+use crablangc_lexer::unescape::unescape_literal;
+use crablangc_lexer::{tokenize, unescape, LiteralKind, TokenKind};
+use crablangc_lint::LateContext;
+use crablangc_parse_format::{self as rpf, Alignment};
+use crablangc_span::def_id::DefId;
+use crablangc_span::hygiene::{self, MacroKind, SyntaxContext};
+use crablangc_span::{sym, BytePos, ExpnData, ExpnId, ExpnKind, Pos, Span, SpanData, Symbol};
 use std::cell::RefCell;
 use std::iter::{once, zip};
 use std::ops::ControlFlow;
@@ -241,7 +241,7 @@ impl<'a> PanicExpn<'a> {
                 Self::Display(e)
             },
             "panic_fmt" => Self::Format(FormatArgsExpn::parse(cx, arg)?),
-            // Since Rust 1.52, `assert_{eq,ne}` macros expand to use:
+            // Since CrabLang 1.52, `assert_{eq,ne}` macros expand to use:
             // `core::panicking::assert_failed(.., left_val, right_val, None | Some(format_args!(..)));`
             "assert_failed" => {
                 // It should have 4 arguments in total (we already matched with the first argument,
@@ -383,7 +383,7 @@ thread_local! {
     };
 }
 
-/// Record [`rustc_ast::FormatArgs`] for use in late lint passes, this should only be called by
+/// Record [`crablangc_ast::FormatArgs`] for use in late lint passes, this should only be called by
 /// `FormatArgsCollector`
 pub fn collect_ast_format_args(span: Span, format_args: &FormatArgs) {
     AST_FORMAT_ARGS.with(|ast_format_args| {
@@ -656,7 +656,7 @@ fn parse_rt_fmt<'tcx>(fmt_arg: &'tcx Expr<'tcx>) -> Option<impl Iterator<Item = 
     }
 }
 
-/// `Span::from_inner`, but for `rustc_parse_format`'s `InnerSpan`
+/// `Span::from_inner`, but for `crablangc_parse_format`'s `InnerSpan`
 fn span_from_inner(base: SpanData, inner: rpf::InnerSpan) -> Span {
     Span::new(
         base.lo + BytePos::from_usize(inner.start),
@@ -745,8 +745,8 @@ impl<'tcx> FormatParam<'tcx> {
     }
 }
 
-/// Used by [width](https://doc.rust-lang.org/std/fmt/#width) and
-/// [precision](https://doc.rust-lang.org/std/fmt/#precision) specifiers.
+/// Used by [width](https://doc.crablang.org/std/fmt/#width) and
+/// [precision](https://doc.crablang.org/std/fmt/#precision) specifiers.
 #[derive(Debug, Copy, Clone)]
 pub enum Count<'tcx> {
     /// Specified with a literal number, stores the value.
@@ -816,7 +816,7 @@ impl<'tcx> Count<'tcx> {
 }
 
 /// Specification for the formatting of an argument in the format string. See
-/// <https://doc.rust-lang.org/std/fmt/index.html#formatting-parameters> for the precise meanings.
+/// <https://doc.crablang.org/std/fmt/index.html#formatting-parameters> for the precise meanings.
 #[derive(Debug)]
 pub struct FormatSpec<'tcx> {
     /// Optionally specified character to fill alignment with.

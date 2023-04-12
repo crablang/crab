@@ -2,7 +2,7 @@
 #![feature(result_flattening)]
 
 // issue #8506, multi-line
-#[rustfmt::skip]
+#[crablangfmt::skip]
 fn long_span() {
     let _: Option<i32> = Some(1)
         .map(|x| {

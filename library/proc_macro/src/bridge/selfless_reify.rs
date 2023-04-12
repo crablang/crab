@@ -26,7 +26,7 @@
 //! A more flexible (and safer) solution to the general problem could exist once
 //! `const`-generic parameters can have type parameters in their types:
 //!
-//! ```rust,ignore (needs future const-generics)
+//! ```crablang,ignore (needs future const-generics)
 //! extern "C" fn ffi_wrapper<
 //!     A, R,
 //!     F: Fn(A) -> R,

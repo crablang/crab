@@ -55,4 +55,4 @@ LL |     let y = *x;
 error: aborting due to 5 previous errors
 
 Some errors have detailed explanations: E0368, E0369, E0600, E0614.
-For more information about an error, try `rustc --explain E0368`.
+For more information about an error, try `crablangc --explain E0368`.

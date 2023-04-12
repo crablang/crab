@@ -43,4 +43,4 @@ LL | type Bug<T, U: std::convert::From<T>> = impl Fn(T) -> U + Copy;
 error: aborting due to 2 previous errors
 
 Some errors have detailed explanations: E0277, E0391.
-For more information about an error, try `rustc --explain E0277`.
+For more information about an error, try `crablangc --explain E0277`.

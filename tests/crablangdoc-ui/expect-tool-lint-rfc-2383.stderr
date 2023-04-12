@@ -1,0 +1,28 @@
+warning: this lint expectation is unfulfilled
+  --> $DIR/expect-tool-lint-rfc-2383.rs:16:11
+   |
+LL | #![expect(crablangdoc::missing_crate_level_docs)]
+   |           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unfulfilled_lint_expectations)]` on by default
+
+warning: this lint expectation is unfulfilled
+  --> $DIR/expect-tool-lint-rfc-2383.rs:71:14
+   |
+LL |     #[expect(crablangdoc::broken_intra_doc_links)]
+   |              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: this lint expectation is unfulfilled
+  --> $DIR/expect-tool-lint-rfc-2383.rs:76:14
+   |
+LL |     #[expect(crablangdoc::invalid_html_tags)]
+   |              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: this lint expectation is unfulfilled
+  --> $DIR/expect-tool-lint-rfc-2383.rs:81:14
+   |
+LL |     #[expect(crablangdoc::bare_urls)]
+   |              ^^^^^^^^^^^^^^^^^^
+
+warning: 4 warnings emitted
+

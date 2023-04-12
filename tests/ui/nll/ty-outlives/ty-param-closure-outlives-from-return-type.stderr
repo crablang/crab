@@ -6,7 +6,7 @@ LL |     with_signature(x, |y| y)
    |
    = note: defining type: no_region::<'_#1r, T>::{closure#0} with closure substs [
                i32,
-               extern "rust-call" fn((std::boxed::Box<T>,)) -> std::boxed::Box<(dyn std::fmt::Debug + '_#2r)>,
+               extern "crablang-call" fn((std::boxed::Box<T>,)) -> std::boxed::Box<(dyn std::fmt::Debug + '_#2r)>,
                (),
            ]
    = note: number of external vids: 3
@@ -46,4 +46,4 @@ LL |     T: 'b + Debug + 'a,
 
 error: aborting due to 2 previous errors
 
-For more information about this error, try `rustc --explain E0309`.
+For more information about this error, try `crablangc --explain E0309`.

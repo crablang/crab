@@ -1,9 +1,9 @@
 std::arch::global_asm!(
     r#"
     .text
-    .global rust_plus_one_global_asm
-    .type rust_plus_one_global_asm, @function
-rust_plus_one_global_asm:
+    .global crablang_plus_one_global_asm
+    .type crablang_plus_one_global_asm, @function
+crablang_plus_one_global_asm:
     movl (%rdi), %eax
     inc %eax
     retq
@@ -24,7 +24,7 @@ extern "C" {
     fn cmake_plus_one_c_global_asm(arg: &u32) -> u32;
     fn cmake_plus_one_cxx_global_asm(arg: &u32) -> u32;
     fn cmake_plus_one_asm(arg: &u32) -> u32;
-    fn rust_plus_one_global_asm(arg: &u32) -> u32;
+    fn crablang_plus_one_global_asm(arg: &u32) -> u32;
 }
 
 fn main() {
@@ -32,7 +32,7 @@ fn main() {
     let question = "Answer to the Ultimate Question of Life, the Universe, and Everything:";
 
     unsafe {
-        println!("{}: {}!", question, rust_plus_one_global_asm(&value));
+        println!("{}: {}!", question, crablang_plus_one_global_asm(&value));
         println!("{}: {}!", question, cc_plus_one_c(&value));
         println!("{}: {}!", question, cc_plus_one_c_asm(&value));
         println!("{}: {}!", question, cc_plus_one_cxx(&value));

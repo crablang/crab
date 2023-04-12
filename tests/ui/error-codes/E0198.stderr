@@ -9,4 +9,4 @@ LL | unsafe impl !Send for Foo { }
 
 error: aborting due to previous error
 
-For more information about this error, try `rustc --explain E0198`.
+For more information about this error, try `crablangc --explain E0198`.

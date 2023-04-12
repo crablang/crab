@@ -1,4 +1,4 @@
-use crate::iter::{FusedIterator, TrustedLen};
+use crate::iter::{FusedIterator, TcrablangedLen};
 use crate::num::NonZeroUsize;
 use crate::ops::Try;
 
@@ -11,7 +11,7 @@ use crate::ops::Try;
 /// [`Iterator`]: trait.Iterator.html
 #[derive(Clone, Debug)]
 #[must_use = "iterators are lazy and do nothing unless consumed"]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub struct Rev<T> {
     iter: T,
 }
@@ -22,7 +22,7 @@ impl<T> Rev<T> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<I> Iterator for Rev<I>
 where
     I: DoubleEndedIterator,
@@ -73,7 +73,7 @@ where
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<I> DoubleEndedIterator for Rev<I>
 where
     I: DoubleEndedIterator,
@@ -117,7 +117,7 @@ where
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<I> ExactSizeIterator for Rev<I>
 where
     I: ExactSizeIterator + DoubleEndedIterator,
@@ -134,10 +134,10 @@ where
 #[stable(feature = "fused", since = "1.26.0")]
 impl<I> FusedIterator for Rev<I> where I: FusedIterator + DoubleEndedIterator {}
 
-#[unstable(feature = "trusted_len", issue = "37572")]
-unsafe impl<I> TrustedLen for Rev<I> where I: TrustedLen + DoubleEndedIterator {}
+#[unstable(feature = "tcrablanged_len", issue = "37572")]
+unsafe impl<I> TcrablangedLen for Rev<I> where I: TcrablangedLen + DoubleEndedIterator {}
 
-#[stable(feature = "default_iters", since = "CURRENT_RUSTC_VERSION")]
+#[stable(feature = "default_iters", since = "CURRENT_CRABLANGC_VERSION")]
 impl<I: Default> Default for Rev<I> {
     /// Creates a `Rev` iterator from the default value of `I`
     /// ```

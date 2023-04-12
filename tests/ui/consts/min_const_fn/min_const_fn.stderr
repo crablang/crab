@@ -12,7 +12,7 @@ error[E0658]: mutable references are not allowed in constant functions
 LL |     const fn get_mut(&mut self) -> &mut T { &mut self.0 }
    |                      ^^^^^^^^^
    |
-   = note: see issue #57349 <https://github.com/rust-lang/rust/issues/57349> for more information
+   = note: see issue #57349 <https://github.com/crablang/crablang/issues/57349> for more information
    = help: add `#![feature(const_mut_refs)]` to the crate attributes to enable
 
 error[E0658]: mutable references are not allowed in constant functions
@@ -21,7 +21,7 @@ error[E0658]: mutable references are not allowed in constant functions
 LL |     const fn get_mut(&mut self) -> &mut T { &mut self.0 }
    |                                    ^^^^^^
    |
-   = note: see issue #57349 <https://github.com/rust-lang/rust/issues/57349> for more information
+   = note: see issue #57349 <https://github.com/crablang/crablang/issues/57349> for more information
    = help: add `#![feature(const_mut_refs)]` to the crate attributes to enable
 
 error[E0658]: mutable references are not allowed in constant functions
@@ -30,7 +30,7 @@ error[E0658]: mutable references are not allowed in constant functions
 LL |     const fn get_mut(&mut self) -> &mut T { &mut self.0 }
    |                                             ^^^^^^^^^^^
    |
-   = note: see issue #57349 <https://github.com/rust-lang/rust/issues/57349> for more information
+   = note: see issue #57349 <https://github.com/crablang/crablang/issues/57349> for more information
    = help: add `#![feature(const_mut_refs)]` to the crate attributes to enable
 
 error[E0493]: destructor of `Foo<T>` cannot be evaluated at compile-time
@@ -47,7 +47,7 @@ error[E0658]: mutable references are not allowed in constant functions
 LL |     const fn get_mut_lt(&'a mut self) -> &mut T { &mut self.0 }
    |                         ^^^^^^^^^^^^
    |
-   = note: see issue #57349 <https://github.com/rust-lang/rust/issues/57349> for more information
+   = note: see issue #57349 <https://github.com/crablang/crablang/issues/57349> for more information
    = help: add `#![feature(const_mut_refs)]` to the crate attributes to enable
 
 error[E0658]: mutable references are not allowed in constant functions
@@ -56,7 +56,7 @@ error[E0658]: mutable references are not allowed in constant functions
 LL |     const fn get_mut_lt(&'a mut self) -> &mut T { &mut self.0 }
    |                                          ^^^^^^
    |
-   = note: see issue #57349 <https://github.com/rust-lang/rust/issues/57349> for more information
+   = note: see issue #57349 <https://github.com/crablang/crablang/issues/57349> for more information
    = help: add `#![feature(const_mut_refs)]` to the crate attributes to enable
 
 error[E0658]: mutable references are not allowed in constant functions
@@ -65,7 +65,7 @@ error[E0658]: mutable references are not allowed in constant functions
 LL |     const fn get_mut_lt(&'a mut self) -> &mut T { &mut self.0 }
    |                                                   ^^^^^^^^^^^
    |
-   = note: see issue #57349 <https://github.com/rust-lang/rust/issues/57349> for more information
+   = note: see issue #57349 <https://github.com/crablang/crablang/issues/57349> for more information
    = help: add `#![feature(const_mut_refs)]` to the crate attributes to enable
 
 error[E0493]: destructor of `Foo<T>` cannot be evaluated at compile-time
@@ -82,7 +82,7 @@ error[E0658]: mutable references are not allowed in constant functions
 LL |     const fn get_mut_s(&mut self) -> &mut T { &mut self.0 }
    |                        ^^^^^^^^^
    |
-   = note: see issue #57349 <https://github.com/rust-lang/rust/issues/57349> for more information
+   = note: see issue #57349 <https://github.com/crablang/crablang/issues/57349> for more information
    = help: add `#![feature(const_mut_refs)]` to the crate attributes to enable
 
 error[E0658]: mutable references are not allowed in constant functions
@@ -91,7 +91,7 @@ error[E0658]: mutable references are not allowed in constant functions
 LL |     const fn get_mut_s(&mut self) -> &mut T { &mut self.0 }
    |                                      ^^^^^^
    |
-   = note: see issue #57349 <https://github.com/rust-lang/rust/issues/57349> for more information
+   = note: see issue #57349 <https://github.com/crablang/crablang/issues/57349> for more information
    = help: add `#![feature(const_mut_refs)]` to the crate attributes to enable
 
 error[E0658]: mutable references are not allowed in constant functions
@@ -100,7 +100,7 @@ error[E0658]: mutable references are not allowed in constant functions
 LL |     const fn get_mut_s(&mut self) -> &mut T { &mut self.0 }
    |                                               ^^^^^^^^^^^
    |
-   = note: see issue #57349 <https://github.com/rust-lang/rust/issues/57349> for more information
+   = note: see issue #57349 <https://github.com/crablang/crablang/issues/57349> for more information
    = help: add `#![feature(const_mut_refs)]` to the crate attributes to enable
 
 error[E0658]: mutable references are not allowed in constant functions
@@ -109,7 +109,7 @@ error[E0658]: mutable references are not allowed in constant functions
 LL |     const fn get_mut_sq(&mut self) -> &mut T { &mut self.0 }
    |                         ^^^^^^^^^
    |
-   = note: see issue #57349 <https://github.com/rust-lang/rust/issues/57349> for more information
+   = note: see issue #57349 <https://github.com/crablang/crablang/issues/57349> for more information
    = help: add `#![feature(const_mut_refs)]` to the crate attributes to enable
 
 error[E0658]: mutable references are not allowed in constant functions
@@ -118,7 +118,7 @@ error[E0658]: mutable references are not allowed in constant functions
 LL |     const fn get_mut_sq(&mut self) -> &mut T { &mut self.0 }
    |                                       ^^^^^^
    |
-   = note: see issue #57349 <https://github.com/rust-lang/rust/issues/57349> for more information
+   = note: see issue #57349 <https://github.com/crablang/crablang/issues/57349> for more information
    = help: add `#![feature(const_mut_refs)]` to the crate attributes to enable
 
 error[E0658]: mutable references are not allowed in constant functions
@@ -127,7 +127,7 @@ error[E0658]: mutable references are not allowed in constant functions
 LL |     const fn get_mut_sq(&mut self) -> &mut T { &mut self.0 }
    |                                                ^^^^^^^^^^^
    |
-   = note: see issue #57349 <https://github.com/rust-lang/rust/issues/57349> for more information
+   = note: see issue #57349 <https://github.com/crablang/crablang/issues/57349> for more information
    = help: add `#![feature(const_mut_refs)]` to the crate attributes to enable
 
 error[E0013]: constant functions cannot refer to statics
@@ -188,7 +188,7 @@ error[E0658]: mutable references are not allowed in constant functions
 LL | const fn inc(x: &mut i32) { *x += 1 }
    |              ^
    |
-   = note: see issue #57349 <https://github.com/rust-lang/rust/issues/57349> for more information
+   = note: see issue #57349 <https://github.com/crablang/crablang/issues/57349> for more information
    = help: add `#![feature(const_mut_refs)]` to the crate attributes to enable
 
 error[E0493]: destructor of `AlanTuring<impl std::fmt::Debug>` cannot be evaluated at compile-time
@@ -210,4 +210,4 @@ LL | const fn no_apit(_x: impl std::fmt::Debug) {}
 error: aborting due to 24 previous errors
 
 Some errors have detailed explanations: E0013, E0493, E0658.
-For more information about an error, try `rustc --explain E0013`.
+For more information about an error, try `crablangc --explain E0013`.

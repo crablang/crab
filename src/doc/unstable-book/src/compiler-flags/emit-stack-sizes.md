@@ -2,11 +2,11 @@
 
 The tracking issue for this feature is: [#54192]
 
-[#54192]: https://github.com/rust-lang/rust/issues/54192
+[#54192]: https://github.com/crablang/crablang/issues/54192
 
 ------------------------
 
-The rustc flag `-Z emit-stack-sizes` makes LLVM emit stack size metadata.
+The crablangc flag `-Z emit-stack-sizes` makes LLVM emit stack size metadata.
 
 > **NOTE**: This LLVM feature only supports the ELF object format as of LLVM
 > 8.0. Using this flag with targets that use other object formats (e.g. macOS
@@ -35,7 +35,7 @@ Using the `-Z emit-stack-sizes` flag produces extra linker sections in the
 output *object file*.
 
 ``` console
-$ rustc -C opt-level=3 --emit=obj foo.rs
+$ crablangc -C opt-level=3 --emit=obj foo.rs
 
 $ size -A foo.o
 foo.o  :
@@ -47,7 +47,7 @@ section                                 size   addr
 .eh_frame                                 72      0
 Total                                     95
 
-$ rustc -C opt-level=3 --emit=obj -Z emit-stack-sizes foo.rs
+$ crablangc -C opt-level=3 --emit=obj -Z emit-stack-sizes foo.rs
 
 $ size -A foo.o
 foo.o  :
@@ -111,7 +111,7 @@ SECTIONS
 }
 ```
 
-The linker script must be passed to the linker using a rustc flag like `-C
+The linker script must be passed to the linker using a crablangc flag like `-C
 link-arg`.
 
 ```
@@ -128,12 +128,12 @@ fn main() {
 ```
 
 ``` console
-$ RUSTFLAGS="-Z emit-stack-sizes" cargo build --release
+$ CRABLANGFLAGS="-Z emit-stack-sizes" cargo build --release
 
 $ size -A target/release/hello | grep stack_sizes || echo section was not found
 section was not found
 
-$ RUSTFLAGS="-Z emit-stack-sizes" cargo rustc --release -- \
+$ CRABLANGFLAGS="-Z emit-stack-sizes" cargo crablangc --release -- \
     -C link-arg=-Wl,-Tkeep-stack-sizes.x \
     -C link-arg=-N
 

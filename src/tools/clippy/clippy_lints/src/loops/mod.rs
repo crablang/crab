@@ -19,10 +19,10 @@ mod while_let_loop;
 mod while_let_on_iterator;
 
 use clippy_utils::higher;
-use rustc_hir::{Expr, ExprKind, LoopSource, Pat};
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_session::{declare_lint_pass, declare_tool_lint};
-use rustc_span::source_map::Span;
+use crablangc_hir::{Expr, ExprKind, LoopSource, Pat};
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_span::source_map::Span;
 use utils::{make_iterator_snippet, IncrementVisitor, InitializeVisitor};
 
 declare_clippy_lint! {
@@ -34,7 +34,7 @@ declare_clippy_lint! {
     /// It is not as fast as a memcpy.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// # let src = vec![1];
     /// # let mut dst = vec![0; 65];
     /// for i in 0..src.len() {
@@ -43,7 +43,7 @@ declare_clippy_lint! {
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// # let src = vec![1];
     /// # let mut dst = vec![0; 65];
     /// dst[64..(src.len() + 64)].clone_from_slice(&src[..]);
@@ -65,7 +65,7 @@ declare_clippy_lint! {
     /// the bounds check that is done when indexing.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// let vec = vec!['a', 'b', 'c'];
     /// for i in 0..vec.len() {
     ///     println!("{}", vec[i]);
@@ -73,7 +73,7 @@ declare_clippy_lint! {
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// let vec = vec!['a', 'b', 'c'];
     /// for i in vec {
     ///     println!("{}", i);
@@ -98,7 +98,7 @@ declare_clippy_lint! {
     /// types.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// // with `y` a `Vec` or slice:
     /// # let y = vec![1];
     /// for x in y.iter() {
@@ -107,7 +107,7 @@ declare_clippy_lint! {
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// # let y = vec![1];
     /// for x in &y {
     ///     // ..
@@ -128,7 +128,7 @@ declare_clippy_lint! {
     /// Readability.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// # let y = vec![1];
     /// // with `y` a `Vec` or slice:
     /// for x in y.into_iter() {
@@ -136,7 +136,7 @@ declare_clippy_lint! {
     /// }
     /// ```
     /// can be rewritten to
-    /// ```rust
+    /// ```crablang
     /// # let y = vec![1];
     /// for x in y {
     ///     // ..
@@ -157,8 +157,8 @@ declare_clippy_lint! {
     /// value, or `None` otherwise. The insidious thing is that `Option<_>`
     /// implements `IntoIterator`, so that possibly one value will be iterated,
     /// leading to some hard to find bugs. No one will want to write such code
-    /// [except to win an Underhanded Rust
-    /// Contest](https://www.reddit.com/r/rust/comments/3hb0wm/underhanded_rust_contest/cu5yuhr).
+    /// [except to win an Underhanded CrabLang
+    /// Contest](https://www.reddit.com/r/crablang/comments/3hb0wm/underhanded_crablang_contest/cu5yuhr).
     ///
     /// ### Example
     /// ```ignore
@@ -182,10 +182,10 @@ declare_clippy_lint! {
     /// readable.
     ///
     /// ### Known problems
-    /// Sometimes the wrong binding is displayed ([#383](https://github.com/rust-lang/rust-clippy/issues/383)).
+    /// Sometimes the wrong binding is displayed ([#383](https://github.com/crablang/crablang-clippy/issues/383)).
     ///
     /// ### Example
-    /// ```rust,no_run
+    /// ```crablang,no_run
     /// # let y = Some(1);
     /// loop {
     ///     let x = match y {
@@ -215,7 +215,7 @@ declare_clippy_lint! {
     /// declutters the code and may be faster in some instances.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// # let v = vec![1];
     /// # fn bar(bar: usize, baz: usize) {}
     /// let mut i = 0;
@@ -226,7 +226,7 @@ declare_clippy_lint! {
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// # let v = vec![1];
     /// # fn bar(bar: usize, baz: usize) {}
     /// for (i, item) in v.iter().enumerate() { bar(i, *item); }
@@ -252,8 +252,8 @@ declare_clippy_lint! {
     ///   - yield or pause the thread
     ///
     /// For `std` targets, this can be done with
-    /// [`std::thread::sleep`](https://doc.rust-lang.org/std/thread/fn.sleep.html)
-    /// or [`std::thread::yield_now`](https://doc.rust-lang.org/std/thread/fn.yield_now.html).
+    /// [`std::thread::sleep`](https://doc.crablang.org/std/thread/fn.sleep.html)
+    /// or [`std::thread::yield_now`](https://doc.crablang.org/std/thread/fn.yield_now.html).
     ///
     /// For `no_std` targets, doing this is more complicated, especially because
     /// `#[panic_handler]`s can't panic. To stop/pause the thread, you will
@@ -337,7 +337,7 @@ declare_clippy_lint! {
     /// code.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// loop {
     ///     ..;
     ///     break;
@@ -360,7 +360,7 @@ declare_clippy_lint! {
     /// False positive when mutation is followed by a `break`, but the `break` is not immediately
     /// after the mutation:
     ///
-    /// ```rust
+    /// ```crablang
     /// let mut x = 5;
     /// for _ in 0..x {
     ///     x += 1; // x is a range bound that is mutated
@@ -369,10 +369,10 @@ declare_clippy_lint! {
     /// }
     /// ```
     ///
-    /// False positive on nested loops ([#6072](https://github.com/rust-lang/rust-clippy/issues/6072))
+    /// False positive on nested loops ([#6072](https://github.com/crablang/crablang-clippy/issues/6072))
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// let mut foo = 42;
     /// for i in 0..foo {
     ///     foo -= 1;
@@ -400,7 +400,7 @@ declare_clippy_lint! {
     /// in the condition and only `Upvar` `b` gets mutated in the body, the lint will not trigger.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// let i = 0;
     /// while i > 10 {
     ///     println!("let me loop forever!");
@@ -423,7 +423,7 @@ declare_clippy_lint! {
     /// have better performance.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// let item1 = 2;
     /// let item2 = 3;
     /// let mut vec: Vec<u8> = Vec::new();
@@ -436,7 +436,7 @@ declare_clippy_lint! {
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// let item1 = 2;
     /// let item2 = 3;
     /// let mut vec: Vec<u8> = vec![item1; 20];
@@ -457,7 +457,7 @@ declare_clippy_lint! {
     /// single element.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// let item1 = 2;
     /// for item in &[item1] {
     ///     println!("{}", item);
@@ -465,7 +465,7 @@ declare_clippy_lint! {
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// let item1 = 2;
     /// let item = &item1;
     /// println!("{}", item);
@@ -487,7 +487,7 @@ declare_clippy_lint! {
     ///
     /// ### Example
     ///
-    /// ```rust
+    /// ```crablang
     /// let x = vec![Some(1), Some(2), Some(3)];
     /// for n in x {
     ///     if let Some(n) = n {
@@ -496,7 +496,7 @@ declare_clippy_lint! {
     /// }
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// let x = vec![Some(1), Some(2), Some(3)];
     /// for n in x.into_iter().flatten() {
     ///     println!("{}", n);
@@ -531,7 +531,7 @@ declare_clippy_lint! {
     /// while b.load(Ordering::Acquire) {};
     /// ```
     /// Use instead:
-    /// ```rust,no_run
+    /// ```crablang,no_run
     ///# use core::sync::atomic::{AtomicBool, Ordering};
     ///# let b = AtomicBool::new(true);
     /// while b.load(Ordering::Acquire) {
@@ -553,7 +553,7 @@ declare_clippy_lint! {
     ///
     /// ### Example
     ///
-    /// ```rust
+    /// ```crablang
     /// fn example(arr: Vec<i32>) -> Option<i32> {
     ///     for el in arr {
     ///         if el == 1 {
@@ -564,7 +564,7 @@ declare_clippy_lint! {
     /// }
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// fn example(arr: Vec<i32>) -> Option<i32> {
     ///     arr.into_iter().find(|&el| el == 1)
     /// }

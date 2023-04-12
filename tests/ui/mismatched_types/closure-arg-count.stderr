@@ -186,4 +186,4 @@ LL | fn call<F, R>(_: F) where F: FnOnce() -> R {}
 
 error: aborting due to 14 previous errors
 
-For more information about this error, try `rustc --explain E0593`.
+For more information about this error, try `crablangc --explain E0593`.

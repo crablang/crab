@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 
 trait Tr: !SuperA {}
 //~^ ERROR negative bounds are not supported

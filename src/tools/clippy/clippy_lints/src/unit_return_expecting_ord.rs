@@ -1,12 +1,12 @@
 use clippy_utils::diagnostics::{span_lint, span_lint_and_help};
 use if_chain::if_chain;
-use rustc_hir::def_id::DefId;
-use rustc_hir::{Closure, Expr, ExprKind, StmtKind};
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_middle::ty;
-use rustc_middle::ty::{Clause, GenericPredicates, PredicateKind, ProjectionPredicate, TraitPredicate};
-use rustc_session::{declare_lint_pass, declare_tool_lint};
-use rustc_span::{sym, BytePos, Span};
+use crablangc_hir::def_id::DefId;
+use crablangc_hir::{Closure, Expr, ExprKind, StmtKind};
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_middle::ty;
+use crablangc_middle::ty::{Clause, GenericPredicates, PredicateKind, ProjectionPredicate, TraitPredicate};
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_span::{sym, BytePos, Span};
 
 declare_clippy_lint! {
     /// ### What it does
@@ -25,7 +25,7 @@ declare_clippy_lint! {
     /// way of specifying this without triggering needless_return lint
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// let mut twins = vec!((1, 1), (2, 2));
     /// twins.sort_by_key(|x| { x.1; });
     /// ```
@@ -83,8 +83,8 @@ fn get_args_to_check<'tcx>(cx: &LateContext<'tcx>, expr: &'tcx Expr<'tcx>) -> Ve
         let partial_ord_preds =
             get_trait_predicates_for_trait_id(cx, generics, cx.tcx.lang_items().partial_ord_trait());
         // Trying to call erase_late_bound_regions on fn_sig.inputs() gives the following error
-        // The trait `rustc::ty::TypeFoldable<'_>` is not implemented for
-        // `&[rustc_middle::ty::Ty<'_>]`
+        // The trait `crablangc::ty::TypeFoldable<'_>` is not implemented for
+        // `&[crablangc_middle::ty::Ty<'_>]`
         let inputs_output = cx.tcx.erase_late_bound_regions(fn_sig.inputs_and_output());
         inputs_output
             .iter()

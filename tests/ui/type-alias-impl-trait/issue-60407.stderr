@@ -1,4 +1,4 @@
-error: fatal error triggered by #[rustc_error]
+error: fatal error triggered by #[crablangc_error]
   --> $DIR/issue-60407.rs:8:1
    |
 LL | fn main() {

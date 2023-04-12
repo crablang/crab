@@ -6,5 +6,5 @@ include ../tools.mk
 all:
 	touch $(TMPDIR)/lib.rs
 
-	$(RUSTC) --crate-type=lib -Z temps-dir=$(TMPDIR)/temp1 $(TMPDIR)/lib.rs & \
-	$(RUSTC) --crate-type=staticlib -Z temps-dir=$(TMPDIR)/temp2 $(TMPDIR)/lib.rs
+	$(CRABLANGC) --crate-type=lib -Z temps-dir=$(TMPDIR)/temp1 $(TMPDIR)/lib.rs & \
+	$(CRABLANGC) --crate-type=staticlib -Z temps-dir=$(TMPDIR)/temp2 $(TMPDIR)/lib.rs

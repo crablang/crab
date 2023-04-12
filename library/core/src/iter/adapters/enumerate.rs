@@ -1,7 +1,7 @@
 use crate::iter::adapters::{
-    zip::try_get_unchecked, SourceIter, TrustedRandomAccess, TrustedRandomAccessNoCoerce,
+    zip::try_get_unchecked, SourceIter, TcrablangedRandomAccess, TcrablangedRandomAccessNoCoerce,
 };
-use crate::iter::{FusedIterator, InPlaceIterable, TrustedLen};
+use crate::iter::{FusedIterator, InPlaceIterable, TcrablangedLen};
 use crate::num::NonZeroUsize;
 use crate::ops::Try;
 
@@ -14,7 +14,7 @@ use crate::ops::Try;
 /// [`Iterator`]: trait.Iterator.html
 #[derive(Clone, Debug)]
 #[must_use = "iterators are lazy and do nothing unless consumed"]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub struct Enumerate<I> {
     iter: I,
     count: usize,
@@ -25,7 +25,7 @@ impl<I> Enumerate<I> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<I> Iterator for Enumerate<I>
 where
     I: Iterator,
@@ -42,7 +42,7 @@ where
     ///
     /// Might panic if the index of the element overflows a `usize`.
     #[inline]
-    #[rustc_inherit_overflow_checks]
+    #[crablangc_inherit_overflow_checks]
     fn next(&mut self) -> Option<(usize, <I as Iterator>::Item)> {
         let a = self.iter.next()?;
         let i = self.count;
@@ -56,7 +56,7 @@ where
     }
 
     #[inline]
-    #[rustc_inherit_overflow_checks]
+    #[crablangc_inherit_overflow_checks]
     fn nth(&mut self, n: usize) -> Option<(usize, I::Item)> {
         let a = self.iter.nth(n)?;
         let i = self.count + n;
@@ -81,7 +81,7 @@ where
             count: &'a mut usize,
             mut fold: impl FnMut(Acc, (usize, T)) -> R + 'a,
         ) -> impl FnMut(Acc, T) -> R + 'a {
-            #[rustc_inherit_overflow_checks]
+            #[crablangc_inherit_overflow_checks]
             move |acc, item| {
                 let acc = fold(acc, (*count, item));
                 *count += 1;
@@ -102,7 +102,7 @@ where
             mut count: usize,
             mut fold: impl FnMut(Acc, (usize, T)) -> Acc,
         ) -> impl FnMut(Acc, T) -> Acc {
-            #[rustc_inherit_overflow_checks]
+            #[crablangc_inherit_overflow_checks]
             move |acc, item| {
                 let acc = fold(acc, (count, item));
                 count += 1;
@@ -114,7 +114,7 @@ where
     }
 
     #[inline]
-    #[rustc_inherit_overflow_checks]
+    #[crablangc_inherit_overflow_checks]
     fn advance_by(&mut self, n: usize) -> Result<(), NonZeroUsize> {
         let remaining = self.iter.advance_by(n);
         let advanced = match remaining {
@@ -125,11 +125,11 @@ where
         remaining
     }
 
-    #[rustc_inherit_overflow_checks]
+    #[crablangc_inherit_overflow_checks]
     #[inline]
     unsafe fn __iterator_get_unchecked(&mut self, idx: usize) -> <Self as Iterator>::Item
     where
-        Self: TrustedRandomAccessNoCoerce,
+        Self: TcrablangedRandomAccessNoCoerce,
     {
         // SAFETY: the caller must uphold the contract for
         // `Iterator::__iterator_get_unchecked`.
@@ -138,7 +138,7 @@ where
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<I> DoubleEndedIterator for Enumerate<I>
 where
     I: ExactSizeIterator + DoubleEndedIterator,
@@ -213,7 +213,7 @@ where
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<I> ExactSizeIterator for Enumerate<I>
 where
     I: ExactSizeIterator,
@@ -228,14 +228,14 @@ where
 }
 
 #[doc(hidden)]
-#[unstable(feature = "trusted_random_access", issue = "none")]
-unsafe impl<I> TrustedRandomAccess for Enumerate<I> where I: TrustedRandomAccess {}
+#[unstable(feature = "tcrablanged_random_access", issue = "none")]
+unsafe impl<I> TcrablangedRandomAccess for Enumerate<I> where I: TcrablangedRandomAccess {}
 
 #[doc(hidden)]
-#[unstable(feature = "trusted_random_access", issue = "none")]
-unsafe impl<I> TrustedRandomAccessNoCoerce for Enumerate<I>
+#[unstable(feature = "tcrablanged_random_access", issue = "none")]
+unsafe impl<I> TcrablangedRandomAccessNoCoerce for Enumerate<I>
 where
-    I: TrustedRandomAccessNoCoerce,
+    I: TcrablangedRandomAccessNoCoerce,
 {
     const MAY_HAVE_SIDE_EFFECT: bool = I::MAY_HAVE_SIDE_EFFECT;
 }
@@ -243,8 +243,8 @@ where
 #[stable(feature = "fused", since = "1.26.0")]
 impl<I> FusedIterator for Enumerate<I> where I: FusedIterator {}
 
-#[unstable(feature = "trusted_len", issue = "37572")]
-unsafe impl<I> TrustedLen for Enumerate<I> where I: TrustedLen {}
+#[unstable(feature = "tcrablanged_len", issue = "37572")]
+unsafe impl<I> TcrablangedLen for Enumerate<I> where I: TcrablangedLen {}
 
 #[unstable(issue = "none", feature = "inplace_iteration")]
 unsafe impl<I> SourceIter for Enumerate<I>
@@ -263,7 +263,7 @@ where
 #[unstable(issue = "none", feature = "inplace_iteration")]
 unsafe impl<I: InPlaceIterable> InPlaceIterable for Enumerate<I> {}
 
-#[stable(feature = "default_iters", since = "CURRENT_RUSTC_VERSION")]
+#[stable(feature = "default_iters", since = "CURRENT_CRABLANGC_VERSION")]
 impl<I: Default> Default for Enumerate<I> {
     /// Creates an `Enumerate` iterator from the default value of `I`
     /// ```

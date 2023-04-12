@@ -12,4 +12,4 @@ LL |     let m::U { c } = u;
 
 error: aborting due to 2 previous errors
 
-For more information about this error, try `rustc --explain E0451`.
+For more information about this error, try `crablangc --explain E0451`.

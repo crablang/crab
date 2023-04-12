@@ -1,7 +1,7 @@
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 
-#[rustc_outlives]
-struct Foo<'a, 'b, T> { //~ ERROR rustc_outlives
+#[crablangc_outlives]
+struct Foo<'a, 'b, T> { //~ ERROR crablangc_outlives
     x: &'a &'b T
 }
 

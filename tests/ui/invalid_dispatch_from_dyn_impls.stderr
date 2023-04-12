@@ -37,4 +37,4 @@ LL | impl<T: ?Sized, U: ?Sized> DispatchFromDyn<OverAligned<U>> for OverAligned<
 
 error: aborting due to 5 previous errors
 
-For more information about this error, try `rustc --explain E0378`.
+For more information about this error, try `crablangc --explain E0378`.

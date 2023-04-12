@@ -3,7 +3,7 @@
 // This code produces a CFG with critical edges that, if we don't
 // handle properly, will cause invalid codegen.
 
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 
 enum State {
     Both,

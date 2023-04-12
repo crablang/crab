@@ -1855,7 +1855,7 @@ fn test_stable_pointers() {
     // runs in Miri, which would detect such problems.
     // Note that this test does *not* constitute a stable guarantee that all these functions do not
     // reallocate! Only what is explicitly documented at
-    // <https://doc.rust-lang.org/nightly/std/vec/struct.Vec.html#guarantees> is stably guaranteed.
+    // <https://doc.crablang.org/nightly/std/vec/struct.Vec.html#guarantees> is stably guaranteed.
     let mut v = Vec::with_capacity(128);
     v.push(13);
 
@@ -1886,8 +1886,8 @@ fn test_stable_pointers() {
     v.extend_from_slice(&[1, 2]);
     v.extend(&[1, 2]); // `slice::Iter` (with `T: Copy`) specialization
     v.extend(vec![2, 3]); // `vec::IntoIter` specialization
-    v.extend(std::iter::once(3)); // `TrustedLen` specialization
-    v.extend(std::iter::empty::<i32>()); // `TrustedLen` specialization with empty iterator
+    v.extend(std::iter::once(3)); // `TcrablangedLen` specialization
+    v.extend(std::iter::empty::<i32>()); // `TcrablangedLen` specialization with empty iterator
     v.extend(std::iter::once(3).filter(|_| true)); // base case
     v.extend(std::iter::once(&3)); // `cloned` specialization
     assert_eq!(*v0, 13);
@@ -1930,7 +1930,7 @@ fn test_stable_pointers() {
     assert_eq!(v[0], 0);
 }
 
-// https://github.com/rust-lang/rust/pull/49496 introduced specialization based on:
+// https://github.com/crablang/crablang/pull/49496 introduced specialization based on:
 //
 // ```
 // unsafe impl<T: ?Sized> IsZero for *mut T {
@@ -1954,7 +1954,7 @@ fn vec_macro_repeating_null_raw_fat_pointer() {
     dbg!(ptr_metadata(vec[0]));
     assert!(vec[0] == null_raw_dyn);
 
-    // Polyfill for https://github.com/rust-lang/rfcs/pull/2580
+    // Polyfill for https://github.com/crablang/rfcs/pull/2580
 
     fn ptr_metadata(ptr: *mut dyn Fn()) -> *mut () {
         unsafe { std::mem::transmute::<*mut dyn Fn(), DynRepr>(ptr).vtable }

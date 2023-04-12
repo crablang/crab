@@ -2,8 +2,8 @@
 
 use crate::common::{expected_output_path, UI_EXTENSIONS, UI_FIXED, UI_STDERR, UI_STDOUT};
 use crate::common::{incremental_dir, output_base_dir, output_base_name, output_testname_unique};
-use crate::common::{Assembly, Incremental, JsDocTest, MirOpt, RunMake, RustdocJson, Ui};
-use crate::common::{Codegen, CodegenUnits, DebugInfo, Debugger, Rustdoc};
+use crate::common::{Assembly, Incremental, JsDocTest, MirOpt, RunMake, CrabLangdocJson, Ui};
+use crate::common::{Codegen, CodegenUnits, DebugInfo, Debugger, CrabLangdoc};
 use crate::common::{CompareMode, FailMode, PassMode};
 use crate::common::{Config, TestPaths};
 use crate::common::{Pretty, RunPassValgrind};
@@ -16,7 +16,7 @@ use crate::read2::read2_abbreviated;
 use crate::util::{add_dylib_path, dylib_env_var, logv, PathBufExt};
 use crate::ColorConfig;
 use regex::{Captures, Regex};
-use rustfix::{apply_suggestions, get_suggestions_from_json, Filter};
+use crablangfix::{apply_suggestions, get_suggestions_from_json, Filter};
 
 use std::collections::hash_map::DefaultHasher;
 use std::collections::{HashMap, HashSet};
@@ -238,8 +238,8 @@ impl<'test> TestCx<'test> {
             Pretty => self.run_pretty_test(),
             DebugInfo => self.run_debuginfo_test(),
             Codegen => self.run_codegen_test(),
-            Rustdoc => self.run_rustdoc_test(),
-            RustdocJson => self.run_rustdoc_json_test(),
+            CrabLangdoc => self.run_crablangdoc_test(),
+            CrabLangdocJson => self.run_crablangdoc_json_test(),
             CodegenUnits => self.run_codegen_units_test(),
             Incremental => self.run_incremental_test(),
             RunMake => self.run_rmake_test(),
@@ -564,16 +564,16 @@ impl<'test> TestCx<'test> {
             ReadFrom::Path => self.testpaths.file.to_str().unwrap(),
         };
 
-        let mut rustc = Command::new(&self.config.rustc_path);
-        rustc
+        let mut crablangc = Command::new(&self.config.crablangc_path);
+        crablangc
             .arg(input)
             .args(&["-Z", &format!("unpretty={}", pretty_type)])
             .args(&["--target", &self.config.target])
             .arg("-L")
             .arg(&aux_dir)
             .args(&self.props.compile_flags)
-            .envs(self.props.rustc_env.clone());
-        self.maybe_add_external_args(&mut rustc, &self.config.target_rustcflags);
+            .envs(self.props.crablangc_env.clone());
+        self.maybe_add_external_args(&mut crablangc, &self.config.target_crablangcflags);
 
         let src = match read_from {
             ReadFrom::Stdin(src) => Some(src),
@@ -581,7 +581,7 @@ impl<'test> TestCx<'test> {
         };
 
         self.compose_and_run(
-            rustc,
+            crablangc,
             self.config.compile_lib_path.to_str().unwrap(),
             Some(aux_dir.to_str().unwrap()),
             src,
@@ -620,7 +620,7 @@ impl<'test> TestCx<'test> {
     }
 
     fn typecheck_source(&self, src: String) -> ProcRes {
-        let mut rustc = Command::new(&self.config.rustc_path);
+        let mut crablangc = Command::new(&self.config.crablangc_path);
 
         let out_dir = self.output_base_name().with_extension("pretty-out");
         let _ = fs::remove_dir_all(&out_dir);
@@ -630,7 +630,7 @@ impl<'test> TestCx<'test> {
 
         let aux_dir = self.aux_output_dir_name();
 
-        rustc
+        crablangc
             .arg("-")
             .arg("-Zno-codegen")
             .arg("--out-dir")
@@ -640,11 +640,11 @@ impl<'test> TestCx<'test> {
             .arg(&self.config.build_base)
             .arg("-L")
             .arg(aux_dir);
-        self.set_revision_flags(&mut rustc);
-        self.maybe_add_external_args(&mut rustc, &self.config.target_rustcflags);
-        rustc.args(&self.props.compile_flags);
+        self.set_revision_flags(&mut crablangc);
+        self.maybe_add_external_args(&mut crablangc, &self.config.target_crablangcflags);
+        crablangc.args(&self.props.compile_flags);
 
-        self.compose_and_run_compiler(rustc, Some(src))
+        self.compose_and_run_compiler(crablangc, Some(src))
     }
 
     fn run_debuginfo_test(&self) {
@@ -657,8 +657,8 @@ impl<'test> TestCx<'test> {
 
     fn run_debuginfo_cdb_test(&self) {
         let config = Config {
-            target_rustcflags: self.cleanup_debug_info_options(&self.config.target_rustcflags),
-            host_rustcflags: self.cleanup_debug_info_options(&self.config.host_rustcflags),
+            target_crablangcflags: self.cleanup_debug_info_options(&self.config.target_crablangcflags),
+            host_crablangcflags: self.cleanup_debug_info_options(&self.config.host_crablangcflags),
             ..self.config.clone()
         };
 
@@ -695,7 +695,7 @@ impl<'test> TestCx<'test> {
 
         let prefixes = {
             static PREFIXES: &[&str] = &["cdb", "cdbg"];
-            // No "native rust support" variation for CDB yet.
+            // No "native crablang support" variation for CDB yet.
             PREFIXES
         };
 
@@ -768,8 +768,8 @@ impl<'test> TestCx<'test> {
 
     fn run_debuginfo_gdb_test(&self) {
         let config = Config {
-            target_rustcflags: self.cleanup_debug_info_options(&self.config.target_rustcflags),
-            host_rustcflags: self.cleanup_debug_info_options(&self.config.host_rustcflags),
+            target_crablangcflags: self.cleanup_debug_info_options(&self.config.target_crablangcflags),
+            host_crablangcflags: self.cleanup_debug_info_options(&self.config.host_crablangcflags),
             ..self.config.clone()
         };
 
@@ -779,15 +779,15 @@ impl<'test> TestCx<'test> {
     }
 
     fn run_debuginfo_gdb_test_no_opt(&self) {
-        let prefixes = if self.config.gdb_native_rust {
-            // GDB with Rust
+        let prefixes = if self.config.gdb_native_crablang {
+            // GDB with CrabLang
             static PREFIXES: &[&str] = &["gdb", "gdbr"];
-            println!("NOTE: compiletest thinks it is using GDB with native rust support");
+            println!("NOTE: compiletest thinks it is using GDB with native crablang support");
             PREFIXES
         } else {
             // Generic GDB
             static PREFIXES: &[&str] = &["gdb", "gdbg"];
-            println!("NOTE: compiletest thinks it is using GDB without native rust support");
+            println!("NOTE: compiletest thinks it is using GDB without native crablang support");
             PREFIXES
         };
 
@@ -832,7 +832,7 @@ impl<'test> TestCx<'test> {
             script_str.push_str("target remote :5039\n");
             script_str.push_str(&format!(
                 "set solib-search-path \
-                 ./{}/stage2/lib/rustlib/{}/lib/\n",
+                 ./{}/stage2/lib/crablanglib/{}/lib/\n",
                 self.config.host, self.config.target
             ));
             for line in &breakpoint_lines {
@@ -923,11 +923,11 @@ impl<'test> TestCx<'test> {
                 println!("Adb process is already finished.");
             }
         } else {
-            let rust_src_root =
-                self.config.find_rust_src_root().expect("Could not find Rust source root");
-            let rust_pp_module_rel_path = Path::new("./src/etc");
-            let rust_pp_module_abs_path =
-                rust_src_root.join(rust_pp_module_rel_path).to_str().unwrap().to_owned();
+            let crablang_src_root =
+                self.config.find_crablang_src_root().expect("Could not find CrabLang source root");
+            let crablang_pp_module_rel_path = Path::new("./src/etc");
+            let crablang_pp_module_abs_path =
+                crablang_src_root.join(crablang_pp_module_rel_path).to_str().unwrap().to_owned();
             // write debugger script
             let mut script_str = String::with_capacity(2048);
             script_str.push_str(&format!("set charset {}\n", Self::charset()));
@@ -942,7 +942,7 @@ impl<'test> TestCx<'test> {
                         // GDB's script auto loading safe path
                         script_str.push_str(&format!(
                             "add-auto-load-safe-path {}\n",
-                            rust_pp_module_abs_path.replace(r"\", r"\\")
+                            crablang_pp_module_abs_path.replace(r"\", r"\\")
                         ));
 
                         let output_base_dir = self.output_base_dir().to_str().unwrap().to_owned();
@@ -970,15 +970,15 @@ impl<'test> TestCx<'test> {
 
             // Add the pretty printer directory to GDB's source-file search path
             script_str
-                .push_str(&format!("directory {}\n", rust_pp_module_abs_path.replace(r"\", r"\\")));
+                .push_str(&format!("directory {}\n", crablang_pp_module_abs_path.replace(r"\", r"\\")));
 
             // Load the target executable
             script_str
                 .push_str(&format!("file {}\n", exe_file.to_str().unwrap().replace(r"\", r"\\")));
 
-            // Force GDB to print values in the Rust format.
-            if self.config.gdb_native_rust {
-                script_str.push_str("set language rust\n");
+            // Force GDB to print values in the CrabLang format.
+            if self.config.gdb_native_crablang {
+                script_str.push_str("set language crablang\n");
             }
 
             // Add line breakpoints
@@ -1004,9 +1004,9 @@ impl<'test> TestCx<'test> {
 
             let mut gdb = Command::new(self.config.gdb.as_ref().unwrap());
             let pythonpath = if let Ok(pp) = std::env::var("PYTHONPATH") {
-                format!("{pp}:{rust_pp_module_abs_path}")
+                format!("{pp}:{crablang_pp_module_abs_path}")
             } else {
-                rust_pp_module_abs_path
+                crablang_pp_module_abs_path
             };
             gdb.args(debugger_opts).env("PYTHONPATH", pythonpath);
 
@@ -1029,8 +1029,8 @@ impl<'test> TestCx<'test> {
         }
 
         let config = Config {
-            target_rustcflags: self.cleanup_debug_info_options(&self.config.target_rustcflags),
-            host_rustcflags: self.cleanup_debug_info_options(&self.config.host_rustcflags),
+            target_crablangcflags: self.cleanup_debug_info_options(&self.config.target_crablangcflags),
+            host_crablangcflags: self.cleanup_debug_info_options(&self.config.host_crablangcflags),
             ..self.config.clone()
         };
 
@@ -1064,13 +1064,13 @@ impl<'test> TestCx<'test> {
             }
         }
 
-        let prefixes = if self.config.lldb_native_rust {
+        let prefixes = if self.config.lldb_native_crablang {
             static PREFIXES: &[&str] = &["lldb", "lldbr"];
-            println!("NOTE: compiletest thinks it is using LLDB with native rust support");
+            println!("NOTE: compiletest thinks it is using LLDB with native crablang support");
             PREFIXES
         } else {
             static PREFIXES: &[&str] = &["lldb", "lldbg"];
-            println!("NOTE: compiletest thinks it is using LLDB without native rust support");
+            println!("NOTE: compiletest thinks it is using LLDB without native crablang support");
             PREFIXES
         };
 
@@ -1093,14 +1093,14 @@ impl<'test> TestCx<'test> {
         // Make LLDB emit its version, so we have it documented in the test output
         script_str.push_str("version\n");
 
-        // Switch LLDB into "Rust mode"
-        let rust_src_root =
-            self.config.find_rust_src_root().expect("Could not find Rust source root");
-        let rust_pp_module_rel_path = Path::new("./src/etc/lldb_lookup.py");
-        let rust_pp_module_abs_path =
-            rust_src_root.join(rust_pp_module_rel_path).to_str().unwrap().to_owned();
+        // Switch LLDB into "CrabLang mode"
+        let crablang_src_root =
+            self.config.find_crablang_src_root().expect("Could not find CrabLang source root");
+        let crablang_pp_module_rel_path = Path::new("./src/etc/lldb_lookup.py");
+        let crablang_pp_module_abs_path =
+            crablang_src_root.join(crablang_pp_module_rel_path).to_str().unwrap().to_owned();
 
-        let rust_type_regexes = vec![
+        let crablang_type_regexes = vec![
             "^(alloc::([a-z_]+::)+)String$",
             "^&(mut )?str$",
             "^&(mut )?\\[.+\\]$",
@@ -1121,15 +1121,15 @@ impl<'test> TestCx<'test> {
         ];
 
         script_str
-            .push_str(&format!("command script import {}\n", &rust_pp_module_abs_path[..])[..]);
+            .push_str(&format!("command script import {}\n", &crablang_pp_module_abs_path[..])[..]);
         script_str.push_str("type synthetic add -l lldb_lookup.synthetic_lookup -x '.*' ");
-        script_str.push_str("--category Rust\n");
-        for type_regex in rust_type_regexes {
+        script_str.push_str("--category CrabLang\n");
+        for type_regex in crablang_type_regexes {
             script_str.push_str("type summary add -F lldb_lookup.summary_lookup  -e -x -h ");
             script_str.push_str(&format!("'{}' ", type_regex));
-            script_str.push_str("--category Rust\n");
+            script_str.push_str("--category CrabLang\n");
         }
-        script_str.push_str("type category enable Rust\n");
+        script_str.push_str("type category enable CrabLang\n");
 
         // Set breakpoints on every line that contains the string "#break"
         let source_file_name = self.testpaths.file.file_name().unwrap().to_string_lossy();
@@ -1155,7 +1155,7 @@ impl<'test> TestCx<'test> {
         let debugger_script = self.make_out_name("debugger.script");
 
         // Let LLDB execute the script via lldb_batchmode.py
-        let debugger_run_result = self.run_lldb(&exe_file, &debugger_script, &rust_src_root);
+        let debugger_run_result = self.run_lldb(&exe_file, &debugger_script, &crablang_src_root);
 
         if !debugger_run_result.status.success() {
             self.fatal_proc_rec("Error while running LLDB", &debugger_run_result);
@@ -1170,10 +1170,10 @@ impl<'test> TestCx<'test> {
         &self,
         test_executable: &Path,
         debugger_script: &Path,
-        rust_src_root: &Path,
+        crablang_src_root: &Path,
     ) -> ProcRes {
         // Prepare the lldb_batchmode which executes the debugger script
-        let lldb_script_path = rust_src_root.join("src/etc/lldb_batchmode.py");
+        let lldb_script_path = crablang_src_root.join("src/etc/lldb_batchmode.py");
         let pythonpath = if let Ok(pp) = std::env::var("PYTHONPATH") {
             format!("{pp}:{}", self.config.lldb_python_dir.as_ref().unwrap())
         } else {
@@ -1206,7 +1206,7 @@ impl<'test> TestCx<'test> {
     }
 
     fn cleanup_debug_info_options(&self, options: &Vec<String>) -> Vec<String> {
-        // Remove options that are either unwanted (-O) or may lead to duplicates due to RUSTFLAGS.
+        // Remove options that are either unwanted (-O) or may lead to duplicates due to CRABLANGFLAGS.
         let options_to_remove = ["-O".to_owned(), "-g".to_owned(), "--debuginfo".to_owned()];
 
         options.iter().filter(|x| !options_to_remove.contains(x)).map(|x| x.clone()).collect()
@@ -1503,7 +1503,7 @@ impl<'test> TestCx<'test> {
                 // want to actually assert warnings about all this code. Instead
                 // let's just ignore unused code warnings by defaults and tests
                 // can turn it back on if needed.
-                if !self.is_rustdoc()
+                if !self.is_crablangdoc()
                     // Note that we use the local pass mode here as we don't want
                     // to set unused to allow if we've overridden the pass mode
                     // via command line flags.
@@ -1517,7 +1517,7 @@ impl<'test> TestCx<'test> {
             _ => AllowUnused::No,
         };
 
-        let rustc = self.make_compile_args(
+        let crablangc = self.make_compile_args(
             &self.testpaths.file,
             output_file,
             emit,
@@ -1525,7 +1525,7 @@ impl<'test> TestCx<'test> {
             LinkToAux::Yes,
         );
 
-        self.compose_and_run_compiler(rustc, None)
+        self.compose_and_run_compiler(crablangc, None)
     }
 
     fn document(&self, out_dir: &Path) -> ProcRes {
@@ -1551,10 +1551,10 @@ impl<'test> TestCx<'test> {
 
         let aux_dir = self.aux_output_dir_name();
 
-        let rustdoc_path = self.config.rustdoc_path.as_ref().expect("--rustdoc-path not passed");
-        let mut rustdoc = Command::new(rustdoc_path);
+        let crablangdoc_path = self.config.crablangdoc_path.as_ref().expect("--crablangdoc-path not passed");
+        let mut crablangdoc = Command::new(crablangdoc_path);
 
-        rustdoc
+        crablangdoc
             .arg("-L")
             .arg(self.config.run_lib_path.to_str().unwrap())
             .arg("-L")
@@ -1566,15 +1566,15 @@ impl<'test> TestCx<'test> {
             .arg(&self.testpaths.file)
             .args(&self.props.compile_flags);
 
-        if self.config.mode == RustdocJson {
-            rustdoc.arg("--output-format").arg("json").arg("-Zunstable-options");
+        if self.config.mode == CrabLangdocJson {
+            crablangdoc.arg("--output-format").arg("json").arg("-Zunstable-options");
         }
 
         if let Some(ref linker) = self.config.linker {
-            rustdoc.arg(format!("-Clinker={}", linker));
+            crablangdoc.arg(format!("-Clinker={}", linker));
         }
 
-        self.compose_and_run_compiler(rustdoc, None)
+        self.compose_and_run_compiler(crablangdoc, None)
     }
 
     fn exec_compiled_test(&self) -> ProcRes {
@@ -1687,7 +1687,7 @@ impl<'test> TestCx<'test> {
 
     fn is_vxworks_pure_static(&self) -> bool {
         if self.config.target.contains("vxworks") {
-            match env::var("RUST_VXWORKS_TEST_DYLINK") {
+            match env::var("CRABLANG_VXWORKS_TEST_DYLINK") {
                 Ok(s) => s != "1",
                 _ => true,
             }
@@ -1700,7 +1700,7 @@ impl<'test> TestCx<'test> {
         self.config.target.contains("vxworks") && !self.is_vxworks_pure_static()
     }
 
-    fn build_all_auxiliary(&self, rustc: &mut Command) -> PathBuf {
+    fn build_all_auxiliary(&self, crablangc: &mut Command) -> PathBuf {
         let aux_dir = self.aux_output_dir_name();
 
         if !self.props.aux_builds.is_empty() {
@@ -1716,18 +1716,18 @@ impl<'test> TestCx<'test> {
             let is_dylib = self.build_auxiliary(&aux_path, &aux_dir);
             let lib_name =
                 get_lib_name(&aux_path.trim_end_matches(".rs").replace('-', "_"), is_dylib);
-            rustc.arg("--extern").arg(format!("{}={}/{}", aux_name, aux_dir.display(), lib_name));
+            crablangc.arg("--extern").arg(format!("{}={}/{}", aux_name, aux_dir.display(), lib_name));
         }
 
         aux_dir
     }
 
-    fn compose_and_run_compiler(&self, mut rustc: Command, input: Option<String>) -> ProcRes {
-        let aux_dir = self.build_all_auxiliary(&mut rustc);
-        self.props.unset_rustc_env.iter().fold(&mut rustc, Command::env_remove);
-        rustc.envs(self.props.rustc_env.clone());
+    fn compose_and_run_compiler(&self, mut crablangc: Command, input: Option<String>) -> ProcRes {
+        let aux_dir = self.build_all_auxiliary(&mut crablangc);
+        self.props.unset_crablangc_env.iter().fold(&mut crablangc, Command::env_remove);
+        crablangc.envs(self.props.crablangc_env.clone());
         self.compose_and_run(
-            rustc,
+            crablangc,
             self.config.compile_lib_path.to_str().unwrap(),
             Some(aux_dir.to_str().unwrap()),
             input,
@@ -1750,7 +1750,7 @@ impl<'test> TestCx<'test> {
         // Create the directory for the stdout/stderr files.
         create_dir_all(aux_cx.output_base_dir()).unwrap();
         let input_file = &aux_testpaths.file;
-        let mut aux_rustc = aux_cx.make_compile_args(
+        let mut aux_crablangc = aux_cx.make_compile_args(
             input_file,
             aux_output,
             Emit::None,
@@ -1758,10 +1758,10 @@ impl<'test> TestCx<'test> {
             LinkToAux::No,
         );
 
-        for key in &aux_props.unset_rustc_env {
-            aux_rustc.env_remove(key);
+        for key in &aux_props.unset_crablangc_env {
+            aux_crablangc.env_remove(key);
         }
-        aux_rustc.envs(aux_props.rustc_env.clone());
+        aux_crablangc.envs(aux_props.crablangc_env.clone());
 
         let (dylib, crate_type) = if aux_props.no_prefer_dynamic {
             (true, None)
@@ -1790,13 +1790,13 @@ impl<'test> TestCx<'test> {
         };
 
         if let Some(crate_type) = crate_type {
-            aux_rustc.args(&["--crate-type", crate_type]);
+            aux_crablangc.args(&["--crate-type", crate_type]);
         }
 
-        aux_rustc.arg("-L").arg(&aux_dir);
+        aux_crablangc.arg("-L").arg(&aux_dir);
 
         let auxres = aux_cx.compose_and_run(
-            aux_rustc,
+            aux_crablangc,
             aux_cx.config.compile_lib_path.to_str().unwrap(),
             Some(aux_dir.to_str().unwrap()),
             None,
@@ -1874,10 +1874,10 @@ impl<'test> TestCx<'test> {
         result
     }
 
-    fn is_rustdoc(&self) -> bool {
-        self.config.src_base.ends_with("rustdoc-ui")
-            || self.config.src_base.ends_with("rustdoc-js")
-            || self.config.src_base.ends_with("rustdoc-json")
+    fn is_crablangdoc(&self) -> bool {
+        self.config.src_base.ends_with("crablangdoc-ui")
+            || self.config.src_base.ends_with("crablangdoc-js")
+            || self.config.src_base.ends_with("crablangdoc-json")
     }
 
     fn make_compile_args(
@@ -1889,16 +1889,16 @@ impl<'test> TestCx<'test> {
         link_to_aux: LinkToAux,
     ) -> Command {
         let is_aux = input_file.components().map(|c| c.as_os_str()).any(|c| c == "auxiliary");
-        let is_rustdoc = self.is_rustdoc() && !is_aux;
-        let mut rustc = if !is_rustdoc {
-            Command::new(&self.config.rustc_path)
+        let is_crablangdoc = self.is_crablangdoc() && !is_aux;
+        let mut crablangc = if !is_crablangdoc {
+            Command::new(&self.config.crablangc_path)
         } else {
-            Command::new(&self.config.rustdoc_path.clone().expect("no rustdoc built yet"))
+            Command::new(&self.config.crablangdoc_path.clone().expect("no crablangdoc built yet"))
         };
-        rustc.arg(input_file);
+        crablangc.arg(input_file);
 
         // Use a single thread for efficiency and a deterministic error message order
-        rustc.arg("-Zthreads=1");
+        crablangc.arg("-Zthreads=1");
 
         // Optionally prevent default --target if specified in test compile-flags.
         let custom_target = self.props.compile_flags.iter().any(|x| x.starts_with("--target"));
@@ -1907,22 +1907,22 @@ impl<'test> TestCx<'test> {
             let target =
                 if self.props.force_host { &*self.config.host } else { &*self.config.target };
 
-            rustc.arg(&format!("--target={}", target));
+            crablangc.arg(&format!("--target={}", target));
         }
-        self.set_revision_flags(&mut rustc);
+        self.set_revision_flags(&mut crablangc);
 
-        if !is_rustdoc {
+        if !is_crablangdoc {
             if let Some(ref incremental_dir) = self.props.incremental_dir {
-                rustc.args(&["-C", &format!("incremental={}", incremental_dir.display())]);
-                rustc.args(&["-Z", "incremental-verify-ich"]);
+                crablangc.args(&["-C", &format!("incremental={}", incremental_dir.display())]);
+                crablangc.args(&["-Z", "incremental-verify-ich"]);
             }
 
             if self.config.mode == CodegenUnits {
-                rustc.args(&["-Z", "human_readable_cgu_names"]);
+                crablangc.args(&["-Z", "human_readable_cgu_names"]);
             }
         }
 
-        if self.config.optimize_tests && !is_rustdoc {
+        if self.config.optimize_tests && !is_crablangdoc {
             match self.config.mode {
                 Ui => {
                     // If optimize-tests is true we still only want to optimize tests that actually get
@@ -1937,12 +1937,12 @@ impl<'test> TestCx<'test> {
                             .iter()
                             .any(|arg| arg == "-O" || arg.contains("opt-level"))
                     {
-                        rustc.arg("-O");
+                        crablangc.arg("-O");
                     }
                 }
                 DebugInfo => { /* debuginfo tests must be unoptimized */ }
                 _ => {
-                    rustc.arg("-O");
+                    crablangc.arg("-O");
                 }
             }
         }
@@ -1955,33 +1955,33 @@ impl<'test> TestCx<'test> {
                 if self.props.error_patterns.is_empty()
                     && self.props.regex_error_patterns.is_empty()
                 {
-                    rustc.args(&["--error-format", "json"]);
-                    rustc.args(&["--json", "future-incompat"]);
+                    crablangc.args(&["--error-format", "json"]);
+                    crablangc.args(&["--json", "future-incompat"]);
                 }
-                rustc.arg("-Zui-testing");
-                rustc.arg("-Zdeduplicate-diagnostics=no");
+                crablangc.arg("-Zui-testing");
+                crablangc.arg("-Zdeduplicate-diagnostics=no");
             }
             Ui => {
                 if !self.props.compile_flags.iter().any(|s| s.starts_with("--error-format")) {
-                    rustc.args(&["--error-format", "json"]);
-                    rustc.args(&["--json", "future-incompat"]);
+                    crablangc.args(&["--error-format", "json"]);
+                    crablangc.args(&["--json", "future-incompat"]);
                 }
-                rustc.arg("-Ccodegen-units=1");
+                crablangc.arg("-Ccodegen-units=1");
                 // Hide line numbers to reduce churn
-                rustc.arg("-Zui-testing");
+                crablangc.arg("-Zui-testing");
                 // Hide libstd sources from ui tests to make sure we generate the stderr
                 // output that users will see.
                 // Without this, we may be producing good diagnostics in-tree but users
                 // will not see half the information.
-                rustc.arg("-Zsimulate-remapped-rust-src-base=/rustc/FAKE_PREFIX");
-                rustc.arg("-Ztranslate-remapped-path-to-local-path=no");
+                crablangc.arg("-Zsimulate-remapped-crablang-src-base=/crablangc/FAKE_PREFIX");
+                crablangc.arg("-Ztranslate-remapped-path-to-local-path=no");
 
-                rustc.arg("-Zdeduplicate-diagnostics=no");
+                crablangc.arg("-Zdeduplicate-diagnostics=no");
                 // FIXME: use this for other modes too, for perf?
-                rustc.arg("-Cstrip=debuginfo");
+                crablangc.arg("-Cstrip=debuginfo");
             }
             MirOpt => {
-                rustc.args(&[
+                crablangc.args(&[
                     "-Copt-level=1",
                     "-Zdump-mir=all",
                     "-Zvalidate-mir",
@@ -1989,9 +1989,9 @@ impl<'test> TestCx<'test> {
                     "-Zmir-pretty-relative-line-numbers=yes",
                 ]);
                 if let Some(pass) = &self.props.mir_unit_test {
-                    rustc.args(&["-Zmir-opt-level=0", &format!("-Zmir-enable-passes=+{}", pass)]);
+                    crablangc.args(&["-Zmir-opt-level=0", &format!("-Zmir-enable-passes=+{}", pass)]);
                 } else {
-                    rustc.arg("-Zmir-opt-level=4");
+                    crablangc.arg("-Zmir-opt-level=4");
                 }
 
                 let mir_dump_dir = self.get_mir_dump_dir();
@@ -2001,16 +2001,16 @@ impl<'test> TestCx<'test> {
                 dir_opt.push_str(mir_dump_dir.to_str().unwrap());
                 debug!("dir_opt: {:?}", dir_opt);
 
-                rustc.arg(dir_opt);
+                crablangc.arg(dir_opt);
             }
-            RunPassValgrind | Pretty | DebugInfo | Codegen | Rustdoc | RustdocJson | RunMake
+            RunPassValgrind | Pretty | DebugInfo | Codegen | CrabLangdoc | CrabLangdocJson | RunMake
             | CodegenUnits | JsDocTest | Assembly => {
                 // do not use JSON output
             }
         }
 
         if self.props.remap_src_base {
-            rustc.arg(format!(
+            crablangc.arg(format!(
                 "--remap-path-prefix={}={}",
                 self.config.src_base.display(),
                 FAKE_SRC_BASE,
@@ -2019,58 +2019,58 @@ impl<'test> TestCx<'test> {
 
         match emit {
             Emit::None => {}
-            Emit::Metadata if is_rustdoc => {}
+            Emit::Metadata if is_crablangdoc => {}
             Emit::Metadata => {
-                rustc.args(&["--emit", "metadata"]);
+                crablangc.args(&["--emit", "metadata"]);
             }
             Emit::LlvmIr => {
-                rustc.args(&["--emit", "llvm-ir"]);
+                crablangc.args(&["--emit", "llvm-ir"]);
             }
             Emit::Asm => {
-                rustc.args(&["--emit", "asm"]);
+                crablangc.args(&["--emit", "asm"]);
             }
         }
 
-        if !is_rustdoc {
+        if !is_crablangdoc {
             if self.config.target == "wasm32-unknown-unknown" || self.is_vxworks_pure_static() {
-                // rustc.arg("-g"); // get any backtrace at all on errors
+                // crablangc.arg("-g"); // get any backtrace at all on errors
             } else if !self.props.no_prefer_dynamic {
-                rustc.args(&["-C", "prefer-dynamic"]);
+                crablangc.args(&["-C", "prefer-dynamic"]);
             }
         }
 
         match output_file {
             TargetLocation::ThisFile(path) => {
-                rustc.arg("-o").arg(path);
+                crablangc.arg("-o").arg(path);
             }
             TargetLocation::ThisDirectory(path) => {
-                if is_rustdoc {
-                    // `rustdoc` uses `-o` for the output directory.
-                    rustc.arg("-o").arg(path);
+                if is_crablangdoc {
+                    // `crablangdoc` uses `-o` for the output directory.
+                    crablangc.arg("-o").arg(path);
                 } else {
-                    rustc.arg("--out-dir").arg(path);
+                    crablangc.arg("--out-dir").arg(path);
                 }
             }
         }
 
         match self.config.compare_mode {
             Some(CompareMode::Polonius) => {
-                rustc.args(&["-Zpolonius"]);
+                crablangc.args(&["-Zpolonius"]);
             }
             Some(CompareMode::Chalk) => {
-                rustc.args(&["-Ztrait-solver=chalk"]);
+                crablangc.args(&["-Ztrait-solver=chalk"]);
             }
             Some(CompareMode::NextSolver) => {
-                rustc.args(&["-Ztrait-solver=next"]);
+                crablangc.args(&["-Ztrait-solver=next"]);
             }
             Some(CompareMode::SplitDwarf) if self.config.target.contains("windows") => {
-                rustc.args(&["-Csplit-debuginfo=unpacked", "-Zunstable-options"]);
+                crablangc.args(&["-Csplit-debuginfo=unpacked", "-Zunstable-options"]);
             }
             Some(CompareMode::SplitDwarf) => {
-                rustc.args(&["-Csplit-debuginfo=unpacked"]);
+                crablangc.args(&["-Csplit-debuginfo=unpacked"]);
             }
             Some(CompareMode::SplitDwarfSingle) => {
-                rustc.args(&["-Csplit-debuginfo=packed"]);
+                crablangc.args(&["-Csplit-debuginfo=packed"]);
             }
             None => {}
         }
@@ -2078,37 +2078,37 @@ impl<'test> TestCx<'test> {
         // Add `-A unused` before `config` flags and in-test (`props`) flags, so that they can
         // overwrite this.
         if let AllowUnused::Yes = allow_unused {
-            rustc.args(&["-A", "unused"]);
+            crablangc.args(&["-A", "unused"]);
         }
 
         if self.props.force_host {
-            self.maybe_add_external_args(&mut rustc, &self.config.host_rustcflags);
+            self.maybe_add_external_args(&mut crablangc, &self.config.host_crablangcflags);
         } else {
-            self.maybe_add_external_args(&mut rustc, &self.config.target_rustcflags);
-            if !is_rustdoc {
+            self.maybe_add_external_args(&mut crablangc, &self.config.target_crablangcflags);
+            if !is_crablangdoc {
                 if let Some(ref linker) = self.config.linker {
-                    rustc.arg(format!("-Clinker={}", linker));
+                    crablangc.arg(format!("-Clinker={}", linker));
                 }
             }
         }
 
         // Use dynamic musl for tests because static doesn't allow creating dylibs
         if self.config.host.contains("musl") || self.is_vxworks_pure_dynamic() {
-            rustc.arg("-Ctarget-feature=-crt-static");
+            crablangc.arg("-Ctarget-feature=-crt-static");
         }
 
         if let LinkToAux::Yes = link_to_aux {
-            rustc.arg("-L").arg(self.aux_output_dir_name());
+            crablangc.arg("-L").arg(self.aux_output_dir_name());
         }
 
-        rustc.args(&self.props.compile_flags);
+        crablangc.args(&self.props.compile_flags);
 
-        rustc
+        crablangc
     }
 
     fn make_exe_name(&self) -> PathBuf {
         // Using a single letter here to keep the path length down for
-        // Windows.  Some test names get very long.  rustc creates `rcgu`
+        // Windows.  Some test names get very long.  crablangc creates `rcgu`
         // files with the module name appended to it which can more than
         // double the length.
         let mut f = self.output_base_dir().join("a");
@@ -2292,7 +2292,7 @@ impl<'test> TestCx<'test> {
     fn compile_test_and_save_ir(&self) -> ProcRes {
         let output_file = TargetLocation::ThisDirectory(self.output_base_dir());
         let input_file = &self.testpaths.file;
-        let rustc = self.make_compile_args(
+        let crablangc = self.make_compile_args(
             input_file,
             output_file,
             Emit::LlvmIr,
@@ -2300,7 +2300,7 @@ impl<'test> TestCx<'test> {
             LinkToAux::Yes,
         );
 
-        self.compose_and_run_compiler(rustc, None)
+        self.compose_and_run_compiler(crablangc, None)
     }
 
     fn compile_test_and_save_assembly(&self) -> (ProcRes, PathBuf) {
@@ -2325,10 +2325,10 @@ impl<'test> TestCx<'test> {
             None => self.fatal("missing 'assembly-output' header"),
         }
 
-        let rustc =
+        let crablangc =
             self.make_compile_args(input_file, output_file, emit, AllowUnused::No, LinkToAux::Yes);
 
-        (self.compose_and_run_compiler(rustc, None), output_path)
+        (self.compose_and_run_compiler(crablangc, None), output_path)
     }
 
     fn verify_with_filecheck(&self, output: &Path) -> ProcRes {
@@ -2394,7 +2394,7 @@ impl<'test> TestCx<'test> {
         if cfg!(target_os = "freebsd") { "ISO-8859-1" } else { "UTF-8" }
     }
 
-    fn run_rustdoc_test(&self) {
+    fn run_crablangdoc_test(&self) {
         assert!(self.revision.is_none(), "revisions not relevant here");
 
         let out_dir = self.output_base_dir();
@@ -2403,13 +2403,13 @@ impl<'test> TestCx<'test> {
 
         let proc_res = self.document(&out_dir);
         if !proc_res.status.success() {
-            self.fatal_proc_rec("rustdoc failed!", &proc_res);
+            self.fatal_proc_rec("crablangdoc failed!", &proc_res);
         }
 
         if self.props.check_test_line_numbers_match {
-            self.check_rustdoc_test_option(proc_res);
+            self.check_crablangdoc_test_option(proc_res);
         } else {
-            let root = self.config.find_rust_src_root().unwrap();
+            let root = self.config.find_crablang_src_root().unwrap();
             let mut cmd = Command::new(&self.config.python);
             cmd.arg(root.join("src/etc/htmldocck.py")).arg(&out_dir).arg(&self.testpaths.file);
             if self.config.bless {
@@ -2418,17 +2418,17 @@ impl<'test> TestCx<'test> {
             let res = self.cmd2procres(&mut cmd);
             if !res.status.success() {
                 self.fatal_proc_rec_with_ctx("htmldocck failed!", &res, |mut this| {
-                    this.compare_to_default_rustdoc(&out_dir)
+                    this.compare_to_default_crablangdoc(&out_dir)
                 });
             }
         }
     }
 
-    fn compare_to_default_rustdoc(&mut self, out_dir: &Path) {
+    fn compare_to_default_crablangdoc(&mut self, out_dir: &Path) {
         if !self.config.has_tidy {
             return;
         }
-        println!("info: generating a diff against nightly rustdoc");
+        println!("info: generating a diff against nightly crablangdoc");
 
         let suffix =
             self.safe_revision().map_or("nightly".into(), |path| path.to_owned() + "-nightly");
@@ -2438,35 +2438,35 @@ impl<'test> TestCx<'test> {
         create_dir_all(&compare_dir).unwrap();
 
         // We need to create a new struct for the lifetimes on `config` to work.
-        let new_rustdoc = TestCx {
+        let new_crablangdoc = TestCx {
             config: &Config {
-                // FIXME: use beta or a user-specified rustdoc instead of
+                // FIXME: use beta or a user-specified crablangdoc instead of
                 // hardcoding the default toolchain
-                rustdoc_path: Some("rustdoc".into()),
+                crablangdoc_path: Some("crablangdoc".into()),
                 // Needed for building auxiliary docs below
-                rustc_path: "rustc".into(),
+                crablangc_path: "crablangc".into(),
                 ..self.config.clone()
             },
             ..*self
         };
 
-        let output_file = TargetLocation::ThisDirectory(new_rustdoc.aux_output_dir_name());
-        let mut rustc = new_rustdoc.make_compile_args(
-            &new_rustdoc.testpaths.file,
+        let output_file = TargetLocation::ThisDirectory(new_crablangdoc.aux_output_dir_name());
+        let mut crablangc = new_crablangdoc.make_compile_args(
+            &new_crablangdoc.testpaths.file,
             output_file,
             Emit::None,
             AllowUnused::Yes,
             LinkToAux::Yes,
         );
-        new_rustdoc.build_all_auxiliary(&mut rustc);
+        new_crablangdoc.build_all_auxiliary(&mut crablangc);
 
-        let proc_res = new_rustdoc.document(&compare_dir);
+        let proc_res = new_crablangdoc.document(&compare_dir);
         if !proc_res.status.success() {
-            eprintln!("failed to run nightly rustdoc");
+            eprintln!("failed to run nightly crablangdoc");
             return;
         }
 
-        #[rustfmt::skip]
+        #[crablangfmt::skip]
         let tidy_args = [
             "--indent", "yes",
             "--indent-spaces", "2",
@@ -2503,7 +2503,7 @@ impl<'test> TestCx<'test> {
             })
         };
 
-        let diff_filename = format!("build/tmp/rustdoc-compare-{}.diff", std::process::id());
+        let diff_filename = format!("build/tmp/crablangdoc-compare-{}.diff", std::process::id());
 
         if !write_filtered_diff(
             &diff_filename,
@@ -2576,7 +2576,7 @@ impl<'test> TestCx<'test> {
         };
     }
 
-    fn run_rustdoc_json_test(&self) {
+    fn run_crablangdoc_json_test(&self) {
         //FIXME: Add bless option.
 
         assert!(self.revision.is_none(), "revisions not relevant here");
@@ -2587,10 +2587,10 @@ impl<'test> TestCx<'test> {
 
         let proc_res = self.document(&out_dir);
         if !proc_res.status.success() {
-            self.fatal_proc_rec("rustdoc failed!", &proc_res);
+            self.fatal_proc_rec("crablangdoc failed!", &proc_res);
         }
 
-        let root = self.config.find_rust_src_root().unwrap();
+        let root = self.config.find_crablang_src_root().unwrap();
         let mut json_out = out_dir.join(self.testpaths.file.file_stem().unwrap());
         json_out.set_extension("json");
         let res = self.cmd2procres(
@@ -2603,7 +2603,7 @@ impl<'test> TestCx<'test> {
 
         if !res.status.success() {
             self.fatal_proc_rec_with_ctx("jsondocck failed!", &res, |_| {
-                println!("Rustdoc Output:");
+                println!("CrabLangdoc Output:");
                 proc_res.print_info();
             })
         }
@@ -2658,7 +2658,7 @@ impl<'test> TestCx<'test> {
             .collect()
     }
 
-    fn check_rustdoc_test_option(&self, res: ProcRes) {
+    fn check_crablangdoc_test_option(&self, res: ProcRes) {
         let mut other_files = Vec::new();
         let mut files: HashMap<String, Vec<usize>> = HashMap::new();
         let cwd = env::current_dir().unwrap();
@@ -2949,7 +2949,7 @@ impl<'test> TestCx<'test> {
         // - execute build/foo/bar.exe and save output
         //
         // FIXME -- use non-incremental mode as an oracle? That doesn't apply
-        // to #[rustc_dirty] and clean tests I guess
+        // to #[crablangc_dirty] and clean tests I guess
 
         let revision = self.revision.expect("incremental tests require a list of revisions");
 
@@ -3013,8 +3013,8 @@ impl<'test> TestCx<'test> {
             .env("TARGET", &self.config.target)
             .env("PYTHON", &self.config.python)
             .env("S", src_root)
-            .env("RUST_BUILD_STAGE", &self.config.stage_id)
-            .env("RUSTC", cwd.join(&self.config.rustc_path))
+            .env("CRABLANG_BUILD_STAGE", &self.config.stage_id)
+            .env("CRABLANGC", cwd.join(&self.config.crablangc_path))
             .env("TMPDIR", &tmpdir)
             .env("LD_LIB_PATH_ENVVAR", dylib_env_var())
             .env("HOST_RPATH_DIR", cwd.join(&self.config.compile_lib_path))
@@ -3027,12 +3027,12 @@ impl<'test> TestCx<'test> {
             .env_remove("MFLAGS")
             .env_remove("CARGO_MAKEFLAGS");
 
-        if let Some(ref rustdoc) = self.config.rustdoc_path {
-            cmd.env("RUSTDOC", cwd.join(rustdoc));
+        if let Some(ref crablangdoc) = self.config.crablangdoc_path {
+            cmd.env("CRABLANGDOC", cwd.join(crablangdoc));
         }
 
-        if let Some(ref rust_demangler) = self.config.rust_demangler_path {
-            cmd.env("RUST_DEMANGLER", cwd.join(rust_demangler));
+        if let Some(ref crablang_demangler) = self.config.crablang_demangler_path {
+            cmd.env("CRABLANG_DEMANGLER", cwd.join(crablang_demangler));
         }
 
         if let Some(ref node) = self.config.nodejs {
@@ -3040,7 +3040,7 @@ impl<'test> TestCx<'test> {
         }
 
         if let Some(ref linker) = self.config.linker {
-            cmd.env("RUSTC_LINKER", linker);
+            cmd.env("CRABLANGC_LINKER", linker);
         }
 
         if let Some(ref clang) = self.config.run_clang_based_tests_with {
@@ -3059,21 +3059,21 @@ impl<'test> TestCx<'test> {
             cmd.env("REMOTE_TEST_CLIENT", remote_test_client);
         }
 
-        // We don't want RUSTFLAGS set from the outside to interfere with
+        // We don't want CRABLANGFLAGS set from the outside to interfere with
         // compiler flags set in the test cases:
-        cmd.env_remove("RUSTFLAGS");
+        cmd.env_remove("CRABLANGFLAGS");
 
         // Use dynamic musl for tests because static doesn't allow creating dylibs
         if self.config.host.contains("musl") {
-            cmd.env("RUSTFLAGS", "-Ctarget-feature=-crt-static").env("IS_MUSL_HOST", "1");
+            cmd.env("CRABLANGFLAGS", "-Ctarget-feature=-crt-static").env("IS_MUSL_HOST", "1");
         }
 
         if self.config.bless {
-            cmd.env("RUSTC_BLESS_TEST", "--bless");
+            cmd.env("CRABLANGC_BLESS_TEST", "--bless");
             // Assume this option is active if the environment variable is "defined", with _any_ value.
             // As an example, a `Makefile` can use this option by:
             //
-            //   ifdef RUSTC_BLESS_TEST
+            //   ifdef CRABLANGC_BLESS_TEST
             //       cp "$(TMPDIR)"/actual_something.ext expected_something.ext
             //   else
             //       $(DIFF) expected_something.ext "$(TMPDIR)"/actual_something.ext
@@ -3159,12 +3159,12 @@ impl<'test> TestCx<'test> {
 
             self.document(&out_dir);
 
-            let root = self.config.find_rust_src_root().unwrap();
+            let root = self.config.find_crablang_src_root().unwrap();
             let file_stem =
                 self.testpaths.file.file_stem().and_then(|f| f.to_str()).expect("no file stem");
             let res = self.cmd2procres(
                 Command::new(&nodejs)
-                    .arg(root.join("src/tools/rustdoc-js/tester.js"))
+                    .arg(root.join("src/tools/crablangdoc-js/tester.js"))
                     .arg("--doc-folder")
                     .arg(out_dir)
                     .arg("--crate-name")
@@ -3173,7 +3173,7 @@ impl<'test> TestCx<'test> {
                     .arg(self.testpaths.file.with_extension("js")),
             );
             if !res.status.success() {
-                self.fatal_proc_rec("rustdoc-js test failed!", &res);
+                self.fatal_proc_rec("crablangdoc-js test failed!", &res);
             }
         } else {
             self.fatal("no nodeJS");
@@ -3273,28 +3273,28 @@ impl<'test> TestCx<'test> {
         self.check_and_prune_duplicate_outputs(&proc_res, &[], &[]);
 
         let mut errors = self.load_compare_outputs(&proc_res, TestOutput::Compile, explicit);
-        let rustfix_input = json::rustfix_diagnostics_only(&proc_res.stderr);
+        let crablangfix_input = json::crablangfix_diagnostics_only(&proc_res.stderr);
 
         if self.config.compare_mode.is_some() {
-            // don't test rustfix with nll right now
-        } else if self.config.rustfix_coverage {
+            // don't test crablangfix with nll right now
+        } else if self.config.crablangfix_coverage {
             // Find out which tests have `MachineApplicable` suggestions but are missing
-            // `run-rustfix` or `run-rustfix-only-machine-applicable` headers.
+            // `run-crablangfix` or `run-crablangfix-only-machine-applicable` headers.
             //
             // This will return an empty `Vec` in case the executed test file has a
             // `compile-flags: --error-format=xxxx` header with a value other than `json`.
             let suggestions = get_suggestions_from_json(
-                &rustfix_input,
+                &crablangfix_input,
                 &HashSet::new(),
                 Filter::MachineApplicableOnly,
             )
             .unwrap_or_default();
             if !suggestions.is_empty()
-                && !self.props.run_rustfix
-                && !self.props.rustfix_only_machine_applicable
+                && !self.props.run_crablangfix
+                && !self.props.crablangfix_only_machine_applicable
             {
                 let mut coverage_file_path = self.config.build_base.clone();
-                coverage_file_path.push("rustfix_missing_coverage.txt");
+                coverage_file_path.push("crablangfix_missing_coverage.txt");
                 debug!("coverage_file_path: {}", coverage_file_path.display());
 
                 let mut file = OpenOptions::new()
@@ -3307,13 +3307,13 @@ impl<'test> TestCx<'test> {
                     panic!("couldn't write to {}", coverage_file_path.display());
                 }
             }
-        } else if self.props.run_rustfix {
-            // Apply suggestions from rustc to the code itself
+        } else if self.props.run_crablangfix {
+            // Apply suggestions from crablangc to the code itself
             let unfixed_code = self.load_expected_output_from_path(&self.testpaths.file).unwrap();
             let suggestions = get_suggestions_from_json(
-                &rustfix_input,
+                &crablangfix_input,
                 &HashSet::new(),
-                if self.props.rustfix_only_machine_applicable {
+                if self.props.crablangfix_only_machine_applicable {
                     Filter::MachineApplicableOnly
                 } else {
                     Filter::Everything
@@ -3322,7 +3322,7 @@ impl<'test> TestCx<'test> {
             .unwrap();
             let fixed_code = apply_suggestions(&unfixed_code, &suggestions).unwrap_or_else(|e| {
                 panic!(
-                    "failed to apply suggestions for {:?} with rustfix: {}",
+                    "failed to apply suggestions for {:?} with crablangfix: {}",
                     self.testpaths.file, e
                 )
             });
@@ -3330,7 +3330,7 @@ impl<'test> TestCx<'test> {
             errors += self.compare_output("fixed", &fixed_code, &expected_fixed);
         } else if !expected_fixed.is_empty() {
             panic!(
-                "the `// run-rustfix` directive wasn't found but a `*.fixed` \
+                "the `// run-crablangfix` directive wasn't found but a `*.fixed` \
                  file was found"
             );
         }
@@ -3408,23 +3408,23 @@ impl<'test> TestCx<'test> {
             }
         }
 
-        if self.props.run_rustfix && self.config.compare_mode.is_none() {
+        if self.props.run_crablangfix && self.config.compare_mode.is_none() {
             // And finally, compile the fixed code and make sure it both
             // succeeds and has no diagnostics.
-            let rustc = self.make_compile_args(
+            let crablangc = self.make_compile_args(
                 &self.testpaths.file.with_extension(UI_FIXED),
                 TargetLocation::ThisFile(self.make_exe_name()),
                 emit_metadata,
                 AllowUnused::No,
                 LinkToAux::Yes,
             );
-            let res = self.compose_and_run_compiler(rustc, None);
+            let res = self.compose_and_run_compiler(crablangc, None);
             if !res.status.success() {
                 self.fatal_proc_rec("failed to compile fixed code", &res);
             }
             if !res.stderr.is_empty()
-                && !self.props.rustfix_only_machine_applicable
-                && !json::rustfix_diagnostics_only(&res.stderr).is_empty()
+                && !self.props.crablangfix_only_machine_applicable
+                && !json::crablangfix_diagnostics_only(&res.stderr).is_empty()
             {
                 self.fatal_proc_rec("fixed code is still producing diagnostics", &res);
             }
@@ -3612,22 +3612,22 @@ impl<'test> TestCx<'test> {
         let source_bases = &[
             // Source base on the current filesystem (calculated as parent of `tests/$suite`):
             Some(self.config.src_base.parent().unwrap().parent().unwrap().into()),
-            // Source base on the sysroot (from the src components downloaded by `download-rustc`):
-            Some(self.config.sysroot_base.join("lib").join("rustlib").join("src").join("rust")),
-            // Virtual `/rustc/$sha` remapped paths (if `remap-debuginfo` is enabled):
-            option_env!("CFG_VIRTUAL_RUST_SOURCE_BASE_DIR").map(PathBuf::from),
-            // Virtual `/rustc/$sha` coming from download-rustc:
-            std::env::var_os("FAKE_DOWNLOAD_RUSTC_PREFIX").map(PathBuf::from),
-            // Tests using -Zsimulate-remapped-rust-src-base should use this fake path
-            Some("/rustc/FAKE_PREFIX".into()),
+            // Source base on the sysroot (from the src components downloaded by `download-crablangc`):
+            Some(self.config.sysroot_base.join("lib").join("crablanglib").join("src").join("crablang")),
+            // Virtual `/crablangc/$sha` remapped paths (if `remap-debuginfo` is enabled):
+            option_env!("CFG_VIRTUAL_CRABLANG_SOURCE_BASE_DIR").map(PathBuf::from),
+            // Virtual `/crablangc/$sha` coming from download-crablangc:
+            std::env::var_os("FAKE_DOWNLOAD_CRABLANGC_PREFIX").map(PathBuf::from),
+            // Tests using -Zsimulate-remapped-crablang-src-base should use this fake path
+            Some("/crablangc/FAKE_PREFIX".into()),
         ];
         for base_dir in source_bases {
             if let Some(base_dir) = base_dir {
                 // Paths into the libstd/libcore
                 normalize_path(&base_dir.join("library"), "$SRC_DIR");
                 // `ui-fulldeps` tests can show paths to the compiler source when testing macros from
-                // `rustc_macros`
-                // eg. /home/user/rust/compiler
+                // `crablangc_macros`
+                // eg. /home/user/crablang/compiler
                 normalize_path(&base_dir.join("compiler"), "$COMPILER_DIR");
             }
         }
@@ -3636,9 +3636,9 @@ impl<'test> TestCx<'test> {
         let test_build_dir = &self.config.build_base;
         let parent_build_dir = test_build_dir.parent().unwrap().parent().unwrap().parent().unwrap();
 
-        // eg. /home/user/rust/build/x86_64-unknown-linux-gnu/test/ui
+        // eg. /home/user/crablang/build/x86_64-unknown-linux-gnu/test/ui
         normalize_path(test_build_dir, "$TEST_BUILD_DIR");
-        // eg. /home/user/rust/build
+        // eg. /home/user/crablang/build
         normalize_path(parent_build_dir, "$BUILD_DIR");
 
         // Paths into lib directory.

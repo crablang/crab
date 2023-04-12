@@ -17,7 +17,7 @@
 #![feature(map_try_insert)]
 #![feature(new_uninit)]
 #![feature(pattern)]
-#![feature(trusted_len)]
+#![feature(tcrablanged_len)]
 #![feature(try_reserve_kind)]
 #![feature(unboxed_closures)]
 #![feature(associated_type_bounds)]

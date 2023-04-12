@@ -4,7 +4,7 @@ error[E0658]: a non-static lifetime is not allowed in a `const`
 LL |     beta: [(); foo::<&'a ()>()],
    |                       ^^
    |
-   = note: see issue #76560 <https://github.com/rust-lang/rust/issues/76560> for more information
+   = note: see issue #76560 <https://github.com/crablang/crablang/issues/76560> for more information
    = help: add `#![feature(generic_const_exprs)]` to the crate attributes to enable
 
 error: generic `Self` types are currently not permitted in anonymous constants
@@ -32,4 +32,4 @@ LL | struct Bar<'a> {
 error: aborting due to 4 previous errors
 
 Some errors have detailed explanations: E0392, E0658.
-For more information about an error, try `rustc --explain E0392`.
+For more information about an error, try `crablangc --explain E0392`.

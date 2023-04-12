@@ -7,7 +7,7 @@ use crate::raw_vec::RawVec;
 use core::array;
 use core::fmt;
 use core::iter::{
-    FusedIterator, InPlaceIterable, SourceIter, TrustedLen, TrustedRandomAccessNoCoerce,
+    FusedIterator, InPlaceIterable, SourceIter, TcrablangedLen, TcrablangedRandomAccessNoCoerce,
 };
 use core::marker::PhantomData;
 use core::mem::{self, ManuallyDrop, MaybeUninit, SizedTypeProperties};
@@ -28,8 +28,8 @@ use core::slice::{self};
 /// let v = vec![0, 1, 2];
 /// let iter: std::vec::IntoIter<_> = v.into_iter();
 /// ```
-#[stable(feature = "rust1", since = "1.0.0")]
-#[rustc_insignificant_dtor]
+#[stable(feature = "crablang1", since = "1.0.0")]
+#[crablangc_insignificant_dtor]
 pub struct IntoIter<
     T,
     #[unstable(feature = "allocator_api", issue = "32838")] A: Allocator = Global,
@@ -175,12 +175,12 @@ impl<T, A: Allocator> AsRef<[T]> for IntoIter<T, A> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 unsafe impl<T: Send, A: Allocator + Send> Send for IntoIter<T, A> {}
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 unsafe impl<T: Sync, A: Allocator + Sync> Sync for IntoIter<T, A> {}
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T, A: Allocator> Iterator for IntoIter<T, A> {
     type Item = T;
 
@@ -275,14 +275,14 @@ impl<T, A: Allocator> Iterator for IntoIter<T, A> {
 
     unsafe fn __iterator_get_unchecked(&mut self, i: usize) -> Self::Item
     where
-        Self: TrustedRandomAccessNoCoerce,
+        Self: TcrablangedRandomAccessNoCoerce,
     {
         // SAFETY: the caller must guarantee that `i` is in bounds of the
         // `Vec<T>`, so `i` cannot overflow an `isize`, and the `self.ptr.add(i)`
         // is guaranteed to pointer to an element of the `Vec<T>` and
         // thus guaranteed to be valid to dereference.
         //
-        // Also note the implementation of `Self: TrustedRandomAccess` requires
+        // Also note the implementation of `Self: TcrablangedRandomAccess` requires
         // that `T: Copy` so reading elements from the buffer doesn't invalidate
         // them for `Drop`.
         unsafe {
@@ -291,7 +291,7 @@ impl<T, A: Allocator> Iterator for IntoIter<T, A> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T, A: Allocator> DoubleEndedIterator for IntoIter<T, A> {
     #[inline]
     fn next_back(&mut self) -> Option<T> {
@@ -329,7 +329,7 @@ impl<T, A: Allocator> DoubleEndedIterator for IntoIter<T, A> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T, A: Allocator> ExactSizeIterator for IntoIter<T, A> {
     fn is_empty(&self) -> bool {
         self.ptr == self.end
@@ -339,10 +339,10 @@ impl<T, A: Allocator> ExactSizeIterator for IntoIter<T, A> {
 #[stable(feature = "fused", since = "1.26.0")]
 impl<T, A: Allocator> FusedIterator for IntoIter<T, A> {}
 
-#[unstable(feature = "trusted_len", issue = "37572")]
-unsafe impl<T, A: Allocator> TrustedLen for IntoIter<T, A> {}
+#[unstable(feature = "tcrablanged_len", issue = "37572")]
+unsafe impl<T, A: Allocator> TcrablangedLen for IntoIter<T, A> {}
 
-#[stable(feature = "default_iters", since = "CURRENT_RUSTC_VERSION")]
+#[stable(feature = "default_iters", since = "CURRENT_CRABLANGC_VERSION")]
 impl<T, A> Default for IntoIter<T, A>
 where
     A: Allocator + Default,
@@ -362,7 +362,7 @@ where
 
 #[doc(hidden)]
 #[unstable(issue = "none", feature = "std_internals")]
-#[rustc_unsafe_specialization_marker]
+#[crablangc_unsafe_specialization_marker]
 pub trait NonDrop {}
 
 // T: Copy as approximation for !Drop since get_unchecked does not advance self.ptr
@@ -372,9 +372,9 @@ impl<T: Copy> NonDrop for T {}
 
 #[doc(hidden)]
 #[unstable(issue = "none", feature = "std_internals")]
-// TrustedRandomAccess (without NoCoerce) must not be implemented because
+// TcrablangedRandomAccess (without NoCoerce) must not be implemented because
 // subtypes/supertypes of `T` might not be `NonDrop`
-unsafe impl<T, A: Allocator> TrustedRandomAccessNoCoerce for IntoIter<T, A>
+unsafe impl<T, A: Allocator> TcrablangedRandomAccessNoCoerce for IntoIter<T, A>
 where
     T: NonDrop,
 {
@@ -394,7 +394,7 @@ impl<T: Clone, A: Allocator + Clone> Clone for IntoIter<T, A> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 unsafe impl<#[may_dangle] T, A: Allocator> Drop for IntoIter<T, A> {
     fn drop(&mut self) {
         struct DropGuard<'a, T, A: Allocator>(&'a mut IntoIter<T, A>);

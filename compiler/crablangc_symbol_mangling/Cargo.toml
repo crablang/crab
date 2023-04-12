@@ -1,0 +1,22 @@
+[package]
+name = "crablangc_symbol_mangling"
+version = "0.0.0"
+edition = "2021"
+
+[lib]
+
+[dependencies]
+bitflags = "1.2.1"
+tracing = "0.1"
+punycode = "0.4.0"
+crablangc-demangle = "0.1.21"
+twox-hash = "1.6.3"
+
+crablangc_span = { path = "../crablangc_span" }
+crablangc_middle = { path = "../crablangc_middle" }
+crablangc_hir = { path = "../crablangc_hir" }
+crablangc_target = { path = "../crablangc_target" }
+crablangc_data_structures = { path = "../crablangc_data_structures" }
+crablangc_session = { path = "../crablangc_session" }
+crablangc_macros = { path = "../crablangc_macros" }
+crablangc_errors = { path = "../crablangc_errors" }

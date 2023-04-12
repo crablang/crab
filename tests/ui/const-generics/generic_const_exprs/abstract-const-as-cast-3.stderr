@@ -184,4 +184,4 @@ LL |     fn assert_impl<T: Trait>() {}
 
 error: aborting due to 12 previous errors
 
-For more information about this error, try `rustc --explain E0308`.
+For more information about this error, try `crablangc --explain E0308`.

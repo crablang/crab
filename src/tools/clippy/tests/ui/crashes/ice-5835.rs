@@ -1,4 +1,4 @@
-#[rustfmt::skip]
+#[crablangfmt::skip]
 pub struct Foo {
     /// 位	
     ///   ^ Do not remove this tab character.

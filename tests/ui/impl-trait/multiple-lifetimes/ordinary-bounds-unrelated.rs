@@ -6,7 +6,7 @@ impl<T> Trait<'_, '_> for T {}
 // `Ordinary<'a> <: Ordinary<'b>` if `'a: 'b`, as with most types.
 //
 // I am purposefully avoiding the terms co- and contra-variant because
-// their application to regions depends on how you interpreted Rust
+// their application to regions depends on how you interpreted CrabLang
 // regions. -nikomatsakis
 struct Ordinary<'a>(&'a u8);
 

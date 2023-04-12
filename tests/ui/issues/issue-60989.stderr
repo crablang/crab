@@ -16,4 +16,4 @@ LL |     c1::<dyn Into<B>>;
 
 error: aborting due to 2 previous errors
 
-For more information about this error, try `rustc --explain E0109`.
+For more information about this error, try `crablangc --explain E0109`.

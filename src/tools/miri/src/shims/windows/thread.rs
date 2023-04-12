@@ -1,5 +1,5 @@
-use rustc_middle::ty::layout::LayoutOf;
-use rustc_target::spec::abi::Abi;
+use crablangc_middle::ty::layout::LayoutOf;
+use crablangc_target::spec::abi::Abi;
 
 use crate::*;
 use shims::windows::handle::{EvalContextExt as _, Handle, PseudoHandle};

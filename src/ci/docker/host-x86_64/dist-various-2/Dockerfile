@@ -100,12 +100,12 @@ COPY scripts/sccache.sh /scripts/
 RUN sh /scripts/sccache.sh
 
 ENV CARGO_TARGET_X86_64_UNKNOWN_FUCHSIA_AR /usr/local/bin/llvm-ar
-ENV CARGO_TARGET_X86_64_UNKNOWN_FUCHSIA_RUSTFLAGS \
+ENV CARGO_TARGET_X86_64_UNKNOWN_FUCHSIA_CRABLANGFLAGS \
 -C link-arg=--sysroot=/usr/local/core-linux-amd64-fuchsia-sdk/arch/x64/sysroot \
 -Lnative=/usr/local/core-linux-amd64-fuchsia-sdk/arch/x64/sysroot/lib \
 -Lnative=/usr/local/core-linux-amd64-fuchsia-sdk/arch/x64/lib
 ENV CARGO_TARGET_AARCH64_UNKNOWN_FUCHSIA_AR /usr/local/bin/llvm-ar
-ENV CARGO_TARGET_AARCH64_UNKNOWN_FUCHSIA_RUSTFLAGS \
+ENV CARGO_TARGET_AARCH64_UNKNOWN_FUCHSIA_CRABLANGFLAGS \
 -C link-arg=--sysroot=/usr/local/core-linux-amd64-fuchsia-sdk/arch/arm64/sysroot \
 -Lnative=/usr/local/core-linux-amd64-fuchsia-sdk/arch/arm64/sysroot/lib \
 -Lnative=/usr/local/core-linux-amd64-fuchsia-sdk/arch/arm64/lib
@@ -134,7 +134,7 @@ ENV TARGETS=$TARGETS,x86_64-unknown-uefi
 # Luckily one of the folders is /usr/local/include so symlink /usr/include/asm-generic there
 RUN ln -s /usr/include/asm-generic /usr/local/include/asm
 
-ENV RUST_CONFIGURE_ARGS --enable-extended --enable-lld --disable-docs \
+ENV CRABLANG_CONFIGURE_ARGS --enable-extended --enable-lld --disable-docs \
   --set target.wasm32-wasi.wasi-root=/wasm32-wasi \
   --musl-root-armv7=/musl-armv7
 

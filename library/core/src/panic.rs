@@ -18,8 +18,8 @@ pub use self::unwind_safe::{AssertUnwindSafe, RefUnwindSafe, UnwindSafe};
 #[doc(hidden)]
 #[unstable(feature = "edition_panic", issue = "none", reason = "use panic!() instead")]
 #[allow_internal_unstable(core_panic, const_format_args)]
-#[rustc_diagnostic_item = "core_panic_2015_macro"]
-#[rustc_macro_transparency = "semitransparent"]
+#[crablangc_diagnostic_item = "core_panic_2015_macro"]
+#[crablangc_macro_transparency = "semitransparent"]
 pub macro panic_2015 {
     () => (
         $crate::panicking::panic("explicit panic")
@@ -43,8 +43,8 @@ pub macro panic_2015 {
 #[doc(hidden)]
 #[unstable(feature = "edition_panic", issue = "none", reason = "use panic!() instead")]
 #[allow_internal_unstable(core_panic, const_format_args)]
-#[rustc_diagnostic_item = "core_panic_2021_macro"]
-#[rustc_macro_transparency = "semitransparent"]
+#[crablangc_diagnostic_item = "core_panic_2021_macro"]
+#[crablangc_macro_transparency = "semitransparent"]
 pub macro panic_2021 {
     () => (
         $crate::panicking::panic("explicit panic")
@@ -61,8 +61,8 @@ pub macro panic_2021 {
 #[doc(hidden)]
 #[unstable(feature = "edition_panic", issue = "none", reason = "use unreachable!() instead")]
 #[allow_internal_unstable(core_panic)]
-#[rustc_diagnostic_item = "unreachable_2015_macro"]
-#[rustc_macro_transparency = "semitransparent"]
+#[crablangc_diagnostic_item = "unreachable_2015_macro"]
+#[crablangc_macro_transparency = "semitransparent"]
 pub macro unreachable_2015 {
     () => (
         $crate::panicking::panic("internal error: entered unreachable code")
@@ -80,7 +80,7 @@ pub macro unreachable_2015 {
 #[doc(hidden)]
 #[unstable(feature = "edition_panic", issue = "none", reason = "use unreachable!() instead")]
 #[allow_internal_unstable(core_panic)]
-#[rustc_macro_transparency = "semitransparent"]
+#[crablangc_macro_transparency = "semitransparent"]
 pub macro unreachable_2021 {
     () => (
         $crate::panicking::panic("internal error: entered unreachable code")
@@ -102,7 +102,7 @@ pub unsafe trait BoxMeUp {
     /// After this method got called, only some dummy default value is left in `self`.
     /// Calling this method twice, or calling `get` after calling this method, is an error.
     ///
-    /// The argument is borrowed because the panic runtime (`__rust_start_panic`) only
+    /// The argument is borrowed because the panic runtime (`__crablang_start_panic`) only
     /// gets a borrowed `dyn BoxMeUp`.
     fn take_box(&mut self) -> *mut (dyn Any + Send);
 

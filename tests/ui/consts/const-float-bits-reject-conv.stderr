@@ -112,4 +112,4 @@ LL |     const_assert!(f64::from_bits(MASKED_NAN2).to_bits(), MASKED_NAN2);
 
 error: aborting due to 4 previous errors
 
-For more information about this error, try `rustc --explain E0080`.
+For more information about this error, try `crablangc --explain E0080`.

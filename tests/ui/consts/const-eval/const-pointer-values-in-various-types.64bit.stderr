@@ -255,4 +255,4 @@ LL |     const STR_CHAR_UNION: char = unsafe { Nonsense { stringy: "3" }.charact
 
 error: aborting due to 29 previous errors
 
-For more information about this error, try `rustc --explain E0080`.
+For more information about this error, try `crablangc --explain E0080`.

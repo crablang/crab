@@ -4,5 +4,5 @@
 include ../tools.mk
 
 all:
-	$(RUSTC) --crate-type=rlib --test foo.rs
+	$(CRABLANGC) --crate-type=rlib --test foo.rs
 	rm $(TMPDIR)/foo.bc && exit 1 || exit 0

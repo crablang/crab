@@ -1,7 +1,7 @@
 //@revisions: stack tree
 //@[tree]compile-flags: -Zmiri-tree-borrows
 #![feature(arbitrary_self_types, unsize, coerce_unsized, dispatch_from_dyn)]
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 
 fn pin_box_dyn() {
     use std::pin::Pin;

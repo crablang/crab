@@ -3,7 +3,7 @@
 // revisions:rpass1 cfail2
 // compile-flags: -Z query-dep-graph
 
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 #![cfg_attr(rpass1, feature(abi_unadjusted))]
 
 fn main() {

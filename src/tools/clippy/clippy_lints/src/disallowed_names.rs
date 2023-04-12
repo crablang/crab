@@ -1,8 +1,8 @@
 use clippy_utils::{diagnostics::span_lint, is_test_module_or_function};
-use rustc_data_structures::fx::FxHashSet;
-use rustc_hir::{Item, Pat, PatKind};
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_session::{declare_tool_lint, impl_lint_pass};
+use crablangc_data_structures::fx::FxHashSet;
+use crablangc_hir::{Item, Pat, PatKind};
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_session::{declare_tool_lint, impl_lint_pass};
 
 declare_clippy_lint! {
     /// ### What it does
@@ -14,7 +14,7 @@ declare_clippy_lint! {
     /// avoided.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// let foo = 3.14;
     /// ```
     #[clippy::version = "pre 1.29.0"]

@@ -744,4 +744,4 @@ LL |             i: 0
 
 error: aborting due to 123 previous errors
 
-For more information about this error, try `rustc --explain E0451`.
+For more information about this error, try `crablangc --explain E0451`.

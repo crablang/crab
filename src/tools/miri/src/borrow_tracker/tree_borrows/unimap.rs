@@ -14,7 +14,7 @@
 
 use std::hash::Hash;
 
-use rustc_data_structures::fx::FxHashMap;
+use crablangc_data_structures::fx::FxHashMap;
 
 /// Intermediate key between a UniKeyMap and a UniValMap.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]

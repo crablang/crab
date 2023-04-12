@@ -28,4 +28,4 @@ LL |     let x2: u32 = whatever2();
 
 error: aborting due to 2 previous errors
 
-For more information about this error, try `rustc --explain E0308`.
+For more information about this error, try `crablangc --explain E0308`.

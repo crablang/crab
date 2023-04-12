@@ -1,5 +1,5 @@
 // run-pass
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 
 use std::sync::Arc;
 

@@ -26,9 +26,9 @@ struct ManyInts {
 #[repr(C)]
 struct Empty;
 
-#[link(name = "rust_test_helpers", kind = "static")]
+#[link(name = "crablang_test_helpers", kind = "static")]
 extern "C" {
-    fn rust_dbg_extern_empty_struct(v1: ManyInts, e: Empty, v2: ManyInts);
+    fn crablang_dbg_extern_empty_struct(v1: ManyInts, e: Empty, v2: ManyInts);
 }
 
 pub fn main() {
@@ -50,6 +50,6 @@ pub fn main() {
             arg6: TwoU8s { one: 6, two: 7 },
         };
         let empty = Empty;
-        rust_dbg_extern_empty_struct(x, empty, y);
+        crablang_dbg_extern_empty_struct(x, empty, y);
     }
 }

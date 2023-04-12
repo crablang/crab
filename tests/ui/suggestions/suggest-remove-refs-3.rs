@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 
 fn main() {
     let v = vec![0, 1, 2, 3];

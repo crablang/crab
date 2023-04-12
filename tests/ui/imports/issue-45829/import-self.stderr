@@ -67,4 +67,4 @@ LL | use foo::{self as OtherA};
 error: aborting due to 5 previous errors
 
 Some errors have detailed explanations: E0252, E0255, E0429.
-For more information about an error, try `rustc --explain E0252`.
+For more information about an error, try `crablangc --explain E0252`.

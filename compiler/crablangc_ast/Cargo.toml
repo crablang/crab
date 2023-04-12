@@ -1,0 +1,19 @@
+[package]
+name = "crablangc_ast"
+version = "0.0.0"
+edition = "2021"
+
+[lib]
+
+[dependencies]
+bitflags = "1.2.1"
+memchr = "2.5.0"
+crablangc_data_structures = { path = "../crablangc_data_structures" }
+crablangc_index = { path = "../crablangc_index" }
+crablangc_lexer = { path = "../crablangc_lexer" }
+crablangc_macros = { path = "../crablangc_macros" }
+crablangc_serialize = { path = "../crablangc_serialize" }
+crablangc_span = { path = "../crablangc_span" }
+smallvec = { version = "1.8.1", features = ["union", "may_dangle"] }
+thin-vec = "0.2.12"
+tracing = "0.1"

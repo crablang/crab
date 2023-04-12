@@ -1,7 +1,7 @@
 error[E0463]: can't find crate for `core`
    |
    = note: the `thumbv7em-none-eabihf` target may not be installed
-   = help: consider downloading the target with `rustup target add thumbv7em-none-eabihf`
+   = help: consider downloading the target with `crablangup target add thumbv7em-none-eabihf`
    = help: consider building the standard library from source with `cargo build -Zbuild-std`
 
 error[E0463]: can't find crate for `compiler_builtins`
@@ -16,4 +16,4 @@ error: requires `sized` lang_item
 
 error: aborting due to 4 previous errors
 
-For more information about this error, try `rustc --explain E0463`.
+For more information about this error, try `crablangc --explain E0463`.

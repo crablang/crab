@@ -74,4 +74,4 @@ LL | fn take_foo(_: impl Foo) {}
 
 error: aborting due to 6 previous errors
 
-For more information about this error, try `rustc --explain E0308`.
+For more information about this error, try `crablangc --explain E0308`.

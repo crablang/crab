@@ -1,0 +1,67 @@
+[package]
+name = "crablangc_driver_impl"
+version = "0.0.0"
+edition = "2021"
+
+[lib]
+
+[dependencies]
+tracing = { version = "0.1.35" }
+serde_json = "1.0.59"
+crablangc_log = { path = "../crablangc_log" }
+crablangc_ast_lowering = { path = "../crablangc_ast_lowering" }
+crablangc_ast_passes = { path = "../crablangc_ast_passes" }
+crablangc_attr = { path = "../crablangc_attr" }
+crablangc_borrowck = { path = "../crablangc_borrowck" }
+crablangc_builtin_macros = { path = "../crablangc_builtin_macros" }
+crablangc_const_eval = { path = "../crablangc_const_eval" }
+crablangc_error_messages = { path = "../crablangc_error_messages" }
+crablangc_expand = { path = "../crablangc_expand" }
+crablangc_hir_typeck = { path = "../crablangc_hir_typeck" }
+crablangc_incremental = { path = "../crablangc_incremental" }
+crablangc_infer = { path = "../crablangc_infer" }
+crablangc_mir_build = { path = "../crablangc_mir_build" }
+crablangc_mir_dataflow = { path = "../crablangc_mir_dataflow" }
+crablangc_monomorphize = { path = "../crablangc_monomorphize" }
+crablangc_passes = { path = "../crablangc_passes" }
+crablangc_privacy = { path = "../crablangc_privacy" }
+crablangc_query_system = { path = "../crablangc_query_system" }
+crablangc_resolve = { path = "../crablangc_resolve" }
+crablangc_symbol_mangling = { path = "../crablangc_symbol_mangling" }
+crablangc_trait_selection = { path = "../crablangc_trait_selection" }
+crablangc_ty_utils = { path = "../crablangc_ty_utils" }
+crablangc_middle = { path = "../crablangc_middle" }
+crablangc_ast_pretty = { path = "../crablangc_ast_pretty" }
+crablangc_target = { path = "../crablangc_target" }
+crablangc_lint = { path = "../crablangc_lint" }
+crablangc_data_structures = { path = "../crablangc_data_structures" }
+crablangc_errors = { path = "../crablangc_errors" }
+crablangc_feature = { path = "../crablangc_feature" }
+crablangc_hir = { path = "../crablangc_hir" }
+crablangc_hir_pretty = { path = "../crablangc_hir_pretty" }
+crablangc_macros = { path = "../crablangc_macros" }
+crablangc_metadata = { path = "../crablangc_metadata" }
+crablangc_parse = { path = "../crablangc_parse" }
+crablangc_plugin_impl = { path = "../crablangc_plugin_impl" }
+crablangc_codegen_ssa = { path = "../crablangc_codegen_ssa" }
+crablangc_session = { path = "../crablangc_session" }
+crablangc_error_codes = { path = "../crablangc_error_codes" }
+crablangc_interface = { path = "../crablangc_interface" }
+crablangc_ast = { path = "../crablangc_ast" }
+crablangc_span = { path = "../crablangc_span" }
+crablangc_hir_analysis = { path = "../crablangc_hir_analysis" }
+
+[target.'cfg(unix)'.dependencies]
+libc = "0.2"
+
+[target.'cfg(windows)'.dependencies.windows]
+version = "0.46.0"
+features = [
+    "Win32_System_Diagnostics_Debug",
+]
+
+[features]
+llvm = ['crablangc_interface/llvm']
+max_level_info = ['crablangc_log/max_level_info']
+crablangc_use_parallel_compiler = ['crablangc_data_structures/crablangc_use_parallel_compiler', 'crablangc_interface/crablangc_use_parallel_compiler',
+    'crablangc_middle/crablangc_use_parallel_compiler']

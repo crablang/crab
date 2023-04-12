@@ -1,7 +1,7 @@
-//! This is a script for validating the platform support page in the rustc book.
+//! This is a script for validating the platform support page in the crablangc book.
 //!
 //! The script takes two arguments, the path to the Platform Support source
-//! page, and the second argument is the path to `rustc`.
+//! page, and the second argument is the path to `crablangc`.
 
 use std::collections::HashSet;
 
@@ -9,13 +9,13 @@ fn main() {
     let mut args = std::env::args().skip(1);
     let src = args.next().expect("expected source file as first argument");
     let filename = std::path::Path::new(&src).file_name().unwrap().to_str().unwrap();
-    let rustc = args.next().expect("expected rustc as second argument");
-    let output = std::process::Command::new(rustc)
+    let crablangc = args.next().expect("expected crablangc as second argument");
+    let output = std::process::Command::new(crablangc)
         .arg("--print=target-list")
         .output()
-        .expect("rustc should run");
+        .expect("crablangc should run");
     if !output.status.success() {
-        eprintln!("rustc failed to run");
+        eprintln!("crablangc failed to run");
         std::process::exit(0);
     }
     let stdout = std::str::from_utf8(&output.stdout).expect("utf8");
@@ -39,7 +39,7 @@ fn main() {
     }
     for target in &extra {
         eprintln!(
-            "error: target `{}` is in {}, but does not appear in the rustc target list\n\
+            "error: target `{}` is in {}, but does not appear in the crablangc target list\n\
             If the target has been removed, please edit {} and remove the target.",
             target, filename, src
         );

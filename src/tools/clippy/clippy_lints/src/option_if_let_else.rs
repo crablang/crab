@@ -5,14 +5,14 @@ use clippy_utils::{
     peel_hir_expr_while, CaptureKind,
 };
 use if_chain::if_chain;
-use rustc_errors::Applicability;
-use rustc_hir::LangItem::{OptionNone, OptionSome, ResultErr, ResultOk};
-use rustc_hir::{
+use crablangc_errors::Applicability;
+use crablangc_hir::LangItem::{OptionNone, OptionSome, ResultErr, ResultOk};
+use crablangc_hir::{
     def::Res, Arm, BindingAnnotation, Expr, ExprKind, MatchSource, Mutability, Pat, PatKind, Path, QPath, UnOp,
 };
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_session::{declare_lint_pass, declare_tool_lint};
-use rustc_span::SyntaxContext;
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_span::SyntaxContext;
 
 declare_clippy_lint! {
     /// ### What it does
@@ -33,7 +33,7 @@ declare_clippy_lint! {
     /// this lint will not be raised.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// # let optional: Option<u32> = Some(0);
     /// # fn do_complicated_function() -> u32 { 5 };
     /// let _ = if let Some(foo) = optional {
@@ -55,7 +55,7 @@ declare_clippy_lint! {
     ///
     /// should be
     ///
-    /// ```rust
+    /// ```crablang
     /// # let optional: Option<u32> = Some(0);
     /// # fn do_complicated_function() -> u32 { 5 };
     /// let _ = optional.map_or(5, |foo| foo);

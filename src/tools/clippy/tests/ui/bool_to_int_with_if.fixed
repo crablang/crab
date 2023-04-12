@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 
 #![feature(let_chains)]
 #![warn(clippy::bool_to_int_with_if)]

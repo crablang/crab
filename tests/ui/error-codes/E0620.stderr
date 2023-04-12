@@ -12,4 +12,4 @@ LL |     let _foo = &[1_usize, 2] as [usize];
 
 error: aborting due to previous error
 
-For more information about this error, try `rustc --explain E0620`.
+For more information about this error, try `crablangc --explain E0620`.

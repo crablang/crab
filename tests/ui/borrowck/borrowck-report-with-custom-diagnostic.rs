@@ -1,6 +1,6 @@
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 #![allow(dead_code)]
-fn main() { #![rustc_error] // rust-lang/rust#49855
+fn main() { #![crablangc_error] // crablang/crablang#49855
     // Original borrow ends at end of function
     let mut x = 1;
     let y = &mut x;

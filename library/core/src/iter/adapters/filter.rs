@@ -10,7 +10,7 @@ use crate::ops::Try;
 /// [`filter`]: Iterator::filter
 /// [`Iterator`]: trait.Iterator.html
 #[must_use = "iterators are lazy and do nothing unless consumed"]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[derive(Clone)]
 pub struct Filter<I, P> {
     // Used for `SplitWhitespace` and `SplitAsciiWhitespace` `as_str` methods
@@ -44,7 +44,7 @@ fn filter_try_fold<'a, T, Acc, R: Try<Output = Acc>>(
     move |acc, item| if predicate(&item) { fold(acc, item) } else { try { acc } }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<I: Iterator, P> Iterator for Filter<I, P>
 where
     P: FnMut(&I::Item) -> bool,
@@ -69,7 +69,7 @@ where
     //
     // Having this specialization thus allows us to write `.filter(p).count()`
     // where we would otherwise write `.map(|x| p(x) as usize).sum()`, which is
-    // less readable and also less backwards-compatible to Rust before 1.10.
+    // less readable and also less backwards-compatible to CrabLang before 1.10.
     //
     // Using the branchless version will also simplify the LLVM byte code, thus
     // leaving more budget for LLVM optimizations.
@@ -102,7 +102,7 @@ where
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<I: DoubleEndedIterator, P> DoubleEndedIterator for Filter<I, P>
 where
     P: FnMut(&I::Item) -> bool,

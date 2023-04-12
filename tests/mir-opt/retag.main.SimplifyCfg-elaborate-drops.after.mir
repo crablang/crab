@@ -111,7 +111,7 @@ fn main() -> () {
                                          // + def_id: DefId(0:14 ~ retag[7654]::main::{closure#0})
                                          // + substs: [
                                          //     i8,
-                                         //     for<'a> extern "rust-call" fn((&'a i32,)) -> &'a i32,
+                                         //     for<'a> extern "crablang-call" fn((&'a i32,)) -> &'a i32,
                                          //     (),
                                          // ]
         Retag(_14);                      // scope 1 at $DIR/retag.rs:+11:31: +14:6

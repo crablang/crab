@@ -2,7 +2,7 @@
 include ../tools.mk
 
 all:
-	$(RUSTC) foo.rs
-	$(RUSTC) -Z ls $(TMPDIR)/foo
+	$(CRABLANGC) foo.rs
+	$(CRABLANGC) -Z ls $(TMPDIR)/foo
 	touch $(TMPDIR)/bar
-	$(RUSTC) -Z ls $(TMPDIR)/bar
+	$(CRABLANGC) -Z ls $(TMPDIR)/bar

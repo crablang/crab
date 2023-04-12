@@ -22,7 +22,7 @@ fn filter_map_none_changes_item_type() -> impl Iterator<Item = bool> {
     "".chars().filter_map(|_| None)
 }
 
-// https://github.com/rust-lang/rust-clippy/issues/4433#issue-483920107
+// https://github.com/crablang/crablang-clippy/issues/4433#issue-483920107
 mod comment_483920107 {
     enum Severity {
         Warning,
@@ -58,7 +58,7 @@ mod comment_483920107 {
     }
 }
 
-// https://github.com/rust-lang/rust-clippy/issues/4433#issuecomment-611006622
+// https://github.com/crablang/crablang-clippy/issues/4433#issuecomment-611006622
 mod comment_611006622 {
     struct PendingRequest {
         reply_to: u8,
@@ -112,7 +112,7 @@ mod comment_611006622 {
     }
 }
 
-// https://github.com/rust-lang/rust-clippy/issues/4433#issuecomment-621925270
+// https://github.com/crablang/crablang-clippy/issues/4433#issuecomment-621925270
 // This extrapolation doesn't reproduce the false positive. Additional context seems necessary.
 mod comment_621925270 {
     struct Signature(u8);
@@ -125,7 +125,7 @@ mod comment_621925270 {
     }
 }
 
-// https://github.com/rust-lang/rust-clippy/issues/4433#issuecomment-1052978898
+// https://github.com/crablang/crablang-clippy/issues/4433#issuecomment-1052978898
 mod comment_1052978898 {
     #![allow(clippy::redundant_closure)]
 

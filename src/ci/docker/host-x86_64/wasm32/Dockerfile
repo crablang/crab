@@ -28,7 +28,7 @@ RUN ln `which python3` /usr/bin/python
 ENV PATH=$PATH:/emsdk-portable
 ENV PATH=$PATH:/emsdk-portable/upstream/emscripten/
 
-# Rust's build system requires NodeJS to be in the path, but the directory in
+# CrabLang's build system requires NodeJS to be in the path, but the directory in
 # which emsdk stores it contains the version number. This caused breakages in
 # the past when emsdk bumped the node version causing the path to point to a
 # missing directory.

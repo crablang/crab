@@ -1,5 +1,5 @@
-use rustc_span::Symbol;
-use rustc_target::spec::abi::Abi;
+use crablangc_span::Symbol;
+use crablangc_target::spec::abi::Abi;
 
 use crate::*;
 use shims::foreign_items::EmulateByNameResult;

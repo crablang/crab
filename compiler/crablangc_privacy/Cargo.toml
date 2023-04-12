@@ -1,0 +1,17 @@
+[package]
+name = "crablangc_privacy"
+version = "0.0.0"
+edition = "2021"
+
+[dependencies]
+crablangc_ast = { path = "../crablangc_ast" }
+crablangc_attr = { path = "../crablangc_attr" }
+crablangc_data_structures = { path = "../crablangc_data_structures" }
+crablangc_errors = { path = "../crablangc_errors" }
+crablangc_hir = { path = "../crablangc_hir" }
+crablangc_macros = { path = "../crablangc_macros" }
+crablangc_middle = { path = "../crablangc_middle" }
+crablangc_session = { path = "../crablangc_session" }
+crablangc_span = { path = "../crablangc_span" }
+crablangc_hir_analysis = { path = "../crablangc_hir_analysis" }
+tracing = "0.1"

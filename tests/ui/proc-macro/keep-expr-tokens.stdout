@@ -1,4 +1,4 @@
-PRINT-ATTR INPUT (DISPLAY): #[rustc_dummy] { 1 + 1 ; }
+PRINT-ATTR INPUT (DISPLAY): #[crablangc_dummy] { 1 + 1 ; }
 PRINT-ATTR INPUT (DEBUG): TokenStream [
     Punct {
         ch: '#',
@@ -9,7 +9,7 @@ PRINT-ATTR INPUT (DEBUG): TokenStream [
         delimiter: Bracket,
         stream: TokenStream [
             Ident {
-                ident: "rustc_dummy",
+                ident: "crablangc_dummy",
                 span: $DIR/keep-expr-tokens.rs:22:7: 22:18 (#0),
             },
         ],

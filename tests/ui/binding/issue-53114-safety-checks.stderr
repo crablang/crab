@@ -151,4 +151,4 @@ LL |     match (&u2.a,) { (_,) => { } }
 error: aborting due to 18 previous errors
 
 Some errors have detailed explanations: E0133, E0793.
-For more information about an error, try `rustc --explain E0133`.
+For more information about an error, try `crablangc --explain E0133`.

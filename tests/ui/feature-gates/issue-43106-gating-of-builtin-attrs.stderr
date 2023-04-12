@@ -310,7 +310,7 @@ LL | | }
    |
    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
 
-warning: attribute should be applied to an `extern` block with non-Rust ABI
+warning: attribute should be applied to an `extern` block with non-CrabLang ABI
   --> $DIR/issue-43106-gating-of-builtin-attrs.rs:553:1
    |
 LL |   #[link()]
@@ -407,7 +407,7 @@ LL | #![cold]
    |
    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
 
-warning: attribute should be applied to an `extern` block with non-Rust ABI
+warning: attribute should be applied to an `extern` block with non-CrabLang ABI
   --> $DIR/issue-43106-gating-of-builtin-attrs.rs:64:1
    |
 LL | #![link()]
@@ -863,7 +863,7 @@ LL |     #[link_section = "1800"] impl S { }
    |
    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
 
-warning: attribute should be applied to an `extern` block with non-Rust ABI
+warning: attribute should be applied to an `extern` block with non-CrabLang ABI
   --> $DIR/issue-43106-gating-of-builtin-attrs.rs:559:17
    |
 LL |     mod inner { #![link()] }
@@ -871,7 +871,7 @@ LL |     mod inner { #![link()] }
    |
    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
 
-warning: attribute should be applied to an `extern` block with non-Rust ABI
+warning: attribute should be applied to an `extern` block with non-CrabLang ABI
   --> $DIR/issue-43106-gating-of-builtin-attrs.rs:564:5
    |
 LL |     #[link()] fn f() { }
@@ -879,7 +879,7 @@ LL |     #[link()] fn f() { }
    |
    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
 
-warning: attribute should be applied to an `extern` block with non-Rust ABI
+warning: attribute should be applied to an `extern` block with non-CrabLang ABI
   --> $DIR/issue-43106-gating-of-builtin-attrs.rs:569:5
    |
 LL |     #[link()] struct S;
@@ -887,7 +887,7 @@ LL |     #[link()] struct S;
    |
    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
 
-warning: attribute should be applied to an `extern` block with non-Rust ABI
+warning: attribute should be applied to an `extern` block with non-CrabLang ABI
   --> $DIR/issue-43106-gating-of-builtin-attrs.rs:574:5
    |
 LL |     #[link()] type T = S;
@@ -895,7 +895,7 @@ LL |     #[link()] type T = S;
    |
    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
 
-warning: attribute should be applied to an `extern` block with non-Rust ABI
+warning: attribute should be applied to an `extern` block with non-CrabLang ABI
   --> $DIR/issue-43106-gating-of-builtin-attrs.rs:579:5
    |
 LL |     #[link()] impl S { }
@@ -903,10 +903,10 @@ LL |     #[link()] impl S { }
    |
    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
 
-warning: attribute should be applied to an `extern` block with non-Rust ABI
+warning: attribute should be applied to an `extern` block with non-CrabLang ABI
   --> $DIR/issue-43106-gating-of-builtin-attrs.rs:584:5
    |
-LL |     #[link()] extern "Rust" {}
+LL |     #[link()] extern "CrabLang" {}
    |     ^^^^^^^^^
    |
    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
@@ -1169,10 +1169,10 @@ warning: crate-level attribute should be an inner attribute: add an exclamation 
 LL |     #[type_length_limit="0100"] impl S { }
    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-warning: the feature `rust1` has been stable since 1.0.0 and no longer requires an attribute to enable
+warning: the feature `crablang1` has been stable since 1.0.0 and no longer requires an attribute to enable
   --> $DIR/issue-43106-gating-of-builtin-attrs.rs:90:12
    |
-LL | #![feature(rust1)]
+LL | #![feature(crablang1)]
    |            ^^^^^
    |
    = note: `#[warn(stable_features)]` on by default

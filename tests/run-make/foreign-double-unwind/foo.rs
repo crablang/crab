@@ -1,4 +1,4 @@
-// Tests that C++ double unwinding through Rust code will be properly guarded
+// Tests that C++ double unwinding through CrabLang code will be properly guarded
 // against instead of exhibiting undefined behaviour.
 
 #![feature(c_unwind)]

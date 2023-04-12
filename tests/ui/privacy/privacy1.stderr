@@ -202,4 +202,4 @@ LL |         ::bar::baz::A.bar2();
 error: aborting due to 18 previous errors
 
 Some errors have detailed explanations: E0603, E0624.
-For more information about an error, try `rustc --explain E0603`.
+For more information about an error, try `crablangc --explain E0603`.

@@ -7,15 +7,15 @@ use clippy_utils::{
     SpanlessEq,
 };
 use core::fmt::{self, Write};
-use rustc_errors::Applicability;
-use rustc_hir::{
+use crablangc_errors::Applicability;
+use crablangc_hir::{
     hir_id::HirIdSet,
     intravisit::{walk_expr, Visitor},
     Block, Expr, ExprKind, Guard, HirId, Let, Pat, Stmt, StmtKind, UnOp,
 };
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_session::{declare_lint_pass, declare_tool_lint};
-use rustc_span::{Span, SyntaxContext, DUMMY_SP};
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_span::{Span, SyntaxContext, DUMMY_SP};
 
 declare_clippy_lint! {
     /// ### What it does
@@ -27,7 +27,7 @@ declare_clippy_lint! {
     ///
     /// ### Known problems
     /// The suggestion may have type inference errors in some cases. e.g.
-    /// ```rust
+    /// ```crablang
     /// let mut map = std::collections::HashMap::new();
     /// let _ = if !map.contains_key(&0) {
     ///     map.insert(0, 0)
@@ -37,7 +37,7 @@ declare_clippy_lint! {
     /// ```
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// # use std::collections::HashMap;
     /// # let mut map = HashMap::new();
     /// # let k = 1;
@@ -47,7 +47,7 @@ declare_clippy_lint! {
     /// }
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// # use std::collections::HashMap;
     /// # let mut map = HashMap::new();
     /// # let k = 1;

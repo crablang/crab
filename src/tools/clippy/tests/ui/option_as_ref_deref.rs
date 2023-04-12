@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 
 #![allow(unused, clippy::redundant_clone)]
 #![warn(clippy::option_as_ref_deref)]
@@ -12,7 +12,7 @@ fn main() {
 
     let _ = opt.clone().as_ref().map(Deref::deref).map(str::len);
 
-    #[rustfmt::skip]
+    #[crablangfmt::skip]
     let _ = opt.clone()
         .as_ref().map(
             Deref::deref

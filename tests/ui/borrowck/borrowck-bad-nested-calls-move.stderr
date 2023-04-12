@@ -25,4 +25,4 @@ LL |         a);
 
 error: aborting due to 2 previous errors
 
-For more information about this error, try `rustc --explain E0505`.
+For more information about this error, try `crablangc --explain E0505`.

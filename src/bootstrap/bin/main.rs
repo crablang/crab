@@ -1,6 +1,6 @@
-//! rustbuild, the Rust build system
+//! crablangbuild, the CrabLang build system
 //!
-//! This is the entry point for the build system used to compile the `rustc`
+//! This is the entry point for the build system used to compile the `crablangc`
 //! compiler. Lots of documentation can be found in the `README.md` file in the
 //! parent directory, and otherwise documentation can be found throughout the `build`
 //! directory in each respective module.
@@ -72,7 +72,7 @@ fn main() {
     // We could see if it's identical to src/etc/pre-push.sh, but pre-push may have been modified in the meantime.
     // Instead, look for this comment, which is almost certainly not in any custom hook.
     if std::fs::read_to_string(pre_commit).map_or(false, |contents| {
-        contents.contains("https://github.com/rust-lang/rust/issues/77620#issuecomment-705144570")
+        contents.contains("https://github.com/crablang/crablang/issues/77620#issuecomment-705144570")
     }) {
         println!(
             "warning: You have the pre-push script installed to .git/hooks/pre-commit. \

@@ -1,10 +1,10 @@
 use clippy_utils::diagnostics::{span_lint_and_help, span_lint_and_sugg};
-use rustc_ast::node_id::{NodeId, NodeMap};
-use rustc_ast::{ptr::P, Crate, Item, ItemKind, MacroDef, ModKind, UseTreeKind};
-use rustc_errors::Applicability;
-use rustc_lint::{EarlyContext, EarlyLintPass, LintContext};
-use rustc_session::{declare_tool_lint, impl_lint_pass};
-use rustc_span::{edition::Edition, symbol::kw, Span, Symbol};
+use crablangc_ast::node_id::{NodeId, NodeMap};
+use crablangc_ast::{ptr::P, Crate, Item, ItemKind, MacroDef, ModKind, UseTreeKind};
+use crablangc_errors::Applicability;
+use crablangc_lint::{EarlyContext, EarlyLintPass, LintContext};
+use crablangc_session::{declare_tool_lint, impl_lint_pass};
+use crablangc_span::{edition::Edition, symbol::kw, Span, Symbol};
 
 declare_clippy_lint! {
     /// ### What it does
@@ -15,7 +15,7 @@ declare_clippy_lint! {
     /// is not necessary, and thus should be removed.
     ///
     /// ### Example
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// use regex;
     ///
     /// fn main() {
@@ -23,7 +23,7 @@ declare_clippy_lint! {
     /// }
     /// ```
     /// Better as
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// fn main() {
     ///     regex::Regex::new(r"^\d{4}-\d{2}-\d{2}$").unwrap();
     /// }

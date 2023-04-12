@@ -1,4 +1,4 @@
-// See https://github.com/rust-lang/unsafe-code-guidelines/issues/148:
+// See https://github.com/crablang/unsafe-code-guidelines/issues/148:
 // this fails when Stacked Borrows is strictly applied even to `!Unpin` types.
 #![feature(generators, generator_trait)]
 

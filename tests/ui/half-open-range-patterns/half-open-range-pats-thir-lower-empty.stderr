@@ -78,4 +78,4 @@ LL |     m!('a', ..'\u{0}');
 
 error: aborting due to 13 previous errors
 
-For more information about this error, try `rustc --explain E0579`.
+For more information about this error, try `crablangc --explain E0579`.

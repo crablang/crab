@@ -2,9 +2,9 @@
 
 ## Expressions
 
-Prefer to use Rust's expression oriented nature where possible;
+Prefer to use CrabLang's expression oriented nature where possible;
 
-```rust
+```crablang
 // use
 let x = if y { 1 } else { 0 };
 // not

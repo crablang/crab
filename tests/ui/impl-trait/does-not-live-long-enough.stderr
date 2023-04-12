@@ -18,4 +18,4 @@ LL |         self.data.iter().filter(move |s| s.starts_with(prefix)).map(|s| s.a
 
 error: aborting due to previous error
 
-For more information about this error, try `rustc --explain E0373`.
+For more information about this error, try `crablangc --explain E0373`.

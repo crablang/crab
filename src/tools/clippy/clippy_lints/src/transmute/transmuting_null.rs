@@ -1,10 +1,10 @@
 use clippy_utils::consts::{constant_context, Constant};
 use clippy_utils::diagnostics::span_lint;
 use clippy_utils::{is_integer_literal, is_path_diagnostic_item};
-use rustc_hir::{Expr, ExprKind};
-use rustc_lint::LateContext;
-use rustc_middle::ty::Ty;
-use rustc_span::symbol::sym;
+use crablangc_hir::{Expr, ExprKind};
+use crablangc_lint::LateContext;
+use crablangc_middle::ty::Ty;
+use crablangc_span::symbol::sym;
 
 use super::TRANSMUTING_NULL;
 

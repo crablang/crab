@@ -4,12 +4,12 @@
 use clippy_utils::diagnostics::span_lint_and_help;
 use clippy_utils::{match_def_path, paths};
 use if_chain::if_chain;
-use rustc_hir::BinOpKind;
-use rustc_hir::{Expr, ExprKind};
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_middle::ty::{self, Ty, TypeAndMut};
-use rustc_session::{declare_lint_pass, declare_tool_lint};
-use rustc_span::sym;
+use crablangc_hir::BinOpKind;
+use crablangc_hir::{Expr, ExprKind};
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_middle::ty::{self, Ty, TypeAndMut};
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_span::sym;
 
 declare_clippy_lint! {
     /// ### What it does
@@ -22,7 +22,7 @@ declare_clippy_lint! {
     /// of `T` and not a number of bytes
     ///
     /// ### Example
-    /// ```rust,no_run
+    /// ```crablang,no_run
     /// # use std::ptr::copy_nonoverlapping;
     /// # use std::mem::size_of;
     /// const SIZE: usize = 128;

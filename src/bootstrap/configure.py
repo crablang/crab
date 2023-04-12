@@ -5,17 +5,17 @@
 from __future__ import absolute_import, division, print_function
 import sys
 import os
-rust_dir = os.path.dirname(os.path.abspath(__file__))
-rust_dir = os.path.dirname(rust_dir)
-rust_dir = os.path.dirname(rust_dir)
-sys.path.append(os.path.join(rust_dir, "src", "bootstrap"))
+crablang_dir = os.path.dirname(os.path.abspath(__file__))
+crablang_dir = os.path.dirname(crablang_dir)
+crablang_dir = os.path.dirname(crablang_dir)
+sys.path.append(os.path.join(crablang_dir, "src", "bootstrap"))
 import bootstrap
 
 
 class Option(object):
-    def __init__(self, name, rustbuild, desc, value):
+    def __init__(self, name, crablangbuild, desc, value):
         self.name = name
-        self.rustbuild = rustbuild
+        self.crablangbuild = crablangbuild
         self.desc = desc
         self.value = value
 
@@ -31,57 +31,57 @@ def v(*args):
     options.append(Option(*args, value=True))
 
 
-o("debug", "rust.debug", "enables debugging environment; does not affect optimization of bootstrapped code")
+o("debug", "crablang.debug", "enables debugging environment; does not affect optimization of bootstrapped code")
 o("docs", "build.docs", "build standard library documentation")
 o("compiler-docs", "build.compiler-docs", "build compiler documentation")
-o("optimize-tests", "rust.optimize-tests", "build tests with optimizations")
-o("verbose-tests", "rust.verbose-tests", "enable verbose output when running tests")
+o("optimize-tests", "crablang.optimize-tests", "build tests with optimizations")
+o("verbose-tests", "crablang.verbose-tests", "enable verbose output when running tests")
 o("ccache", "llvm.ccache", "invoke gcc/clang via ccache to reuse object files between builds")
 o("sccache", None, "invoke gcc/clang via sccache to reuse object files between builds")
-o("local-rust", None, "use an installed rustc rather than downloading a snapshot")
-v("local-rust-root", None, "set prefix for local rust binary")
-o("local-rebuild", "build.local-rebuild", "assume local-rust matches the current version, for rebuilds; implies local-rust, and is implied if local-rust already matches the current version")
+o("local-crablang", None, "use an installed crablangc rather than downloading a snapshot")
+v("local-crablang-root", None, "set prefix for local crablang binary")
+o("local-rebuild", "build.local-rebuild", "assume local-crablang matches the current version, for rebuilds; implies local-crablang, and is implied if local-crablang already matches the current version")
 o("llvm-static-stdcpp", "llvm.static-libstdcpp", "statically link to libstdc++ for LLVM")
 o("llvm-link-shared", "llvm.link-shared", "prefer shared linking to LLVM (llvm-config --link-shared)")
-o("rpath", "rust.rpath", "build rpaths into rustc itself")
-o("codegen-tests", "rust.codegen-tests", "run the tests/codegen tests")
+o("rpath", "crablang.rpath", "build rpaths into crablangc itself")
+o("codegen-tests", "crablang.codegen-tests", "run the tests/codegen tests")
 o("option-checking", None, "complain about unrecognized options in this configure script")
 o("ninja", "llvm.ninja", "build LLVM using the Ninja generator (for MSVC, requires building in the correct environment)")
 o("locked-deps", "build.locked-deps", "force Cargo.lock to be up to date")
-o("vendor", "build.vendor", "enable usage of vendored Rust crates")
+o("vendor", "build.vendor", "enable usage of vendored CrabLang crates")
 o("sanitizers", "build.sanitizers", "build the sanitizer runtimes (asan, lsan, msan, tsan, hwasan)")
-o("dist-src", "rust.dist-src", "when building tarballs enables building a source tarball")
+o("dist-src", "crablang.dist-src", "when building tarballs enables building a source tarball")
 o("cargo-native-static", "build.cargo-native-static", "static native libraries in cargo")
 o("profiler", "build.profiler", "build the profiler runtime")
 o("full-tools", None, "enable all tools")
-o("lld", "rust.lld", "build lld")
+o("lld", "crablang.lld", "build lld")
 o("clang", "llvm.clang", "build clang")
 o("missing-tools", "dist.missing-tools", "allow failures when building tools")
 o("use-libcxx", "llvm.use-libcxx", "build LLVM with libc++")
-o("control-flow-guard", "rust.control-flow-guard", "Enable Control Flow Guard")
+o("control-flow-guard", "crablang.control-flow-guard", "Enable Control Flow Guard")
 
 v("llvm-cflags", "llvm.cflags", "build LLVM with these extra compiler flags")
 v("llvm-cxxflags", "llvm.cxxflags", "build LLVM with these extra compiler flags")
 v("llvm-ldflags", "llvm.ldflags", "build LLVM with these extra linker flags")
 
-v("llvm-libunwind", "rust.llvm-libunwind", "use LLVM libunwind")
+v("llvm-libunwind", "crablang.llvm-libunwind", "use LLVM libunwind")
 
 # Optimization and debugging options. These may be overridden by the release
 # channel, etc.
 o("optimize-llvm", "llvm.optimize", "build optimized LLVM")
 o("llvm-assertions", "llvm.assertions", "build LLVM with assertions")
 o("llvm-plugins", "llvm.plugins", "build LLVM with plugin interface")
-o("debug-assertions", "rust.debug-assertions", "build with debugging assertions")
-o("debug-assertions-std", "rust.debug-assertions-std", "build the standard library with debugging assertions")
-o("overflow-checks", "rust.overflow-checks", "build with overflow checks")
-o("overflow-checks-std", "rust.overflow-checks-std", "build the standard library with overflow checks")
+o("debug-assertions", "crablang.debug-assertions", "build with debugging assertions")
+o("debug-assertions-std", "crablang.debug-assertions-std", "build the standard library with debugging assertions")
+o("overflow-checks", "crablang.overflow-checks", "build with overflow checks")
+o("overflow-checks-std", "crablang.overflow-checks-std", "build the standard library with overflow checks")
 o("llvm-release-debuginfo", "llvm.release-debuginfo", "build LLVM with debugger metadata")
-v("debuginfo-level", "rust.debuginfo-level", "debuginfo level for Rust code")
-v("debuginfo-level-rustc", "rust.debuginfo-level-rustc", "debuginfo level for the compiler")
-v("debuginfo-level-std", "rust.debuginfo-level-std", "debuginfo level for the standard library")
-v("debuginfo-level-tools", "rust.debuginfo-level-tools", "debuginfo level for the tools")
-v("debuginfo-level-tests", "rust.debuginfo-level-tests", "debuginfo level for the test suites run with compiletest")
-v("save-toolstates", "rust.save-toolstates", "save build and test status of external tools into this file")
+v("debuginfo-level", "crablang.debuginfo-level", "debuginfo level for CrabLang code")
+v("debuginfo-level-crablangc", "crablang.debuginfo-level-crablangc", "debuginfo level for the compiler")
+v("debuginfo-level-std", "crablang.debuginfo-level-std", "debuginfo level for the standard library")
+v("debuginfo-level-tools", "crablang.debuginfo-level-tools", "debuginfo level for the tools")
+v("debuginfo-level-tests", "crablang.debuginfo-level-tests", "debuginfo level for the test suites run with compiletest")
+v("save-toolstates", "crablang.save-toolstates", "save build and test status of external tools into this file")
 
 v("prefix", "install.prefix", "set installation prefix")
 v("localstatedir", "install.localstatedir", "local state directory")
@@ -147,19 +147,19 @@ v("qemu-riscv64-rootfs", "target.riscv64gc-unknown-linux-gnu.qemu-rootfs",
   "rootfs in qemu testing, you probably don't want to use this")
 v("experimental-targets", "llvm.experimental-targets",
   "experimental LLVM targets to build")
-v("release-channel", "rust.channel", "the name of the release channel to build")
-v("release-description", "rust.description", "optional descriptive string for version output")
+v("release-channel", "crablang.channel", "the name of the release channel to build")
+v("release-description", "crablang.description", "optional descriptive string for version output")
 v("dist-compression-formats", None,
   "comma-separated list of compression formats to use")
 
 # Used on systems where "cc" is unavailable
-v("default-linker", "rust.default-linker", "the default linker")
+v("default-linker", "crablang.default-linker", "the default linker")
 
 # Many of these are saved below during the "writing configuration" step
 # (others are conditionally saved).
 o("manage-submodules", "build.submodules", "let the build manage the git submodules")
 o("full-bootstrap", "build.full-bootstrap", "build three compilers instead of two (not recommended except for testing reproducible builds)")
-o("extended", "build.extended", "build an extended rust tool set")
+o("extended", "build.extended", "build an extended crablang tool set")
 
 v("tools", None, "List of extended tools will be installed")
 v("codegen-backends", None, "List of codegen backends to build")
@@ -319,9 +319,9 @@ def apply_args(known_args, option_checking, config):
             err("Option '{}' provided more than once".format(key))
         option, value = arr[-1]
 
-        # If we have a clear avenue to set our value in rustbuild, do so
-        if option.rustbuild is not None:
-            set(option.rustbuild, value, config)
+        # If we have a clear avenue to set our value in crablangbuild, do so
+        if option.crablangbuild is not None:
+            set(option.crablangbuild, value, config)
             continue
 
         # Otherwise we're a "special" option and need some extra handling, so do
@@ -330,17 +330,17 @@ def apply_args(known_args, option_checking, config):
 
         if option.name == 'sccache':
             set('llvm.ccache', 'sccache', config)
-        elif option.name == 'local-rust':
+        elif option.name == 'local-crablang':
             for path in os.environ['PATH'].split(os.pathsep):
-                if os.path.exists(path + '/rustc'):
-                    set('build.rustc', path + '/rustc', config)
+                if os.path.exists(path + '/crablangc'):
+                    set('build.crablangc', path + '/crablangc', config)
                     break
             for path in os.environ['PATH'].split(os.pathsep):
                 if os.path.exists(path + '/cargo'):
                     set('build.cargo', path + '/cargo', config)
                     break
-        elif option.name == 'local-rust-root':
-            set('build.rustc', value + '/bin/rustc', config)
+        elif option.name == 'local-crablang-root':
+            set('build.crablangc', value + '/bin/crablangc', config)
             set('build.cargo', value + '/bin/cargo', config)
         elif option.name == 'llvm-root':
             set('target.{}.llvm-config'.format(build_triple), value + '/bin/llvm-config', config)
@@ -351,15 +351,15 @@ def apply_args(known_args, option_checking, config):
         elif option.name == 'tools':
             set('build.tools', value.split(','), config)
         elif option.name == 'codegen-backends':
-            set('rust.codegen-backends', value.split(','), config)
+            set('crablang.codegen-backends', value.split(','), config)
         elif option.name == 'host':
             set('build.host', value.split(','), config)
         elif option.name == 'target':
             set('build.target', value.split(','), config)
         elif option.name == 'full-tools':
-            set('rust.codegen-backends', ['llvm'], config)
-            set('rust.lld', True, config)
-            set('rust.llvm-tools', True, config)
+            set('crablang.codegen-backends', ['llvm'], config)
+            set('crablang.lld', True, config)
+            set('crablang.llvm-tools', True, config)
             set('build.extended', True, config)
         elif option.name == 'option-checking':
             # this was handled above
@@ -383,7 +383,7 @@ def parse_example_config(known_args, config):
     targets = {}
     top_level_keys = []
 
-    for line in open(rust_dir + '/config.example.toml').read().split("\n"):
+    for line in open(crablang_dir + '/config.example.toml').read().split("\n"):
         if cur_section == None:
             if line.count('=') == 1:
                 top_level_key = line.split('=')[0]
@@ -537,11 +537,11 @@ if __name__ == "__main__":
         write_config_toml(f, section_order, targets, sections)
 
     with bootstrap.output('Makefile') as f:
-        contents = os.path.join(rust_dir, 'src', 'bootstrap', 'mk', 'Makefile.in')
+        contents = os.path.join(crablang_dir, 'src', 'bootstrap', 'mk', 'Makefile.in')
         contents = open(contents).read()
-        contents = contents.replace("$(CFG_SRC_DIR)", rust_dir + '/')
+        contents = contents.replace("$(CFG_SRC_DIR)", crablang_dir + '/')
         contents = contents.replace("$(CFG_PYTHON)", sys.executable)
         f.write(contents)
 
     p("")
-    p("run `python {}/x.py --help`".format(rust_dir))
+    p("run `python {}/x.py --help`".format(crablang_dir))

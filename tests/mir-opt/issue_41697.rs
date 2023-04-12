@@ -5,7 +5,7 @@
 // types of the impl, which would trigger a cycle. We suppressed this
 // cycle now by forcing mir-dump to avoid asking for types of an impl.
 
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 
 use std::sync::Arc;
 

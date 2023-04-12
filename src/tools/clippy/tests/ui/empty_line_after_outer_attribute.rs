@@ -2,7 +2,7 @@
 #![warn(clippy::empty_line_after_outer_attr)]
 #![allow(clippy::assertions_on_constants)]
 #![feature(custom_inner_attributes)]
-#![rustfmt::skip]
+#![crablangfmt::skip]
 
 #[macro_use]
 extern crate proc_macro_attr;
@@ -98,7 +98,7 @@ pub struct S;
 pub struct T;
 
 // This should not produce a warning
-// See https://github.com/rust-lang/rust-clippy/issues/5567
+// See https://github.com/crablang/crablang-clippy/issues/5567
 #[fake_async_trait]
 pub trait Bazz {
     fn foo() -> Vec<u8> {

@@ -2,13 +2,13 @@
 
 #![allow(clippy::module_name_repetitions)]
 
-use rustc_errors::Applicability;
-use rustc_hir::{Expr, ExprKind};
-use rustc_lint::{LateContext, LintContext};
-use rustc_session::Session;
-use rustc_span::hygiene;
-use rustc_span::source_map::{original_sp, SourceMap};
-use rustc_span::{BytePos, Pos, Span, SpanData, SyntaxContext, DUMMY_SP};
+use crablangc_errors::Applicability;
+use crablangc_hir::{Expr, ExprKind};
+use crablangc_lint::{LateContext, LintContext};
+use crablangc_session::Session;
+use crablangc_span::hygiene;
+use crablangc_span::source_map::{original_sp, SourceMap};
+use crablangc_span::{BytePos, Pos, Span, SpanData, SyntaxContext, DUMMY_SP};
 use std::borrow::Cow;
 
 /// Like `snippet_block`, but add braces if the expr is not an `ExprKind::Block`.
@@ -33,7 +33,7 @@ pub fn expr_block<T: LintContext>(
 /// Returns a new Span that extends the original Span to the first non-whitespace char of the first
 /// line.
 ///
-/// ```rust,ignore
+/// ```crablang,ignore
 ///     let x = ();
 /// //          ^^
 /// // will be converted to
@@ -54,7 +54,7 @@ fn first_char_in_first_line<T: LintContext>(cx: &T, span: Span) -> Option<BytePo
 
 /// Extends the span to the beginning of the spans line, incl. whitespaces.
 ///
-/// ```rust
+/// ```crablang
 ///        let x = ();
 /// //             ^^
 /// // will be converted to
@@ -71,7 +71,7 @@ fn line_span<T: LintContext>(cx: &T, span: Span) -> Span {
 
 /// Returns the indentation of the line of a span
 ///
-/// ```rust,ignore
+/// ```crablang,ignore
 /// let x = ();
 /// //      ^^ -- will return 0
 ///     let x = ();
@@ -106,7 +106,7 @@ pub fn is_present_in_source<T: LintContext>(cx: &T, span: Span) -> bool {
 
 /// Returns the position just before rarrow
 ///
-/// ```rust,ignore
+/// ```crablang,ignore
 /// fn into(self) -> () {}
 ///              ^
 /// // in case of unformatted code
@@ -177,7 +177,7 @@ fn reindent_multiline_inner(s: &str, ignore_first: bool, indent: Option<usize>, 
 /// [`snippet_with_applicability`] to ensure that the applicability stays correct.
 ///
 /// # Example
-/// ```rust,ignore
+/// ```crablang,ignore
 /// // Given two spans one for `value` and one for the `init` expression.
 /// let value = Vec::new();
 /// //  ^^^^^   ^^^^^^^^^^
@@ -245,7 +245,7 @@ fn snippet_opt_sess(sess: &Session, span: Span) -> Option<String> {
 ///
 /// # Example
 ///
-/// ```rust,ignore
+/// ```crablang,ignore
 /// snippet_block(cx, block.span, "..", None)
 /// // where, `block` is the block of the if expr
 ///     if x {
@@ -257,7 +257,7 @@ fn snippet_opt_sess(sess: &Session, span: Span) -> Option<String> {
 /// }
 /// ```
 ///
-/// ```rust,ignore
+/// ```crablang,ignore
 /// snippet_block(cx, block.span, "..", Some(if_expr.span))
 /// // where, `block` is the block of the if expr
 ///     if x {
@@ -358,7 +358,7 @@ fn snippet_with_context_sess<'a>(
 ///
 /// Given the following
 ///
-/// ```rust,ignore
+/// ```crablang,ignore
 /// macro_rules! m { ($e:expr) => { f($e) }; }
 /// g(m!(0))
 /// ```
@@ -369,7 +369,7 @@ fn snippet_with_context_sess<'a>(
 ///
 /// This will traverse through multiple macro calls. Given the following:
 ///
-/// ```rust,ignore
+/// ```crablang,ignore
 /// macro_rules! m { ($e:expr) => { n!($e, 0) }; }
 /// macro_rules! n { ($e:expr, $f:expr) => { f($e, $f) }; }
 /// g(m!(0))
@@ -386,7 +386,7 @@ pub fn walk_span_to_context(span: Span, outer: SyntaxContext) -> Option<Span> {
 ///
 /// # Examples
 ///
-/// ```rust,ignore
+/// ```crablang,ignore
 /// without_block_comments(vec!["/*", "foo", "*/"]);
 /// // => vec![]
 ///
@@ -437,7 +437,7 @@ pub fn trim_span(sm: &SourceMap, span: Span) -> Span {
 }
 
 /// Expand a span to include a preceding comma
-/// ```rust,ignore
+/// ```crablang,ignore
 /// writeln!(o, "")   ->   writeln!(o, "")
 ///             ^^                   ^^^^
 /// ```
@@ -460,7 +460,7 @@ mod test {
     }
 
     #[test]
-    #[rustfmt::skip]
+    #[crablangfmt::skip]
     fn test_reindent_multiline_block() {
         assert_eq!("\
     if x {
@@ -485,7 +485,7 @@ mod test {
     }
 
     #[test]
-    #[rustfmt::skip]
+    #[crablangfmt::skip]
     fn test_reindent_multiline_empty_line() {
         assert_eq!("\
     if x {
@@ -502,7 +502,7 @@ mod test {
     }
 
     #[test]
-    #[rustfmt::skip]
+    #[crablangfmt::skip]
     fn test_reindent_multiline_lines_deeper() {
         assert_eq!("\
         if x {
@@ -526,7 +526,7 @@ mod test {
         let result = without_block_comments(vec!["", "/*", "", "*/", "#[crate_type = \"lib\"]", "/*", "", "*/", ""]);
         assert_eq!(result, vec!["", "#[crate_type = \"lib\"]", ""]);
 
-        let result = without_block_comments(vec!["/* rust", "", "*/"]);
+        let result = without_block_comments(vec!["/* crablang", "", "*/"]);
         assert!(result.is_empty());
 
         let result = without_block_comments(vec!["/* one-line comment */"]);

@@ -1,7 +1,7 @@
 use crate::iter::adapters::{
-    zip::try_get_unchecked, TrustedRandomAccess, TrustedRandomAccessNoCoerce,
+    zip::try_get_unchecked, TcrablangedRandomAccess, TcrablangedRandomAccessNoCoerce,
 };
-use crate::iter::{FusedIterator, TrustedLen};
+use crate::iter::{FusedIterator, TcrablangedLen};
 use crate::mem::MaybeUninit;
 use crate::mem::SizedTypeProperties;
 use crate::num::NonZeroUsize;
@@ -96,7 +96,7 @@ where
 
     unsafe fn __iterator_get_unchecked(&mut self, idx: usize) -> T
     where
-        Self: TrustedRandomAccessNoCoerce,
+        Self: TcrablangedRandomAccessNoCoerce,
     {
         // SAFETY: the caller must uphold the contract for
         // `Iterator::__iterator_get_unchecked`.
@@ -160,22 +160,22 @@ where
 }
 
 #[doc(hidden)]
-#[unstable(feature = "trusted_random_access", issue = "none")]
-unsafe impl<I> TrustedRandomAccess for Copied<I> where I: TrustedRandomAccess {}
+#[unstable(feature = "tcrablanged_random_access", issue = "none")]
+unsafe impl<I> TcrablangedRandomAccess for Copied<I> where I: TcrablangedRandomAccess {}
 
 #[doc(hidden)]
-#[unstable(feature = "trusted_random_access", issue = "none")]
-unsafe impl<I> TrustedRandomAccessNoCoerce for Copied<I>
+#[unstable(feature = "tcrablanged_random_access", issue = "none")]
+unsafe impl<I> TcrablangedRandomAccessNoCoerce for Copied<I>
 where
-    I: TrustedRandomAccessNoCoerce,
+    I: TcrablangedRandomAccessNoCoerce,
 {
     const MAY_HAVE_SIDE_EFFECT: bool = I::MAY_HAVE_SIDE_EFFECT;
 }
 
 #[stable(feature = "iter_copied", since = "1.36.0")]
-unsafe impl<'a, I, T: 'a> TrustedLen for Copied<I>
+unsafe impl<'a, I, T: 'a> TcrablangedLen for Copied<I>
 where
-    I: TrustedLen<Item = &'a T>,
+    I: TcrablangedLen<Item = &'a T>,
     T: Copy,
 {
 }
@@ -242,7 +242,7 @@ where
     }
 }
 
-#[stable(feature = "default_iters", since = "CURRENT_RUSTC_VERSION")]
+#[stable(feature = "default_iters", since = "CURRENT_CRABLANGC_VERSION")]
 impl<I: Default> Default for Copied<I> {
     /// Creates a `Copied` iterator from the default value of `I`
     /// ```

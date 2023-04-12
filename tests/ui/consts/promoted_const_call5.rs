@@ -1,22 +1,22 @@
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 #![feature(staged_api)]
 #![stable(feature = "a", since = "1.0.0")]
 
-#[rustc_promotable]
+#[crablangc_promotable]
 #[stable(feature = "a", since = "1.0.0")]
-#[rustc_const_stable(feature = "a", since = "1.0.0")]
+#[crablangc_const_stable(feature = "a", since = "1.0.0")]
 pub const fn id<T>(x: &'static T) -> &'static T { x }
 
-#[rustc_promotable]
+#[crablangc_promotable]
 #[stable(feature = "a", since = "1.0.0")]
-#[rustc_const_stable(feature = "a", since = "1.0.0")]
+#[crablangc_const_stable(feature = "a", since = "1.0.0")]
 pub const fn new_string() -> String {
     String::new()
 }
 
-#[rustc_promotable]
+#[crablangc_promotable]
 #[stable(feature = "a", since = "1.0.0")]
-#[rustc_const_stable(feature = "a", since = "1.0.0")]
+#[crablangc_const_stable(feature = "a", since = "1.0.0")]
 pub const fn new_manually_drop<T>(t: T) -> std::mem::ManuallyDrop<T>  {
     std::mem::ManuallyDrop::new(t)
 }

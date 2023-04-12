@@ -1,9 +1,9 @@
 use super::transitive_relation::TransitiveRelation;
 use crate::ty::is_copy;
-use rustc_data_structures::fx::FxHashMap;
-use rustc_index::bit_set::HybridBitSet;
-use rustc_lint::LateContext;
-use rustc_middle::mir;
+use crablangc_data_structures::fx::FxHashMap;
+use crablangc_index::bit_set::HybridBitSet;
+use crablangc_lint::LateContext;
+use crablangc_middle::mir;
 
 /// Collect possible borrowed for every `&mut` local.
 /// For example, `_1 = &mut _2` generate _1: {_2,...}
@@ -44,7 +44,7 @@ impl<'a, 'tcx> mir::visit::Visitor<'tcx> for PossibleOriginVisitor<'a, 'tcx> {
         let lhs = place.local;
         match rvalue {
             // Only consider `&mut`, which can modify origin place
-            mir::Rvalue::Ref(_, rustc_middle::mir::BorrowKind::Mut { .. }, borrowed) |
+            mir::Rvalue::Ref(_, crablangc_middle::mir::BorrowKind::Mut { .. }, borrowed) |
             // _2: &mut _;
             // _3 = move _2
             mir::Rvalue::Use(mir::Operand::Move(borrowed))  |

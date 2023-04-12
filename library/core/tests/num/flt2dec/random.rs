@@ -151,7 +151,7 @@ fn shortest_f32_exhaustive_equivalence_test() {
     // two different algorithms agree to each other.
     //
     // this reports the progress and the number of f32 values returned `None`.
-    // with `--nocapture` (and plenty of time and appropriate rustc flags), this should print:
+    // with `--nocapture` (and plenty of time and appropriate crablangc flags), this should print:
     // `done, ignored=17643158 passed=2121451881 failed=0`.
 
     use core::num::flt2dec::strategy::dragon::format_shortest as fallback;
@@ -161,7 +161,7 @@ fn shortest_f32_exhaustive_equivalence_test() {
 #[test]
 #[ignore] // it is too expensive
 fn shortest_f64_hard_random_equivalence_test() {
-    // this again probably has to use appropriate rustc flags.
+    // this again probably has to use appropriate crablangc flags.
 
     use core::num::flt2dec::strategy::dragon::format_shortest as fallback;
     f64_random_equivalence_test(format_shortest_opt, fallback, MAX_SIG_DIGITS, 100_000_000);

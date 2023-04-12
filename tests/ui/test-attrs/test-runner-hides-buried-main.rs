@@ -1,14 +1,14 @@
 // run-pass
 // compile-flags: --test
 
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 
 #![allow(dead_code)]
 
 mod a {
     fn b() {
         (|| {
-            #[rustc_main]
+            #[crablangc_main]
             fn c() { panic!(); }
         })();
     }

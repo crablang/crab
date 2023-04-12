@@ -40,7 +40,7 @@
 //! assert_eq!(bytes, [240, 159, 146, 150]);
 //! ```
 
-#![stable(feature = "rust1", since = "1.0.0")]
+#![stable(feature = "crablang1", since = "1.0.0")]
 
 use core::error::Error;
 use core::fmt;
@@ -229,11 +229,11 @@ use crate::vec::Vec;
 /// [`&str`]s as arguments unless they need a `String` for some specific
 /// reason.
 ///
-/// In certain cases Rust doesn't have enough information to make this
+/// In certain cases CrabLang doesn't have enough information to make this
 /// conversion, known as [`Deref`] coercion. In the following example a string
 /// slice [`&'a str`][`&str`] implements the trait `TraitExample`, and the function
-/// `example_func` takes anything that implements the trait. In this case Rust
-/// would need to make two implicit conversions, which Rust doesn't have the
+/// `example_func` takes anything that implements the trait. In this case CrabLang
+/// would need to make two implicit conversions, which CrabLang doesn't have the
 /// means to do. For that reason, the following example will not compile.
 ///
 /// ```compile_fail,E0277
@@ -360,7 +360,7 @@ use crate::vec::Vec;
 /// [`Deref`]: core::ops::Deref "ops::Deref"
 /// [`as_str()`]: String::as_str
 #[derive(PartialEq, PartialOrd, Eq, Ord)]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[cfg_attr(not(test), lang = "String")]
 pub struct String {
     vec: Vec<u8>,
@@ -399,7 +399,7 @@ pub struct String {
 /// assert!(value.is_err());
 /// assert_eq!(vec![0, 159], value.unwrap_err().into_bytes());
 /// ```
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[cfg_attr(not(no_global_oom_handling), derive(Clone))]
 #[derive(Debug, PartialEq, Eq)]
 pub struct FromUtf8Error {
@@ -423,7 +423,7 @@ pub struct FromUtf8Error {
 ///
 /// assert!(String::from_utf16(v).is_err());
 /// ```
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[derive(Debug)]
 pub struct FromUtf16Error(());
 
@@ -447,8 +447,8 @@ impl String {
     /// let s = String::new();
     /// ```
     #[inline]
-    #[rustc_const_stable(feature = "const_string_new", since = "1.39.0")]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[crablangc_const_stable(feature = "const_string_new", since = "1.39.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[must_use]
     pub const fn new() -> String {
         String { vec: Vec::new() }
@@ -493,7 +493,7 @@ impl String {
     /// ```
     #[cfg(not(no_global_oom_handling))]
     #[inline]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[must_use]
     pub fn with_capacity(capacity: usize) -> String {
         String { vec: Vec::with_capacity(capacity) }
@@ -566,7 +566,7 @@ impl String {
     /// [`&str`]: prim@str "&str"
     /// [`into_bytes`]: String::into_bytes
     #[inline]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn from_utf8(vec: Vec<u8>) -> Result<String, FromUtf8Error> {
         match str::from_utf8(&vec) {
             Ok(..) => Ok(String { vec }),
@@ -625,7 +625,7 @@ impl String {
     /// ```
     #[must_use]
     #[cfg(not(no_global_oom_handling))]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn from_utf8_lossy(v: &[u8]) -> Cow<'_, str> {
         let mut iter = Utf8Chunks::new(v);
 
@@ -676,7 +676,7 @@ impl String {
     /// assert!(String::from_utf16(v).is_err());
     /// ```
     #[cfg(not(no_global_oom_handling))]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn from_utf16(v: &[u16]) -> Result<String, FromUtf16Error> {
         // This isn't done via collect::<Result<_, _>>() for performance reasons.
         // FIXME: the function can be simplified again when #48994 is closed.
@@ -718,7 +718,7 @@ impl String {
     #[cfg(not(no_global_oom_handling))]
     #[must_use]
     #[inline]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn from_utf16_lossy(v: &[u16]) -> String {
         char::decode_utf16(v.iter().cloned())
             .map(|r| r.unwrap_or(char::REPLACEMENT_CHARACTER))
@@ -774,7 +774,7 @@ impl String {
     /// internal data structures. For example, it is normally **not** safe to
     /// build a `String` from a pointer to a C `char` array containing UTF-8
     /// _unless_ you are certain that array was originally allocated by the
-    /// Rust standard library's allocator.
+    /// CrabLang standard library's allocator.
     ///
     /// The ownership of `buf` is effectively transferred to the
     /// `String` which may then deallocate, reallocate or change the
@@ -806,7 +806,7 @@ impl String {
     /// }
     /// ```
     #[inline]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub unsafe fn from_raw_parts(buf: *mut u8, length: usize, capacity: usize) -> String {
         unsafe { String { vec: Vec::from_raw_parts(buf, length, capacity) } }
     }
@@ -841,7 +841,7 @@ impl String {
     /// ```
     #[inline]
     #[must_use]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub unsafe fn from_utf8_unchecked(bytes: Vec<u8>) -> String {
         String { vec: bytes }
     }
@@ -862,7 +862,7 @@ impl String {
     /// ```
     #[inline]
     #[must_use = "`self` will be dropped if the result is not used"]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn into_bytes(self) -> Vec<u8> {
         self.vec
     }
@@ -921,7 +921,7 @@ impl String {
     /// ```
     #[cfg(not(no_global_oom_handling))]
     #[inline]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn push_str(&mut self, string: &str) {
         self.vec.extend_from_slice(string.as_bytes())
     }
@@ -975,7 +975,7 @@ impl String {
     /// ```
     #[inline]
     #[must_use]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn capacity(&self) -> usize {
         self.vec.capacity()
     }
@@ -1022,7 +1022,7 @@ impl String {
     /// ```
     #[cfg(not(no_global_oom_handling))]
     #[inline]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn reserve(&mut self, additional: usize) {
         self.vec.reserve(additional)
     }
@@ -1072,7 +1072,7 @@ impl String {
     /// ```
     #[cfg(not(no_global_oom_handling))]
     #[inline]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn reserve_exact(&mut self, additional: usize) {
         self.vec.reserve_exact(additional)
     }
@@ -1105,7 +1105,7 @@ impl String {
     ///
     ///     Ok(output)
     /// }
-    /// # process_data("rust").expect("why is the test harness OOMing on 4 bytes?");
+    /// # process_data("crablang").expect("why is the test harness OOMing on 4 bytes?");
     /// ```
     #[stable(feature = "try_reserve", since = "1.57.0")]
     pub fn try_reserve(&mut self, additional: usize) -> Result<(), TryReserveError> {
@@ -1146,7 +1146,7 @@ impl String {
     ///
     ///     Ok(output)
     /// }
-    /// # process_data("rust").expect("why is the test harness OOMing on 4 bytes?");
+    /// # process_data("crablang").expect("why is the test harness OOMing on 4 bytes?");
     /// ```
     #[stable(feature = "try_reserve", since = "1.57.0")]
     pub fn try_reserve_exact(&mut self, additional: usize) -> Result<(), TryReserveError> {
@@ -1170,7 +1170,7 @@ impl String {
     /// ```
     #[cfg(not(no_global_oom_handling))]
     #[inline]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn shrink_to_fit(&mut self) {
         self.vec.shrink_to_fit()
     }
@@ -1219,7 +1219,7 @@ impl String {
     /// ```
     #[cfg(not(no_global_oom_handling))]
     #[inline]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn push(&mut self, ch: char) {
         match ch.len_utf8() {
             1 => self.vec.push(ch as u8),
@@ -1244,7 +1244,7 @@ impl String {
     /// ```
     #[inline]
     #[must_use]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn as_bytes(&self) -> &[u8] {
         &self.vec
     }
@@ -1273,7 +1273,7 @@ impl String {
     /// assert_eq!("he", s);
     /// ```
     #[inline]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn truncate(&mut self, new_len: usize) {
         if new_len <= self.len() {
             assert!(self.is_char_boundary(new_len));
@@ -1299,7 +1299,7 @@ impl String {
     /// assert_eq!(s.pop(), None);
     /// ```
     #[inline]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn pop(&mut self) -> Option<char> {
         let ch = self.chars().rev().next()?;
         let newlen = self.len() - ch.len_utf8();
@@ -1331,7 +1331,7 @@ impl String {
     /// assert_eq!(s.remove(0), 'o');
     /// ```
     #[inline]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn remove(&mut self, idx: usize) -> char {
         let ch = match self[idx..].chars().next() {
             Some(ch) => ch,
@@ -1527,7 +1527,7 @@ impl String {
     /// ```
     #[cfg(not(no_global_oom_handling))]
     #[inline]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn insert(&mut self, idx: usize, ch: char) {
         assert!(self.is_char_boundary(idx));
         let mut bits = [0; 4];
@@ -1609,7 +1609,7 @@ impl String {
     /// assert_eq!(s, "olleh");
     /// ```
     #[inline]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub unsafe fn as_mut_vec(&mut self) -> &mut Vec<u8> {
         &mut self.vec
     }
@@ -1632,7 +1632,7 @@ impl String {
     /// ```
     #[inline]
     #[must_use]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn len(&self) -> usize {
         self.vec.len()
     }
@@ -1652,7 +1652,7 @@ impl String {
     /// ```
     #[inline]
     #[must_use]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn is_empty(&self) -> bool {
         self.len() == 0
     }
@@ -1709,7 +1709,7 @@ impl String {
     /// assert_eq!(3, s.capacity());
     /// ```
     #[inline]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn clear(&mut self) {
         self.vec.clear()
     }
@@ -1920,7 +1920,7 @@ impl FromUtf8Error {
     /// assert_eq!(vec![0, 159], value.unwrap_err().into_bytes());
     /// ```
     #[must_use = "`self` will be dropped if the result is not used"]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn into_bytes(self) -> Vec<u8> {
         self.bytes
     }
@@ -1949,27 +1949,27 @@ impl FromUtf8Error {
     /// assert_eq!(1, error.valid_up_to());
     /// ```
     #[must_use]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn utf8_error(&self) -> Utf8Error {
         self.error
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl fmt::Display for FromUtf8Error {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         fmt::Display::fmt(&self.error, f)
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl fmt::Display for FromUtf16Error {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         fmt::Display::fmt("invalid utf-16: lone surrogate found", f)
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl Error for FromUtf8Error {
     #[allow(deprecated)]
     fn description(&self) -> &str {
@@ -1977,7 +1977,7 @@ impl Error for FromUtf8Error {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl Error for FromUtf16Error {
     #[allow(deprecated)]
     fn description(&self) -> &str {
@@ -1986,7 +1986,7 @@ impl Error for FromUtf16Error {
 }
 
 #[cfg(not(no_global_oom_handling))]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl Clone for String {
     fn clone(&self) -> Self {
         String { vec: self.vec.clone() }
@@ -1998,7 +1998,7 @@ impl Clone for String {
 }
 
 #[cfg(not(no_global_oom_handling))]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl FromIterator<char> for String {
     fn from_iter<I: IntoIterator<Item = char>>(iter: I) -> String {
         let mut buf = String::new();
@@ -2018,7 +2018,7 @@ impl<'a> FromIterator<&'a char> for String {
 }
 
 #[cfg(not(no_global_oom_handling))]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<'a> FromIterator<&'a str> for String {
     fn from_iter<I: IntoIterator<Item = &'a str>>(iter: I) -> String {
         let mut buf = String::new();
@@ -2077,7 +2077,7 @@ impl<'a> FromIterator<Cow<'a, str>> for String {
 }
 
 #[cfg(not(no_global_oom_handling))]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl Extend<char> for String {
     fn extend<I: IntoIterator<Item = char>>(&mut self, iter: I) {
         let iterator = iter.into_iter();
@@ -2116,7 +2116,7 @@ impl<'a> Extend<&'a char> for String {
 }
 
 #[cfg(not(no_global_oom_handling))]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<'a> Extend<&'a str> for String {
     fn extend<I: IntoIterator<Item = &'a str>>(&mut self, iter: I) {
         iter.into_iter().for_each(move |s| self.push_str(s));
@@ -2209,7 +2209,7 @@ impl<'a, 'b> Pattern<'a> for &'b String {
 
 macro_rules! impl_eq {
     ($lhs:ty, $rhs: ty) => {
-        #[stable(feature = "rust1", since = "1.0.0")]
+        #[stable(feature = "crablang1", since = "1.0.0")]
         #[allow(unused_lifetimes)]
         impl<'a, 'b> PartialEq<$rhs> for $lhs {
             #[inline]
@@ -2222,7 +2222,7 @@ macro_rules! impl_eq {
             }
         }
 
-        #[stable(feature = "rust1", since = "1.0.0")]
+        #[stable(feature = "crablang1", since = "1.0.0")]
         #[allow(unused_lifetimes)]
         impl<'a, 'b> PartialEq<$lhs> for $rhs {
             #[inline]
@@ -2246,8 +2246,8 @@ impl_eq! { Cow<'a, str>, &'b str }
 #[cfg(not(no_global_oom_handling))]
 impl_eq! { Cow<'a, str>, String }
 
-#[stable(feature = "rust1", since = "1.0.0")]
-#[rustc_const_unstable(feature = "const_default_impls", issue = "87864")]
+#[stable(feature = "crablang1", since = "1.0.0")]
+#[crablangc_const_unstable(feature = "const_default_impls", issue = "87864")]
 impl const Default for String {
     /// Creates an empty `String`.
     #[inline]
@@ -2256,7 +2256,7 @@ impl const Default for String {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl fmt::Display for String {
     #[inline]
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
@@ -2264,7 +2264,7 @@ impl fmt::Display for String {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl fmt::Debug for String {
     #[inline]
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
@@ -2272,7 +2272,7 @@ impl fmt::Debug for String {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl hash::Hash for String {
     #[inline]
     fn hash<H: hash::Hasher>(&self, hasher: &mut H) {
@@ -2318,7 +2318,7 @@ impl hash::Hash for String {
 /// let c = a.to_string() + b;
 /// ```
 #[cfg(not(no_global_oom_handling))]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl Add<&str> for String {
     type Output = String;
 
@@ -2341,7 +2341,7 @@ impl AddAssign<&str> for String {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl ops::Index<ops::Range<usize>> for String {
     type Output = str;
 
@@ -2350,7 +2350,7 @@ impl ops::Index<ops::Range<usize>> for String {
         &self[..][index]
     }
 }
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl ops::Index<ops::RangeTo<usize>> for String {
     type Output = str;
 
@@ -2359,7 +2359,7 @@ impl ops::Index<ops::RangeTo<usize>> for String {
         &self[..][index]
     }
 }
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl ops::Index<ops::RangeFrom<usize>> for String {
     type Output = str;
 
@@ -2368,7 +2368,7 @@ impl ops::Index<ops::RangeFrom<usize>> for String {
         &self[..][index]
     }
 }
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl ops::Index<ops::RangeFull> for String {
     type Output = str;
 
@@ -2439,7 +2439,7 @@ impl ops::IndexMut<ops::RangeToInclusive<usize>> for String {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl ops::Deref for String {
     type Target = str;
 
@@ -2466,7 +2466,7 @@ impl ops::DerefMut for String {
 pub type ParseError = core::convert::Infallible;
 
 #[cfg(not(no_global_oom_handling))]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl FromStr for String {
     type Err = core::convert::Infallible;
     #[inline]
@@ -2483,8 +2483,8 @@ impl FromStr for String {
 /// implementation for free.
 ///
 /// [`Display`]: fmt::Display
-#[cfg_attr(not(test), rustc_diagnostic_item = "ToString")]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[cfg_attr(not(test), crablangc_diagnostic_item = "ToString")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub trait ToString {
     /// Converts the given value to a `String`.
     ///
@@ -2498,8 +2498,8 @@ pub trait ToString {
     ///
     /// assert_eq!(five, i.to_string());
     /// ```
-    #[rustc_conversion_suggestion]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[crablangc_conversion_suggestion]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     fn to_string(&self) -> String;
 }
 
@@ -2510,11 +2510,11 @@ pub trait ToString {
 /// This indicates an incorrect `Display` implementation
 /// since `fmt::Write for String` never returns an error itself.
 #[cfg(not(no_global_oom_handling))]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: fmt::Display + ?Sized> ToString for T {
     // A common guideline is to not inline generic functions. However,
     // removing `#[inline]` from this method causes non-negligible regressions.
-    // See <https://github.com/rust-lang/rust/pull/74852>, the last attempt
+    // See <https://github.com/crablang/crablang/pull/74852>, the last attempt
     // to try to remove it.
     #[inline]
     default fn to_string(&self) -> String {
@@ -2615,7 +2615,7 @@ impl ToString for String {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl AsRef<str> for String {
     #[inline]
     fn as_ref(&self) -> &str {
@@ -2631,7 +2631,7 @@ impl AsMut<str> for String {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl AsRef<[u8]> for String {
     #[inline]
     fn as_ref(&self) -> &[u8] {
@@ -2640,7 +2640,7 @@ impl AsRef<[u8]> for String {
 }
 
 #[cfg(not(no_global_oom_handling))]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl From<&str> for String {
     /// Converts a `&str` into a [`String`].
     ///
@@ -2744,7 +2744,7 @@ impl<'a> From<Cow<'a, str>> for String {
 }
 
 #[cfg(not(no_global_oom_handling))]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<'a> From<&'a str> for Cow<'a, str> {
     /// Converts a string slice into a [`Borrowed`] variant.
     /// No heap allocation is performed, and the string
@@ -2765,7 +2765,7 @@ impl<'a> From<&'a str> for Cow<'a, str> {
 }
 
 #[cfg(not(no_global_oom_handling))]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<'a> From<String> for Cow<'a, str> {
     /// Converts a [`String`] into an [`Owned`] variant.
     /// No heap allocation is performed, and the string
@@ -2855,7 +2855,7 @@ impl From<String> for Vec<u8> {
 }
 
 #[cfg(not(no_global_oom_handling))]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl fmt::Write for String {
     #[inline]
     fn write_str(&mut self, s: &str) -> fmt::Result {
@@ -2983,7 +2983,7 @@ impl From<char> for String {
     /// Allocates an owned [`String`] from a single character.
     ///
     /// # Example
-    /// ```rust
+    /// ```crablang
     /// let c: char = 'a';
     /// let s: String = String::from(c);
     /// assert_eq!("a", &s[..]);

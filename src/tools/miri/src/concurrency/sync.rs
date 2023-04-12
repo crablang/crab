@@ -4,8 +4,8 @@ use std::ops::Not;
 
 use log::trace;
 
-use rustc_data_structures::fx::FxHashMap;
-use rustc_index::vec::{Idx, IndexVec};
+use crablangc_data_structures::fx::FxHashMap;
+use crablangc_index::vec::{Idx, IndexVec};
 
 use super::init_once::InitOnce;
 use super::vector_clock::VClock;

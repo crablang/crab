@@ -2,7 +2,7 @@
 <!--
 Welcome to a Clippy's lint list, at least the source code of it. If you are
 interested in contributing to this website checkout `util/gh-pages/index.html`
-inside the rust-clippy repository.
+inside the crablang-clippy repository.
 
 Otherwise, have a great day =^.^=
 -->
@@ -10,7 +10,7 @@ Otherwise, have a great day =^.^=
 <head>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <meta name="description" content="A collection of lints to catch common mistakes and improve your Rust code.">
+    <meta name="description" content="A collection of lints to catch common mistakes and improve your CrabLang code.">
 
     <title>Clippy Lints</title>
 
@@ -19,10 +19,10 @@ Otherwise, have a great day =^.^=
     <link id="githubDarkHighlight" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.6.0/styles/github-dark.min.css" disabled="true" />
 
     <!-- The files are not copied over into the Clippy project since they use the MPL-2.0 License -->
-    <link rel="stylesheet" href="https://rust-lang.github.io/mdBook/css/variables.css"/>
-    <link id="styleHighlight" rel="stylesheet" href="https://rust-lang.github.io/mdBook/highlight.css">
-    <link id="styleNight" rel="stylesheet" href="https://rust-lang.github.io/mdBook/tomorrow-night.css" disabled="true">
-    <link id="styleAyu" rel="stylesheet" href="https://rust-lang.github.io/mdBook/ayu-highlight.css" disabled="true">
+    <link rel="stylesheet" href="https://crablang.github.io/mdBook/css/variables.css"/>
+    <link id="styleHighlight" rel="stylesheet" href="https://crablang.github.io/mdBook/highlight.css">
+    <link id="styleNight" rel="stylesheet" href="https://crablang.github.io/mdBook/tomorrow-night.css" disabled="true">
+    <link id="styleAyu" rel="stylesheet" href="https://crablang.github.io/mdBook/ayu-highlight.css" disabled="true">
     <style>
         blockquote { font-size: 1em; }
         [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak { display: none !important; }
@@ -234,7 +234,7 @@ Otherwise, have a great day =^.^=
         .light {
             --inline-code-bg: #f6f7f6;
         }
-        .rust {
+        .crablang {
             --inline-code-bg: #f6f7f6;
         }
         .coal {
@@ -542,7 +542,7 @@ Otherwise, have a great day =^.^=
                         <div class="lint-additional-info-item">
                             <span> Applicability: </span>
                             <span class="label label-default label-applicability">{{lint.applicability.applicability}}</span>
-                            <a href="https://doc.rust-lang.org/nightly/nightly-rustc/rustc_lint_defs/enum.Applicability.html#variants">(?)</a>
+                            <a href="https://doc.crablang.org/nightly/nightly-crablangc/crablangc_lint_defs/enum.Applicability.html#variants">(?)</a>
                         </div>
                         <!-- Clippy version -->
                         <div class="lint-additional-info-item">
@@ -551,11 +551,11 @@ Otherwise, have a great day =^.^=
                         </div>
                         <!-- Open related issues -->
                         <div class="lint-additional-info-item">
-                            <a href="https://github.com/rust-lang/rust-clippy/issues?q=is%3Aissue+{{lint.id}}">Related Issues</a>
+                            <a href="https://github.com/crablang/crablang-clippy/issues?q=is%3Aissue+{{lint.id}}">Related Issues</a>
                         </div>
                         <!-- Jump to source -->
                         <div class="lint-additional-info-item">
-                            <a href="https://github.com/rust-lang/rust-clippy/blob/{{docVersion}}/clippy_lints/{{lint.id_span.path}}#L{{lint.id_span.line}}">View Source</a>
+                            <a href="https://github.com/crablang/crablang-clippy/blob/{{docVersion}}/clippy_lints/{{lint.id_span.path}}#L{{lint.id_span.line}}">View Source</a>
                         </div>
                     </div>
                 </div>
@@ -563,13 +563,13 @@ Otherwise, have a great day =^.^=
         </div>
     </div>
 
-    <a href="https://github.com/rust-lang/rust-clippy">
+    <a href="https://github.com/crablang/crablang-clippy">
         <img style="position: absolute; top: 0; right: 0; border: 0; clip-path: polygon(0% 0%, 100% 0%, 100% 100%);" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on Github"/>
     </a>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/markdown-it/12.3.2/markdown-it.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.6.0/highlight.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.6.0/languages/rust.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.6.0/languages/crablang.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.12/angular.min.js"></script>
     <script src="script.js"></script>
 </body>

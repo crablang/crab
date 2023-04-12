@@ -1,6 +1,6 @@
 // Pin's PartialEq implementation allowed to access the pointer allowing for
 // unsoundness by using Rc::get_mut to move value within Rc.
-// See https://internals.rust-lang.org/t/unsoundness-in-pin/11311/73 for more details.
+// See https://internals.crablang.org/t/unsoundness-in-pin/11311/73 for more details.
 
 use std::ops::Deref;
 use std::pin::Pin;

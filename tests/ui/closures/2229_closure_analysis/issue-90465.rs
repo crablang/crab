@@ -1,6 +1,6 @@
-// run-rustfix
+// run-crablangfix
 
-#![deny(rust_2021_incompatible_closure_captures)]
+#![deny(crablang_2021_incompatible_closure_captures)]
 //~^ NOTE lint level is defined here
 
 fn main() {
@@ -15,10 +15,10 @@ fn main() {
     let f1 = Foo(1);
 
     let c0 = move || {
-        //~^ ERROR changes to closure capture in Rust 2021 will affect drop order
+        //~^ ERROR changes to closure capture in CrabLang 2021 will affect drop order
         //~| NOTE for more information
         let _ = f0;
-        //~^ NOTE in Rust 2018, this causes the closure to capture `f0`, but in Rust 2021, it has no effect
+        //~^ NOTE in CrabLang 2018, this causes the closure to capture `f0`, but in CrabLang 2021, it has no effect
     };
 
     let c1 = move || {
@@ -31,4 +31,4 @@ fn main() {
     drop(c1);
     println!("dropped all");
 }
-//~^ NOTE in Rust 2018, `f0` is dropped here along with the closure, but in Rust 2021 `f0` is not part of the closure
+//~^ NOTE in CrabLang 2018, `f0` is dropped here along with the closure, but in CrabLang 2021 `f0` is not part of the closure

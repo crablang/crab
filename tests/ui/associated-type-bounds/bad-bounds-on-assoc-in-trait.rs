@@ -1,4 +1,4 @@
-// NOTE: rustc cannot currently handle bounds of the form `for<'a> <Foo as Bar<'a>>::Assoc: Baz`.
+// NOTE: crablangc cannot currently handle bounds of the form `for<'a> <Foo as Bar<'a>>::Assoc: Baz`.
 // This should hopefully be fixed with Chalk.
 
 #![feature(associated_type_bounds)]

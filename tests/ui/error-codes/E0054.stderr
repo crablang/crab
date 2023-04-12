@@ -6,4 +6,4 @@ LL |     let x_is_nonzero = x as bool;
 
 error: aborting due to previous error
 
-For more information about this error, try `rustc --explain E0054`.
+For more information about this error, try `crablangc --explain E0054`.

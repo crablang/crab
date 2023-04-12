@@ -1,0 +1,54 @@
+[package]
+name = "crablangc_data_structures"
+version = "0.0.0"
+edition = "2021"
+
+[lib]
+
+[dependencies]
+arrayvec = { version = "0.7", default-features = false }
+bitflags = "1.2.1"
+cfg-if = "1.0"
+ena = "0.14.2"
+indexmap = { version = "1.9.3" }
+jobserver_crate = { version = "0.1.13", package = "jobserver" }
+libc = "0.2"
+measureme = "10.0.0"
+crablangc-rayon-core = { version = "0.5.0", optional = true }
+crablangc-rayon = { version = "0.5.0", optional = true }
+crablangc_graphviz = { path = "../crablangc_graphviz" }
+crablangc-hash = "1.1.0"
+crablangc_index = { path = "../crablangc_index", package = "crablangc_index" }
+crablangc_macros = { path = "../crablangc_macros" }
+crablangc_serialize = { path = "../crablangc_serialize" }
+serde_json = "1.0.59"
+smallvec = { version = "1.8.1", features = [
+    "const_generics",
+    "union",
+    "may_dangle",
+] }
+stable_deref_trait = "1.0.0"
+stacker = "0.1.15"
+tempfile = "3.2"
+thin-vec = "0.2.12"
+tracing = "0.1"
+elsa = "=1.7.1"
+
+[dependencies.parking_lot]
+version = "0.11"
+
+[target.'cfg(windows)'.dependencies.windows]
+version = "0.46.0"
+features = [
+    "Win32_Foundation",
+    "Win32_Storage_FileSystem",
+    "Win32_System_IO",
+    "Win32_System_ProcessStatus",
+    "Win32_System_Threading",
+]
+
+[target.'cfg(not(target_arch = "wasm32"))'.dependencies]
+memmap2 = "0.2.1"
+
+[features]
+crablangc_use_parallel_compiler = ["indexmap/crablangc-rayon", "crablangc-rayon", "crablangc-rayon-core"]

@@ -2,7 +2,7 @@ use core::num::{Saturating, Wrapping};
 
 use crate::boxed::Box;
 
-#[rustc_specialization_trait]
+#[crablangc_specialization_trait]
 pub(super) unsafe trait IsZero {
     /// Whether this value's representation is all zeros,
     /// or can be represented with all zeroes.
@@ -61,7 +61,7 @@ unsafe impl<T: IsZero, const N: usize> IsZero for [T; N] {
         // it's worth doing if the array is really long. The threshold here
         // is largely arbitrary, but was picked because as of 2022-07-01 LLVM
         // fails to const-fold the check in `vec![[1; 32]; n]`
-        // See https://github.com/rust-lang/rust/pull/97581#issuecomment-1166628022
+        // See https://github.com/crablang/crablang/pull/97581#issuecomment-1166628022
         // Feel free to tweak if you have better evidence.
 
         N <= 16 && self.iter().all(IsZero::is_zero)
@@ -79,7 +79,7 @@ macro_rules! impl_for_tuples {
             #[inline]
             fn is_zero(&self) -> bool{
                 // Destructure tuple to N references
-                // Rust allows to hide generic params by local variable names.
+                // CrabLang allows to hide generic params by local variable names.
                 #[allow(non_snake_case)]
                 let ($first_arg, $($rest,)*) = self;
 
@@ -185,7 +185,7 @@ macro_rules! impl_for_optional_bool {
             #[inline]
             fn is_zero(&self) -> bool {
                 // SAFETY: This is *not* a stable layout guarantee, but
-                // inside `core` we're allowed to rely on the current rustc
+                // inside `core` we're allowed to rely on the current crablangc
                 // behaviour that options of bools will be one byte with
                 // no padding, so long as they're nested less than 254 deep.
                 let raw: u8 = unsafe { core::mem::transmute(*self) };

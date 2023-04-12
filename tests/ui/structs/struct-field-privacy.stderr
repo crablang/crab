@@ -30,4 +30,4 @@ LL |     z.1;
 
 error: aborting due to 5 previous errors
 
-For more information about this error, try `rustc --explain E0616`.
+For more information about this error, try `crablangc --explain E0616`.

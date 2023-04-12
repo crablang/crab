@@ -17,18 +17,18 @@ cd clang-build
 
 # For whatever reason the default set of include paths for clang is different
 # than that of gcc. As a result we need to manually include our sysroot's
-# include path, /rustroot/include, to clang's default include path.
-INC="/rustroot/include:/usr/include"
+# include path, /crablangroot/include, to clang's default include path.
+INC="/crablangroot/include:/usr/include"
 
 # We need compiler-rt for the profile runtime (used later to PGO the LLVM build)
 # but sanitizers aren't currently building. Since we don't need those, just
 # disable them. BOLT is used for optimizing LLVM.
 hide_output \
     cmake ../llvm \
-      -DCMAKE_C_COMPILER=/rustroot/bin/gcc \
-      -DCMAKE_CXX_COMPILER=/rustroot/bin/g++ \
+      -DCMAKE_C_COMPILER=/crablangroot/bin/gcc \
+      -DCMAKE_CXX_COMPILER=/crablangroot/bin/g++ \
       -DCMAKE_BUILD_TYPE=Release \
-      -DCMAKE_INSTALL_PREFIX=/rustroot \
+      -DCMAKE_INSTALL_PREFIX=/crablangroot \
       -DCOMPILER_RT_BUILD_SANITIZERS=OFF \
       -DCOMPILER_RT_BUILD_XRAY=OFF \
       -DCOMPILER_RT_BUILD_MEMPROF=OFF \

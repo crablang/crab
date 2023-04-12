@@ -128,4 +128,4 @@ LL | #![warn(missing_copy_implementations, reason)]
 
 error: aborting due to 20 previous errors; 1 warning emitted
 
-For more information about this error, try `rustc --explain E0452`.
+For more information about this error, try `crablangc --explain E0452`.

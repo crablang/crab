@@ -4,10 +4,10 @@ use clippy_utils::diagnostics::span_lint_and_sugg;
 use clippy_utils::msrvs::{self, Msrv};
 use clippy_utils::sugg::Sugg;
 use if_chain::if_chain;
-use rustc_errors::Applicability;
-use rustc_hir::{Expr, ExprKind, Mutability, TyKind};
-use rustc_lint::LateContext;
-use rustc_middle::ty::{self, TypeAndMut};
+use crablangc_errors::Applicability;
+use crablangc_hir::{Expr, ExprKind, Mutability, TyKind};
+use crablangc_lint::LateContext;
+use crablangc_middle::ty::{self, TypeAndMut};
 
 use super::PTR_AS_PTR;
 
@@ -24,7 +24,7 @@ pub(super) fn check(cx: &LateContext<'_>, expr: &Expr<'_>, msrv: &Msrv) {
         if matches!((from_mutbl, to_mutbl),
             (Mutability::Not, Mutability::Not) | (Mutability::Mut, Mutability::Mut));
         // The `U` in `pointer::cast` have to be `Sized`
-        // as explained here: https://github.com/rust-lang/rust/issues/60602.
+        // as explained here: https://github.com/crablang/crablang/issues/60602.
         if to_pointee_ty.is_sized(cx.tcx, cx.param_env);
         then {
             let mut applicability = Applicability::MachineApplicable;

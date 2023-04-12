@@ -571,7 +571,7 @@ PRINT-ATTR INPUT (DEBUG): TokenStream [
 PRINT-DERIVE INPUT (DISPLAY): struct MyDerivePrint
 {
     field :
-    [u8 ; { match true { _ => { #! [rustc_dummy(third)] true } } ; 0 }]
+    [u8 ; { match true { _ => { #! [crablangc_dummy(third)] true } } ; 0 }]
 }
 PRINT-DERIVE INPUT (DEBUG): TokenStream [
     Ident {
@@ -651,7 +651,7 @@ PRINT-DERIVE INPUT (DEBUG): TokenStream [
                                                 delimiter: Bracket,
                                                 stream: TokenStream [
                                                     Ident {
-                                                        ident: "rustc_dummy",
+                                                        ident: "crablangc_dummy",
                                                         span: $DIR/inner-attrs.rs:40:41: 40:52 (#0),
                                                     },
                                                     Group {
@@ -705,7 +705,7 @@ PRINT-ATTR_ARGS INPUT (DEBUG): TokenStream [
         span: $DIR/inner-attrs.rs:49:29: 49:40 (#0),
     },
 ]
-PRINT-ATTR INPUT (DISPLAY): (3, 4, { #! [cfg_attr(not(FALSE), rustc_dummy(innermost))] 5 }) ;
+PRINT-ATTR INPUT (DISPLAY): (3, 4, { #! [cfg_attr(not(FALSE), crablangc_dummy(innermost))] 5 }) ;
 PRINT-ATTR INPUT (DEBUG): TokenStream [
     Group {
         delimiter: Parenthesis,
@@ -775,7 +775,7 @@ PRINT-ATTR INPUT (DEBUG): TokenStream [
                                         span: $DIR/inner-attrs.rs:51:35: 51:36 (#0),
                                     },
                                     Ident {
-                                        ident: "rustc_dummy",
+                                        ident: "crablangc_dummy",
                                         span: $DIR/inner-attrs.rs:51:37: 51:48 (#0),
                                     },
                                     Group {
@@ -819,7 +819,7 @@ PRINT-ATTR_ARGS INPUT (DEBUG): TokenStream [
         span: $DIR/inner-attrs.rs:56:29: 56:40 (#0),
     },
 ]
-PRINT-ATTR INPUT (DISPLAY): (3, 4, { #! [cfg_attr(not(FALSE), rustc_dummy(innermost))] 5 }) ;
+PRINT-ATTR INPUT (DISPLAY): (3, 4, { #! [cfg_attr(not(FALSE), crablangc_dummy(innermost))] 5 }) ;
 PRINT-ATTR INPUT (DEBUG): TokenStream [
     Group {
         delimiter: Parenthesis,
@@ -889,7 +889,7 @@ PRINT-ATTR INPUT (DEBUG): TokenStream [
                                         span: $DIR/inner-attrs.rs:58:35: 58:36 (#0),
                                     },
                                     Ident {
-                                        ident: "rustc_dummy",
+                                        ident: "crablangc_dummy",
                                         span: $DIR/inner-attrs.rs:58:37: 58:48 (#0),
                                     },
                                     Group {

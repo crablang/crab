@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 #![allow(dead_code)]
 #![allow(unused_variables, clippy::unnecessary_wraps)]
 
@@ -22,7 +22,7 @@ fn option_unwrap_or() {
     };
 
     // multiline case
-    #[rustfmt::skip]
+    #[crablangfmt::skip]
     match Some(1) {
         Some(i) => i,
         None => {
@@ -127,7 +127,7 @@ fn result_unwrap_or() {
     };
 
     // multiline case
-    #[rustfmt::skip]
+    #[crablangfmt::skip]
     match Ok::<i32, &str>(1) {
         Ok(i) => i,
         Err(_) => {

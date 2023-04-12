@@ -53,4 +53,4 @@ LL |     [(); return match () { 'a' => 0, _ => 0 }];
 error: aborting due to 4 previous errors
 
 Some errors have detailed explanations: E0308, E0572.
-For more information about an error, try `rustc --explain E0308`.
+For more information about an error, try `crablangc --explain E0308`.

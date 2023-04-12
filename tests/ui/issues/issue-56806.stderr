@@ -9,4 +9,4 @@ LL |     fn dyn_instead_of_self(self: Box<dyn Trait>);
 
 error: aborting due to previous error
 
-For more information about this error, try `rustc --explain E0307`.
+For more information about this error, try `crablangc --explain E0307`.

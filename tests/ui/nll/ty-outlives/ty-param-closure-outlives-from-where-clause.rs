@@ -5,7 +5,7 @@
 // compile-flags:-Zverbose
 
 #![allow(warnings)]
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 
 use std::cell::Cell;
 
@@ -22,7 +22,7 @@ where
 {
 }
 
-#[rustc_regions]
+#[crablangc_regions]
 fn no_region<'a, T>(a: Cell<&'a ()>, b: T) {
     with_signature(a, b, |x, y| {
         // See `correct_region`, which explains the point of this
@@ -34,7 +34,7 @@ fn no_region<'a, T>(a: Cell<&'a ()>, b: T) {
     })
 }
 
-#[rustc_regions]
+#[crablangc_regions]
 fn correct_region<'a, T>(a: Cell<&'a ()>, b: T)
 where
     T: 'a,
@@ -55,7 +55,7 @@ where
     })
 }
 
-#[rustc_regions]
+#[crablangc_regions]
 fn wrong_region<'a, 'b, T>(a: Cell<&'a ()>, b: T)
 where
     T: 'b,
@@ -67,7 +67,7 @@ where
     })
 }
 
-#[rustc_regions]
+#[crablangc_regions]
 fn outlives_region<'a, 'b, T>(a: Cell<&'a ()>, b: T)
 where
     T: 'b,

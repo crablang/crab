@@ -4,7 +4,7 @@ error[E0658]: yield syntax is experimental
 LL |     yield true;
    |     ^^^^^^^^^^
    |
-   = note: see issue #43122 <https://github.com/rust-lang/rust/issues/43122> for more information
+   = note: see issue #43122 <https://github.com/crablang/crablang/issues/43122> for more information
    = help: add `#![feature(generators)]` to the crate attributes to enable
 
 error[E0658]: yield syntax is experimental
@@ -13,7 +13,7 @@ error[E0658]: yield syntax is experimental
 LL |     yield;
    |     ^^^^^
    |
-   = note: see issue #43122 <https://github.com/rust-lang/rust/issues/43122> for more information
+   = note: see issue #43122 <https://github.com/crablang/crablang/issues/43122> for more information
    = help: add `#![feature(generators)]` to the crate attributes to enable
 
 error[E0658]: yield syntax is experimental
@@ -22,7 +22,7 @@ error[E0658]: yield syntax is experimental
 LL |     yield 0;
    |     ^^^^^^^
    |
-   = note: see issue #43122 <https://github.com/rust-lang/rust/issues/43122> for more information
+   = note: see issue #43122 <https://github.com/crablang/crablang/issues/43122> for more information
    = help: add `#![feature(generators)]` to the crate attributes to enable
 
 error[E0627]: yield expression outside of generator literal
@@ -34,4 +34,4 @@ LL |     yield true;
 error: aborting due to 4 previous errors
 
 Some errors have detailed explanations: E0627, E0658.
-For more information about an error, try `rustc --explain E0627`.
+For more information about an error, try `crablangc --explain E0627`.

@@ -8,19 +8,19 @@
 // no-prefer-dynamic
 // compile-flags: -Z query-dep-graph
 
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 
 extern crate a;
 
-#[rustc_clean(except="typeck,optimized_mir", cfg="rpass2")]
-#[rustc_clean(cfg="rpass3")]
+#[crablangc_clean(except="typeck,optimized_mir", cfg="rpass2")]
+#[crablangc_clean(cfg="rpass3")]
 pub fn use_X() -> u32 {
     let x: a::X = 22;
     x as u32
 }
 
-#[rustc_clean(cfg="rpass2")]
-#[rustc_clean(cfg="rpass3")]
+#[crablangc_clean(cfg="rpass2")]
+#[crablangc_clean(cfg="rpass3")]
 pub fn use_Y() {
     let x: a::Y = 'c';
 }

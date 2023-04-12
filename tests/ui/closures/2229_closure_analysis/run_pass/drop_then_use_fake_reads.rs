@@ -1,6 +1,6 @@
 // edition:2021
 // check-pass
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 
 fn main() {
     let mut x = 1;

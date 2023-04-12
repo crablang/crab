@@ -31,4 +31,4 @@ LL |     let foo: <i32 as Example>::from_be;
 error: aborting due to 3 previous errors
 
 Some errors have detailed explanations: E0214, E0223, E0573.
-For more information about an error, try `rustc --explain E0214`.
+For more information about an error, try `crablangc --explain E0214`.

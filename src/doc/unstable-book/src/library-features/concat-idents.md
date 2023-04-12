@@ -2,7 +2,7 @@
 
 The tracking issue for this feature is: [#29599]
 
-[#29599]: https://github.com/rust-lang/rust/issues/29599
+[#29599]: https://github.com/crablang/crablang/issues/29599
 
 ------------------------
 
@@ -11,7 +11,7 @@ into one identifier.
 
 ## Examples
 
-```rust
+```crablang
 #![feature(concat_idents)]
 
 fn main() {

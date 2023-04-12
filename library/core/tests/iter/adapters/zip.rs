@@ -213,7 +213,7 @@ fn test_zip_nth_back_side_effects_exhausted() {
 }
 
 #[test]
-fn test_zip_trusted_random_access_composition() {
+fn test_zip_tcrablanged_random_access_composition() {
     let a = [0, 1, 2, 3, 4];
     let b = a;
     let c = a;
@@ -227,14 +227,14 @@ fn test_zip_trusted_random_access_composition() {
     assert_eq!(z1.next().unwrap(), (0, 0));
 
     let mut z2 = z1.zip(c);
-    fn assert_trusted_random_access<T: TrustedRandomAccess>(_a: &T) {}
-    assert_trusted_random_access(&z2);
+    fn assert_tcrablanged_random_access<T: TcrablangedRandomAccess>(_a: &T) {}
+    assert_tcrablanged_random_access(&z2);
     assert_eq!(z2.next().unwrap(), ((1, 1), 1));
 }
 
 #[test]
 #[cfg(panic = "unwind")]
-fn test_zip_trusted_random_access_next_back_drop() {
+fn test_zip_tcrablanged_random_access_next_back_drop() {
     use std::panic::catch_unwind;
     use std::panic::AssertUnwindSafe;
 

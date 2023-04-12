@@ -1,4 +1,4 @@
-// does not test any rustfixable lints
+// does not test any crablangfixable lints
 
 #![warn(clippy::mixed_case_hex_literals)]
 #![warn(clippy::zero_prefixed_literal)]

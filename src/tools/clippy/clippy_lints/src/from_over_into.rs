@@ -3,17 +3,17 @@ use clippy_utils::macros::span_is_local;
 use clippy_utils::msrvs::{self, Msrv};
 use clippy_utils::path_def_id;
 use clippy_utils::source::snippet_opt;
-use rustc_errors::Applicability;
-use rustc_hir::intravisit::{walk_path, Visitor};
-use rustc_hir::{
+use crablangc_errors::Applicability;
+use crablangc_hir::intravisit::{walk_path, Visitor};
+use crablangc_hir::{
     GenericArg, GenericArgs, HirId, Impl, ImplItemKind, ImplItemRef, Item, ItemKind, PatKind, Path, PathSegment, Ty,
     TyKind,
 };
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_middle::{hir::nested_filter::OnlyBodies, ty};
-use rustc_session::{declare_tool_lint, impl_lint_pass};
-use rustc_span::symbol::{kw, sym};
-use rustc_span::{Span, Symbol};
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_middle::{hir::nested_filter::OnlyBodies, ty};
+use crablangc_session::{declare_tool_lint, impl_lint_pass};
+use crablangc_span::symbol::{kw, sym};
+use crablangc_span::{Span, Symbol};
 
 declare_clippy_lint! {
     /// ### What it does
@@ -23,7 +23,7 @@ declare_clippy_lint! {
     /// According the std docs implementing `From<..>` is preferred since it gives you `Into<..>` for free where the reverse isn't true.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// struct StringWrapper(String);
     ///
     /// impl Into<StringWrapper> for String {
@@ -33,7 +33,7 @@ declare_clippy_lint! {
     /// }
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// struct StringWrapper(String);
     ///
     /// impl From<String> for StringWrapper {
@@ -90,7 +90,7 @@ impl<'tcx> LateLintPass<'tcx> for FromOverInto {
                     if path_def_id(cx, target_ty.peel_refs()).map_or(true, |id| !id.is_local()) {
                         diag.help(
                             "`impl From<Local> for Foreign` is allowed by the orphan rules, for more information see\n\
-                            https://doc.rust-lang.org/reference/items/implementations.html#trait-implementation-coherence"
+                            https://doc.crablang.org/reference/items/implementations.html#trait-implementation-coherence"
                         );
                     }
 

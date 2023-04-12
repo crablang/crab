@@ -1,6 +1,6 @@
 // check-pass
 // compile-flags: --edition 2018
-// run-rustfix
+// run-crablangfix
 
 #![feature(try_blocks)]
 #![warn(unused_parens, unused_braces)]

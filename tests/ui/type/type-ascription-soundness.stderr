@@ -36,4 +36,4 @@ LL |     let _len = type_ascribe!(arr, &[u8]).len();
 
 error: aborting due to 4 previous errors
 
-For more information about this error, try `rustc --explain E0308`.
+For more information about this error, try `crablangc --explain E0308`.

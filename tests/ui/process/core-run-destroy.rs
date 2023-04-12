@@ -14,7 +14,7 @@
 // memory, which makes for some *confusing* logs. That's why these are here
 // instead of in std.
 
-#![feature(rustc_private, duration)]
+#![feature(crablangc_private, duration)]
 
 extern crate libc;
 

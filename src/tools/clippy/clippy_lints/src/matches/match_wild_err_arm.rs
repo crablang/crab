@@ -3,9 +3,9 @@ use clippy_utils::macros::{is_panic, root_macro_call};
 use clippy_utils::ty::is_type_diagnostic_item;
 use clippy_utils::visitors::is_local_used;
 use clippy_utils::{is_wild, peel_blocks_with_stmt};
-use rustc_hir::{Arm, Expr, PatKind};
-use rustc_lint::LateContext;
-use rustc_span::symbol::{kw, sym};
+use crablangc_hir::{Arm, Expr, PatKind};
+use crablangc_lint::LateContext;
+use crablangc_span::symbol::{kw, sym};
 
 use super::MATCH_WILD_ERR_ARM;
 
@@ -14,7 +14,7 @@ pub(crate) fn check<'tcx>(cx: &LateContext<'tcx>, ex: &Expr<'tcx>, arms: &[Arm<'
     if is_type_diagnostic_item(cx, ex_ty, sym::Result) {
         for arm in arms {
             if let PatKind::TupleStruct(ref path, inner, _) = arm.pat.kind {
-                let path_str = rustc_hir_pretty::to_string(rustc_hir_pretty::NO_ANN, |s| s.print_qpath(path, false));
+                let path_str = crablangc_hir_pretty::to_string(crablangc_hir_pretty::NO_ANN, |s| s.print_qpath(path, false));
                 if path_str == "Err" {
                     let mut matching_wild = inner.iter().any(is_wild);
                     let mut ident_bind_name = kw::Underscore;

@@ -97,7 +97,7 @@ LL |     fn foo() = 42;
    |        cannot have a body
    |
    = help: you might have meant to write a function accessible through FFI, which can be done by writing `extern fn` outside of the `extern` block
-   = note: for more information, visit https://doc.rust-lang.org/std/keyword.extern.html
+   = note: for more information, visit https://doc.crablang.org/std/keyword.extern.html
 
 error: incorrect function inside `extern` block
   --> $DIR/fn-body-eq-expr-semi.rs:11:8
@@ -111,7 +111,7 @@ LL |     fn bar() -> u8 = 42;
    |        cannot have a body
    |
    = help: you might have meant to write a function accessible through FFI, which can be done by writing `extern fn` outside of the `extern` block
-   = note: for more information, visit https://doc.rust-lang.org/std/keyword.extern.html
+   = note: for more information, visit https://doc.crablang.org/std/keyword.extern.html
 
 error: aborting due to 10 previous errors
 

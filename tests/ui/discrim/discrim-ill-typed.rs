@@ -1,6 +1,6 @@
 // When explicit discriminant value has
 // a type that does not match the representation
-// type, rustc should fail gracefully.
+// type, crablangc should fail gracefully.
 
 // See also run-pass/discrim-explicit-23030.rs where the input types
 // are correct.

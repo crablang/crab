@@ -1,4 +1,4 @@
-// Taken from https://github.com/rust-lang/rust/issues/44454#issuecomment-1332781290
+// Taken from https://github.com/crablang/crablang/issues/44454#issuecomment-1332781290
 
 use std::any::Any;
 

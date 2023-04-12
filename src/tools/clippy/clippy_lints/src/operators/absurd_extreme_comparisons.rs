@@ -1,6 +1,6 @@
-use rustc_hir::{BinOpKind, Expr, ExprKind};
-use rustc_lint::LateContext;
-use rustc_middle::ty;
+use crablangc_hir::{BinOpKind, Expr, ExprKind};
+use crablangc_lint::LateContext;
+use crablangc_middle::ty;
 
 use clippy_utils::comparisons::{normalize_comparison, Rel};
 use clippy_utils::consts::{constant, Constant};

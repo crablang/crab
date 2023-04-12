@@ -1,10 +1,10 @@
-error[E0658]: rust-call ABI is subject to change
+error[E0658]: crablang-call ABI is subject to change
   --> $DIR/feature-gate-unboxed-closures.rs:10:12
    |
-LL |     extern "rust-call" fn call_once(self, (a, b): (u32, u32)) -> u32 {
+LL |     extern "crablang-call" fn call_once(self, (a, b): (u32, u32)) -> u32 {
    |            ^^^^^^^^^^^
    |
-   = note: see issue #29625 <https://github.com/rust-lang/rust/issues/29625> for more information
+   = note: see issue #29625 <https://github.com/crablang/crablang/issues/29625> for more information
    = help: add `#![feature(unboxed_closures)]` to the crate attributes to enable
 
 error[E0658]: the precise format of `Fn`-family traits' type parameters is subject to change
@@ -13,7 +13,7 @@ error[E0658]: the precise format of `Fn`-family traits' type parameters is subje
 LL | impl FnOnce<(u32, u32)> for Test {
    |      ^^^^^^^^^^^^^^^^^^
    |
-   = note: see issue #29625 <https://github.com/rust-lang/rust/issues/29625> for more information
+   = note: see issue #29625 <https://github.com/crablang/crablang/issues/29625> for more information
    = help: add `#![feature(unboxed_closures)]` to the crate attributes to enable
 
 error[E0183]: manual implementations of `FnOnce` are experimental
@@ -27,4 +27,4 @@ LL | impl FnOnce<(u32, u32)> for Test {
 error: aborting due to 3 previous errors
 
 Some errors have detailed explanations: E0183, E0658.
-For more information about an error, try `rustc --explain E0183`.
+For more information about an error, try `crablangc --explain E0183`.

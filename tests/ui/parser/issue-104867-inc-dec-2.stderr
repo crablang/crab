@@ -1,4 +1,4 @@
-error: Rust has no prefix increment operator
+error: CrabLang has no prefix increment operator
   --> $DIR/issue-104867-inc-dec-2.rs:3:17
    |
 LL |     let _ = i + ++i;
@@ -9,7 +9,7 @@ help: use `+= 1` instead
 LL |     let _ = i + { i += 1; i };
    |                 ~   +++++++++
 
-error: Rust has no prefix increment operator
+error: CrabLang has no prefix increment operator
   --> $DIR/issue-104867-inc-dec-2.rs:8:13
    |
 LL |     let _ = ++i + i;
@@ -20,7 +20,7 @@ help: use `+= 1` instead
 LL |     let _ = { i += 1; i } + i;
    |             ~   +++++++++
 
-error: Rust has no prefix increment operator
+error: CrabLang has no prefix increment operator
   --> $DIR/issue-104867-inc-dec-2.rs:13:13
    |
 LL |     let _ = ++i + ++i;
@@ -31,13 +31,13 @@ help: use `+= 1` instead
 LL |     let _ = { i += 1; i } + ++i;
    |             ~   +++++++++
 
-error: Rust has no postfix increment operator
+error: CrabLang has no postfix increment operator
   --> $DIR/issue-104867-inc-dec-2.rs:18:18
    |
 LL |     let _ = i + i++;
    |                  ^^ not a valid postfix operator
 
-error: Rust has no postfix increment operator
+error: CrabLang has no postfix increment operator
   --> $DIR/issue-104867-inc-dec-2.rs:24:14
    |
 LL |     let _ = i++ + i;
@@ -48,7 +48,7 @@ help: use `+= 1` instead
 LL |     let _ = { let tmp = i; i += 1; tmp } + i;
    |             +++++++++++  ~~~~~~~~~~~~~~~
 
-error: Rust has no postfix increment operator
+error: CrabLang has no postfix increment operator
   --> $DIR/issue-104867-inc-dec-2.rs:29:14
    |
 LL |     let _ = i++ + i++;
@@ -59,7 +59,7 @@ help: use `+= 1` instead
 LL |     let _ = { let tmp = i; i += 1; tmp } + i++;
    |             +++++++++++  ~~~~~~~~~~~~~~~
 
-error: Rust has no prefix increment operator
+error: CrabLang has no prefix increment operator
   --> $DIR/issue-104867-inc-dec-2.rs:34:13
    |
 LL |     let _ = ++i + i++;
@@ -70,7 +70,7 @@ help: use `+= 1` instead
 LL |     let _ = { i += 1; i } + i++;
    |             ~   +++++++++
 
-error: Rust has no postfix increment operator
+error: CrabLang has no postfix increment operator
   --> $DIR/issue-104867-inc-dec-2.rs:39:14
    |
 LL |     let _ = i++ + ++i;
@@ -81,7 +81,7 @@ help: use `+= 1` instead
 LL |     let _ = { let tmp = i; i += 1; tmp } + ++i;
    |             +++++++++++  ~~~~~~~~~~~~~~~
 
-error: Rust has no postfix increment operator
+error: CrabLang has no postfix increment operator
   --> $DIR/issue-104867-inc-dec-2.rs:44:24
    |
 LL |     let _ = (1 + 2 + i)++;
@@ -92,7 +92,7 @@ help: use `+= 1` instead
 LL |     let _ = { let tmp = (1 + 2 + i); (1 + 2 + i) += 1; tmp };
    |             +++++++++++            ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-error: Rust has no postfix increment operator
+error: CrabLang has no postfix increment operator
   --> $DIR/issue-104867-inc-dec-2.rs:49:15
    |
 LL |     let _ = (i++ + 1) + 2;

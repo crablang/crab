@@ -6,7 +6,7 @@
 #![feature(custom_inner_attributes)]
 #![feature(proc_macro_hygiene)]
 #![feature(stmt_expr_attributes)]
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 
 #![no_std] // Don't load unnecessary hygiene information from std
 extern crate std;
@@ -37,7 +37,7 @@ struct MyDerivePrint {
     field: [u8; {
         match true {
             _ => {
-                #![cfg_attr(not(FALSE), rustc_dummy(third))]
+                #![cfg_attr(not(FALSE), crablangc_dummy(third))]
                 true
             }
         };
@@ -48,14 +48,14 @@ struct MyDerivePrint {
 fn bar() {
     #[print_target_and_args(tuple_attrs)] (
         3, 4, {
-            #![cfg_attr(not(FALSE), rustc_dummy(innermost))]
+            #![cfg_attr(not(FALSE), crablangc_dummy(innermost))]
             5
         }
     );
 
     #[print_target_and_args(tuple_attrs)] (
         3, 4, {
-            #![cfg_attr(not(FALSE), rustc_dummy(innermost))]
+            #![cfg_attr(not(FALSE), crablangc_dummy(innermost))]
             5
         }
     );

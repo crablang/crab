@@ -7,7 +7,7 @@
 // ignore-emscripten no processes
 // ignore-sgx no processes
 // ignore-fuchsia no execvp syscall
-#![feature(process_exec, rustc_private)]
+#![feature(process_exec, crablangc_private)]
 
 extern crate libc;
 

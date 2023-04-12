@@ -22,25 +22,25 @@ cd gcc-$GCC
 # latter host is presented to `wget`! Therefore, we choose to download from the insecure HTTP server
 # instead here.
 #
-# FIXME: use HTTPS (see https://github.com/rust-lang/rust/pull/86586#issuecomment-868355356)
+# FIXME: use HTTPS (see https://github.com/crablang/crablang/pull/86586#issuecomment-868355356)
 sed -i'' 's|ftp://gcc\.gnu\.org/|http://gcc.gnu.org/|g' ./contrib/download_prerequisites
 
 ./contrib/download_prerequisites
 mkdir ../gcc-build
 cd ../gcc-build
 hide_output ../gcc-$GCC/configure \
-    --prefix=/rustroot \
+    --prefix=/crablangroot \
     --enable-languages=c,c++ \
     --disable-gnu-unique-object
 hide_output make -j$(nproc)
 hide_output make install
-ln -s gcc /rustroot/bin/cc
+ln -s gcc /crablangroot/bin/cc
 
 cd ..
 rm -rf gcc-build
 rm -rf gcc-$GCC
 
-# FIXME: clang doesn't find 32-bit libraries in /rustroot/lib,
-# but it does look all the way under /rustroot/lib/[...]/32,
+# FIXME: clang doesn't find 32-bit libraries in /crablangroot/lib,
+# but it does look all the way under /crablangroot/lib/[...]/32,
 # so we can link stuff there to help it out.
-ln /rustroot/lib/*.{a,so} -rst /rustroot/lib/gcc/x86_64-pc-linux-gnu/$GCC/32/
+ln /crablangroot/lib/*.{a,so} -rst /crablangroot/lib/gcc/x86_64-pc-linux-gnu/$GCC/32/

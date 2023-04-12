@@ -19,7 +19,7 @@ crate.
 This feature was introduced as part of PR [#43348] to allow the platform-specific parts of the
 standard library be documented.
 
-```rust
+```crablang
 #![feature(doc_cfg)]
 
 #[cfg(any(windows, doc))]
@@ -42,5 +42,5 @@ pub struct Icon {
 }
 ```
 
-[#43781]: https://github.com/rust-lang/rust/issues/43781
-[#43348]: https://github.com/rust-lang/rust/issues/43348
+[#43781]: https://github.com/crablang/crablang/issues/43781
+[#43348]: https://github.com/crablang/crablang/issues/43348

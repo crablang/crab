@@ -5,7 +5,7 @@
 
 // check-pass
 
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 #![allow(dead_code)]
 
 mod variant_struct_type {

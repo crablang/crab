@@ -1,7 +1,7 @@
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 
-#[rustc_outlives]
-union Foo<'a, T: Copy> { //~ ERROR rustc_outlives
+#[crablangc_outlives]
+union Foo<'a, T: Copy> { //~ ERROR crablangc_outlives
     field1: Bar<'a, T>
 }
 

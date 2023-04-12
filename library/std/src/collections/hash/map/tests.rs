@@ -7,7 +7,7 @@ use crate::test_helpers::test_rng;
 use rand::Rng;
 use realstd::collections::TryReserveErrorKind::*;
 
-// https://github.com/rust-lang/rust/issues/62301
+// https://github.com/crablang/crablang/issues/62301
 fn _assert_hashmap_is_unwind_safe() {
     fn assert_unwind_safe<T: crate::panic::UnwindSafe>() {}
     assert_unwind_safe::<HashMap<(), crate::cell::UnsafeCell<()>>>();

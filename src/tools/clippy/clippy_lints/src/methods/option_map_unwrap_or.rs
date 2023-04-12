@@ -2,25 +2,25 @@ use clippy_utils::diagnostics::span_lint_and_then;
 use clippy_utils::source::snippet_with_applicability;
 use clippy_utils::ty::is_copy;
 use clippy_utils::ty::is_type_diagnostic_item;
-use rustc_data_structures::fx::FxHashSet;
-use rustc_errors::Applicability;
-use rustc_hir::intravisit::{walk_path, Visitor};
-use rustc_hir::{self, HirId, Path};
-use rustc_lint::LateContext;
-use rustc_middle::hir::nested_filter;
-use rustc_span::source_map::Span;
-use rustc_span::{sym, Symbol};
+use crablangc_data_structures::fx::FxHashSet;
+use crablangc_errors::Applicability;
+use crablangc_hir::intravisit::{walk_path, Visitor};
+use crablangc_hir::{self, HirId, Path};
+use crablangc_lint::LateContext;
+use crablangc_middle::hir::nested_filter;
+use crablangc_span::source_map::Span;
+use crablangc_span::{sym, Symbol};
 
 use super::MAP_UNWRAP_OR;
 
 /// lint use of `map().unwrap_or()` for `Option`s
 pub(super) fn check<'tcx>(
     cx: &LateContext<'tcx>,
-    expr: &rustc_hir::Expr<'_>,
-    recv: &rustc_hir::Expr<'_>,
-    map_arg: &'tcx rustc_hir::Expr<'_>,
-    unwrap_recv: &rustc_hir::Expr<'_>,
-    unwrap_arg: &'tcx rustc_hir::Expr<'_>,
+    expr: &crablangc_hir::Expr<'_>,
+    recv: &crablangc_hir::Expr<'_>,
+    map_arg: &'tcx crablangc_hir::Expr<'_>,
+    unwrap_recv: &crablangc_hir::Expr<'_>,
+    unwrap_arg: &'tcx crablangc_hir::Expr<'_>,
     map_span: Span,
 ) {
     // lint if the caller of `map()` is an `Option`

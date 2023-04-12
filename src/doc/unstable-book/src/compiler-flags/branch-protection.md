@@ -13,6 +13,6 @@ It takes some combination of the following values, separated by a `,`.
 For example, `-Z branch-protection=bti,pac-ret,leaf` is valid, but
 `-Z branch-protection=bti,leaf,pac-ret` is not.
 
-Rust's standard library does not ship with BTI or pointer authentication enabled by default.
+CrabLang's standard library does not ship with BTI or pointer authentication enabled by default.
 In Cargo projects the standard library can be recompiled with pointer authentication using the nightly
 [build-std](../../cargo/reference/unstable.html#build-std) feature.

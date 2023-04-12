@@ -5,11 +5,11 @@ LL | extern crate core;
    | ^^^^^^^^^^^^^^^^^^ can't find crate
    |
    = note: the `x86_64-unknown-uefi` target may not be installed
-   = help: consider downloading the target with `rustup target add x86_64-unknown-uefi`
+   = help: consider downloading the target with `crablangup target add x86_64-unknown-uefi`
    = help: consider building the standard library from source with `cargo build -Zbuild-std`
 
 error: requires `sized` lang_item
 
 error: aborting due to 2 previous errors
 
-For more information about this error, try `rustc --explain E0463`.
+For more information about this error, try `crablangc --explain E0463`.

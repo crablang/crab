@@ -6,7 +6,7 @@ use core::any::Any;
 // Must be pointer-sized.
 type Payload = Box<Box<dyn Any + Send>>;
 
-extern "Rust" {
+extern "CrabLang" {
     /// Miri-provided extern function to begin unwinding.
     fn miri_start_panic(payload: *mut u8) -> !;
 }

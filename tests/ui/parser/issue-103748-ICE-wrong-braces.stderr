@@ -48,4 +48,4 @@ LL | struct Apple((Box<Apple>, Option(Banana ? Citron)));
 error: aborting due to 5 previous errors
 
 Some errors have detailed explanations: E0072, E0214, E0412.
-For more information about an error, try `rustc --explain E0072`.
+For more information about an error, try `crablangc --explain E0072`.

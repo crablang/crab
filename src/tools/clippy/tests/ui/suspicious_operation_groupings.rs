@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 #![warn(clippy::suspicious_operation_groupings)]
 #![allow(dead_code, unused_parens, clippy::eq_op)]
 

@@ -9,8 +9,8 @@ struct EvilSend<T>(pub T);
 unsafe impl<T> Send for EvilSend<T> {}
 unsafe impl<T> Sync for EvilSend<T> {}
 
-extern "Rust" {
-    fn __rust_dealloc(ptr: *mut u8, size: usize, align: usize);
+extern "CrabLang" {
+    fn __crablang_dealloc(ptr: *mut u8, size: usize, align: usize);
 }
 pub fn main() {
     // Shared atomic pointer
@@ -23,7 +23,7 @@ pub fn main() {
         });
 
         let j2 = spawn(move || {
-            __rust_dealloc(
+            __crablang_dealloc(
                 //~^ ERROR: Data race detected between (1) Write on thread `<unnamed>` and (2) Deallocate on thread `<unnamed>`
                 ptr.0 as *mut _,
                 std::mem::size_of::<usize>(),

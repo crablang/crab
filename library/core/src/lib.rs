@@ -1,9 +1,9 @@
-//! # The Rust Core Library
+//! # The CrabLang Core Library
 //!
-//! The Rust Core Library is the dependency-free[^free] foundation of [The
-//! Rust Standard Library](../std/index.html). It is the portable glue
+//! The CrabLang Core Library is the dependency-free[^free] foundation of [The
+//! CrabLang Standard Library](../std/index.html). It is the portable glue
 //! between the language and its libraries, defining the intrinsic and
-//! primitive building blocks of all Rust code. It links to no
+//! primitive building blocks of all CrabLang code. It links to no
 //! upstream libraries, no system libraries, and no libc.
 //!
 //! [^free]: Strictly speaking, there are some symbols which are needed but
@@ -26,14 +26,14 @@
 //!   These functions are often provided by the system libc, but can also be
 //!   provided by the [compiler-builtins crate](https://crates.io/crates/compiler_builtins).
 //!
-//! * `rust_begin_panic` - This function takes four arguments, a
+//! * `crablang_begin_panic` - This function takes four arguments, a
 //!   `fmt::Arguments`, a `&'static str`, and two `u32`'s. These four arguments
 //!   dictate the panic message, the file at which panic was invoked, and the
 //!   line and column inside the file. It is up to consumers of this core
 //!   library to define this panic function; it is only required to never
 //!   return. This requires a `lang` attribute named `panic_impl`.
 //!
-//! * `rust_eh_personality` - is used by the failure mechanisms of the
+//! * `crablang_eh_personality` - is used by the failure mechanisms of the
 //!    compiler. This is often mapped to GCC's personality function, but crates
 //!    which do not trigger a panic can be assured that this function is never
 //!    called. The `lang` attribute is called `eh_personality`.
@@ -50,13 +50,13 @@
 // This cfg won't affect doc tests.
 #![cfg(not(test))]
 // To run core tests without x.py without ending up with two copies of core, Miri needs to be
-// able to "empty" this crate. See <https://github.com/rust-lang/miri-test-libstd/issues/4>.
-// rustc itself never sets the feature, so this line has no affect there.
+// able to "empty" this crate. See <https://github.com/crablang/miri-test-libstd/issues/4>.
+// crablangc itself never sets the feature, so this line has no affect there.
 #![cfg(any(not(feature = "miri-test-libstd"), test, doctest))]
 #![stable(feature = "core", since = "1.6.0")]
 #![doc(
-    html_playground_url = "https://play.rust-lang.org/",
-    issue_tracker_base_url = "https://github.com/rust-lang/rust/issues/",
+    html_playground_url = "https://play.crablang.org/",
+    issue_tracker_base_url = "https://github.com/crablang/crablang/issues/",
     test(no_crate_inject, attr(deny(warnings))),
     test(attr(allow(dead_code, deprecated, unused_variables, unused_mut)))
 )]
@@ -84,10 +84,10 @@
     target_has_atomic_load_store = "ptr",
 ))]
 #![no_core]
-#![rustc_coherence_is_core]
+#![crablangc_coherence_is_core]
 //
 // Lints:
-#![deny(rust_2021_incompatible_or_patterns)]
+#![deny(crablang_2021_incompatible_or_patterns)]
 #![deny(unsafe_op_in_unsafe_fn)]
 #![deny(fuzzy_provenance_casts)]
 #![warn(deprecated_in_future)]
@@ -208,7 +208,7 @@
 #![feature(doc_cfg)]
 #![feature(doc_notable_trait)]
 #![feature(generic_arg_infer)]
-#![feature(rustdoc_internals)]
+#![feature(crablangdoc_internals)]
 #![feature(exhaustive_patterns)]
 #![feature(doc_cfg_hide)]
 #![feature(extern_types)]
@@ -225,12 +225,12 @@
 #![feature(negative_impls)]
 #![feature(never_type)]
 #![feature(no_core)]
-#![feature(no_coverage)] // rust-lang/rust#84605
+#![feature(no_coverage)] // crablang/crablang#84605
 #![feature(platform_intrinsics)]
 #![feature(prelude_import)]
 #![feature(repr_simd)]
-#![feature(rustc_allow_const_fn_unstable)]
-#![feature(rustc_attrs)]
+#![feature(crablangc_allow_const_fn_unstable)]
+#![feature(crablangc_attrs)]
 #![feature(simd_ffi)]
 #![feature(staged_api)]
 #![feature(stmt_expr_attributes)]
@@ -269,7 +269,7 @@ use prelude::v1::*;
 mod macros;
 
 // We don't export this through #[macro_export] for now, to avoid breakage.
-// See https://github.com/rust-lang/rust/issues/82913
+// See https://github.com/crablang/crablang/issues/82913
 #[cfg(not(test))]
 #[unstable(feature = "assert_matches", issue = "82775")]
 /// Unstable module containing the unstable `assert_matches` macro.
@@ -386,7 +386,7 @@ mod unit;
 pub mod primitive;
 
 // Pull in the `core_arch` crate directly into core. The contents of
-// `core_arch` are in a different repository: rust-lang/stdarch.
+// `core_arch` are in a different repository: crablang/stdarch.
 //
 // `core_arch` depends on core, but the contents of this module are
 // set up in such a way that directly pulling it here works such that the
@@ -399,8 +399,8 @@ pub mod primitive;
     unused_imports,
     unsafe_op_in_unsafe_fn
 )]
-#[allow(rustdoc::bare_urls)]
-// FIXME: This annotation should be moved into rust-lang/stdarch after clashing_extern_declarations is
+#[allow(crablangdoc::bare_urls)]
+// FIXME: This annotation should be moved into crablang/stdarch after clashing_extern_declarations is
 // merged. It currently cannot because bootstrap fails as the lint hasn't been defined yet.
 #[allow(clashing_extern_declarations)]
 #[unstable(feature = "stdsimd", issue = "48556")]
@@ -410,14 +410,14 @@ mod core_arch;
 pub mod arch;
 
 // Pull in the `core_simd` crate directly into core. The contents of
-// `core_simd` are in a different repository: rust-lang/portable-simd.
+// `core_simd` are in a different repository: crablang/portable-simd.
 //
 // `core_simd` depends on core, but the contents of this module are
 // set up in such a way that directly pulling it here works such that the
 // crate uses this crate as its core.
 #[path = "../../portable-simd/crates/core_simd/src/mod.rs"]
 #[allow(missing_debug_implementations, dead_code, unsafe_op_in_unsafe_fn, unused_unsafe)]
-#[allow(rustdoc::bare_urls)]
+#[allow(crablangdoc::bare_urls)]
 #[unstable(feature = "portable_simd", issue = "86656")]
 mod core_simd;
 

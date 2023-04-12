@@ -7,7 +7,7 @@ impl<T> Trait<'_, '_> for T {}
 // `Invert<'a> <: Invert<'b>` if `'b: 'a`, unlike most types.
 //
 // I am purposefully avoiding the terms co- and contra-variant because
-// their application to regions depends on how you interpreted Rust
+// their application to regions depends on how you interpreted CrabLang
 // regions. -nikomatsakis
 struct Invert<'a>(fn(&'a u8));
 

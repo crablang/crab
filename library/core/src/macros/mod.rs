@@ -1,9 +1,9 @@
 #[doc = include_str!("panic.md")]
 #[macro_export]
-#[rustc_builtin_macro(core_panic)]
+#[crablangc_builtin_macro(core_panic)]
 #[allow_internal_unstable(edition_panic)]
 #[stable(feature = "core", since = "1.6.0")]
-#[rustc_diagnostic_item = "core_panic_macro"]
+#[crablangc_diagnostic_item = "core_panic_macro"]
 macro_rules! panic {
     // Expands to either `$crate::panic::panic_2015` or `$crate::panic::panic_2021`
     // depending on the edition of the caller.
@@ -30,8 +30,8 @@ macro_rules! panic {
 /// assert_eq!(a, b, "we are testing addition with {} and {}", a, b);
 /// ```
 #[macro_export]
-#[stable(feature = "rust1", since = "1.0.0")]
-#[cfg_attr(not(test), rustc_diagnostic_item = "assert_eq_macro")]
+#[stable(feature = "crablang1", since = "1.0.0")]
+#[cfg_attr(not(test), crablangc_diagnostic_item = "assert_eq_macro")]
 #[allow_internal_unstable(core_panic)]
 macro_rules! assert_eq {
     ($left:expr, $right:expr $(,)?) => {
@@ -81,7 +81,7 @@ macro_rules! assert_eq {
 /// ```
 #[macro_export]
 #[stable(feature = "assert_ne", since = "1.13.0")]
-#[cfg_attr(not(test), rustc_diagnostic_item = "assert_ne_macro")]
+#[cfg_attr(not(test), crablangc_diagnostic_item = "assert_ne_macro")]
 #[allow_internal_unstable(core_panic)]
 macro_rules! assert_ne {
     ($left:expr, $right:expr $(,)?) => {
@@ -140,7 +140,7 @@ macro_rules! assert_ne {
 /// ```
 #[unstable(feature = "assert_matches", issue = "82775")]
 #[allow_internal_unstable(core_panic)]
-#[rustc_macro_transparency = "semitransparent"]
+#[crablangc_macro_transparency = "semitransparent"]
 pub macro assert_matches {
     ($left:expr, $(|)? $( $pattern:pat_param )|+ $( if $guard: expr )? $(,)?) => {
         match $left {
@@ -210,8 +210,8 @@ pub macro assert_matches {
 /// debug_assert!(a + b == 30, "a = {}, b = {}", a, b);
 /// ```
 #[macro_export]
-#[stable(feature = "rust1", since = "1.0.0")]
-#[rustc_diagnostic_item = "debug_assert_macro"]
+#[stable(feature = "crablang1", since = "1.0.0")]
+#[crablangc_diagnostic_item = "debug_assert_macro"]
 #[allow_internal_unstable(edition_panic)]
 macro_rules! debug_assert {
     ($($arg:tt)*) => {
@@ -241,8 +241,8 @@ macro_rules! debug_assert {
 /// debug_assert_eq!(a, b);
 /// ```
 #[macro_export]
-#[stable(feature = "rust1", since = "1.0.0")]
-#[cfg_attr(not(test), rustc_diagnostic_item = "debug_assert_eq_macro")]
+#[stable(feature = "crablang1", since = "1.0.0")]
+#[cfg_attr(not(test), crablangc_diagnostic_item = "debug_assert_eq_macro")]
 macro_rules! debug_assert_eq {
     ($($arg:tt)*) => {
         if $crate::cfg!(debug_assertions) {
@@ -272,7 +272,7 @@ macro_rules! debug_assert_eq {
 /// ```
 #[macro_export]
 #[stable(feature = "assert_ne", since = "1.13.0")]
-#[cfg_attr(not(test), rustc_diagnostic_item = "debug_assert_ne_macro")]
+#[cfg_attr(not(test), crablangc_diagnostic_item = "debug_assert_ne_macro")]
 macro_rules! debug_assert_ne {
     ($($arg:tt)*) => {
         if $crate::cfg!(debug_assertions) {
@@ -315,7 +315,7 @@ macro_rules! debug_assert_ne {
 #[macro_export]
 #[unstable(feature = "assert_matches", issue = "82775")]
 #[allow_internal_unstable(assert_matches)]
-#[rustc_macro_transparency = "semitransparent"]
+#[crablangc_macro_transparency = "semitransparent"]
 pub macro debug_assert_matches($($arg:tt)*) {
     if $crate::cfg!(debug_assertions) {
         $crate::assert_matches::assert_matches!($($arg)*);
@@ -338,7 +338,7 @@ pub macro debug_assert_matches($($arg:tt)*) {
 /// ```
 #[macro_export]
 #[stable(feature = "matches_macro", since = "1.42.0")]
-#[cfg_attr(not(test), rustc_diagnostic_item = "matches_macro")]
+#[cfg_attr(not(test), crablangc_diagnostic_item = "matches_macro")]
 macro_rules! matches {
     ($expression:expr, $pattern:pat $(if $guard:expr)? $(,)?) => {
         match $expression {
@@ -352,11 +352,11 @@ macro_rules! matches {
 ///
 /// The [`?` operator][propagating-errors] was added to replace `try!`
 /// and should be used instead. Furthermore, `try` is a reserved word
-/// in Rust 2018, so if you must use it, you will need to use the
+/// in CrabLang 2018, so if you must use it, you will need to use the
 /// [raw-identifier syntax][ris]: `r#try`.
 ///
-/// [propagating-errors]: https://doc.rust-lang.org/book/ch09-02-recoverable-errors-with-result.html#a-shortcut-for-propagating-errors-the--operator
-/// [ris]: https://doc.rust-lang.org/nightly/rust-by-example/compatibility/raw_identifiers.html
+/// [propagating-errors]: https://doc.crablang.org/book/ch09-02-recoverable-errors-with-result.html#a-shortcut-for-propagating-errors-the--operator
+/// [ris]: https://doc.crablang.org/nightly/crablang-by-example/compatibility/raw_identifiers.html
 ///
 /// `try!` matches the given [`Result`]. In case of the `Ok` variant, the
 /// expression has the value of the wrapped value.
@@ -411,7 +411,7 @@ macro_rules! matches {
 /// }
 /// ```
 #[macro_export]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[deprecated(since = "1.39.0", note = "use the `?` operator instead")]
 #[doc(alias = "?")]
 macro_rules! r#try {
@@ -513,8 +513,8 @@ macro_rules! r#try {
 /// write!(&mut m, "Hello World").expect("Not written");
 /// ```
 #[macro_export]
-#[stable(feature = "rust1", since = "1.0.0")]
-#[cfg_attr(not(test), rustc_diagnostic_item = "write_macro")]
+#[stable(feature = "crablang1", since = "1.0.0")]
+#[cfg_attr(not(test), crablangc_diagnostic_item = "write_macro")]
 macro_rules! write {
     ($dst:expr, $($arg:tt)*) => {
         $dst.write_fmt($crate::format_args!($($arg)*))
@@ -547,8 +547,8 @@ macro_rules! write {
 /// }
 /// ```
 #[macro_export]
-#[stable(feature = "rust1", since = "1.0.0")]
-#[cfg_attr(not(test), rustc_diagnostic_item = "writeln_macro")]
+#[stable(feature = "crablang1", since = "1.0.0")]
+#[cfg_attr(not(test), crablangc_diagnostic_item = "writeln_macro")]
 #[allow_internal_unstable(format_args_nl)]
 macro_rules! writeln {
     ($dst:expr $(,)?) => {
@@ -612,10 +612,10 @@ macro_rules! writeln {
 /// }
 /// ```
 #[macro_export]
-#[rustc_builtin_macro(unreachable)]
+#[crablangc_builtin_macro(unreachable)]
 #[allow_internal_unstable(edition_panic)]
-#[stable(feature = "rust1", since = "1.0.0")]
-#[cfg_attr(not(test), rustc_diagnostic_item = "unreachable_macro")]
+#[stable(feature = "crablang1", since = "1.0.0")]
+#[cfg_attr(not(test), crablangc_diagnostic_item = "unreachable_macro")]
 macro_rules! unreachable {
     // Expands to either `$crate::panic::unreachable_2015` or `$crate::panic::unreachable_2021`
     // depending on the edition of the caller.
@@ -698,8 +698,8 @@ macro_rules! unreachable {
 /// }
 /// ```
 #[macro_export]
-#[stable(feature = "rust1", since = "1.0.0")]
-#[cfg_attr(not(test), rustc_diagnostic_item = "unimplemented_macro")]
+#[stable(feature = "crablang1", since = "1.0.0")]
+#[cfg_attr(not(test), crablangc_diagnostic_item = "unimplemented_macro")]
 #[allow_internal_unstable(core_panic)]
 macro_rules! unimplemented {
     () => {
@@ -766,7 +766,7 @@ macro_rules! unimplemented {
 /// ```
 #[macro_export]
 #[stable(feature = "todo_macro", since = "1.40.0")]
-#[cfg_attr(not(test), rustc_diagnostic_item = "todo_macro")]
+#[cfg_attr(not(test), crablangc_diagnostic_item = "todo_macro")]
 #[allow_internal_unstable(core_panic)]
 macro_rules! todo {
     () => {
@@ -818,7 +818,7 @@ pub(crate) mod builtin {
     /// compile_error!("Either feature \"foo\" or \"bar\" must be enabled for this crate.");
     /// ```
     #[stable(feature = "compile_error_macro", since = "1.20.0")]
-    #[rustc_builtin_macro]
+    #[crablangc_builtin_macro]
     #[macro_export]
     macro_rules! compile_error {
         ($msg:expr $(,)?) => {{ /* compiler built-in */ }};
@@ -844,7 +844,7 @@ pub(crate) mod builtin {
     /// that `Debug` and `Display` format to the same thing: the interpolated
     /// format string in `format_args!`.
     ///
-    /// ```rust
+    /// ```crablang
     /// let debug = format!("{:?}", format_args!("{} foo {:?}", 1, 2));
     /// let display = format!("{}", format_args!("{} foo {:?}", 1, 2));
     /// assert_eq!("1 foo 2", display);
@@ -868,11 +868,11 @@ pub(crate) mod builtin {
     /// let s = fmt::format(format_args!("hello {}", "world"));
     /// assert_eq!(s, format!("hello {}", "world"));
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
-    #[cfg_attr(not(test), rustc_diagnostic_item = "format_args_macro")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    #[cfg_attr(not(test), crablangc_diagnostic_item = "format_args_macro")]
     #[allow_internal_unsafe]
     #[allow_internal_unstable(fmt_internals)]
-    #[rustc_builtin_macro]
+    #[crablangc_builtin_macro]
     #[macro_export]
     macro_rules! format_args {
         ($fmt:expr) => {{ /* compiler built-in */ }};
@@ -886,7 +886,7 @@ pub(crate) mod builtin {
     /// This macro will be removed once `format_args` is allowed in const contexts.
     #[unstable(feature = "const_format_args", issue = "none")]
     #[allow_internal_unstable(fmt_internals, const_fmt_arguments_new)]
-    #[rustc_builtin_macro]
+    #[crablangc_builtin_macro]
     #[macro_export]
     macro_rules! const_format_args {
         ($fmt:expr) => {{ /* compiler built-in */ }};
@@ -901,7 +901,7 @@ pub(crate) mod builtin {
                   language use and is subject to change"
     )]
     #[allow_internal_unstable(fmt_internals)]
-    #[rustc_builtin_macro]
+    #[crablangc_builtin_macro]
     #[macro_export]
     macro_rules! format_args_nl {
         ($fmt:expr) => {{ /* compiler built-in */ }};
@@ -940,8 +940,8 @@ pub(crate) mod builtin {
     /// ```text
     /// error: what's that?!
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
-    #[rustc_builtin_macro]
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    #[crablangc_builtin_macro]
     #[macro_export]
     macro_rules! env {
         ($name:expr $(,)?) => {{ /* compiler built-in */ }};
@@ -968,8 +968,8 @@ pub(crate) mod builtin {
     /// let key: Option<&'static str> = option_env!("SECRET_KEY");
     /// println!("the secret key might be: {key:?}");
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
-    #[rustc_builtin_macro]
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    #[crablangc_builtin_macro]
     #[macro_export]
     macro_rules! option_env {
         ($name:expr $(,)?) => {{ /* compiler built-in */ }};
@@ -1004,7 +1004,7 @@ pub(crate) mod builtin {
         issue = "29599",
         reason = "`concat_idents` is not stable enough for use and is subject to change"
     )]
-    #[rustc_builtin_macro]
+    #[crablangc_builtin_macro]
     #[macro_export]
     macro_rules! concat_idents {
         ($($e:ident),+ $(,)?) => {{ /* compiler built-in */ }};
@@ -1017,7 +1017,7 @@ pub(crate) mod builtin {
     /// concatenated left-to-right. The literals passed can be any combination of:
     ///
     /// - byte literals (`b'r'`)
-    /// - byte strings (`b"Rust"`)
+    /// - byte strings (`b"CrabLang"`)
     /// - arrays of bytes/numbers (`[b'A', 66, b'C']`)
     ///
     /// # Examples
@@ -1031,7 +1031,7 @@ pub(crate) mod builtin {
     /// # }
     /// ```
     #[unstable(feature = "concat_bytes", issue = "87555")]
-    #[rustc_builtin_macro]
+    #[crablangc_builtin_macro]
     #[macro_export]
     macro_rules! concat_bytes {
         ($($e:literal),+ $(,)?) => {{ /* compiler built-in */ }};
@@ -1052,8 +1052,8 @@ pub(crate) mod builtin {
     /// let s = concat!("test", 10, 'b', true);
     /// assert_eq!(s, "test10btrue");
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
-    #[rustc_builtin_macro]
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    #[crablangc_builtin_macro]
     #[macro_export]
     macro_rules! concat {
         ($($e:expr),* $(,)?) => {{ /* compiler built-in */ }};
@@ -1077,8 +1077,8 @@ pub(crate) mod builtin {
     /// let current_line = line!();
     /// println!("defined on line: {current_line}");
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
-    #[rustc_builtin_macro]
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    #[crablangc_builtin_macro]
     #[macro_export]
     macro_rules! line {
         () => {
@@ -1116,8 +1116,8 @@ pub(crate) mod builtin {
     /// assert_eq!(a, b);
     /// assert_ne!(b, c);
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
-    #[rustc_builtin_macro]
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    #[crablangc_builtin_macro]
     #[macro_export]
     macro_rules! column {
         () => {
@@ -1141,8 +1141,8 @@ pub(crate) mod builtin {
     /// let this_file = file!();
     /// println!("defined in file: {this_file}");
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
-    #[rustc_builtin_macro]
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    #[crablangc_builtin_macro]
     #[macro_export]
     macro_rules! file {
         () => {
@@ -1165,8 +1165,8 @@ pub(crate) mod builtin {
     /// let one_plus_one = stringify!(1 + 1);
     /// assert_eq!(one_plus_one, "1 + 1");
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
-    #[rustc_builtin_macro]
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    #[crablangc_builtin_macro]
     #[macro_export]
     macro_rules! stringify {
         ($($t:tt)*) => {
@@ -1206,10 +1206,10 @@ pub(crate) mod builtin {
     /// ```
     ///
     /// Compiling 'main.rs' and running the resulting binary will print "adiós".
-    #[stable(feature = "rust1", since = "1.0.0")]
-    #[rustc_builtin_macro]
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    #[crablangc_builtin_macro]
     #[macro_export]
-    #[cfg_attr(not(test), rustc_diagnostic_item = "include_str_macro")]
+    #[cfg_attr(not(test), crablangc_diagnostic_item = "include_str_macro")]
     macro_rules! include_str {
         ($file:expr $(,)?) => {{ /* compiler built-in */ }};
     }
@@ -1246,10 +1246,10 @@ pub(crate) mod builtin {
     /// ```
     ///
     /// Compiling 'main.rs' and running the resulting binary will print "adiós".
-    #[stable(feature = "rust1", since = "1.0.0")]
-    #[rustc_builtin_macro]
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    #[crablangc_builtin_macro]
     #[macro_export]
-    #[cfg_attr(not(test), rustc_diagnostic_item = "include_bytes_macro")]
+    #[cfg_attr(not(test), crablangc_diagnostic_item = "include_bytes_macro")]
     macro_rules! include_bytes {
         ($file:expr $(,)?) => {{ /* compiler built-in */ }};
     }
@@ -1271,8 +1271,8 @@ pub(crate) mod builtin {
     ///
     /// test::foo();
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
-    #[rustc_builtin_macro]
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    #[crablangc_builtin_macro]
     #[macro_export]
     macro_rules! module_path {
         () => {
@@ -1304,8 +1304,8 @@ pub(crate) mod builtin {
     ///     "unix-directory"
     /// };
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
-    #[rustc_builtin_macro]
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    #[crablangc_builtin_macro]
     #[macro_export]
     macro_rules! cfg {
         ($($cfg:tt)*) => {
@@ -1315,16 +1315,16 @@ pub(crate) mod builtin {
 
     /// Parses a file as an expression or an item according to the context.
     ///
-    /// **Warning**: For multi-file Rust projects, the `include!` macro is probably not what you
-    /// are looking for. Usually, multi-file Rust projects use
-    /// [modules](https://doc.rust-lang.org/reference/items/modules.html). Multi-file projects and
-    /// modules are explained in the Rust-by-Example book
-    /// [here](https://doc.rust-lang.org/rust-by-example/mod/split.html) and the module system is
-    /// explained in the Rust Book
-    /// [here](https://doc.rust-lang.org/book/ch07-02-defining-modules-to-control-scope-and-privacy.html).
+    /// **Warning**: For multi-file CrabLang projects, the `include!` macro is probably not what you
+    /// are looking for. Usually, multi-file CrabLang projects use
+    /// [modules](https://doc.crablang.org/reference/items/modules.html). Multi-file projects and
+    /// modules are explained in the CrabLang-by-Example book
+    /// [here](https://doc.crablang.org/crablang-by-example/mod/split.html) and the module system is
+    /// explained in the CrabLang Book
+    /// [here](https://doc.crablang.org/book/ch07-02-defining-modules-to-control-scope-and-privacy.html).
     ///
     /// The included file is placed in the surrounding code
-    /// [unhygienically](https://doc.rust-lang.org/reference/macros-by-example.html#hygiene). If
+    /// [unhygienically](https://doc.crablang.org/reference/macros-by-example.html#hygiene). If
     /// the included file is parsed as an expression and variables or functions share names across
     /// both files, it could result in variables or functions being different from what the
     /// included file expected.
@@ -1339,10 +1339,10 @@ pub(crate) mod builtin {
     /// The `include!` macro is primarily used for two purposes. It is used to include
     /// documentation that is written in a separate file and it is used to include [build artifacts
     /// usually as a result from the `build.rs`
-    /// script](https://doc.rust-lang.org/cargo/reference/build-scripts.html#outputs-of-the-build-script).
+    /// script](https://doc.crablang.org/cargo/reference/build-scripts.html#outputs-of-the-build-script).
     ///
     /// When using the `include` macro to include stretches of documentation, remember that the
-    /// included file still needs to be a valid rust syntax. It is also possible to
+    /// included file still needs to be a valid crablang syntax. It is also possible to
     /// use the [`include_str`] macro as `#![doc = include_str!("...")]` (at the module level) or
     /// `#[doc = include_str!("...")]` (at the item level) to include documentation from a plain
     /// text or markdown file.
@@ -1373,8 +1373,8 @@ pub(crate) mod builtin {
     ///
     /// Compiling 'main.rs' and running the resulting binary will print
     /// "🙈🙊🙉🙈🙊🙉".
-    #[stable(feature = "rust1", since = "1.0.0")]
-    #[rustc_builtin_macro]
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    #[crablangc_builtin_macro]
     #[macro_export]
     macro_rules! include {
         ($file:expr $(,)?) => {{ /* compiler built-in */ }};
@@ -1424,10 +1424,10 @@ pub(crate) mod builtin {
     /// let a = 3; let b = 27;
     /// assert!(a + b == 30, "a = {}, b = {}", a, b);
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
-    #[rustc_builtin_macro]
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    #[crablangc_builtin_macro]
     #[macro_export]
-    #[rustc_diagnostic_item = "assert_macro"]
+    #[crablangc_diagnostic_item = "assert_macro"]
     #[allow_internal_unstable(core_panic, edition_panic)]
     macro_rules! assert {
         ($cond:expr $(,)?) => {{ /* compiler built-in */ }};
@@ -1440,7 +1440,7 @@ pub(crate) mod builtin {
         issue = "29598",
         reason = "`log_syntax!` is not stable enough for use and is subject to change"
     )]
-    #[rustc_builtin_macro]
+    #[crablangc_builtin_macro]
     #[macro_export]
     macro_rules! log_syntax {
         ($($arg:tt)*) => {
@@ -1454,7 +1454,7 @@ pub(crate) mod builtin {
         issue = "29598",
         reason = "`trace_macros` is not stable enough for use and is subject to change"
     )]
-    #[rustc_builtin_macro]
+    #[crablangc_builtin_macro]
     #[macro_export]
     macro_rules! trace_macros {
         (true) => {{ /* compiler built-in */ }};
@@ -1466,8 +1466,8 @@ pub(crate) mod builtin {
     /// See [the reference] for more info.
     ///
     /// [the reference]: ../../../reference/attributes/derive.html
-    #[stable(feature = "rust1", since = "1.0.0")]
-    #[rustc_builtin_macro]
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    #[crablangc_builtin_macro]
     pub macro derive($item:item) {
         /* compiler built-in */
     }
@@ -1479,7 +1479,7 @@ pub(crate) mod builtin {
     ///
     /// [the reference]: ../../../reference/attributes/derive.html
     #[unstable(feature = "derive_const", issue = "none")]
-    #[rustc_builtin_macro]
+    #[crablangc_builtin_macro]
     pub macro derive_const($item:item) {
         /* compiler built-in */
     }
@@ -1489,9 +1489,9 @@ pub(crate) mod builtin {
     /// See [the reference] for more info.
     ///
     /// [the reference]: ../../../reference/attributes/testing.html#the-test-attribute
-    #[stable(feature = "rust1", since = "1.0.0")]
-    #[allow_internal_unstable(test, rustc_attrs)]
-    #[rustc_builtin_macro]
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    #[allow_internal_unstable(test, crablangc_attrs)]
+    #[crablangc_builtin_macro]
     pub macro test($item:item) {
         /* compiler built-in */
     }
@@ -1503,8 +1503,8 @@ pub(crate) mod builtin {
         soft,
         reason = "`bench` is a part of custom test frameworks which are unstable"
     )]
-    #[allow_internal_unstable(test, rustc_attrs)]
-    #[rustc_builtin_macro]
+    #[allow_internal_unstable(test, crablangc_attrs)]
+    #[crablangc_builtin_macro]
     pub macro bench($item:item) {
         /* compiler built-in */
     }
@@ -1515,8 +1515,8 @@ pub(crate) mod builtin {
         issue = "50297",
         reason = "custom test frameworks are an unstable feature"
     )]
-    #[allow_internal_unstable(test, rustc_attrs)]
-    #[rustc_builtin_macro]
+    #[allow_internal_unstable(test, crablangc_attrs)]
+    #[crablangc_builtin_macro]
     pub macro test_case($item:item) {
         /* compiler built-in */
     }
@@ -1525,8 +1525,8 @@ pub(crate) mod builtin {
     ///
     /// See also [`std::alloc::GlobalAlloc`](../../../std/alloc/trait.GlobalAlloc.html).
     #[stable(feature = "global_allocator", since = "1.28.0")]
-    #[allow_internal_unstable(rustc_attrs)]
-    #[rustc_builtin_macro]
+    #[allow_internal_unstable(crablangc_attrs)]
+    #[crablangc_builtin_macro]
     pub macro global_allocator($item:item) {
         /* compiler built-in */
     }
@@ -1535,8 +1535,8 @@ pub(crate) mod builtin {
     ///
     /// See also [`std::alloc::handle_alloc_error`](../../../std/alloc/fn.handle_alloc_error.html).
     #[unstable(feature = "alloc_error_handler", issue = "51540")]
-    #[allow_internal_unstable(rustc_attrs)]
-    #[rustc_builtin_macro]
+    #[allow_internal_unstable(crablangc_attrs)]
+    #[crablangc_builtin_macro]
     pub macro alloc_error_handler($item:item) {
         /* compiler built-in */
     }
@@ -1547,7 +1547,7 @@ pub(crate) mod builtin {
         issue = "64797",
         reason = "`cfg_accessible` is not fully implemented"
     )]
-    #[rustc_builtin_macro]
+    #[crablangc_builtin_macro]
     pub macro cfg_accessible($item:item) {
         /* compiler built-in */
     }
@@ -1558,13 +1558,13 @@ pub(crate) mod builtin {
         issue = "82679",
         reason = "`cfg_eval` is a recently implemented feature"
     )]
-    #[rustc_builtin_macro]
+    #[crablangc_builtin_macro]
     pub macro cfg_eval($($tt:tt)*) {
         /* compiler built-in */
     }
 
     /// Unstable placeholder for type ascription.
-    #[rustc_builtin_macro]
+    #[crablangc_builtin_macro]
     #[unstable(
         feature = "type_ascription",
         issue = "23416",
@@ -1574,23 +1574,23 @@ pub(crate) mod builtin {
         /* compiler built-in */
     }
 
-    /// Unstable implementation detail of the `rustc` compiler, do not use.
-    #[rustc_builtin_macro]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    /// Unstable implementation detail of the `crablangc` compiler, do not use.
+    #[crablangc_builtin_macro]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[allow_internal_unstable(core_intrinsics, libstd_sys_internals, rt)]
-    #[deprecated(since = "1.52.0", note = "rustc-serialize is deprecated and no longer supported")]
+    #[deprecated(since = "1.52.0", note = "crablangc-serialize is deprecated and no longer supported")]
     #[doc(hidden)] // While technically stable, using it is unstable, and deprecated. Hide it.
-    pub macro RustcDecodable($item:item) {
+    pub macro CrabLangcDecodable($item:item) {
         /* compiler built-in */
     }
 
-    /// Unstable implementation detail of the `rustc` compiler, do not use.
-    #[rustc_builtin_macro]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    /// Unstable implementation detail of the `crablangc` compiler, do not use.
+    #[crablangc_builtin_macro]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[allow_internal_unstable(core_intrinsics, rt)]
-    #[deprecated(since = "1.52.0", note = "rustc-serialize is deprecated and no longer supported")]
+    #[deprecated(since = "1.52.0", note = "crablangc-serialize is deprecated and no longer supported")]
     #[doc(hidden)] // While technically stable, using it is unstable, and deprecated. Hide it.
-    pub macro RustcEncodable($item:item) {
+    pub macro CrabLangcEncodable($item:item) {
         /* compiler built-in */
     }
 }

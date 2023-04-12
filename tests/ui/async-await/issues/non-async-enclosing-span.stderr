@@ -9,4 +9,4 @@ LL |     let y = do_the_thing().await;
 
 error: aborting due to previous error
 
-For more information about this error, try `rustc --explain E0728`.
+For more information about this error, try `crablangc --explain E0728`.

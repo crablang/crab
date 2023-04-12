@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 #![warn(clippy::partialeq_to_none)]
 
 struct Foobar;

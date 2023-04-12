@@ -1,6 +1,6 @@
 use std::collections::HashSet;
 
-// See rust-lang/rust-clippy#2774.
+// See crablang/crablang-clippy#2774.
 
 #[derive(Eq, PartialEq, Debug, Hash)]
 pub struct Bar {

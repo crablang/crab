@@ -6,14 +6,14 @@ use clippy_utils::diagnostics::span_lint_and_sugg;
 use clippy_utils::higher;
 use clippy_utils::{eq_expr_value, get_parent_expr, in_constant, numeric_literal, peel_blocks, sugg};
 use if_chain::if_chain;
-use rustc_errors::Applicability;
-use rustc_hir::{BinOpKind, Expr, ExprKind, PathSegment, UnOp};
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_middle::ty;
-use rustc_session::{declare_lint_pass, declare_tool_lint};
-use rustc_span::source_map::Spanned;
+use crablangc_errors::Applicability;
+use crablangc_hir::{BinOpKind, Expr, ExprKind, PathSegment, UnOp};
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_middle::ty;
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_span::source_map::Spanned;
 
-use rustc_ast::ast;
+use crablangc_ast::ast;
 use std::f32::consts as f32_consts;
 use std::f64::consts as f64_consts;
 use sugg::Sugg;
@@ -28,7 +28,7 @@ declare_clippy_lint! {
     /// Negatively impacts accuracy.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// let a = 3f32;
     /// let _ = a.powf(1.0 / 3.0);
     /// let _ = (1.0 + a).ln();
@@ -36,7 +36,7 @@ declare_clippy_lint! {
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// let a = 3f32;
     /// let _ = a.cbrt();
     /// let _ = a.ln_1p();
@@ -58,7 +58,7 @@ declare_clippy_lint! {
     /// Negatively impacts accuracy and performance.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// use std::f32::consts::E;
     ///
     /// let a = 3f32;
@@ -84,7 +84,7 @@ declare_clippy_lint! {
     ///
     /// is better expressed as
     ///
-    /// ```rust
+    /// ```crablang
     /// use std::f32::consts::E;
     ///
     /// let a = 3f32;
@@ -450,7 +450,7 @@ fn is_float_mul_expr<'a>(cx: &LateContext<'_>, expr: &'a Expr<'a>) -> Option<(&'
     None
 }
 
-// TODO: Fix rust-lang/rust-clippy#4735
+// TODO: Fix crablang/crablang-clippy#4735
 fn check_mul_add(cx: &LateContext<'_>, expr: &Expr<'_>) {
     if let ExprKind::Binary(
         Spanned {

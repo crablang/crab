@@ -1,4 +1,4 @@
-//! Shim which is passed to Cargo as "rustc" when running the bootstrap.
+//! Shim which is passed to Cargo as "crablangc" when running the bootstrap.
 //!
 //! This shim will take care of some various tasks that our build process
 //! requires that Cargo can't quite do through normal configuration:
@@ -11,7 +11,7 @@
 //!    (and this slightly differs based on a whether we're using a snapshot or
 //!    not), so we do that all here.
 //!
-//! This may one day be replaced by RUSTFLAGS, but the dynamic nature of
+//! This may one day be replaced by CRABLANGFLAGS, but the dynamic nature of
 //! switching compilers for the bootstrap and for build scripts will probably
 //! never get replaced.
 
@@ -32,8 +32,8 @@ fn main() {
     let target = arg("--target");
     let version = args.iter().find(|w| &**w == "-vV");
 
-    let verbose = match env::var("RUSTC_VERBOSE") {
-        Ok(s) => usize::from_str(&s).expect("RUSTC_VERBOSE should be an integer"),
+    let verbose = match env::var("CRABLANGC_VERBOSE") {
+        Ok(s) => usize::from_str(&s).expect("CRABLANGC_VERBOSE should be an integer"),
         Err(_) => 0,
     };
 
@@ -42,28 +42,28 @@ fn main() {
     // determine the version of the compiler, the real compiler needs to be
     // used. Currently, these two states are differentiated based on whether
     // --target and -vV is/isn't passed.
-    let (rustc, libdir) = if target.is_none() && version.is_none() {
-        ("RUSTC_SNAPSHOT", "RUSTC_SNAPSHOT_LIBDIR")
+    let (crablangc, libdir) = if target.is_none() && version.is_none() {
+        ("CRABLANGC_SNAPSHOT", "CRABLANGC_SNAPSHOT_LIBDIR")
     } else {
-        ("RUSTC_REAL", "RUSTC_LIBDIR")
+        ("CRABLANGC_REAL", "CRABLANGC_LIBDIR")
     };
-    let stage = env::var("RUSTC_STAGE").expect("RUSTC_STAGE was not set");
-    let sysroot = env::var_os("RUSTC_SYSROOT").expect("RUSTC_SYSROOT was not set");
-    let on_fail = env::var_os("RUSTC_ON_FAIL").map(Command::new);
+    let stage = env::var("CRABLANGC_STAGE").expect("CRABLANGC_STAGE was not set");
+    let sysroot = env::var_os("CRABLANGC_SYSROOT").expect("CRABLANGC_SYSROOT was not set");
+    let on_fail = env::var_os("CRABLANGC_ON_FAIL").map(Command::new);
 
-    let rustc = env::var_os(rustc).unwrap_or_else(|| panic!("{:?} was not set", rustc));
+    let crablangc = env::var_os(crablangc).unwrap_or_else(|| panic!("{:?} was not set", crablangc));
     let libdir = env::var_os(libdir).unwrap_or_else(|| panic!("{:?} was not set", libdir));
     let mut dylib_path = dylib_path();
     dylib_path.insert(0, PathBuf::from(&libdir));
 
-    let mut cmd = Command::new(rustc);
+    let mut cmd = Command::new(crablangc);
     cmd.args(&args).env(dylib_path_var(), env::join_paths(&dylib_path).unwrap());
 
     // Get the name of the crate we're compiling, if any.
     let crate_name = arg("--crate-name");
 
     if let Some(crate_name) = crate_name {
-        if let Some(target) = env::var_os("RUSTC_TIME") {
+        if let Some(target) = env::var_os("CRABLANGC_TIME") {
             if target == "all"
                 || target.into_string().unwrap().split(',').any(|c| c.trim() == crate_name)
             {
@@ -73,11 +73,11 @@ fn main() {
     }
 
     // Print backtrace in case of ICE
-    if env::var("RUSTC_BACKTRACE_ON_ICE").is_ok() && env::var("RUST_BACKTRACE").is_err() {
-        cmd.env("RUST_BACKTRACE", "1");
+    if env::var("CRABLANGC_BACKTRACE_ON_ICE").is_ok() && env::var("CRABLANG_BACKTRACE").is_err() {
+        cmd.env("CRABLANG_BACKTRACE", "1");
     }
 
-    if let Ok(lint_flags) = env::var("RUSTC_LINT_FLAGS") {
+    if let Ok(lint_flags) = env::var("CRABLANGC_LINT_FLAGS") {
         cmd.args(lint_flags.split_whitespace());
     }
 
@@ -102,26 +102,26 @@ fn main() {
         }
 
         // `-Ztls-model=initial-exec` must not be applied to proc-macros, see
-        // issue https://github.com/rust-lang/rust/issues/100530
-        if env::var("RUSTC_TLS_MODEL_INITIAL_EXEC").is_ok()
+        // issue https://github.com/crablang/crablang/issues/100530
+        if env::var("CRABLANGC_TLS_MODEL_INITIAL_EXEC").is_ok()
             && arg("--crate-type") != Some("proc-macro")
             && !matches!(crate_name, Some("proc_macro2" | "quote" | "syn" | "synstructure"))
         {
             cmd.arg("-Ztls-model=initial-exec");
         }
     } else {
-        // FIXME(rust-lang/cargo#5754) we shouldn't be using special env vars
-        // here, but rather Cargo should know what flags to pass rustc itself.
+        // FIXME(crablang/cargo#5754) we shouldn't be using special env vars
+        // here, but rather Cargo should know what flags to pass crablangc itself.
 
         // Override linker if necessary.
-        if let Ok(host_linker) = env::var("RUSTC_HOST_LINKER") {
+        if let Ok(host_linker) = env::var("CRABLANGC_HOST_LINKER") {
             cmd.arg(format!("-Clinker={}", host_linker));
         }
-        if env::var_os("RUSTC_HOST_FUSE_LD_LLD").is_some() {
+        if env::var_os("CRABLANGC_HOST_FUSE_LD_LLD").is_some() {
             cmd.arg("-Clink-args=-fuse-ld=lld");
         }
 
-        if let Ok(s) = env::var("RUSTC_HOST_CRT_STATIC") {
+        if let Ok(s) = env::var("CRABLANGC_HOST_CRT_STATIC") {
             if s == "true" {
                 cmd.arg("-C").arg("target-feature=+crt-static");
             }
@@ -130,8 +130,8 @@ fn main() {
             }
         }
 
-        // Cargo doesn't pass RUSTFLAGS to proc_macros:
-        // https://github.com/rust-lang/cargo/issues/4423
+        // Cargo doesn't pass CRABLANGFLAGS to proc_macros:
+        // https://github.com/crablang/cargo/issues/4423
         // Thus, if we are on stage 0, we explicitly set `--cfg=bootstrap`.
         // We also declare that the flag is expected, which we need to do to not
         // get warnings about it being unexpected.
@@ -142,32 +142,32 @@ fn main() {
         cmd.arg("--check-cfg=values(bootstrap)");
     }
 
-    if let Ok(map) = env::var("RUSTC_DEBUGINFO_MAP") {
+    if let Ok(map) = env::var("CRABLANGC_DEBUGINFO_MAP") {
         cmd.arg("--remap-path-prefix").arg(&map);
     }
 
     // Force all crates compiled by this compiler to (a) be unstable and (b)
-    // allow the `rustc_private` feature to link to other unstable crates
+    // allow the `crablangc_private` feature to link to other unstable crates
     // also in the sysroot. We also do this for host crates, since those
     // may be proc macros, in which case we might ship them.
-    if env::var_os("RUSTC_FORCE_UNSTABLE").is_some() && (stage != "0" || target.is_some()) {
+    if env::var_os("CRABLANGC_FORCE_UNSTABLE").is_some() && (stage != "0" || target.is_some()) {
         cmd.arg("-Z").arg("force-unstable-if-unmarked");
     }
 
-    // allow-features is handled from within this rustc wrapper because of
+    // allow-features is handled from within this crablangc wrapper because of
     // issues with build scripts. Some packages use build scripts to
     // dynamically detect if certain nightly features are available.
     // There are different ways this causes problems:
     //
-    // * rustix runs `rustc` on a small test program to see if the feature is
+    // * crablangix runs `crablangc` on a small test program to see if the feature is
     //   available (and sets a `cfg` if it is). It does not honor
-    //   CARGO_ENCODED_RUSTFLAGS.
-    // * proc-macro2 detects if `rustc -vV` says "nighty" or "dev" and enables
-    //   nightly features. It will scan CARGO_ENCODED_RUSTFLAGS for
-    //   -Zallow-features. Unfortunately CARGO_ENCODED_RUSTFLAGS is not set
+    //   CARGO_ENCODED_CRABLANGFLAGS.
+    // * proc-macro2 detects if `crablangc -vV` says "nighty" or "dev" and enables
+    //   nightly features. It will scan CARGO_ENCODED_CRABLANGFLAGS for
+    //   -Zallow-features. Unfortunately CARGO_ENCODED_CRABLANGFLAGS is not set
     //   for build-dependencies when --target is used.
     //
-    // The issues above means we can't just use RUSTFLAGS, and we can't use
+    // The issues above means we can't just use CRABLANGFLAGS, and we can't use
     // `cargo -Zallow-features=…`. Passing it through here ensures that it
     // always gets set. Unfortunately that also means we need to enable more
     // features than we really want (like those for proc-macro2), but there
@@ -181,15 +181,15 @@ fn main() {
     //
     // If you want to try to remove this, I suggest working with the crate
     // authors to remove the dynamic checking. Another option is to pursue
-    // https://github.com/rust-lang/cargo/issues/11244 and
-    // https://github.com/rust-lang/cargo/issues/4423, which will likely be
+    // https://github.com/crablang/cargo/issues/11244 and
+    // https://github.com/crablang/cargo/issues/4423, which will likely be
     // very difficult, but could help expose -Zallow-features into build
     // scripts so they could try to honor them.
-    if let Ok(allow_features) = env::var("RUSTC_ALLOW_FEATURES") {
+    if let Ok(allow_features) = env::var("CRABLANGC_ALLOW_FEATURES") {
         cmd.arg(format!("-Zallow-features={allow_features}"));
     }
 
-    if let Ok(flags) = env::var("MAGIC_EXTRA_RUSTFLAGS") {
+    if let Ok(flags) = env::var("MAGIC_EXTRA_CRABLANGFLAGS") {
         for flag in flags.split(' ') {
             cmd.arg(flag);
         }
@@ -197,14 +197,14 @@ fn main() {
 
     let is_test = args.iter().any(|a| a == "--test");
     if verbose > 2 {
-        let rust_env_vars =
-            env::vars().filter(|(k, _)| k.starts_with("RUST") || k.starts_with("CARGO"));
-        let prefix = if is_test { "[RUSTC-SHIM] rustc --test" } else { "[RUSTC-SHIM] rustc" };
+        let crablang_env_vars =
+            env::vars().filter(|(k, _)| k.starts_with("CRABLANG") || k.starts_with("CARGO"));
+        let prefix = if is_test { "[CRABLANGC-SHIM] crablangc --test" } else { "[CRABLANGC-SHIM] crablangc" };
         let prefix = match crate_name {
             Some(crate_name) => format!("{} {}", prefix, crate_name),
             None => prefix.to_string(),
         };
-        for (i, (k, v)) in rust_env_vars.enumerate() {
+        for (i, (k, v)) in crablang_env_vars.enumerate() {
             eprintln!("{} env[{}]: {:?}={:?}", prefix, i, k, v);
         }
         eprintln!("{} working directory: {}", prefix, env::current_dir().unwrap().display());
@@ -227,17 +227,17 @@ fn main() {
         (child, status)
     };
 
-    if env::var_os("RUSTC_PRINT_STEP_TIMINGS").is_some()
-        || env::var_os("RUSTC_PRINT_STEP_RUSAGE").is_some()
+    if env::var_os("CRABLANGC_PRINT_STEP_TIMINGS").is_some()
+        || env::var_os("CRABLANGC_PRINT_STEP_RUSAGE").is_some()
     {
         if let Some(crate_name) = crate_name {
             let dur = start.elapsed();
             // If the user requested resource usage data, then
             // include that in addition to the timing output.
             let rusage_data =
-                env::var_os("RUSTC_PRINT_STEP_RUSAGE").and_then(|_| format_rusage_data(child));
+                env::var_os("CRABLANGC_PRINT_STEP_RUSAGE").and_then(|_| format_rusage_data(child));
             eprintln!(
-                "[RUSTC-TIMING] {} test:{} {}.{:03}{}{}",
+                "[CRABLANGC-TIMING] {} test:{} {}.{:03}{}{}",
                 crate_name,
                 is_test,
                 dur.as_secs(),
@@ -266,7 +266,7 @@ fn main() {
     match status.code() {
         Some(i) => std::process::exit(i),
         None => {
-            eprintln!("rustc exited with {}", status);
+            eprintln!("crablangc exited with {}", status);
             std::process::exit(0xfe);
         }
     }

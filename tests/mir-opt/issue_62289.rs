@@ -2,12 +2,12 @@
 // initializing it
 // ignore-wasm32-bare compiled with panic=abort by default
 
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 
 // EMIT_MIR issue_62289.test.ElaborateDrops.before.mir
 fn test() -> Option<Box<u32>> {
     Some(
-        #[rustc_box]
+        #[crablangc_box]
         Box::new(None?),
     )
 }

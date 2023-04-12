@@ -1,9 +1,9 @@
 use clippy_utils::diagnostics::span_lint_and_sugg;
 use clippy_utils::source::snippet;
-use rustc_ast::ast::{Expr, ExprKind, MethodCall};
-use rustc_errors::Applicability;
-use rustc_lint::{EarlyContext, EarlyLintPass};
-use rustc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_ast::ast::{Expr, ExprKind, MethodCall};
+use crablangc_errors::Applicability;
+use crablangc_lint::{EarlyContext, EarlyLintPass};
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
 
 declare_clippy_lint! {
     /// ### What it does
@@ -16,11 +16,11 @@ declare_clippy_lint! {
     /// This is unnecessary and confusing to the reader. Doing this is probably a mistake.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// let x = 1f32.ceil();
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// let x = 1f32;
     /// ```
     #[clippy::version = "1.63.0"]

@@ -1,3 +1,3 @@
-#![feature(unknown_rust_feature)] //~ ERROR unknown feature
+#![feature(unknown_crablang_feature)] //~ ERROR unknown feature
 
 fn main() {}

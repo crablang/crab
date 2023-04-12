@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 // aux-build:proc_macros.rs
 #![warn(clippy::toplevel_ref_arg)]
 #![allow(clippy::uninlined_format_args, unused)]

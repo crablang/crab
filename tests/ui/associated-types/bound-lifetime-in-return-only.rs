@@ -1,7 +1,7 @@
 // revisions: sig local structure ok elision
 
 #![allow(dead_code)]
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 #![feature(unboxed_closures)]
 
 trait Foo {
@@ -45,5 +45,5 @@ fn ok1(_: &dyn for<'a> Fn(&Parameterized<'a>) -> &'a i32) {
 fn ok2(_: &dyn for<'a,'b> Fn<(&'b Parameterized<'a>,), Output=&'a i32>) {
 }
 
-#[rustc_error]
-fn main() { } //[ok]~ ERROR fatal error triggered by #[rustc_error]
+#[crablangc_error]
+fn main() { } //[ok]~ ERROR fatal error triggered by #[crablangc_error]

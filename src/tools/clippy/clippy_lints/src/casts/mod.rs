@@ -23,10 +23,10 @@ mod utils;
 
 use clippy_utils::is_hir_ty_cfg_dependant;
 use clippy_utils::msrvs::{self, Msrv};
-use rustc_hir::{Expr, ExprKind};
-use rustc_lint::{LateContext, LateLintPass, LintContext};
-use rustc_middle::lint::in_external_macro;
-use rustc_session::{declare_tool_lint, impl_lint_pass};
+use crablangc_hir::{Expr, ExprKind};
+use crablangc_lint::{LateContext, LateLintPass, LintContext};
+use crablangc_middle::lint::in_external_macro;
+use crablangc_session::{declare_tool_lint, impl_lint_pass};
 
 declare_clippy_lint! {
     /// ### What it does
@@ -44,7 +44,7 @@ declare_clippy_lint! {
     /// those places in the code.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// let x = u64::MAX;
     /// x as f64;
     /// ```
@@ -66,7 +66,7 @@ declare_clippy_lint! {
     /// as a one-time check to see where numerical wrapping can arise.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// let y: i8 = -1;
     /// y as u128; // will return 18446744073709551615
     /// ```
@@ -89,7 +89,7 @@ declare_clippy_lint! {
     /// checks could be beneficial.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// fn as_u8(x: u64) -> u8 {
     ///     x as u8
     /// }
@@ -130,7 +130,7 @@ declare_clippy_lint! {
     /// example below.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// u32::MAX as i32; // will yield a value of `-1`
     /// ```
     #[clippy::version = "pre 1.29.0"]
@@ -145,7 +145,7 @@ declare_clippy_lint! {
     /// be replaced by safe conversion functions.
     ///
     /// ### Why is this bad?
-    /// Rust's `as` keyword will perform many kinds of
+    /// CrabLang's `as` keyword will perform many kinds of
     /// conversions, including silently lossy conversions. Conversion functions such
     /// as `i32::from` will only perform lossless conversions. Using the conversion
     /// functions prevents conversions from turning into silent lossy conversions if
@@ -153,7 +153,7 @@ declare_clippy_lint! {
     /// people reading the code to know that the conversion is lossless.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// fn as_u64(x: u8) -> u64 {
     ///     x as u64
     /// }
@@ -161,7 +161,7 @@ declare_clippy_lint! {
     ///
     /// Using `::from` would look like this:
     ///
-    /// ```rust
+    /// ```crablang
     /// fn as_u64(x: u8) -> u64 {
     ///     u64::from(x)
     /// }
@@ -181,14 +181,14 @@ declare_clippy_lint! {
     /// It's just unnecessary.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// let _ = 2i32 as i32;
     /// let _ = 0.5 as f32;
     /// ```
     ///
     /// Better:
     ///
-    /// ```rust
+    /// ```crablang
     /// let _ = 2_i32;
     /// let _ = 0.5_f32;
     /// ```
@@ -213,7 +213,7 @@ declare_clippy_lint! {
     /// u64-> u8 -> u16 can be fine. Miri is able to do a more in-depth analysis.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// let _ = (&1u8 as *const u8) as *const u16;
     /// let _ = (&mut 1u8 as *mut u8) as *mut u16;
     ///
@@ -239,13 +239,13 @@ declare_clippy_lint! {
     /// Casting to isize also doesn't make sense since there are no signed addresses.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// fn fun() -> i32 { 1 }
     /// let _ = fun as i64;
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// # fn fun() -> i32 { 1 }
     /// let _ = fun as usize;
     /// ```
@@ -266,7 +266,7 @@ declare_clippy_lint! {
     /// a comment) to perform the truncation.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// fn fn1() -> i16 {
     ///     1
     /// };
@@ -274,7 +274,7 @@ declare_clippy_lint! {
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// // Cast to usize first, then comment with the reason for the truncation
     /// fn fn1() -> i16 {
     ///     1
@@ -300,7 +300,7 @@ declare_clippy_lint! {
     /// pointer casts in your code.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// // fn1 is cast as `usize`
     /// fn fn1() -> u16 {
     ///     1
@@ -309,7 +309,7 @@ declare_clippy_lint! {
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// // maybe you intended to call the function?
     /// fn fn2() -> u16 {
     ///     1
@@ -340,7 +340,7 @@ declare_clippy_lint! {
     /// mutable.
     ///
     /// ### Example
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// fn x(r: &i32) {
     ///     unsafe {
     ///         *(r as *const _ as *mut _) += 1;
@@ -350,7 +350,7 @@ declare_clippy_lint! {
     ///
     /// Instead consider using interior mutability types.
     ///
-    /// ```rust
+    /// ```crablang
     /// use std::cell::UnsafeCell;
     ///
     /// fn x(r: &UnsafeCell<i32>) {
@@ -378,13 +378,13 @@ declare_clippy_lint! {
     /// than `'a' as u8`.
     ///
     /// ### Example
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// 'x' as u8
     /// ```
     ///
     /// A better version, using the byte literal:
     ///
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// b'x'
     /// ```
     #[clippy::version = "pre 1.29.0"]
@@ -403,14 +403,14 @@ declare_clippy_lint! {
     /// it cannot accidentally change the pointer's mutability nor cast the pointer to other types like `usize`.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// let ptr: *const u32 = &42_u32;
     /// let mut_ptr: *mut u32 = &mut 42_u32;
     /// let _ = ptr as *const i32;
     /// let _ = mut_ptr as *mut i32;
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// let ptr: *const u32 = &42_u32;
     /// let mut_ptr: *mut u32 = &mut 42_u32;
     /// let _ = ptr.cast::<i32>();
@@ -431,7 +431,7 @@ declare_clippy_lint! {
     /// The resulting integral value will not match the value of the variant it came from.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// enum E { X = 256 };
     /// let _ = E::X as u8;
     /// ```
@@ -454,7 +454,7 @@ declare_clippy_lint! {
     ///
     /// ### Example
     /// // Missing data
-    /// ```rust
+    /// ```crablang
     /// let a = [1_i32, 2, 3, 4];
     /// let p = &a as *const [i32] as *const [u8];
     /// unsafe {
@@ -462,7 +462,7 @@ declare_clippy_lint! {
     /// }
     /// ```
     /// // Undefined Behavior (note: also potential alignment issues)
-    /// ```rust
+    /// ```crablang
     /// let a = [1_u8, 2, 3, 4];
     /// let p = &a as *const [u8] as *const [u32];
     /// unsafe {
@@ -470,7 +470,7 @@ declare_clippy_lint! {
     /// }
     /// ```
     /// Instead use `ptr::slice_from_raw_parts` to construct a slice from a data pointer and the correct length
-    /// ```rust
+    /// ```crablang
     /// let a = [1_i32, 2, 3, 4];
     /// let old_ptr = &a as *const [i32];
     /// // The data pointer is cast to a pointer to the target `u8` not `[u8]`
@@ -494,7 +494,7 @@ declare_clippy_lint! {
     /// The cast is easily confused with casting a c-like enum value to an integer.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// enum E { X(i32) };
     /// let _ = E::X as usize;
     /// ```
@@ -512,12 +512,12 @@ declare_clippy_lint! {
     /// The `unsigned_abs()` method avoids panic when called on the MIN value.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// let x: i32 = -42;
     /// let y: u32 = x.abs() as u32;
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// let x: i32 = -42;
     /// let y: u32 = x.unsigned_abs();
     /// ```
@@ -538,13 +538,13 @@ declare_clippy_lint! {
     /// The lint is allowed by default as using `_` is less wordy than always specifying the type.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// fn foo(n: usize) {}
     /// let n: u16 = 256;
     /// foo(n as _);
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// fn foo(n: usize) {}
     /// let n: u16 = 256;
     /// foo(n as usize);
@@ -567,7 +567,7 @@ declare_clippy_lint! {
     /// Read the `ptr::addr_of` docs for more information.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// let val = 1;
     /// let p = &val as *const i32;
     ///
@@ -575,7 +575,7 @@ declare_clippy_lint! {
     /// let p_mut = &mut val_mut as *mut i32;
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// let val = 1;
     /// let p = std::ptr::addr_of!(val);
     ///
@@ -599,16 +599,16 @@ declare_clippy_lint! {
     /// the same [safety requirements] to be upheld.
     ///
     /// ### Example
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// let _: *const [u8] = std::slice::from_raw_parts(ptr, len) as *const _;
     /// let _: *mut [u8] = std::slice::from_raw_parts_mut(ptr, len) as *mut _;
     /// ```
     /// Use instead:
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// let _: *const [u8] = std::ptr::slice_from_raw_parts(ptr, len);
     /// let _: *mut [u8] = std::ptr::slice_from_raw_parts_mut(ptr, len);
     /// ```
-    /// [safety requirements]: https://doc.rust-lang.org/std/slice/fn.from_raw_parts.html#safety
+    /// [safety requirements]: https://doc.crablang.org/std/slice/fn.from_raw_parts.html#safety
     #[clippy::version = "1.65.0"]
     pub CAST_SLICE_FROM_RAW_PARTS,
     suspicious,
@@ -624,13 +624,13 @@ declare_clippy_lint! {
     /// mutability is used, making it unlikely that having it as a mutable pointer is correct.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// let string = String::with_capacity(1);
     /// let ptr = string.as_ptr() as *mut u8;
     /// unsafe { ptr.write(4) }; // UNDEFINED BEHAVIOUR
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// let mut string = String::with_capacity(1);
     /// let ptr = string.as_mut_ptr();
     /// unsafe { ptr.write(4) };
@@ -650,11 +650,11 @@ declare_clippy_lint! {
     /// code more readable. The lint could also hint at a programmer error.
     ///
     /// ### Example
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// let _: (0.0_f32 / 0.0) as u64;
     /// ```
     /// Use instead:
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// let _: = 0_u64;
     /// ```
     #[clippy::version = "1.66.0"]

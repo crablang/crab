@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 
 import std::{
     //~^ ERROR expected item, found `import`

@@ -4,7 +4,7 @@
 // compile-flags:-Cstrip=none
 // run-fail
 // check-run-results
-// exec-env:RUST_BACKTRACE=1
+// exec-env:CRABLANG_BACKTRACE=1
 
 // ignore-msvc see #62897 and `backtrace-debuginfo.rs` test
 // ignore-android FIXME #17520

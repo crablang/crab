@@ -1,6 +1,6 @@
 // run-pass
 //
-// This is derived from a change to compiler/rustc_codegen_llvm/src/debuginfo/metadata.rs, in
+// This is derived from a change to compiler/crablangc_codegen_llvm/src/debuginfo/metadata.rs, in
 // preparation for adopting let-else within the compiler (thanks @est31):
 //
 // ```

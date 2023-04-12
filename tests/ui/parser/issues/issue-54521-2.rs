@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 
 // This test checks that the following error is emitted and the suggestion works:
 //

@@ -1,30 +1,30 @@
 // Note: More specifically this lint is largely inspired (aka copied) from
-// *rustc*'s
+// *crablangc*'s
 // [`missing_doc`].
 //
-// [`missing_doc`]: https://github.com/rust-lang/rust/blob/cf9cf7c923eb01146971429044f216a3ca905e06/compiler/rustc_lint/src/builtin.rs#L415
+// [`missing_doc`]: https://github.com/crablang/crablang/blob/cf9cf7c923eb01146971429044f216a3ca905e06/compiler/crablangc_lint/src/builtin.rs#L415
 //
 
 use clippy_utils::attrs::is_doc_hidden;
 use clippy_utils::diagnostics::span_lint;
 use clippy_utils::is_from_proc_macro;
 use if_chain::if_chain;
-use rustc_ast::ast::{self, MetaItem, MetaItemKind};
-use rustc_hir as hir;
-use rustc_hir::def_id::LocalDefId;
-use rustc_lint::{LateContext, LateLintPass, LintContext};
-use rustc_middle::ty::Visibility;
-use rustc_session::{declare_tool_lint, impl_lint_pass};
-use rustc_span::def_id::CRATE_DEF_ID;
-use rustc_span::source_map::Span;
-use rustc_span::sym;
+use crablangc_ast::ast::{self, MetaItem, MetaItemKind};
+use crablangc_hir as hir;
+use crablangc_hir::def_id::LocalDefId;
+use crablangc_lint::{LateContext, LateLintPass, LintContext};
+use crablangc_middle::ty::Visibility;
+use crablangc_session::{declare_tool_lint, impl_lint_pass};
+use crablangc_span::def_id::CRATE_DEF_ID;
+use crablangc_span::source_map::Span;
+use crablangc_span::sym;
 
 declare_clippy_lint! {
     /// ### What it does
     /// Warns if there is missing doc for any private documentable item
     ///
     /// ### Why is this bad?
-    /// Doc is good. *rustc* has a `MISSING_DOCS`
+    /// Doc is good. *crablangc* has a `MISSING_DOCS`
     /// allowed-by-default lint for
     /// public members, but has no way to enforce documentation of private items.
     /// This lint fixes that.

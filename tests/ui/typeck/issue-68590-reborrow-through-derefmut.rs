@@ -1,6 +1,6 @@
 // check-pass
 
-// rust-lang/rust#68590: confusing diagnostics when reborrowing through DerefMut.
+// crablang/crablang#68590: confusing diagnostics when reborrowing through DerefMut.
 
 use std::cell::RefCell;
 

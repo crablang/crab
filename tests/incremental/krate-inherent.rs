@@ -3,8 +3,8 @@
 // build-pass (FIXME(62277): could be check-pass?)
 
 #![allow(warnings)]
-#![feature(rustc_attrs)]
-#![rustc_partition_reused(module = "krate_inherent-x", cfg = "cfail2")]
+#![feature(crablangc_attrs)]
+#![crablangc_partition_reused(module = "krate_inherent-x", cfg = "cfail2")]
 #![crate_type = "rlib"]
 
 pub mod x {

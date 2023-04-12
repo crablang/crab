@@ -1,35 +1,35 @@
-# rustbuild - Bootstrapping Rust
+# crablangbuild - Bootstrapping CrabLang
 
-This is an in-progress README which is targeted at helping to explain how Rust
+This is an in-progress README which is targeted at helping to explain how CrabLang
 is bootstrapped and in general, some of the technical details of the build
 system.
 
 Note that this README only covers internal information, not how to use the tool.
 Please check [bootstrapping dev guide][bootstrapping-dev-guide] for further information.
 
-[bootstrapping-dev-guide]: https://rustc-dev-guide.rust-lang.org/building/bootstrapping.html
+[bootstrapping-dev-guide]: https://crablangc-dev-guide.crablang.org/building/bootstrapping.html
 
 ## Introduction
 
 The build system defers most of the complicated logic managing invocations
-of rustc and rustdoc to Cargo itself. However, moving through various stages
-and copying artifacts is still necessary for it to do. Each time rustbuild
+of crablangc and crablangdoc to Cargo itself. However, moving through various stages
+and copying artifacts is still necessary for it to do. Each time crablangbuild
 is invoked, it will iterate through the list of predefined steps and execute
 each serially in turn if it matches the paths passed or is a default rule.
-For each step rustbuild relies on the step internally being incremental and
-parallel. Note, though, that the `-j` parameter to rustbuild gets forwarded
+For each step crablangbuild relies on the step internally being incremental and
+parallel. Note, though, that the `-j` parameter to crablangbuild gets forwarded
 to appropriate test harnesses and such.
 
 ## Build phases
 
-The rustbuild build system goes through a few phases to actually build the
-compiler. What actually happens when you invoke rustbuild is:
+The crablangbuild build system goes through a few phases to actually build the
+compiler. What actually happens when you invoke crablangbuild is:
 
 1. The entry point script(`x` for unix like systems, `x.ps1` for windows systems,
    `x.py` cross-platform) is run. This script is responsible for downloading the stage0
    compiler/Cargo binaries, and it then compiles the build system itself (this folder).
    Finally, it then invokes the actual `bootstrap` binary build system.
-2. In Rust, `bootstrap` will slurp up all configuration, perform a number of
+2. In CrabLang, `bootstrap` will slurp up all configuration, perform a number of
    sanity checks (whether compilers exist, for example), and then start building the
    stage0 artifacts.
 3. The stage0 `cargo`, downloaded earlier, is used to build the standard library
@@ -39,7 +39,7 @@ compiler. What actually happens when you invoke rustbuild is:
    artifacts are generated using that compiler.
 
 The goal of each stage is to (a) leverage Cargo as much as possible and failing
-that (b) leverage Rust as much as possible!
+that (b) leverage CrabLang as much as possible!
 
 ## Directory Layout
 
@@ -59,12 +59,12 @@ build/
     ...
 
   # Output directory for building this build system itself. The stage0
-  # cargo/rustc are used to build the build system into this location.
+  # cargo/crablangc are used to build the build system into this location.
   bootstrap/
     debug/
     release/
 
-  # Output of the dist-related steps like dist-std, dist-rustc, and dist-docs
+  # Output of the dist-related steps like dist-std, dist-crablangc, and dist-docs
   dist/
 
   # Temporary directory used for various input/output as part of various stages
@@ -106,7 +106,7 @@ build/
       debuginfo/
       ...
 
-    # Location where the stage0 Cargo and Rust compiler are unpacked. This
+    # Location where the stage0 Cargo and CrabLang compiler are unpacked. This
     # directory is purely an extracted and overlaid tarball of these two (done
     # by the bootstrap python script). In theory, the build system does not
     # modify anything under this directory afterwards.
@@ -122,7 +122,7 @@ build/
     # with the right variables to ensure that these are filled in correctly.
     stageN-std/
     stageN-test/
-    stageN-rustc/
+    stageN-crablangc/
     stageN-tools/
 
     # This is a special case of the above directories, **not** filled in via
@@ -141,25 +141,25 @@ build/
 
     # These output directories are intended to be standalone working
     # implementations of the compiler (corresponding to each stage). The build
-    # system will link (using hard links) output from stageN-{std,rustc} into
+    # system will link (using hard links) output from stageN-{std,crablangc} into
     # each of these directories.
     #
-    # In theory these are working rustc sysroot directories, meaning there is
+    # In theory these are working crablangc sysroot directories, meaning there is
     # no extra build output in these directories.
     stage1/
     stage2/
     stage3/
 ```
 
-## Extending rustbuild
+## Extending crablangbuild
 
 When you use the bootstrap system, you'll call it through the entry point script
 (`x`, `x.ps1`, or `x.py`). However, most of the code lives in `src/bootstrap`.
-`bootstrap` has a difficult problem: it is written in Rust, but yet it is run
-before the Rust compiler is built! To work around this, there are two components
-of bootstrap: the main one written in rust, and `bootstrap.py`. `bootstrap.py`
+`bootstrap` has a difficult problem: it is written in CrabLang, but yet it is run
+before the CrabLang compiler is built! To work around this, there are two components
+of bootstrap: the main one written in crablang, and `bootstrap.py`. `bootstrap.py`
 is what gets run by entry point script. It takes care of downloading the `stage0`
-compiler, which will then build the bootstrap binary written in Rust.
+compiler, which will then build the bootstrap binary written in CrabLang.
 
 Because there are two separate codebases behind `x.py`, they need to
 be kept in sync. In particular, both `bootstrap.py` and the bootstrap binary
@@ -194,11 +194,11 @@ A 'major change' includes
 * A change in the default options.
 
 Changes that do not affect contributors to the compiler or users
-building rustc from source don't need an update to `VERSION`.
+building crablangc from source don't need an update to `VERSION`.
 
 If you have any questions, feel free to reach out on the `#t-infra/bootstrap` channel
-at [Rust Bootstrap Zulip server][rust-bootstrap-zulip]. When you encounter bugs,
-please file issues on the [Rust issue tracker][rust-issue-tracker].
+at [CrabLang Bootstrap Zulip server][crablang-bootstrap-zulip]. When you encounter bugs,
+please file issues on the [CrabLang issue tracker][crablang-issue-tracker].
 
-[rust-bootstrap-zulip]: https://rust-lang.zulipchat.com/#narrow/stream/t-infra.2Fbootstrap
-[rust-issue-tracker]: https://github.com/rust-lang/rust/issues
+[crablang-bootstrap-zulip]: https://crablang.zulipchat.com/#narrow/stream/t-infra.2Fbootstrap
+[crablang-issue-tracker]: https://github.com/crablang/crablang/issues

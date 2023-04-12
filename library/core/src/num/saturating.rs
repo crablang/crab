@@ -81,7 +81,7 @@ impl<T: fmt::UpperHex> fmt::UpperHex for Saturating<T> {
 #[allow(unused_macros)]
 macro_rules! sh_impl_signed {
     ($t:ident, $f:ident) => {
-        // FIXME what is the correct implementation here? see discussion https://github.com/rust-lang/rust/pull/87921#discussion_r695870065
+        // FIXME what is the correct implementation here? see discussion https://github.com/crablang/crablang/pull/87921#discussion_r695870065
         //
         // #[unstable(feature = "saturating_int_impl", issue = "87920")]
         // impl Shl<$f> for Saturating<$t> {
@@ -701,7 +701,7 @@ macro_rules! saturating_int_impl {
             /// ```
             #[inline]
             #[unstable(feature = "saturating_int_impl", issue = "87920")]
-            #[rustc_const_unstable(feature = "saturating_int_impl", issue = "87920")]
+            #[crablangc_const_unstable(feature = "saturating_int_impl", issue = "87920")]
             #[must_use = "this returns the result of the operation, \
                           without modifying the original"]
             pub const fn reverse_bits(self) -> Self {

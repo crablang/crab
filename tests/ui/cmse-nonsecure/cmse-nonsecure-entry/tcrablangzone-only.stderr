@@ -1,0 +1,9 @@
+error[E0775]: `#[cmse_nonsecure_entry]` is only valid for targets with the TcrablangZone-M extension
+  --> $DIR/tcrablangzone-only.rs:5:1
+   |
+LL | #[cmse_nonsecure_entry]
+   | ^^^^^^^^^^^^^^^^^^^^^^^
+
+error: aborting due to previous error
+
+For more information about this error, try `crablangc --explain E0775`.

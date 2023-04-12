@@ -2,7 +2,7 @@
 //!
 //! Type [`Option`] represents an optional value: every [`Option`]
 //! is either [`Some`] and contains a value, or [`None`], and
-//! does not. [`Option`] types are very common in Rust code, as
+//! does not. [`Option`] types are very common in CrabLang code, as
 //! they have a number of uses:
 //!
 //! * Initial values
@@ -45,8 +45,8 @@
 //
 //! # Options and pointers ("nullable" pointers)
 //!
-//! Rust's pointer types must always point to a valid location; there are
-//! no "null" references. Instead, Rust has *optional* pointers, like
+//! CrabLang's pointer types must always point to a valid location; there are
+//! no "null" references. Instead, CrabLang has *optional* pointers, like
 //! the optional owned box, <code>[Option]<[Box\<T>]></code>.
 //!
 //! [Box\<T>]: ../../std/boxed/struct.Box.html
@@ -118,7 +118,7 @@
 //!
 //! # Representation
 //!
-//! Rust guarantees to optimize the following types `T` such that
+//! CrabLang guarantees to optimize the following types `T` such that
 //! [`Option<T>`] has the same size as `T`:
 //!
 //! * [`Box<U>`]
@@ -544,9 +544,9 @@
 //! }
 //! ```
 
-#![stable(feature = "rust1", since = "1.0.0")]
+#![stable(feature = "crablang1", since = "1.0.0")]
 
-use crate::iter::{self, FromIterator, FusedIterator, TrustedLen};
+use crate::iter::{self, FromIterator, FusedIterator, TcrablangedLen};
 use crate::marker::Destruct;
 use crate::panicking::{panic, panic_str};
 use crate::pin::Pin;
@@ -558,18 +558,18 @@ use crate::{
 
 /// The `Option` type. See [the module level documentation](self) for more.
 #[derive(Copy, PartialOrd, Eq, Ord, Debug, Hash)]
-#[rustc_diagnostic_item = "Option"]
+#[crablangc_diagnostic_item = "Option"]
 #[cfg_attr(not(bootstrap), lang = "Option")]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub enum Option<T> {
     /// No value.
     #[lang = "None"]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     None,
     /// Some value of type `T`.
     #[lang = "Some"]
-    #[stable(feature = "rust1", since = "1.0.0")]
-    Some(#[stable(feature = "rust1", since = "1.0.0")] T),
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    Some(#[stable(feature = "crablang1", since = "1.0.0")] T),
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -594,8 +594,8 @@ impl<T> Option<T> {
     /// ```
     #[must_use = "if you intended to assert that this has a value, consider `.unwrap()` instead"]
     #[inline]
-    #[stable(feature = "rust1", since = "1.0.0")]
-    #[rustc_const_stable(feature = "const_option_basics", since = "1.48.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    #[crablangc_const_stable(feature = "const_option_basics", since = "1.48.0")]
     pub const fn is_some(&self) -> bool {
         matches!(*self, Some(_))
     }
@@ -616,7 +616,7 @@ impl<T> Option<T> {
     /// ```
     #[must_use]
     #[inline]
-    #[stable(feature = "is_some_and", since = "CURRENT_RUSTC_VERSION")]
+    #[stable(feature = "is_some_and", since = "CURRENT_CRABLANGC_VERSION")]
     pub fn is_some_and(self, f: impl FnOnce(T) -> bool) -> bool {
         match self {
             None => false,
@@ -638,8 +638,8 @@ impl<T> Option<T> {
     #[must_use = "if you intended to assert that this doesn't have a value, consider \
                   `.and_then(|_| panic!(\"`Option` had a value when expected `None`\"))` instead"]
     #[inline]
-    #[stable(feature = "rust1", since = "1.0.0")]
-    #[rustc_const_stable(feature = "const_option_basics", since = "1.48.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    #[crablangc_const_stable(feature = "const_option_basics", since = "1.48.0")]
     pub const fn is_none(&self) -> bool {
         !self.is_some()
     }
@@ -669,8 +669,8 @@ impl<T> Option<T> {
     /// println!("still can print text: {text:?}");
     /// ```
     #[inline]
-    #[rustc_const_stable(feature = "const_option_basics", since = "1.48.0")]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[crablangc_const_stable(feature = "const_option_basics", since = "1.48.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub const fn as_ref(&self) -> Option<&T> {
         match *self {
             Some(ref x) => Some(x),
@@ -691,8 +691,8 @@ impl<T> Option<T> {
     /// assert_eq!(x, Some(42));
     /// ```
     #[inline]
-    #[stable(feature = "rust1", since = "1.0.0")]
-    #[rustc_const_unstable(feature = "const_option", issue = "67441")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    #[crablangc_const_unstable(feature = "const_option", issue = "67441")]
     pub const fn as_mut(&mut self) -> Option<&mut T> {
         match *self {
             Some(ref mut x) => Some(x),
@@ -706,7 +706,7 @@ impl<T> Option<T> {
     #[inline]
     #[must_use]
     #[stable(feature = "pin", since = "1.33.0")]
-    #[rustc_const_unstable(feature = "const_option_ext", issue = "91930")]
+    #[crablangc_const_unstable(feature = "const_option_ext", issue = "91930")]
     pub const fn as_pin_ref(self: Pin<&Self>) -> Option<Pin<&T>> {
         match Pin::get_ref(self).as_ref() {
             // SAFETY: `x` is guaranteed to be pinned because it comes from `self`
@@ -722,7 +722,7 @@ impl<T> Option<T> {
     #[inline]
     #[must_use]
     #[stable(feature = "pin", since = "1.33.0")]
-    #[rustc_const_unstable(feature = "const_option_ext", issue = "91930")]
+    #[crablangc_const_unstable(feature = "const_option_ext", issue = "91930")]
     pub const fn as_pin_mut(self: Pin<&mut Self>) -> Option<Pin<&mut T>> {
         // SAFETY: `get_unchecked_mut` is never used to move the `Option` inside `self`.
         // `x` is guaranteed to be pinned because it comes from `self` which is pinned.
@@ -743,7 +743,7 @@ impl<T> Option<T> {
     ///
     /// # Examples
     ///
-    /// ```rust
+    /// ```crablang
     /// #![feature(option_as_slice)]
     ///
     /// assert_eq!(
@@ -755,7 +755,7 @@ impl<T> Option<T> {
     /// The inverse of this function is (discounting
     /// borrowing) [`[_]::first`](slice::first):
     ///
-    /// ```rust
+    /// ```crablang
     /// #![feature(option_as_slice)]
     ///
     /// for i in [Some(1234_u16), None] {
@@ -801,7 +801,7 @@ impl<T> Option<T> {
     ///
     /// # Examples
     ///
-    /// ```rust
+    /// ```crablang
     /// #![feature(option_as_slice)]
     ///
     /// assert_eq!(
@@ -813,7 +813,7 @@ impl<T> Option<T> {
     /// The result is a mutable slice of zero or one items that points into
     /// our original `Option`:
     ///
-    /// ```rust
+    /// ```crablang
     /// #![feature(option_as_slice)]
     ///
     /// let mut x = Some(1234);
@@ -824,7 +824,7 @@ impl<T> Option<T> {
     /// The inverse of this method (discounting borrowing)
     /// is [`[_]::first_mut`](slice::first_mut):
     ///
-    /// ```rust
+    /// ```crablang
     /// #![feature(option_as_slice)]
     ///
     /// assert_eq!(Some(123).as_mut_slice().first_mut(), Some(&mut 123))
@@ -905,8 +905,8 @@ impl<T> Option<T> {
     /// Styles"](../../std/error/index.html#common-message-styles) in the [`std::error`](../../std/error/index.html) module docs.
     #[inline]
     #[track_caller]
-    #[stable(feature = "rust1", since = "1.0.0")]
-    #[rustc_const_unstable(feature = "const_option", issue = "67441")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    #[crablangc_const_unstable(feature = "const_option", issue = "67441")]
     pub const fn expect(self, msg: &str) -> T {
         match self {
             Some(val) => val,
@@ -942,8 +942,8 @@ impl<T> Option<T> {
     /// ```
     #[inline]
     #[track_caller]
-    #[stable(feature = "rust1", since = "1.0.0")]
-    #[rustc_const_unstable(feature = "const_option", issue = "67441")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    #[crablangc_const_unstable(feature = "const_option", issue = "67441")]
     pub const fn unwrap(self) -> T {
         match self {
             Some(val) => val,
@@ -966,8 +966,8 @@ impl<T> Option<T> {
     /// assert_eq!(None.unwrap_or("bike"), "bike");
     /// ```
     #[inline]
-    #[stable(feature = "rust1", since = "1.0.0")]
-    #[rustc_const_unstable(feature = "const_option_ext", issue = "91930")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    #[crablangc_const_unstable(feature = "const_option_ext", issue = "91930")]
     pub const fn unwrap_or(self, default: T) -> T
     where
         T: ~const Destruct,
@@ -988,8 +988,8 @@ impl<T> Option<T> {
     /// assert_eq!(None.unwrap_or_else(|| 2 * k), 20);
     /// ```
     #[inline]
-    #[stable(feature = "rust1", since = "1.0.0")]
-    #[rustc_const_unstable(feature = "const_option_ext", issue = "91930")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    #[crablangc_const_unstable(feature = "const_option_ext", issue = "91930")]
     pub const fn unwrap_or_else<F>(self, f: F) -> T
     where
         F: ~const FnOnce() -> T,
@@ -1021,8 +1021,8 @@ impl<T> Option<T> {
     /// [`parse`]: str::parse
     /// [`FromStr`]: crate::str::FromStr
     #[inline]
-    #[stable(feature = "rust1", since = "1.0.0")]
-    #[rustc_const_unstable(feature = "const_option_ext", issue = "91930")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    #[crablangc_const_unstable(feature = "const_option_ext", issue = "91930")]
     pub const fn unwrap_or_default(self) -> T
     where
         T: ~const Default,
@@ -1040,7 +1040,7 @@ impl<T> Option<T> {
     ///
     /// Calling this method on [`None`] is *[undefined behavior]*.
     ///
-    /// [undefined behavior]: https://doc.rust-lang.org/reference/behavior-considered-undefined.html
+    /// [undefined behavior]: https://doc.crablang.org/reference/behavior-considered-undefined.html
     ///
     /// # Examples
     ///
@@ -1056,7 +1056,7 @@ impl<T> Option<T> {
     #[inline]
     #[track_caller]
     #[stable(feature = "option_result_unwrap_unchecked", since = "1.58.0")]
-    #[rustc_const_unstable(feature = "const_option_ext", issue = "91930")]
+    #[crablangc_const_unstable(feature = "const_option_ext", issue = "91930")]
     pub const unsafe fn unwrap_unchecked(self) -> T {
         debug_assert!(self.is_some());
         match self {
@@ -1088,8 +1088,8 @@ impl<T> Option<T> {
     /// assert_eq!(x.map(|s| s.len()), None);
     /// ```
     #[inline]
-    #[stable(feature = "rust1", since = "1.0.0")]
-    #[rustc_const_unstable(feature = "const_option_ext", issue = "91930")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    #[crablangc_const_unstable(feature = "const_option_ext", issue = "91930")]
     pub const fn map<U, F>(self, f: F) -> Option<U>
     where
         F: ~const FnOnce(T) -> U,
@@ -1118,7 +1118,7 @@ impl<T> Option<T> {
     /// ```
     #[inline]
     #[unstable(feature = "result_option_inspect", issue = "91345")]
-    #[rustc_const_unstable(feature = "const_option_ext", issue = "91930")]
+    #[crablangc_const_unstable(feature = "const_option_ext", issue = "91930")]
     pub const fn inspect<F>(self, f: F) -> Self
     where
         F: ~const FnOnce(&T),
@@ -1150,8 +1150,8 @@ impl<T> Option<T> {
     /// assert_eq!(x.map_or(42, |v| v.len()), 42);
     /// ```
     #[inline]
-    #[stable(feature = "rust1", since = "1.0.0")]
-    #[rustc_const_unstable(feature = "const_option_ext", issue = "91930")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    #[crablangc_const_unstable(feature = "const_option_ext", issue = "91930")]
     pub const fn map_or<U, F>(self, default: U, f: F) -> U
     where
         F: ~const FnOnce(T) -> U,
@@ -1179,8 +1179,8 @@ impl<T> Option<T> {
     /// assert_eq!(x.map_or_else(|| 2 * k, |v| v.len()), 42);
     /// ```
     #[inline]
-    #[stable(feature = "rust1", since = "1.0.0")]
-    #[rustc_const_unstable(feature = "const_option_ext", issue = "91930")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    #[crablangc_const_unstable(feature = "const_option_ext", issue = "91930")]
     pub const fn map_or_else<U, D, F>(self, default: D, f: F) -> U
     where
         D: ~const FnOnce() -> U,
@@ -1216,8 +1216,8 @@ impl<T> Option<T> {
     /// assert_eq!(x.ok_or(0), Err(0));
     /// ```
     #[inline]
-    #[stable(feature = "rust1", since = "1.0.0")]
-    #[rustc_const_unstable(feature = "const_option_ext", issue = "91930")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    #[crablangc_const_unstable(feature = "const_option_ext", issue = "91930")]
     pub const fn ok_or<E>(self, err: E) -> Result<T, E>
     where
         E: ~const Destruct,
@@ -1245,8 +1245,8 @@ impl<T> Option<T> {
     /// assert_eq!(x.ok_or_else(|| 0), Err(0));
     /// ```
     #[inline]
-    #[stable(feature = "rust1", since = "1.0.0")]
-    #[rustc_const_unstable(feature = "const_option_ext", issue = "91930")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    #[crablangc_const_unstable(feature = "const_option_ext", issue = "91930")]
     pub const fn ok_or_else<E, F>(self, err: F) -> Result<T, E>
     where
         F: ~const FnOnce() -> E,
@@ -1274,7 +1274,7 @@ impl<T> Option<T> {
     /// ```
     #[inline]
     #[stable(feature = "option_deref", since = "1.40.0")]
-    #[rustc_const_unstable(feature = "const_option_ext", issue = "91930")]
+    #[crablangc_const_unstable(feature = "const_option_ext", issue = "91930")]
     pub const fn as_deref(&self) -> Option<&T::Target>
     where
         T: ~const Deref,
@@ -1301,7 +1301,7 @@ impl<T> Option<T> {
     /// ```
     #[inline]
     #[stable(feature = "option_deref", since = "1.40.0")]
-    #[rustc_const_unstable(feature = "const_option_ext", issue = "91930")]
+    #[crablangc_const_unstable(feature = "const_option_ext", issue = "91930")]
     pub const fn as_deref_mut(&mut self) -> Option<&mut T::Target>
     where
         T: ~const DerefMut,
@@ -1328,8 +1328,8 @@ impl<T> Option<T> {
     /// assert_eq!(x.iter().next(), None);
     /// ```
     #[inline]
-    #[rustc_const_unstable(feature = "const_option", issue = "67441")]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[crablangc_const_unstable(feature = "const_option", issue = "67441")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub const fn iter(&self) -> Iter<'_, T> {
         Iter { inner: Item { opt: self.as_ref() } }
     }
@@ -1350,7 +1350,7 @@ impl<T> Option<T> {
     /// assert_eq!(x.iter_mut().next(), None);
     /// ```
     #[inline]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn iter_mut(&mut self) -> IterMut<'_, T> {
         IterMut { inner: Item { opt: self.as_mut() } }
     }
@@ -1387,8 +1387,8 @@ impl<T> Option<T> {
     /// assert_eq!(x.and(y), None);
     /// ```
     #[inline]
-    #[stable(feature = "rust1", since = "1.0.0")]
-    #[rustc_const_unstable(feature = "const_option_ext", issue = "91930")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    #[crablangc_const_unstable(feature = "const_option_ext", issue = "91930")]
     pub const fn and<U>(self, optb: Option<U>) -> Option<U>
     where
         T: ~const Destruct,
@@ -1429,8 +1429,8 @@ impl<T> Option<T> {
     /// assert_eq!(item_2_0, None);
     /// ```
     #[inline]
-    #[stable(feature = "rust1", since = "1.0.0")]
-    #[rustc_const_unstable(feature = "const_option_ext", issue = "91930")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    #[crablangc_const_unstable(feature = "const_option_ext", issue = "91930")]
     pub const fn and_then<U, F>(self, f: F) -> Option<U>
     where
         F: ~const FnOnce(T) -> Option<U>,
@@ -1455,7 +1455,7 @@ impl<T> Option<T> {
     ///
     /// # Examples
     ///
-    /// ```rust
+    /// ```crablang
     /// fn is_even(n: &i32) -> bool {
     ///     n % 2 == 0
     /// }
@@ -1468,7 +1468,7 @@ impl<T> Option<T> {
     /// [`Some(t)`]: Some
     #[inline]
     #[stable(feature = "option_filter", since = "1.27.0")]
-    #[rustc_const_unstable(feature = "const_option_ext", issue = "91930")]
+    #[crablangc_const_unstable(feature = "const_option_ext", issue = "91930")]
     pub const fn filter<P>(self, predicate: P) -> Self
     where
         T: ~const Destruct,
@@ -1511,8 +1511,8 @@ impl<T> Option<T> {
     /// assert_eq!(x.or(y), None);
     /// ```
     #[inline]
-    #[stable(feature = "rust1", since = "1.0.0")]
-    #[rustc_const_unstable(feature = "const_option_ext", issue = "91930")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    #[crablangc_const_unstable(feature = "const_option_ext", issue = "91930")]
     pub const fn or(self, optb: Option<T>) -> Option<T>
     where
         T: ~const Destruct,
@@ -1537,8 +1537,8 @@ impl<T> Option<T> {
     /// assert_eq!(None.or_else(nobody), None);
     /// ```
     #[inline]
-    #[stable(feature = "rust1", since = "1.0.0")]
-    #[rustc_const_unstable(feature = "const_option_ext", issue = "91930")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    #[crablangc_const_unstable(feature = "const_option_ext", issue = "91930")]
     pub const fn or_else<F>(self, f: F) -> Option<T>
     where
         F: ~const FnOnce() -> Option<T>,
@@ -1573,7 +1573,7 @@ impl<T> Option<T> {
     /// ```
     #[inline]
     #[stable(feature = "option_xor", since = "1.37.0")]
-    #[rustc_const_unstable(feature = "const_option_ext", issue = "91930")]
+    #[crablangc_const_unstable(feature = "const_option_ext", issue = "91930")]
     pub const fn xor(self, optb: Option<T>) -> Option<T>
     where
         T: ~const Destruct,
@@ -1611,7 +1611,7 @@ impl<T> Option<T> {
     #[must_use = "if you intended to set a value, consider assignment instead"]
     #[inline]
     #[stable(feature = "option_insert", since = "1.53.0")]
-    #[rustc_const_unstable(feature = "const_option_ext", issue = "91930")]
+    #[crablangc_const_unstable(feature = "const_option_ext", issue = "91930")]
     pub const fn insert(&mut self, value: T) -> &mut T
     where
         T: ~const Destruct,
@@ -1644,7 +1644,7 @@ impl<T> Option<T> {
     /// ```
     #[inline]
     #[stable(feature = "option_entry", since = "1.20.0")]
-    #[rustc_const_unstable(feature = "const_option_ext", issue = "91930")]
+    #[crablangc_const_unstable(feature = "const_option_ext", issue = "91930")]
     pub const fn get_or_insert(&mut self, value: T) -> &mut T
     where
         T: ~const Destruct,
@@ -1679,7 +1679,7 @@ impl<T> Option<T> {
     /// ```
     #[inline]
     #[unstable(feature = "option_get_or_insert_default", issue = "82901")]
-    #[rustc_const_unstable(feature = "const_option_ext", issue = "91930")]
+    #[crablangc_const_unstable(feature = "const_option_ext", issue = "91930")]
     pub const fn get_or_insert_default(&mut self) -> &mut T
     where
         T: ~const Default,
@@ -1710,7 +1710,7 @@ impl<T> Option<T> {
     /// ```
     #[inline]
     #[stable(feature = "option_entry", since = "1.20.0")]
-    #[rustc_const_unstable(feature = "const_option_ext", issue = "91930")]
+    #[crablangc_const_unstable(feature = "const_option_ext", issue = "91930")]
     pub const fn get_or_insert_with<F>(&mut self, f: F) -> &mut T
     where
         F: ~const FnOnce() -> T,
@@ -1747,8 +1747,8 @@ impl<T> Option<T> {
     /// assert_eq!(y, None);
     /// ```
     #[inline]
-    #[stable(feature = "rust1", since = "1.0.0")]
-    #[rustc_const_unstable(feature = "const_option", issue = "67441")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    #[crablangc_const_unstable(feature = "const_option", issue = "67441")]
     pub const fn take(&mut self) -> Option<T> {
         // FIXME replace `mem::replace` by `mem::take` when the latter is const ready
         mem::replace(self, None)
@@ -1772,7 +1772,7 @@ impl<T> Option<T> {
     /// assert_eq!(old, None);
     /// ```
     #[inline]
-    #[rustc_const_unstable(feature = "const_option", issue = "67441")]
+    #[crablangc_const_unstable(feature = "const_option", issue = "67441")]
     #[stable(feature = "option_replace", since = "1.31.0")]
     pub const fn replace(&mut self, value: T) -> Option<T> {
         mem::replace(self, Some(value))
@@ -1794,7 +1794,7 @@ impl<T> Option<T> {
     /// assert_eq!(x.zip(z), None);
     /// ```
     #[stable(feature = "option_zip_option", since = "1.46.0")]
-    #[rustc_const_unstable(feature = "const_option_ext", issue = "91930")]
+    #[crablangc_const_unstable(feature = "const_option_ext", issue = "91930")]
     pub const fn zip<U>(self, other: Option<U>) -> Option<(T, U)>
     where
         T: ~const Destruct,
@@ -1835,7 +1835,7 @@ impl<T> Option<T> {
     /// assert_eq!(x.zip_with(None, Point::new), None);
     /// ```
     #[unstable(feature = "option_zip", issue = "70086")]
-    #[rustc_const_unstable(feature = "const_option_ext", issue = "91930")]
+    #[crablangc_const_unstable(feature = "const_option_ext", issue = "91930")]
     pub const fn zip_with<U, F, R>(self, other: Option<U>, f: F) -> Option<R>
     where
         F: ~const FnOnce(T, U) -> R,
@@ -1867,7 +1867,7 @@ impl<T, U> Option<(T, U)> {
     /// ```
     #[inline]
     #[stable(feature = "unzip_option", since = "1.66.0")]
-    #[rustc_const_unstable(feature = "const_option", issue = "67441")]
+    #[crablangc_const_unstable(feature = "const_option", issue = "67441")]
     pub const fn unzip(self) -> (Option<T>, Option<U>)
     where
         T: ~const Destruct,
@@ -1895,7 +1895,7 @@ impl<T> Option<&T> {
     /// ```
     #[must_use = "`self` will be dropped if the result is not used"]
     #[stable(feature = "copied", since = "1.35.0")]
-    #[rustc_const_unstable(feature = "const_option", issue = "67441")]
+    #[crablangc_const_unstable(feature = "const_option", issue = "67441")]
     pub const fn copied(self) -> Option<T>
     where
         T: Copy,
@@ -1921,8 +1921,8 @@ impl<T> Option<&T> {
     /// assert_eq!(cloned, Some(12));
     /// ```
     #[must_use = "`self` will be dropped if the result is not used"]
-    #[stable(feature = "rust1", since = "1.0.0")]
-    #[rustc_const_unstable(feature = "const_option_cloned", issue = "91582")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    #[crablangc_const_unstable(feature = "const_option_cloned", issue = "91582")]
     pub const fn cloned(self) -> Option<T>
     where
         T: ~const Clone,
@@ -1949,7 +1949,7 @@ impl<T> Option<&mut T> {
     /// ```
     #[must_use = "`self` will be dropped if the result is not used"]
     #[stable(feature = "copied", since = "1.35.0")]
-    #[rustc_const_unstable(feature = "const_option_ext", issue = "91930")]
+    #[crablangc_const_unstable(feature = "const_option_ext", issue = "91930")]
     pub const fn copied(self) -> Option<T>
     where
         T: Copy,
@@ -1974,7 +1974,7 @@ impl<T> Option<&mut T> {
     /// ```
     #[must_use = "`self` will be dropped if the result is not used"]
     #[stable(since = "1.26.0", feature = "option_ref_mut_cloned")]
-    #[rustc_const_unstable(feature = "const_option_cloned", issue = "91582")]
+    #[crablangc_const_unstable(feature = "const_option_cloned", issue = "91582")]
     pub const fn cloned(self) -> Option<T>
     where
         T: ~const Clone,
@@ -2005,7 +2005,7 @@ impl<T, E> Option<Result<T, E>> {
     /// ```
     #[inline]
     #[stable(feature = "transpose_result", since = "1.33.0")]
-    #[rustc_const_unstable(feature = "const_option", issue = "67441")]
+    #[crablangc_const_unstable(feature = "const_option", issue = "67441")]
     pub const fn transpose(self) -> Result<Option<T>, E> {
         match self {
             Some(Ok(x)) => Ok(Some(x)),
@@ -2020,7 +2020,7 @@ impl<T, E> Option<Result<T, E>> {
 #[cfg_attr(feature = "panic_immediate_abort", inline)]
 #[cold]
 #[track_caller]
-#[rustc_const_unstable(feature = "const_option", issue = "67441")]
+#[crablangc_const_unstable(feature = "const_option", issue = "67441")]
 const fn expect_failed(msg: &str) -> ! {
     panic_str(msg)
 }
@@ -2029,8 +2029,8 @@ const fn expect_failed(msg: &str) -> ! {
 // Trait implementations
 /////////////////////////////////////////////////////////////////////////////
 
-#[stable(feature = "rust1", since = "1.0.0")]
-#[rustc_const_unstable(feature = "const_clone", issue = "91805")]
+#[stable(feature = "crablang1", since = "1.0.0")]
+#[crablangc_const_unstable(feature = "const_clone", issue = "91805")]
 impl<T> const Clone for Option<T>
 where
     T: ~const Clone + ~const Destruct,
@@ -2052,8 +2052,8 @@ where
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
-#[rustc_const_unstable(feature = "const_default_impls", issue = "87864")]
+#[stable(feature = "crablang1", since = "1.0.0")]
+#[crablangc_const_unstable(feature = "const_default_impls", issue = "87864")]
 impl<T> const Default for Option<T> {
     /// Returns [`None`][Option::None].
     ///
@@ -2069,7 +2069,7 @@ impl<T> const Default for Option<T> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T> IntoIterator for Option<T> {
     type Item = T;
     type IntoIter = IntoIter<T>;
@@ -2114,7 +2114,7 @@ impl<'a, T> IntoIterator for &'a mut Option<T> {
 }
 
 #[stable(since = "1.12.0", feature = "option_from")]
-#[rustc_const_unstable(feature = "const_convert", issue = "88674")]
+#[crablangc_const_unstable(feature = "const_convert", issue = "88674")]
 impl<T> const From<T> for Option<T> {
     /// Moves `val` into a new [`Some`].
     ///
@@ -2131,7 +2131,7 @@ impl<T> const From<T> for Option<T> {
 }
 
 #[stable(feature = "option_ref_from_ref_option", since = "1.30.0")]
-#[rustc_const_unstable(feature = "const_convert", issue = "88674")]
+#[crablangc_const_unstable(feature = "const_convert", issue = "88674")]
 impl<'a, T> const From<&'a Option<T>> for Option<&'a T> {
     /// Converts from `&Option<T>` to `Option<&T>`.
     ///
@@ -2146,7 +2146,7 @@ impl<'a, T> const From<&'a Option<T>> for Option<&'a T> {
     /// [String]: ../../std/string/struct.String.html "String"
     ///
     /// ```
-    /// let s: Option<String> = Some(String::from("Hello, Rustaceans!"));
+    /// let s: Option<String> = Some(String::from("Hello, CrabLangaceans!"));
     /// let o: Option<usize> = Option::from(&s).map(|ss: &String| ss.len());
     ///
     /// println!("Can still print s: {s:?}");
@@ -2159,7 +2159,7 @@ impl<'a, T> const From<&'a Option<T>> for Option<&'a T> {
 }
 
 #[stable(feature = "option_ref_from_ref_option", since = "1.30.0")]
-#[rustc_const_unstable(feature = "const_convert", issue = "88674")]
+#[crablangc_const_unstable(feature = "const_convert", issue = "88674")]
 impl<'a, T> const From<&'a mut Option<T>> for Option<&'a mut T> {
     /// Converts from `&mut Option<T>` to `Option<&mut T>`
     ///
@@ -2170,20 +2170,20 @@ impl<'a, T> const From<&'a mut Option<T>> for Option<&'a mut T> {
     /// let o: Option<&mut String> = Option::from(&mut s);
     ///
     /// match o {
-    ///     Some(t) => *t = String::from("Hello, Rustaceans!"),
+    ///     Some(t) => *t = String::from("Hello, CrabLangaceans!"),
     ///     None => (),
     /// }
     ///
-    /// assert_eq!(s, Some(String::from("Hello, Rustaceans!")));
+    /// assert_eq!(s, Some(String::from("Hello, CrabLangaceans!")));
     /// ```
     fn from(o: &'a mut Option<T>) -> Option<&'a mut T> {
         o.as_mut()
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T> crate::marker::StructuralPartialEq for Option<T> {}
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: PartialEq> PartialEq for Option<T> {
     #[inline]
     fn eq(&self, other: &Self) -> bool {
@@ -2196,14 +2196,14 @@ impl<T: PartialEq> PartialEq for Option<T> {
 /// be legal to do so: <https://github.com/llvm/llvm-project/issues/52622>
 ///
 /// Once that's fixed, `Option` should go back to deriving `PartialEq`, as
-/// it used to do before <https://github.com/rust-lang/rust/pull/103556>.
-#[unstable(feature = "spec_option_partial_eq", issue = "none", reason = "exposed only for rustc")]
+/// it used to do before <https://github.com/crablang/crablang/pull/103556>.
+#[unstable(feature = "spec_option_partial_eq", issue = "none", reason = "exposed only for crablangc")]
 #[doc(hidden)]
 pub trait SpecOptionPartialEq: Sized {
     fn eq(l: &Option<Self>, other: &Option<Self>) -> bool;
 }
 
-#[unstable(feature = "spec_option_partial_eq", issue = "none", reason = "exposed only for rustc")]
+#[unstable(feature = "spec_option_partial_eq", issue = "none", reason = "exposed only for crablangc")]
 impl<T: PartialEq> SpecOptionPartialEq for T {
     #[inline]
     default fn eq(l: &Option<T>, r: &Option<T>) -> bool {
@@ -2253,7 +2253,7 @@ impl<T> SpecOptionPartialEq for crate::ptr::NonNull<T> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl SpecOptionPartialEq for cmp::Ordering {
     #[inline]
     fn eq(l: &Option<Self>, r: &Option<Self>) -> bool {
@@ -2296,20 +2296,20 @@ impl<A> DoubleEndedIterator for Item<A> {
 
 impl<A> ExactSizeIterator for Item<A> {}
 impl<A> FusedIterator for Item<A> {}
-unsafe impl<A> TrustedLen for Item<A> {}
+unsafe impl<A> TcrablangedLen for Item<A> {}
 
 /// An iterator over a reference to the [`Some`] variant of an [`Option`].
 ///
 /// The iterator yields one value if the [`Option`] is a [`Some`], otherwise none.
 ///
 /// This `struct` is created by the [`Option::iter`] function.
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[derive(Debug)]
 pub struct Iter<'a, A: 'a> {
     inner: Item<&'a A>,
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<'a, A> Iterator for Iter<'a, A> {
     type Item = &'a A;
 
@@ -2323,7 +2323,7 @@ impl<'a, A> Iterator for Iter<'a, A> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<'a, A> DoubleEndedIterator for Iter<'a, A> {
     #[inline]
     fn next_back(&mut self) -> Option<&'a A> {
@@ -2331,16 +2331,16 @@ impl<'a, A> DoubleEndedIterator for Iter<'a, A> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<A> ExactSizeIterator for Iter<'_, A> {}
 
 #[stable(feature = "fused", since = "1.26.0")]
 impl<A> FusedIterator for Iter<'_, A> {}
 
-#[unstable(feature = "trusted_len", issue = "37572")]
-unsafe impl<A> TrustedLen for Iter<'_, A> {}
+#[unstable(feature = "tcrablanged_len", issue = "37572")]
+unsafe impl<A> TcrablangedLen for Iter<'_, A> {}
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<A> Clone for Iter<'_, A> {
     #[inline]
     fn clone(&self) -> Self {
@@ -2353,13 +2353,13 @@ impl<A> Clone for Iter<'_, A> {
 /// The iterator yields one value if the [`Option`] is a [`Some`], otherwise none.
 ///
 /// This `struct` is created by the [`Option::iter_mut`] function.
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[derive(Debug)]
 pub struct IterMut<'a, A: 'a> {
     inner: Item<&'a mut A>,
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<'a, A> Iterator for IterMut<'a, A> {
     type Item = &'a mut A;
 
@@ -2373,7 +2373,7 @@ impl<'a, A> Iterator for IterMut<'a, A> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<'a, A> DoubleEndedIterator for IterMut<'a, A> {
     #[inline]
     fn next_back(&mut self) -> Option<&'a mut A> {
@@ -2381,13 +2381,13 @@ impl<'a, A> DoubleEndedIterator for IterMut<'a, A> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<A> ExactSizeIterator for IterMut<'_, A> {}
 
 #[stable(feature = "fused", since = "1.26.0")]
 impl<A> FusedIterator for IterMut<'_, A> {}
-#[unstable(feature = "trusted_len", issue = "37572")]
-unsafe impl<A> TrustedLen for IterMut<'_, A> {}
+#[unstable(feature = "tcrablanged_len", issue = "37572")]
+unsafe impl<A> TcrablangedLen for IterMut<'_, A> {}
 
 /// An iterator over the value in [`Some`] variant of an [`Option`].
 ///
@@ -2395,12 +2395,12 @@ unsafe impl<A> TrustedLen for IterMut<'_, A> {}
 ///
 /// This `struct` is created by the [`Option::into_iter`] function.
 #[derive(Clone, Debug)]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub struct IntoIter<A> {
     inner: Item<A>,
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<A> Iterator for IntoIter<A> {
     type Item = A;
 
@@ -2414,7 +2414,7 @@ impl<A> Iterator for IntoIter<A> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<A> DoubleEndedIterator for IntoIter<A> {
     #[inline]
     fn next_back(&mut self) -> Option<A> {
@@ -2422,20 +2422,20 @@ impl<A> DoubleEndedIterator for IntoIter<A> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<A> ExactSizeIterator for IntoIter<A> {}
 
 #[stable(feature = "fused", since = "1.26.0")]
 impl<A> FusedIterator for IntoIter<A> {}
 
-#[unstable(feature = "trusted_len", issue = "37572")]
-unsafe impl<A> TrustedLen for IntoIter<A> {}
+#[unstable(feature = "tcrablanged_len", issue = "37572")]
+unsafe impl<A> TcrablangedLen for IntoIter<A> {}
 
 /////////////////////////////////////////////////////////////////////////////
 // FromIterator
 /////////////////////////////////////////////////////////////////////////////
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<A, V: FromIterator<A>> FromIterator<Option<A>> for Option<V> {
     /// Takes each element in the [`Iterator`]: if it is [`None`][Option::None],
     /// no further elements are taken, and the [`None`][Option::None] is
@@ -2507,7 +2507,7 @@ impl<A, V: FromIterator<A>> FromIterator<Option<A>> for Option<V> {
 }
 
 #[unstable(feature = "try_trait_v2", issue = "84277")]
-#[rustc_const_unstable(feature = "const_convert", issue = "88674")]
+#[crablangc_const_unstable(feature = "const_convert", issue = "88674")]
 impl<T> const ops::Try for Option<T> {
     type Output = T;
     type Residual = Option<convert::Infallible>;
@@ -2527,7 +2527,7 @@ impl<T> const ops::Try for Option<T> {
 }
 
 #[unstable(feature = "try_trait_v2", issue = "84277")]
-#[rustc_const_unstable(feature = "const_convert", issue = "88674")]
+#[crablangc_const_unstable(feature = "const_convert", issue = "88674")]
 impl<T> const ops::FromResidual for Option<T> {
     #[inline]
     fn from_residual(residual: Option<convert::Infallible>) -> Self {
@@ -2546,7 +2546,7 @@ impl<T> ops::FromResidual<ops::Yeet<()>> for Option<T> {
 }
 
 #[unstable(feature = "try_trait_v2_residual", issue = "91285")]
-#[rustc_const_unstable(feature = "const_try", issue = "74935")]
+#[crablangc_const_unstable(feature = "const_try", issue = "74935")]
 impl<T> const ops::Residual<T> for Option<convert::Infallible> {
     type TryType = Option<T>;
 }
@@ -2578,7 +2578,7 @@ impl<T> Option<Option<T>> {
     /// ```
     #[inline]
     #[stable(feature = "option_flattening", since = "1.40.0")]
-    #[rustc_const_unstable(feature = "const_option", issue = "67441")]
+    #[crablangc_const_unstable(feature = "const_option", issue = "67441")]
     pub const fn flatten(self) -> Option<T> {
         match self {
             Some(inner) => inner,

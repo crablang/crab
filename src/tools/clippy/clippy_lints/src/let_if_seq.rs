@@ -2,11 +2,11 @@ use clippy_utils::diagnostics::span_lint_and_then;
 use clippy_utils::source::snippet;
 use clippy_utils::{path_to_local_id, visitors::is_local_used};
 use if_chain::if_chain;
-use rustc_errors::Applicability;
-use rustc_hir as hir;
-use rustc_hir::{BindingAnnotation, Mutability};
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_errors::Applicability;
+use crablangc_hir as hir;
+use crablangc_hir::{BindingAnnotation, Mutability};
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
 
 declare_clippy_lint! {
     /// ### What it does
@@ -14,10 +14,10 @@ declare_clippy_lint! {
     /// conditional affectation.
     ///
     /// ### Why is this bad?
-    /// This is not idiomatic Rust.
+    /// This is not idiomatic CrabLang.
     ///
     /// ### Example
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// let foo;
     ///
     /// if bar() {
@@ -35,7 +35,7 @@ declare_clippy_lint! {
     ///
     /// should be written
     ///
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// let foo = if bar() {
     ///     42
     /// } else {

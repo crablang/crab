@@ -18,4 +18,4 @@ LL |         intrinsics::assert_zero_valid::<&'static i32>();
 
 error: aborting due to 3 previous errors
 
-For more information about this error, try `rustc --explain E0080`.
+For more information about this error, try `crablangc --explain E0080`.

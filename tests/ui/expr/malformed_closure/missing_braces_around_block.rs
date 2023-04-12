@@ -5,10 +5,10 @@
 // only one error.
 //
 // This is part of the following issues:
-// https://github.com/rust-lang/rust/issues/88065
-// https://github.com/rust-lang/rust/issues/107959
+// https://github.com/crablang/crablang/issues/88065
+// https://github.com/crablang/crablang/issues/107959
 
-// run-rustfix
+// run-crablangfix
 
 fn main() {
     // Closure with multiple expressions delimited by semicolon.

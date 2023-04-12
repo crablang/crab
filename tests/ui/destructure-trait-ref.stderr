@@ -62,4 +62,4 @@ LL |     let box box x = Box::new(1isize) as Box<dyn T>;
 error: aborting due to 6 previous errors
 
 Some errors have detailed explanations: E0033, E0308.
-For more information about an error, try `rustc --explain E0033`.
+For more information about an error, try `crablangc --explain E0033`.

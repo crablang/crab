@@ -21,8 +21,8 @@
 //!
 //! Like raw pointers, `RawHandle` and `RawSocket` values are primitive values.
 //! And in new code, they should be considered unsafe to do I/O on (analogous
-//! to dereferencing them). Rust did not always provide this guidance, so
-//! existing code in the Rust ecosystem often doesn't mark `RawHandle` and
+//! to dereferencing them). CrabLang did not always provide this guidance, so
+//! existing code in the CrabLang ecosystem often doesn't mark `RawHandle` and
 //! `RawSocket` usage as unsafe. Once the `io_safety` feature is stable,
 //! libraries will be encouraged to migrate, either by adding `unsafe` to APIs
 //! that dereference `RawHandle` and `RawSocket` values, or by using to
@@ -48,7 +48,7 @@
 //! [`BorrowedHandle<'a>`]: crate::os::windows::io::BorrowedHandle
 //! [`BorrowedSocket<'a>`]: crate::os::windows::io::BorrowedSocket
 
-#![stable(feature = "rust1", since = "1.0.0")]
+#![stable(feature = "crablang1", since = "1.0.0")]
 
 mod handle;
 mod raw;
@@ -56,7 +56,7 @@ mod socket;
 
 #[stable(feature = "io_safety", since = "1.63.0")]
 pub use handle::*;
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub use raw::*;
 #[stable(feature = "io_safety", since = "1.63.0")]
 pub use socket::*;

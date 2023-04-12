@@ -6,7 +6,7 @@ fn main() {
 
     let mut x = [0u8; 20];
     let x_ptr: *mut u8 = x.as_mut_ptr();
-    #[rustfmt::skip]
+    #[crablangfmt::skip]
     unsafe {
         // At least one of these is definitely unaligned.
         *(x_ptr as *mut u32) = 42; *(x_ptr.add(1) as *mut u32) = 42;

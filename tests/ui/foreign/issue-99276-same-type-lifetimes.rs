@@ -6,7 +6,7 @@ pub struct Record<'a> {
 }
 
 mod a {
-    extern "Rust" {
+    extern "CrabLang" {
         fn foo<'a, 'b>(record: &'a super::Record<'b>);
 
         fn bar<'a, 'b>(record: &'a super::Record<'b>);
@@ -14,7 +14,7 @@ mod a {
 }
 
 mod b {
-    extern "Rust" {
+    extern "CrabLang" {
         fn foo<'a, 'b>(record: &'a super::Record<'b>);
 
         fn bar<'a, 'b>(record: &'a super::Record<'b>);

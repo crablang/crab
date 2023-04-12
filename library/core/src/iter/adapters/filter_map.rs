@@ -10,7 +10,7 @@ use crate::ops::{ControlFlow, Try};
 /// [`filter_map`]: Iterator::filter_map
 /// [`Iterator`]: trait.Iterator.html
 #[must_use = "iterators are lazy and do nothing unless consumed"]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[derive(Clone)]
 pub struct FilterMap<I, F> {
     iter: I,
@@ -49,7 +49,7 @@ fn filter_map_try_fold<'a, T, B, Acc, R: Try<Output = Acc>>(
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<B, I: Iterator, F> Iterator for FilterMap<I, F>
 where
     F: FnMut(I::Item) -> Option<B>,
@@ -86,7 +86,7 @@ where
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<B, I: DoubleEndedIterator, F> DoubleEndedIterator for FilterMap<I, F>
 where
     F: FnMut(I::Item) -> Option<B>,

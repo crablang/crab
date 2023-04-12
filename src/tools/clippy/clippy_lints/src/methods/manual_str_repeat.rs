@@ -4,12 +4,12 @@ use clippy_utils::source::{snippet_with_applicability, snippet_with_context};
 use clippy_utils::sugg::Sugg;
 use clippy_utils::ty::{is_type_diagnostic_item, is_type_lang_item};
 use if_chain::if_chain;
-use rustc_ast::LitKind;
-use rustc_errors::Applicability;
-use rustc_hir::{Expr, ExprKind, LangItem};
-use rustc_lint::LateContext;
-use rustc_middle::ty::{self, Ty};
-use rustc_span::symbol::sym;
+use crablangc_ast::LitKind;
+use crablangc_errors::Applicability;
+use crablangc_hir::{Expr, ExprKind, LangItem};
+use crablangc_lint::LateContext;
+use crablangc_middle::ty::{self, Ty};
+use crablangc_span::symbol::sym;
 use std::borrow::Cow;
 
 use super::MANUAL_STR_REPEAT;

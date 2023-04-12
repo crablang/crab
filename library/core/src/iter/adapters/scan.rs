@@ -10,7 +10,7 @@ use crate::ops::{ControlFlow, Try};
 /// [`scan`]: Iterator::scan
 /// [`Iterator`]: trait.Iterator.html
 #[must_use = "iterators are lazy and do nothing unless consumed"]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[derive(Clone)]
 pub struct Scan<I, St, F> {
     iter: I,
@@ -31,7 +31,7 @@ impl<I: fmt::Debug, St: fmt::Debug, F> fmt::Debug for Scan<I, St, F> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<B, I, St, F> Iterator for Scan<I, St, F>
 where
     I: Iterator,

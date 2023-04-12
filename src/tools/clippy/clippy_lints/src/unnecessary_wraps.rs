@@ -2,16 +2,16 @@ use clippy_utils::diagnostics::span_lint_and_then;
 use clippy_utils::source::snippet;
 use clippy_utils::{contains_return, is_res_lang_ctor, path_res, return_ty, visitors::find_all_ret_expressions};
 use if_chain::if_chain;
-use rustc_errors::Applicability;
-use rustc_hir::intravisit::FnKind;
-use rustc_hir::LangItem::{OptionSome, ResultOk};
-use rustc_hir::{Body, ExprKind, FnDecl, Impl, ItemKind, Node};
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_middle::ty;
-use rustc_session::{declare_tool_lint, impl_lint_pass};
-use rustc_span::def_id::LocalDefId;
-use rustc_span::symbol::sym;
-use rustc_span::Span;
+use crablangc_errors::Applicability;
+use crablangc_hir::intravisit::FnKind;
+use crablangc_hir::LangItem::{OptionSome, ResultOk};
+use crablangc_hir::{Body, ExprKind, FnDecl, Impl, ItemKind, Node};
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_middle::ty;
+use crablangc_session::{declare_tool_lint, impl_lint_pass};
+use crablangc_span::def_id::LocalDefId;
+use crablangc_span::symbol::sym;
+use crablangc_span::Span;
 
 declare_clippy_lint! {
     /// ### What it does
@@ -25,7 +25,7 @@ declare_clippy_lint! {
     /// fit some external requirement.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// fn get_cool_number(a: bool, b: bool) -> Option<i32> {
     ///     if a && b {
     ///         return Some(50);
@@ -38,7 +38,7 @@ declare_clippy_lint! {
     /// }
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// fn get_cool_number(a: bool, b: bool) -> i32 {
     ///     if a && b {
     ///         return 50;

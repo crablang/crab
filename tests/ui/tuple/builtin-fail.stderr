@@ -52,4 +52,4 @@ LL | fn assert_is_tuple<T: std::marker::Tuple + ?Sized>() {}
 
 error: aborting due to 4 previous errors
 
-For more information about this error, try `rustc --explain E0277`.
+For more information about this error, try `crablangc --explain E0277`.

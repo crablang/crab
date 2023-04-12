@@ -11,7 +11,7 @@
 //
 // Secondly, this tests the status quo (not a guarantee; subject to change!) to not apply such
 // optimizations to types containing unions even if they're theoretically possible. (discussion:
-// https://github.com/rust-lang/rust/issues/36394)
+// https://github.com/crablang/crablang/issues/36394)
 //
 // Notably this nails down part of the behavior that `MaybeUninit` assumes: that an
 // `Option<MaybeUninit<&u8>>` does not take advantage of non-zero optimization, and thus is a safe

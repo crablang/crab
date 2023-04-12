@@ -3,8 +3,8 @@
 The tracking issue for this feature is: [#37854].
 
 
-[#67264]: https://github.com/rust-lang/rust/issues/67264
-[#37854]: https://github.com/rust-lang/rust/issues/37854
+[#67264]: https://github.com/crablang/crablang/issues/67264
+[#37854]: https://github.com/crablang/crablang/issues/37854
 -----
 
 The `exclusive_range_pattern` feature allows non-inclusive range
@@ -15,7 +15,7 @@ to be able to use RangeTo patterns (`..10`).
 It also enabled RangeFrom patterns but that has since been
 stabilized.
 
-```rust
+```crablang
 #![feature(exclusive_range_pattern)]
     let x = 5;
     match x {

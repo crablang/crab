@@ -1,10 +1,10 @@
 //! Primitive traits and types representing basic properties of types.
 //!
-//! Rust types can be classified in various useful ways according to
+//! CrabLang types can be classified in various useful ways according to
 //! their intrinsic properties. These classifications are represented
 //! as traits.
 
-#![stable(feature = "rust1", since = "1.0.0")]
+#![stable(feature = "crablang1", since = "1.0.0")]
 
 use crate::cell::UnsafeCell;
 use crate::cmp;
@@ -29,9 +29,9 @@ use crate::hash::Hasher;
 /// [`Rc`]: ../../std/rc/struct.Rc.html
 /// [arc]: ../../std/sync/struct.Arc.html
 /// [ub]: ../../reference/behavior-considered-undefined.html
-#[stable(feature = "rust1", since = "1.0.0")]
-#[cfg_attr(not(test), rustc_diagnostic_item = "Send")]
-#[rustc_on_unimplemented(
+#[stable(feature = "crablang1", since = "1.0.0")]
+#[cfg_attr(not(test), crablangc_diagnostic_item = "Send")]
+#[crablangc_on_unimplemented(
     message = "`{Self}` cannot be sent between threads safely",
     label = "`{Self}` cannot be sent between threads safely"
 )]
@@ -39,15 +39,15 @@ pub unsafe auto trait Send {
     // empty.
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: ?Sized> !Send for *const T {}
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: ?Sized> !Send for *mut T {}
 
 // Most instances arise automatically, but this instance is needed to link up `T: Sync` with
 // `&T: Send` (and it also removes the unsound default instance `T Send` -> `&T: Send` that would
 // otherwise exist).
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 unsafe impl<T: Sync + ?Sized> Send for &T {}
 
 /// Types with a constant size known at compile time.
@@ -69,7 +69,7 @@ unsafe impl<T: Sync + ?Sized> Send for &T {}
 /// where, by definition, the trait needs to work with all possible implementors,
 /// and thus could be any size.
 ///
-/// Although Rust will let you bind `Sized` to a trait, you won't
+/// Although CrabLang will let you bind `Sized` to a trait, you won't
 /// be able to use it to form a trait object later:
 ///
 /// ```
@@ -88,16 +88,16 @@ unsafe impl<T: Sync + ?Sized> Send for &T {}
 ///
 /// [trait object]: ../../book/ch17-02-trait-objects.html
 #[doc(alias = "?", alias = "?Sized")]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[lang = "sized"]
-#[rustc_on_unimplemented(
+#[crablangc_on_unimplemented(
     message = "the size for values of type `{Self}` cannot be known at compilation time",
     label = "doesn't have a size known at compile-time"
 )]
 #[fundamental] // for Default, for example, which requires that `[T]: !Default` be evaluatable
-#[rustc_specialization_trait]
-#[rustc_deny_explicit_impl]
-#[rustc_coinductive]
+#[crablangc_specialization_trait]
+#[crablangc_deny_explicit_impl]
+#[crablangc_coinductive]
 pub trait Sized {
     // Empty.
 }
@@ -125,11 +125,11 @@ pub trait Sized {
 ///
 /// [`ops::CoerceUnsized`]: crate::ops::CoerceUnsized
 /// [`Rc`]: ../../std/rc/struct.Rc.html
-/// [RFC982]: https://github.com/rust-lang/rfcs/blob/master/text/0982-dst-coercion.md
+/// [RFC982]: https://github.com/crablang/rfcs/blob/master/text/0982-dst-coercion.md
 /// [nomicon-coerce]: ../../nomicon/coercions.html
 #[unstable(feature = "unsize", issue = "18598")]
 #[lang = "unsize"]
-#[rustc_deny_explicit_impl]
+#[crablangc_deny_explicit_impl]
 pub trait Unsize<T: ?Sized> {
     // Empty.
 }
@@ -152,10 +152,10 @@ pub trait Unsize<T: ?Sized> {
 /// See also the [structural match RFC][RFC1445], and [issue 63438] which
 /// motivated migrating from attribute-based design to this trait.
 ///
-/// [RFC1445]: https://github.com/rust-lang/rfcs/blob/master/text/1445-restrict-constants-in-patterns.md
-/// [issue 63438]: https://github.com/rust-lang/rust/issues/63438
+/// [RFC1445]: https://github.com/crablang/rfcs/blob/master/text/1445-restrict-constants-in-patterns.md
+/// [issue 63438]: https://github.com/crablang/crablang/issues/63438
 #[unstable(feature = "structural_match", issue = "31434")]
-#[rustc_on_unimplemented(message = "the type `{Self}` does not `#[derive(PartialEq)]`")]
+#[crablangc_on_unimplemented(message = "the type `{Self}` does not `#[derive(PartialEq)]`")]
 #[lang = "structural_peq"]
 pub trait StructuralPartialEq {
     // Empty.
@@ -181,7 +181,7 @@ pub trait StructuralPartialEq {
 ///
 /// Namely, a case like this:
 ///
-/// ```rust
+/// ```crablang
 /// #[derive(PartialEq, Eq)]
 /// struct Wrap<X>(X);
 ///
@@ -208,7 +208,7 @@ pub trait StructuralPartialEq {
 /// of the two derives (`#[derive(PartialEq)]` and `#[derive(Eq)]`) and check
 /// that both of them are present as part of structural-match checking.
 #[unstable(feature = "structural_match", issue = "31434")]
-#[rustc_on_unimplemented(message = "the type `{Self}` does not `#[derive(Eq)]`")]
+#[crablangc_on_unimplemented(message = "the type `{Self}` does not `#[derive(Eq)]`")]
 #[lang = "structural_teq"]
 pub trait StructuralEq {
     // Empty.
@@ -379,7 +379,7 @@ pub trait StructuralEq {
 /// [`String`]: ../../std/string/struct.String.html
 /// [`size_of::<T>`]: crate::mem::size_of
 /// [impls]: #implementors
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[lang = "copy"]
 // FIXME(matthewjasper) This allows copying a type that doesn't implement
 // `Copy` because of unsatisfied lifetime bounds (copying `A<'_>` when only
@@ -387,14 +387,14 @@ pub trait StructuralEq {
 // We have this attribute here for now only because there are quite a few
 // existing specializations on `Copy` that already exist in the standard
 // library, and there's no way to safely have this behavior right now.
-#[rustc_unsafe_specialization_marker]
-#[rustc_diagnostic_item = "Copy"]
+#[crablangc_unsafe_specialization_marker]
+#[crablangc_diagnostic_item = "Copy"]
 pub trait Copy: Clone {
     // Empty.
 }
 
 /// Derive macro generating an impl of the trait `Copy`.
-#[rustc_builtin_macro]
+#[crablangc_builtin_macro]
 #[stable(feature = "builtin_macro_prelude", since = "1.38.0")]
 #[allow_internal_unstable(core_intrinsics, derive_clone_copy)]
 pub macro Copy($item:item) {
@@ -439,7 +439,7 @@ pub macro Copy($item:item) {
 /// a new [`Rc<T>`][rc], modifying the reference counts in a non-atomic way.
 ///
 /// For cases when one does need thread-safe interior mutability,
-/// Rust provides [atomic data types], as well as explicit locking via
+/// CrabLang provides [atomic data types], as well as explicit locking via
 /// [`sync::Mutex`][mutex] and [`sync::RwLock`][rwlock]. These types
 /// ensure that any mutation cannot cause data races, hence the types
 /// are `Sync`. Likewise, [`sync::Arc`][arc] provides a thread-safe
@@ -466,10 +466,10 @@ pub macro Copy($item:item) {
 /// [ub]: ../../reference/behavior-considered-undefined.html
 /// [transmute]: crate::mem::transmute
 /// [nomicon-send-and-sync]: ../../nomicon/send-and-sync.html
-#[stable(feature = "rust1", since = "1.0.0")]
-#[cfg_attr(not(test), rustc_diagnostic_item = "Sync")]
+#[stable(feature = "crablang1", since = "1.0.0")]
+#[cfg_attr(not(test), crablangc_diagnostic_item = "Sync")]
 #[lang = "sync"]
-#[rustc_on_unimplemented(
+#[crablangc_on_unimplemented(
     on(
         _Self = "std::cell::OnceCell<T>",
         note = "if you want to do aliasing and mutation between multiple threads, use `std::sync::OnceLock` instead"
@@ -530,7 +530,7 @@ pub macro Copy($item:item) {
     label = "`{Self}` cannot be shared between threads safely"
 )]
 pub unsafe auto trait Sync {
-    // FIXME(estebank): once support to add notes in `rustc_on_unimplemented`
+    // FIXME(estebank): once support to add notes in `crablangc_on_unimplemented`
     // lands in beta, and it has been extended to check whether a closure is
     // anywhere in the requirement chain, extend it as such (#48534):
     // ```
@@ -543,9 +543,9 @@ pub unsafe auto trait Sync {
     // Empty
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: ?Sized> !Sync for *const T {}
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: ?Sized> !Sync for *mut T {}
 
 /// Zero-sized type used to mark things that "act like" they own a `T`.
@@ -561,7 +561,7 @@ impl<T: ?Sized> !Sync for *mut T {}
 ///
 /// Though they both have scary names, `PhantomData` and 'phantom types' are
 /// related, but not identical. A phantom type parameter is simply a type
-/// parameter which is never used. In Rust, this often causes the compiler to
+/// parameter which is never used. In CrabLang, this often causes the compiler to
 /// complain, and the solution is to add a "dummy" use by way of `PhantomData`.
 ///
 /// # Examples
@@ -628,11 +628,11 @@ impl<T: ?Sized> !Sync for *mut T {}
 /// indicate what type of data a struct is "tied" to, even though that
 /// data is not actually found in the struct itself. Here is an
 /// example where this arises with [FFI]. The foreign interface uses
-/// handles of type `*mut ()` to refer to Rust values of different
-/// types. We track the Rust type using a phantom type parameter on
+/// handles of type `*mut ()` to refer to CrabLang values of different
+/// types. We track the CrabLang type using a phantom type parameter on
 /// the struct `ExternalResource` which wraps a handle.
 ///
-/// [FFI]: ../../book/ch19-01-unsafe-rust.html#using-extern-functions-to-call-external-code
+/// [FFI]: ../../book/ch19-01-unsafe-crablang.html#using-extern-functions-to-call-external-code
 ///
 /// ```
 /// # #![allow(dead_code)]
@@ -672,7 +672,7 @@ impl<T: ?Sized> !Sync for *mut T {}
 /// Adding a field of type `PhantomData<T>` indicates that your
 /// type owns data of type `T`. This in turn implies that when your
 /// type is dropped, it may drop one or more instances of the type
-/// `T`. This has bearing on the Rust compiler's [drop check]
+/// `T`. This has bearing on the CrabLang compiler's [drop check]
 /// analysis.
 ///
 /// If your struct does not in fact *own* the data of type `T`, it is
@@ -688,51 +688,51 @@ impl<T: ?Sized> !Sync for *mut T {}
 ///
 /// [drop check]: ../../nomicon/dropck.html
 #[lang = "phantom_data"]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub struct PhantomData<T: ?Sized>;
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: ?Sized> Hash for PhantomData<T> {
     #[inline]
     fn hash<H: Hasher>(&self, _: &mut H) {}
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: ?Sized> cmp::PartialEq for PhantomData<T> {
     fn eq(&self, _other: &PhantomData<T>) -> bool {
         true
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: ?Sized> cmp::Eq for PhantomData<T> {}
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: ?Sized> cmp::PartialOrd for PhantomData<T> {
     fn partial_cmp(&self, _other: &PhantomData<T>) -> Option<cmp::Ordering> {
         Option::Some(cmp::Ordering::Equal)
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: ?Sized> cmp::Ord for PhantomData<T> {
     fn cmp(&self, _other: &PhantomData<T>) -> cmp::Ordering {
         cmp::Ordering::Equal
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: ?Sized> Copy for PhantomData<T> {}
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: ?Sized> Clone for PhantomData<T> {
     fn clone(&self) -> Self {
         Self
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
-#[rustc_const_unstable(feature = "const_default_impls", issue = "87864")]
+#[stable(feature = "crablang1", since = "1.0.0")]
+#[crablangc_const_unstable(feature = "const_default_impls", issue = "87864")]
 impl<T: ?Sized> const Default for PhantomData<T> {
     fn default() -> Self {
         Self
@@ -758,7 +758,7 @@ impl<T: ?Sized> StructuralEq for PhantomData<T> {}
     reason = "this trait is unlikely to ever be stabilized, use `mem::discriminant` instead"
 )]
 #[lang = "discriminant_kind"]
-#[rustc_deny_explicit_impl]
+#[crablangc_deny_explicit_impl]
 pub trait DiscriminantKind {
     /// The type of the discriminant, which must satisfy the trait
     /// bounds required by `mem::Discriminant`.
@@ -782,7 +782,7 @@ unsafe impl<T: ?Sized> Freeze for &mut T {}
 
 /// Types that can be safely moved after being pinned.
 ///
-/// Rust itself has no notion of immovable types, and considers moves (e.g.,
+/// CrabLang itself has no notion of immovable types, and considers moves (e.g.,
 /// through assignment or [`mem::replace`]) to always be safe.
 ///
 /// The [`Pin`][Pin] type is used instead to prevent moves through the type
@@ -802,7 +802,7 @@ unsafe impl<T: ?Sized> Freeze for &mut T {}
 ///
 /// So this, for example, can only be done on types implementing `Unpin`:
 ///
-/// ```rust
+/// ```crablang
 /// # #![allow(unused_must_use)]
 /// use std::mem;
 /// use std::pin::Pin;
@@ -822,7 +822,7 @@ unsafe impl<T: ?Sized> Freeze for &mut T {}
 /// [Pin]: crate::pin::Pin
 /// [`pin` module]: crate::pin
 #[stable(feature = "pin", since = "1.33.0")]
-#[rustc_on_unimplemented(
+#[crablangc_on_unimplemented(
     note = "consider using `Box::pin`",
     message = "`{Self}` cannot be unpinned"
 )]
@@ -857,9 +857,9 @@ impl<T: ?Sized> Unpin for *mut T {}
 /// as non-const bounds will always hold for every type.
 #[unstable(feature = "const_trait_impl", issue = "67792")]
 #[lang = "destruct"]
-#[rustc_on_unimplemented(message = "can't drop `{Self}`", append_const_msg)]
+#[crablangc_on_unimplemented(message = "can't drop `{Self}`", append_const_msg)]
 #[const_trait]
-#[rustc_deny_explicit_impl]
+#[crablangc_deny_explicit_impl]
 pub trait Destruct {}
 
 /// A marker for tuple types.
@@ -868,8 +868,8 @@ pub trait Destruct {}
 /// for any user type.
 #[unstable(feature = "tuple_trait", issue = "none")]
 #[lang = "tuple_trait"]
-#[rustc_on_unimplemented(message = "`{Self}` is not a tuple")]
-#[rustc_deny_explicit_impl]
+#[crablangc_on_unimplemented(message = "`{Self}` is not a tuple")]
+#[crablangc_deny_explicit_impl]
 pub trait Tuple {}
 
 /// A marker for pointer-like types.
@@ -878,7 +878,7 @@ pub trait Tuple {}
 /// `*const ()` automatically implement this trait.
 #[unstable(feature = "pointer_like_trait", issue = "none")]
 #[lang = "pointer_like"]
-#[rustc_on_unimplemented(
+#[crablangc_on_unimplemented(
     message = "`{Self}` needs to have the same ABI as a pointer",
     label = "`{Self}` needs to be a pointer-like type"
 )]
@@ -886,9 +886,9 @@ pub trait PointerLike {}
 
 /// Implementations of `Copy` for primitive types.
 ///
-/// Implementations that cannot be described in Rust
+/// Implementations that cannot be described in CrabLang
 /// are implemented in `traits::SelectionContext::copy_clone_conditions()`
-/// in `rustc_trait_selection`.
+/// in `crablangc_trait_selection`.
 mod copy_impls {
 
     use super::Copy;
@@ -896,7 +896,7 @@ mod copy_impls {
     macro_rules! impl_copy {
         ($($t:ty)*) => {
             $(
-                #[stable(feature = "rust1", since = "1.0.0")]
+                #[stable(feature = "crablang1", since = "1.0.0")]
                 impl Copy for $t {}
             )*
         }
@@ -912,14 +912,14 @@ mod copy_impls {
     #[unstable(feature = "never_type", issue = "35121")]
     impl Copy for ! {}
 
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     impl<T: ?Sized> Copy for *const T {}
 
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     impl<T: ?Sized> Copy for *mut T {}
 
     /// Shared references can be copied, but mutable references *cannot*!
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     impl<T: ?Sized> Copy for &T {}
 }
 
@@ -931,7 +931,7 @@ mod copy_impls {
 )]
 #[lang = "fn_ptr_trait"]
 #[cfg(not(bootstrap))]
-#[rustc_deny_explicit_impl]
+#[crablangc_deny_explicit_impl]
 pub trait FnPtr: Copy + Clone {
     /// Returns the address of the function pointer.
     #[lang = "fn_ptr_addr"]

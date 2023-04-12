@@ -4,9 +4,9 @@ error[E0308]: intrinsic has wrong type
 LL |     fn size_of<T>();
    |     ^^^^^^^^^^^^^^^^ expected `()`, found `usize`
    |
-   = note: expected fn pointer `extern "rust-intrinsic" fn()`
-              found fn pointer `extern "rust-intrinsic" fn() -> usize`
+   = note: expected fn pointer `extern "crablang-intrinsic" fn()`
+              found fn pointer `extern "crablang-intrinsic" fn() -> usize`
 
 error: aborting due to previous error
 
-For more information about this error, try `rustc --explain E0308`.
+For more information about this error, try `crablangc --explain E0308`.

@@ -1,9 +1,9 @@
 // normalize-stderr-test "pref: Align\([1-8] bytes\)" -> "pref: $$PREF_ALIGN"
 #![crate_type = "lib"]
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 
 // This cannot use `Scalar` abi since there is padding.
-#[rustc_layout(debug)]
+#[crablangc_layout(debug)]
 #[repr(align(8))]
 pub enum Aligned1 { //~ ERROR: layout_of
     Zero = 0,
@@ -11,7 +11,7 @@ pub enum Aligned1 { //~ ERROR: layout_of
 }
 
 // This should use `Scalar` abi.
-#[rustc_layout(debug)]
+#[crablangc_layout(debug)]
 #[repr(align(1))]
 pub enum Aligned2 { //~ ERROR: layout_of
     Zero = 0,

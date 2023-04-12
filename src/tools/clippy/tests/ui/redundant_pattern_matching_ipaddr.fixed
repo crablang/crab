@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 #![warn(clippy::all, clippy::redundant_pattern_matching)]
 #![allow(unused_must_use)]
 #![allow(

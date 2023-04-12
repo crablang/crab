@@ -8,7 +8,7 @@ fn main() {
         assert!(ptr.is_null());
     }
 
-    extern "Rust" {
+    extern "CrabLang" {
         fn malloc(size: usize) -> *mut std::ffi::c_void;
     }
 

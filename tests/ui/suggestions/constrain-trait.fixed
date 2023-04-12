@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 // check-only
 
 #[derive(Debug)]

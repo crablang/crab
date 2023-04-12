@@ -1,8 +1,8 @@
 Interfaces for working with Errors.
 
-# Error Handling In Rust
+# Error Handling In CrabLang
 
-The Rust language provides two complementary systems for constructing /
+The CrabLang language provides two complementary systems for constructing /
 representing, reporting, propagating, reacting to, and discarding errors.
 These responsibilities are collectively known as "error handling." The
 components of the first system, the panic runtime and interfaces, are most
@@ -132,6 +132,6 @@ should be available and executable by the current user".
 [panic hook]: ../../std/panic/fn.set_hook.html
 [`set_hook`]: ../../std/panic/fn.set_hook.html
 [`take_hook`]: ../../std/panic/fn.take_hook.html
-[panic-handler]: <https://doc.rust-lang.org/nomicon/panic-handler.html>
+[panic-handler]: <https://doc.crablang.org/nomicon/panic-handler.html>
 [`match`]: ../../std/keyword.match.html
 [`?`]: ../../std/result/index.html#the-question-mark-operator-

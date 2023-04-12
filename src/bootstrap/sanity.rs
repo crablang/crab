@@ -1,4 +1,4 @@
-//! Sanity checking performed by rustbuild before actually executing anything.
+//! Sanity checking performed by crablangbuild before actually executing anything.
 //!
 //! This module contains the implementation of ensuring that the build
 //! environment looks reasonable before progressing. This will verify that
@@ -66,7 +66,7 @@ pub fn check(build: &mut Build) {
     // On Windows, quotes are invalid characters for filename paths, and if
     // one is present as part of the PATH then that can lead to the system
     // being unable to identify the files properly. See
-    // https://github.com/rust-lang/rust/issues/34959 for more details.
+    // https://github.com/crablang/crablang/issues/34959 for more details.
     if cfg!(windows) && path.to_string_lossy().contains('\"') {
         panic!("PATH contains invalid character '\"'");
     }
@@ -74,12 +74,12 @@ pub fn check(build: &mut Build) {
     let mut cmd_finder = Finder::new();
     // If we've got a git directory we're gonna need git to update
     // submodules and learn about various other aspects.
-    if build.rust_info().is_managed_git_subrepository() {
+    if build.crablang_info().is_managed_git_subrepository() {
         cmd_finder.must_have("git");
     }
 
     // We need cmake, but only if we're actually building LLVM or sanitizers.
-    let building_llvm = build.config.rust_codegen_backends.contains(&INTERNER.intern_str("llvm"))
+    let building_llvm = build.config.crablang_codegen_backends.contains(&INTERNER.intern_str("llvm"))
         && build
             .hosts
             .iter()
@@ -165,7 +165,7 @@ than building it.
         // Some environments don't want or need these tools, such as when testing Miri.
         // FIXME: it would be better to refactor this code to split necessary setup from pure sanity
         // checks, and have a regular flag for skipping the latter. Also see
-        // <https://github.com/rust-lang/rust/pull/103569#discussion_r1008741742>.
+        // <https://github.com/crablang/crablang/pull/103569#discussion_r1008741742>.
         if env::var_os("BOOTSTRAP_SKIP_TARGET_SANITY").is_some() {
             continue;
         }
@@ -184,7 +184,7 @@ than building it.
         }
     }
 
-    if build.config.rust_codegen_backends.contains(&INTERNER.intern_str("llvm")) {
+    if build.config.crablang_codegen_backends.contains(&INTERNER.intern_str("llvm")) {
         // Externally configured LLVM requires FileCheck to exist
         let filecheck = build.llvm_filecheck(build.build);
         if !filecheck.starts_with(&build.out) && !filecheck.exists() && build.config.codegen_tests {
@@ -220,7 +220,7 @@ than building it.
                     }
                 }
                 None => panic!(
-                    "when targeting MUSL either the rust.musl-root \
+                    "when targeting MUSL either the crablang.musl-root \
                             option or the target.$TARGET.musl-root option must \
                             be specified in config.toml"
                 ),
@@ -230,7 +230,7 @@ than building it.
         // Some environments don't want or need these tools, such as when testing Miri.
         // FIXME: it would be better to refactor this code to split necessary setup from pure sanity
         // checks, and have a regular flag for skipping the latter. Also see
-        // <https://github.com/rust-lang/rust/pull/103569#discussion_r1008741742>.
+        // <https://github.com/crablang/crablang/pull/103569#discussion_r1008741742>.
         if env::var_os("BOOTSTRAP_SKIP_TARGET_SANITY").is_some() {
             continue;
         }

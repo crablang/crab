@@ -2,8 +2,8 @@
 use std::ffi::OsString;
 
 fn main() {
-    let os_str = OsString::from("Hello Rust!");
+    let os_str = OsString::from("Hello CrabLang!");
 
-    assert_eq!(os_str, "Hello Rust!");
-    assert_eq!("Hello Rust!", os_str);
+    assert_eq!(os_str, "Hello CrabLang!");
+    assert_eq!("Hello CrabLang!", os_str);
 }

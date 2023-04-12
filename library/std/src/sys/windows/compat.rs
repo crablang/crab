@@ -2,7 +2,7 @@
 //!
 //! The standard library uses some Windows API functions that are not present
 //! on older versions of Windows.  (Note that the oldest version of Windows
-//! that Rust supports is Windows 7 (client) and Windows Server 2008 (server).)
+//! that CrabLang supports is Windows 7 (client) and Windows Server 2008 (server).)
 //! This module implements a form of delayed DLL import binding, using
 //! `GetModuleHandle` and `GetProcAddress` to look up DLL entry points at
 //! runtime.
@@ -59,7 +59,7 @@ unsafe extern "C" fn init() {
     // https://docs.microsoft.com/en-us/windows/win32/dlls/dynamic-link-library-best-practices
     //
     // DO NOT do anything interesting or complicated in this function! DO NOT call
-    // any Rust functions or CRT functions if those functions touch any global state,
+    // any CrabLang functions or CRT functions if those functions touch any global state,
     // because this function runs during global initialization. For example, DO NOT
     // do any dynamic allocation, don't call LoadLibrary, etc.
 

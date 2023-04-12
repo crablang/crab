@@ -15,7 +15,7 @@
 // (higher-priority) impl for the intersection of every 2 conflicting
 // impls that determines what happens in the intersection case. That's
 // the first thing we thought about - see e.g.
-// https://github.com/rust-lang/rust/issues/57012#issuecomment-452150775
+// https://github.com/crablang/crablang/issues/57012#issuecomment-452150775
 //
 // 2. The other way is to notice that `impl From<!> for T` is basically a
 // marker trait since its only method is uninhabited, and allow for "marker
@@ -36,7 +36,7 @@
 // revisions: old next
 //[next] compile-flags: -Ztrait-solver=next
 
-#![feature(rustc_attrs, never_type)]
+#![feature(crablangc_attrs, never_type)]
 
 trait MyTrait {}
 
@@ -47,7 +47,7 @@ trait MyFrom<T> {
 }
 
 // Given the "normal" impls for From
-#[rustc_reservation_impl="this impl is reserved"]
+#[crablangc_reservation_impl="this impl is reserved"]
 impl<T> MyFrom<!> for T {
     fn my_from(x: !) -> Self { match x {} }
 }

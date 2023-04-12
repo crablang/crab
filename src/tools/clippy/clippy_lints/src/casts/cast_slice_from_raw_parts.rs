@@ -3,10 +3,10 @@ use clippy_utils::msrvs::{self, Msrv};
 use clippy_utils::source::snippet_with_context;
 use clippy_utils::{match_def_path, paths};
 use if_chain::if_chain;
-use rustc_errors::Applicability;
-use rustc_hir::{def_id::DefId, Expr, ExprKind};
-use rustc_lint::LateContext;
-use rustc_middle::ty::{self, Ty};
+use crablangc_errors::Applicability;
+use crablangc_hir::{def_id::DefId, Expr, ExprKind};
+use crablangc_lint::LateContext;
+use crablangc_middle::ty::{self, Ty};
 
 use super::CAST_SLICE_FROM_RAW_PARTS;
 

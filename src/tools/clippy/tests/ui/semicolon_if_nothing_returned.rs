@@ -17,14 +17,14 @@ fn basic101(x: i32) {
     y = x + 1
 }
 
-#[rustfmt::skip]
+#[crablangfmt::skip]
 fn closure_error() {
     let _d = || {
         hello()
     };
 }
 
-#[rustfmt::skip]
+#[crablangfmt::skip]
 fn unsafe_checks_error() {
     use std::mem::MaybeUninit;
     use std::ptr;
@@ -76,7 +76,7 @@ fn closure() {
     let _d = || hello();
 }
 
-#[rustfmt::skip]
+#[crablangfmt::skip]
 fn closure_block() {
     let _d = || { hello() };
 }
@@ -99,7 +99,7 @@ fn unsafe_checks() {
 }
 
 // Issue #7768
-#[rustfmt::skip]
+#[crablangfmt::skip]
 fn macro_with_semicolon() {
     macro_rules! repro {
         () => {

@@ -89,7 +89,7 @@ fn new_cc_build(build: &Build, target: TargetSelection) -> cc::Build {
 
 pub fn find(build: &mut Build) {
     // For all targets we're going to need a C compiler for building some shims
-    // and such as well as for being a linker for Rust code.
+    // and such as well as for being a linker for CrabLang code.
     let targets = build
         .targets
         .iter()
@@ -114,7 +114,7 @@ pub fn find(build: &mut Build) {
         };
 
         build.cc.insert(target, compiler.clone());
-        let cflags = build.cflags(target, GitRepo::Rustc, CLang::C);
+        let cflags = build.cflags(target, GitRepo::CrabLangc, CLang::C);
 
         // If we use llvm-libunwind, we will need a C++ compiler as well for all targets
         // We'll need one anyways if the target triple is also a host triple
@@ -140,7 +140,7 @@ pub fn find(build: &mut Build) {
         build.verbose(&format!("CC_{} = {:?}", &target.triple, build.cc(target)));
         build.verbose(&format!("CFLAGS_{} = {:?}", &target.triple, cflags));
         if let Ok(cxx) = build.cxx(target) {
-            let cxxflags = build.cflags(target, GitRepo::Rustc, CLang::Cxx);
+            let cxxflags = build.cflags(target, GitRepo::CrabLangc, CLang::Cxx);
             build.verbose(&format!("CXX_{} = {:?}", &target.triple, cxx));
             build.verbose(&format!("CXXFLAGS_{} = {:?}", &target.triple, cxxflags));
         }

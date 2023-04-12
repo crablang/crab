@@ -4,7 +4,7 @@
 // revisions:rpass1 rpass2
 // compile-flags: -Z query-dep-graph
 
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 
 #[cfg(rpass1)]
 pub struct X {
@@ -24,19 +24,19 @@ pub struct Y {
     pub y: char
 }
 
-#[rustc_clean(except="typeck", cfg="rpass2")]
+#[crablangc_clean(except="typeck", cfg="rpass2")]
 pub fn use_X() -> u32 {
     let x: X = X { x: 22 };
     x.x as u32
 }
 
-#[rustc_clean(except="typeck", cfg="rpass2")]
+#[crablangc_clean(except="typeck", cfg="rpass2")]
 pub fn use_EmbedX(x: EmbedX) -> u32 {
     let x: X = X { x: 22 };
     x.x as u32
 }
 
-#[rustc_clean(cfg="rpass2")]
+#[crablangc_clean(cfg="rpass2")]
 pub fn use_Y() {
     let x: Y = Y { y: 'c' };
 }

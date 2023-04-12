@@ -1,12 +1,12 @@
 use clippy_utils::diagnostics::span_lint_and_sugg;
 use clippy_utils::source::snippet;
 use if_chain::if_chain;
-use rustc_data_structures::fx::FxHashMap;
-use rustc_errors::Applicability;
-use rustc_hir::{self as hir, ExprKind};
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_session::{declare_lint_pass, declare_tool_lint};
-use rustc_span::symbol::Symbol;
+use crablangc_data_structures::fx::FxHashMap;
+use crablangc_errors::Applicability;
+use crablangc_hir::{self as hir, ExprKind};
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_span::symbol::Symbol;
 use std::fmt::{self, Write as _};
 
 declare_clippy_lint! {
@@ -19,7 +19,7 @@ declare_clippy_lint! {
     /// Since the order of fields in a constructor doesn't affect the
     /// resulted instance as the below example indicates,
     ///
-    /// ```rust
+    /// ```crablang
     /// #[derive(Debug, PartialEq, Eq)]
     /// struct Foo {
     ///     x: i32,
@@ -35,7 +35,7 @@ declare_clippy_lint! {
     /// inconsistent order can be confusing and decreases readability and consistency.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// struct Foo {
     ///     x: i32,
     ///     y: i32,
@@ -47,7 +47,7 @@ declare_clippy_lint! {
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// # struct Foo {
     /// #     x: i32,
     /// #     y: i32,

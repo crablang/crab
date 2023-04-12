@@ -3,10 +3,10 @@ use clippy_utils::diagnostics::span_lint_and_then;
 use clippy_utils::msrvs::{self, Msrv};
 use clippy_utils::source::snippet_with_applicability;
 use clippy_utils::sugg;
-use rustc_errors::Applicability;
-use rustc_hir::{self as hir, Expr, GenericArg, Mutability, Path, TyKind};
-use rustc_lint::LateContext;
-use rustc_middle::ty::{self, Ty, TypeVisitableExt};
+use crablangc_errors::Applicability;
+use crablangc_hir::{self as hir, Expr, GenericArg, Mutability, Path, TyKind};
+use crablangc_lint::LateContext;
+use crablangc_middle::ty::{self, Ty, TypeVisitableExt};
 
 /// Checks for `transmute_ptr_to_ref` lint.
 /// Returns `true` if it's triggered, otherwise returns `false`.

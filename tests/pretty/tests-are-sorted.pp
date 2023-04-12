@@ -1,7 +1,7 @@
 #![feature(prelude_import)]
 #![no_std]
 #[prelude_import]
-use ::std::prelude::rust_2015::*;
+use ::std::prelude::crablang_2015::*;
 #[macro_use]
 extern crate std;
 // compile-flags: --crate-type=lib --test --remap-path-prefix={{src-base}}/=/the/src/ --remap-path-prefix={{src-base}}\=/the/src/
@@ -11,7 +11,7 @@ extern crate std;
 
 extern crate test;
 #[cfg(test)]
-#[rustc_test_marker = "m_test"]
+#[crablangc_test_marker = "m_test"]
 pub const m_test: test::TestDescAndFn =
     test::TestDescAndFn {
         desc: test::TestDesc {
@@ -34,7 +34,7 @@ fn m_test() {}
 
 extern crate test;
 #[cfg(test)]
-#[rustc_test_marker = "z_test"]
+#[crablangc_test_marker = "z_test"]
 pub const z_test: test::TestDescAndFn =
     test::TestDescAndFn {
         desc: test::TestDesc {
@@ -58,7 +58,7 @@ fn z_test() {}
 
 extern crate test;
 #[cfg(test)]
-#[rustc_test_marker = "a_test"]
+#[crablangc_test_marker = "a_test"]
 pub const a_test: test::TestDescAndFn =
     test::TestDescAndFn {
         desc: test::TestDesc {
@@ -78,7 +78,7 @@ pub const a_test: test::TestDescAndFn =
         testfn: test::StaticTestFn(|| test::assert_test_result(a_test())),
     };
 fn a_test() {}
-#[rustc_main]
+#[crablangc_main]
 pub fn main() -> () {
     extern crate test;
     test::test_main_static(&[&a_test, &m_test, &z_test])

@@ -2,11 +2,11 @@ use clippy_utils::diagnostics::span_lint_and_sugg;
 use clippy_utils::paths;
 use clippy_utils::source::snippet_with_context;
 use clippy_utils::ty::{is_type_diagnostic_item, match_type};
-use rustc_errors::Applicability;
-use rustc_hir as hir;
-use rustc_lint::LateContext;
-use rustc_middle::ty;
-use rustc_span::symbol::{sym, Symbol};
+use crablangc_errors::Applicability;
+use crablangc_hir as hir;
+use crablangc_lint::LateContext;
+use crablangc_middle::ty;
+use crablangc_span::symbol::{sym, Symbol};
 
 use super::CLONE_ON_REF_PTR;
 

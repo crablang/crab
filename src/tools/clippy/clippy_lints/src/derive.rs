@@ -3,24 +3,24 @@ use clippy_utils::paths;
 use clippy_utils::ty::{implements_trait, implements_trait_with_env, is_copy};
 use clippy_utils::{is_lint_allowed, match_def_path};
 use if_chain::if_chain;
-use rustc_errors::Applicability;
-use rustc_hir::def_id::DefId;
-use rustc_hir::intravisit::{walk_expr, walk_fn, walk_item, FnKind, Visitor};
-use rustc_hir::{
+use crablangc_errors::Applicability;
+use crablangc_hir::def_id::DefId;
+use crablangc_hir::intravisit::{walk_expr, walk_fn, walk_item, FnKind, Visitor};
+use crablangc_hir::{
     self as hir, BlockCheckMode, BodyId, Constness, Expr, ExprKind, FnDecl, Impl, Item, ItemKind, UnsafeSource,
     Unsafety,
 };
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_middle::hir::nested_filter;
-use rustc_middle::traits::Reveal;
-use rustc_middle::ty::{
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_middle::hir::nested_filter;
+use crablangc_middle::traits::Reveal;
+use crablangc_middle::ty::{
     self, Binder, BoundConstness, Clause, GenericArgKind, GenericParamDefKind, ImplPolarity, ParamEnv, PredicateKind,
     TraitPredicate, Ty, TyCtxt,
 };
-use rustc_session::{declare_lint_pass, declare_tool_lint};
-use rustc_span::def_id::LocalDefId;
-use rustc_span::source_map::Span;
-use rustc_span::sym;
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_span::def_id::LocalDefId;
+use crablangc_span::source_map::Span;
+use crablangc_span::sym;
 
 declare_clippy_lint! {
     /// ### What it does
@@ -69,7 +69,7 @@ declare_clippy_lint! {
     /// ```
     ///
     /// ### Example
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// #[derive(Ord, PartialEq, Eq)]
     /// struct Foo;
     ///
@@ -78,7 +78,7 @@ declare_clippy_lint! {
     /// }
     /// ```
     /// Use instead:
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// #[derive(PartialEq, Eq)]
     /// struct Foo;
     ///
@@ -93,7 +93,7 @@ declare_clippy_lint! {
     /// }
     /// ```
     /// or, if you don't need a custom ordering:
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// #[derive(Ord, PartialOrd, PartialEq, Eq)]
     /// struct Foo;
     /// ```
@@ -116,7 +116,7 @@ declare_clippy_lint! {
     /// gets you.
     ///
     /// ### Example
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// #[derive(Copy)]
     /// struct Foo;
     ///
@@ -140,7 +140,7 @@ declare_clippy_lint! {
     /// that may violate invariants hold by another constructor.
     ///
     /// ### Example
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// use serde::Deserialize;
     ///
     /// #[derive(Deserialize)]
@@ -175,7 +175,7 @@ declare_clippy_lint! {
     /// `Eq` themselves.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// #[derive(PartialEq)]
     /// struct Foo {
     ///     i_am_eq: i32,
@@ -183,7 +183,7 @@ declare_clippy_lint! {
     /// }
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// #[derive(PartialEq, Eq)]
     /// struct Foo {
     ///     i_am_eq: i32,
@@ -362,7 +362,7 @@ fn check_copy_clone<'tcx>(cx: &LateContext<'tcx>, item: &Item<'_>, trait_ref: &h
         return;
     }
     // `#[repr(packed)]` structs with type/const parameters can't derive `Clone`.
-    // https://github.com/rust-lang/rust-clippy/issues/10188
+    // https://github.com/crablang/crablang-clippy/issues/10188
     if ty_adt.repr().packed()
         && ty_subs
             .iter()

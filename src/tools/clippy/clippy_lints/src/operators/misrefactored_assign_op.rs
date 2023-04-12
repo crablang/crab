@@ -2,9 +2,9 @@ use clippy_utils::diagnostics::span_lint_and_then;
 use clippy_utils::eq_expr_value;
 use clippy_utils::source::snippet_opt;
 use clippy_utils::sugg;
-use rustc_errors::Applicability;
-use rustc_hir as hir;
-use rustc_lint::LateContext;
+use crablangc_errors::Applicability;
+use crablangc_hir as hir;
+use crablangc_lint::LateContext;
 
 use super::MISREFACTORED_ASSIGN_OP;
 
@@ -70,7 +70,7 @@ fn lint_misrefactored_assign_op(
 
 #[must_use]
 fn is_commutative(op: hir::BinOpKind) -> bool {
-    use rustc_hir::BinOpKind::{
+    use crablangc_hir::BinOpKind::{
         Add, And, BitAnd, BitOr, BitXor, Div, Eq, Ge, Gt, Le, Lt, Mul, Ne, Or, Rem, Shl, Shr, Sub,
     };
     match op {

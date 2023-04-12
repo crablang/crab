@@ -1,7 +1,7 @@
 // check-pass
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 
-#[rustc_diagnostic_item = "foomp"]
+#[crablangc_diagnostic_item = "foomp"]
 struct Foomp;
 
 fn main() {}

@@ -1,7 +1,7 @@
 // run-pass
 
 // Test that simd gather instructions on slice of usize don't cause crash
-// See issue #89183 - https://github.com/rust-lang/rust/issues/89193
+// See issue #89183 - https://github.com/crablang/crablang/issues/89193
 
 #![feature(repr_simd, platform_intrinsics)]
 #![allow(non_camel_case_types)]

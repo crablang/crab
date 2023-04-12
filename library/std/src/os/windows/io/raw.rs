@@ -1,6 +1,6 @@
 //! Windows-specific extensions to general I/O primitives.
 
-#![stable(feature = "rust1", since = "1.0.0")]
+#![stable(feature = "crablang1", since = "1.0.0")]
 
 use crate::fs;
 use crate::io;
@@ -15,15 +15,15 @@ use crate::sys::c;
 use crate::sys_common::{self, AsInner, FromInner, IntoInner};
 
 /// Raw HANDLEs.
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub type RawHandle = raw::HANDLE;
 
 /// Raw SOCKETs.
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub type RawSocket = raw::SOCKET;
 
 /// Extracts raw handles.
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub trait AsRawHandle {
     /// Extracts the raw handle.
     ///
@@ -41,7 +41,7 @@ pub trait AsRawHandle {
     /// [`Stdin`]: io::Stdin
     /// [`Stdout`]: io::Stdout
     /// [`Stderr`]: io::Stderr
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     fn as_raw_handle(&self) -> RawHandle;
 }
 
@@ -93,7 +93,7 @@ pub trait IntoRawHandle {
     fn into_raw_handle(self) -> RawHandle;
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl AsRawHandle for fs::File {
     #[inline]
     fn as_raw_handle(&self) -> RawHandle {
@@ -175,7 +175,7 @@ impl IntoRawHandle for fs::File {
 }
 
 /// Extracts raw sockets.
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub trait AsRawSocket {
     /// Extracts the raw socket.
     ///
@@ -186,7 +186,7 @@ pub trait AsRawSocket {
     ///
     /// However, borrowing is not strictly required. See [`AsSocket::as_socket`]
     /// for an API which strictly borrows a socket.
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     fn as_raw_socket(&self) -> RawSocket;
 }
 
@@ -233,21 +233,21 @@ pub trait IntoRawSocket {
     fn into_raw_socket(self) -> RawSocket;
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl AsRawSocket for net::TcpStream {
     #[inline]
     fn as_raw_socket(&self) -> RawSocket {
         self.as_inner().socket().as_raw_socket()
     }
 }
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl AsRawSocket for net::TcpListener {
     #[inline]
     fn as_raw_socket(&self) -> RawSocket {
         self.as_inner().socket().as_raw_socket()
     }
 }
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl AsRawSocket for net::UdpSocket {
     #[inline]
     fn as_raw_socket(&self) -> RawSocket {

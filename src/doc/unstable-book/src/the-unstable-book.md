@@ -2,9 +2,9 @@
 
 Welcome to the Unstable Book! This book consists of a number of chapters,
 each one organized by a "feature flag." That is, when using an unstable
-feature of Rust, you must use a flag, like this:
+feature of CrabLang, you must use a flag, like this:
 
-```rust
+```crablang
 #![feature(generators, generator_trait)]
 
 use std::ops::{Generator, GeneratorState};

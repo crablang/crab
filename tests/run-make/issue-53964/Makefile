@@ -1,5 +1,5 @@
 include ../tools.mk
 
 all:
-	$(RUSTC) panic.rs
-	$(RUSTC) -C panic=abort --emit=obj app.rs -L $(TMPDIR)
+	$(CRABLANGC) panic.rs
+	$(CRABLANGC) -C panic=abort --emit=obj app.rs -L $(TMPDIR)

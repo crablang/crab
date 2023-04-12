@@ -88,7 +88,7 @@ cfg_if::cfg_if! {
         //
         // iOS uses the default routine instead since it uses SjLj unwinding.
         #[lang = "eh_personality"]
-        unsafe extern "C" fn rust_eh_personality(
+        unsafe extern "C" fn crablang_eh_personality(
             state: uw::_Unwind_State,
             exception_object: *mut uw::_Unwind_Exception,
             context: *mut uw::_Unwind_Context,
@@ -99,7 +99,7 @@ cfg_if::cfg_if! {
                 // Backtraces on ARM will call the personality routine with
                 // state == _US_VIRTUAL_UNWIND_FRAME | _US_FORCE_UNWIND. In those cases
                 // we want to continue unwinding the stack, otherwise all our backtraces
-                // would end at __rust_try
+                // would end at __crablang_try
                 if state & uw::_US_FORCE_UNWIND as c_int != 0 {
                     return continue_unwind(exception_object, context);
                 }
@@ -181,7 +181,7 @@ cfg_if::cfg_if! {
     } else {
         // Default personality routine, which is used directly on most targets
         // and indirectly on Windows x86_64 via SEH.
-        unsafe extern "C" fn rust_eh_personality_impl(
+        unsafe extern "C" fn crablang_eh_personality_impl(
             version: c_int,
             actions: uw::_Unwind_Action,
             _exception_class: uw::_Unwind_Exception_Class,
@@ -225,7 +225,7 @@ cfg_if::cfg_if! {
                 // handler data (aka LSDA) uses GCC-compatible encoding.
                 #[lang = "eh_personality"]
                 #[allow(nonstandard_style)]
-                unsafe extern "C" fn rust_eh_personality(
+                unsafe extern "C" fn crablang_eh_personality(
                     exceptionRecord: *mut uw::EXCEPTION_RECORD,
                     establisherFrame: uw::LPVOID,
                     contextRecord: *mut uw::CONTEXT,
@@ -236,20 +236,20 @@ cfg_if::cfg_if! {
                         establisherFrame,
                         contextRecord,
                         dispatcherContext,
-                        rust_eh_personality_impl,
+                        crablang_eh_personality_impl,
                     )
                 }
             } else {
                 // The personality routine for most of our targets.
                 #[lang = "eh_personality"]
-                unsafe extern "C" fn rust_eh_personality(
+                unsafe extern "C" fn crablang_eh_personality(
                     version: c_int,
                     actions: uw::_Unwind_Action,
                     exception_class: uw::_Unwind_Exception_Class,
                     exception_object: *mut uw::_Unwind_Exception,
                     context: *mut uw::_Unwind_Context,
                 ) -> uw::_Unwind_Reason_Code {
-                    rust_eh_personality_impl(
+                    crablang_eh_personality_impl(
                         version,
                         actions,
                         exception_class,

@@ -1,6 +1,6 @@
 // compile-flags:-g
 
-// We only test Rust-aware versions of GDB:
+// We only test CrabLang-aware versions of GDB:
 // min-gdb-version: 8.2
 
 // === GDB TESTS ===================================================================================

@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 #![allow(clippy::match_single_binding)]
 
 fn main() {

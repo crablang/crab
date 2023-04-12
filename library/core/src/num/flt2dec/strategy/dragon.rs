@@ -1,4 +1,4 @@
-//! Almost direct (but slightly optimized) Rust translation of Figure 3 of "Printing
+//! Almost direct (but slightly optimized) CrabLang translation of Figure 3 of "Printing
 //! Floating-Point Numbers Quickly and Accurately"[^1].
 //!
 //! [^1]: Burger, R. G. and Dybvig, R. K. 1996. Printing floating-point numbers

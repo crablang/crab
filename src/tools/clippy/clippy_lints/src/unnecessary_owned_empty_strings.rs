@@ -1,13 +1,13 @@
 use clippy_utils::{diagnostics::span_lint_and_sugg, ty::is_type_lang_item};
 use clippy_utils::{match_def_path, paths};
 use if_chain::if_chain;
-use rustc_ast::ast::LitKind;
-use rustc_errors::Applicability;
-use rustc_hir::{BorrowKind, Expr, ExprKind, LangItem, Mutability};
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_middle::ty;
-use rustc_session::{declare_lint_pass, declare_tool_lint};
-use rustc_span::symbol::sym;
+use crablangc_ast::ast::LitKind;
+use crablangc_errors::Applicability;
+use crablangc_hir::{BorrowKind, Expr, ExprKind, LangItem, Mutability};
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_middle::ty;
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_span::symbol::sym;
 
 declare_clippy_lint! {
     /// ### What it does
@@ -19,11 +19,11 @@ declare_clippy_lint! {
     /// This results in longer and less readable code
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// vec!["1", "2", "3"].join(&String::new());
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// vec!["1", "2", "3"].join("");
     /// ```
     #[clippy::version = "1.62.0"]

@@ -14,4 +14,4 @@ LL | extern crate issue_45829_b as other_issue_45829_a;
 
 error: aborting due to previous error
 
-For more information about this error, try `rustc --explain E0259`.
+For more information about this error, try `crablangc --explain E0259`.

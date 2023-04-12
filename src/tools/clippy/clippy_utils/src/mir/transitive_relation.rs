@@ -1,6 +1,6 @@
-use rustc_data_structures::fx::FxHashMap;
-use rustc_index::bit_set::HybridBitSet;
-use rustc_middle::mir;
+use crablangc_data_structures::fx::FxHashMap;
+use crablangc_index::bit_set::HybridBitSet;
+use crablangc_middle::mir;
 
 #[derive(Default)]
 pub(super) struct TransitiveRelation {

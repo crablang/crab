@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 
 extern crate std;
 fn main() {}

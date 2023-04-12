@@ -1,9 +1,9 @@
 // force-host
 
-#![feature(rustc_private)]
+#![feature(crablangc_private)]
 
-extern crate rustc_driver;
-use rustc_driver::plugin::Registry;
+extern crate crablangc_driver;
+use crablangc_driver::plugin::Registry;
 
 #[no_mangle]
-fn __rustc_plugin_registrar(_: &mut Registry) {}
+fn __crablangc_plugin_registrar(_: &mut Registry) {}

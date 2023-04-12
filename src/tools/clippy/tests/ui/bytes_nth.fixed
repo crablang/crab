@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 
 #![allow(clippy::unnecessary_operation)]
 #![warn(clippy::bytes_nth)]

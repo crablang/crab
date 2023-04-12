@@ -58,22 +58,22 @@ fn config() -> Config {
         "--channel=nightly",
     ];
     let mut args: Vec<String> = args.iter().map(ToString::to_string).collect();
-    args.push("--rustc-path".to_string());
-    // This is a subtle/fragile thing. On rust-lang CI, there is no global
-    // `rustc`, and Cargo doesn't offer a convenient way to get the path to
-    // `rustc`. Fortunately bootstrap sets `RUSTC` for us, which is pointing
+    args.push("--crablangc-path".to_string());
+    // This is a subtle/fragile thing. On crablang CI, there is no global
+    // `crablangc`, and Cargo doesn't offer a convenient way to get the path to
+    // `crablangc`. Fortunately bootstrap sets `CRABLANGC` for us, which is pointing
     // to the stage0 compiler.
     //
     // Otherwise, if you are running compiletests's tests manually, you
-    // probably don't have `RUSTC` set, in which case this falls back to the
-    // global rustc. If your global rustc is too far out of sync with stage0,
+    // probably don't have `CRABLANGC` set, in which case this falls back to the
+    // global crablangc. If your global crablangc is too far out of sync with stage0,
     // then this may cause confusing errors. Or if for some reason you don't
-    // have rustc in PATH, that would also fail.
-    args.push(std::env::var("RUSTC").unwrap_or_else(|_| {
+    // have crablangc in PATH, that would also fail.
+    args.push(std::env::var("CRABLANGC").unwrap_or_else(|_| {
         eprintln!(
-            "warning: RUSTC not set, using global rustc (are you not running via bootstrap?)"
+            "warning: CRABLANGC not set, using global crablangc (are you not running via bootstrap?)"
         );
-        "rustc".to_string()
+        "crablangc".to_string()
     }));
     crate::parse_config(args)
 }

@@ -1,5 +1,5 @@
 trait T {
-    extern "Rust" unsafe fn foo();
+    extern "CrabLang" unsafe fn foo();
     //~^ ERROR expected `{`, found keyword `unsafe`
 }
 

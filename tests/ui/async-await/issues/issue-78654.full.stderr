@@ -16,4 +16,4 @@ LL | impl<const H: feature> Foo {
 error: aborting due to 2 previous errors
 
 Some errors have detailed explanations: E0207, E0573.
-For more information about an error, try `rustc --explain E0207`.
+For more information about an error, try `crablangc --explain E0207`.

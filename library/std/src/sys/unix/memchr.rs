@@ -1,4 +1,4 @@
-// Original implementation taken from rust-memchr.
+// Original implementation taken from crablang-memchr.
 // Copyright 2015 Andrew Gallant, bluss and Nicolas Koch
 
 pub fn memchr(needle: u8, haystack: &[u8]) -> Option<usize> {

@@ -6,9 +6,9 @@ RUN sh /scripts/cross-apt-packages.sh
 COPY scripts/crosstool-ng-1.24.sh /scripts/
 RUN sh /scripts/crosstool-ng-1.24.sh
 
-COPY scripts/rustbuild-setup.sh /scripts/
-RUN sh /scripts/rustbuild-setup.sh
-USER rustbuild
+COPY scripts/crablangbuild-setup.sh /scripts/
+RUN sh /scripts/crablangbuild-setup.sh
+USER crablangbuild
 WORKDIR /tmp
 
 COPY host-x86_64/dist-powerpc-linux/powerpc-linux-gnu.config host-x86_64/dist-powerpc-linux/build-powerpc-toolchain.sh /tmp/
@@ -28,5 +28,5 @@ ENV \
 
 ENV HOSTS=powerpc-unknown-linux-gnu
 
-ENV RUST_CONFIGURE_ARGS --enable-extended --disable-docs
+ENV CRABLANG_CONFIGURE_ARGS --enable-extended --disable-docs
 ENV SCRIPT python3 ../x.py dist --host $HOSTS --target $HOSTS

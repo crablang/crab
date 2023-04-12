@@ -5,7 +5,7 @@
 fn main() {
     let a = &[1, 2, 3];
     println!("{}", {
-        extern "rust-intrinsic" { //~ ERROR intrinsics are subject to change
+        extern "crablang-intrinsic" { //~ ERROR intrinsics are subject to change
             fn atomic_fence();
         }
         atomic_fence();

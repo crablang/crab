@@ -10,18 +10,18 @@ use clippy_utils::source::snippet_opt;
 use clippy_utils::ty::{implements_trait, is_type_lang_item};
 use if_chain::if_chain;
 use itertools::Itertools;
-use rustc_errors::{
+use crablangc_errors::{
     Applicability,
     SuggestionStyle::{CompletelyHidden, ShowCode},
 };
-use rustc_hir::{Expr, ExprKind, HirId, LangItem, QPath};
-use rustc_lint::{LateContext, LateLintPass, LintContext};
-use rustc_middle::ty::adjustment::{Adjust, Adjustment};
-use rustc_middle::ty::Ty;
-use rustc_session::{declare_tool_lint, impl_lint_pass};
-use rustc_span::def_id::DefId;
-use rustc_span::edition::Edition::Edition2021;
-use rustc_span::{sym, ExpnData, ExpnKind, Span, Symbol};
+use crablangc_hir::{Expr, ExprKind, HirId, LangItem, QPath};
+use crablangc_lint::{LateContext, LateLintPass, LintContext};
+use crablangc_middle::ty::adjustment::{Adjust, Adjustment};
+use crablangc_middle::ty::Ty;
+use crablangc_session::{declare_tool_lint, impl_lint_pass};
+use crablangc_span::def_id::DefId;
+use crablangc_span::edition::Edition::Edition2021;
+use crablangc_span::{sym, ExpnData, ExpnKind, Span, Symbol};
 
 declare_clippy_lint! {
     /// ### What it does
@@ -33,12 +33,12 @@ declare_clippy_lint! {
     /// The recommended code is both shorter and avoids a temporary allocation.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// # use std::panic::Location;
     /// println!("error: {}", format!("something failed at {}", Location::caller()));
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// # use std::panic::Location;
     /// println!("error: something failed at {}", Location::caller());
     /// ```
@@ -50,8 +50,8 @@ declare_clippy_lint! {
 
 declare_clippy_lint! {
     /// ### What it does
-    /// Checks for [`ToString::to_string`](https://doc.rust-lang.org/std/string/trait.ToString.html#tymethod.to_string)
-    /// applied to a type that implements [`Display`](https://doc.rust-lang.org/std/fmt/trait.Display.html)
+    /// Checks for [`ToString::to_string`](https://doc.crablang.org/std/string/trait.ToString.html#tymethod.to_string)
+    /// applied to a type that implements [`Display`](https://doc.crablang.org/std/fmt/trait.Display.html)
     /// in a macro that does formatting.
     ///
     /// ### Why is this bad?
@@ -59,12 +59,12 @@ declare_clippy_lint! {
     /// unnecessary.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// # use std::panic::Location;
     /// println!("error: something failed at {}", Location::caller().to_string());
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// # use std::panic::Location;
     /// println!("error: something failed at {}", Location::caller());
     /// ```
@@ -85,7 +85,7 @@ declare_clippy_lint! {
     /// The inlined syntax, where allowed, is simpler.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// # let var = 42;
     /// # let width = 1;
     /// # let prec = 2;
@@ -96,7 +96,7 @@ declare_clippy_lint! {
     /// format!("{:.*}", prec, var);
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// # let var = 42;
     /// # let width = 1;
     /// # let prec = 2;
@@ -109,12 +109,12 @@ declare_clippy_lint! {
     ///
     /// If allow-mixed-uninlined-format-args is set to false in clippy.toml,
     /// the following code will also trigger the lint:
-    /// ```rust
+    /// ```crablang
     /// # let var = 42;
     /// format!("{} {}", var, 1+2);
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// # let var = 42;
     /// format!("{var} {}", 1+2);
     /// ```
@@ -139,13 +139,13 @@ declare_clippy_lint! {
     /// an expected formatting operation such as adding padding isn't happening.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// println!("{:.}", 1.0);
     ///
     /// println!("not padded: {:5}", format_args!("..."));
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// println!("{}", 1.0);
     ///
     /// println!("not padded: {}", format_args!("..."));
@@ -153,7 +153,7 @@ declare_clippy_lint! {
     /// println!("padded: {:5}", format!("..."));
     /// ```
     ///
-    /// [formatting parameters]: https://doc.rust-lang.org/std/fmt/index.html#formatting-parameters
+    /// [formatting parameters]: https://doc.crablang.org/std/fmt/index.html#formatting-parameters
     #[clippy::version = "1.66.0"]
     pub UNUSED_FORMAT_SPECS,
     complexity,
@@ -307,7 +307,7 @@ fn check_uninlined_args(
         return;
     }
 
-    // multiline span display suggestion is sometimes broken: https://github.com/rust-lang/rust/pull/102729#discussion_r988704308
+    // multiline span display suggestion is sometimes broken: https://github.com/crablang/crablang/pull/102729#discussion_r988704308
     // in those cases, make the code suggestion hidden
     let multiline_fix = fixes.iter().any(|(span, _)| cx.sess().source_map().is_multiline(*span));
 

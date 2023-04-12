@@ -16,4 +16,4 @@ LL | fn main() { let a: bool = 1; let b: i32 = true; }
 
 error: aborting due to 2 previous errors
 
-For more information about this error, try `rustc --explain E0308`.
+For more information about this error, try `crablangc --explain E0308`.

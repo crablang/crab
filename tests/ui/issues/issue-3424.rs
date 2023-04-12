@@ -1,7 +1,7 @@
 // check-pass
 #![allow(dead_code)]
 #![allow(non_camel_case_types)]
-// rustc --test ignores2.rs && ./ignores2
+// crablangc --test ignores2.rs && ./ignores2
 
 pub struct Path;
 

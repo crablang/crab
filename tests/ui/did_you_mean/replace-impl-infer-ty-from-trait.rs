@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 #![allow(unused)]
 
 trait Foo<T>: Sized {

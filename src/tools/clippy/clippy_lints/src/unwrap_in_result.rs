@@ -4,11 +4,11 @@ use clippy_utils::visitors::for_each_expr;
 use clippy_utils::{method_chain_args, return_ty};
 use core::ops::ControlFlow;
 use if_chain::if_chain;
-use rustc_hir as hir;
-use rustc_hir::ImplItemKind;
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_session::{declare_lint_pass, declare_tool_lint};
-use rustc_span::{sym, Span};
+use crablangc_hir as hir;
+use crablangc_hir::ImplItemKind;
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_span::{sym, Span};
 
 declare_clippy_lint! {
     /// ### What it does
@@ -22,7 +22,7 @@ declare_clippy_lint! {
     ///
     /// ### Example
     /// Before:
-    /// ```rust
+    /// ```crablang
     /// fn divisible_by_3(i_str: String) -> Result<(), String> {
     ///     let i = i_str
     ///         .parse::<i32>()
@@ -37,7 +37,7 @@ declare_clippy_lint! {
     /// ```
     ///
     /// After:
-    /// ```rust
+    /// ```crablang
     /// fn divisible_by_3(i_str: String) -> Result<(), String> {
     ///     let i = i_str
     ///         .parse::<i32>()

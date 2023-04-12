@@ -1,7 +1,7 @@
 use clippy_utils::diagnostics::span_lint;
-use rustc_ast::ast::{GenericParam, GenericParamKind};
-use rustc_hir::PrimTy;
-use rustc_lint::EarlyContext;
+use crablangc_ast::ast::{GenericParam, GenericParamKind};
+use crablangc_hir::PrimTy;
+use crablangc_lint::EarlyContext;
 
 use super::BUILTIN_TYPE_SHADOW;
 

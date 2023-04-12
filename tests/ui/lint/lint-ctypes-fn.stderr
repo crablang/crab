@@ -126,11 +126,11 @@ LL | pub extern "C" fn zero_size_phantom_toplevel() -> PhantomData<bool> {
 error: `extern` fn uses type `fn()`, which is not FFI-safe
   --> $DIR/lint-ctypes-fn.rs:118:30
    |
-LL | pub extern "C" fn fn_type(p: RustFn) { }
+LL | pub extern "C" fn fn_type(p: CrabLangFn) { }
    |                              ^^^^^^ not FFI-safe
    |
    = help: consider using an `extern fn(...) -> ...` function pointer instead
-   = note: this function pointer has Rust-specific calling convention
+   = note: this function pointer has CrabLang-specific calling convention
 
 error: `extern` fn uses type `fn()`, which is not FFI-safe
   --> $DIR/lint-ctypes-fn.rs:121:31
@@ -139,7 +139,7 @@ LL | pub extern "C" fn fn_type2(p: fn()) { }
    |                               ^^^^ not FFI-safe
    |
    = help: consider using an `extern fn(...) -> ...` function pointer instead
-   = note: this function pointer has Rust-specific calling convention
+   = note: this function pointer has CrabLang-specific calling convention
 
 error: `extern` fn uses type `i128`, which is not FFI-safe
   --> $DIR/lint-ctypes-fn.rs:126:39

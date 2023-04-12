@@ -3,7 +3,7 @@
 
 #![crate_type = "lib"]
 
-// Adapted from <https://github.com/rust-lang/rust/issues/73258#issue-637346014>
+// Adapted from <https://github.com/crablang/crablang/issues/73258#issue-637346014>
 
 #[derive(Clone, Copy)]
 #[repr(u8)]

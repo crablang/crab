@@ -4,7 +4,7 @@ error[E0658]: avr-interrupt and avr-non-blocking-interrupt ABIs are experimental
 LL | extern "avr-non-blocking-interrupt" fn fu() {}
    |        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
    |
-   = note: see issue #69664 <https://github.com/rust-lang/rust/issues/69664> for more information
+   = note: see issue #69664 <https://github.com/crablang/crablang/issues/69664> for more information
    = help: add `#![feature(abi_avr_interrupt)]` to the crate attributes to enable
 
 error[E0658]: avr-interrupt and avr-non-blocking-interrupt ABIs are experimental and subject to change
@@ -13,7 +13,7 @@ error[E0658]: avr-interrupt and avr-non-blocking-interrupt ABIs are experimental
 LL | extern "avr-interrupt" fn f() {}
    |        ^^^^^^^^^^^^^^^
    |
-   = note: see issue #69664 <https://github.com/rust-lang/rust/issues/69664> for more information
+   = note: see issue #69664 <https://github.com/crablang/crablang/issues/69664> for more information
    = help: add `#![feature(abi_avr_interrupt)]` to the crate attributes to enable
 
 error[E0658]: avr-interrupt and avr-non-blocking-interrupt ABIs are experimental and subject to change
@@ -22,7 +22,7 @@ error[E0658]: avr-interrupt and avr-non-blocking-interrupt ABIs are experimental
 LL |     extern "avr-interrupt" fn m();
    |            ^^^^^^^^^^^^^^^
    |
-   = note: see issue #69664 <https://github.com/rust-lang/rust/issues/69664> for more information
+   = note: see issue #69664 <https://github.com/crablang/crablang/issues/69664> for more information
    = help: add `#![feature(abi_avr_interrupt)]` to the crate attributes to enable
 
 error[E0658]: avr-interrupt and avr-non-blocking-interrupt ABIs are experimental and subject to change
@@ -31,7 +31,7 @@ error[E0658]: avr-interrupt and avr-non-blocking-interrupt ABIs are experimental
 LL |     extern "avr-non-blocking-interrupt" fn mu();
    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
    |
-   = note: see issue #69664 <https://github.com/rust-lang/rust/issues/69664> for more information
+   = note: see issue #69664 <https://github.com/crablang/crablang/issues/69664> for more information
    = help: add `#![feature(abi_avr_interrupt)]` to the crate attributes to enable
 
 error[E0658]: avr-interrupt and avr-non-blocking-interrupt ABIs are experimental and subject to change
@@ -40,7 +40,7 @@ error[E0658]: avr-interrupt and avr-non-blocking-interrupt ABIs are experimental
 LL |     extern "avr-interrupt" fn dm() {}
    |            ^^^^^^^^^^^^^^^
    |
-   = note: see issue #69664 <https://github.com/rust-lang/rust/issues/69664> for more information
+   = note: see issue #69664 <https://github.com/crablang/crablang/issues/69664> for more information
    = help: add `#![feature(abi_avr_interrupt)]` to the crate attributes to enable
 
 error[E0658]: avr-interrupt and avr-non-blocking-interrupt ABIs are experimental and subject to change
@@ -49,7 +49,7 @@ error[E0658]: avr-interrupt and avr-non-blocking-interrupt ABIs are experimental
 LL |     extern "avr-non-blocking-interrupt" fn dmu() {}
    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
    |
-   = note: see issue #69664 <https://github.com/rust-lang/rust/issues/69664> for more information
+   = note: see issue #69664 <https://github.com/crablang/crablang/issues/69664> for more information
    = help: add `#![feature(abi_avr_interrupt)]` to the crate attributes to enable
 
 error[E0658]: avr-interrupt and avr-non-blocking-interrupt ABIs are experimental and subject to change
@@ -58,7 +58,7 @@ error[E0658]: avr-interrupt and avr-non-blocking-interrupt ABIs are experimental
 LL |     extern "avr-interrupt" fn m() {}
    |            ^^^^^^^^^^^^^^^
    |
-   = note: see issue #69664 <https://github.com/rust-lang/rust/issues/69664> for more information
+   = note: see issue #69664 <https://github.com/crablang/crablang/issues/69664> for more information
    = help: add `#![feature(abi_avr_interrupt)]` to the crate attributes to enable
 
 error[E0658]: avr-interrupt and avr-non-blocking-interrupt ABIs are experimental and subject to change
@@ -67,7 +67,7 @@ error[E0658]: avr-interrupt and avr-non-blocking-interrupt ABIs are experimental
 LL |     extern "avr-non-blocking-interrupt" fn mu() {}
    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
    |
-   = note: see issue #69664 <https://github.com/rust-lang/rust/issues/69664> for more information
+   = note: see issue #69664 <https://github.com/crablang/crablang/issues/69664> for more information
    = help: add `#![feature(abi_avr_interrupt)]` to the crate attributes to enable
 
 error[E0658]: avr-interrupt and avr-non-blocking-interrupt ABIs are experimental and subject to change
@@ -76,7 +76,7 @@ error[E0658]: avr-interrupt and avr-non-blocking-interrupt ABIs are experimental
 LL |     extern "avr-interrupt" fn im() {}
    |            ^^^^^^^^^^^^^^^
    |
-   = note: see issue #69664 <https://github.com/rust-lang/rust/issues/69664> for more information
+   = note: see issue #69664 <https://github.com/crablang/crablang/issues/69664> for more information
    = help: add `#![feature(abi_avr_interrupt)]` to the crate attributes to enable
 
 error[E0658]: avr-interrupt and avr-non-blocking-interrupt ABIs are experimental and subject to change
@@ -85,7 +85,7 @@ error[E0658]: avr-interrupt and avr-non-blocking-interrupt ABIs are experimental
 LL |     extern "avr-non-blocking-interrupt" fn imu() {}
    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
    |
-   = note: see issue #69664 <https://github.com/rust-lang/rust/issues/69664> for more information
+   = note: see issue #69664 <https://github.com/crablang/crablang/issues/69664> for more information
    = help: add `#![feature(abi_avr_interrupt)]` to the crate attributes to enable
 
 error[E0658]: avr-interrupt and avr-non-blocking-interrupt ABIs are experimental and subject to change
@@ -94,7 +94,7 @@ error[E0658]: avr-interrupt and avr-non-blocking-interrupt ABIs are experimental
 LL | type TA = extern "avr-interrupt" fn();
    |                  ^^^^^^^^^^^^^^^
    |
-   = note: see issue #69664 <https://github.com/rust-lang/rust/issues/69664> for more information
+   = note: see issue #69664 <https://github.com/crablang/crablang/issues/69664> for more information
    = help: add `#![feature(abi_avr_interrupt)]` to the crate attributes to enable
 
 error[E0658]: avr-interrupt and avr-non-blocking-interrupt ABIs are experimental and subject to change
@@ -103,7 +103,7 @@ error[E0658]: avr-interrupt and avr-non-blocking-interrupt ABIs are experimental
 LL | type TAU = extern "avr-non-blocking-interrupt" fn();
    |                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
    |
-   = note: see issue #69664 <https://github.com/rust-lang/rust/issues/69664> for more information
+   = note: see issue #69664 <https://github.com/crablang/crablang/issues/69664> for more information
    = help: add `#![feature(abi_avr_interrupt)]` to the crate attributes to enable
 
 error[E0658]: avr-interrupt and avr-non-blocking-interrupt ABIs are experimental and subject to change
@@ -112,7 +112,7 @@ error[E0658]: avr-interrupt and avr-non-blocking-interrupt ABIs are experimental
 LL | extern "avr-interrupt" {}
    |        ^^^^^^^^^^^^^^^
    |
-   = note: see issue #69664 <https://github.com/rust-lang/rust/issues/69664> for more information
+   = note: see issue #69664 <https://github.com/crablang/crablang/issues/69664> for more information
    = help: add `#![feature(abi_avr_interrupt)]` to the crate attributes to enable
 
 error[E0658]: avr-interrupt and avr-non-blocking-interrupt ABIs are experimental and subject to change
@@ -121,9 +121,9 @@ error[E0658]: avr-interrupt and avr-non-blocking-interrupt ABIs are experimental
 LL | extern "avr-non-blocking-interrupt" {}
    |        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
    |
-   = note: see issue #69664 <https://github.com/rust-lang/rust/issues/69664> for more information
+   = note: see issue #69664 <https://github.com/crablang/crablang/issues/69664> for more information
    = help: add `#![feature(abi_avr_interrupt)]` to the crate attributes to enable
 
 error: aborting due to 14 previous errors
 
-For more information about this error, try `rustc --explain E0658`.
+For more information about this error, try `crablangc --explain E0658`.

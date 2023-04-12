@@ -1,8 +1,8 @@
 use super::WRONG_TRANSMUTE;
 use clippy_utils::diagnostics::span_lint;
-use rustc_hir::Expr;
-use rustc_lint::LateContext;
-use rustc_middle::ty::{self, Ty};
+use crablangc_hir::Expr;
+use crablangc_lint::LateContext;
+use crablangc_middle::ty::{self, Ty};
 
 /// Checks for `wrong_transmute` lint.
 /// Returns `true` if it's triggered, otherwise returns `false`.

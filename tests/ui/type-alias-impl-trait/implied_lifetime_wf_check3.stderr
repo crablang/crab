@@ -31,4 +31,4 @@ LL |     fn test<A: 'static>() where Ty<A>: 'static { assert_static::<A>() }
 
 error: aborting due to 4 previous errors
 
-For more information about this error, try `rustc --explain E0310`.
+For more information about this error, try `crablangc --explain E0310`.

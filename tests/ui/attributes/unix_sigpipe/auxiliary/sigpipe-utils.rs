@@ -1,4 +1,4 @@
-#![feature(rustc_private)]
+#![feature(crablangc_private)]
 extern crate libc;
 
 /// So tests don't have to bring libc in scope themselves

@@ -1,10 +1,10 @@
 // ignore-stage1
 // edition:2018
-// compile-flags:--extern rustc_middle
+// compile-flags:--extern crablangc_middle
 
-// Test that `--extern rustc_middle` fails with `rustc_private`.
+// Test that `--extern crablangc_middle` fails with `crablangc_private`.
 
-pub use rustc_middle;
-//~^ ERROR use of unstable library feature 'rustc_private'
+pub use crablangc_middle;
+//~^ ERROR use of unstable library feature 'crablangc_private'
 
 fn main() {}

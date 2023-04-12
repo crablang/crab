@@ -25,4 +25,4 @@ LL |   d: for<'a> fn() -> &'a u32, // OK, used only in return type.
 
 error: aborting due to 2 previous errors
 
-For more information about this error, try `rustc --explain E0581`.
+For more information about this error, try `crablangc --explain E0581`.

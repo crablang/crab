@@ -36,4 +36,4 @@ LL | fn bar<'a, 'b, 'c, T>(x: bar::X<'a, T, 'b, 'c>) {}
 
 error: aborting due to 6 previous errors
 
-For more information about this error, try `rustc --explain E0747`.
+For more information about this error, try `crablangc --explain E0747`.

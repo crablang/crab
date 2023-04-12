@@ -9,7 +9,7 @@ following principles (in rough priority order):
     - accessibility - readable and editable by users using the the widest
       variety of hardware, including non-visual accessibility interfaces
     - readability of code in contexts without syntax highlighting or IDE
-      assistance, such as rustc error messages, diffs, grep, and other
+      assistance, such as crablangc error messages, diffs, grep, and other
       plain-text contexts
 
 * aesthetics
@@ -24,7 +24,7 @@ following principles (in rough priority order):
 
 * application
     - ease of manual application
-    - ease of implementation (in Rustfmt, and in other tools/editors/code generators)
+    - ease of implementation (in CrabLangfmt, and in other tools/editors/code generators)
     - internal consistency
     - simplicity of formatting rules
 
@@ -33,7 +33,7 @@ following principles (in rough priority order):
 
 Prefer block indent over visual indent. E.g.,
 
-```rust
+```crablang
 // Block indent
 a_function_call(
     foo,

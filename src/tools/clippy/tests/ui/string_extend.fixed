@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 
 #[derive(Copy, Clone)]
 struct HasChars;

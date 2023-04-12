@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 
 pub struct A { pub foo: isize }
 

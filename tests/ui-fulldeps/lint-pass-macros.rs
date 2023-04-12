@@ -1,12 +1,12 @@
 // compile-flags: -Z unstable-options
 // check-pass
 
-#![feature(rustc_private)]
+#![feature(crablangc_private)]
 
-extern crate rustc_session;
+extern crate crablangc_session;
 
-use rustc_session::lint::{LintArray, LintPass};
-use rustc_session::{declare_lint, declare_lint_pass, impl_lint_pass};
+use crablangc_session::lint::{LintArray, LintPass};
+use crablangc_session::{declare_lint, declare_lint_pass, impl_lint_pass};
 
 declare_lint! {
     pub TEST_LINT,

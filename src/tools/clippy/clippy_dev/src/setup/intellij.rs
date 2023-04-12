@@ -3,12 +3,12 @@ use std::fs::File;
 use std::io::prelude::*;
 use std::path::{Path, PathBuf};
 
-// This module takes an absolute path to a rustc repo and alters the dependencies to point towards
-// the respective rustc subcrates instead of using extern crate xyz.
-// This allows IntelliJ to analyze rustc internals and show proper information inside Clippy
-// code. See https://github.com/rust-lang/rust-clippy/issues/5514 for details
+// This module takes an absolute path to a crablangc repo and alters the dependencies to point towards
+// the respective crablangc subcrates instead of using extern crate xyz.
+// This allows IntelliJ to analyze crablangc internals and show proper information inside Clippy
+// code. See https://github.com/crablang/crablang-clippy/issues/5514 for details
 
-const RUSTC_PATH_SECTION: &str = "[target.'cfg(NOT_A_PLATFORM)'.dependencies]";
+const CRABLANGC_PATH_SECTION: &str = "[target.'cfg(NOT_A_PLATFORM)'.dependencies]";
 const DEPENDENCIES_SECTION: &str = "[dependencies]";
 
 const CLIPPY_PROJECTS: &[ClippyProjectInfo] = &[
@@ -35,13 +35,13 @@ impl ClippyProjectInfo {
     }
 }
 
-pub fn setup_rustc_src(rustc_path: &str) {
-    let Ok(rustc_source_dir) = check_and_get_rustc_dir(rustc_path) else {
+pub fn setup_crablangc_src(crablangc_path: &str) {
+    let Ok(crablangc_source_dir) = check_and_get_crablangc_dir(crablangc_path) else {
         return
     };
 
     for project in CLIPPY_PROJECTS {
-        if inject_deps_into_project(&rustc_source_dir, project).is_err() {
+        if inject_deps_into_project(&crablangc_source_dir, project).is_err() {
             return;
         }
     }
@@ -49,17 +49,17 @@ pub fn setup_rustc_src(rustc_path: &str) {
     println!("info: the source paths can be removed again with `cargo dev remove intellij`");
 }
 
-fn check_and_get_rustc_dir(rustc_path: &str) -> Result<PathBuf, ()> {
-    let mut path = PathBuf::from(rustc_path);
+fn check_and_get_crablangc_dir(crablangc_path: &str) -> Result<PathBuf, ()> {
+    let mut path = PathBuf::from(crablangc_path);
 
     if path.is_relative() {
         match path.canonicalize() {
             Ok(absolute_path) => {
-                println!("info: the rustc path was resolved to: `{}`", absolute_path.display());
+                println!("info: the crablangc path was resolved to: `{}`", absolute_path.display());
                 path = absolute_path;
             },
             Err(err) => {
-                eprintln!("error: unable to get the absolute path of rustc ({err})");
+                eprintln!("error: unable to get the absolute path of crablangc ({err})");
                 return Err(());
             },
         };
@@ -81,11 +81,11 @@ fn check_and_get_rustc_dir(rustc_path: &str) -> Result<PathBuf, ()> {
     Ok(path)
 }
 
-fn inject_deps_into_project(rustc_source_dir: &Path, project: &ClippyProjectInfo) -> Result<(), ()> {
+fn inject_deps_into_project(crablangc_source_dir: &Path, project: &ClippyProjectInfo) -> Result<(), ()> {
     let cargo_content = read_project_file(project.cargo_file)?;
     let lib_content = read_project_file(project.lib_rs_file)?;
 
-    if inject_deps_into_manifest(rustc_source_dir, project.cargo_file, &cargo_content, &lib_content).is_err() {
+    if inject_deps_into_manifest(crablangc_source_dir, project.cargo_file, &cargo_content, &lib_content).is_err() {
         eprintln!(
             "error: unable to inject dependencies into {} with the Cargo file {}",
             project.name, project.cargo_file
@@ -116,29 +116,29 @@ fn read_project_file(file_path: &str) -> Result<String, ()> {
 }
 
 fn inject_deps_into_manifest(
-    rustc_source_dir: &Path,
+    crablangc_source_dir: &Path,
     manifest_path: &str,
     cargo_toml: &str,
     lib_rs: &str,
 ) -> std::io::Result<()> {
     // do not inject deps if we have already done so
-    if cargo_toml.contains(RUSTC_PATH_SECTION) {
+    if cargo_toml.contains(CRABLANGC_PATH_SECTION) {
         eprintln!("warn: dependencies are already setup inside {manifest_path}, skipping file");
         return Ok(());
     }
 
     let extern_crates = lib_rs
         .lines()
-        // only take dependencies starting with `rustc_`
-        .filter(|line| line.starts_with("extern crate rustc_"))
+        // only take dependencies starting with `crablangc_`
+        .filter(|line| line.starts_with("extern crate crablangc_"))
         // we have something like "extern crate foo;", we only care about the "foo"
-        // extern crate rustc_middle;
+        // extern crate crablangc_middle;
         //              ^^^^^^^^^^^^
         .map(|s| &s[13..(s.len() - 1)]);
 
     let new_deps = extern_crates.map(|dep| {
         // format the dependencies that are going to be put inside the Cargo.toml
-        format!("{dep} = {{ path = \"{}/{dep}\" }}\n", rustc_source_dir.display())
+        format!("{dep} = {{ path = \"{}/{dep}\" }}\n", crablangc_source_dir.display())
     });
 
     // format a new [dependencies]-block with the new deps we need to inject
@@ -164,17 +164,17 @@ fn inject_deps_into_manifest(
     Ok(())
 }
 
-pub fn remove_rustc_src() {
+pub fn remove_crablangc_src() {
     for project in CLIPPY_PROJECTS {
-        remove_rustc_src_from_project(project);
+        remove_crablangc_src_from_project(project);
     }
 }
 
-fn remove_rustc_src_from_project(project: &ClippyProjectInfo) -> bool {
+fn remove_crablangc_src_from_project(project: &ClippyProjectInfo) -> bool {
     let Ok(mut cargo_content) = read_project_file(project.cargo_file) else {
         return false;
     };
-    let Some(section_start) = cargo_content.find(RUSTC_PATH_SECTION) else {
+    let Some(section_start) = cargo_content.find(CRABLANGC_PATH_SECTION) else {
         println!(
             "info: dependencies could not be found in `{}` for {}, skipping file",
             project.cargo_file, project.name
@@ -184,7 +184,7 @@ fn remove_rustc_src_from_project(project: &ClippyProjectInfo) -> bool {
 
     let Some(end_point) = cargo_content.find(DEPENDENCIES_SECTION) else {
         eprintln!(
-            "error: the end of the rustc dependencies section could not be found in `{}`",
+            "error: the end of the crablangc dependencies section could not be found in `{}`",
             project.cargo_file
         );
         return false;
@@ -200,7 +200,7 @@ fn remove_rustc_src_from_project(project: &ClippyProjectInfo) -> bool {
         },
         Err(err) => {
             eprintln!(
-                "error: unable to open file `{}` to remove rustc dependencies for {} ({err})",
+                "error: unable to open file `{}` to remove crablangc dependencies for {} ({err})",
                 project.cargo_file, project.name
             );
             false

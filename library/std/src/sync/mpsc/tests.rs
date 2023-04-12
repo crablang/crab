@@ -4,7 +4,7 @@ use crate::thread;
 use crate::time::{Duration, Instant};
 
 pub fn stress_factor() -> usize {
-    match env::var("RUST_TEST_STRESS") {
+    match env::var("CRABLANG_TEST_STRESS") {
         Ok(val) => val.parse().unwrap(),
         Err(..) => 1,
     }

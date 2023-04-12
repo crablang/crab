@@ -1,0 +1,15 @@
+[package]
+name = "crablangc_smir"
+version = "0.0.0"
+edition = "2021"
+
+[dependencies]
+crablangc_middle = { path = "../crablangc_middle", optional = true }
+crablangc_span = { path = "../crablangc_span", optional = true }
+tracing = "0.1"
+
+[features]
+default = [
+    "crablangc_middle",
+    "crablangc_span",
+]

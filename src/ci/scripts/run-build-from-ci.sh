@@ -12,10 +12,10 @@ export SRC=.
 
 echo "::add-matcher::src/ci/github-actions/problem_matchers.json"
 
-# Remove any preexisting rustup installation since it can interfere
+# Remove any preexisting crablangup installation since it can interfere
 # with the cargotest step and its auto-detection of things like Clippy in
 # the environment
-rustup self uninstall -y || true
+crablangup self uninstall -y || true
 if [ -z "${IMAGE+x}" ]; then
     src/ci/run.sh
 else

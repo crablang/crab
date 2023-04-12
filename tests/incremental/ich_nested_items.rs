@@ -6,14 +6,14 @@
 // compile-flags: -Z query-dep-graph
 
 #![crate_type = "rlib"]
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 
-#[rustc_clean(except = "hir_owner_nodes", cfg = "cfail2")]
+#[crablangc_clean(except = "hir_owner_nodes", cfg = "cfail2")]
 pub fn foo() {
     #[cfg(cfail1)]
     pub fn baz() {} // order is different...
 
-    #[rustc_clean(cfg = "cfail2")]
+    #[crablangc_clean(cfg = "cfail2")]
     pub fn bar() {} // but that doesn't matter.
 
     #[cfg(cfail2)]

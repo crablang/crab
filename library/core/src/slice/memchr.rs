@@ -1,4 +1,4 @@
-// Original implementation taken from rust-memchr.
+// Original implementation taken from crablang-memchr.
 // Copyright 2015 Andrew Gallant, bluss and Nicolas Koch
 
 use crate::cmp;
@@ -16,21 +16,21 @@ const USIZE_BYTES: usize = mem::size_of::<usize>();
 /// bytes where the borrow propagated all the way to the most significant
 /// bit."
 #[inline]
-#[rustc_const_stable(feature = "const_memchr", since = "1.65.0")]
+#[crablangc_const_stable(feature = "const_memchr", since = "1.65.0")]
 const fn contains_zero_byte(x: usize) -> bool {
     x.wrapping_sub(LO_USIZE) & !x & HI_USIZE != 0
 }
 
 #[inline]
 #[cfg(target_pointer_width = "16")]
-#[rustc_const_stable(feature = "const_memchr", since = "1.65.0")]
+#[crablangc_const_stable(feature = "const_memchr", since = "1.65.0")]
 const fn repeat_byte(b: u8) -> usize {
     (b as usize) << 8 | b as usize
 }
 
 #[inline]
 #[cfg(not(target_pointer_width = "16"))]
-#[rustc_const_stable(feature = "const_memchr", since = "1.65.0")]
+#[crablangc_const_stable(feature = "const_memchr", since = "1.65.0")]
 const fn repeat_byte(b: u8) -> usize {
     (b as usize) * (usize::MAX / 255)
 }
@@ -38,7 +38,7 @@ const fn repeat_byte(b: u8) -> usize {
 /// Returns the first index matching the byte `x` in `text`.
 #[inline]
 #[must_use]
-#[rustc_const_stable(feature = "const_memchr", since = "1.65.0")]
+#[crablangc_const_stable(feature = "const_memchr", since = "1.65.0")]
 pub const fn memchr(x: u8, text: &[u8]) -> Option<usize> {
     // Fast path for small slices.
     if text.len() < 2 * USIZE_BYTES {
@@ -49,7 +49,7 @@ pub const fn memchr(x: u8, text: &[u8]) -> Option<usize> {
 }
 
 #[inline]
-#[rustc_const_stable(feature = "const_memchr", since = "1.65.0")]
+#[crablangc_const_stable(feature = "const_memchr", since = "1.65.0")]
 const fn memchr_naive(x: u8, text: &[u8]) -> Option<usize> {
     let mut i = 0;
 
@@ -65,10 +65,10 @@ const fn memchr_naive(x: u8, text: &[u8]) -> Option<usize> {
     None
 }
 
-#[rustc_allow_const_fn_unstable(const_cmp)]
-#[rustc_allow_const_fn_unstable(const_slice_index)]
-#[rustc_allow_const_fn_unstable(const_align_offset)]
-#[rustc_const_stable(feature = "const_memchr", since = "1.65.0")]
+#[crablangc_allow_const_fn_unstable(const_cmp)]
+#[crablangc_allow_const_fn_unstable(const_slice_index)]
+#[crablangc_allow_const_fn_unstable(const_align_offset)]
+#[crablangc_const_stable(feature = "const_memchr", since = "1.65.0")]
 const fn memchr_aligned(x: u8, text: &[u8]) -> Option<usize> {
     // Scan for a single byte value by reading two `usize` words at a time.
     //

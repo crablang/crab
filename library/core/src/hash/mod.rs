@@ -11,7 +11,7 @@
 //!
 //! # Examples
 //!
-//! ```rust
+//! ```crablang
 //! use std::collections::hash_map::DefaultHasher;
 //! use std::hash::{Hash, Hasher};
 //!
@@ -45,7 +45,7 @@
 //! If you need more control over how a value is hashed, you need to implement
 //! the [`Hash`] trait:
 //!
-//! ```rust
+//! ```crablang
 //! use std::collections::hash_map::DefaultHasher;
 //! use std::hash::{Hash, Hasher};
 //!
@@ -83,13 +83,13 @@
 //! }
 //! ```
 
-#![stable(feature = "rust1", since = "1.0.0")]
+#![stable(feature = "crablang1", since = "1.0.0")]
 
 use crate::fmt;
 use crate::intrinsics::const_eval_select;
 use crate::marker::{self, Destruct};
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[allow(deprecated)]
 pub use self::sip::SipHasher;
 
@@ -113,7 +113,7 @@ mod sip;
 ///
 /// ```
 /// #[derive(Hash)]
-/// struct Rustacean {
+/// struct CrabLangacean {
 ///     name: String,
 ///     country: String,
 /// }
@@ -182,8 +182,8 @@ mod sip;
 /// [`HashSet`]: ../../std/collections/struct.HashSet.html
 /// [`hash`]: Hash::hash
 /// [impl]: ../../std/primitive.str.html#impl-Hash-for-str
-#[stable(feature = "rust1", since = "1.0.0")]
-#[rustc_diagnostic_item = "Hash"]
+#[stable(feature = "crablang1", since = "1.0.0")]
+#[crablangc_diagnostic_item = "Hash"]
 #[const_trait]
 pub trait Hash {
     /// Feeds this value into the given [`Hasher`].
@@ -198,7 +198,7 @@ pub trait Hash {
     /// 7920.hash(&mut hasher);
     /// println!("Hash is {:x}!", hasher.finish());
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     fn hash<H: ~const Hasher>(&self, state: &mut H);
 
     /// Feeds a slice of this type into the given [`Hasher`].
@@ -261,7 +261,7 @@ pub trait Hash {
 // Separate module to reexport the macro `Hash` from prelude without the trait `Hash`.
 pub(crate) mod macros {
     /// Derive macro generating an impl of the trait `Hash`.
-    #[rustc_builtin_macro]
+    #[crablangc_builtin_macro]
     #[stable(feature = "builtin_macro_prelude", since = "1.38.0")]
     #[allow_internal_unstable(core_intrinsics)]
     pub macro Hash($item:item) {
@@ -326,7 +326,7 @@ pub use macros::Hash;
 /// [`write`]: Hasher::write
 /// [`write_u8`]: Hasher::write_u8
 /// [`write_u32`]: Hasher::write_u32
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[const_trait]
 pub trait Hasher {
     /// Returns the hash value for the values written so far.
@@ -349,7 +349,7 @@ pub trait Hasher {
     /// ```
     ///
     /// [`write`]: Hasher::write
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     fn finish(&self) -> u64;
 
     /// Writes some data into this `Hasher`.
@@ -373,7 +373,7 @@ pub trait Hasher {
     /// You generally should not do length-prefixing as part of implementing
     /// this method.  It's up to the [`Hash`] implementation to call
     /// [`Hasher::write_length_prefix`] before sequences that need it.
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     fn write(&mut self, bytes: &[u8]);
 
     /// Writes a single `u8` into this hasher.
@@ -573,7 +573,7 @@ pub trait Hasher {
 }
 
 #[stable(feature = "indirect_hasher_impl", since = "1.22.0")]
-#[rustc_const_unstable(feature = "const_hash", issue = "104061")]
+#[crablangc_const_unstable(feature = "const_hash", issue = "104061")]
 impl<H: ~const Hasher + ?Sized> const Hasher for &mut H {
     fn finish(&self) -> u64 {
         (**self).finish()
@@ -770,7 +770,7 @@ pub trait BuildHasher {
 /// [method.default]: BuildHasherDefault::default
 /// [`HashMap`]: ../../std/collections/struct.HashMap.html
 /// [`HashSet`]: ../../std/collections/struct.HashSet.html
-/// [zero-sized]: https://doc.rust-lang.org/nomicon/exotic-sizes.html#zero-sized-types-zsts
+/// [zero-sized]: https://doc.crablang.org/nomicon/exotic-sizes.html#zero-sized-types-zsts
 #[stable(since = "1.7.0", feature = "build_hasher")]
 pub struct BuildHasherDefault<H>(marker::PhantomData<fn() -> H>);
 
@@ -782,7 +782,7 @@ impl<H> fmt::Debug for BuildHasherDefault<H> {
 }
 
 #[stable(since = "1.7.0", feature = "build_hasher")]
-#[rustc_const_unstable(feature = "const_hash", issue = "104061")]
+#[crablangc_const_unstable(feature = "const_hash", issue = "104061")]
 impl<H: ~const Default + Hasher> const BuildHasher for BuildHasherDefault<H> {
     type Hasher = H;
 
@@ -799,7 +799,7 @@ impl<H> Clone for BuildHasherDefault<H> {
 }
 
 #[stable(since = "1.7.0", feature = "build_hasher")]
-#[rustc_const_unstable(feature = "const_default_impls", issue = "87864")]
+#[crablangc_const_unstable(feature = "const_default_impls", issue = "87864")]
 impl<H> const Default for BuildHasherDefault<H> {
     fn default() -> BuildHasherDefault<H> {
         BuildHasherDefault(marker::PhantomData)
@@ -824,8 +824,8 @@ mod impls {
 
     macro_rules! impl_write {
         ($(($ty:ident, $meth:ident),)*) => {$(
-            #[stable(feature = "rust1", since = "1.0.0")]
-            #[rustc_const_unstable(feature = "const_hash", issue = "104061")]
+            #[stable(feature = "crablang1", since = "1.0.0")]
+            #[crablangc_const_unstable(feature = "const_hash", issue = "104061")]
             impl const Hash for $ty {
                 #[inline]
                 fn hash<H: ~const Hasher>(&self, state: &mut H) {
@@ -861,8 +861,8 @@ mod impls {
         (i128, write_i128),
     }
 
-    #[stable(feature = "rust1", since = "1.0.0")]
-    #[rustc_const_unstable(feature = "const_hash", issue = "104061")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    #[crablangc_const_unstable(feature = "const_hash", issue = "104061")]
     impl const Hash for bool {
         #[inline]
         fn hash<H: ~const Hasher>(&self, state: &mut H) {
@@ -870,8 +870,8 @@ mod impls {
         }
     }
 
-    #[stable(feature = "rust1", since = "1.0.0")]
-    #[rustc_const_unstable(feature = "const_hash", issue = "104061")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    #[crablangc_const_unstable(feature = "const_hash", issue = "104061")]
     impl const Hash for char {
         #[inline]
         fn hash<H: ~const Hasher>(&self, state: &mut H) {
@@ -879,8 +879,8 @@ mod impls {
         }
     }
 
-    #[stable(feature = "rust1", since = "1.0.0")]
-    #[rustc_const_unstable(feature = "const_hash", issue = "104061")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    #[crablangc_const_unstable(feature = "const_hash", issue = "104061")]
     impl const Hash for str {
         #[inline]
         fn hash<H: ~const Hasher>(&self, state: &mut H) {
@@ -889,7 +889,7 @@ mod impls {
     }
 
     #[stable(feature = "never_hash", since = "1.29.0")]
-    #[rustc_const_unstable(feature = "const_hash", issue = "104061")]
+    #[crablangc_const_unstable(feature = "const_hash", issue = "104061")]
     impl const Hash for ! {
         #[inline]
         fn hash<H: ~const Hasher>(&self, _: &mut H) {
@@ -899,8 +899,8 @@ mod impls {
 
     macro_rules! impl_hash_tuple {
         () => (
-            #[stable(feature = "rust1", since = "1.0.0")]
-            #[rustc_const_unstable(feature = "const_hash", issue = "104061")]
+            #[stable(feature = "crablang1", since = "1.0.0")]
+            #[crablangc_const_unstable(feature = "const_hash", issue = "104061")]
             impl const Hash for () {
                 #[inline]
                 fn hash<H: ~const Hasher>(&self, _state: &mut H) {}
@@ -910,8 +910,8 @@ mod impls {
         ( $($name:ident)+) => (
             maybe_tuple_doc! {
                 $($name)+ @
-                #[stable(feature = "rust1", since = "1.0.0")]
-                #[rustc_const_unstable(feature = "const_hash", issue = "104061")]
+                #[stable(feature = "crablang1", since = "1.0.0")]
+                #[crablangc_const_unstable(feature = "const_hash", issue = "104061")]
                 impl<$($name: ~const Hash),+> const Hash for ($($name,)+) where last_type!($($name,)+): ?Sized {
                     #[allow(non_snake_case)]
                     #[inline]
@@ -957,8 +957,8 @@ mod impls {
     impl_hash_tuple! { T B C D E F G H I J K }
     impl_hash_tuple! { T B C D E F G H I J K L }
 
-    #[stable(feature = "rust1", since = "1.0.0")]
-    #[rustc_const_unstable(feature = "const_hash", issue = "104061")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    #[crablangc_const_unstable(feature = "const_hash", issue = "104061")]
     impl<T: ~const Hash> const Hash for [T] {
         #[inline]
         fn hash<H: ~const Hasher>(&self, state: &mut H) {
@@ -967,8 +967,8 @@ mod impls {
         }
     }
 
-    #[stable(feature = "rust1", since = "1.0.0")]
-    #[rustc_const_unstable(feature = "const_hash", issue = "104061")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    #[crablangc_const_unstable(feature = "const_hash", issue = "104061")]
     impl<T: ?Sized + ~const Hash> const Hash for &T {
         #[inline]
         fn hash<H: ~const Hasher>(&self, state: &mut H) {
@@ -976,8 +976,8 @@ mod impls {
         }
     }
 
-    #[stable(feature = "rust1", since = "1.0.0")]
-    #[rustc_const_unstable(feature = "const_hash", issue = "104061")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    #[crablangc_const_unstable(feature = "const_hash", issue = "104061")]
     impl<T: ?Sized + ~const Hash> const Hash for &mut T {
         #[inline]
         fn hash<H: ~const Hasher>(&self, state: &mut H) {
@@ -985,7 +985,7 @@ mod impls {
         }
     }
 
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     impl<T: ?Sized> Hash for *const T {
         #[inline]
         fn hash<H: Hasher>(&self, state: &mut H) {
@@ -995,7 +995,7 @@ mod impls {
         }
     }
 
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     impl<T: ?Sized> Hash for *mut T {
         #[inline]
         fn hash<H: Hasher>(&self, state: &mut H) {

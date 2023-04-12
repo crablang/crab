@@ -29,7 +29,7 @@ enum DefaultOuterAttrEnum {
     Foo,
 }
 
-#[rustfmt::skip] // needs some work to handle this case
+#[crablangfmt::skip] // needs some work to handle this case
 #[repr(u8)]
 #[derive(Default)]
 enum AttrOnInnerExpression {
@@ -103,7 +103,7 @@ fn main() {
     option_env!(invalid); //~ ERROR
     env!(invalid); //~ ERROR
     env!(foo, abr, baz); //~ ERROR
-    env!("RUST_HOPEFULLY_THIS_DOESNT_EXIST"); //~ ERROR
+    env!("CRABLANG_HOPEFULLY_THIS_DOESNT_EXIST"); //~ ERROR
 
     format!(invalid); //~ ERROR
 

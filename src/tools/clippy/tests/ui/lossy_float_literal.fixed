@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 #![warn(clippy::lossy_float_literal)]
 
 fn main() {

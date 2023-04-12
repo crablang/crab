@@ -2,7 +2,7 @@
 
 // check-pass
 
-#![feature(decl_macro, rustc_attrs)]
+#![feature(decl_macro, crablangc_attrs)]
 
 mod x {
     pub use std::ops::Not as _;
@@ -24,7 +24,7 @@ macro m() {
     }
 }
 
-#[rustc_macro_transparency = "transparent"]
+#[crablangc_macro_transparency = "transparent"]
 macro n() {
     mod z {
         pub use std::ops::Deref as _;

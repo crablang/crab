@@ -7,13 +7,13 @@ use clippy_utils::higher;
 use clippy_utils::source::snippet_with_applicability;
 use clippy_utils::sugg::Sugg;
 use clippy_utils::{get_parent_node, is_else_clause, is_expn_of, peel_blocks, peel_blocks_with_stmt};
-use rustc_ast::ast::LitKind;
-use rustc_errors::Applicability;
-use rustc_hir::{BinOpKind, Block, Expr, ExprKind, HirId, Node, UnOp};
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_session::{declare_lint_pass, declare_tool_lint};
-use rustc_span::source_map::Spanned;
-use rustc_span::Span;
+use crablangc_ast::ast::LitKind;
+use crablangc_errors::Applicability;
+use crablangc_hir::{BinOpKind, Block, Expr, ExprKind, HirId, Node, UnOp};
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_span::source_map::Spanned;
+use crablangc_span::Span;
 
 declare_clippy_lint! {
     /// ### What it does
@@ -30,7 +30,7 @@ declare_clippy_lint! {
     /// shorter code.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// # let x = true;
     /// if x {
     ///     false
@@ -41,7 +41,7 @@ declare_clippy_lint! {
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// # let x = true;
     /// !x
     /// # ;
@@ -62,12 +62,12 @@ declare_clippy_lint! {
     /// Unnecessary code.
     ///
     /// ### Example
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// if x == true {}
     /// if y == false {}
     /// ```
     /// use `x` directly:
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// if x {}
     /// if !y {}
     /// ```

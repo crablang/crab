@@ -4,7 +4,7 @@ warning: the feature `generic_const_exprs` is incomplete and may not be safe to 
 LL | #![feature(const_trait_impl, generic_const_exprs)]
    |                              ^^^^^^^^^^^^^^^^^^^
    |
-   = note: see issue #76560 <https://github.com/rust-lang/rust/issues/76560> for more information
+   = note: see issue #76560 <https://github.com/crablang/crablang/issues/76560> for more information
    = note: `#[warn(incomplete_features)]` on by default
 
 error[E0080]: evaluation of `foo::<()>::{constant#0}` failed
@@ -15,4 +15,4 @@ LL | const fn foo<T: ~const Tr>() -> [u8; T::a()] {
 
 error: aborting due to previous error; 1 warning emitted
 
-For more information about this error, try `rustc --explain E0080`.
+For more information about this error, try `crablangc --explain E0080`.

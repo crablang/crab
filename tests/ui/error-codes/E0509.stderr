@@ -14,4 +14,4 @@ LL |     let fancy_field = &drop_struct.fancy;
 
 error: aborting due to previous error
 
-For more information about this error, try `rustc --explain E0509`.
+For more information about this error, try `crablangc --explain E0509`.

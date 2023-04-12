@@ -1,0 +1,15 @@
+error[E0046]: not all trait items implemented, missing one of: `eq`, `neq`
+  --> $DIR/crablangc_must_implement_one_of.rs:41:1
+   |
+LL | impl Equal for T3 {}
+   | ^^^^^^^^^^^^^^^^^ missing one of `eq`, `neq` in implementation
+   |
+note: required because of this annotation
+  --> $DIR/crablangc_must_implement_one_of.rs:3:1
+   |
+LL | #[crablangc_must_implement_one_of(eq, neq)]
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: aborting due to previous error
+
+For more information about this error, try `crablangc --explain E0046`.

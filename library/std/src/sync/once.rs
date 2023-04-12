@@ -25,7 +25,7 @@ use crate::sys_common::once as sys;
 ///     // run initialization here
 /// });
 /// ```
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub struct Once {
     inner: sys::Once,
 }
@@ -58,7 +58,7 @@ pub(crate) enum ExclusiveState {
 ///
 /// static START: Once = ONCE_INIT;
 /// ```
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[deprecated(
     since = "1.38.0",
     note = "the `new` function is now preferred",
@@ -70,7 +70,7 @@ impl Once {
     /// Creates a new `Once` value.
     #[inline]
     #[stable(feature = "once_new", since = "1.2.0")]
-    #[rustc_const_stable(feature = "const_once_new", since = "1.32.0")]
+    #[crablangc_const_stable(feature = "const_once_new", since = "1.32.0")]
     #[must_use]
     pub const fn new() -> Once {
         Once { inner: sys::Once::new() }
@@ -134,7 +134,7 @@ impl Once {
     ///
     /// [poison]: struct.Mutex.html#poisoning
     #[inline]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[track_caller]
     pub fn call_once<F>(&self, f: F)
     where

@@ -2,7 +2,7 @@ use crate::*;
 
 use crate::shims::unix::fs::FileDescriptor;
 
-use rustc_data_structures::fx::FxHashMap;
+use crablangc_data_structures::fx::FxHashMap;
 use std::io;
 
 /// An `Epoll` file descriptor connects file handles and epoll events

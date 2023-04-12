@@ -9,17 +9,17 @@
 // a proc-macro (e.g. producing the module via `quote!`)
 // but we use `-Z incremental-ignore-spans` for simplicity
 
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 
 #[cfg(rpass1)]
-#[rustc_clean(cfg="rpass1",except="hir_owner")]
+#[crablangc_clean(cfg="rpass1",except="hir_owner")]
 mod foo {
     struct First;
     struct Second;
 }
 
 #[cfg(rpass2)]
-#[rustc_clean(cfg="rpass2",except="hir_owner")]
+#[crablangc_clean(cfg="rpass2",except="hir_owner")]
 mod foo {
     struct Second;
     struct First;

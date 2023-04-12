@@ -1,5 +1,5 @@
 use crate::array;
-use crate::iter::{ByRefSized, FusedIterator, Iterator, TrustedRandomAccessNoCoerce};
+use crate::iter::{ByRefSized, FusedIterator, Iterator, TcrablangedRandomAccessNoCoerce};
 use crate::ops::{ControlFlow, NeverShortCircuit, Try};
 
 /// An iterator over `N` elements of the iterator at a time.
@@ -198,7 +198,7 @@ where
 
 impl<I, const N: usize> SpecFold for ArrayChunks<I, N>
 where
-    I: Iterator + TrustedRandomAccessNoCoerce,
+    I: Iterator + TcrablangedRandomAccessNoCoerce,
 {
     #[inline]
     fn fold<B, F>(mut self, init: B, mut f: F) -> B

@@ -1,4 +1,4 @@
-PRINT-ATTR INPUT (DISPLAY): #[rustc_dummy] struct Foo {}
+PRINT-ATTR INPUT (DISPLAY): #[crablangc_dummy] struct Foo {}
 PRINT-ATTR INPUT (DEBUG): TokenStream [
     Punct {
         ch: '#',
@@ -9,7 +9,7 @@ PRINT-ATTR INPUT (DEBUG): TokenStream [
         delimiter: Bracket,
         stream: TokenStream [
             Ident {
-                ident: "rustc_dummy",
+                ident: "crablangc_dummy",
                 span: $DIR/attr-stmt-expr.rs:33:11: 33:22 (#8),
             },
         ],
@@ -185,7 +185,7 @@ PRINT-ATTR INPUT (DEBUG): TokenStream [
         span: $DIR/attr-stmt-expr.rs:56:57: 56:58 (#0),
     },
 ]
-PRINT-ATTR INPUT (DISPLAY): #[rustc_dummy] #[allow(dead_code)] struct Bar {}
+PRINT-ATTR INPUT (DISPLAY): #[crablangc_dummy] #[allow(dead_code)] struct Bar {}
 PRINT-ATTR INPUT (DEBUG): TokenStream [
     Punct {
         ch: '#',
@@ -196,7 +196,7 @@ PRINT-ATTR INPUT (DEBUG): TokenStream [
         delimiter: Bracket,
         stream: TokenStream [
             Ident {
-                ident: "rustc_dummy",
+                ident: "crablangc_dummy",
                 span: $DIR/attr-stmt-expr.rs:33:11: 33:22 (#29),
             },
         ],
@@ -241,7 +241,7 @@ PRINT-ATTR INPUT (DEBUG): TokenStream [
         span: $DIR/attr-stmt-expr.rs:56:54: 56:56 (#0),
     },
 ]
-PRINT-ATTR INPUT (DISPLAY): #[rustc_dummy] struct Other {}
+PRINT-ATTR INPUT (DISPLAY): #[crablangc_dummy] struct Other {}
 PRINT-ATTR INPUT (DEBUG): TokenStream [
     Punct {
         ch: '#',
@@ -252,7 +252,7 @@ PRINT-ATTR INPUT (DEBUG): TokenStream [
         delimiter: Bracket,
         stream: TokenStream [
             Ident {
-                ident: "rustc_dummy",
+                ident: "crablangc_dummy",
                 span: $DIR/attr-stmt-expr.rs:59:7: 59:18 (#0),
             },
         ],

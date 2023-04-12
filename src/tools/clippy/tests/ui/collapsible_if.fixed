@@ -1,7 +1,7 @@
-// run-rustfix
+// run-crablangfix
 #![allow(clippy::assertions_on_constants, clippy::equatable_if_let)]
 
-#[rustfmt::skip]
+#[crablangfmt::skip]
 #[warn(clippy::collapsible_if)]
 fn main() {
     let x = "hello";
@@ -60,7 +60,7 @@ fn main() {
     }
 
 
-    // The following tests check for the fix of https://github.com/rust-lang/rust-clippy/issues/798
+    // The following tests check for the fix of https://github.com/crablang/crablang-clippy/issues/798
     if x == "hello" {// Not collapsible
         if y == "world" {
             println!("Hello world!");

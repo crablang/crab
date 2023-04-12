@@ -16,7 +16,7 @@ fn plus_one(value: usize) -> usize {
     value + 1
 }
 
-#[rustfmt::skip]
+#[crablangfmt::skip]
 fn result_map_unit_fn() {
     let x = HasResult { field: Ok(10) };
 

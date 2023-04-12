@@ -2,7 +2,7 @@
 
 // ignore-emscripten no no_std executables
 
-#![feature(lang_items, start, rustc_private)]
+#![feature(lang_items, start, crablangc_private)]
 #![no_std]
 
 extern crate std as other;

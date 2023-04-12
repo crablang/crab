@@ -3,11 +3,11 @@
 use clippy_utils::consts::{constant, Constant};
 use clippy_utils::diagnostics::{span_lint, span_lint_and_then};
 use clippy_utils::higher;
-use rustc_ast::ast::RangeLimits;
-use rustc_hir::{Expr, ExprKind};
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_middle::ty;
-use rustc_session::{declare_tool_lint, impl_lint_pass};
+use crablangc_ast::ast::RangeLimits;
+use crablangc_hir::{Expr, ExprKind};
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_middle::ty;
+use crablangc_session::{declare_tool_lint, impl_lint_pass};
 
 declare_clippy_lint! {
     /// ### What it does
@@ -18,7 +18,7 @@ declare_clippy_lint! {
     /// This will always panic at runtime.
     ///
     /// ### Example
-    /// ```rust,no_run
+    /// ```crablang,no_run
     /// let x = [1, 2, 3, 4];
     ///
     /// x[9];
@@ -26,7 +26,7 @@ declare_clippy_lint! {
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// # let x = [1, 2, 3, 4];
     /// // Index within bounds
     ///
@@ -43,14 +43,14 @@ declare_clippy_lint! {
     /// ### What it does
     /// Checks for usage of indexing or slicing. Arrays are special cases, this lint
     /// does report on arrays if we can tell that slicing operations are in bounds and does not
-    /// lint on constant `usize` indexing on arrays because that is handled by rustc's `const_err` lint.
+    /// lint on constant `usize` indexing on arrays because that is handled by crablangc's `const_err` lint.
     ///
     /// ### Why is this bad?
     /// Indexing and slicing can panic at runtime and there are
     /// safe alternatives.
     ///
     /// ### Example
-    /// ```rust,no_run
+    /// ```crablang,no_run
     /// // Vector
     /// let x = vec![0; 5];
     ///
@@ -65,7 +65,7 @@ declare_clippy_lint! {
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// # #![allow(unused)]
     ///
     /// # let x = vec![0; 5];
@@ -171,7 +171,7 @@ impl<'tcx> LateLintPass<'tcx> for IndexingSlicing {
                     }
                     // Index is a constant uint.
                     if let Some(..) = constant(cx, cx.typeck_results(), index) {
-                        // Let rustc's `const_err` lint handle constant `usize` indexing on arrays.
+                        // Let crablangc's `const_err` lint handle constant `usize` indexing on arrays.
                         return;
                     }
                 }

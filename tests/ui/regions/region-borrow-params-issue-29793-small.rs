@@ -35,7 +35,7 @@ fn move_of_closure_params() {
         let f = move |t: bool| if t { x } else { y };
         f;
     };
-    // (this code is fine, so lets go ahead and ensure rustc accepts call of `g`)
+    // (this code is fine, so lets go ahead and ensure crablangc accepts call of `g`)
     (g(1,2));
 }
 
@@ -44,7 +44,7 @@ fn ok_borrow_of_fn_params(a: usize, b:usize) {
         let f = |t: bool| if t { a } else { b };
         return f;
     };
-    // (this code is fine, so lets go ahead and ensure rustc accepts call of `g`)
+    // (this code is fine, so lets go ahead and ensure crablangc accepts call of `g`)
     (g(1,2))(true);
 }
 
@@ -77,7 +77,7 @@ fn move_of_fn_params() {
         let f = move |t: bool| if t { x } else { y };
         return Box::new(f);
     };
-    // (this code is fine, so lets go ahead and ensure rustc accepts call of `g`)
+    // (this code is fine, so lets go ahead and ensure crablangc accepts call of `g`)
     (g(1,2))(true);
 }
 
@@ -118,7 +118,7 @@ fn move_of_method_params() {
             return Box::new(f);
         }
     }
-    // (this code is fine, so lets go ahead and ensure rustc accepts call of `g`)
+    // (this code is fine, so lets go ahead and ensure crablangc accepts call of `g`)
     (S.g(1,2))(true);
 }
 
@@ -162,7 +162,7 @@ fn move_of_trait_impl_params() {
             return Box::new(f);
         }
     }
-    // (this code is fine, so lets go ahead and ensure rustc accepts call of `g`)
+    // (this code is fine, so lets go ahead and ensure crablangc accepts call of `g`)
     (S.g(1,2))(true);
 }
 
@@ -205,7 +205,7 @@ fn move_of_trait_default_params() {
         }
     }
     impl T for S {}
-    // (this code is fine, so lets go ahead and ensure rustc accepts call of `g`)
+    // (this code is fine, so lets go ahead and ensure crablangc accepts call of `g`)
     (S.g(1,2))(true);
 }
 

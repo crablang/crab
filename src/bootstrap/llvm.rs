@@ -138,7 +138,7 @@ pub(crate) fn detect_llvm_sha(config: &Config, is_git: bool) -> String {
             "--".into(),
             config.src.join("src/llvm-project"),
             config.src.join("src/bootstrap/download-ci-llvm-stamp"),
-            // the LLVM shared object file is named `LLVM-12-rust-{version}-nightly`
+            // the LLVM shared object file is named `LLVM-12-crablang-{version}-nightly`
             config.src.join("src/version"),
         ]);
         output(&mut rev_list).trim().to_owned()
@@ -167,7 +167,7 @@ pub(crate) fn detect_llvm_sha(config: &Config, is_git: bool) -> String {
 pub(crate) fn is_ci_llvm_available(config: &Config, asserts: bool) -> bool {
     // This is currently all tier 1 targets and tier 2 targets with host tools
     // (since others may not have CI artifacts)
-    // https://doc.rust-lang.org/rustc/platform-support.html#tier-1
+    // https://doc.crablang.org/crablangc/platform-support.html#tier-1
     let supported_platforms = [
         // tier 1
         ("aarch64-unknown-linux-gnu", false),
@@ -216,7 +216,7 @@ pub(crate) fn is_ci_llvm_available(config: &Config, asserts: bool) -> bool {
 
 /// Returns true if we're running in CI with modified LLVM (and thus can't download it)
 pub(crate) fn is_ci_llvm_modified(config: &Config) -> bool {
-    CiEnv::is_ci() && config.rust_info.is_managed_git_subrepository() && {
+    CiEnv::is_ci() && config.crablang_info.is_managed_git_subrepository() && {
         // We assume we have access to git, so it's okay to unconditionally pass
         // `true` here.
         let llvm_sha = detect_llvm_sha(config, true);
@@ -248,8 +248,8 @@ impl Step for Llvm {
     fn run(self, builder: &Builder<'_>) -> LlvmResult {
         let target = self.target;
         let target_native = if self.target.starts_with("riscv") {
-            // RISC-V target triples in Rust is not named the same as C compiler target triples.
-            // This converts Rust RISC-V target triples to C compiler triples.
+            // RISC-V target triples in CrabLang is not named the same as C compiler target triples.
+            // This converts CrabLang RISC-V target triples to C compiler triples.
             let idx = target.triple.find('-').unwrap();
 
             format!("riscv{}{}", &target.triple[5..7], &target.triple[idx..])
@@ -419,7 +419,7 @@ impl Step for Llvm {
         }
 
         // We want libxml to be disabled.
-        // See https://github.com/rust-lang/rust/pull/50104
+        // See https://github.com/crablang/crablang/pull/50104
         cfg.define("LLVM_ENABLE_LIBXML2", "OFF");
 
         if !enabled_llvm_projects.is_empty() {
@@ -464,11 +464,11 @@ impl Step for Llvm {
             if !suffix.is_empty() { Some(suffix.to_string()) } else { None }
         } else if builder.config.channel == "dev" {
             // Changes to a version suffix require a complete rebuild of the LLVM.
-            // To avoid rebuilds during a time of version bump, don't include rustc
+            // To avoid rebuilds during a time of version bump, don't include crablangc
             // release number on the dev channel.
-            Some("-rust-dev".to_string())
+            Some("-crablang-dev".to_string())
         } else {
-            Some(format!("-rust-{}-{}", builder.version, builder.config.channel))
+            Some(format!("-crablang-{}-{}", builder.version, builder.config.channel))
         };
         if let Some(ref suffix) = llvm_version_suffix {
             cfg.define("LLVM_VERSION_SUFFIX", suffix);
@@ -734,7 +734,7 @@ fn configure_cmake(
     cfg.define("CMAKE_EXE_LINKER_FLAGS", &ldflags.exe);
 
     if env::var_os("SCCACHE_ERROR_LOG").is_some() {
-        cfg.env("RUSTC_LOG", "sccache=warn");
+        cfg.env("CRABLANGC_LOG", "sccache=warn");
     }
 }
 
@@ -801,7 +801,7 @@ impl Step for Lld {
         if ci_llvm_bin.is_dir() && ci_llvm_bin.file_name().unwrap() == "bin" {
             let lld_path = ci_llvm_bin.join(exe("lld", target));
             if lld_path.exists() {
-                // The following steps copying `lld` as `rust-lld` to the sysroot, expect it in the
+                // The following steps copying `lld` as `crablang-lld` to the sysroot, expect it in the
                 // `bin` subfolder of this step's out dir.
                 return ci_llvm_bin.parent().unwrap().to_path_buf();
             }
@@ -962,7 +962,7 @@ pub struct SanitizerRuntime {
     pub cmake_target: String,
     /// Path to the built runtime library.
     pub path: PathBuf,
-    /// Library filename that will be used rustc.
+    /// Library filename that will be used crablangc.
     pub name: String,
 }
 
@@ -979,7 +979,7 @@ fn supported_sanitizers(
                 cmake_target: format!("clang_rt.{}_{}_dynamic", c, os),
                 path: out_dir
                     .join(&format!("build/lib/darwin/libclang_rt.{}_{}_dynamic.dylib", c, os)),
-                name: format!("librustc-{}_rt.{}.dylib", channel, c),
+                name: format!("libcrablangc-{}_rt.{}.dylib", channel, c),
             })
             .collect()
     };
@@ -990,7 +990,7 @@ fn supported_sanitizers(
             .map(move |c| SanitizerRuntime {
                 cmake_target: format!("clang_rt.{}-{}", c, arch),
                 path: out_dir.join(&format!("build/lib/{}/libclang_rt.{}-{}.a", os, c, arch)),
-                name: format!("librustc-{}_rt.{}.a", channel, c),
+                name: format!("libcrablangc-{}_rt.{}.a", channel, c),
             })
             .collect()
     };
@@ -1204,7 +1204,7 @@ impl Step for Libunwind {
                 // easiest way to undefine since no API available in cc::Build to undefine
                 cfg.flag("-U_FORTIFY_SOURCE");
                 cfg.define("_FORTIFY_SOURCE", "0");
-                cfg.define("RUST_SGX", "1");
+                cfg.define("CRABLANG_SGX", "1");
                 cfg.define("__NO_STRING_INLINES", None);
                 cfg.define("__NO_MATH_INLINES", None);
                 cfg.define("_LIBUNWIND_IS_BAREMETAL", None);
@@ -1257,7 +1257,7 @@ impl Step for Libunwind {
         let cpp_len = cpp_sources.len();
 
         if self.target.contains("x86_64-fortanix-unknown-sgx") {
-            c_sources.push("UnwindRustSgx.c");
+            c_sources.push("UnwindCrabLangSgx.c");
         }
 
         for src in c_sources {

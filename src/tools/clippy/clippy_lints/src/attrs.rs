@@ -5,18 +5,18 @@ use clippy_utils::macros::{is_panic, macro_backtrace};
 use clippy_utils::msrvs::{self, Msrv};
 use clippy_utils::source::{first_line_of_span, is_present_in_source, snippet_opt, without_block_comments};
 use if_chain::if_chain;
-use rustc_ast::{AttrKind, AttrStyle, Attribute, LitKind, MetaItemKind, MetaItemLit, NestedMetaItem};
-use rustc_errors::Applicability;
-use rustc_hir::{
+use crablangc_ast::{AttrKind, AttrStyle, Attribute, LitKind, MetaItemKind, MetaItemLit, NestedMetaItem};
+use crablangc_errors::Applicability;
+use crablangc_hir::{
     Block, Expr, ExprKind, ImplItem, ImplItemKind, Item, ItemKind, StmtKind, TraitFn, TraitItem, TraitItemKind,
 };
-use rustc_lint::{EarlyContext, EarlyLintPass, LateContext, LateLintPass, Level, LintContext};
-use rustc_middle::lint::in_external_macro;
-use rustc_middle::ty;
-use rustc_session::{declare_lint_pass, declare_tool_lint, impl_lint_pass};
-use rustc_span::source_map::Span;
-use rustc_span::symbol::Symbol;
-use rustc_span::{sym, DUMMY_SP};
+use crablangc_lint::{EarlyContext, EarlyLintPass, LateContext, LateLintPass, Level, LintContext};
+use crablangc_middle::lint::in_external_macro;
+use crablangc_middle::ty;
+use crablangc_session::{declare_lint_pass, declare_tool_lint, impl_lint_pass};
+use crablangc_span::source_map::Span;
+use crablangc_span::symbol::Symbol;
+use crablangc_span::{sym, DUMMY_SP};
 use semver::Version;
 
 static UNIX_SYSTEMS: &[&str] = &[
@@ -101,7 +101,7 @@ declare_clippy_lint! {
     /// ```
     ///
     /// Use instead:
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// #[allow(unused_imports)]
     /// use foo::baz;
     /// #[allow(unused_imports)]
@@ -124,7 +124,7 @@ declare_clippy_lint! {
     /// a valid semver. Failing that, the contained information is useless.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// #[deprecated(since = "forever")]
     /// fn something_else() { /* ... */ }
     /// ```
@@ -151,14 +151,14 @@ declare_clippy_lint! {
     /// currently works for basic cases but is not perfect.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// #[allow(dead_code)]
     ///
     /// fn not_quite_good_code() { }
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// // Good (as inner attribute)
     /// #![allow(dead_code)]
     ///
@@ -181,16 +181,16 @@ declare_clippy_lint! {
     /// Checks for `warn`/`deny`/`forbid` attributes targeting the whole clippy::restriction category.
     ///
     /// ### Why is this bad?
-    /// Restriction lints sometimes are in contrast with other lints or even go against idiomatic rust.
+    /// Restriction lints sometimes are in contrast with other lints or even go against idiomatic crablang.
     /// These lints should only be enabled on a lint-by-lint basis and with careful consideration.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// #![deny(clippy::restriction)]
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// #![deny(clippy::as_conversions)]
     /// ```
     #[clippy::version = "1.47.0"]
@@ -201,33 +201,33 @@ declare_clippy_lint! {
 
 declare_clippy_lint! {
     /// ### What it does
-    /// Checks for `#[cfg_attr(rustfmt, rustfmt_skip)]` and suggests to replace it
-    /// with `#[rustfmt::skip]`.
+    /// Checks for `#[cfg_attr(crablangfmt, crablangfmt_skip)]` and suggests to replace it
+    /// with `#[crablangfmt::skip]`.
     ///
     /// ### Why is this bad?
-    /// Since tool_attributes ([rust-lang/rust#44690](https://github.com/rust-lang/rust/issues/44690))
-    /// are stable now, they should be used instead of the old `cfg_attr(rustfmt)` attributes.
+    /// Since tool_attributes ([crablang/crablang#44690](https://github.com/crablang/crablang/issues/44690))
+    /// are stable now, they should be used instead of the old `cfg_attr(crablangfmt)` attributes.
     ///
     /// ### Known problems
     /// This lint doesn't detect crate level inner attributes, because they get
     /// processed before the PreExpansionPass lints get executed. See
-    /// [#3123](https://github.com/rust-lang/rust-clippy/pull/3123#issuecomment-422321765)
+    /// [#3123](https://github.com/crablang/crablang-clippy/pull/3123#issuecomment-422321765)
     ///
     /// ### Example
-    /// ```rust
-    /// #[cfg_attr(rustfmt, rustfmt_skip)]
+    /// ```crablang
+    /// #[cfg_attr(crablangfmt, crablangfmt_skip)]
     /// fn main() { }
     /// ```
     ///
     /// Use instead:
-    /// ```rust
-    /// #[rustfmt::skip]
+    /// ```crablang
+    /// #[crablangfmt::skip]
     /// fn main() { }
     /// ```
     #[clippy::version = "1.32.0"]
     pub DEPRECATED_CFG_ATTR,
     complexity,
-    "usage of `cfg_attr(rustfmt)` instead of tool attributes"
+    "usage of `cfg_attr(crablangfmt)` instead of tool attributes"
 }
 
 declare_clippy_lint! {
@@ -239,13 +239,13 @@ declare_clippy_lint! {
     /// by the conditional compilation engine.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// #[cfg(linux)]
     /// fn conditional() { }
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// # mod hidden {
     /// #[cfg(target_os = "linux")]
     /// fn conditional() { }
@@ -256,7 +256,7 @@ declare_clippy_lint! {
     /// #[cfg(unix)]
     /// fn conditional() { }
     /// ```
-    /// Check the [Rust Reference](https://doc.rust-lang.org/reference/conditional-compilation.html#target_os) for more details.
+    /// Check the [CrabLang Reference](https://doc.crablang.org/reference/conditional-compilation.html#target_os) for more details.
     #[clippy::version = "1.45.0"]
     pub MISMATCHED_TARGET_OS,
     correctness,
@@ -274,17 +274,17 @@ declare_clippy_lint! {
     /// ensure that others understand the reasoning
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// #![feature(lint_reasons)]
     ///
     /// #![allow(clippy::some_lint)]
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// #![feature(lint_reasons)]
     ///
-    /// #![allow(clippy::some_lint, reason = "False positive rust-lang/rust-clippy#1002020")]
+    /// #![allow(clippy::some_lint, reason = "False positive crablang/crablang-clippy#1002020")]
     /// ```
     #[clippy::version = "1.61.0"]
     pub ALLOW_ATTRIBUTES_WITHOUT_REASON,
@@ -607,7 +607,7 @@ impl_lint_pass!(EarlyAttributes => [
 ]);
 
 impl EarlyLintPass for EarlyAttributes {
-    fn check_item(&mut self, cx: &EarlyContext<'_>, item: &rustc_ast::Item) {
+    fn check_item(&mut self, cx: &EarlyContext<'_>, item: &crablangc_ast::Item) {
         check_empty_line_after_outer_attr(cx, item);
     }
 
@@ -619,7 +619,7 @@ impl EarlyLintPass for EarlyAttributes {
     extract_msrv_attr!(EarlyContext);
 }
 
-fn check_empty_line_after_outer_attr(cx: &EarlyContext<'_>, item: &rustc_ast::Item) {
+fn check_empty_line_after_outer_attr(cx: &EarlyContext<'_>, item: &crablangc_ast::Item) {
     let mut iter = item.attrs.iter().peekable();
     while let Some(attr) = iter.next() {
         if matches!(attr.kind, AttrKind::Normal(..))
@@ -659,12 +659,12 @@ fn check_deprecated_cfg_attr(cx: &EarlyContext<'_>, attr: &Attribute, msrv: &Msr
         if attr.has_name(sym::cfg_attr);
         if let Some(items) = attr.meta_item_list();
         if items.len() == 2;
-        // check for `rustfmt`
+        // check for `crablangfmt`
         if let Some(feature_item) = items[0].meta_item();
-        if feature_item.has_name(sym::rustfmt);
-        // check for `rustfmt_skip` and `rustfmt::skip`
+        if feature_item.has_name(sym::crablangfmt);
+        // check for `crablangfmt_skip` and `crablangfmt::skip`
         if let Some(skip_item) = &items[1].meta_item();
-        if skip_item.has_name(sym!(rustfmt_skip))
+        if skip_item.has_name(sym!(crablangfmt_skip))
             || skip_item
                 .path
                 .segments
@@ -674,16 +674,16 @@ fn check_deprecated_cfg_attr(cx: &EarlyContext<'_>, attr: &Attribute, msrv: &Msr
                 .name
                 == sym::skip;
         // Only lint outer attributes, because custom inner attributes are unstable
-        // Tracking issue: https://github.com/rust-lang/rust/issues/54726
+        // Tracking issue: https://github.com/crablang/crablang/issues/54726
         if attr.style == AttrStyle::Outer;
         then {
             span_lint_and_sugg(
                 cx,
                 DEPRECATED_CFG_ATTR,
                 attr.span,
-                "`cfg_attr` is deprecated for rustfmt and got replaced by tool attributes",
+                "`cfg_attr` is deprecated for crablangfmt and got replaced by tool attributes",
                 "use",
-                "#[rustfmt::skip]".to_string(),
+                "#[crablangfmt::skip]".to_string(),
                 Applicability::MachineApplicable,
             );
         }

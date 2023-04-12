@@ -2,7 +2,7 @@
 
 The tracking issue for this feature is [#13231]
 
-[#13231]: https://github.com/rust-lang/rust/issues/13231
+[#13231]: https://github.com/crablang/crablang/issues/13231
 
 ----
 
@@ -16,13 +16,13 @@ by the `negative_impls` feature.)
 [`Send`]: ../../std/marker/trait.Send.html
 [`Sync`]: ../../std/marker/trait.Sync.html
 
-```rust,ignore (partial-example)
+```crablang,ignore (partial-example)
 impl !Trait for Type {}
 ```
 
 Example:
 
-```rust
+```crablang
 #![feature(negative_impls)]
 #![feature(auto_traits)]
 
@@ -55,7 +55,7 @@ of the form `T: AutoTrait`, where `T` is the type of the field and
 `AutoTrait` is the auto trait in question. As an example, consider the
 struct `List` and the auto trait `Send`:
 
-```rust
+```crablang
 struct List<T> {
   data: T,
   next: Option<Box<List<T>>>,
@@ -65,7 +65,7 @@ struct List<T> {
 Presuming that there is no explicit impl of `Send` for `List`, the
 compiler will supply an automatic impl of the form:
 
-```rust
+```crablang
 struct List<T> {
   data: T,
   next: Option<Box<List<T>>>,
@@ -80,7 +80,7 @@ where
 
 Explicit impls may be either positive or negative. They take the form:
 
-```rust,ignore (partial-example)
+```crablang,ignore (partial-example)
 impl<...> AutoTrait for StructName<..> { }
 impl<...> !AutoTrait for StructName<..> { }
 ```

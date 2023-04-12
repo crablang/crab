@@ -6,13 +6,13 @@ use clippy_utils::visitors::for_each_expr;
 use clippy_utils::{eq_expr_value, trait_ref_of_method};
 use core::ops::ControlFlow;
 use if_chain::if_chain;
-use rustc_errors::Applicability;
-use rustc_hir as hir;
-use rustc_hir_typeck::expr_use_visitor::{Delegate, ExprUseVisitor, PlaceBase, PlaceWithHirId};
-use rustc_lint::LateContext;
-use rustc_middle::mir::FakeReadCause;
-use rustc_middle::ty::BorrowKind;
-use rustc_trait_selection::infer::TyCtxtInferExt;
+use crablangc_errors::Applicability;
+use crablangc_hir as hir;
+use crablangc_hir_typeck::expr_use_visitor::{Delegate, ExprUseVisitor, PlaceBase, PlaceWithHirId};
+use crablangc_lint::LateContext;
+use crablangc_middle::mir::FakeReadCause;
+use crablangc_middle::ty::BorrowKind;
+use crablangc_trait_selection::infer::TyCtxtInferExt;
 
 use super::ASSIGN_OP_PATTERN;
 

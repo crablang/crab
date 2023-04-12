@@ -1,18 +1,18 @@
-//! Rustc internal tooling for hand-writing MIR.
+//! CrabLangc internal tooling for hand-writing MIR.
 //!
-//! If for some reasons you are not writing rustc tests and have found yourself considering using
+//! If for some reasons you are not writing crablangc tests and have found yourself considering using
 //! this feature, turn back. This is *exceptionally* unstable. There is no attempt at all to make
-//! anything work besides those things which the rustc test suite happened to need. If you make a
+//! anything work besides those things which the crablangc test suite happened to need. If you make a
 //! typo you'll probably ICE. Really, this is not the solution to your problems. Consider instead
-//! supporting the [stable MIR project group](https://github.com/rust-lang/project-stable-mir).
+//! supporting the [stable MIR project group](https://github.com/crablang/project-stable-mir).
 //!
 //! The documentation for this module describes how to use this feature. If you are interested in
 //! hacking on the implementation, most of that documentation lives at
-//! `rustc_mir_build/src/build/custom/mod.rs`.
+//! `crablangc_mir_build/src/build/custom/mod.rs`.
 //!
 //! Typical usage will look like this:
 //!
-//! ```rust
+//! ```crablang
 //! #![feature(core_intrinsics, custom_mir)]
 //!
 //! extern crate core;
@@ -45,7 +45,7 @@
 //! "runtime", phase = "optimized")]` if you don't.
 //!
 //! [dialect docs]:
-//!     https://doc.rust-lang.org/nightly/nightly-rustc/rustc_middle/mir/enum.MirPhase.html
+//!     https://doc.crablang.org/nightly/nightly-crablangc/crablangc_middle/mir/enum.MirPhase.html
 //!
 //! The input to the [`mir!`] macro is:
 //!
@@ -58,11 +58,11 @@
 //!    to later.
 //!     - Each block is a list of semicolon terminated statements, followed by a terminator. The
 //!       syntax for the various statements and terminators is designed to be as similar as possible
-//!       to the syntax for analogous concepts in native Rust. See below for a list.
+//!       to the syntax for analogous concepts in native CrabLang. See below for a list.
 //!
 //! # Examples
 //!
-//! ```rust
+//! ```crablang
 //! #![feature(core_intrinsics, custom_mir)]
 //!
 //! extern crate core;
@@ -143,7 +143,7 @@
 //! We can also set off compilation failures that happen in sufficiently late stages of the
 //! compiler:
 //!
-//! ```rust,compile_fail
+//! ```crablang,compile_fail
 //! #![feature(core_intrinsics, custom_mir)]
 //!
 //! extern crate core;
@@ -195,7 +195,7 @@
 //!
 //! error: aborting due to previous error
 //!
-//! For more information about this error, try `rustc --explain E0381`.
+//! For more information about this error, try `crablangc --explain E0381`.
 //! ```
 //!
 //! # Syntax
@@ -223,7 +223,7 @@
 //!    constants in MIR and the only way to access statics.
 //!
 //! #### Statements
-//!  - Assign statements work via normal Rust assignment.
+//!  - Assign statements work via normal CrabLang assignment.
 //!  - [`Retag`], [`StorageLive`], [`StorageDead`], [`Deinit`] statements have an associated function.
 //!
 //! #### Rvalues
@@ -231,7 +231,7 @@
 //!  - Operands implicitly convert to `Use` rvalues.
 //!  - `&`, `&mut`, `addr_of!`, and `addr_of_mut!` all work to create their associated rvalue.
 //!  - [`Discriminant`] and [`Len`] have associated functions.
-//!  - Unary and binary operations use their normal Rust syntax - `a * b`, `!c`, etc.
+//!  - Unary and binary operations use their normal CrabLang syntax - `a * b`, `!c`, etc.
 //!  - Checked binary operations are represented by wrapping the associated binop in [`Checked`].
 //!  - Array repetition syntax (`[foo; 10]`) creates the associated rvalue.
 //!
@@ -263,7 +263,7 @@ pub struct BasicBlock;
 
 macro_rules! define {
     ($name:literal, $( #[ $meta:meta ] )* fn $($sig:tt)*) => {
-        #[rustc_diagnostic_item = $name]
+        #[crablangc_diagnostic_item = $name]
         $( #[ $meta ] )*
         pub fn $($sig)* { panic!() }
     }
@@ -296,7 +296,7 @@ define!(
     /// This only makes sense to use in conjunction with [`Variant`]. If the type you are looking to
     /// access the field of does not have variants, you can use normal field projection syntax.
     ///
-    /// There is no proper way to do a place projection to a variant in Rust, and so these two
+    /// There is no proper way to do a place projection to a variant in CrabLang, and so these two
     /// functions are a workaround. You can access a field of a variant via `Field(Variant(place,
     /// var_idx), field_idx)`, where `var_idx` and `field_idx` are appropriate literals. Some
     /// caveats:
@@ -312,7 +312,7 @@ define!(
     ///
     /// # Examples
     ///
-    /// ```rust
+    /// ```crablang
     /// #![feature(custom_mir, core_intrinsics)]
     ///
     /// extern crate core;
@@ -361,7 +361,7 @@ define!(
 ///
 /// See the module documentation for syntax details. This macro is not magic - it only transforms
 /// your MIR into something that is easier to parse in the compiler.
-#[rustc_macro_transparency = "transparent"]
+#[crablangc_macro_transparency = "transparent"]
 pub macro mir {
     (
         $(type RET = $ret_ty:ty ;)?

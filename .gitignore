@@ -43,8 +43,8 @@ no_llvm_build
 /llvm/
 /mingw-build/
 build/
-!/compiler/rustc_mir_build/src/build/
-/build-rust-analyzer/
+!/compiler/crablangc_mir_build/src/build/
+/build-crablang-analyzer/
 /dist/
 /unicode-downloads
 /target
@@ -75,7 +75,7 @@ node_modules
 package-lock.json
 package.json
 
-## Rustdoc GUI tests
-tests/rustdoc-gui/src/**.lock
+## CrabLangdoc GUI tests
+tests/crablangdoc-gui/src/**.lock
 
 # Before adding new lines, see the comment at the top.

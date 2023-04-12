@@ -1,6 +1,6 @@
 // check-pass
 
-// See https://github.com/rust-lang/rust/issues/95151
+// See https://github.com/crablang/crablang/issues/95151
 #[track_caller]
 macro_rules! _foo {
     () => {};

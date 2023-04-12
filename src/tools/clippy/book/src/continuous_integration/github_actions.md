@@ -1,6 +1,6 @@
 # GitHub Actions
 
-GitHub hosted runners using the latest stable version of Rust have Clippy pre-installed.
+GitHub hosted runners using the latest stable version of CrabLang have Clippy pre-installed.
 It is as simple as running `cargo clippy` to run lints against the codebase.
 
 ```yml
@@ -9,7 +9,7 @@ name: Clippy check
 
 # Make sure CI fails on all warnings, including Clippy lints
 env:
-  RUSTFLAGS: "-Dwarnings"
+  CRABLANGFLAGS: "-Dwarnings"
 
 jobs:
   clippy_check:

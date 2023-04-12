@@ -4,7 +4,7 @@ error[E0261]: use of undeclared lifetime name `'b`
 LL |         + Deref<Target = Self::Item<'b>>;
    |                                     ^^ undeclared lifetime
    |
-   = note: for more information on higher-ranked polymorphism, visit https://doc.rust-lang.org/nomicon/hrtb.html
+   = note: for more information on higher-ranked polymorphism, visit https://doc.crablang.org/nomicon/hrtb.html
 help: consider making the bound lifetime-generic with a new `'b` lifetime
    |
 LL |         + for<'b> Deref<Target = Self::Item<'b>>;
@@ -35,4 +35,4 @@ LL | trait Iterable<'undeclared> {
 
 error: aborting due to 2 previous errors
 
-For more information about this error, try `rustc --explain E0261`.
+For more information about this error, try `crablangc --explain E0261`.

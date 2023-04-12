@@ -4,7 +4,7 @@ error[E0658]: cannot borrow here, since the borrowed element may contain interio
 LL |     let y = &x.0;
    |             ^^^^
    |
-   = note: see issue #80384 <https://github.com/rust-lang/rust/issues/80384> for more information
+   = note: see issue #80384 <https://github.com/crablang/crablang/issues/80384> for more information
    = help: add `#![feature(const_refs_to_cell)]` to the crate attributes to enable
 
 error[E0658]: cannot borrow here, since the borrowed element may contain interior mutability
@@ -13,7 +13,7 @@ error[E0658]: cannot borrow here, since the borrowed element may contain interio
 LL |     let y = unsafe { &x.0 };
    |                      ^^^^
    |
-   = note: see issue #80384 <https://github.com/rust-lang/rust/issues/80384> for more information
+   = note: see issue #80384 <https://github.com/crablang/crablang/issues/80384> for more information
    = help: add `#![feature(const_refs_to_cell)]` to the crate attributes to enable
 
 error[E0133]: borrow of layout constrained field with interior mutability is unsafe and requires unsafe function or block
@@ -27,4 +27,4 @@ LL |     let y = &x.0;
 error: aborting due to 3 previous errors
 
 Some errors have detailed explanations: E0133, E0658.
-For more information about an error, try `rustc --explain E0133`.
+For more information about an error, try `crablangc --explain E0133`.

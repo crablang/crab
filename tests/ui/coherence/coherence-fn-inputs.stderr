@@ -6,8 +6,8 @@ LL | impl Trait for for<'a, 'b> fn(&'a u32, &'b u32) {}
 LL | impl Trait for for<'c> fn(&'c u32, &'c u32) {
    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ conflicting implementation for `for<'a, 'b> fn(&'a u32, &'b u32)`
    |
-   = note: this behavior recently changed as a result of a bug fix; see rust-lang/rust#56105 for details
+   = note: this behavior recently changed as a result of a bug fix; see crablang/crablang#56105 for details
 
 error: aborting due to previous error
 
-For more information about this error, try `rustc --explain E0119`.
+For more information about this error, try `crablangc --explain E0119`.

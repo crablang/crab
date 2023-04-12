@@ -49,7 +49,7 @@ fn main() {
         panic!("Can't find Valgrind to run Valgrind tests");
     }
 
-    if !config.has_tidy && config.mode == Mode::Rustdoc {
+    if !config.has_tidy && config.mode == Mode::CrabLangdoc {
         eprintln!("warning: `tidy` is not installed; diffs will not be generated");
     }
 
@@ -61,9 +61,9 @@ pub fn parse_config(args: Vec<String>) -> Config {
     let mut opts = Options::new();
     opts.reqopt("", "compile-lib-path", "path to host shared libraries", "PATH")
         .reqopt("", "run-lib-path", "path to target shared libraries", "PATH")
-        .reqopt("", "rustc-path", "path to rustc to use for compiling", "PATH")
-        .optopt("", "rustdoc-path", "path to rustdoc to use for compiling", "PATH")
-        .optopt("", "rust-demangler-path", "path to rust-demangler to use in tests", "PATH")
+        .reqopt("", "crablangc-path", "path to crablangc to use for compiling", "PATH")
+        .optopt("", "crablangdoc-path", "path to crablangdoc to use for compiling", "PATH")
+        .optopt("", "crablang-demangler-path", "path to crablang-demangler to use in tests", "PATH")
         .reqopt("", "python", "path to python to use for doc tests", "PATH")
         .optopt("", "jsondocck-path", "path to jsondocck to use for doc tests", "PATH")
         .optopt("", "jsondoclint-path", "path to jsondoclint to use for doc tests", "PATH")
@@ -79,8 +79,8 @@ pub fn parse_config(args: Vec<String>) -> Config {
             "",
             "mode",
             "which sort of compile tests to run",
-            "run-pass-valgrind | pretty | debug-info | codegen | rustdoc \
-            | rustdoc-json | codegen-units | incremental | run-make | ui | js-doc-test | mir-opt | assembly",
+            "run-pass-valgrind | pretty | debug-info | codegen | crablangdoc \
+            | crablangdoc-json | codegen-units | incremental | run-make | ui | js-doc-test | mir-opt | assembly",
         )
         .reqopt(
             "",
@@ -105,8 +105,8 @@ pub fn parse_config(args: Vec<String>) -> Config {
              (eg. emulator, valgrind)",
             "PROGRAM",
         )
-        .optmulti("", "host-rustcflags", "flags to pass to rustc for host", "FLAGS")
-        .optmulti("", "target-rustcflags", "flags to pass to rustc for target", "FLAGS")
+        .optmulti("", "host-crablangcflags", "flags to pass to crablangc for host", "FLAGS")
+        .optmulti("", "target-crablangcflags", "flags to pass to crablangc for target", "FLAGS")
         .optflag("", "optimize-tests", "run tests with optimizations enabled")
         .optflag("", "verbose", "run tests verbosely, showing all output")
         .optflag(
@@ -148,16 +148,16 @@ pub fn parse_config(args: Vec<String>) -> Config {
         )
         .optflag(
             "",
-            "rustfix-coverage",
-            "enable this to generate a Rustfix coverage file, which is saved in \
-            `./<build_base>/rustfix_missing_coverage.txt`",
+            "crablangfix-coverage",
+            "enable this to generate a CrabLangfix coverage file, which is saved in \
+            `./<build_base>/crablangfix_missing_coverage.txt`",
         )
         .optflag("", "force-rerun", "rerun tests even if the inputs are unchanged")
         .optflag("", "only-modified", "only run tests that result been modified")
         .optflag("", "nocapture", "")
         .optflag("h", "help", "show this message")
-        .reqopt("", "channel", "current Rust channel", "CHANNEL")
-        .optopt("", "edition", "default Rust edition", "EDITION");
+        .reqopt("", "channel", "current CrabLang channel", "CHANNEL")
+        .optopt("", "edition", "default CrabLang edition", "EDITION");
 
     let (argv0, args_) = args.split_first().unwrap();
     if args.len() == 1 || args[1] == "-h" || args[1] == "--help" {
@@ -193,9 +193,9 @@ pub fn parse_config(args: Vec<String>) -> Config {
     let target = opt_str2(matches.opt_str("target"));
     let android_cross_path = opt_path(matches, "android-cross-path");
     let (cdb, cdb_version) = analyze_cdb(matches.opt_str("cdb"), &target);
-    let (gdb, gdb_version, gdb_native_rust) =
+    let (gdb, gdb_version, gdb_native_crablang) =
         analyze_gdb(matches.opt_str("gdb"), &target, &android_cross_path);
-    let (lldb_version, lldb_native_rust) = matches
+    let (lldb_version, lldb_native_crablang) = matches
         .opt_str("lldb-version")
         .as_deref()
         .and_then(extract_lldb_version)
@@ -215,7 +215,7 @@ pub fn parse_config(args: Vec<String>) -> Config {
     let src_base = opt_path(matches, "src-base");
     let run_ignored = matches.opt_present("ignored");
     let mode = matches.opt_str("mode").unwrap().parse().expect("invalid mode");
-    let has_tidy = if mode == Mode::Rustdoc {
+    let has_tidy = if mode == Mode::CrabLangdoc {
         Command::new("tidy")
             .arg("--version")
             .stdout(Stdio::null())
@@ -229,9 +229,9 @@ pub fn parse_config(args: Vec<String>) -> Config {
         bless: matches.opt_present("bless"),
         compile_lib_path: make_absolute(opt_path(matches, "compile-lib-path")),
         run_lib_path: make_absolute(opt_path(matches, "run-lib-path")),
-        rustc_path: opt_path(matches, "rustc-path"),
-        rustdoc_path: matches.opt_str("rustdoc-path").map(PathBuf::from),
-        rust_demangler_path: matches.opt_str("rust-demangler-path").map(PathBuf::from),
+        crablangc_path: opt_path(matches, "crablangc-path"),
+        crablangdoc_path: matches.opt_str("crablangdoc-path").map(PathBuf::from),
+        crablang_demangler_path: matches.opt_str("crablang-demangler-path").map(PathBuf::from),
         python: matches.opt_str("python").unwrap(),
         jsondocck_path: matches.opt_str("jsondocck-path"),
         jsondoclint_path: matches.opt_str("jsondoclint-path"),
@@ -263,8 +263,8 @@ pub fn parse_config(args: Vec<String>) -> Config {
         }),
         logfile: matches.opt_str("logfile").map(|s| PathBuf::from(&s)),
         runtool: matches.opt_str("runtool"),
-        host_rustcflags: matches.opt_strs("host-rustcflags"),
-        target_rustcflags: matches.opt_strs("target-rustcflags"),
+        host_crablangcflags: matches.opt_strs("host-crablangcflags"),
+        target_crablangcflags: matches.opt_strs("target-crablangcflags"),
         optimize_tests: matches.opt_present("optimize-tests"),
         target,
         host: opt_str2(matches.opt_str("host")),
@@ -272,9 +272,9 @@ pub fn parse_config(args: Vec<String>) -> Config {
         cdb_version,
         gdb,
         gdb_version,
-        gdb_native_rust,
+        gdb_native_crablang,
         lldb_version,
-        lldb_native_rust,
+        lldb_native_crablang,
         llvm_version,
         system_llvm: matches.opt_present("system-llvm"),
         android_cross_path,
@@ -297,7 +297,7 @@ pub fn parse_config(args: Vec<String>) -> Config {
         compare_mode: matches
             .opt_str("compare-mode")
             .map(|s| s.parse().expect("invalid --compare-mode provided")),
-        rustfix_coverage: matches.opt_present("rustfix-coverage"),
+        crablangfix_coverage: matches.opt_present("crablangfix-coverage"),
         has_tidy,
         channel: matches.opt_str("channel").unwrap(),
         edition: matches.opt_str("edition"),
@@ -325,9 +325,9 @@ pub fn log_config(config: &Config) {
     logv(c, "configuration:".to_string());
     logv(c, format!("compile_lib_path: {:?}", config.compile_lib_path));
     logv(c, format!("run_lib_path: {:?}", config.run_lib_path));
-    logv(c, format!("rustc_path: {:?}", config.rustc_path.display()));
-    logv(c, format!("rustdoc_path: {:?}", config.rustdoc_path));
-    logv(c, format!("rust_demangler_path: {:?}", config.rust_demangler_path));
+    logv(c, format!("crablangc_path: {:?}", config.crablangc_path.display()));
+    logv(c, format!("crablangdoc_path: {:?}", config.crablangdoc_path));
+    logv(c, format!("crablang_demangler_path: {:?}", config.crablang_demangler_path));
     logv(c, format!("src_base: {:?}", config.src_base.display()));
     logv(c, format!("build_base: {:?}", config.build_base.display()));
     logv(c, format!("stage_id: {}", config.stage_id));
@@ -341,8 +341,8 @@ pub fn log_config(config: &Config) {
         format!("force_pass_mode: {}", opt_str(&config.force_pass_mode.map(|m| format!("{}", m))),),
     );
     logv(c, format!("runtool: {}", opt_str(&config.runtool)));
-    logv(c, format!("host-rustcflags: {:?}", config.host_rustcflags));
-    logv(c, format!("target-rustcflags: {:?}", config.target_rustcflags));
+    logv(c, format!("host-crablangcflags: {:?}", config.host_crablangcflags));
+    logv(c, format!("target-crablangcflags: {:?}", config.target_crablangcflags));
     logv(c, format!("target: {}", config.target));
     logv(c, format!("host: {}", config.host));
     logv(c, format!("android-cross-path: {:?}", config.android_cross_path.display()));
@@ -371,12 +371,12 @@ pub fn opt_str2(maybestr: Option<String>) -> String {
 }
 
 pub fn run_tests(config: Arc<Config>) {
-    // If we want to collect rustfix coverage information,
+    // If we want to collect crablangfix coverage information,
     // we first make sure that the coverage file does not exist.
     // It will be created later on.
-    if config.rustfix_coverage {
+    if config.crablangfix_coverage {
         let mut coverage_file_path = config.build_base.clone();
-        coverage_file_path.push("rustfix_missing_coverage.txt");
+        coverage_file_path.push("crablangfix_missing_coverage.txt");
         if coverage_file_path.exists() {
             if let Err(e) = fs::remove_file(&coverage_file_path) {
                 panic!("Could not delete {} due to {}", coverage_file_path.display(), e)
@@ -492,7 +492,7 @@ fn configure_gdb(config: &Config) -> Option<Arc<Config>> {
         //
         // we should figure out how to lift this restriction! (run them all
         // on different ports allocated dynamically).
-        env::set_var("RUST_TEST_THREADS", "1");
+        env::set_var("CRABLANG_TEST_THREADS", "1");
     }
 
     Some(Arc::new(Config { debugger: Some(Debugger::Gdb), ..config.clone() }))
@@ -515,9 +515,9 @@ fn configure_lldb(config: &Config) -> Option<Arc<Config>> {
 }
 
 pub fn test_opts(config: &Config) -> test::TestOpts {
-    if env::var("RUST_TEST_NOCAPTURE").is_ok() {
+    if env::var("CRABLANG_TEST_NOCAPTURE").is_ok() {
         eprintln!(
-            "WARNING: RUST_TEST_NOCAPTURE is no longer used. \
+            "WARNING: CRABLANG_TEST_NOCAPTURE is no longer used. \
                    Use the `--nocapture` flag instead."
         );
     }
@@ -541,7 +541,7 @@ pub fn test_opts(config: &Config) -> test::TestOpts {
         options: test::Options::new(),
         time_options: None,
         force_run_in_process: false,
-        fail_fast: std::env::var_os("RUSTC_TEST_FAIL_FAST").is_some(),
+        fail_fast: std::env::var_os("CRABLANGC_TEST_FAIL_FAST").is_some(),
     }
 }
 
@@ -569,14 +569,14 @@ pub fn make_tests(
 
 /// Returns a stamp constructed from input files common to all test cases.
 fn common_inputs_stamp(config: &Config) -> Stamp {
-    let rust_src_dir = config.find_rust_src_root().expect("Could not find Rust source root");
+    let crablang_src_dir = config.find_crablang_src_root().expect("Could not find CrabLang source root");
 
-    let mut stamp = Stamp::from_path(&config.rustc_path);
+    let mut stamp = Stamp::from_path(&config.crablangc_path);
 
     // Relevant pretty printer files
     let pretty_printer_files = [
-        "src/etc/rust_types.py",
-        "src/etc/gdb_load_rust_pretty_printers.py",
+        "src/etc/crablang_types.py",
+        "src/etc/gdb_load_crablang_pretty_printers.py",
         "src/etc/gdb_lookup.py",
         "src/etc/gdb_providers.py",
         "src/etc/lldb_batchmode.py",
@@ -584,21 +584,21 @@ fn common_inputs_stamp(config: &Config) -> Stamp {
         "src/etc/lldb_providers.py",
     ];
     for file in &pretty_printer_files {
-        let path = rust_src_dir.join(file);
+        let path = crablang_src_dir.join(file);
         stamp.add_path(&path);
     }
 
-    stamp.add_dir(&rust_src_dir.join("src/etc/natvis"));
+    stamp.add_dir(&crablang_src_dir.join("src/etc/natvis"));
 
     stamp.add_dir(&config.run_lib_path);
 
-    if let Some(ref rustdoc_path) = config.rustdoc_path {
-        stamp.add_path(&rustdoc_path);
-        stamp.add_path(&rust_src_dir.join("src/etc/htmldocck.py"));
+    if let Some(ref crablangdoc_path) = config.crablangdoc_path {
+        stamp.add_path(&crablangdoc_path);
+        stamp.add_path(&crablang_src_dir.join("src/etc/htmldocck.py"));
     }
 
     // Compiletest itself.
-    stamp.add_dir(&rust_src_dir.join("src/tools/compiletest/"));
+    stamp.add_dir(&crablang_src_dir.join("src/tools/compiletest/"));
 
     stamp
 }
@@ -858,7 +858,7 @@ fn make_test_name(
     revision: Option<&String>,
 ) -> test::TestName {
     // Print the name of the file, relative to the repository root.
-    // `src_base` looks like `/path/to/rust/tests/ui`
+    // `src_base` looks like `/path/to/crablang/tests/ui`
     let root_directory = config.src_base.parent().unwrap().parent().unwrap();
     let path = testpaths.file.strip_prefix(root_directory).unwrap();
     let debugger = match config.debugger {
@@ -966,7 +966,7 @@ fn extract_cdb_version(full_version_line: &str) -> Option<[u16; 4]> {
     Some([major, minor, patch, build])
 }
 
-/// Returns (Path to GDB, GDB Version, GDB has Rust Support)
+/// Returns (Path to GDB, GDB Version, GDB has CrabLang Support)
 fn analyze_gdb(
     gdb: Option<String>,
     target: &str,
@@ -977,7 +977,7 @@ fn analyze_gdb(
     #[cfg(windows)]
     const GDB_FALLBACK: &str = "gdb.exe";
 
-    const MIN_GDB_WITH_RUST: u32 = 7011010;
+    const MIN_GDB_WITH_CRABLANG: u32 = 7011010;
 
     let fallback_gdb = || {
         if is_android_gdb_target(target) {
@@ -1010,9 +1010,9 @@ fn analyze_gdb(
         None => return (None, None, false),
     };
 
-    let gdb_native_rust = version.map_or(false, |v| v >= MIN_GDB_WITH_RUST);
+    let gdb_native_crablang = version.map_or(false, |v| v >= MIN_GDB_WITH_CRABLANG);
 
-    (Some(gdb), version, gdb_native_rust)
+    (Some(gdb), version, gdb_native_crablang)
 }
 
 fn extract_gdb_version(full_version_line: &str) -> Option<u32> {
@@ -1062,7 +1062,7 @@ fn extract_gdb_version(full_version_line: &str) -> Option<u32> {
     Some(((major * 1000) + minor) * 1000 + patch)
 }
 
-/// Returns (LLDB version, LLDB is rust-enabled)
+/// Returns (LLDB version, LLDB is crablang-enabled)
 fn extract_lldb_version(full_version_line: &str) -> Option<(u32, bool)> {
     // Extract the major LLDB version from the given version string.
     // LLDB version strings are different for Apple and non-Apple platforms.
@@ -1082,7 +1082,7 @@ fn extract_lldb_version(full_version_line: &str) -> Option<(u32, bool)> {
     // written against Apple versions, we make a fake Apple version by
     // multiplying the first number by 100.  This is a hack, but
     // normally fine because the only non-Apple version we test is
-    // rust-enabled.
+    // crablang-enabled.
 
     let full_version_line = full_version_line.trim();
 
@@ -1091,12 +1091,12 @@ fn extract_lldb_version(full_version_line: &str) -> Option<(u32, bool)> {
     {
         if let Some(idx) = apple_ver.find(not_a_digit) {
             let version: u32 = apple_ver[..idx].parse().unwrap();
-            return Some((version, full_version_line.contains("rust-enabled")));
+            return Some((version, full_version_line.contains("crablang-enabled")));
         }
     } else if let Some(lldb_ver) = full_version_line.strip_prefix("lldb version ") {
         if let Some(idx) = lldb_ver.find(not_a_digit) {
             let version: u32 = lldb_ver[..idx].parse().ok()?;
-            return Some((version * 100, full_version_line.contains("rust-enabled")));
+            return Some((version * 100, full_version_line.contains("crablang-enabled")));
         }
     }
     None

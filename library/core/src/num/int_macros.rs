@@ -81,7 +81,7 @@ macro_rules! int_impl {
         /// ```
         #[doc = concat!("assert_eq!(", stringify!($SelfT), "::from_str_radix(\"A\", 16), Ok(10));")]
         /// ```
-        #[stable(feature = "rust1", since = "1.0.0")]
+        #[stable(feature = "crablang1", since = "1.0.0")]
         pub fn from_str_radix(src: &str, radix: u32) -> Result<Self, ParseIntError> {
             from_str_radix(src, radix)
         }
@@ -98,8 +98,8 @@ macro_rules! int_impl {
         /// assert_eq!(n.count_ones(), 1);
         /// ```
         ///
-        #[stable(feature = "rust1", since = "1.0.0")]
-        #[rustc_const_stable(feature = "const_int_methods", since = "1.32.0")]
+        #[stable(feature = "crablang1", since = "1.0.0")]
+        #[crablangc_const_stable(feature = "const_int_methods", since = "1.32.0")]
         #[doc(alias = "popcount")]
         #[doc(alias = "popcnt")]
         #[must_use = "this returns the result of the operation, \
@@ -116,8 +116,8 @@ macro_rules! int_impl {
         /// ```
         #[doc = concat!("assert_eq!(", stringify!($SelfT), "::MAX.count_zeros(), 1);")]
         /// ```
-        #[stable(feature = "rust1", since = "1.0.0")]
-        #[rustc_const_stable(feature = "const_int_methods", since = "1.32.0")]
+        #[stable(feature = "crablang1", since = "1.0.0")]
+        #[crablangc_const_stable(feature = "const_int_methods", since = "1.32.0")]
         #[must_use = "this returns the result of the operation, \
                       without modifying the original"]
         #[inline(always)]
@@ -140,8 +140,8 @@ macro_rules! int_impl {
         /// assert_eq!(n.leading_zeros(), 0);
         /// ```
         #[doc = concat!("[`ilog2`]: ", stringify!($SelfT), "::ilog2")]
-        #[stable(feature = "rust1", since = "1.0.0")]
-        #[rustc_const_stable(feature = "const_int_methods", since = "1.32.0")]
+        #[stable(feature = "crablang1", since = "1.0.0")]
+        #[crablangc_const_stable(feature = "const_int_methods", since = "1.32.0")]
         #[must_use = "this returns the result of the operation, \
                       without modifying the original"]
         #[inline(always)]
@@ -160,8 +160,8 @@ macro_rules! int_impl {
         ///
         /// assert_eq!(n.trailing_zeros(), 2);
         /// ```
-        #[stable(feature = "rust1", since = "1.0.0")]
-        #[rustc_const_stable(feature = "const_int_methods", since = "1.32.0")]
+        #[stable(feature = "crablang1", since = "1.0.0")]
+        #[crablangc_const_stable(feature = "const_int_methods", since = "1.32.0")]
         #[must_use = "this returns the result of the operation, \
                       without modifying the original"]
         #[inline(always)]
@@ -181,7 +181,7 @@ macro_rules! int_impl {
         #[doc = concat!("assert_eq!(n.leading_ones(), ", stringify!($BITS), ");")]
         /// ```
         #[stable(feature = "leading_trailing_ones", since = "1.46.0")]
-        #[rustc_const_stable(feature = "leading_trailing_ones", since = "1.46.0")]
+        #[crablangc_const_stable(feature = "leading_trailing_ones", since = "1.46.0")]
         #[must_use = "this returns the result of the operation, \
                       without modifying the original"]
         #[inline(always)]
@@ -201,7 +201,7 @@ macro_rules! int_impl {
         /// assert_eq!(n.trailing_ones(), 2);
         /// ```
         #[stable(feature = "leading_trailing_ones", since = "1.46.0")]
-        #[rustc_const_stable(feature = "leading_trailing_ones", since = "1.46.0")]
+        #[crablangc_const_stable(feature = "leading_trailing_ones", since = "1.46.0")]
         #[must_use = "this returns the result of the operation, \
                       without modifying the original"]
         #[inline(always)]
@@ -224,8 +224,8 @@ macro_rules! int_impl {
         ///
         #[doc = concat!("assert_eq!(n.rotate_left(", $rot, "), m);")]
         /// ```
-        #[stable(feature = "rust1", since = "1.0.0")]
-        #[rustc_const_stable(feature = "const_int_methods", since = "1.32.0")]
+        #[stable(feature = "crablang1", since = "1.0.0")]
+        #[crablangc_const_stable(feature = "const_int_methods", since = "1.32.0")]
         #[must_use = "this returns the result of the operation, \
                       without modifying the original"]
         #[inline(always)]
@@ -249,8 +249,8 @@ macro_rules! int_impl {
         ///
         #[doc = concat!("assert_eq!(n.rotate_right(", $rot, "), m);")]
         /// ```
-        #[stable(feature = "rust1", since = "1.0.0")]
-        #[rustc_const_stable(feature = "const_int_methods", since = "1.32.0")]
+        #[stable(feature = "crablang1", since = "1.0.0")]
+        #[crablangc_const_stable(feature = "const_int_methods", since = "1.32.0")]
         #[must_use = "this returns the result of the operation, \
                       without modifying the original"]
         #[inline(always)]
@@ -271,8 +271,8 @@ macro_rules! int_impl {
         ///
         #[doc = concat!("assert_eq!(m, ", $swapped, ");")]
         /// ```
-        #[stable(feature = "rust1", since = "1.0.0")]
-        #[rustc_const_stable(feature = "const_int_methods", since = "1.32.0")]
+        #[stable(feature = "crablang1", since = "1.0.0")]
+        #[crablangc_const_stable(feature = "const_int_methods", since = "1.32.0")]
         #[must_use = "this returns the result of the operation, \
                       without modifying the original"]
         #[inline(always)]
@@ -295,7 +295,7 @@ macro_rules! int_impl {
         #[doc = concat!("assert_eq!(0, 0", stringify!($SelfT), ".reverse_bits());")]
         /// ```
         #[stable(feature = "reverse_bits", since = "1.37.0")]
-        #[rustc_const_stable(feature = "reverse_bits", since = "1.37.0")]
+        #[crablangc_const_stable(feature = "reverse_bits", since = "1.37.0")]
         #[must_use = "this returns the result of the operation, \
                       without modifying the original"]
         #[inline(always)]
@@ -320,8 +320,8 @@ macro_rules! int_impl {
         #[doc = concat!("    assert_eq!(", stringify!($SelfT), "::from_be(n), n.swap_bytes())")]
         /// }
         /// ```
-        #[stable(feature = "rust1", since = "1.0.0")]
-        #[rustc_const_stable(feature = "const_int_conversions", since = "1.32.0")]
+        #[stable(feature = "crablang1", since = "1.0.0")]
+        #[crablangc_const_stable(feature = "const_int_conversions", since = "1.32.0")]
         #[must_use]
         #[inline]
         pub const fn from_be(x: Self) -> Self {
@@ -352,8 +352,8 @@ macro_rules! int_impl {
         #[doc = concat!("    assert_eq!(", stringify!($SelfT), "::from_le(n), n.swap_bytes())")]
         /// }
         /// ```
-        #[stable(feature = "rust1", since = "1.0.0")]
-        #[rustc_const_stable(feature = "const_int_conversions", since = "1.32.0")]
+        #[stable(feature = "crablang1", since = "1.0.0")]
+        #[crablangc_const_stable(feature = "const_int_conversions", since = "1.32.0")]
         #[must_use]
         #[inline]
         pub const fn from_le(x: Self) -> Self {
@@ -384,8 +384,8 @@ macro_rules! int_impl {
         ///     assert_eq!(n.to_be(), n.swap_bytes())
         /// }
         /// ```
-        #[stable(feature = "rust1", since = "1.0.0")]
-        #[rustc_const_stable(feature = "const_int_conversions", since = "1.32.0")]
+        #[stable(feature = "crablang1", since = "1.0.0")]
+        #[crablangc_const_stable(feature = "const_int_conversions", since = "1.32.0")]
         #[must_use = "this returns the result of the operation, \
                       without modifying the original"]
         #[inline]
@@ -417,8 +417,8 @@ macro_rules! int_impl {
         ///     assert_eq!(n.to_le(), n.swap_bytes())
         /// }
         /// ```
-        #[stable(feature = "rust1", since = "1.0.0")]
-        #[rustc_const_stable(feature = "const_int_conversions", since = "1.32.0")]
+        #[stable(feature = "crablang1", since = "1.0.0")]
+        #[crablangc_const_stable(feature = "const_int_conversions", since = "1.32.0")]
         #[must_use = "this returns the result of the operation, \
                       without modifying the original"]
         #[inline]
@@ -444,8 +444,8 @@ macro_rules! int_impl {
         #[doc = concat!("assert_eq!((", stringify!($SelfT), "::MAX - 2).checked_add(1), Some(", stringify!($SelfT), "::MAX - 1));")]
         #[doc = concat!("assert_eq!((", stringify!($SelfT), "::MAX - 2).checked_add(3), None);")]
         /// ```
-        #[stable(feature = "rust1", since = "1.0.0")]
-        #[rustc_const_stable(feature = "const_checked_int_methods", since = "1.47.0")]
+        #[stable(feature = "crablang1", since = "1.0.0")]
+        #[crablangc_const_stable(feature = "const_checked_int_methods", since = "1.47.0")]
         #[must_use = "this returns the result of the operation, \
                       without modifying the original"]
         #[inline]
@@ -471,7 +471,7 @@ macro_rules! int_impl {
         )]
         #[must_use = "this returns the result of the operation, \
                       without modifying the original"]
-        #[rustc_const_unstable(feature = "const_inherent_unchecked_arith", issue = "85122")]
+        #[crablangc_const_unstable(feature = "const_inherent_unchecked_arith", issue = "85122")]
         #[inline(always)]
         #[cfg_attr(miri, track_caller)] // even without panics, this helps for Miri backtraces
         pub const unsafe fn unchecked_add(self, rhs: Self) -> Self {
@@ -492,7 +492,7 @@ macro_rules! int_impl {
         #[doc = concat!("assert_eq!((", stringify!($SelfT), "::MAX - 2).checked_add_unsigned(3), None);")]
         /// ```
         #[stable(feature = "mixed_integer_ops", since = "1.66.0")]
-        #[rustc_const_stable(feature = "mixed_integer_ops", since = "1.66.0")]
+        #[crablangc_const_stable(feature = "mixed_integer_ops", since = "1.66.0")]
         #[must_use = "this returns the result of the operation, \
                       without modifying the original"]
         #[inline]
@@ -512,8 +512,8 @@ macro_rules! int_impl {
         #[doc = concat!("assert_eq!((", stringify!($SelfT), "::MIN + 2).checked_sub(1), Some(", stringify!($SelfT), "::MIN + 1));")]
         #[doc = concat!("assert_eq!((", stringify!($SelfT), "::MIN + 2).checked_sub(3), None);")]
         /// ```
-        #[stable(feature = "rust1", since = "1.0.0")]
-        #[rustc_const_stable(feature = "const_checked_int_methods", since = "1.47.0")]
+        #[stable(feature = "crablang1", since = "1.0.0")]
+        #[crablangc_const_stable(feature = "const_checked_int_methods", since = "1.47.0")]
         #[must_use = "this returns the result of the operation, \
                       without modifying the original"]
         #[inline]
@@ -539,7 +539,7 @@ macro_rules! int_impl {
         )]
         #[must_use = "this returns the result of the operation, \
                       without modifying the original"]
-        #[rustc_const_unstable(feature = "const_inherent_unchecked_arith", issue = "85122")]
+        #[crablangc_const_unstable(feature = "const_inherent_unchecked_arith", issue = "85122")]
         #[inline(always)]
         #[cfg_attr(miri, track_caller)] // even without panics, this helps for Miri backtraces
         pub const unsafe fn unchecked_sub(self, rhs: Self) -> Self {
@@ -560,7 +560,7 @@ macro_rules! int_impl {
         #[doc = concat!("assert_eq!((", stringify!($SelfT), "::MIN + 2).checked_sub_unsigned(3), None);")]
         /// ```
         #[stable(feature = "mixed_integer_ops", since = "1.66.0")]
-        #[rustc_const_stable(feature = "mixed_integer_ops", since = "1.66.0")]
+        #[crablangc_const_stable(feature = "mixed_integer_ops", since = "1.66.0")]
         #[must_use = "this returns the result of the operation, \
                       without modifying the original"]
         #[inline]
@@ -580,8 +580,8 @@ macro_rules! int_impl {
         #[doc = concat!("assert_eq!(", stringify!($SelfT), "::MAX.checked_mul(1), Some(", stringify!($SelfT), "::MAX));")]
         #[doc = concat!("assert_eq!(", stringify!($SelfT), "::MAX.checked_mul(2), None);")]
         /// ```
-        #[stable(feature = "rust1", since = "1.0.0")]
-        #[rustc_const_stable(feature = "const_checked_int_methods", since = "1.47.0")]
+        #[stable(feature = "crablang1", since = "1.0.0")]
+        #[crablangc_const_stable(feature = "const_checked_int_methods", since = "1.47.0")]
         #[must_use = "this returns the result of the operation, \
                       without modifying the original"]
         #[inline]
@@ -607,7 +607,7 @@ macro_rules! int_impl {
         )]
         #[must_use = "this returns the result of the operation, \
                       without modifying the original"]
-        #[rustc_const_unstable(feature = "const_inherent_unchecked_arith", issue = "85122")]
+        #[crablangc_const_unstable(feature = "const_inherent_unchecked_arith", issue = "85122")]
         #[inline(always)]
         #[cfg_attr(miri, track_caller)] // even without panics, this helps for Miri backtraces
         pub const unsafe fn unchecked_mul(self, rhs: Self) -> Self {
@@ -628,8 +628,8 @@ macro_rules! int_impl {
         #[doc = concat!("assert_eq!(", stringify!($SelfT), "::MIN.checked_div(-1), None);")]
         #[doc = concat!("assert_eq!((1", stringify!($SelfT), ").checked_div(0), None);")]
         /// ```
-        #[stable(feature = "rust1", since = "1.0.0")]
-        #[rustc_const_stable(feature = "const_checked_int_div", since = "1.52.0")]
+        #[stable(feature = "crablang1", since = "1.0.0")]
+        #[crablangc_const_stable(feature = "const_checked_int_div", since = "1.52.0")]
         #[must_use = "this returns the result of the operation, \
                       without modifying the original"]
         #[inline]
@@ -655,7 +655,7 @@ macro_rules! int_impl {
         #[doc = concat!("assert_eq!((1", stringify!($SelfT), ").checked_div_euclid(0), None);")]
         /// ```
         #[stable(feature = "euclidean_division", since = "1.38.0")]
-        #[rustc_const_stable(feature = "const_euclidean_int_methods", since = "1.52.0")]
+        #[crablangc_const_stable(feature = "const_euclidean_int_methods", since = "1.52.0")]
         #[must_use = "this returns the result of the operation, \
                       without modifying the original"]
         #[inline]
@@ -681,7 +681,7 @@ macro_rules! int_impl {
         #[doc = concat!("assert_eq!(", stringify!($SelfT), "::MIN.checked_rem(-1), None);")]
         /// ```
         #[stable(feature = "wrapping", since = "1.7.0")]
-        #[rustc_const_stable(feature = "const_checked_int_div", since = "1.52.0")]
+        #[crablangc_const_stable(feature = "const_checked_int_div", since = "1.52.0")]
         #[must_use = "this returns the result of the operation, \
                       without modifying the original"]
         #[inline]
@@ -707,7 +707,7 @@ macro_rules! int_impl {
         #[doc = concat!("assert_eq!(", stringify!($SelfT), "::MIN.checked_rem_euclid(-1), None);")]
         /// ```
         #[stable(feature = "euclidean_division", since = "1.38.0")]
-        #[rustc_const_stable(feature = "const_euclidean_int_methods", since = "1.52.0")]
+        #[crablangc_const_stable(feature = "const_euclidean_int_methods", since = "1.52.0")]
         #[must_use = "this returns the result of the operation, \
                       without modifying the original"]
         #[inline]
@@ -731,7 +731,7 @@ macro_rules! int_impl {
         #[doc = concat!("assert_eq!(", stringify!($SelfT), "::MIN.checked_neg(), None);")]
         /// ```
         #[stable(feature = "wrapping", since = "1.7.0")]
-        #[rustc_const_stable(feature = "const_checked_int_methods", since = "1.47.0")]
+        #[crablangc_const_stable(feature = "const_checked_int_methods", since = "1.47.0")]
         #[must_use = "this returns the result of the operation, \
                       without modifying the original"]
         #[inline]
@@ -752,7 +752,7 @@ macro_rules! int_impl {
         #[doc = concat!("assert_eq!(0x1", stringify!($SelfT), ".checked_shl(129), None);")]
         /// ```
         #[stable(feature = "wrapping", since = "1.7.0")]
-        #[rustc_const_stable(feature = "const_checked_int_methods", since = "1.47.0")]
+        #[crablangc_const_stable(feature = "const_checked_int_methods", since = "1.47.0")]
         #[must_use = "this returns the result of the operation, \
                       without modifying the original"]
         #[inline]
@@ -778,7 +778,7 @@ macro_rules! int_impl {
         )]
         #[must_use = "this returns the result of the operation, \
                       without modifying the original"]
-        #[rustc_const_unstable(feature = "const_inherent_unchecked_arith", issue = "85122")]
+        #[crablangc_const_unstable(feature = "const_inherent_unchecked_arith", issue = "85122")]
         #[inline(always)]
         #[cfg_attr(miri, track_caller)] // even without panics, this helps for Miri backtraces
         pub const unsafe fn unchecked_shl(self, rhs: u32) -> Self {
@@ -800,7 +800,7 @@ macro_rules! int_impl {
         #[doc = concat!("assert_eq!(0x10", stringify!($SelfT), ".checked_shr(128), None);")]
         /// ```
         #[stable(feature = "wrapping", since = "1.7.0")]
-        #[rustc_const_stable(feature = "const_checked_int_methods", since = "1.47.0")]
+        #[crablangc_const_stable(feature = "const_checked_int_methods", since = "1.47.0")]
         #[must_use = "this returns the result of the operation, \
                       without modifying the original"]
         #[inline]
@@ -826,7 +826,7 @@ macro_rules! int_impl {
         )]
         #[must_use = "this returns the result of the operation, \
                       without modifying the original"]
-        #[rustc_const_unstable(feature = "const_inherent_unchecked_arith", issue = "85122")]
+        #[crablangc_const_unstable(feature = "const_inherent_unchecked_arith", issue = "85122")]
         #[inline(always)]
         #[cfg_attr(miri, track_caller)] // even without panics, this helps for Miri backtraces
         pub const unsafe fn unchecked_shr(self, rhs: u32) -> Self {
@@ -848,7 +848,7 @@ macro_rules! int_impl {
         #[doc = concat!("assert_eq!(", stringify!($SelfT), "::MIN.checked_abs(), None);")]
         /// ```
         #[stable(feature = "no_panic_abs", since = "1.13.0")]
-        #[rustc_const_stable(feature = "const_checked_int_methods", since = "1.47.0")]
+        #[crablangc_const_stable(feature = "const_checked_int_methods", since = "1.47.0")]
         #[must_use = "this returns the result of the operation, \
                       without modifying the original"]
         #[inline]
@@ -873,7 +873,7 @@ macro_rules! int_impl {
         /// ```
 
         #[stable(feature = "no_panic_pow", since = "1.34.0")]
-        #[rustc_const_stable(feature = "const_int_pow", since = "1.50.0")]
+        #[crablangc_const_stable(feature = "const_int_pow", since = "1.50.0")]
         #[must_use = "this returns the result of the operation, \
                       without modifying the original"]
         #[inline]
@@ -911,8 +911,8 @@ macro_rules! int_impl {
         #[doc = concat!("assert_eq!(", stringify!($SelfT), "::MIN.saturating_add(-1), ", stringify!($SelfT), "::MIN);")]
         /// ```
 
-        #[stable(feature = "rust1", since = "1.0.0")]
-        #[rustc_const_stable(feature = "const_saturating_int_methods", since = "1.47.0")]
+        #[stable(feature = "crablang1", since = "1.0.0")]
+        #[crablangc_const_stable(feature = "const_saturating_int_methods", since = "1.47.0")]
         #[must_use = "this returns the result of the operation, \
                       without modifying the original"]
         #[inline(always)]
@@ -932,7 +932,7 @@ macro_rules! int_impl {
         #[doc = concat!("assert_eq!(", stringify!($SelfT), "::MAX.saturating_add_unsigned(100), ", stringify!($SelfT), "::MAX);")]
         /// ```
         #[stable(feature = "mixed_integer_ops", since = "1.66.0")]
-        #[rustc_const_stable(feature = "mixed_integer_ops", since = "1.66.0")]
+        #[crablangc_const_stable(feature = "mixed_integer_ops", since = "1.66.0")]
         #[must_use = "this returns the result of the operation, \
                       without modifying the original"]
         #[inline]
@@ -957,8 +957,8 @@ macro_rules! int_impl {
         #[doc = concat!("assert_eq!(", stringify!($SelfT), "::MIN.saturating_sub(100), ", stringify!($SelfT), "::MIN);")]
         #[doc = concat!("assert_eq!(", stringify!($SelfT), "::MAX.saturating_sub(-1), ", stringify!($SelfT), "::MAX);")]
         /// ```
-        #[stable(feature = "rust1", since = "1.0.0")]
-        #[rustc_const_stable(feature = "const_saturating_int_methods", since = "1.47.0")]
+        #[stable(feature = "crablang1", since = "1.0.0")]
+        #[crablangc_const_stable(feature = "const_saturating_int_methods", since = "1.47.0")]
         #[must_use = "this returns the result of the operation, \
                       without modifying the original"]
         #[inline(always)]
@@ -978,7 +978,7 @@ macro_rules! int_impl {
         #[doc = concat!("assert_eq!(", stringify!($SelfT), "::MIN.saturating_sub_unsigned(100), ", stringify!($SelfT), "::MIN);")]
         /// ```
         #[stable(feature = "mixed_integer_ops", since = "1.66.0")]
-        #[rustc_const_stable(feature = "mixed_integer_ops", since = "1.66.0")]
+        #[crablangc_const_stable(feature = "mixed_integer_ops", since = "1.66.0")]
         #[must_use = "this returns the result of the operation, \
                       without modifying the original"]
         #[inline]
@@ -1006,7 +1006,7 @@ macro_rules! int_impl {
         /// ```
 
         #[stable(feature = "saturating_neg", since = "1.45.0")]
-        #[rustc_const_stable(feature = "const_saturating_int_methods", since = "1.47.0")]
+        #[crablangc_const_stable(feature = "const_saturating_int_methods", since = "1.47.0")]
         #[must_use = "this returns the result of the operation, \
                       without modifying the original"]
         #[inline(always)]
@@ -1029,7 +1029,7 @@ macro_rules! int_impl {
         /// ```
 
         #[stable(feature = "saturating_neg", since = "1.45.0")]
-        #[rustc_const_stable(feature = "const_saturating_int_methods", since = "1.47.0")]
+        #[crablangc_const_stable(feature = "const_saturating_int_methods", since = "1.47.0")]
         #[must_use = "this returns the result of the operation, \
                       without modifying the original"]
         #[inline]
@@ -1054,7 +1054,7 @@ macro_rules! int_impl {
         #[doc = concat!("assert_eq!(", stringify!($SelfT), "::MIN.saturating_mul(10), ", stringify!($SelfT), "::MIN);")]
         /// ```
         #[stable(feature = "wrapping", since = "1.7.0")]
-        #[rustc_const_stable(feature = "const_saturating_int_methods", since = "1.47.0")]
+        #[crablangc_const_stable(feature = "const_saturating_int_methods", since = "1.47.0")]
         #[must_use = "this returns the result of the operation, \
                       without modifying the original"]
         #[inline]
@@ -1088,7 +1088,7 @@ macro_rules! int_impl {
         ///
         /// ```
         #[stable(feature = "saturating_div", since = "1.58.0")]
-        #[rustc_const_stable(feature = "saturating_div", since = "1.58.0")]
+        #[crablangc_const_stable(feature = "saturating_div", since = "1.58.0")]
         #[must_use = "this returns the result of the operation, \
                       without modifying the original"]
         #[inline]
@@ -1112,7 +1112,7 @@ macro_rules! int_impl {
         #[doc = concat!("assert_eq!(", stringify!($SelfT), "::MIN.saturating_pow(3), ", stringify!($SelfT), "::MIN);")]
         /// ```
         #[stable(feature = "no_panic_pow", since = "1.34.0")]
-        #[rustc_const_stable(feature = "const_int_pow", since = "1.50.0")]
+        #[crablangc_const_stable(feature = "const_int_pow", since = "1.50.0")]
         #[must_use = "this returns the result of the operation, \
                       without modifying the original"]
         #[inline]
@@ -1135,8 +1135,8 @@ macro_rules! int_impl {
         #[doc = concat!("assert_eq!(100", stringify!($SelfT), ".wrapping_add(27), 127);")]
         #[doc = concat!("assert_eq!(", stringify!($SelfT), "::MAX.wrapping_add(2), ", stringify!($SelfT), "::MIN + 1);")]
         /// ```
-        #[stable(feature = "rust1", since = "1.0.0")]
-        #[rustc_const_stable(feature = "const_int_methods", since = "1.32.0")]
+        #[stable(feature = "crablang1", since = "1.0.0")]
+        #[crablangc_const_stable(feature = "const_int_methods", since = "1.32.0")]
         #[must_use = "this returns the result of the operation, \
                       without modifying the original"]
         #[inline(always)]
@@ -1156,7 +1156,7 @@ macro_rules! int_impl {
         #[doc = concat!("assert_eq!(", stringify!($SelfT), "::MAX.wrapping_add_unsigned(2), ", stringify!($SelfT), "::MIN + 1);")]
         /// ```
         #[stable(feature = "mixed_integer_ops", since = "1.66.0")]
-        #[rustc_const_stable(feature = "mixed_integer_ops", since = "1.66.0")]
+        #[crablangc_const_stable(feature = "mixed_integer_ops", since = "1.66.0")]
         #[must_use = "this returns the result of the operation, \
                       without modifying the original"]
         #[inline(always)]
@@ -1175,8 +1175,8 @@ macro_rules! int_impl {
         #[doc = concat!("assert_eq!(0", stringify!($SelfT), ".wrapping_sub(127), -127);")]
         #[doc = concat!("assert_eq!((-2", stringify!($SelfT), ").wrapping_sub(", stringify!($SelfT), "::MAX), ", stringify!($SelfT), "::MAX);")]
         /// ```
-        #[stable(feature = "rust1", since = "1.0.0")]
-        #[rustc_const_stable(feature = "const_int_methods", since = "1.32.0")]
+        #[stable(feature = "crablang1", since = "1.0.0")]
+        #[crablangc_const_stable(feature = "const_int_methods", since = "1.32.0")]
         #[must_use = "this returns the result of the operation, \
                       without modifying the original"]
         #[inline(always)]
@@ -1196,7 +1196,7 @@ macro_rules! int_impl {
         #[doc = concat!("assert_eq!((-2", stringify!($SelfT), ").wrapping_sub_unsigned(", stringify!($UnsignedT), "::MAX), -1);")]
         /// ```
         #[stable(feature = "mixed_integer_ops", since = "1.66.0")]
-        #[rustc_const_stable(feature = "mixed_integer_ops", since = "1.66.0")]
+        #[crablangc_const_stable(feature = "mixed_integer_ops", since = "1.66.0")]
         #[must_use = "this returns the result of the operation, \
                       without modifying the original"]
         #[inline(always)]
@@ -1215,8 +1215,8 @@ macro_rules! int_impl {
         #[doc = concat!("assert_eq!(10", stringify!($SelfT), ".wrapping_mul(12), 120);")]
         /// assert_eq!(11i8.wrapping_mul(12), -124);
         /// ```
-        #[stable(feature = "rust1", since = "1.0.0")]
-        #[rustc_const_stable(feature = "const_int_methods", since = "1.32.0")]
+        #[stable(feature = "crablang1", since = "1.0.0")]
+        #[crablangc_const_stable(feature = "const_int_methods", since = "1.32.0")]
         #[must_use = "this returns the result of the operation, \
                       without modifying the original"]
         #[inline(always)]
@@ -1244,7 +1244,7 @@ macro_rules! int_impl {
         /// assert_eq!((-128i8).wrapping_div(-1), -128);
         /// ```
         #[stable(feature = "num_wrapping", since = "1.2.0")]
-        #[rustc_const_stable(feature = "const_wrapping_int_methods", since = "1.52.0")]
+        #[crablangc_const_stable(feature = "const_wrapping_int_methods", since = "1.52.0")]
         #[must_use = "this returns the result of the operation, \
                       without modifying the original"]
         #[inline]
@@ -1272,7 +1272,7 @@ macro_rules! int_impl {
         /// assert_eq!((-128i8).wrapping_div_euclid(-1), -128);
         /// ```
         #[stable(feature = "euclidean_division", since = "1.38.0")]
-        #[rustc_const_stable(feature = "const_euclidean_int_methods", since = "1.52.0")]
+        #[crablangc_const_stable(feature = "const_euclidean_int_methods", since = "1.52.0")]
         #[must_use = "this returns the result of the operation, \
                       without modifying the original"]
         #[inline]
@@ -1300,7 +1300,7 @@ macro_rules! int_impl {
         /// assert_eq!((-128i8).wrapping_rem(-1), 0);
         /// ```
         #[stable(feature = "num_wrapping", since = "1.2.0")]
-        #[rustc_const_stable(feature = "const_wrapping_int_methods", since = "1.52.0")]
+        #[crablangc_const_stable(feature = "const_wrapping_int_methods", since = "1.52.0")]
         #[must_use = "this returns the result of the operation, \
                       without modifying the original"]
         #[inline]
@@ -1327,7 +1327,7 @@ macro_rules! int_impl {
         /// assert_eq!((-128i8).wrapping_rem_euclid(-1), 0);
         /// ```
         #[stable(feature = "euclidean_division", since = "1.38.0")]
-        #[rustc_const_stable(feature = "const_euclidean_int_methods", since = "1.52.0")]
+        #[crablangc_const_stable(feature = "const_euclidean_int_methods", since = "1.52.0")]
         #[must_use = "this returns the result of the operation, \
                       without modifying the original"]
         #[inline]
@@ -1351,7 +1351,7 @@ macro_rules! int_impl {
         #[doc = concat!("assert_eq!(", stringify!($SelfT), "::MIN.wrapping_neg(), ", stringify!($SelfT), "::MIN);")]
         /// ```
         #[stable(feature = "num_wrapping", since = "1.2.0")]
-        #[rustc_const_stable(feature = "const_int_methods", since = "1.32.0")]
+        #[crablangc_const_stable(feature = "const_int_methods", since = "1.32.0")]
         #[must_use = "this returns the result of the operation, \
                       without modifying the original"]
         #[inline(always)]
@@ -1376,11 +1376,11 @@ macro_rules! int_impl {
         #[doc = concat!("assert_eq!((-1", stringify!($SelfT), ").wrapping_shl(128), -1);")]
         /// ```
         #[stable(feature = "num_wrapping", since = "1.2.0")]
-        #[rustc_const_stable(feature = "const_int_methods", since = "1.32.0")]
+        #[crablangc_const_stable(feature = "const_int_methods", since = "1.32.0")]
         #[must_use = "this returns the result of the operation, \
                       without modifying the original"]
         #[inline(always)]
-        #[rustc_allow_const_fn_unstable(const_inherent_unchecked_arith)]
+        #[crablangc_allow_const_fn_unstable(const_inherent_unchecked_arith)]
         pub const fn wrapping_shl(self, rhs: u32) -> Self {
             // SAFETY: the masking by the bitsize of the type ensures that we do not shift
             // out of bounds
@@ -1406,11 +1406,11 @@ macro_rules! int_impl {
         /// assert_eq!((-128i16).wrapping_shr(64), -128);
         /// ```
         #[stable(feature = "num_wrapping", since = "1.2.0")]
-        #[rustc_const_stable(feature = "const_int_methods", since = "1.32.0")]
+        #[crablangc_const_stable(feature = "const_int_methods", since = "1.32.0")]
         #[must_use = "this returns the result of the operation, \
                       without modifying the original"]
         #[inline(always)]
-        #[rustc_allow_const_fn_unstable(const_inherent_unchecked_arith)]
+        #[crablangc_allow_const_fn_unstable(const_inherent_unchecked_arith)]
         pub const fn wrapping_shr(self, rhs: u32) -> Self {
             // SAFETY: the masking by the bitsize of the type ensures that we do not shift
             // out of bounds
@@ -1437,7 +1437,7 @@ macro_rules! int_impl {
         /// assert_eq!((-128i8).wrapping_abs() as u8, 128);
         /// ```
         #[stable(feature = "no_panic_abs", since = "1.13.0")]
-        #[rustc_const_stable(feature = "const_int_methods", since = "1.32.0")]
+        #[crablangc_const_stable(feature = "const_int_methods", since = "1.32.0")]
         #[must_use = "this returns the result of the operation, \
                       without modifying the original"]
         #[allow(unused_attributes)]
@@ -1464,7 +1464,7 @@ macro_rules! int_impl {
         /// assert_eq!((-128i8).unsigned_abs(), 128u8);
         /// ```
         #[stable(feature = "unsigned_abs", since = "1.51.0")]
-        #[rustc_const_stable(feature = "unsigned_abs", since = "1.51.0")]
+        #[crablangc_const_stable(feature = "unsigned_abs", since = "1.51.0")]
         #[must_use = "this returns the result of the operation, \
                       without modifying the original"]
         #[inline]
@@ -1485,7 +1485,7 @@ macro_rules! int_impl {
         /// assert_eq!(3i8.wrapping_pow(6), -39);
         /// ```
         #[stable(feature = "no_panic_pow", since = "1.34.0")]
-        #[rustc_const_stable(feature = "const_int_pow", since = "1.50.0")]
+        #[crablangc_const_stable(feature = "const_int_pow", since = "1.50.0")]
         #[must_use = "this returns the result of the operation, \
                       without modifying the original"]
         #[inline]
@@ -1525,7 +1525,7 @@ macro_rules! int_impl {
         #[doc = concat!("assert_eq!(", stringify!($SelfT), "::MAX.overflowing_add(1), (", stringify!($SelfT), "::MIN, true));")]
         /// ```
         #[stable(feature = "wrapping", since = "1.7.0")]
-        #[rustc_const_stable(feature = "const_int_methods", since = "1.32.0")]
+        #[crablangc_const_stable(feature = "const_int_methods", since = "1.32.0")]
         #[must_use = "this returns the result of the operation, \
                       without modifying the original"]
         #[inline(always)]
@@ -1580,13 +1580,13 @@ macro_rules! int_impl {
         /// assert_eq!((sum1, sum0), (6, 8));
         /// ```
         #[unstable(feature = "bigint_helper_methods", issue = "85532")]
-        #[rustc_const_unstable(feature = "const_bigint_helper_methods", issue = "85532")]
+        #[crablangc_const_unstable(feature = "const_bigint_helper_methods", issue = "85532")]
         #[must_use = "this returns the result of the operation, \
                       without modifying the original"]
         #[inline]
         pub const fn carrying_add(self, rhs: Self, carry: bool) -> (Self, bool) {
             // note: longer-term this should be done via an intrinsic.
-            // note: no intermediate overflow is required (https://github.com/rust-lang/rust/issues/85532#issuecomment-1032214946).
+            // note: no intermediate overflow is required (https://github.com/crablang/crablang/issues/85532#issuecomment-1032214946).
             let (a, b) = self.overflowing_add(rhs);
             let (c, d) = a.overflowing_add(carry as $SelfT);
             (c, b != d)
@@ -1608,7 +1608,7 @@ macro_rules! int_impl {
         #[doc = concat!("assert_eq!((", stringify!($SelfT), "::MAX - 2).overflowing_add_unsigned(3), (", stringify!($SelfT), "::MIN, true));")]
         /// ```
         #[stable(feature = "mixed_integer_ops", since = "1.66.0")]
-        #[rustc_const_stable(feature = "mixed_integer_ops", since = "1.66.0")]
+        #[crablangc_const_stable(feature = "mixed_integer_ops", since = "1.66.0")]
         #[must_use = "this returns the result of the operation, \
                       without modifying the original"]
         #[inline]
@@ -1632,7 +1632,7 @@ macro_rules! int_impl {
         #[doc = concat!("assert_eq!(", stringify!($SelfT), "::MIN.overflowing_sub(1), (", stringify!($SelfT), "::MAX, true));")]
         /// ```
         #[stable(feature = "wrapping", since = "1.7.0")]
-        #[rustc_const_stable(feature = "const_int_methods", since = "1.32.0")]
+        #[crablangc_const_stable(feature = "const_int_methods", since = "1.32.0")]
         #[must_use = "this returns the result of the operation, \
                       without modifying the original"]
         #[inline(always)]
@@ -1688,13 +1688,13 @@ macro_rules! int_impl {
         #[doc = concat!("assert_eq!((diff1, diff0), (10, ", stringify!($UnsignedT), "::MAX));")]
         /// ```
         #[unstable(feature = "bigint_helper_methods", issue = "85532")]
-        #[rustc_const_unstable(feature = "const_bigint_helper_methods", issue = "85532")]
+        #[crablangc_const_unstable(feature = "const_bigint_helper_methods", issue = "85532")]
         #[must_use = "this returns the result of the operation, \
                       without modifying the original"]
         #[inline]
         pub const fn borrowing_sub(self, rhs: Self, borrow: bool) -> (Self, bool) {
             // note: longer-term this should be done via an intrinsic.
-            // note: no intermediate overflow is required (https://github.com/rust-lang/rust/issues/85532#issuecomment-1032214946).
+            // note: no intermediate overflow is required (https://github.com/crablang/crablang/issues/85532#issuecomment-1032214946).
             let (a, b) = self.overflowing_sub(rhs);
             let (c, d) = a.overflowing_sub(borrow as $SelfT);
             (c, b != d)
@@ -1716,7 +1716,7 @@ macro_rules! int_impl {
         #[doc = concat!("assert_eq!((", stringify!($SelfT), "::MIN + 2).overflowing_sub_unsigned(3), (", stringify!($SelfT), "::MAX, true));")]
         /// ```
         #[stable(feature = "mixed_integer_ops", since = "1.66.0")]
-        #[rustc_const_stable(feature = "mixed_integer_ops", since = "1.66.0")]
+        #[crablangc_const_stable(feature = "mixed_integer_ops", since = "1.66.0")]
         #[must_use = "this returns the result of the operation, \
                       without modifying the original"]
         #[inline]
@@ -1740,7 +1740,7 @@ macro_rules! int_impl {
         /// assert_eq!(1_000_000_000i32.overflowing_mul(10), (1410065408, true));
         /// ```
         #[stable(feature = "wrapping", since = "1.7.0")]
-        #[rustc_const_stable(feature = "const_int_methods", since = "1.32.0")]
+        #[crablangc_const_stable(feature = "const_int_methods", since = "1.32.0")]
         #[must_use = "this returns the result of the operation, \
                       without modifying the original"]
         #[inline(always)]
@@ -1768,7 +1768,7 @@ macro_rules! int_impl {
         /// ```
         #[inline]
         #[stable(feature = "wrapping", since = "1.7.0")]
-        #[rustc_const_stable(feature = "const_overflowing_int_methods", since = "1.52.0")]
+        #[crablangc_const_stable(feature = "const_overflowing_int_methods", since = "1.52.0")]
         #[must_use = "this returns the result of the operation, \
                       without modifying the original"]
         pub const fn overflowing_div(self, rhs: Self) -> (Self, bool) {
@@ -1799,7 +1799,7 @@ macro_rules! int_impl {
         /// ```
         #[inline]
         #[stable(feature = "euclidean_division", since = "1.38.0")]
-        #[rustc_const_stable(feature = "const_euclidean_int_methods", since = "1.52.0")]
+        #[crablangc_const_stable(feature = "const_euclidean_int_methods", since = "1.52.0")]
         #[must_use = "this returns the result of the operation, \
                       without modifying the original"]
         pub const fn overflowing_div_euclid(self, rhs: Self) -> (Self, bool) {
@@ -1830,7 +1830,7 @@ macro_rules! int_impl {
         /// ```
         #[inline]
         #[stable(feature = "wrapping", since = "1.7.0")]
-        #[rustc_const_stable(feature = "const_overflowing_int_methods", since = "1.52.0")]
+        #[crablangc_const_stable(feature = "const_overflowing_int_methods", since = "1.52.0")]
         #[must_use = "this returns the result of the operation, \
                       without modifying the original"]
         pub const fn overflowing_rem(self, rhs: Self) -> (Self, bool) {
@@ -1860,7 +1860,7 @@ macro_rules! int_impl {
         #[doc = concat!("assert_eq!(", stringify!($SelfT), "::MIN.overflowing_rem_euclid(-1), (0, true));")]
         /// ```
         #[stable(feature = "euclidean_division", since = "1.38.0")]
-        #[rustc_const_stable(feature = "const_euclidean_int_methods", since = "1.52.0")]
+        #[crablangc_const_stable(feature = "const_euclidean_int_methods", since = "1.52.0")]
         #[must_use = "this returns the result of the operation, \
                       without modifying the original"]
         #[inline]
@@ -1889,7 +1889,7 @@ macro_rules! int_impl {
         /// ```
         #[inline]
         #[stable(feature = "wrapping", since = "1.7.0")]
-        #[rustc_const_stable(feature = "const_int_methods", since = "1.32.0")]
+        #[crablangc_const_stable(feature = "const_int_methods", since = "1.32.0")]
         #[must_use = "this returns the result of the operation, \
                       without modifying the original"]
         #[allow(unused_attributes)]
@@ -1916,7 +1916,7 @@ macro_rules! int_impl {
         /// assert_eq!(0x1i32.overflowing_shl(36), (0x10, true));
         /// ```
         #[stable(feature = "wrapping", since = "1.7.0")]
-        #[rustc_const_stable(feature = "const_int_methods", since = "1.32.0")]
+        #[crablangc_const_stable(feature = "const_int_methods", since = "1.32.0")]
         #[must_use = "this returns the result of the operation, \
                       without modifying the original"]
         #[inline]
@@ -1939,7 +1939,7 @@ macro_rules! int_impl {
         /// assert_eq!(0x10i32.overflowing_shr(36), (0x1, true));
         /// ```
         #[stable(feature = "wrapping", since = "1.7.0")]
-        #[rustc_const_stable(feature = "const_int_methods", since = "1.32.0")]
+        #[crablangc_const_stable(feature = "const_int_methods", since = "1.32.0")]
         #[must_use = "this returns the result of the operation, \
                       without modifying the original"]
         #[inline]
@@ -1965,7 +1965,7 @@ macro_rules! int_impl {
         #[doc = concat!("assert_eq!((", stringify!($SelfT), "::MIN).overflowing_abs(), (", stringify!($SelfT), "::MIN, true));")]
         /// ```
         #[stable(feature = "no_panic_abs", since = "1.13.0")]
-        #[rustc_const_stable(feature = "const_int_methods", since = "1.32.0")]
+        #[crablangc_const_stable(feature = "const_int_methods", since = "1.32.0")]
         #[must_use = "this returns the result of the operation, \
                       without modifying the original"]
         #[inline]
@@ -1987,7 +1987,7 @@ macro_rules! int_impl {
         /// assert_eq!(3i8.overflowing_pow(5), (-13, true));
         /// ```
         #[stable(feature = "no_panic_pow", since = "1.34.0")]
-        #[rustc_const_stable(feature = "const_int_pow", since = "1.50.0")]
+        #[crablangc_const_stable(feature = "const_int_pow", since = "1.50.0")]
         #[must_use = "this returns the result of the operation, \
                       without modifying the original"]
         #[inline]
@@ -2033,12 +2033,12 @@ macro_rules! int_impl {
         ///
         /// assert_eq!(x.pow(5), 32);
         /// ```
-        #[stable(feature = "rust1", since = "1.0.0")]
-        #[rustc_const_stable(feature = "const_int_pow", since = "1.50.0")]
+        #[stable(feature = "crablang1", since = "1.0.0")]
+        #[crablangc_const_stable(feature = "const_int_pow", since = "1.50.0")]
         #[must_use = "this returns the result of the operation, \
                       without modifying the original"]
         #[inline]
-        #[rustc_inherit_overflow_checks]
+        #[crablangc_inherit_overflow_checks]
         pub const fn pow(self, mut exp: u32) -> Self {
             if exp == 0 {
                 return 1;
@@ -2068,7 +2068,7 @@ macro_rules! int_impl {
         ///
         /// In other words, the result is `self / rhs` rounded to the integer `q`
         /// such that `self >= q * rhs`.
-        /// If `self > 0`, this is equal to round towards zero (the default in Rust);
+        /// If `self > 0`, this is equal to round towards zero (the default in CrabLang);
         /// if `self < 0`, this is equal to round towards +/- infinity.
         ///
         /// # Panics
@@ -2089,11 +2089,11 @@ macro_rules! int_impl {
         /// assert_eq!((-a).div_euclid(-b), 2); // -7 >= -4 * 2
         /// ```
         #[stable(feature = "euclidean_division", since = "1.38.0")]
-        #[rustc_const_stable(feature = "const_euclidean_int_methods", since = "1.52.0")]
+        #[crablangc_const_stable(feature = "const_euclidean_int_methods", since = "1.52.0")]
         #[must_use = "this returns the result of the operation, \
                       without modifying the original"]
         #[inline]
-        #[rustc_inherit_overflow_checks]
+        #[crablangc_inherit_overflow_checks]
         pub const fn div_euclid(self, rhs: Self) -> Self {
             let q = self / rhs;
             if self % rhs < 0 {
@@ -2127,11 +2127,11 @@ macro_rules! int_impl {
         /// assert_eq!((-a).rem_euclid(-b), 1);
         /// ```
         #[stable(feature = "euclidean_division", since = "1.38.0")]
-        #[rustc_const_stable(feature = "const_euclidean_int_methods", since = "1.52.0")]
+        #[crablangc_const_stable(feature = "const_euclidean_int_methods", since = "1.52.0")]
         #[must_use = "this returns the result of the operation, \
                       without modifying the original"]
         #[inline]
-        #[rustc_inherit_overflow_checks]
+        #[crablangc_inherit_overflow_checks]
         pub const fn rem_euclid(self, rhs: Self) -> Self {
             let r = self % rhs;
             if r < 0 {
@@ -2178,7 +2178,7 @@ macro_rules! int_impl {
         #[must_use = "this returns the result of the operation, \
                       without modifying the original"]
         #[inline]
-        #[rustc_inherit_overflow_checks]
+        #[crablangc_inherit_overflow_checks]
         pub const fn div_floor(self, rhs: Self) -> Self {
             let d = self / rhs;
             let r = self % rhs;
@@ -2218,7 +2218,7 @@ macro_rules! int_impl {
         #[must_use = "this returns the result of the operation, \
                       without modifying the original"]
         #[inline]
-        #[rustc_inherit_overflow_checks]
+        #[crablangc_inherit_overflow_checks]
         pub const fn div_ceil(self, rhs: Self) -> Self {
             let d = self / rhs;
             let r = self % rhs;
@@ -2262,7 +2262,7 @@ macro_rules! int_impl {
         #[must_use = "this returns the result of the operation, \
                       without modifying the original"]
         #[inline]
-        #[rustc_inherit_overflow_checks]
+        #[crablangc_inherit_overflow_checks]
         pub const fn next_multiple_of(self, rhs: Self) -> Self {
             // This would otherwise fail when calculating `r` when self == T::MIN.
             if rhs == -1 {
@@ -2350,7 +2350,7 @@ macro_rules! int_impl {
         #[doc = concat!("assert_eq!(5", stringify!($SelfT), ".ilog(5), 1);")]
         /// ```
         #[stable(feature = "int_log", since = "1.67.0")]
-        #[rustc_const_stable(feature = "int_log", since = "1.67.0")]
+        #[crablangc_const_stable(feature = "int_log", since = "1.67.0")]
         #[must_use = "this returns the result of the operation, \
                       without modifying the original"]
         #[inline]
@@ -2376,7 +2376,7 @@ macro_rules! int_impl {
         #[doc = concat!("assert_eq!(2", stringify!($SelfT), ".ilog2(), 1);")]
         /// ```
         #[stable(feature = "int_log", since = "1.67.0")]
-        #[rustc_const_stable(feature = "int_log", since = "1.67.0")]
+        #[crablangc_const_stable(feature = "int_log", since = "1.67.0")]
         #[must_use = "this returns the result of the operation, \
                       without modifying the original"]
         #[inline]
@@ -2401,7 +2401,7 @@ macro_rules! int_impl {
         #[doc = concat!("assert_eq!(10", stringify!($SelfT), ".ilog10(), 1);")]
         /// ```
         #[stable(feature = "int_log", since = "1.67.0")]
-        #[rustc_const_stable(feature = "int_log", since = "1.67.0")]
+        #[crablangc_const_stable(feature = "int_log", since = "1.67.0")]
         #[must_use = "this returns the result of the operation, \
                       without modifying the original"]
         #[inline]
@@ -2429,7 +2429,7 @@ macro_rules! int_impl {
         #[doc = concat!("assert_eq!(5", stringify!($SelfT), ".checked_ilog(5), Some(1));")]
         /// ```
         #[stable(feature = "int_log", since = "1.67.0")]
-        #[rustc_const_stable(feature = "int_log", since = "1.67.0")]
+        #[crablangc_const_stable(feature = "int_log", since = "1.67.0")]
         #[must_use = "this returns the result of the operation, \
                       without modifying the original"]
         #[inline]
@@ -2465,7 +2465,7 @@ macro_rules! int_impl {
         #[doc = concat!("assert_eq!(2", stringify!($SelfT), ".checked_ilog2(), Some(1));")]
         /// ```
         #[stable(feature = "int_log", since = "1.67.0")]
-        #[rustc_const_stable(feature = "int_log", since = "1.67.0")]
+        #[crablangc_const_stable(feature = "int_log", since = "1.67.0")]
         #[must_use = "this returns the result of the operation, \
                       without modifying the original"]
         #[inline]
@@ -2489,7 +2489,7 @@ macro_rules! int_impl {
         #[doc = concat!("assert_eq!(10", stringify!($SelfT), ".checked_ilog10(), Some(1));")]
         /// ```
         #[stable(feature = "int_log", since = "1.67.0")]
-        #[rustc_const_stable(feature = "int_log", since = "1.67.0")]
+        #[crablangc_const_stable(feature = "int_log", since = "1.67.0")]
         #[must_use = "this returns the result of the operation, \
                       without modifying the original"]
         #[inline]
@@ -2523,15 +2523,15 @@ macro_rules! int_impl {
         #[doc = concat!("assert_eq!(10", stringify!($SelfT), ".abs(), 10);")]
         #[doc = concat!("assert_eq!((-10", stringify!($SelfT), ").abs(), 10);")]
         /// ```
-        #[stable(feature = "rust1", since = "1.0.0")]
-        #[rustc_const_stable(feature = "const_int_methods", since = "1.32.0")]
+        #[stable(feature = "crablang1", since = "1.0.0")]
+        #[crablangc_const_stable(feature = "const_int_methods", since = "1.32.0")]
         #[allow(unused_attributes)]
         #[must_use = "this returns the result of the operation, \
                       without modifying the original"]
         #[inline]
-        #[rustc_inherit_overflow_checks]
+        #[crablangc_inherit_overflow_checks]
         pub const fn abs(self) -> Self {
-            // Note that the #[rustc_inherit_overflow_checks] and #[inline]
+            // Note that the #[crablangc_inherit_overflow_checks] and #[inline]
             // above mean that the overflow semantics of the subtraction
             // depend on the crate we're being called from.
             if self.is_negative() {
@@ -2558,7 +2558,7 @@ macro_rules! int_impl {
         #[doc = concat!("assert_eq!(", stringify!($SelfT), "::MIN.abs_diff(", stringify!($SelfT), "::MAX), ", stringify!($UnsignedT), "::MAX);")]
         /// ```
         #[stable(feature = "int_abs_diff", since = "1.60.0")]
-        #[rustc_const_stable(feature = "int_abs_diff", since = "1.60.0")]
+        #[crablangc_const_stable(feature = "int_abs_diff", since = "1.60.0")]
         #[must_use = "this returns the result of the operation, \
                       without modifying the original"]
         #[inline]
@@ -2598,12 +2598,12 @@ macro_rules! int_impl {
         #[doc = concat!("assert_eq!(0", stringify!($SelfT), ".signum(), 0);")]
         #[doc = concat!("assert_eq!((-10", stringify!($SelfT), ").signum(), -1);")]
         /// ```
-        #[stable(feature = "rust1", since = "1.0.0")]
-        #[rustc_const_stable(feature = "const_int_sign", since = "1.47.0")]
+        #[stable(feature = "crablang1", since = "1.0.0")]
+        #[crablangc_const_stable(feature = "const_int_sign", since = "1.47.0")]
         #[must_use = "this returns the result of the operation, \
                       without modifying the original"]
         #[inline(always)]
-        #[rustc_allow_const_fn_unstable(const_cmp)]
+        #[crablangc_allow_const_fn_unstable(const_cmp)]
         pub const fn signum(self) -> Self {
             // Picking the right way to phrase this is complicated
             // (<https://graphics.stanford.edu/~seander/bithacks.html#CopyIntegerSign>)
@@ -2624,8 +2624,8 @@ macro_rules! int_impl {
         #[doc = concat!("assert!(!(-10", stringify!($SelfT), ").is_positive());")]
         /// ```
         #[must_use]
-        #[stable(feature = "rust1", since = "1.0.0")]
-        #[rustc_const_stable(feature = "const_int_methods", since = "1.32.0")]
+        #[stable(feature = "crablang1", since = "1.0.0")]
+        #[crablangc_const_stable(feature = "const_int_methods", since = "1.32.0")]
         #[inline(always)]
         pub const fn is_positive(self) -> bool { self > 0 }
 
@@ -2641,8 +2641,8 @@ macro_rules! int_impl {
         #[doc = concat!("assert!(!10", stringify!($SelfT), ".is_negative());")]
         /// ```
         #[must_use]
-        #[stable(feature = "rust1", since = "1.0.0")]
-        #[rustc_const_stable(feature = "const_int_methods", since = "1.32.0")]
+        #[stable(feature = "crablang1", since = "1.0.0")]
+        #[crablangc_const_stable(feature = "const_int_methods", since = "1.32.0")]
         #[inline(always)]
         pub const fn is_negative(self) -> bool { self < 0 }
 
@@ -2658,7 +2658,7 @@ macro_rules! int_impl {
         #[doc = concat!("assert_eq!(bytes, ", $be_bytes, ");")]
         /// ```
         #[stable(feature = "int_to_from_bytes", since = "1.32.0")]
-        #[rustc_const_stable(feature = "const_int_conversion", since = "1.44.0")]
+        #[crablangc_const_stable(feature = "const_int_conversion", since = "1.44.0")]
         #[must_use = "this returns the result of the operation, \
                       without modifying the original"]
         #[inline]
@@ -2678,7 +2678,7 @@ macro_rules! int_impl {
         #[doc = concat!("assert_eq!(bytes, ", $le_bytes, ");")]
         /// ```
         #[stable(feature = "int_to_from_bytes", since = "1.32.0")]
-        #[rustc_const_stable(feature = "const_int_conversion", since = "1.44.0")]
+        #[crablangc_const_stable(feature = "const_int_conversion", since = "1.44.0")]
         #[must_use = "this returns the result of the operation, \
                       without modifying the original"]
         #[inline]
@@ -2712,7 +2712,7 @@ macro_rules! int_impl {
         /// );
         /// ```
         #[stable(feature = "int_to_from_bytes", since = "1.32.0")]
-        #[rustc_const_stable(feature = "const_int_conversion", since = "1.44.0")]
+        #[crablangc_const_stable(feature = "const_int_conversion", since = "1.44.0")]
         // SAFETY: const sound because integers are plain old datatypes so we can always
         // transmute them to arrays of bytes
         #[must_use = "this returns the result of the operation, \
@@ -2746,7 +2746,7 @@ macro_rules! int_impl {
         /// }
         /// ```
         #[stable(feature = "int_to_from_bytes", since = "1.32.0")]
-        #[rustc_const_stable(feature = "const_int_conversion", since = "1.44.0")]
+        #[crablangc_const_stable(feature = "const_int_conversion", since = "1.44.0")]
         #[must_use]
         #[inline]
         pub const fn from_be_bytes(bytes: [u8; mem::size_of::<Self>()]) -> Self {
@@ -2775,7 +2775,7 @@ macro_rules! int_impl {
         /// }
         /// ```
         #[stable(feature = "int_to_from_bytes", since = "1.32.0")]
-        #[rustc_const_stable(feature = "const_int_conversion", since = "1.44.0")]
+        #[crablangc_const_stable(feature = "const_int_conversion", since = "1.44.0")]
         #[must_use]
         #[inline]
         pub const fn from_le_bytes(bytes: [u8; mem::size_of::<Self>()]) -> Self {
@@ -2815,7 +2815,7 @@ macro_rules! int_impl {
         /// }
         /// ```
         #[stable(feature = "int_to_from_bytes", since = "1.32.0")]
-        #[rustc_const_stable(feature = "const_int_conversion", since = "1.44.0")]
+        #[crablangc_const_stable(feature = "const_int_conversion", since = "1.44.0")]
         #[must_use]
         // SAFETY: const sound because integers are plain old datatypes so we can always
         // transmute to them
@@ -2829,10 +2829,10 @@ macro_rules! int_impl {
         #[doc = concat!("[`", stringify!($SelfT), "::MIN", "`] instead.")]
         ///
         /// Returns the smallest value that can be represented by this integer type.
-        #[stable(feature = "rust1", since = "1.0.0")]
+        #[stable(feature = "crablang1", since = "1.0.0")]
         #[inline(always)]
-        #[rustc_promotable]
-        #[rustc_const_stable(feature = "const_min_value", since = "1.32.0")]
+        #[crablangc_promotable]
+        #[crablangc_const_stable(feature = "const_min_value", since = "1.32.0")]
         #[deprecated(since = "TBD", note = "replaced by the `MIN` associated constant on this type")]
         pub const fn min_value() -> Self {
             Self::MIN
@@ -2842,10 +2842,10 @@ macro_rules! int_impl {
         #[doc = concat!("[`", stringify!($SelfT), "::MAX", "`] instead.")]
         ///
         /// Returns the largest value that can be represented by this integer type.
-        #[stable(feature = "rust1", since = "1.0.0")]
+        #[stable(feature = "crablang1", since = "1.0.0")]
         #[inline(always)]
-        #[rustc_promotable]
-        #[rustc_const_stable(feature = "const_max_value", since = "1.32.0")]
+        #[crablangc_promotable]
+        #[crablangc_const_stable(feature = "const_max_value", since = "1.32.0")]
         #[deprecated(since = "TBD", note = "replaced by the `MAX` associated constant on this type")]
         pub const fn max_value() -> Self {
             Self::MAX

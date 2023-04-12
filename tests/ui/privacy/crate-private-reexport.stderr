@@ -217,4 +217,4 @@ LL |     pub(self) fn f9() {}
 error: aborting due to 20 previous errors
 
 Some errors have detailed explanations: E0364, E0365, E0603.
-For more information about an error, try `rustc --explain E0364`.
+For more information about an error, try `crablangc --explain E0364`.

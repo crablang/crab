@@ -14,6 +14,6 @@ all:
 	mkdir $(SRC)
 	mkdir $(INCR)
 	cp a.rs $(SRC)/main.rs
-	$(RUSTC) -C incremental=$(INCR) $(SRC)/main.rs --target $(TARGET)
+	$(CRABLANGC) -C incremental=$(INCR) $(SRC)/main.rs --target $(TARGET)
 	cp b.rs $(SRC)/main.rs
-	$(RUSTC) -C incremental=$(INCR) $(SRC)/main.rs --target $(TARGET)
+	$(CRABLANGC) -C incremental=$(INCR) $(SRC)/main.rs --target $(TARGET)

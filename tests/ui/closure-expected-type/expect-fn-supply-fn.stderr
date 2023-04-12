@@ -48,4 +48,4 @@ LL |     with_closure_expecting_fn_with_bound_region(|x: Foo<'_>, y| {
 
 error: aborting due to 5 previous errors
 
-For more information about this error, try `rustc --explain E0308`.
+For more information about this error, try `crablangc --explain E0308`.

@@ -6,9 +6,9 @@ use std::ptr;
 // - Writes to the pointer after it has moved across the await point
 //
 // This is only meant to assert current behavior, not guarantee that this is
-// how it should work in the future. In fact, upcoming changes to rustc
+// how it should work in the future. In fact, upcoming changes to crablangc
 // *should* break these tests.
-// See: https://github.com/rust-lang/rust/issues/62958
+// See: https://github.com/crablang/crablang/issues/62958
 async fn data_moved_async() {
     async fn helper(mut data: Vec<u8>, raw_pointer: *mut Vec<u8>) {
         let raw_pointer2 = ptr::addr_of_mut!(data);

@@ -29,7 +29,7 @@ fn add_coverage_not_called() {
 }
 
 // FIXME: These test-cases illustrate confusing results of nested functions.
-// See https://github.com/rust-lang/rust/issues/93319
+// See https://github.com/crablang/crablang/issues/93319
 mod nested_fns {
     #[no_coverage]
     pub fn outer_not_covered(is_true: bool) {

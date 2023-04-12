@@ -19,4 +19,4 @@ LL | use std::fmt::{self, self};
 error: aborting due to 2 previous errors
 
 Some errors have detailed explanations: E0252, E0430.
-For more information about an error, try `rustc --explain E0252`.
+For more information about an error, try `crablangc --explain E0252`.

@@ -1,5 +1,5 @@
 // aux-build:amputate-span.rs
-// run-rustfix
+// run-crablangfix
 // edition:2018
 // compile-flags: --extern amputate_span
 

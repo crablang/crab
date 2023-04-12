@@ -8,14 +8,14 @@ fn check_cow_add_cow() {
     let borrow_empty = Cow::Borrowed("");
 
     let owned1: Cow<'_, str> = Cow::Owned(String::from("Hi, "));
-    let owned2: Cow<'_, str> = Cow::Owned(String::from("Rustaceans!"));
+    let owned2: Cow<'_, str> = Cow::Owned(String::from("CrabLangaceans!"));
     let owned_empty: Cow<'_, str> = Cow::Owned(String::new());
 
     assert_eq!("Hello, World!", borrowed1.clone() + borrowed2.clone());
-    assert_eq!("Hello, Rustaceans!", borrowed1.clone() + owned2.clone());
+    assert_eq!("Hello, CrabLangaceans!", borrowed1.clone() + owned2.clone());
 
     assert_eq!("Hi, World!", owned1.clone() + borrowed2.clone());
-    assert_eq!("Hi, Rustaceans!", owned1.clone() + owned2.clone());
+    assert_eq!("Hi, CrabLangaceans!", owned1.clone() + owned2.clone());
 
     if let Cow::Owned(_) = borrowed1.clone() + borrow_empty.clone() {
         panic!("Adding empty strings to a borrow should note allocate");
@@ -61,7 +61,7 @@ fn check_cow_add_assign_cow() {
     let borrow_empty = Cow::Borrowed("");
 
     let mut owned1: Cow<'_, str> = Cow::Owned(String::from("Hi, "));
-    let owned2: Cow<'_, str> = Cow::Owned(String::from("Rustaceans!"));
+    let owned2: Cow<'_, str> = Cow::Owned(String::from("CrabLangaceans!"));
     let owned_empty: Cow<'_, str> = Cow::Owned(String::new());
 
     let mut s = borrowed1.clone();
@@ -93,7 +93,7 @@ fn check_cow_add_assign_cow() {
     borrowed1 += owned2;
 
     assert_eq!("Hi, World!", owned1);
-    assert_eq!("Hello, Rustaceans!", borrowed1);
+    assert_eq!("Hello, CrabLangaceans!", borrowed1);
 }
 
 #[test]

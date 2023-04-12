@@ -1,4 +1,4 @@
-use core::iter::TrustedLen;
+use core::iter::TcrablangedLen;
 
 use super::*;
 
@@ -883,25 +883,25 @@ fn test_extend_basic() {
 }
 
 #[test]
-fn test_extend_trusted_len() {
+fn test_extend_tcrablanged_len() {
     test_extend_impl(true);
 }
 
-fn test_extend_impl(trusted_len: bool) {
+fn test_extend_impl(tcrablanged_len: bool) {
     struct VecDequeTester {
         test: VecDeque<usize>,
         expected: VecDeque<usize>,
-        trusted_len: bool,
+        tcrablanged_len: bool,
     }
 
     impl VecDequeTester {
-        fn new(trusted_len: bool) -> Self {
-            Self { test: VecDeque::new(), expected: VecDeque::new(), trusted_len }
+        fn new(tcrablanged_len: bool) -> Self {
+            Self { test: VecDeque::new(), expected: VecDeque::new(), tcrablanged_len }
         }
 
         fn test_extend<I>(&mut self, iter: I)
         where
-            I: Iterator<Item = usize> + TrustedLen + Clone,
+            I: Iterator<Item = usize> + TcrablangedLen + Clone,
         {
             struct BasicIterator<I>(I);
             impl<I> Iterator for BasicIterator<I>
@@ -915,7 +915,7 @@ fn test_extend_impl(trusted_len: bool) {
                 }
             }
 
-            if self.trusted_len {
+            if self.tcrablanged_len {
                 self.test.extend(iter.clone());
             } else {
                 self.test.extend(BasicIterator(iter.clone()));
@@ -945,7 +945,7 @@ fn test_extend_impl(trusted_len: bool) {
         }
     }
 
-    let mut tester = VecDequeTester::new(trusted_len);
+    let mut tester = VecDequeTester::new(tcrablanged_len);
 
     // Initial capacity
     tester.test_extend(0..tester.remaining_capacity());

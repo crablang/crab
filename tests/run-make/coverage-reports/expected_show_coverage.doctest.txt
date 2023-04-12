@@ -1,6 +1,6 @@
 ../coverage/doctest.rs:
     1|       |//! This test ensures that code from doctests is properly re-mapped.
-    2|       |//! See <https://github.com/rust-lang/rust/issues/79417> for more info.
+    2|       |//! See <https://github.com/crablang/crablang/issues/79417> for more info.
     3|       |//!
     4|       |//! Just some random code:
     5|      1|//! ```
@@ -40,7 +40,7 @@
                    ^0
    37|      1|//!     res = Ok(0);
    38|       |//! }
-   39|       |//! // need to be explicit because rustdoc cant infer the return type
+   39|       |//! // need to be explicit because crablangdoc cant infer the return type
    40|      1|//! Ok::<(), SomeError>(())
    41|      1|//! ```
    42|       |//!

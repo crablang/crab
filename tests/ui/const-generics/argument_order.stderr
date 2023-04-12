@@ -15,4 +15,4 @@ LL |     let _: AlsoBad<7, 'static, u32, 'static, 17, u16>;
 
 error: aborting due to 2 previous errors
 
-For more information about this error, try `rustc --explain E0747`.
+For more information about this error, try `crablangc --explain E0747`.

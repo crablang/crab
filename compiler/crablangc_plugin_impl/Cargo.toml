@@ -1,0 +1,17 @@
+[package]
+name = "crablangc_plugin_impl"
+version = "0.0.0"
+build = false
+edition = "2021"
+
+[lib]
+
+[dependencies]
+libloading = "0.7.1"
+crablangc_errors = { path = "../crablangc_errors" }
+crablangc_lint = { path = "../crablangc_lint" }
+crablangc_macros = { path = "../crablangc_macros" }
+crablangc_metadata = { path = "../crablangc_metadata" }
+crablangc_ast = { path = "../crablangc_ast" }
+crablangc_session = { path = "../crablangc_session" }
+crablangc_span = { path = "../crablangc_span" }

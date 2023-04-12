@@ -1,0 +1,29 @@
+[package]
+name = "crablangc_query_system"
+version = "0.0.0"
+edition = "2021"
+
+[lib]
+
+[dependencies]
+parking_lot = "0.11"
+crablangc_arena = { path = "../crablangc_arena" }
+crablangc_ast = { path = "../crablangc_ast" }
+crablangc_data_structures = { path = "../crablangc_data_structures" }
+crablangc_errors = { path = "../crablangc_errors" }
+crablangc_feature = { path = "../crablangc_feature" }
+crablangc_hir = { path = "../crablangc_hir" }
+crablangc_index = { path = "../crablangc_index" }
+crablangc_macros = { path = "../crablangc_macros" }
+crablangc-rayon-core = { version = "0.5.0", optional = true }
+crablangc_serialize = { path = "../crablangc_serialize" }
+crablangc_session = { path = "../crablangc_session" }
+crablangc_span = { path = "../crablangc_span" }
+crablangc_target = { path = "../crablangc_target" }
+crablangc_type_ir = { path = "../crablangc_type_ir" }
+smallvec = { version = "1.8.1", features = ["union", "may_dangle"] }
+thin-vec = "0.2.12"
+tracing = "0.1"
+
+[features]
+crablangc_use_parallel_compiler = ["crablangc-rayon-core"]

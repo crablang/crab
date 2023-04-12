@@ -4,11 +4,11 @@
 // compile-flags:-Zverbose
 
 #![allow(warnings)]
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 
 struct SomeStruct<T> { t: T }
 
-#[rustc_dump_user_substs]
+#[crablangc_dump_user_substs]
 fn main() {
     SomeStruct { t: 22 }; // Nothing given, no annotation.
 

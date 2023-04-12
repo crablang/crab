@@ -1,7 +1,7 @@
 // aux-build:macro_rules.rs
 // aux-build:macro_use_helper.rs
 // aux-build:proc_macro_derive.rs
-// run-rustfix
+// run-crablangfix
 // ignore-32bit
 
 #![feature(lint_reasons)]

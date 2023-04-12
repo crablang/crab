@@ -1,5 +1,5 @@
-// Tests that C++ exceptions can unwind through Rust code run destructors and
-// are caught by catch_unwind. Also tests that Rust panics can unwind through
+// Tests that C++ exceptions can unwind through CrabLang code run destructors and
+// are caught by catch_unwind. Also tests that CrabLang panics can unwind through
 // C++ code.
 
 #![feature(c_unwind)]
@@ -23,15 +23,15 @@ extern "C-unwind" {
 }
 
 #[no_mangle]
-extern "C-unwind" fn rust_catch_callback(cb: extern "C-unwind" fn(), rust_ok: &mut bool) {
-    let _drop = DropCheck(rust_ok);
+extern "C-unwind" fn crablang_catch_callback(cb: extern "C-unwind" fn(), crablang_ok: &mut bool) {
+    let _drop = DropCheck(crablang_ok);
     cb();
     unreachable!("should have unwound instead of returned");
 }
 
-fn test_rust_panic() {
+fn test_crablang_panic() {
     extern "C-unwind" fn callback() {
-        println!("throwing rust panic");
+        println!("throwing crablang panic");
         panic!(1234i32);
     }
 
@@ -44,7 +44,7 @@ fn test_rust_panic() {
         }
         unreachable!("should have unwound instead of returned");
     }));
-    println!("caught rust panic");
+    println!("caught crablang panic");
     assert!(dropped);
     assert!(caught_unwind.is_err());
     let panic_obj = caught_unwind.unwrap_err();
@@ -55,5 +55,5 @@ fn test_rust_panic() {
 
 fn main() {
     unsafe { test_cxx_exception() };
-    test_rust_panic();
+    test_crablang_panic();
 }

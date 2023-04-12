@@ -47,18 +47,18 @@
 /// assert_eq!(nucleotide_count[Nucleotide::T], 12);
 /// ```
 #[lang = "index"]
-#[rustc_on_unimplemented(
+#[crablangc_on_unimplemented(
     message = "the type `{Self}` cannot be indexed by `{Idx}`",
     label = "`{Self}` cannot be indexed by `{Idx}`"
 )]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[doc(alias = "]")]
 #[doc(alias = "[")]
 #[doc(alias = "[]")]
 #[const_trait]
 pub trait Index<Idx: ?Sized> {
     /// The returned type after indexing.
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     type Output: ?Sized;
 
     /// Performs the indexing (`container[index]`) operation.
@@ -66,7 +66,7 @@ pub trait Index<Idx: ?Sized> {
     /// # Panics
     ///
     /// May panic if the index is out of bounds.
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[track_caller]
     fn index(&self, index: Idx) -> &Self::Output;
 }
@@ -141,26 +141,26 @@ pub trait Index<Idx: ?Sized> {
 /// balance[Side::Left] = Weight::Kilogram(3.0);
 /// ```
 #[lang = "index_mut"]
-#[rustc_on_unimplemented(
+#[crablangc_on_unimplemented(
     on(
         _Self = "&str",
         note = "you can use `.chars().nth()` or `.bytes().nth()`
-see chapter in The Book <https://doc.rust-lang.org/book/ch08-02-strings.html#indexing-into-strings>"
+see chapter in The Book <https://doc.crablang.org/book/ch08-02-strings.html#indexing-into-strings>"
     ),
     on(
         _Self = "str",
         note = "you can use `.chars().nth()` or `.bytes().nth()`
-see chapter in The Book <https://doc.rust-lang.org/book/ch08-02-strings.html#indexing-into-strings>"
+see chapter in The Book <https://doc.crablang.org/book/ch08-02-strings.html#indexing-into-strings>"
     ),
     on(
         _Self = "std::string::String",
         note = "you can use `.chars().nth()` or `.bytes().nth()`
-see chapter in The Book <https://doc.rust-lang.org/book/ch08-02-strings.html#indexing-into-strings>"
+see chapter in The Book <https://doc.crablang.org/book/ch08-02-strings.html#indexing-into-strings>"
     ),
     message = "the type `{Self}` cannot be mutably indexed by `{Idx}`",
     label = "`{Self}` cannot be mutably indexed by `{Idx}`"
 )]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[doc(alias = "[")]
 #[doc(alias = "]")]
 #[doc(alias = "[]")]
@@ -171,7 +171,7 @@ pub trait IndexMut<Idx: ?Sized>: ~const Index<Idx> {
     /// # Panics
     ///
     /// May panic if the index is out of bounds.
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[track_caller]
     fn index_mut(&mut self, index: Idx) -> &mut Self::Output;
 }

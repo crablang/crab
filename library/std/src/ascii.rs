@@ -1,6 +1,6 @@
 //! Operations on ASCII strings and characters.
 //!
-//! Most string operations in Rust act on UTF-8 strings. However, at times it
+//! Most string operations in CrabLang act on UTF-8 strings. However, at times it
 //! makes more sense to only consider the ASCII character set for a specific
 //! operation.
 //!
@@ -11,9 +11,9 @@
 //! The [`escape_default`] function provides an iterator over the bytes of an
 //! escaped version of the character given.
 
-#![stable(feature = "rust1", since = "1.0.0")]
+#![stable(feature = "crablang1", since = "1.0.0")]
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub use core::ascii::{escape_default, EscapeDefault};
 
 /// Extension methods for ASCII-subset only operations.
@@ -38,11 +38,11 @@ pub use core::ascii::{escape_default, EscapeDefault};
 /// it will not get mapped to an uppercase variant, resulting in `"CAF\u{e9}"`.
 ///
 /// [combining character]: https://en.wikipedia.org/wiki/Combining_character
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[deprecated(since = "1.26.0", note = "use inherent methods instead")]
 pub trait AsciiExt {
     /// Container type for copied ASCII characters.
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     type Owned;
 
     /// Checks if the value is within the ASCII range.
@@ -51,7 +51,7 @@ pub trait AsciiExt {
     ///
     /// This method is deprecated in favor of the identically-named
     /// inherent methods on `u8`, `char`, `[u8]` and `str`.
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     fn is_ascii(&self) -> bool;
 
     /// Makes a copy of the value in its ASCII upper case equivalent.
@@ -70,7 +70,7 @@ pub trait AsciiExt {
     /// inherent methods on `u8`, `char`, `[u8]` and `str`.
     ///
     /// [`make_ascii_uppercase`]: AsciiExt::make_ascii_uppercase
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[allow(deprecated)]
     fn to_ascii_uppercase(&self) -> Self::Owned;
 
@@ -90,7 +90,7 @@ pub trait AsciiExt {
     /// inherent methods on `u8`, `char`, `[u8]` and `str`.
     ///
     /// [`make_ascii_lowercase`]: AsciiExt::make_ascii_lowercase
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[allow(deprecated)]
     fn to_ascii_lowercase(&self) -> Self::Owned;
 
@@ -103,7 +103,7 @@ pub trait AsciiExt {
     ///
     /// This method is deprecated in favor of the identically-named
     /// inherent methods on `u8`, `char`, `[u8]` and `str`.
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     fn eq_ignore_ascii_case(&self, other: &Self) -> bool;
 
     /// Converts this type to its ASCII upper case equivalent in-place.
@@ -175,7 +175,7 @@ macro_rules! delegating_ascii_methods {
     };
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[allow(deprecated)]
 impl AsciiExt for u8 {
     type Owned = u8;
@@ -183,7 +183,7 @@ impl AsciiExt for u8 {
     delegating_ascii_methods!();
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[allow(deprecated)]
 impl AsciiExt for char {
     type Owned = char;
@@ -191,7 +191,7 @@ impl AsciiExt for char {
     delegating_ascii_methods!();
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[allow(deprecated)]
 impl AsciiExt for [u8] {
     type Owned = Vec<u8>;
@@ -199,7 +199,7 @@ impl AsciiExt for [u8] {
     delegating_ascii_methods!();
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[allow(deprecated)]
 impl AsciiExt for str {
     type Owned = String;

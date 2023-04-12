@@ -6,7 +6,7 @@ LL |     for<'a> || -> () { for<'c> |_: &'a ()| -> () {}; };
    |
    = note: defining type: main::{closure#0}::{closure#0} with closure substs [
                i8,
-               extern "rust-call" fn((&(),)),
+               extern "crablang-call" fn((&(),)),
                (),
            ]
    = note: late-bound region is '_#4r
@@ -23,7 +23,7 @@ LL |     for<'a> || -> () { for<'c> |_: &'a ()| -> () {}; };
    |
    = note: defining type: main::{closure#0} with closure substs [
                i8,
-               extern "rust-call" fn(()),
+               extern "crablang-call" fn(()),
                (),
            ]
    = note: late-bound region is '_#2r

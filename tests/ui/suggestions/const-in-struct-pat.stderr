@@ -17,4 +17,4 @@ LL |     let Thing { foo: other_foo } = t;
 
 error: aborting due to previous error
 
-For more information about this error, try `rustc --explain E0308`.
+For more information about this error, try `crablangc --explain E0308`.

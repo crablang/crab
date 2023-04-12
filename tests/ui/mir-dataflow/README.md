@@ -2,17 +2,17 @@ This directory contains unit tests for the MIR-based dataflow
 analysis.
 
 These unit tests check the dataflow analysis by embedding calls to a
-special `rustc_peek` intrinsic within the code, in tandem with an
-attribute `#[rustc_mir(rustc_peek_maybe_init)]` (\*). With that
-attribute in place, `rustc_peek` calls are a signal to the compiler to
+special `crablangc_peek` intrinsic within the code, in tandem with an
+attribute `#[crablangc_mir(crablangc_peek_maybe_init)]` (\*). With that
+attribute in place, `crablangc_peek` calls are a signal to the compiler to
 lookup the computed dataflow state for the Lvalue corresponding to the
-argument expression being fed to `rustc_peek`. If the dataflow state
+argument expression being fed to `crablangc_peek`. If the dataflow state
 for that Lvalue is a 1-bit at that point in the control flow, then no
 error is emitted by the compiler at that point; if it is a 0-bit, then
-that invocation of `rustc_peek` will emit an error with the message
-"rustc_peek: bit not set".
+that invocation of `crablangc_peek` will emit an error with the message
+"crablangc_peek: bit not set".
 
-(\*): Or `#[rustc_mir(rustc_peek_maybe_uninit)]`, and perhaps other
+(\*): Or `#[crablangc_mir(crablangc_peek_maybe_uninit)]`, and perhaps other
 variants in the future.
 
 The end effect is that one can write unit tests for MIR dataflow that
@@ -27,7 +27,7 @@ looking at the actual MIR control-flow graph being processed with the
 corresponding GEN and KILL sets.
 
 For a graphviz-rendering with dataflow annotations, add the attribute
-`#[rustc_mir(borrowck_graphviz_postflow="/path/to/suffix.dot")]` to
+`#[crablangc_mir(borrowck_graphviz_postflow="/path/to/suffix.dot")]` to
 the function in question. (You can change the content of
 `"suffix.dot"` to control the filenames used for the output). This
 will generate a separate file for each dataflow analysis, adding a

@@ -1,5 +1,5 @@
 // check-pass
-// run-rustfix
+// run-crablangfix
 #![warn(unused_braces)]
 
 macro_rules! make_1 {

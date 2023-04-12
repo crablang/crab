@@ -8,7 +8,7 @@ LL |     for _ in x.drain() {}
 note: the lint level is defined here
   --> $DIR/query_stability.rs:4:9
    |
-LL | #![deny(rustc::potential_query_instability)]
+LL | #![deny(crablangc::potential_query_instability)]
    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 error: using `iter` can result in unstable query results

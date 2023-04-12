@@ -13,7 +13,7 @@
 // [cfail3]compile-flags: -Zincremental-ignore-spans
 
 #![allow(warnings)]
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 #![crate_type="rlib"]
 
 
@@ -34,10 +34,10 @@ pub fn change_field_value_regular_struct() -> RegularStruct {
 }
 
 #[cfg(not(any(cfail1,cfail4)))]
-#[rustc_clean(cfg="cfail2", except="hir_owner_nodes,optimized_mir")]
-#[rustc_clean(cfg="cfail3")]
-#[rustc_clean(cfg="cfail5", except="hir_owner_nodes,optimized_mir")]
-#[rustc_clean(cfg="cfail6")]
+#[crablangc_clean(cfg="cfail2", except="hir_owner_nodes,optimized_mir")]
+#[crablangc_clean(cfg="cfail3")]
+#[crablangc_clean(cfg="cfail5", except="hir_owner_nodes,optimized_mir")]
+#[crablangc_clean(cfg="cfail6")]
 pub fn change_field_value_regular_struct() -> RegularStruct {
     RegularStruct {
         x: 0,
@@ -59,10 +59,10 @@ pub fn change_field_order_regular_struct() -> RegularStruct {
 }
 
 #[cfg(not(any(cfail1,cfail4)))]
-#[rustc_clean(cfg="cfail2", except="hir_owner_nodes,typeck")]
-#[rustc_clean(cfg="cfail3")]
-#[rustc_clean(cfg="cfail5", except="hir_owner_nodes,typeck,optimized_mir")]
-#[rustc_clean(cfg="cfail6")]
+#[crablangc_clean(cfg="cfail2", except="hir_owner_nodes,typeck")]
+#[crablangc_clean(cfg="cfail3")]
+#[crablangc_clean(cfg="cfail5", except="hir_owner_nodes,typeck,optimized_mir")]
+#[crablangc_clean(cfg="cfail6")]
 pub fn change_field_order_regular_struct() -> RegularStruct {
     RegularStruct {
         y: 4,
@@ -90,10 +90,10 @@ pub fn add_field_regular_struct() -> RegularStruct {
 }
 
 #[cfg(not(any(cfail1,cfail4)))]
-#[rustc_clean(cfg="cfail2", except="hir_owner,hir_owner_nodes,optimized_mir,typeck")]
-#[rustc_clean(cfg="cfail3")]
-#[rustc_clean(cfg="cfail5", except="hir_owner,hir_owner_nodes,optimized_mir,typeck")]
-#[rustc_clean(cfg="cfail6")]
+#[crablangc_clean(cfg="cfail2", except="hir_owner,hir_owner_nodes,optimized_mir,typeck")]
+#[crablangc_clean(cfg="cfail3")]
+#[crablangc_clean(cfg="cfail5", except="hir_owner,hir_owner_nodes,optimized_mir,typeck")]
+#[crablangc_clean(cfg="cfail6")]
 pub fn add_field_regular_struct() -> RegularStruct {
     let struct1 = RegularStruct {
         x: 3,
@@ -127,10 +127,10 @@ pub fn change_field_label_regular_struct() -> RegularStruct {
 }
 
 #[cfg(not(any(cfail1,cfail4)))]
-#[rustc_clean(cfg="cfail2", except="hir_owner_nodes,optimized_mir,typeck")]
-#[rustc_clean(cfg="cfail3")]
-#[rustc_clean(cfg="cfail5", except="hir_owner_nodes,optimized_mir,typeck")]
-#[rustc_clean(cfg="cfail6")]
+#[crablangc_clean(cfg="cfail2", except="hir_owner_nodes,optimized_mir,typeck")]
+#[crablangc_clean(cfg="cfail3")]
+#[crablangc_clean(cfg="cfail5", except="hir_owner_nodes,optimized_mir,typeck")]
+#[crablangc_clean(cfg="cfail6")]
 pub fn change_field_label_regular_struct() -> RegularStruct {
     let struct1 = RegularStruct {
         x: 3,
@@ -164,10 +164,10 @@ pub fn change_constructor_path_regular_struct() {
 }
 
 #[cfg(not(any(cfail1,cfail4)))]
-#[rustc_clean(cfg="cfail2", except="hir_owner_nodes,typeck")]
-#[rustc_clean(cfg="cfail3")]
-#[rustc_clean(cfg="cfail5", except="hir_owner_nodes,typeck")]
-#[rustc_clean(cfg="cfail6")]
+#[crablangc_clean(cfg="cfail2", except="hir_owner_nodes,typeck")]
+#[crablangc_clean(cfg="cfail3")]
+#[crablangc_clean(cfg="cfail5", except="hir_owner_nodes,typeck")]
+#[crablangc_clean(cfg="cfail6")]
 pub fn change_constructor_path_regular_struct() {
     let _ = RegularStruct2 {
         x: 0,
@@ -185,16 +185,16 @@ pub mod change_constructor_path_indirectly_regular_struct {
     #[cfg(not(any(cfail1,cfail4)))]
     use super::RegularStruct2 as Struct;
 
-    #[rustc_clean(
+    #[crablangc_clean(
         cfg="cfail2",
         except="fn_sig,hir_owner,hir_owner_nodes,optimized_mir,typeck"
     )]
-    #[rustc_clean(cfg="cfail3")]
-    #[rustc_clean(
+    #[crablangc_clean(cfg="cfail3")]
+    #[crablangc_clean(
         cfg="cfail5",
         except="fn_sig,hir_owner,hir_owner_nodes,optimized_mir,typeck"
     )]
-    #[rustc_clean(cfg="cfail6")]
+    #[crablangc_clean(cfg="cfail6")]
     pub fn function() -> Struct {
         Struct {
             x: 0,
@@ -215,10 +215,10 @@ pub fn change_field_value_tuple_struct() -> TupleStruct {
 }
 
 #[cfg(not(any(cfail1,cfail4)))]
-#[rustc_clean(cfg="cfail2", except="hir_owner_nodes,optimized_mir")]
-#[rustc_clean(cfg="cfail3")]
-#[rustc_clean(cfg="cfail5", except="hir_owner_nodes,optimized_mir")]
-#[rustc_clean(cfg="cfail6")]
+#[crablangc_clean(cfg="cfail2", except="hir_owner_nodes,optimized_mir")]
+#[crablangc_clean(cfg="cfail3")]
+#[crablangc_clean(cfg="cfail5", except="hir_owner_nodes,optimized_mir")]
+#[crablangc_clean(cfg="cfail6")]
 pub fn change_field_value_tuple_struct() -> TupleStruct {
     TupleStruct(0, 1, 3)
 }
@@ -234,10 +234,10 @@ pub fn change_constructor_path_tuple_struct() {
 }
 
 #[cfg(not(any(cfail1,cfail4)))]
-#[rustc_clean(cfg="cfail2", except="hir_owner_nodes,typeck")]
-#[rustc_clean(cfg="cfail3")]
-#[rustc_clean(cfg="cfail5", except="hir_owner_nodes,typeck")]
-#[rustc_clean(cfg="cfail6")]
+#[crablangc_clean(cfg="cfail2", except="hir_owner_nodes,typeck")]
+#[crablangc_clean(cfg="cfail3")]
+#[crablangc_clean(cfg="cfail5", except="hir_owner_nodes,typeck")]
+#[crablangc_clean(cfg="cfail6")]
 pub fn change_constructor_path_tuple_struct() {
     let _ = TupleStruct2(0, 1, 2);
 }
@@ -251,16 +251,16 @@ pub mod change_constructor_path_indirectly_tuple_struct {
     #[cfg(not(any(cfail1,cfail4)))]
     use super::TupleStruct2 as Struct;
 
-    #[rustc_clean(
+    #[crablangc_clean(
         cfg="cfail5",
         except="fn_sig,hir_owner,hir_owner_nodes,optimized_mir,typeck"
     )]
-    #[rustc_clean(cfg="cfail6")]
-    #[rustc_clean(
+    #[crablangc_clean(cfg="cfail6")]
+    #[crablangc_clean(
         cfg="cfail2",
         except="fn_sig,hir_owner,hir_owner_nodes,optimized_mir,typeck"
     )]
-    #[rustc_clean(cfg="cfail3")]
+    #[crablangc_clean(cfg="cfail3")]
     pub fn function() -> Struct {
         Struct(0, 1, 2)
     }

@@ -14,4 +14,4 @@ LL |             0..=(5+1) => errors_only.push(x),
 
 error: aborting due to 2 previous errors
 
-For more information about this error, try `rustc --explain E0586`.
+For more information about this error, try `crablangc --explain E0586`.

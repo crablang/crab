@@ -9,4 +9,4 @@ LL |     1u32 as char;
 
 error: aborting due to previous error
 
-For more information about this error, try `rustc --explain E0604`.
+For more information about this error, try `crablangc --explain E0604`.

@@ -80,7 +80,7 @@ fn main() {
     // Test that we can assume the right set of assoc. types from outside the impl
 
     // This is a `default impl`, which does *not* mean that `A`/`A2` actually implement the trait.
-    // cf. https://github.com/rust-lang/rust/issues/48515
+    // cf. https://github.com/crablang/crablang/issues/48515
     //let _: <A<()> as Tr>::Ty = 0u8;
     //let _: <A2<()> as Tr>::Ty = 0u8;
 

@@ -1,4 +1,4 @@
-// Make sure Rust generates the correct calling convention for extern
+// Make sure CrabLang generates the correct calling convention for extern
 // functions.
 
 #[inline(never)]

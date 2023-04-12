@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 
 #![allow(non_snake_case)]
 #![allow(dead_code)]

@@ -16,7 +16,7 @@ const fn three() -> i32 {
 }
 
 fn inline_const() {
-    // rust-lang/rust#78171: dead_code lint triggers even though function is used in const pattern
+    // crablang/crablang#78171: dead_code lint triggers even though function is used in const pattern
     match 1 {
         const { one() } => {}
         _ => {}

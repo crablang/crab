@@ -1,6 +1,6 @@
 ---
 name: Bug Report
-about: Create a bug report for Rust.
+about: Create a bug report for CrabLang.
 labels: C-bug
 ---
 <!--
@@ -10,7 +10,7 @@ along with any information you feel relevant to replicating the bug.
 
 I tried this code:
 
-```rust
+```crablang
 <code>
 ```
 
@@ -20,7 +20,7 @@ Instead, this happened: *explanation*
 
 ### Meta
 
-`rustc --version --verbose`:
+`crablangc --version --verbose`:
 ```
 <version>
 ```
@@ -36,8 +36,8 @@ stdsimd =
 
 <!--
 If a backtrace is available, please include a backtrace in the code block by
-setting `RUST_BACKTRACE=1` in your environment. e.g.
-`RUST_BACKTRACE=1 cargo build`.
+setting `CRABLANG_BACKTRACE=1` in your environment. e.g.
+`CRABLANG_BACKTRACE=1 cargo build`.
 -->
 <details><summary>Backtrace</summary>
 <p>

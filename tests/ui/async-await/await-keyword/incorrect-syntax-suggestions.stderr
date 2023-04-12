@@ -227,4 +227,4 @@ LL |         let _ = await!(bar())?;
 
 error: aborting due to 33 previous errors
 
-For more information about this error, try `rustc --explain E0728`.
+For more information about this error, try `crablangc --explain E0728`.

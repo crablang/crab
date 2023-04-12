@@ -14,9 +14,9 @@ LL |     let _next = iter2.next();
    |
    = note: requirement occurs because of a mutable reference to `Eat<&mut I, F>`
    = note: mutable references are invariant over their type parameter
-   = help: see <https://doc.rust-lang.org/nomicon/subtyping.html> for more information about variance
+   = help: see <https://doc.crablang.org/nomicon/subtyping.html> for more information about variance
    = note: due to current limitations in the borrow checker, this implies a `'static` lifetime
 
 error: aborting due to previous error
 
-For more information about this error, try `rustc --explain E0521`.
+For more information about this error, try `crablangc --explain E0521`.

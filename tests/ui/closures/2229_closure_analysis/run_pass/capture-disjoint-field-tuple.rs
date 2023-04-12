@@ -4,7 +4,7 @@
 // Test that we can immutably borrow an element of a tuple from within a closure,
 // while having a mutable borrow to another element of the same tuple outside the closure.
 
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 
 fn main() {
     let mut t = (10, 10);

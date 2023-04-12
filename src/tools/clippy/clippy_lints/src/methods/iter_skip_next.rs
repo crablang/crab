@@ -2,11 +2,11 @@ use clippy_utils::diagnostics::span_lint_and_then;
 use clippy_utils::is_trait_method;
 use clippy_utils::path_to_local;
 use clippy_utils::source::snippet;
-use rustc_errors::Applicability;
-use rustc_hir as hir;
-use rustc_hir::{BindingAnnotation, Node, PatKind};
-use rustc_lint::LateContext;
-use rustc_span::sym;
+use crablangc_errors::Applicability;
+use crablangc_hir as hir;
+use crablangc_hir::{BindingAnnotation, Node, PatKind};
+use crablangc_lint::LateContext;
+use crablangc_span::sym;
 
 use super::ITER_SKIP_NEXT;
 

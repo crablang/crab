@@ -2,7 +2,7 @@
 __declspec(dllexport)
 #endif
 
-// An external function, defined in Rust.
+// An external function, defined in CrabLang.
 extern void panic_if_greater_than_10(unsigned x);
 
 unsigned add_small_numbers(unsigned a, unsigned b) {

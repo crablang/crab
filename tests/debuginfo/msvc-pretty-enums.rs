@@ -133,7 +133,7 @@
 // cdb-check: arbitrary_discr2,d : Def [Type: enum2$<msvc_pretty_enums::ArbitraryDiscr>]
 // cdb-check:     [+0x[...]] __0              : 5678 [Type: unsigned int]
 
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 #![feature(repr128)]
 #![feature(arbitrary_enum_discriminant)]
 
@@ -153,7 +153,7 @@ pub enum NicheLayoutEnum {
 pub enum Empty {}
 
 // The following three types will use a niche layout once
-// https://github.com/rust-lang/rust/pull/94075 is merged:
+// https://github.com/crablang/crablang/pull/94075 is merged:
 enum NicheLayoutWithFields1<'a> {
     A(&'a u8, u32),
     B(u32),
@@ -173,12 +173,12 @@ enum NicheLayoutWithFields3 {
     F,
 }
 
-#[rustc_layout_scalar_valid_range_start(340282366920938463463374607431768211454)]
-#[rustc_layout_scalar_valid_range_end(1)]
+#[crablangc_layout_scalar_valid_range_start(340282366920938463463374607431768211454)]
+#[crablangc_layout_scalar_valid_range_end(1)]
 #[repr(transparent)]
 struct Wrapping128(u128);
 
-// #[rustc_layout(debug)]
+// #[crablangc_layout(debug)]
 enum Wrapping128Niche {
     X(Wrapping128),
     Y,

@@ -4,7 +4,7 @@
 
 #![feature(stmt_expr_attributes)]
 #![feature(custom_inner_attributes)]
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 
 #![no_std] // Don't load unnecessary hygiene information from std
 extern crate std;
@@ -20,7 +20,7 @@ fn foo<T: MyTrait<MyStruct<{ true }>>>() {}
 
 impl<T> MyTrait<T> for MyStruct<{true}> {
     #![print_attr]
-    #![rustc_dummy]
+    #![crablangc_dummy]
 }
 
 fn main() {}

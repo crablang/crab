@@ -4,7 +4,7 @@ error[E0261]: use of undeclared lifetime name `'a`
 LL |     (dyn for<'a> Trait1<'a>): Trait1<'a>,
    |                                      ^^ undeclared lifetime
    |
-   = note: for more information on higher-ranked polymorphism, visit https://doc.rust-lang.org/nomicon/hrtb.html
+   = note: for more information on higher-ranked polymorphism, visit https://doc.crablang.org/nomicon/hrtb.html
 help: consider making the bound lifetime-generic with a new `'a` lifetime
    |
 LL |     (dyn for<'a> Trait1<'a>): for<'a> Trait1<'a>,
@@ -39,4 +39,4 @@ LL | fn f<'b>() where
 
 error: aborting due to 2 previous errors
 
-For more information about this error, try `rustc --explain E0261`.
+For more information about this error, try `crablangc --explain E0261`.

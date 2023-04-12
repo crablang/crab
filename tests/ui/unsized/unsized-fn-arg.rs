@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 #![crate_type="lib"]
 #![allow(unused)]
 

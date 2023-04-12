@@ -1,7 +1,7 @@
 // Check that while a trait with by-value self is object-safe, we
 // can't actually invoke it from an object (yet...?).
 
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 
 trait Bar {
     fn bar(self);

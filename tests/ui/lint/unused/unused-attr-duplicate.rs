@@ -80,13 +80,13 @@ impl X {}
 pub fn xyz() {}
 
 // No warnings for #[link], would require more logic.
-#[link(name = "rust_test_helpers", kind = "static")]
-#[link(name = "rust_test_helpers", kind = "static")]
+#[link(name = "crablang_test_helpers", kind = "static")]
+#[link(name = "crablang_test_helpers", kind = "static")]
 extern "C" {
     #[link_name = "this_does_not_exist"] //~ ERROR unused attribute
     //~^ WARN this was previously accepted
-    #[link_name = "rust_dbg_extern_identity_u32"]
-    pub fn name_in_rust(v: u32) -> u32;
+    #[link_name = "crablang_dbg_extern_identity_u32"]
+    pub fn name_in_crablang(v: u32) -> u32;
 }
 
 #[export_name = "exported_symbol_name"] //~ ERROR unused attribute

@@ -79,4 +79,4 @@ LL |     a.x = &&0;
 
 error: aborting due to 7 previous errors
 
-For more information about this error, try `rustc --explain E0381`.
+For more information about this error, try `crablangc --explain E0381`.

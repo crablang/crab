@@ -1,6 +1,6 @@
 // only-aarch64
 // needs-asm-support
-// run-rustfix
+// run-crablangfix
 
 use std::arch::asm;
 

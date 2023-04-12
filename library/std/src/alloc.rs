@@ -13,7 +13,7 @@
 //! You can use this to implement a completely custom global allocator
 //! to route all default allocation requests to a custom object.
 //!
-//! ```rust
+//! ```crablang
 //! use std::alloc::{GlobalAlloc, System, Layout};
 //!
 //! struct MyAllocator;
@@ -41,7 +41,7 @@
 //! The attribute is used on a `static` item whose type implements the
 //! [`GlobalAlloc`] trait. This type can be provided by an external library:
 //!
-//! ```rust,ignore (demonstrates crates.io usage)
+//! ```crablang,ignore (demonstrates crates.io usage)
 //! use jemallocator::Jemalloc;
 //!
 //! #[global_allocator]
@@ -73,10 +73,10 @@ pub use alloc_crate::alloc::*;
 /// work, such as to serve alignment requests greater than the alignment
 /// provided directly by the backing system allocator.
 ///
-/// This type implements the `GlobalAlloc` trait and Rust programs by default
+/// This type implements the `GlobalAlloc` trait and CrabLang programs by default
 /// work as if they had this definition:
 ///
-/// ```rust
+/// ```crablang
 /// use std::alloc::System;
 ///
 /// #[global_allocator]
@@ -91,7 +91,7 @@ pub use alloc_crate::alloc::*;
 /// You can also define your own wrapper around `System` if you'd like, such as
 /// keeping track of the number of all bytes allocated:
 ///
-/// ```rust
+/// ```crablang
 /// use std::alloc::{System, GlobalAlloc, Layout};
 /// use std::sync::atomic::{AtomicUsize, Ordering::SeqCst};
 ///
@@ -123,7 +123,7 @@ pub use alloc_crate::alloc::*;
 /// ```
 ///
 /// It can also be used directly to allocate memory independently of whatever
-/// global allocator has been selected for a Rust program. For example if a Rust
+/// global allocator has been selected for a CrabLang program. For example if a CrabLang
 /// program opts in to using jemalloc as the global allocator, `System` will
 /// still allocate memory using `malloc` and `HeapAlloc`.
 #[stable(feature = "alloc_system_type", since = "1.28.0")]
@@ -330,14 +330,14 @@ pub fn take_alloc_error_hook() -> fn(Layout) {
 }
 
 fn default_alloc_error_hook(layout: Layout) {
-    extern "Rust" {
-        // This symbol is emitted by rustc next to __rust_alloc_error_handler.
+    extern "CrabLang" {
+        // This symbol is emitted by crablangc next to __crablang_alloc_error_handler.
         // Its value depends on the -Zoom={panic,abort} compiler option.
-        static __rust_alloc_error_handler_should_panic: u8;
+        static __crablang_alloc_error_handler_should_panic: u8;
     }
 
     #[allow(unused_unsafe)]
-    if unsafe { __rust_alloc_error_handler_should_panic != 0 } {
+    if unsafe { __crablang_alloc_error_handler_should_panic != 0 } {
         panic!("memory allocation of {} bytes failed", layout.size());
     } else {
         rtprintpanic!("memory allocation of {} bytes failed\n", layout.size());
@@ -348,7 +348,7 @@ fn default_alloc_error_hook(layout: Layout) {
 #[doc(hidden)]
 #[alloc_error_handler]
 #[unstable(feature = "alloc_internals", issue = "none")]
-pub fn rust_oom(layout: Layout) -> ! {
+pub fn crablang_oom(layout: Layout) -> ! {
     let hook = HOOK.load(Ordering::SeqCst);
     let hook: fn(Layout) =
         if hook.is_null() { default_alloc_error_hook } else { unsafe { mem::transmute(hook) } };
@@ -363,16 +363,16 @@ pub fn rust_oom(layout: Layout) -> ! {
 pub mod __default_lib_allocator {
     use super::{GlobalAlloc, Layout, System};
     // These magic symbol names are used as a fallback for implementing the
-    // `__rust_alloc` etc symbols (see `src/liballoc/alloc.rs`) when there is
+    // `__crablang_alloc` etc symbols (see `src/liballoc/alloc.rs`) when there is
     // no `#[global_allocator]` attribute.
 
-    // for symbol names src/librustc_ast/expand/allocator.rs
-    // for signatures src/librustc_allocator/lib.rs
+    // for symbol names src/libcrablangc_ast/expand/allocator.rs
+    // for signatures src/libcrablangc_allocator/lib.rs
 
     // linkage directives are provided as part of the current compiler allocator
     // ABI
 
-    #[rustc_std_internal_symbol]
+    #[crablangc_std_internal_symbol]
     pub unsafe extern "C" fn __rdl_alloc(size: usize, align: usize) -> *mut u8 {
         // SAFETY: see the guarantees expected by `Layout::from_size_align` and
         // `GlobalAlloc::alloc`.
@@ -382,14 +382,14 @@ pub mod __default_lib_allocator {
         }
     }
 
-    #[rustc_std_internal_symbol]
+    #[crablangc_std_internal_symbol]
     pub unsafe extern "C" fn __rdl_dealloc(ptr: *mut u8, size: usize, align: usize) {
         // SAFETY: see the guarantees expected by `Layout::from_size_align` and
         // `GlobalAlloc::dealloc`.
         unsafe { System.dealloc(ptr, Layout::from_size_align_unchecked(size, align)) }
     }
 
-    #[rustc_std_internal_symbol]
+    #[crablangc_std_internal_symbol]
     pub unsafe extern "C" fn __rdl_realloc(
         ptr: *mut u8,
         old_size: usize,
@@ -404,7 +404,7 @@ pub mod __default_lib_allocator {
         }
     }
 
-    #[rustc_std_internal_symbol]
+    #[crablangc_std_internal_symbol]
     pub unsafe extern "C" fn __rdl_alloc_zeroed(size: usize, align: usize) -> *mut u8 {
         // SAFETY: see the guarantees expected by `Layout::from_size_align` and
         // `GlobalAlloc::alloc_zeroed`.

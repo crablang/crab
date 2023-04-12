@@ -19,7 +19,7 @@ ENV DEP_Z_ROOT=/android/ndk/x86-14/sysroot/usr/
 
 ENV HOSTS=i686-linux-android
 
-ENV RUST_CONFIGURE_ARGS \
+ENV CRABLANG_CONFIGURE_ARGS \
       --i686-linux-android-ndk=/android/ndk/x86 \
       --disable-rpath \
       --enable-extended \
@@ -34,7 +34,7 @@ ENV RUST_CONFIGURE_ARGS \
 # symbols does not affect std, only the compiler (llvm) and cargo (openssl).
 ENV SCRIPT \
   python3 ../x.py --stage 2 build src/llvm --host $HOSTS --target $HOSTS && \
-  (export RUSTFLAGS="\"-C link-arg=-Wl,--warn-unresolved-symbols\""; \
+  (export CRABLANGFLAGS="\"-C link-arg=-Wl,--warn-unresolved-symbols\""; \
     rm /android/ndk/x86 && \
     ln -s /android/ndk/x86-14 /android/ndk/x86 && \
     python3 ../x.py dist --host $HOSTS --target $HOSTS)

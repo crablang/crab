@@ -8,7 +8,7 @@
 // compile-flags:-Zverbose
 
 #![allow(warnings)]
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 
 use std::cell::Cell;
 
@@ -30,7 +30,7 @@ where
 {
 }
 
-#[rustc_regions]
+#[crablangc_regions]
 fn no_relationships_late<'a, 'b, 'c, T>(cell: Cell<&'a ()>, t: T)
 where
     T: Anything<'b, 'c>,
@@ -39,7 +39,7 @@ where
     //~^ ERROR may not live long enough
 }
 
-#[rustc_regions]
+#[crablangc_regions]
 fn no_relationships_early<'a, 'b, 'c, T>(cell: Cell<&'a ()>, t: T)
 where
     T: Anything<'b, 'c>,
@@ -49,7 +49,7 @@ where
     //~^ ERROR may not live long enough
 }
 
-#[rustc_regions]
+#[crablangc_regions]
 fn projection_outlives<'a, 'b, 'c, T>(cell: Cell<&'a ()>, t: T)
 where
     T: Anything<'b, 'c>,
@@ -61,7 +61,7 @@ where
     with_signature(cell, t, |cell, t| require(cell, t));
 }
 
-#[rustc_regions]
+#[crablangc_regions]
 fn elements_outlive1<'a, 'b, 'c, T>(cell: Cell<&'a ()>, t: T)
 where
     T: Anything<'b, 'c>,
@@ -70,7 +70,7 @@ where
     with_signature(cell, t, |cell, t| require(cell, t));
 }
 
-#[rustc_regions]
+#[crablangc_regions]
 fn elements_outlive2<'a, 'b, 'c, T>(cell: Cell<&'a ()>, t: T)
 where
     T: Anything<'b, 'c>,
@@ -79,7 +79,7 @@ where
     with_signature(cell, t, |cell, t| require(cell, t));
 }
 
-#[rustc_regions]
+#[crablangc_regions]
 fn two_regions<'a, 'b, T>(cell: Cell<&'a ()>, t: T)
 where
     T: Anything<'b, 'b>,
@@ -88,7 +88,7 @@ where
     //~^ ERROR lifetime may not live long enough
 }
 
-#[rustc_regions]
+#[crablangc_regions]
 fn two_regions_outlive<'a, 'b, T>(cell: Cell<&'a ()>, t: T)
 where
     T: Anything<'b, 'b>,
@@ -97,7 +97,7 @@ where
     with_signature(cell, t, |cell, t| require(cell, t));
 }
 
-#[rustc_regions]
+#[crablangc_regions]
 fn one_region<'a, T>(cell: Cell<&'a ()>, t: T)
 where
     T: Anything<'a, 'a>,

@@ -2,9 +2,9 @@ use crate::source::snippet;
 use crate::visitors::{for_each_expr, Descend};
 use crate::{path_to_local_id, strip_pat_refs};
 use core::ops::ControlFlow;
-use rustc_hir::{Body, BodyId, ExprKind, HirId, PatKind};
-use rustc_lint::LateContext;
-use rustc_span::Span;
+use crablangc_hir::{Body, BodyId, ExprKind, HirId, PatKind};
+use crablangc_lint::LateContext;
+use crablangc_span::Span;
 use std::borrow::Cow;
 
 pub fn get_spans(

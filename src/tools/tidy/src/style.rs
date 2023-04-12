@@ -1,16 +1,16 @@
-//! Tidy check to enforce various stylistic guidelines on the Rust codebase.
+//! Tidy check to enforce various stylistic guidelines on the CrabLang codebase.
 //!
 //! Example checks are:
 //!
-//! * No lines over 100 characters (in non-Rust files).
-//! * No files with over 3000 lines (in non-Rust files).
+//! * No lines over 100 characters (in non-CrabLang files).
+//! * No files with over 3000 lines (in non-CrabLang files).
 //! * No tabs.
 //! * No trailing whitespace.
 //! * No CR characters.
 //! * No `TODO` or `XXX` directives.
-//! * No unexplained ` ```ignore ` or ` ```rust,ignore ` doc tests.
+//! * No unexplained ` ```ignore ` or ` ```crablang,ignore ` doc tests.
 //!
-//! Note that some of these rules are excluded from Rust files because we enforce rustfmt. It is
+//! Note that some of these rules are excluded from CrabLang files because we enforce crablangfmt. It is
 //! preferable to be formatted rather than tidy-clean.
 //!
 //! A number of these checks can be opted-out of with various directives of the form:
@@ -32,7 +32,7 @@ const LINES: usize = 3000;
 const UNEXPLAINED_IGNORE_DOCTEST_INFO: &str = r#"unexplained "```ignore" doctest; try one:
 
 * make the test actually pass, by adding necessary imports and declarations, or
-* use "```text", if the code is not Rust code, or
+* use "```text", if the code is not CrabLang code, or
 * use "```compile_fail,Ennnn", if the code is expected to fail at compile time, or
 * use "```should_panic", if the code is expected to fail at run time, or
 * use "```no_run", if the code should type-check but not necessary linkable/runnable, or
@@ -68,7 +68,7 @@ const PROBLEMATIC_CONSTS: &[u32] = &[
     3735927486, 3735932941, 4027431614, 4276992702,
 ];
 
-const INTERNAL_COMPILER_DOCS_LINE: &str = "#### This error code is internal to the compiler and will not be emitted with normal Rust code.";
+const INTERNAL_COMPILER_DOCS_LINE: &str = "#### This error code is internal to the compiler and will not be emitted with normal CrabLang code.";
 
 /// Parser states for `line_is_url`.
 #[derive(Clone, Copy, PartialEq)]
@@ -208,14 +208,14 @@ fn skip_markdown_path(path: &Path) -> bool {
         "src/doc/embedded-book",
         "src/doc/nomicon",
         "src/doc/reference",
-        "src/doc/rust-by-example",
-        "src/doc/rustc-dev-guide",
+        "src/doc/crablang-by-example",
+        "src/doc/crablangc-dev-guide",
     ];
     SKIP_MD.iter().any(|p| path.ends_with(p))
 }
 
 fn is_unexplained_ignore(extension: &str, line: &str) -> bool {
-    if !line.ends_with("```ignore") && !line.ends_with("```rust,ignore") {
+    if !line.ends_with("```ignore") && !line.ends_with("```crablang,ignore") {
         return false;
     }
     if extension == "md" && line.trim().starts_with("//") {
@@ -249,8 +249,8 @@ pub fn check(path: &Path, bad: &mut bool) {
             return true;
         }
 
-        // We only check CSS files in rustdoc.
-        path.extension().map_or(false, |e| e == "css") && !is_in(path, "src", "librustdoc")
+        // We only check CSS files in crablangdoc.
+        path.extension().map_or(false, |e| e == "css") && !is_in(path, "src", "libcrablangdoc")
     }
 
     let problematic_consts_strings: Vec<String> = (PROBLEMATIC_CONSTS.iter().map(u32::to_string))
@@ -264,8 +264,8 @@ pub fn check(path: &Path, bad: &mut bool) {
         let filename = file.file_name().unwrap().to_string_lossy();
 
         let is_style_file = filename.ends_with(".css");
-        let under_rustfmt = filename.ends_with(".rs") &&
-            // This list should ideally be sourced from rustfmt.toml but we don't want to add a toml
+        let under_crablangfmt = filename.ends_with(".rs") &&
+            // This list should ideally be sourced from crablangfmt.toml but we don't want to add a toml
             // parser to tidy.
             !file.ancestors().any(|a| {
                 (a.ends_with("tests") && a.join("COMPILER_TESTS.md").exists()) ||
@@ -297,7 +297,7 @@ pub fn check(path: &Path, bad: &mut bool) {
             return;
         }
         // apfloat shouldn't be changed because of license problems
-        if is_in(file, "compiler", "rustc_apfloat") {
+        if is_in(file, "compiler", "crablangc_apfloat") {
             return;
         }
         let mut skip_cr = contains_ignore_directive(can_contain, &contents, "cr");
@@ -361,7 +361,7 @@ pub fn check(path: &Path, bad: &mut bool) {
                 )
             }
 
-            if !under_rustfmt
+            if !under_crablangfmt
                 && line.chars().count() > max_columns
                 && !long_line_is_ok(&extension, is_error_code, max_columns, line)
             {
@@ -414,13 +414,13 @@ pub fn check(path: &Path, bad: &mut bool) {
             if (line.starts_with("// Copyright")
                 || line.starts_with("# Copyright")
                 || line.starts_with("Copyright"))
-                && (trimmed.contains("Rust Developers")
-                    || trimmed.contains("Rust Project Developers"))
+                && (trimmed.contains("CrabLang Developers")
+                    || trimmed.contains("CrabLang Project Developers"))
             {
                 suppressible_tidy_err!(
                     err,
                     skip_copyright,
-                    "copyright notices attributed to the Rust Project Developers are deprecated"
+                    "copyright notices attributed to the CrabLang Project Developers are deprecated"
                 );
             }
             if is_unexplained_ignore(&extension, line) {

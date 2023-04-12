@@ -1,6 +1,6 @@
 // compile-flags: -Z mir-opt-level=3
 
-#![feature(type_alias_impl_trait, rustc_attrs)]
+#![feature(type_alias_impl_trait, crablangc_attrs)]
 
 use std::marker::PhantomData;
 
@@ -42,7 +42,7 @@ impl<T: MyFrom<Phantom2<DummyT<U>>>, U> MyIndex<Phantom1<T>> for Scope<U> {
     }
 }
 
-#[rustc_error]
+#[crablangc_error]
 fn main() {
     //~^ ERROR
     let _pos: Phantom1<DummyT<()>> = Scope::new().my_index();

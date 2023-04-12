@@ -4,7 +4,7 @@ warning: the feature `async_fn_in_trait` is incomplete and may not be safe to us
 LL | #![feature(async_fn_in_trait)]
    |            ^^^^^^^^^^^^^^^^^
    |
-   = note: see issue #91611 <https://github.com/rust-lang/rust/issues/91611> for more information
+   = note: see issue #91611 <https://github.com/crablang/crablang/issues/91611> for more information
    = note: `#[warn(incomplete_features)]` on by default
 
 error[E0053]: method `foo` has an incompatible type for trait
@@ -31,4 +31,4 @@ LL |     default async fn foo(_: T) -> &'static str {
 
 error: aborting due to 2 previous errors; 1 warning emitted
 
-For more information about this error, try `rustc --explain E0053`.
+For more information about this error, try `crablangc --explain E0053`.

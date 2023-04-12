@@ -1,5 +1,5 @@
 //! Make sure we detect erroneous constants post-monomorphization even when they are unused.
-//! (https://github.com/rust-lang/miri/issues/1382)
+//! (https://github.com/crablang/miri/issues/1382)
 // Inlining changes the error location
 //@compile-flags: -Zmir-opt-level=0
 #![feature(never_type)]

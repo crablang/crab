@@ -1,6 +1,6 @@
 use clippy_utils::diagnostics::span_lint;
-use rustc_ast::ast::{Expr, ExprKind, UnOp};
-use rustc_lint::EarlyContext;
+use crablangc_ast::ast::{Expr, ExprKind, UnOp};
+use crablangc_lint::EarlyContext;
 
 use super::DOUBLE_NEG;
 

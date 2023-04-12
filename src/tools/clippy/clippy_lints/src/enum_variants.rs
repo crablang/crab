@@ -3,11 +3,11 @@
 use clippy_utils::diagnostics::{span_lint, span_lint_and_help};
 use clippy_utils::source::is_present_in_source;
 use clippy_utils::str_utils::{camel_case_split, count_match_end, count_match_start};
-use rustc_hir::{EnumDef, Item, ItemKind, Variant};
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_session::{declare_tool_lint, impl_lint_pass};
-use rustc_span::source_map::Span;
-use rustc_span::symbol::Symbol;
+use crablangc_hir::{EnumDef, Item, ItemKind, Variant};
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_session::{declare_tool_lint, impl_lint_pass};
+use crablangc_span::source_map::Span;
+use crablangc_span::symbol::Symbol;
 
 declare_clippy_lint! {
     /// ### What it does
@@ -25,7 +25,7 @@ declare_clippy_lint! {
     /// (the prefixes are `Foo1` and `Foo2` respectively), as also `Bar螃`, `Bar蟹`
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// enum Cake {
     ///     BlackForestCake,
     ///     HummingbirdCake,
@@ -33,7 +33,7 @@ declare_clippy_lint! {
     /// }
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// enum Cake {
     ///     BlackForest,
     ///     Hummingbird,
@@ -55,14 +55,14 @@ declare_clippy_lint! {
     /// It requires the user to type the module name twice.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// mod cake {
     ///     struct BlackForestCake;
     /// }
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// mod cake {
     ///     struct BlackForest;
     /// }

@@ -13,7 +13,7 @@ use crate::iter::Step;
 ///
 /// [`Fuse`]: crate::iter::Fuse
 #[stable(feature = "fused", since = "1.26.0")]
-#[rustc_unsafe_specialization_marker]
+#[crablangc_unsafe_specialization_marker]
 pub trait FusedIterator: Iterator {}
 
 #[stable(feature = "fused", since = "1.26.0")]
@@ -31,27 +31,27 @@ impl<I: FusedIterator + ?Sized> FusedIterator for &mut I {}
 /// The iterator must produce exactly the number of elements it reported
 /// or diverge before reaching the end.
 ///
-/// # When *shouldn't* an adapter be `TrustedLen`?
+/// # When *shouldn't* an adapter be `TcrablangedLen`?
 ///
 /// If an adapter makes an iterator *shorter* by a given amount, then it's
-/// usually incorrect for that adapter to implement `TrustedLen`.  The inner
+/// usually incorrect for that adapter to implement `TcrablangedLen`.  The inner
 /// iterator might return more than `usize::MAX` items, but there's no way to
 /// know what `k` elements less than that will be, since the `size_hint` from
 /// the inner iterator has already saturated and lost that information.
 ///
-/// This is why [`Skip<I>`](crate::iter::Skip) isn't `TrustedLen`, even when
-/// `I` implements `TrustedLen`.
+/// This is why [`Skip<I>`](crate::iter::Skip) isn't `TcrablangedLen`, even when
+/// `I` implements `TcrablangedLen`.
 ///
 /// # Safety
 ///
 /// This trait must only be implemented when the contract is upheld. Consumers
 /// of this trait must inspect [`Iterator::size_hint()`]’s upper bound.
-#[unstable(feature = "trusted_len", issue = "37572")]
-#[rustc_unsafe_specialization_marker]
-pub unsafe trait TrustedLen: Iterator {}
+#[unstable(feature = "tcrablanged_len", issue = "37572")]
+#[crablangc_unsafe_specialization_marker]
+pub unsafe trait TcrablangedLen: Iterator {}
 
-#[unstable(feature = "trusted_len", issue = "37572")]
-unsafe impl<I: TrustedLen + ?Sized> TrustedLen for &mut I {}
+#[unstable(feature = "tcrablanged_len", issue = "37572")]
+unsafe impl<I: TcrablangedLen + ?Sized> TcrablangedLen for &mut I {}
 
 /// An iterator that when yielding an item will have taken at least one element
 /// from its underlying [`SourceIter`].
@@ -76,7 +76,7 @@ pub unsafe trait InPlaceIterable: Iterator {}
 /// A type that upholds all invariants of [`Step`].
 ///
 /// The invariants of [`Step::steps_between()`] are a superset of the invariants
-/// of [`TrustedLen`]. As such, [`TrustedLen`] is implemented for all range
+/// of [`TcrablangedLen`]. As such, [`TcrablangedLen`] is implemented for all range
 /// types with the same generic type argument.
 ///
 /// # Safety
@@ -84,6 +84,6 @@ pub unsafe trait InPlaceIterable: Iterator {}
 /// The implementation of [`Step`] for the given type must guarantee all
 /// invariants of all methods are upheld. See the [`Step`] trait's documentation
 /// for details. Consumers are free to rely on the invariants in unsafe code.
-#[unstable(feature = "trusted_step", issue = "85731")]
-#[rustc_specialization_trait]
-pub unsafe trait TrustedStep: Step {}
+#[unstable(feature = "tcrablanged_step", issue = "85731")]
+#[crablangc_specialization_trait]
+pub unsafe trait TcrablangedStep: Step {}

@@ -13,7 +13,7 @@ impl S {
     }
 }
 
-// https://github.com/rust-lang/rust/pull/103531#discussion_r1004728080
+// https://github.com/crablang/crablang/pull/103531#discussion_r1004728080
 struct Foo {
     i: i32,
 }

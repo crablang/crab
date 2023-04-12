@@ -1,11 +1,11 @@
 // compile-flags: --target mips-unknown-linux-gnu
 // needs-llvm-components: mips
 
-#![feature(no_core, lang_items, rustc_attrs)]
+#![feature(no_core, lang_items, crablangc_attrs)]
 #![crate_type = "rlib"]
 #![no_core]
 
-#[rustc_builtin_macro]
+#[crablangc_builtin_macro]
 macro_rules! asm {
     () => {};
 }

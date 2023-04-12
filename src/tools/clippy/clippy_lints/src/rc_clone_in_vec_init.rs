@@ -5,11 +5,11 @@ use clippy_utils::macros::root_macro_call_first_node;
 use clippy_utils::paths;
 use clippy_utils::source::{indent_of, snippet};
 use clippy_utils::ty::match_type;
-use rustc_errors::Applicability;
-use rustc_hir::{Expr, ExprKind, QPath, TyKind};
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_session::{declare_lint_pass, declare_tool_lint};
-use rustc_span::{sym, Span, Symbol};
+use crablangc_errors::Applicability;
+use crablangc_hir::{Expr, ExprKind, QPath, TyKind};
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_span::{sym, Span, Symbol};
 
 declare_clippy_lint! {
     /// ### What it does
@@ -22,13 +22,13 @@ declare_clippy_lint! {
     /// than different instances.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// let v = vec![std::sync::Arc::new("some data".to_string()); 100];
     /// // or
     /// let v = vec![std::rc::Rc::new("some data".to_string()); 100];
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// // Initialize each value separately:
     /// let mut data = Vec::with_capacity(100);
     /// for _ in 0..100 {

@@ -8,31 +8,31 @@ use clippy_utils::{
     fn_def_id, get_parent_expr, get_parent_expr_for_hir, is_lint_allowed, path_to_local, walk_to_expr_usage,
 };
 
-use rustc_ast::util::parser::{PREC_POSTFIX, PREC_PREFIX};
-use rustc_data_structures::fx::FxIndexMap;
-use rustc_data_structures::graph::iterate::{CycleDetector, TriColorDepthFirstSearch};
-use rustc_errors::Applicability;
-use rustc_hir::intravisit::{walk_ty, Visitor};
-use rustc_hir::{
+use crablangc_ast::util::parser::{PREC_POSTFIX, PREC_PREFIX};
+use crablangc_data_structures::fx::FxIndexMap;
+use crablangc_data_structures::graph::iterate::{CycleDetector, TriColorDepthFirstSearch};
+use crablangc_errors::Applicability;
+use crablangc_hir::intravisit::{walk_ty, Visitor};
+use crablangc_hir::{
     self as hir,
     def_id::{DefId, LocalDefId},
     BindingAnnotation, Body, BodyId, BorrowKind, Closure, Expr, ExprKind, FnRetTy, GenericArg, HirId, ImplItem,
     ImplItemKind, Item, ItemKind, Local, MatchSource, Mutability, Node, Pat, PatKind, Path, QPath, TraitItem,
     TraitItemKind, TyKind, UnOp,
 };
-use rustc_index::bit_set::BitSet;
-use rustc_infer::infer::TyCtxtInferExt;
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_middle::mir::{Rvalue, StatementKind};
-use rustc_middle::ty::adjustment::{Adjust, Adjustment, AutoBorrow, AutoBorrowMutability};
-use rustc_middle::ty::{
+use crablangc_index::bit_set::BitSet;
+use crablangc_infer::infer::TyCtxtInferExt;
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_middle::mir::{Rvalue, StatementKind};
+use crablangc_middle::ty::adjustment::{Adjust, Adjustment, AutoBorrow, AutoBorrowMutability};
+use crablangc_middle::ty::{
     self, Binder, BoundVariableKind, Clause, EarlyBinder, FnSig, GenericArgKind, List, ParamEnv, ParamTy,
     PredicateKind, ProjectionPredicate, Ty, TyCtxt, TypeVisitableExt, TypeckResults,
 };
-use rustc_session::{declare_tool_lint, impl_lint_pass};
-use rustc_span::{symbol::sym, Span, Symbol};
-use rustc_trait_selection::infer::InferCtxtExt as _;
-use rustc_trait_selection::traits::{query::evaluate_obligation::InferCtxtExt as _, Obligation, ObligationCause};
+use crablangc_session::{declare_tool_lint, impl_lint_pass};
+use crablangc_span::{symbol::sym, Span, Symbol};
+use crablangc_trait_selection::infer::InferCtxtExt as _;
+use crablangc_trait_selection::traits::{query::evaluate_obligation::InferCtxtExt as _, Obligation, ObligationCause};
 use std::collections::VecDeque;
 
 declare_clippy_lint! {
@@ -44,20 +44,20 @@ declare_clippy_lint! {
     /// when not part of a method chain.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// use std::ops::Deref;
     /// let a: &mut String = &mut String::from("foo");
     /// let b: &str = a.deref();
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// let a: &mut String = &mut String::from("foo");
     /// let b = &*a;
     /// ```
     ///
     /// This lint excludes:
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// let _ = d.unwrap().deref();
     /// ```
     #[clippy::version = "1.44.0"]
@@ -76,7 +76,7 @@ declare_clippy_lint! {
     /// the expression.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// fn fun(_a: &i32) {}
     ///
     /// let x: &i32 = &&&&&&5;
@@ -84,7 +84,7 @@ declare_clippy_lint! {
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// # fn fun(_a: &i32) {}
     /// let x: &i32 = &5;
     /// fun(x);
@@ -103,7 +103,7 @@ declare_clippy_lint! {
     /// The address-of operator at the use site is clearer about the need for a reference.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// let x = Some("");
     /// if let Some(ref x) = x {
     ///     // use `x` here
@@ -111,7 +111,7 @@ declare_clippy_lint! {
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// let x = Some("");
     /// if let Some(x) = x {
     ///     // use `&x` here
@@ -131,12 +131,12 @@ declare_clippy_lint! {
     /// This unnecessarily complicates the code.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// let x = String::new();
     /// let y: &str = &*x;
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// let x = String::new();
     /// let y: &str = &x;
     /// ```
@@ -180,7 +180,7 @@ pub struct Dereferencing<'tcx> {
     /// be moved.
     possible_borrowers: Vec<(LocalDefId, PossibleBorrowerMap<'tcx, 'tcx>)>,
 
-    // `IntoIterator` for arrays requires Rust 1.53.
+    // `IntoIterator` for arrays requires CrabLang 1.53.
     msrv: Msrv,
 }
 
@@ -831,8 +831,8 @@ fn walk_parents<'tcx>(
                                     binding_ty_auto_deref_stability(cx, hir_ty, precedence, ty.bound_vars())
                                 },
                                 None => {
-                                    // `e.hir_id == child_id` for https://github.com/rust-lang/rust-clippy/issues/9739
-                                    // `!call_is_qualified(func)` for https://github.com/rust-lang/rust-clippy/issues/9782
+                                    // `e.hir_id == child_id` for https://github.com/crablang/crablang-clippy/issues/9739
+                                    // `!call_is_qualified(func)` for https://github.com/crablang/crablang-clippy/issues/9782
                                     if e.hir_id == child_id
                                         && !call_is_qualified(func)
                                         && let ty::Param(param_ty) = ty.skip_binder().kind()
@@ -902,8 +902,8 @@ fn walk_parents<'tcx>(
                     }
                     args.iter().position(|arg| arg.hir_id == child_id).map(|i| {
                         let ty = cx.tcx.fn_sig(fn_id).subst_identity().input(i + 1);
-                        // `e.hir_id == child_id` for https://github.com/rust-lang/rust-clippy/issues/9739
-                        // `method.args.is_none()` for https://github.com/rust-lang/rust-clippy/issues/9782
+                        // `e.hir_id == child_id` for https://github.com/crablang/crablang-clippy/issues/9739
+                        // `method.args.is_none()` for https://github.com/crablang/crablang-clippy/issues/9782
                         if e.hir_id == child_id
                             && method.args.is_none()
                             && let ty::Param(param_ty) = ty.skip_binder().kind()
@@ -958,7 +958,7 @@ fn is_union<'tcx>(typeck: &'tcx TypeckResults<'_>, path_expr: &'tcx Expr<'_>) ->
     typeck
         .expr_ty_adjusted(path_expr)
         .ty_adt_def()
-        .map_or(false, rustc_middle::ty::AdtDef::is_union)
+        .map_or(false, crablangc_middle::ty::AdtDef::is_union)
 }
 
 fn closure_result_position<'tcx>(
@@ -1168,8 +1168,8 @@ fn needless_borrow_impl_arg_position<'tcx>(
     }
 
     // See:
-    // - https://github.com/rust-lang/rust-clippy/pull/9674#issuecomment-1289294201
-    // - https://github.com/rust-lang/rust-clippy/pull/9674#issuecomment-1292225232
+    // - https://github.com/crablang/crablang-clippy/pull/9674#issuecomment-1289294201
+    // - https://github.com/crablang/crablang-clippy/pull/9674#issuecomment-1292225232
     if projection_predicates
         .iter()
         .any(|projection_predicate| is_mixed_projection_predicate(cx, callee_def_id, projection_predicate))
@@ -1191,7 +1191,7 @@ fn needless_borrow_impl_arg_position<'tcx>(
             return false;
         }
 
-        // https://github.com/rust-lang/rust-clippy/pull/9136#pullrequestreview-1037379321
+        // https://github.com/crablang/crablang-clippy/pull/9136#pullrequestreview-1037379321
         if trait_with_ref_mut_self_method && !matches!(referent_ty.kind(), ty::Ref(_, _, Mutability::Mut)) {
             return false;
         }
@@ -1298,7 +1298,7 @@ fn referent_used_exactly_once<'tcx>(
         && let Some(statement) = mir.basic_blocks[location.block].statements.get(location.statement_index)
         && let StatementKind::Assign(box (_, Rvalue::Ref(_, _, place))) = statement.kind
         && !place.has_deref()
-        // Ensure not in a loop (https://github.com/rust-lang/rust-clippy/issues/9710)
+        // Ensure not in a loop (https://github.com/crablang/crablang-clippy/issues/9710)
         && TriColorDepthFirstSearch::new(&mir.basic_blocks).run_from(location.block, &mut CycleDetector).is_none()
     {
         let body_owner_local_def_id = cx.tcx.hir().enclosing_body_owner(reference.hir_id);
@@ -1322,7 +1322,7 @@ fn referent_used_exactly_once<'tcx>(
 // Iteratively replaces `param_ty` with `new_ty` in `substs`, and similarly for each resulting
 // projected type that is a type parameter. Returns `false` if replacing the types would have an
 // effect on the function signature beyond substituting `new_ty` for `param_ty`.
-// See: https://github.com/rust-lang/rust-clippy/pull/9136#discussion_r927212757
+// See: https://github.com/crablang/crablang-clippy/pull/9136#discussion_r927212757
 fn replace_types<'tcx>(
     cx: &LateContext<'tcx>,
     param_ty: ParamTy,
@@ -1548,7 +1548,7 @@ fn report<'tcx>(cx: &LateContext<'tcx>, expr: &'tcx Expr<'_>, state: State, data
                     | ExprKind::Match(..)
             ) && matches!(data.position, Position::DerefStable(_, true))
             {
-                // Rustc bug: auto deref doesn't work on block expression when targeting sized types.
+                // CrabLangc bug: auto deref doesn't work on block expression when targeting sized types.
                 return;
             }
 
@@ -1592,7 +1592,7 @@ fn report<'tcx>(cx: &LateContext<'tcx>, expr: &'tcx Expr<'_>, state: State, data
                     | ExprKind::Match(..)
             ) && matches!(data.position, Position::DerefStable(_, true))
             {
-                // Rustc bug: auto deref doesn't work on block expression when targeting sized types.
+                // CrabLangc bug: auto deref doesn't work on block expression when targeting sized types.
                 return;
             }
 

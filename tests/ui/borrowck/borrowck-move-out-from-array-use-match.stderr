@@ -210,4 +210,4 @@ LL |         [_, _, ref _x @ ..] => {}
 
 error: aborting due to 14 previous errors
 
-For more information about this error, try `rustc --explain E0382`.
+For more information about this error, try `crablangc --explain E0382`.

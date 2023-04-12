@@ -4,16 +4,16 @@ use clippy_utils::visitors::{for_each_expr, Descend};
 use clippy_utils::{fn_def_id, path_to_local_id, span_find_starting_semi};
 use core::ops::ControlFlow;
 use if_chain::if_chain;
-use rustc_errors::Applicability;
-use rustc_hir::intravisit::FnKind;
-use rustc_hir::{Block, Body, Expr, ExprKind, FnDecl, LangItem, MatchSource, PatKind, QPath, StmtKind};
-use rustc_lint::{LateContext, LateLintPass, LintContext};
-use rustc_middle::lint::in_external_macro;
-use rustc_middle::ty::subst::GenericArgKind;
-use rustc_session::{declare_lint_pass, declare_tool_lint};
-use rustc_span::def_id::LocalDefId;
-use rustc_span::source_map::Span;
-use rustc_span::{BytePos, Pos};
+use crablangc_errors::Applicability;
+use crablangc_hir::intravisit::FnKind;
+use crablangc_hir::{Block, Body, Expr, ExprKind, FnDecl, LangItem, MatchSource, PatKind, QPath, StmtKind};
+use crablangc_lint::{LateContext, LateLintPass, LintContext};
+use crablangc_middle::lint::in_external_macro;
+use crablangc_middle::ty::subst::GenericArgKind;
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_span::def_id::LocalDefId;
+use crablangc_span::source_map::Span;
+use crablangc_span::{BytePos, Pos};
 use std::borrow::Cow;
 
 declare_clippy_lint! {
@@ -23,10 +23,10 @@ declare_clippy_lint! {
     ///
     /// ### Why is this bad?
     /// It is just extraneous code. Remove it to make your code
-    /// more rusty.
+    /// more crablangy.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// fn foo() -> String {
     ///     let x = String::new();
     ///     x
@@ -50,16 +50,16 @@ declare_clippy_lint! {
     ///
     /// ### Why is this bad?
     /// Removing the `return` and semicolon will make the code
-    /// more rusty.
+    /// more crablangy.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// fn foo(x: usize) -> usize {
     ///     return x;
     /// }
     /// ```
     /// simplify to
-    /// ```rust
+    /// ```crablang
     /// fn foo(x: usize) -> usize {
     ///     x
     /// }

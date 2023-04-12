@@ -1,6 +1,6 @@
 // Demonstrate that "rogue" `DerefMut` impls for `&T` are not allowed.
 //
-// https://github.com/rust-lang/rust/issues/66544
+// https://github.com/crablang/crablang/issues/66544
 
 use std::cell::Cell;
 use std::marker::PhantomPinned;

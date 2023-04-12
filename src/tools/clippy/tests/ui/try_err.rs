@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 // aux-build:proc_macros.rs
 
 #![deny(clippy::try_err)]
@@ -14,7 +14,7 @@ use std::task::Poll;
 // Should flag `Err(err)?`
 pub fn basic_test() -> Result<i32, i32> {
     let err: i32 = 1;
-    // To avoid warnings during rustfix
+    // To avoid warnings during crablangfix
     if true {
         Err(err)?;
     }
@@ -24,7 +24,7 @@ pub fn basic_test() -> Result<i32, i32> {
 // Tests that `.into()` is added when appropriate
 pub fn into_test() -> Result<i32, i32> {
     let err: u8 = 1;
-    // To avoid warnings during rustfix
+    // To avoid warnings during crablangfix
     if true {
         Err(err)?;
     }
@@ -44,7 +44,7 @@ pub fn closure_matches_test() -> Result<i32, i32> {
         .into_iter()
         .map(|i| {
             let err: i8 = 1;
-            // To avoid warnings during rustfix
+            // To avoid warnings during crablangfix
             if true {
                 Err(err)?;
             }
@@ -63,7 +63,7 @@ pub fn closure_into_test() -> Result<i32, i32> {
         .into_iter()
         .map(|i| {
             let err: i8 = 1;
-            // To avoid warnings during rustfix
+            // To avoid warnings during crablangfix
             if true {
                 Err(err)?;
             }
@@ -110,7 +110,7 @@ fn main() {
     external! {
         pub fn try_err_fn() -> Result<i32, i32> {
             let err: i32 = 1;
-            // To avoid warnings during rustfix
+            // To avoid warnings during crablangfix
             if true { Err(err)? } else { Ok(2) }
         }
     }

@@ -18,4 +18,4 @@ LL |     fn f() -> ([u8; A::C], [u8; A::C]);
 
 error: aborting due to 2 previous errors
 
-For more information about this error, try `rustc --explain E0790`.
+For more information about this error, try `crablangc --explain E0790`.

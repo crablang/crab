@@ -1,7 +1,7 @@
 use clippy_utils::{diagnostics::span_lint_and_sugg, get_parent_expr, path_to_local, source::snippet, ty::is_copy};
-use rustc_hir::{BindingAnnotation, Expr, ExprKind, Node, PatKind, UnOp};
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_hir::{BindingAnnotation, Expr, ExprKind, Node, PatKind, UnOp};
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
 
 declare_clippy_lint! {
     /// ### What it does
@@ -12,14 +12,14 @@ declare_clippy_lint! {
     /// Readibility suffers from unnecessary struct building.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// struct S { s: String }
     ///
     /// let a = S { s: String::from("Hello, world!") };
     /// let b = S { ..a };
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// struct S { s: String }
     ///
     /// let a = S { s: String::from("Hello, world!") };
@@ -67,7 +67,7 @@ impl LateLintPass<'_> for UnnecessaryStruct {
                 "unnecessary struct building",
                 "replace with",
                 snippet(cx, base.span, "..").into_owned(),
-                rustc_errors::Applicability::MachineApplicable,
+                crablangc_errors::Applicability::MachineApplicable,
             );
         }
     }

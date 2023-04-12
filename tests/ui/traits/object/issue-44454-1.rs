@@ -1,4 +1,4 @@
-// Taken from https://github.com/rust-lang/rust/issues/44454#issue-256435333
+// Taken from https://github.com/crablang/crablang/issues/44454#issue-256435333
 
 trait Animal<X>: 'static {}
 

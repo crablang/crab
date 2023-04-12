@@ -1,7 +1,7 @@
 // test for #87707
 // edition:2018
 // run-fail
-// exec-env:RUST_BACKTRACE=0
+// exec-env:CRABLANG_BACKTRACE=0
 // check-run-results
 // needs-unwind uses catch_unwind
 

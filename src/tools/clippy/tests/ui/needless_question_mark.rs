@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 
 #![warn(clippy::needless_question_mark)]
 #![allow(
@@ -24,7 +24,7 @@ fn simple_option_bad1(to: TO) -> Option<usize> {
 
 // formatting will add a semi-colon, which would make
 // this identical to the test case above
-#[rustfmt::skip]
+#[crablangfmt::skip]
 fn simple_option_bad2(to: TO) -> Option<usize> {
     // return as an expression
     return Some(to.magic?)
@@ -42,7 +42,7 @@ fn simple_option_bad4(to: Option<TO>) -> Option<usize> {
 
 // formatting this will remove the block brackets, making
 // this test identical to the one above
-#[rustfmt::skip]
+#[crablangfmt::skip]
 fn simple_option_bad5(to: Option<TO>) -> Option<usize> {
     // closure with body
     to.and_then(|t| {
@@ -56,7 +56,7 @@ fn simple_result_bad1(tr: TR) -> Result<usize, bool> {
 
 // formatting will add a semi-colon, which would make
 // this identical to the test case above
-#[rustfmt::skip]
+#[crablangfmt::skip]
 fn simple_result_bad2(tr: TR) -> Result<usize, bool> {
     return Ok(tr.magic?)
 }
@@ -71,7 +71,7 @@ fn simple_result_bad4(tr: Result<TR, bool>) -> Result<usize, bool> {
 
 // formatting this will remove the block brackets, making
 // this test identical to the one above
-#[rustfmt::skip]
+#[crablangfmt::skip]
 fn simple_result_bad5(tr: Result<TR, bool>) -> Result<usize, bool> {
     tr.and_then(|t| {
         Ok(t.magic?)

@@ -1,4 +1,4 @@
-// Regression test from https://github.com/rust-lang/rust/pull/98109
+// Regression test from https://github.com/crablang/crablang/pull/98109
 
 pub fn negotiate<S>(link: S)
 where

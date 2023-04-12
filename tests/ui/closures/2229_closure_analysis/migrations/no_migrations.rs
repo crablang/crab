@@ -2,7 +2,7 @@
 
 // Set of test cases that don't need migrations
 
-#![deny(rust_2021_incompatible_closure_captures)]
+#![deny(crablang_2021_incompatible_closure_captures)]
 
 // Copy types as copied by the closure instead of being moved into the closure
 // Therefore their drop order isn't tied to the closure and won't be requiring any

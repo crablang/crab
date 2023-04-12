@@ -3,21 +3,21 @@ use clippy_utils::diagnostics::{span_lint, span_lint_and_help};
 use clippy_utils::macros::root_macro_call_first_node;
 use clippy_utils::{is_lint_allowed, match_def_path, paths};
 use if_chain::if_chain;
-use rustc_ast as ast;
-use rustc_ast::ast::LitKind;
-use rustc_data_structures::fx::{FxHashMap, FxHashSet};
-use rustc_hir as hir;
-use rustc_hir::def::{DefKind, Res};
-use rustc_hir::hir_id::CRATE_HIR_ID;
-use rustc_hir::intravisit::Visitor;
-use rustc_hir::{ExprKind, HirId, Item, MutTy, Mutability, Path, TyKind};
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_middle::hir::nested_filter;
-use rustc_semver::RustcVersion;
-use rustc_session::{declare_tool_lint, impl_lint_pass};
-use rustc_span::source_map::Spanned;
-use rustc_span::symbol::Symbol;
-use rustc_span::{sym, Span};
+use crablangc_ast as ast;
+use crablangc_ast::ast::LitKind;
+use crablangc_data_structures::fx::{FxHashMap, FxHashSet};
+use crablangc_hir as hir;
+use crablangc_hir::def::{DefKind, Res};
+use crablangc_hir::hir_id::CRATE_HIR_ID;
+use crablangc_hir::intravisit::Visitor;
+use crablangc_hir::{ExprKind, HirId, Item, MutTy, Mutability, Path, TyKind};
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_middle::hir::nested_filter;
+use crablangc_semver::CrabLangcVersion;
+use crablangc_session::{declare_tool_lint, impl_lint_pass};
+use crablangc_span::source_map::Spanned;
+use crablangc_span::symbol::Symbol;
+use crablangc_span::{sym, Span};
 
 declare_clippy_lint! {
     /// ### What it does
@@ -33,7 +33,7 @@ declare_clippy_lint! {
     /// `declare_lint_pass!`, `impl_lint_pass!`, and `lint_array!` macros.
     ///
     /// ### Example
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// declare_lint! { pub LINT_1, ... }
     /// declare_lint! { pub LINT_2, ... }
     /// declare_lint! { pub FORGOTTEN_LINT, ... }
@@ -55,12 +55,12 @@ declare_clippy_lint! {
     /// Indicates that the lint is not finished.
     ///
     /// ### Example
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// declare_lint! { pub COOL_LINT, nursery, "default lint description" }
     /// ```
     ///
     /// Use instead:
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// declare_lint! { pub COOL_LINT, nursery, "a great new lint" }
     /// ```
     pub DEFAULT_LINT,
@@ -98,7 +98,7 @@ declare_clippy_lint! {
     /// Indicates that the documentation is incomplete.
     ///
     /// ### Example
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// declare_deprecated_lint! {
     ///     /// ### What it does
     ///     /// Nothing. This lint has been deprecated.
@@ -112,7 +112,7 @@ declare_clippy_lint! {
     /// ```
     ///
     /// Use instead:
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// declare_deprecated_lint! {
     ///     /// ### What it does
     ///     /// Nothing. This lint has been deprecated.
@@ -235,7 +235,7 @@ impl<'tcx> LateLintPass<'tcx> for LintWithoutLintPass {
 
         for (lint_name, &lint_span) in &self.declared_lints {
             // When using the `declare_tool_lint!` macro, the original `lint_span`'s
-            // file points to "<rustc macros>".
+            // file points to "<crablangc macros>".
             // `compiletest-rs` thinks that's an error in a different file and
             // just ignores it. This causes the test in compile-fail/lint_pass
             // not able to capture the error.
@@ -282,7 +282,7 @@ fn check_invalid_clippy_version_attribute(cx: &LateContext<'_>, item: &'_ Item<'
             return;
         }
 
-        if RustcVersion::parse(value.as_str()).is_err() {
+        if CrabLangcVersion::parse(value.as_str()).is_err() {
             span_lint_and_help(
                 cx,
                 INVALID_CLIPPY_VERSION_ATTRIBUTE,

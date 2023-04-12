@@ -4,13 +4,13 @@
 //
 // Issue #18262.
 
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 
 use std::mem;
 
 trait T { fn foo(&self); }
 
-#[rustc_variance]
+#[crablangc_variance]
 struct TOption<'a> { //~ ERROR [+]
     v: Option<Box<dyn T + 'a>>,
 }

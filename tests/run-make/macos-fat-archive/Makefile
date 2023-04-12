@@ -7,4 +7,4 @@ include ../tools.mk
 	$(AR) crs "$(TMPDIR)"/libnative-library.a "$(TMPDIR)"/native-library.o
 
 all: "$(TMPDIR)"/libnative-library.a
-	$(RUSTC) lib.rs --crate-type=lib -L "native=$(TMPDIR)" -l static=native-library
+	$(CRABLANGC) lib.rs --crate-type=lib -L "native=$(TMPDIR)" -l static=native-library

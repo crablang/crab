@@ -6,9 +6,9 @@ RUN sh /scripts/cross-apt-packages.sh
 COPY scripts/crosstool-ng-1.24.sh /scripts/
 RUN sh /scripts/crosstool-ng-1.24.sh
 
-COPY scripts/rustbuild-setup.sh /scripts/
-RUN sh /scripts/rustbuild-setup.sh
-USER rustbuild
+COPY scripts/crablangbuild-setup.sh /scripts/
+RUN sh /scripts/crablangbuild-setup.sh
+USER crablangbuild
 WORKDIR /tmp
 
 COPY host-x86_64/dist-aarch64-linux/aarch64-linux-gnu.config host-x86_64/dist-aarch64-linux/build-toolchains.sh /tmp/
@@ -27,7 +27,7 @@ ENV CC_aarch64_unknown_linux_gnu=aarch64-unknown-linux-gnu-gcc \
 
 ENV HOSTS=aarch64-unknown-linux-gnu
 
-ENV RUST_CONFIGURE_ARGS \
+ENV CRABLANG_CONFIGURE_ARGS \
       --enable-full-tools \
       --enable-profiler \
       --enable-sanitizers

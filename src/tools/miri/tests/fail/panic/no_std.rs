@@ -7,7 +7,7 @@
 
 // Plumbing to let us use `writeln!` to host stderr:
 
-extern "Rust" {
+extern "CrabLang" {
     fn miri_write_to_stderr(bytes: &[u8]);
 }
 

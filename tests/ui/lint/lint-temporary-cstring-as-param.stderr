@@ -7,7 +7,7 @@ LL |     some_function(CString::new("").unwrap().as_ptr());
    |                   this `CString` is deallocated at the end of the statement, bind it to a variable to extend its lifetime
    |
    = note: pointers do not have a lifetime; when calling `as_ptr` the `CString` will be deallocated at the end of the statement because nothing is referencing it as far as the type system is concerned
-   = help: for more information, see https://doc.rust-lang.org/reference/destructors.html
+   = help: for more information, see https://doc.crablang.org/reference/destructors.html
 note: the lint level is defined here
   --> $DIR/lint-temporary-cstring-as-param.rs:1:9
    |

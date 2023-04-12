@@ -1,4 +1,4 @@
-% The (old) Rust Macros Guide
+% The (old) CrabLang Macros Guide
 
 This content has moved into
-[the Rust Programming Language book](book/macros.html).
+[the CrabLang Programming Language book](book/macros.html).

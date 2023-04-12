@@ -2,11 +2,11 @@ use clippy_utils::diagnostics::span_lint_and_sugg;
 use clippy_utils::match_def_path;
 use clippy_utils::source::snippet_with_applicability;
 use if_chain::if_chain;
-use rustc_errors::Applicability;
-use rustc_hir as hir;
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_middle::ty;
-use rustc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_errors::Applicability;
+use crablangc_hir as hir;
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_middle::ty;
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
 
 declare_clippy_lint! {
     /// ### What it does
@@ -17,7 +17,7 @@ declare_clippy_lint! {
     /// more straight forward to use the dedicated `is_digit` method.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// # let c = 'c';
     /// # let radix = 10;
     /// let is_digit = c.to_digit(radix).is_some();

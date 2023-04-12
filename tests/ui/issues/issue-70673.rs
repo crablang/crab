@@ -1,4 +1,4 @@
-// Regression test for https://github.com/rust-lang/rust/issues/70673.
+// Regression test for https://github.com/crablang/crablang/issues/70673.
 
 // run-pass
 

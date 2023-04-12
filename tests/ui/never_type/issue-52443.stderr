@@ -12,7 +12,7 @@ error[E0658]: `for` is not allowed in a `const`
 LL |     [(); { for _ in 0usize.. {}; 0}];
    |            ^^^^^^^^^^^^^^^^^^^^
    |
-   = note: see issue #87575 <https://github.com/rust-lang/rust/issues/87575> for more information
+   = note: see issue #87575 <https://github.com/crablang/crablang/issues/87575> for more information
    = help: add `#![feature(const_for)]` to the crate attributes to enable
 
 error[E0308]: mismatched types
@@ -55,7 +55,7 @@ error[E0658]: mutable references are not allowed in constants
 LL |     [(); { for _ in 0usize.. {}; 0}];
    |                     ^^^^^^^^
    |
-   = note: see issue #57349 <https://github.com/rust-lang/rust/issues/57349> for more information
+   = note: see issue #57349 <https://github.com/crablang/crablang/issues/57349> for more information
    = help: add `#![feature(const_mut_refs)]` to the crate attributes to enable
 
 error[E0277]: the trait bound `RangeFrom<usize>: Iterator` is not satisfied
@@ -83,4 +83,4 @@ LL |     [(); { for _ in 0usize.. {}; 0}];
 error: aborting due to 7 previous errors; 1 warning emitted
 
 Some errors have detailed explanations: E0015, E0277, E0308, E0658.
-For more information about an error, try `rustc --explain E0015`.
+For more information about an error, try `crablangc --explain E0015`.

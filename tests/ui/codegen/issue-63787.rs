@@ -5,7 +5,7 @@
 // because once they drop, their reference/pointer can alias other writes.
 
 // Adapted from comex's proof of concept:
-// https://github.com/rust-lang/rust/issues/63787#issuecomment-523588164
+// https://github.com/crablang/crablang/issues/63787#issuecomment-523588164
 
 use std::cell::RefCell;
 use std::ops::Deref;

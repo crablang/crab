@@ -1,4 +1,4 @@
-// Ref: https://github.com/rust-lang/rust/issues/23563#issuecomment-260751672
+// Ref: https://github.com/crablang/crablang/issues/23563#issuecomment-260751672
 
 pub trait LolTo<T> {
     fn convert_to(&self) -> T;

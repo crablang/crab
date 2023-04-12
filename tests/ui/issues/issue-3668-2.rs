@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 #![allow(unused_variables, dead_code)]
 fn f(x:isize) {
     static child: isize = x + 1;

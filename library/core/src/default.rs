@@ -1,6 +1,6 @@
 //! The `Default` trait for types with a default value.
 
-#![stable(feature = "rust1", since = "1.0.0")]
+#![stable(feature = "crablang1", since = "1.0.0")]
 
 /// A trait for giving a type a useful default value.
 ///
@@ -31,7 +31,7 @@
 /// }
 /// ```
 ///
-/// Now, you get all of the default values. Rust implements `Default` for various primitives types.
+/// Now, you get all of the default values. CrabLang implements `Default` for various primitives types.
 ///
 /// If you want to override a particular option, but still retain the other defaults:
 ///
@@ -97,8 +97,8 @@
 ///     bar: f32,
 /// }
 /// ```
-#[cfg_attr(not(test), rustc_diagnostic_item = "Default")]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[cfg_attr(not(test), crablangc_diagnostic_item = "Default")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[const_trait]
 pub trait Default: Sized {
     /// Returns the "default value" for a type.
@@ -130,7 +130,7 @@ pub trait Default: Sized {
     ///     fn default() -> Self { Kind::A }
     /// }
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     fn default() -> Self;
 }
 
@@ -180,7 +180,7 @@ pub fn default<T: Default>() -> T {
 }
 
 /// Derive macro generating an impl of the trait `Default`.
-#[rustc_builtin_macro(Default, attributes(default))]
+#[crablangc_builtin_macro(Default, attributes(default))]
 #[stable(feature = "builtin_macro_prelude", since = "1.38.0")]
 #[allow_internal_unstable(core_intrinsics)]
 pub macro Default($item:item) {
@@ -189,8 +189,8 @@ pub macro Default($item:item) {
 
 macro_rules! default_impl {
     ($t:ty, $v:expr, $doc:tt) => {
-        #[stable(feature = "rust1", since = "1.0.0")]
-        #[rustc_const_unstable(feature = "const_default_impls", issue = "87864")]
+        #[stable(feature = "crablang1", since = "1.0.0")]
+        #[crablangc_const_unstable(feature = "const_default_impls", issue = "87864")]
         impl const Default for $t {
             #[inline]
             #[doc = $doc]

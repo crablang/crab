@@ -2,7 +2,7 @@
 // Tests that `EvaluatedToOkModuloRegions` from a projection sub-obligation
 // is correctly propagated
 
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 
 trait MyTrait {
     type Assoc;
@@ -32,7 +32,7 @@ impl MyTrait for Bar {
     type Assoc = bool;
 }
 
-// The implementation of `#[rustc_evaluate_where_clauses]` doesn't perform
+// The implementation of `#[crablangc_evaluate_where_clauses]` doesn't perform
 // normalization, so we need to place the projection predicate behind a normal
 // trait predicate
 struct Helper {}
@@ -41,7 +41,7 @@ impl HelperTrait for Helper where <MyStruct as MyTrait>::Assoc: Sized {}
 
 // Evaluating this 'where' clause will (recursively) end up evaluating
 // `for<'b> &'b (): 'b`, which will produce `EvaluatedToOkModuloRegions`
-#[rustc_evaluate_where_clauses]
+#[crablangc_evaluate_where_clauses]
 fn test(val: MyStruct) where Helper: HelperTrait  {
     panic!()
 }

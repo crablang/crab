@@ -1,18 +1,18 @@
 # Installation
 
-If you're using `rustup` to install and manage your Rust toolchains, Clippy is
+If you're using `crablangup` to install and manage your CrabLang toolchains, Clippy is
 usually **already installed**. In that case you can skip this chapter and go to
 the [Usage] chapter.
 
-> Note: If you used the `minimal` profile when installing a Rust toolchain,
+> Note: If you used the `minimal` profile when installing a CrabLang toolchain,
 > Clippy is not automatically installed.
 
-## Using Rustup
+## Using CrabLangup
 
 If Clippy was not installed for a toolchain, it can be installed with
 
 ```
-$ rustup component add clippy [--toolchain=<name>]
+$ crablangup component add clippy [--toolchain=<name>]
 ```
 
 ## From Source

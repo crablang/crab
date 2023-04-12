@@ -1,5 +1,5 @@
 // Regression test for
-// https://github.com/rust-lang/rust/issues/67945#issuecomment-572617285
+// https://github.com/crablang/crablang/issues/67945#issuecomment-572617285
 
 // revisions: full min
 #![cfg_attr(full, feature(generic_const_exprs))]

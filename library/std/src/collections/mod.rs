@@ -1,6 +1,6 @@
 //! Collection types.
 //!
-//! Rust's standard collection library provides efficient implementations of the
+//! CrabLang's standard collection library provides efficient implementations of the
 //! most common general purpose programming data structures. By using the
 //! standard implementations, it should be possible for two libraries to
 //! communicate without significant data conversion.
@@ -13,7 +13,7 @@
 //! Even when `Vec` and `HashMap` are technically suboptimal, they're probably a
 //! good enough choice to get started.
 //!
-//! Rust's collections can be grouped into four major categories:
+//! CrabLang's collections can be grouped into four major categories:
 //!
 //! * Sequences: [`Vec`], [`VecDeque`], [`LinkedList`]
 //! * Maps: [`HashMap`], [`BTreeMap`]
@@ -172,7 +172,7 @@
 //!
 //! ## Iterators
 //!
-//! Iterators are a powerful and robust mechanism used throughout Rust's
+//! Iterators are a powerful and robust mechanism used throughout CrabLang's
 //! standard libraries. Iterators provide a sequence of values in a generic,
 //! safe, efficient and convenient way. The contents of an iterator are usually
 //! *lazily* evaluated, so that only the values that are actually needed are
@@ -398,27 +398,27 @@
 //!
 //! [IntoIterator]: crate::iter::IntoIterator "iter::IntoIterator"
 
-#![stable(feature = "rust1", since = "1.0.0")]
+#![stable(feature = "crablang1", since = "1.0.0")]
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 // FIXME(#82080) The deprecation here is only theoretical, and does not actually produce a warning.
 #[deprecated(note = "moved to `std::ops::Bound`", since = "1.26.0")]
 #[doc(hidden)]
 pub use crate::ops::Bound;
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub use alloc_crate::collections::{binary_heap, btree_map, btree_set};
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub use alloc_crate::collections::{linked_list, vec_deque};
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub use alloc_crate::collections::{BTreeMap, BTreeSet, BinaryHeap};
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub use alloc_crate::collections::{LinkedList, VecDeque};
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[doc(inline)]
 pub use self::hash_map::HashMap;
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[doc(inline)]
 pub use self::hash_set::HashSet;
 
@@ -433,16 +433,16 @@ pub use alloc_crate::collections::TryReserveErrorKind;
 
 mod hash;
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub mod hash_map {
     //! A hash map implemented with quadratic probing and SIMD lookup.
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub use super::hash::map::*;
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub mod hash_set {
     //! A hash set implemented as a `HashMap` where the value is `()`.
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub use super::hash::set::*;
 }

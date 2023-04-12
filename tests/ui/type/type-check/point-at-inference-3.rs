@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 fn main() {
     let mut v = Vec::new();
     v.push(0i32);

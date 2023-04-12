@@ -5,9 +5,9 @@
 include ../tools.mk
 
 all:
-	$(RUSTC) --crate-type lib --crate-name raw_dylib_test lib.rs
-	$(RUSTC) --crate-type bin driver.rs -L "$(TMPDIR)"
-	$(RUSTC) --crate-type bin --crate-name raw_dylib_test_bin lib.rs
+	$(CRABLANGC) --crate-type lib --crate-name raw_dylib_test lib.rs
+	$(CRABLANGC) --crate-type bin driver.rs -L "$(TMPDIR)"
+	$(CRABLANGC) --crate-type bin --crate-name raw_dylib_test_bin lib.rs
 	$(call COMPILE_OBJ,"$(TMPDIR)"/extern_1.obj,extern_1.c)
 	$(call COMPILE_OBJ,"$(TMPDIR)"/extern_2.obj,extern_2.c)
 ifdef IS_MSVC
@@ -20,7 +20,7 @@ endif
 	"$(TMPDIR)"/driver > "$(TMPDIR)"/output.txt
 	"$(TMPDIR)"/raw_dylib_test_bin > "$(TMPDIR)"/output_bin.txt
 
-ifdef RUSTC_BLESS_TEST
+ifdef CRABLANGC_BLESS_TEST
 	cp "$(TMPDIR)"/output.txt output.txt
 else
 	$(DIFF) output.txt "$(TMPDIR)"/output.txt

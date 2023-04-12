@@ -3,7 +3,7 @@ authors = ["Miri Team"]
 description = "dependencies that unit tests can have"
 license = "MIT OR Apache-2.0"
 name = "miri-test-deps"
-repository = "https://github.com/rust-lang/miri"
+repository = "https://github.com/crablang/miri"
 version = "0.1.0"
 edition = "2021"
 

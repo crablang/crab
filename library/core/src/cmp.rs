@@ -20,7 +20,7 @@
 //! [`max`]: Ord::max
 //! [`min`]: Ord::min
 
-#![stable(feature = "rust1", since = "1.0.0")]
+#![stable(feature = "crablang1", since = "1.0.0")]
 
 mod bytewise;
 pub(crate) use bytewise::BytewiseEq;
@@ -204,35 +204,35 @@ use self::Ordering::*;
 /// [`eq`]: PartialEq::eq
 /// [`ne`]: PartialEq::ne
 #[lang = "eq"]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[doc(alias = "==")]
 #[doc(alias = "!=")]
-#[rustc_on_unimplemented(
+#[crablangc_on_unimplemented(
     message = "can't compare `{Self}` with `{Rhs}`",
     label = "no implementation for `{Self} == {Rhs}`",
     append_const_msg
 )]
 #[const_trait]
-#[rustc_diagnostic_item = "PartialEq"]
+#[crablangc_diagnostic_item = "PartialEq"]
 pub trait PartialEq<Rhs: ?Sized = Self> {
     /// This method tests for `self` and `other` values to be equal, and is used
     /// by `==`.
     #[must_use]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     fn eq(&self, other: &Rhs) -> bool;
 
     /// This method tests for `!=`. The default implementation is almost always
     /// sufficient, and should not be overridden without very good reason.
     #[inline]
     #[must_use]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     fn ne(&self, other: &Rhs) -> bool {
         !self.eq(other)
     }
 }
 
 /// Derive macro generating an impl of the trait `PartialEq`.
-#[rustc_builtin_macro]
+#[crablangc_builtin_macro]
 #[stable(feature = "builtin_macro_prelude", since = "1.38.0")]
 #[allow_internal_unstable(core_intrinsics, structural_match)]
 pub macro PartialEq($item:item) {
@@ -280,8 +280,8 @@ pub macro PartialEq($item:item) {
 /// ```
 #[doc(alias = "==")]
 #[doc(alias = "!=")]
-#[stable(feature = "rust1", since = "1.0.0")]
-#[rustc_diagnostic_item = "Eq"]
+#[stable(feature = "crablang1", since = "1.0.0")]
+#[crablangc_diagnostic_item = "Eq"]
 pub trait Eq: PartialEq<Self> {
     // this method is used solely by #[deriving] to assert
     // that every component of a type implements #[deriving]
@@ -291,14 +291,14 @@ pub trait Eq: PartialEq<Self> {
     //
     // This should never be implemented by hand.
     #[doc(hidden)]
-    #[no_coverage] // rust-lang/rust#84605
+    #[no_coverage] // crablang/crablang#84605
     #[inline]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     fn assert_receiver_is_total_eq(&self) {}
 }
 
 /// Derive macro generating an impl of the trait `Eq`.
-#[rustc_builtin_macro]
+#[crablangc_builtin_macro]
 #[stable(feature = "builtin_macro_prelude", since = "1.38.0")]
 #[allow_internal_unstable(core_intrinsics, derive_eq, structural_match, no_coverage)]
 pub macro Eq($item:item) {
@@ -334,17 +334,17 @@ pub struct AssertParamIsEq<T: Eq + ?Sized> {
 /// ```
 #[derive(Clone, Copy, Eq, Debug, Hash)]
 #[derive_const(PartialOrd, Ord, PartialEq)]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[repr(i8)]
 pub enum Ordering {
     /// An ordering where a compared value is less than another.
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     Less = -1,
     /// An ordering where a compared value is equal to another.
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     Equal = 0,
     /// An ordering where a compared value is greater than another.
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     Greater = 1,
 }
 
@@ -362,7 +362,7 @@ impl Ordering {
     /// ```
     #[inline]
     #[must_use]
-    #[rustc_const_stable(feature = "ordering_helpers", since = "1.53.0")]
+    #[crablangc_const_stable(feature = "ordering_helpers", since = "1.53.0")]
     #[stable(feature = "ordering_helpers", since = "1.53.0")]
     pub const fn is_eq(self) -> bool {
         matches!(self, Equal)
@@ -381,7 +381,7 @@ impl Ordering {
     /// ```
     #[inline]
     #[must_use]
-    #[rustc_const_stable(feature = "ordering_helpers", since = "1.53.0")]
+    #[crablangc_const_stable(feature = "ordering_helpers", since = "1.53.0")]
     #[stable(feature = "ordering_helpers", since = "1.53.0")]
     pub const fn is_ne(self) -> bool {
         !matches!(self, Equal)
@@ -400,7 +400,7 @@ impl Ordering {
     /// ```
     #[inline]
     #[must_use]
-    #[rustc_const_stable(feature = "ordering_helpers", since = "1.53.0")]
+    #[crablangc_const_stable(feature = "ordering_helpers", since = "1.53.0")]
     #[stable(feature = "ordering_helpers", since = "1.53.0")]
     pub const fn is_lt(self) -> bool {
         matches!(self, Less)
@@ -419,7 +419,7 @@ impl Ordering {
     /// ```
     #[inline]
     #[must_use]
-    #[rustc_const_stable(feature = "ordering_helpers", since = "1.53.0")]
+    #[crablangc_const_stable(feature = "ordering_helpers", since = "1.53.0")]
     #[stable(feature = "ordering_helpers", since = "1.53.0")]
     pub const fn is_gt(self) -> bool {
         matches!(self, Greater)
@@ -438,7 +438,7 @@ impl Ordering {
     /// ```
     #[inline]
     #[must_use]
-    #[rustc_const_stable(feature = "ordering_helpers", since = "1.53.0")]
+    #[crablangc_const_stable(feature = "ordering_helpers", since = "1.53.0")]
     #[stable(feature = "ordering_helpers", since = "1.53.0")]
     pub const fn is_le(self) -> bool {
         !matches!(self, Greater)
@@ -457,7 +457,7 @@ impl Ordering {
     /// ```
     #[inline]
     #[must_use]
-    #[rustc_const_stable(feature = "ordering_helpers", since = "1.53.0")]
+    #[crablangc_const_stable(feature = "ordering_helpers", since = "1.53.0")]
     #[stable(feature = "ordering_helpers", since = "1.53.0")]
     pub const fn is_ge(self) -> bool {
         !matches!(self, Less)
@@ -494,8 +494,8 @@ impl Ordering {
     /// ```
     #[inline]
     #[must_use]
-    #[rustc_const_stable(feature = "const_ordering", since = "1.48.0")]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[crablangc_const_stable(feature = "const_ordering", since = "1.48.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub const fn reverse(self) -> Ordering {
         match self {
             Less => Greater,
@@ -533,7 +533,7 @@ impl Ordering {
     /// ```
     #[inline]
     #[must_use]
-    #[rustc_const_stable(feature = "const_ordering", since = "1.48.0")]
+    #[crablangc_const_stable(feature = "const_ordering", since = "1.48.0")]
     #[stable(feature = "ordering_chaining", since = "1.17.0")]
     pub const fn then(self, other: Ordering) -> Ordering {
         match self {
@@ -603,7 +603,7 @@ impl Ordering {
 pub struct Reverse<T>(#[stable(feature = "reverse_cmp_key", since = "1.19.0")] pub T);
 
 #[stable(feature = "reverse_cmp_key", since = "1.19.0")]
-#[rustc_const_unstable(feature = "const_cmp", issue = "92391")]
+#[crablangc_const_unstable(feature = "const_cmp", issue = "92391")]
 impl<T: ~const PartialOrd> const PartialOrd for Reverse<T> {
     #[inline]
     fn partial_cmp(&self, other: &Reverse<T>) -> Option<Ordering> {
@@ -760,8 +760,8 @@ impl<T: Clone> Clone for Reverse<T> {
 #[doc(alias = ">")]
 #[doc(alias = "<=")]
 #[doc(alias = ">=")]
-#[stable(feature = "rust1", since = "1.0.0")]
-#[rustc_diagnostic_item = "Ord"]
+#[stable(feature = "crablang1", since = "1.0.0")]
+#[crablangc_diagnostic_item = "Ord"]
 #[const_trait]
 pub trait Ord: Eq + PartialOrd<Self> {
     /// This method returns an [`Ordering`] between `self` and `other`.
@@ -779,7 +779,7 @@ pub trait Ord: Eq + PartialOrd<Self> {
     /// assert_eq!(5.cmp(&5), Ordering::Equal);
     /// ```
     #[must_use]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     fn cmp(&self, other: &Self) -> Ordering;
 
     /// Compares and returns the maximum of two values.
@@ -860,7 +860,7 @@ pub trait Ord: Eq + PartialOrd<Self> {
 }
 
 /// Derive macro generating an impl of the trait `Ord`.
-#[rustc_builtin_macro]
+#[crablangc_builtin_macro]
 #[stable(feature = "builtin_macro_prelude", since = "1.38.0")]
 #[allow_internal_unstable(core_intrinsics)]
 pub macro Ord($item:item) {
@@ -1023,18 +1023,18 @@ pub macro Ord($item:item) {
 /// [`partial_cmp`]: PartialOrd::partial_cmp
 /// [`cmp`]: Ord::cmp
 #[lang = "partial_ord"]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[doc(alias = ">")]
 #[doc(alias = "<")]
 #[doc(alias = "<=")]
 #[doc(alias = ">=")]
-#[rustc_on_unimplemented(
+#[crablangc_on_unimplemented(
     message = "can't compare `{Self}` with `{Rhs}`",
     label = "no implementation for `{Self} < {Rhs}` and `{Self} > {Rhs}`",
     append_const_msg
 )]
 #[const_trait]
-#[rustc_diagnostic_item = "PartialOrd"]
+#[crablangc_diagnostic_item = "PartialOrd"]
 pub trait PartialOrd<Rhs: ?Sized = Self>: PartialEq<Rhs> {
     /// This method returns an ordering between `self` and `other` values if one exists.
     ///
@@ -1060,7 +1060,7 @@ pub trait PartialOrd<Rhs: ?Sized = Self>: PartialEq<Rhs> {
     /// assert_eq!(result, None);
     /// ```
     #[must_use]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     fn partial_cmp(&self, other: &Rhs) -> Option<Ordering>;
 
     /// This method tests less than (for `self` and `other`) and is used by the `<` operator.
@@ -1076,7 +1076,7 @@ pub trait PartialOrd<Rhs: ?Sized = Self>: PartialEq<Rhs> {
     /// ```
     #[inline]
     #[must_use]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     fn lt(&self, other: &Rhs) -> bool {
         matches!(self.partial_cmp(other), Some(Less))
     }
@@ -1095,7 +1095,7 @@ pub trait PartialOrd<Rhs: ?Sized = Self>: PartialEq<Rhs> {
     /// ```
     #[inline]
     #[must_use]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     fn le(&self, other: &Rhs) -> bool {
         matches!(self.partial_cmp(other), Some(Less | Equal))
     }
@@ -1113,7 +1113,7 @@ pub trait PartialOrd<Rhs: ?Sized = Self>: PartialEq<Rhs> {
     /// ```
     #[inline]
     #[must_use]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     fn gt(&self, other: &Rhs) -> bool {
         matches!(self.partial_cmp(other), Some(Greater))
     }
@@ -1132,14 +1132,14 @@ pub trait PartialOrd<Rhs: ?Sized = Self>: PartialEq<Rhs> {
     /// ```
     #[inline]
     #[must_use]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     fn ge(&self, other: &Rhs) -> bool {
         matches!(self.partial_cmp(other), Some(Greater | Equal))
     }
 }
 
 /// Derive macro generating an impl of the trait `PartialOrd`.
-#[rustc_builtin_macro]
+#[crablangc_builtin_macro]
 #[stable(feature = "builtin_macro_prelude", since = "1.38.0")]
 #[allow_internal_unstable(core_intrinsics)]
 pub macro PartialOrd($item:item) {
@@ -1162,9 +1162,9 @@ pub macro PartialOrd($item:item) {
 /// ```
 #[inline]
 #[must_use]
-#[stable(feature = "rust1", since = "1.0.0")]
-#[rustc_const_unstable(feature = "const_cmp", issue = "92391")]
-#[cfg_attr(not(test), rustc_diagnostic_item = "cmp_min")]
+#[stable(feature = "crablang1", since = "1.0.0")]
+#[crablangc_const_unstable(feature = "const_cmp", issue = "92391")]
+#[cfg_attr(not(test), crablangc_diagnostic_item = "cmp_min")]
 pub const fn min<T: ~const Ord + ~const Destruct>(v1: T, v2: T) -> T {
     v1.min(v2)
 }
@@ -1184,7 +1184,7 @@ pub const fn min<T: ~const Ord + ~const Destruct>(v1: T, v2: T) -> T {
 #[inline]
 #[must_use]
 #[stable(feature = "cmp_min_max_by", since = "1.53.0")]
-#[rustc_const_unstable(feature = "const_cmp", issue = "92391")]
+#[crablangc_const_unstable(feature = "const_cmp", issue = "92391")]
 pub const fn min_by<T, F: ~const FnOnce(&T, &T) -> Ordering>(v1: T, v2: T, compare: F) -> T
 where
     T: ~const Destruct,
@@ -1211,7 +1211,7 @@ where
 #[inline]
 #[must_use]
 #[stable(feature = "cmp_min_max_by", since = "1.53.0")]
-#[rustc_const_unstable(feature = "const_cmp", issue = "92391")]
+#[crablangc_const_unstable(feature = "const_cmp", issue = "92391")]
 pub const fn min_by_key<T, F: ~const FnMut(&T) -> K, K: ~const Ord>(v1: T, v2: T, mut f: F) -> T
 where
     T: ~const Destruct,
@@ -1237,9 +1237,9 @@ where
 /// ```
 #[inline]
 #[must_use]
-#[stable(feature = "rust1", since = "1.0.0")]
-#[rustc_const_unstable(feature = "const_cmp", issue = "92391")]
-#[cfg_attr(not(test), rustc_diagnostic_item = "cmp_max")]
+#[stable(feature = "crablang1", since = "1.0.0")]
+#[crablangc_const_unstable(feature = "const_cmp", issue = "92391")]
+#[cfg_attr(not(test), crablangc_diagnostic_item = "cmp_max")]
 pub const fn max<T: ~const Ord + ~const Destruct>(v1: T, v2: T) -> T {
     v1.max(v2)
 }
@@ -1259,7 +1259,7 @@ pub const fn max<T: ~const Ord + ~const Destruct>(v1: T, v2: T) -> T {
 #[inline]
 #[must_use]
 #[stable(feature = "cmp_min_max_by", since = "1.53.0")]
-#[rustc_const_unstable(feature = "const_cmp", issue = "92391")]
+#[crablangc_const_unstable(feature = "const_cmp", issue = "92391")]
 pub const fn max_by<T, F: ~const FnOnce(&T, &T) -> Ordering>(v1: T, v2: T, compare: F) -> T
 where
     T: ~const Destruct,
@@ -1286,7 +1286,7 @@ where
 #[inline]
 #[must_use]
 #[stable(feature = "cmp_min_max_by", since = "1.53.0")]
-#[rustc_const_unstable(feature = "const_cmp", issue = "92391")]
+#[crablangc_const_unstable(feature = "const_cmp", issue = "92391")]
 pub const fn max_by_key<T, F: ~const FnMut(&T) -> K, K: ~const Ord>(v1: T, v2: T, mut f: F) -> T
 where
     T: ~const Destruct,
@@ -1303,8 +1303,8 @@ mod impls {
 
     macro_rules! partial_eq_impl {
         ($($t:ty)*) => ($(
-            #[stable(feature = "rust1", since = "1.0.0")]
-            #[rustc_const_unstable(feature = "const_cmp", issue = "92391")]
+            #[stable(feature = "crablang1", since = "1.0.0")]
+            #[crablangc_const_unstable(feature = "const_cmp", issue = "92391")]
             impl const PartialEq for $t {
                 #[inline]
                 fn eq(&self, other: &$t) -> bool { (*self) == (*other) }
@@ -1314,8 +1314,8 @@ mod impls {
         )*)
     }
 
-    #[stable(feature = "rust1", since = "1.0.0")]
-    #[rustc_const_unstable(feature = "const_cmp", issue = "92391")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    #[crablangc_const_unstable(feature = "const_cmp", issue = "92391")]
     impl const PartialEq for () {
         #[inline]
         fn eq(&self, _other: &()) -> bool {
@@ -1333,7 +1333,7 @@ mod impls {
 
     macro_rules! eq_impl {
         ($($t:ty)*) => ($(
-            #[stable(feature = "rust1", since = "1.0.0")]
+            #[stable(feature = "crablang1", since = "1.0.0")]
             impl Eq for $t {}
         )*)
     }
@@ -1342,8 +1342,8 @@ mod impls {
 
     macro_rules! partial_ord_impl {
         ($($t:ty)*) => ($(
-            #[stable(feature = "rust1", since = "1.0.0")]
-            #[rustc_const_unstable(feature = "const_cmp", issue = "92391")]
+            #[stable(feature = "crablang1", since = "1.0.0")]
+            #[crablangc_const_unstable(feature = "const_cmp", issue = "92391")]
             impl const PartialOrd for $t {
                 #[inline]
                 fn partial_cmp(&self, other: &$t) -> Option<Ordering> {
@@ -1366,8 +1366,8 @@ mod impls {
         )*)
     }
 
-    #[stable(feature = "rust1", since = "1.0.0")]
-    #[rustc_const_unstable(feature = "const_cmp", issue = "92391")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    #[crablangc_const_unstable(feature = "const_cmp", issue = "92391")]
     impl const PartialOrd for () {
         #[inline]
         fn partial_cmp(&self, _: &()) -> Option<Ordering> {
@@ -1375,8 +1375,8 @@ mod impls {
         }
     }
 
-    #[stable(feature = "rust1", since = "1.0.0")]
-    #[rustc_const_unstable(feature = "const_cmp", issue = "92391")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    #[crablangc_const_unstable(feature = "const_cmp", issue = "92391")]
     impl const PartialOrd for bool {
         #[inline]
         fn partial_cmp(&self, other: &bool) -> Option<Ordering> {
@@ -1388,8 +1388,8 @@ mod impls {
 
     macro_rules! ord_impl {
         ($($t:ty)*) => ($(
-            #[stable(feature = "rust1", since = "1.0.0")]
-            #[rustc_const_unstable(feature = "const_cmp", issue = "92391")]
+            #[stable(feature = "crablang1", since = "1.0.0")]
+            #[crablangc_const_unstable(feature = "const_cmp", issue = "92391")]
             impl const PartialOrd for $t {
                 #[inline]
                 fn partial_cmp(&self, other: &$t) -> Option<Ordering> {
@@ -1405,13 +1405,13 @@ mod impls {
                 fn gt(&self, other: &$t) -> bool { (*self) > (*other) }
             }
 
-            #[stable(feature = "rust1", since = "1.0.0")]
-            #[rustc_const_unstable(feature = "const_cmp", issue = "92391")]
+            #[stable(feature = "crablang1", since = "1.0.0")]
+            #[crablangc_const_unstable(feature = "const_cmp", issue = "92391")]
             impl const Ord for $t {
                 #[inline]
                 fn cmp(&self, other: &$t) -> Ordering {
                     // The order here is important to generate more optimal assembly.
-                    // See <https://github.com/rust-lang/rust/issues/63758> for more info.
+                    // See <https://github.com/crablang/crablang/issues/63758> for more info.
                     if *self < *other { Less }
                     else if *self == *other { Equal }
                     else { Greater }
@@ -1420,8 +1420,8 @@ mod impls {
         )*)
     }
 
-    #[stable(feature = "rust1", since = "1.0.0")]
-    #[rustc_const_unstable(feature = "const_cmp", issue = "92391")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    #[crablangc_const_unstable(feature = "const_cmp", issue = "92391")]
     impl const Ord for () {
         #[inline]
         fn cmp(&self, _other: &()) -> Ordering {
@@ -1429,14 +1429,14 @@ mod impls {
         }
     }
 
-    #[stable(feature = "rust1", since = "1.0.0")]
-    #[rustc_const_unstable(feature = "const_cmp", issue = "92391")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    #[crablangc_const_unstable(feature = "const_cmp", issue = "92391")]
     impl const Ord for bool {
         #[inline]
         fn cmp(&self, other: &bool) -> Ordering {
             // Casting to i8's and converting the difference to an Ordering generates
             // more optimal assembly.
-            // See <https://github.com/rust-lang/rust/issues/66780> for more info.
+            // See <https://github.com/crablang/crablang/issues/66780> for more info.
             match (*self as i8) - (*other as i8) {
                 -1 => Less,
                 0 => Equal,
@@ -1450,7 +1450,7 @@ mod impls {
     ord_impl! { char usize u8 u16 u32 u64 u128 isize i8 i16 i32 i64 i128 }
 
     #[unstable(feature = "never_type", issue = "35121")]
-    #[rustc_const_unstable(feature = "const_cmp", issue = "92391")]
+    #[crablangc_const_unstable(feature = "const_cmp", issue = "92391")]
     impl const PartialEq for ! {
         fn eq(&self, _: &!) -> bool {
             *self
@@ -1461,7 +1461,7 @@ mod impls {
     impl Eq for ! {}
 
     #[unstable(feature = "never_type", issue = "35121")]
-    #[rustc_const_unstable(feature = "const_cmp", issue = "92391")]
+    #[crablangc_const_unstable(feature = "const_cmp", issue = "92391")]
     impl const PartialOrd for ! {
         fn partial_cmp(&self, _: &!) -> Option<Ordering> {
             *self
@@ -1469,7 +1469,7 @@ mod impls {
     }
 
     #[unstable(feature = "never_type", issue = "35121")]
-    #[rustc_const_unstable(feature = "const_cmp", issue = "92391")]
+    #[crablangc_const_unstable(feature = "const_cmp", issue = "92391")]
     impl const Ord for ! {
         fn cmp(&self, _: &!) -> Ordering {
             *self
@@ -1478,8 +1478,8 @@ mod impls {
 
     // & pointers
 
-    #[stable(feature = "rust1", since = "1.0.0")]
-    #[rustc_const_unstable(feature = "const_cmp", issue = "92391")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    #[crablangc_const_unstable(feature = "const_cmp", issue = "92391")]
     impl<A: ?Sized, B: ?Sized> const PartialEq<&B> for &A
     where
         A: ~const PartialEq<B>,
@@ -1493,8 +1493,8 @@ mod impls {
             PartialEq::ne(*self, *other)
         }
     }
-    #[stable(feature = "rust1", since = "1.0.0")]
-    #[rustc_const_unstable(feature = "const_cmp", issue = "92391")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    #[crablangc_const_unstable(feature = "const_cmp", issue = "92391")]
     impl<A: ?Sized, B: ?Sized> const PartialOrd<&B> for &A
     where
         A: ~const PartialOrd<B>,
@@ -1520,7 +1520,7 @@ mod impls {
             PartialOrd::ge(*self, *other)
         }
     }
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     impl<A: ?Sized> Ord for &A
     where
         A: Ord,
@@ -1530,12 +1530,12 @@ mod impls {
             Ord::cmp(*self, *other)
         }
     }
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     impl<A: ?Sized> Eq for &A where A: Eq {}
 
     // &mut pointers
 
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     impl<A: ?Sized, B: ?Sized> PartialEq<&mut B> for &mut A
     where
         A: PartialEq<B>,
@@ -1549,7 +1549,7 @@ mod impls {
             PartialEq::ne(*self, *other)
         }
     }
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     impl<A: ?Sized, B: ?Sized> PartialOrd<&mut B> for &mut A
     where
         A: PartialOrd<B>,
@@ -1575,7 +1575,7 @@ mod impls {
             PartialOrd::ge(*self, *other)
         }
     }
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     impl<A: ?Sized> Ord for &mut A
     where
         A: Ord,
@@ -1585,10 +1585,10 @@ mod impls {
             Ord::cmp(*self, *other)
         }
     }
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     impl<A: ?Sized> Eq for &mut A where A: Eq {}
 
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     impl<A: ?Sized, B: ?Sized> PartialEq<&mut B> for &A
     where
         A: PartialEq<B>,
@@ -1603,7 +1603,7 @@ mod impls {
         }
     }
 
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     impl<A: ?Sized, B: ?Sized> PartialEq<&B> for &mut A
     where
         A: PartialEq<B>,

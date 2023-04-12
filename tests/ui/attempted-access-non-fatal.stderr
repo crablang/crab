@@ -56,4 +56,4 @@ LL |     let _ = 34.0f64;
 
 error: aborting due to 6 previous errors
 
-For more information about this error, try `rustc --explain E0610`.
+For more information about this error, try `crablangc --explain E0610`.

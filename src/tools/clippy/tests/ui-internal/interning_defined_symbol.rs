@@ -1,15 +1,15 @@
-// run-rustfix
+// run-crablangfix
 #![deny(clippy::internal)]
 #![allow(clippy::missing_clippy_version_attribute, clippy::let_unit_value)]
-#![feature(rustc_private)]
+#![feature(crablangc_private)]
 
-extern crate rustc_span;
+extern crate crablangc_span;
 
-use rustc_span::symbol::Symbol;
+use crablangc_span::symbol::Symbol;
 
 macro_rules! sym {
     ($tt:tt) => {
-        rustc_span::symbol::Symbol::intern(stringify!($tt))
+        crablangc_span::symbol::Symbol::intern(stringify!($tt))
     };
 }
 

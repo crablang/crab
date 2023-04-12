@@ -6,7 +6,7 @@
 
 // revisions:rpass1 rpass2
 
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 
 use std::vec::Vec;
 

@@ -69,4 +69,4 @@ LL |         Opts::A(ref mut i) | Opts::B(ref i) => {}
 error: aborting due to 6 previous errors
 
 Some errors have detailed explanations: E0308, E0409.
-For more information about an error, try `rustc --explain E0308`.
+For more information about an error, try `crablangc --explain E0308`.

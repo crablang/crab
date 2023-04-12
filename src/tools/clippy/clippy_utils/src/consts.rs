@@ -2,17 +2,17 @@
 
 use crate::{clip, is_direct_expn_of, sext, unsext};
 use if_chain::if_chain;
-use rustc_ast::ast::{self, LitFloatType, LitKind};
-use rustc_data_structures::sync::Lrc;
-use rustc_hir::def::{DefKind, Res};
-use rustc_hir::{BinOp, BinOpKind, Block, Expr, ExprKind, HirId, Item, ItemKind, Node, QPath, UnOp};
-use rustc_lint::LateContext;
-use rustc_middle::mir;
-use rustc_middle::mir::interpret::Scalar;
-use rustc_middle::ty::SubstsRef;
-use rustc_middle::ty::{self, EarlyBinder, FloatTy, ScalarInt, Ty, TyCtxt};
-use rustc_middle::{bug, span_bug};
-use rustc_span::symbol::Symbol;
+use crablangc_ast::ast::{self, LitFloatType, LitKind};
+use crablangc_data_structures::sync::Lrc;
+use crablangc_hir::def::{DefKind, Res};
+use crablangc_hir::{BinOp, BinOpKind, Block, Expr, ExprKind, HirId, Item, ItemKind, Node, QPath, UnOp};
+use crablangc_lint::LateContext;
+use crablangc_middle::mir;
+use crablangc_middle::mir::interpret::Scalar;
+use crablangc_middle::ty::SubstsRef;
+use crablangc_middle::ty::{self, EarlyBinder, FloatTy, ScalarInt, Ty, TyCtxt};
+use crablangc_middle::{bug, span_bug};
+use crablangc_span::symbol::Symbol;
 use std::cmp::Ordering::{self, Equal};
 use std::hash::{Hash, Hasher};
 use std::iter;
@@ -456,7 +456,7 @@ impl<'a, 'tcx> ConstEvalLateContext<'a, 'tcx> {
                         None,
                     )
                     .ok()
-                    .map(|val| rustc_middle::mir::ConstantKind::from_value(val, ty))?;
+                    .map(|val| crablangc_middle::mir::ConstantKind::from_value(val, ty))?;
                 let result = miri_to_const(self.lcx.tcx, result);
                 if result.is_some() {
                     self.needed_resolution = true;
@@ -608,7 +608,7 @@ impl<'a, 'tcx> ConstEvalLateContext<'a, 'tcx> {
 }
 
 pub fn miri_to_const<'tcx>(tcx: TyCtxt<'tcx>, result: mir::ConstantKind<'tcx>) -> Option<Constant> {
-    use rustc_middle::mir::interpret::ConstValue;
+    use crablangc_middle::mir::interpret::ConstValue;
     match result {
         mir::ConstantKind::Val(ConstValue::Scalar(Scalar::Int(int)), _) => {
             match result.ty().kind() {

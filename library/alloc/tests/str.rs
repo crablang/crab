@@ -1649,7 +1649,7 @@ fn strslice_issue_104726() {
     // The first and last byte are the same so it backtracks by one byte
     // which aligns with the end of the string. Previously incorrect offset calculations
     // lead to out-of-bounds slicing.
-    #[rustfmt::skip]
+    #[crablangfmt::skip]
     let needle =                        "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaba";
     let haystack = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaab";
     assert!(!haystack.contains(needle));
@@ -1786,7 +1786,7 @@ fn to_lowercase() {
     assert_eq!("".to_lowercase(), "");
     assert_eq!("AÉǅaé ".to_lowercase(), "aéǆaé ");
 
-    // https://github.com/rust-lang/rust/issues/26035
+    // https://github.com/crablang/crablang/issues/26035
     assert_eq!("ΑΣ".to_lowercase(), "ας");
     assert_eq!("Α'Σ".to_lowercase(), "α'ς");
     assert_eq!("Α''Σ".to_lowercase(), "α''ς");
@@ -2192,7 +2192,7 @@ fn const_str_ptr() {
     const B: &'static [u8; 2] = &A;
     const C: *const u8 = B as *const u8;
 
-    // Miri does not deduplicate consts (https://github.com/rust-lang/miri/issues/131)
+    // Miri does not deduplicate consts (https://github.com/crablang/miri/issues/131)
     #[cfg(not(miri))]
     {
         let foo = &A as *const u8;

@@ -24,7 +24,7 @@ fn main() -> () {
         _2 = transmute::<(), Void>(move _3) -> bb4; // scope 2 at $DIR/issue_72181_1.rs:+2:9: +2:44
                                          // mir::Constant
                                          // + span: $DIR/issue_72181_1.rs:17:9: 17:40
-                                         // + literal: Const { ty: unsafe extern "rust-intrinsic" fn(()) -> Void {transmute::<(), Void>}, val: Value(<ZST>) }
+                                         // + literal: Const { ty: unsafe extern "crablang-intrinsic" fn(()) -> Void {transmute::<(), Void>}, val: Value(<ZST>) }
     }
 
     bb1: {

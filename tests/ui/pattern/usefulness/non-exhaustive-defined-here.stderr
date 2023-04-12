@@ -29,7 +29,7 @@ LL |     let E::A = e;
    |         ^^^^ patterns `E::B` and `E::C` not covered
    |
    = note: `let` bindings require an "irrefutable pattern", like a `struct` or an `enum` with only one variant
-   = note: for more information, visit https://doc.rust-lang.org/book/ch18-02-refutability.html
+   = note: for more information, visit https://doc.crablang.org/book/ch18-02-refutability.html
 note: `E` defined here
   --> $DIR/non-exhaustive-defined-here.rs:6:6
    |
@@ -78,7 +78,7 @@ LL |     let E::A = e;
    |         ^^^^ patterns `&E::B` and `&E::C` not covered
    |
    = note: `let` bindings require an "irrefutable pattern", like a `struct` or an `enum` with only one variant
-   = note: for more information, visit https://doc.rust-lang.org/book/ch18-02-refutability.html
+   = note: for more information, visit https://doc.crablang.org/book/ch18-02-refutability.html
 note: `E` defined here
   --> $DIR/non-exhaustive-defined-here.rs:6:6
    |
@@ -127,7 +127,7 @@ LL |     let E::A = e;
    |         ^^^^ patterns `&&mut &E::B` and `&&mut &E::C` not covered
    |
    = note: `let` bindings require an "irrefutable pattern", like a `struct` or an `enum` with only one variant
-   = note: for more information, visit https://doc.rust-lang.org/book/ch18-02-refutability.html
+   = note: for more information, visit https://doc.crablang.org/book/ch18-02-refutability.html
 note: `E` defined here
   --> $DIR/non-exhaustive-defined-here.rs:6:6
    |
@@ -173,7 +173,7 @@ LL |     let Opt::Some(ref _x) = e;
    |         ^^^^^^^^^^^^^^^^^ pattern `Opt::None` not covered
    |
    = note: `let` bindings require an "irrefutable pattern", like a `struct` or an `enum` with only one variant
-   = note: for more information, visit https://doc.rust-lang.org/book/ch18-02-refutability.html
+   = note: for more information, visit https://doc.crablang.org/book/ch18-02-refutability.html
 note: `Opt` defined here
   --> $DIR/non-exhaustive-defined-here.rs:81:6
    |
@@ -191,4 +191,4 @@ LL |     let Opt::Some(ref _x) = e else { todo!() };
 error: aborting due to 8 previous errors
 
 Some errors have detailed explanations: E0004, E0005.
-For more information about an error, try `rustc --explain E0004`.
+For more information about an error, try `crablangc --explain E0004`.

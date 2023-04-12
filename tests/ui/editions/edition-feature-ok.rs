@@ -1,5 +1,5 @@
 // check-pass
 
-#![feature(rust_2018_preview)]
+#![feature(crablang_2018_preview)]
 
 fn main() {}

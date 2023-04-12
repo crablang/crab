@@ -8,7 +8,7 @@ LL |     static X: u8 = 0;
    |            |
    |            cannot have a body
    |
-   = note: for more information, visit https://doc.rust-lang.org/std/keyword.extern.html
+   = note: for more information, visit https://doc.crablang.org/std/keyword.extern.html
 
 error: incorrect `static` inside `extern` block
   --> $DIR/foreign-static-semantic-fail.rs:7:16
@@ -21,7 +21,7 @@ LL |     static mut Y: u8 = 0;
    |                |
    |                cannot have a body
    |
-   = note: for more information, visit https://doc.rust-lang.org/std/keyword.extern.html
+   = note: for more information, visit https://doc.crablang.org/std/keyword.extern.html
 
 error: aborting due to 2 previous errors
 

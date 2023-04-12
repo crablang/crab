@@ -12,4 +12,4 @@ LL |     fn next(&mut self) -> Result<i32, i32> { Ok(7) }
 
 error: aborting due to previous error
 
-For more information about this error, try `rustc --explain E0053`.
+For more information about this error, try `crablangc --explain E0053`.

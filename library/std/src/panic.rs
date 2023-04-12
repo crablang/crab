@@ -12,8 +12,8 @@ use crate::thread::Result;
 #[doc(hidden)]
 #[unstable(feature = "edition_panic", issue = "none", reason = "use panic!() instead")]
 #[allow_internal_unstable(libstd_sys_internals, const_format_args, core_panic, rt)]
-#[cfg_attr(not(test), rustc_diagnostic_item = "std_panic_2015_macro")]
-#[rustc_macro_transparency = "semitransparent"]
+#[cfg_attr(not(test), crablangc_diagnostic_item = "std_panic_2015_macro")]
+#[crablangc_macro_transparency = "semitransparent"]
 pub macro panic_2015 {
     () => ({
         $crate::rt::begin_panic("explicit panic")
@@ -71,7 +71,7 @@ impl<T: ?Sized> RefUnwindSafe for Mutex<T> {}
 #[stable(feature = "unwind_safe_lock_refs", since = "1.12.0")]
 impl<T: ?Sized> RefUnwindSafe for RwLock<T> {}
 
-// https://github.com/rust-lang/rust/issues/62301
+// https://github.com/crablang/crablang/issues/62301
 #[stable(feature = "hashbrown", since = "1.36.0")]
 impl<K, V, S> UnwindSafe for collections::HashMap<K, V, S>
 where
@@ -87,9 +87,9 @@ where
 /// does not panic, and will return `Err(cause)` if the closure panics. The
 /// `cause` returned is the object with which panic was originally invoked.
 ///
-/// It is currently undefined behavior to unwind from Rust code into foreign
-/// code, so this function is particularly useful when Rust is called from
-/// another language (normally C). This can run arbitrary Rust code, capturing a
+/// It is currently undefined behavior to unwind from CrabLang code into foreign
+/// code, so this function is particularly useful when CrabLang is called from
+/// another language (normally C). This can run arbitrary CrabLang code, capturing a
 /// panic and allowing a graceful handling of the error.
 ///
 /// It is **not** recommended to use this function for a general try/catch
@@ -105,19 +105,19 @@ where
 /// becomes a problem the [`AssertUnwindSafe`] wrapper struct can be used to quickly
 /// assert that the usage here is indeed unwind safe.
 ///
-/// [rfc]: https://github.com/rust-lang/rfcs/blob/master/text/1236-stabilize-catch-panic.md
+/// [rfc]: https://github.com/crablang/rfcs/blob/master/text/1236-stabilize-catch-panic.md
 ///
 /// # Notes
 ///
-/// Note that this function **might not catch all panics** in Rust. A panic in
-/// Rust is not always implemented via unwinding, but can be implemented by
+/// Note that this function **might not catch all panics** in CrabLang. A panic in
+/// CrabLang is not always implemented via unwinding, but can be implemented by
 /// aborting the process as well. This function *only* catches unwinding panics,
 /// not those that abort the process.
 ///
 /// Note that if a custom panic hook has been set, it will be invoked before
 /// the panic is caught, before unwinding.
 ///
-/// Also note that unwinding into Rust code with a foreign exception (e.g.
+/// Also note that unwinding into CrabLang code with a foreign exception (e.g.
 /// an exception thrown from C++ code) is undefined behavior.
 ///
 /// # Examples
@@ -147,7 +147,7 @@ pub fn catch_unwind<F: FnOnce() -> R + UnwindSafe, R>(f: F) -> Result<R> {
 ///
 /// # Notes
 ///
-/// Note that panics in Rust are not always implemented via unwinding, but they
+/// Note that panics in CrabLang are not always implemented via unwinding, but they
 /// may be implemented by aborting the process. If this function is called when
 /// panics are implemented this way then this function will abort the process,
 /// not trigger an unwind.
@@ -167,7 +167,7 @@ pub fn catch_unwind<F: FnOnce() -> R + UnwindSafe, R>(f: F) -> Result<R> {
 /// ```
 #[stable(feature = "resume_unwind", since = "1.9.0")]
 pub fn resume_unwind(payload: Box<dyn Any + Send>) -> ! {
-    panicking::rust_panic_without_hook(payload)
+    panicking::crablang_panic_without_hook(payload)
 }
 
 /// Make all future panics abort directly without running the panic hook or unwinding.
@@ -254,7 +254,7 @@ static SHOULD_CAPTURE: AtomicUsize = AtomicUsize::new(0);
 /// Configure whether the default panic hook will capture and display a
 /// backtrace.
 ///
-/// The default value for this setting may be set by the `RUST_BACKTRACE`
+/// The default value for this setting may be set by the `CRABLANG_BACKTRACE`
 /// environment variable; see the details in [`get_backtrace_style`].
 #[unstable(feature = "panic_backtrace_config", issue = "93346")]
 pub fn set_backtrace_style(style: BacktraceStyle) {
@@ -269,15 +269,15 @@ pub fn set_backtrace_style(style: BacktraceStyle) {
 /// backtrace.
 ///
 /// This function will, if a backtrace style has not been set via
-/// [`set_backtrace_style`], read the environment variable `RUST_BACKTRACE` to
+/// [`set_backtrace_style`], read the environment variable `CRABLANG_BACKTRACE` to
 /// determine a default value for the backtrace formatting:
 ///
-/// The first call to `get_backtrace_style` may read the `RUST_BACKTRACE`
+/// The first call to `get_backtrace_style` may read the `CRABLANG_BACKTRACE`
 /// environment variable if `set_backtrace_style` has not been called to
 /// override the default value. After a call to `set_backtrace_style` or
-/// `get_backtrace_style`, any changes to `RUST_BACKTRACE` will have no effect.
+/// `get_backtrace_style`, any changes to `CRABLANG_BACKTRACE` will have no effect.
 ///
-/// `RUST_BACKTRACE` is read according to these rules:
+/// `CRABLANG_BACKTRACE` is read according to these rules:
 ///
 /// * `0` for `BacktraceStyle::Off`
 /// * `full` for `BacktraceStyle::Full`
@@ -298,7 +298,7 @@ pub fn get_backtrace_style() -> Option<BacktraceStyle> {
         return Some(style);
     }
 
-    let format = crate::env::var_os("RUST_BACKTRACE")
+    let format = crate::env::var_os("CRABLANG_BACKTRACE")
         .map(|x| {
             if &x == "0" {
                 BacktraceStyle::Off

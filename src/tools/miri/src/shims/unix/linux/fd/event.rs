@@ -1,6 +1,6 @@
 use crate::shims::unix::fs::FileDescriptor;
 
-use rustc_const_eval::interpret::InterpResult;
+use crablangc_const_eval::interpret::InterpResult;
 
 use std::cell::Cell;
 use std::io;

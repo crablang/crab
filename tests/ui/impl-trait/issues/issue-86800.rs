@@ -1,12 +1,12 @@
 #![feature(type_alias_impl_trait)]
 
 // edition:2021
-// unset-rustc-env:RUST_BACKTRACE
+// unset-crablangc-env:CRABLANG_BACKTRACE
 // compile-flags:-Z treat-err-as-bug=1
 // error-pattern:stack backtrace:
 // failure-status:101
 // normalize-stderr-test "note: .*" -> ""
-// normalize-stderr-test "thread 'rustc' .*" -> ""
+// normalize-stderr-test "thread 'crablangc' .*" -> ""
 // normalize-stderr-test " +[0-9]+:.*\n" -> ""
 // normalize-stderr-test " +at .*\n" -> ""
 

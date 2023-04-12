@@ -76,8 +76,8 @@ Björn Steinbrink <bsteinbr@gmail.com> <B.Steinbrink@gmx.de>
 blake2-ppc <ulrik.sverdrup@gmail.com> <blake2-ppc>
 boolean_coercion <booleancoercion@gmail.com>
 Boris Egorov <jightuse@gmail.com> <egorov@linux.com>
-bors <bors@rust-lang.org> bors[bot] <26634292+bors[bot]@users.noreply.github.com>
-bors <bors@rust-lang.org> bors[bot] <bors[bot]@users.noreply.github.com>
+bors <bors@crablang.org> bors[bot] <26634292+bors[bot]@users.noreply.github.com>
+bors <bors@crablang.org> bors[bot] <bors[bot]@users.noreply.github.com>
 Braden Nelson <moonheart08@users.noreply.github.com>
 Brandon Sanderson <singingboyo@gmail.com> Brandon Sanderson <singingboyo@hotmail.com>
 Brett Cannon <brett@python.org> Brett Cannon <brettcannon@users.noreply.github.com>
@@ -279,7 +279,7 @@ John Clements <clements@racket-lang.org> <clements@brinckerhoff.org>
 John Hodge <acessdev@gmail.com> John Hodge <tpg@mutabah.net>
 John Hörnvall <trolledwoods@gmail.com>
 John Kåre Alsaker <john.kare.alsaker@gmail.com>
-John Talling <inrustwetrust@users.noreply.github.com>
+John Talling <incrablangwetcrablang@users.noreply.github.com>
 John Van Enk <vanenkj@gmail.com>
 Jonas Tepe <jonasprogrammer@gmail.com>
 Jonathan Bailey <jbailey@mozilla.com> <jbailey@jbailey-20809.local>
@@ -321,7 +321,7 @@ Kyle J Strand <batmanaod@gmail.com> <kyle.j.strand@gmail.com>
 Kyle J Strand <batmanaod@gmail.com> <kyle.strand@pieinsurance.com>
 Kyle J Strand <batmanaod@gmail.com> <kyle.strand@rms.com>
 Laurențiu Nicola <lnicola@dend.ro>
-lcnr <rust@lcnr.de> <bastian_kauschke@hotmail.de>
+lcnr <crablang@lcnr.de> <bastian_kauschke@hotmail.de>
 Lee Jeffery <leejeffery@gmail.com> Lee Jeffery <lee@leejeffery.co.uk>
 Lee Wondong <wdlee91@gmail.com>
 lengyijun <sjtu5140809011@gmail.com>
@@ -425,7 +425,7 @@ Oliver Middleton <olliemail27@gmail.com> <ollie27@users.noreply.github.com>
 Oliver Scherer <oli-obk@users.noreply.github.com> <git-spam-no-reply9815368754983@oli-obk.de>
 Oliver Scherer <oli-obk@users.noreply.github.com> <git-spam9815368754983@oli-obk.de>
 Oliver Scherer <oli-obk@users.noreply.github.com> <github333195615777966@oli-obk.de>
-Oliver Scherer <oli-obk@users.noreply.github.com> <rust19446194516@oli-obk.de>
+Oliver Scherer <oli-obk@users.noreply.github.com> <crablang19446194516@oli-obk.de>
 Oliver Scherer <oli-obk@users.noreply.github.com> <git-no-reply-9879165716479413131@oli-obk.de>
 Oliver Scherer <oli-obk@users.noreply.github.com> <git1984941651981@oli-obk.de>
 Oliver Scherer <oli-obk@users.noreply.github.com> <github35764891676564198441@oli-obk.de>
@@ -480,9 +480,9 @@ Rohit Joshi <rohitjoshi@users.noreply.github.com> Rohit Joshi <rohit.joshi@capit
 Roxane Fruytier <roxane.fruytier@hotmail.com>
 Rui <xiongmao86dev@sina.com>
 Russell Johnston <rpjohnst@gmail.com>
-Rustin-Liu <rustin.liu@gmail.com>
-Rusty Blitzerr <rusty.blitzerr@gmail.com>
-RustyYato <krishna.sd.2012@gmail.com>
+CrabLangin-Liu <crablangin.liu@gmail.com>
+CrabLangy Blitzerr <crablangy.blitzerr@gmail.com>
+CrabLangyYato <krishna.sd.2012@gmail.com>
 Ruud van Asseldonk <dev@veniogames.com> Ruud van Asseldonk <ruuda@google.com>
 Ryan Leung <rleungx@gmail.com>
 Ryan Scheel <ryan.havvy@gmail.com>

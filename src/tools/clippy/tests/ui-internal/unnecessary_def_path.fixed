@@ -1,14 +1,14 @@
-// run-rustfix
+// run-crablangfix
 // aux-build:paths.rs
 #![deny(clippy::internal)]
-#![feature(rustc_private)]
+#![feature(crablangc_private)]
 
 extern crate clippy_utils;
 extern crate paths;
-extern crate rustc_hir;
-extern crate rustc_lint;
-extern crate rustc_middle;
-extern crate rustc_span;
+extern crate crablangc_hir;
+extern crate crablangc_lint;
+extern crate crablangc_middle;
+extern crate crablangc_span;
 
 #[allow(unused)]
 use clippy_utils::ty::{is_type_diagnostic_item, is_type_lang_item, match_type};
@@ -19,14 +19,14 @@ use clippy_utils::{
 };
 
 #[allow(unused)]
-use rustc_hir::LangItem;
+use crablangc_hir::LangItem;
 #[allow(unused)]
-use rustc_span::sym;
+use crablangc_span::sym;
 
-use rustc_hir::def_id::DefId;
-use rustc_hir::Expr;
-use rustc_lint::LateContext;
-use rustc_middle::ty::Ty;
+use crablangc_hir::def_id::DefId;
+use crablangc_hir::Expr;
+use crablangc_lint::LateContext;
+use crablangc_middle::ty::Ty;
 
 #[allow(unused, clippy::unnecessary_def_path)]
 static OPTION: [&str; 3] = ["core", "option", "Option"];

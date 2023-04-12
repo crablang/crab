@@ -1,6 +1,6 @@
 //! This test is meant to only be run in CI. To run it locally use:
 //!
-//! `env INTEGRATION=rust-lang/log cargo test --test integration --features=integration`
+//! `env INTEGRATION=crablang/log cargo test --test integration --features=integration`
 //!
 //! You can use a different `INTEGRATION` value to test different repositories.
 //!
@@ -9,7 +9,7 @@
 
 #![cfg(feature = "integration")]
 #![cfg_attr(feature = "deny-warnings", deny(warnings))]
-#![warn(rust_2018_idioms, unused_lifetimes)]
+#![warn(crablang_2018_idioms, unused_lifetimes)]
 
 use std::env;
 use std::ffi::OsStr;
@@ -49,7 +49,7 @@ fn integration_test() {
 
     let output = Command::new(clippy_binary)
         .current_dir(repo_dir)
-        .env("RUST_BACKTRACE", "full")
+        .env("CRABLANG_BACKTRACE", "full")
         .env("CARGO_TARGET_DIR", target_dir)
         .args([
             "clippy",
@@ -84,8 +84,8 @@ fn integration_test() {
         panic!("error: E0463");
     } else if stderr.contains("E0514") {
         panic!("incompatible crate versions");
-    } else if stderr.contains("failed to run `rustc` to learn about target-specific information") {
-        panic!("couldn't find librustc_driver, consider setting `LD_LIBRARY_PATH`");
+    } else if stderr.contains("failed to run `crablangc` to learn about target-specific information") {
+        panic!("couldn't find libcrablangc_driver, consider setting `LD_LIBRARY_PATH`");
     } else {
         assert!(
             !stderr.contains("toolchain") || !stderr.contains("is not installed"),

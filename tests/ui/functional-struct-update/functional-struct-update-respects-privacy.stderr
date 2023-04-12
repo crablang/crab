@@ -6,4 +6,4 @@ LL |     let s_2 = foo::S { b: format!("ess two"), ..s_1 }; // FRU ...
 
 error: aborting due to previous error
 
-For more information about this error, try `rustc --explain E0451`.
+For more information about this error, try `crablangc --explain E0451`.

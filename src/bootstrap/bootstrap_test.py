@@ -46,11 +46,11 @@ class ProgramOutOfDate(unittest.TestCase):
     def setUp(self):
         self.container = tempfile.mkdtemp()
         os.mkdir(os.path.join(self.container, "stage0"))
-        self.build = bootstrap.RustBuild()
+        self.build = bootstrap.CrabLangBuild()
         self.build.date = "2017-06-15"
         self.build.build_dir = self.container
-        self.rustc_stamp_path = os.path.join(self.container, "stage0",
-                                             ".rustc-stamp")
+        self.crablangc_stamp_path = os.path.join(self.container, "stage0",
+                                             ".crablangc-stamp")
         self.key = self.build.date + str(None)
 
     def tearDown(self):
@@ -58,21 +58,21 @@ class ProgramOutOfDate(unittest.TestCase):
 
     def test_stamp_path_does_not_exist(self):
         """Return True when the stamp file does not exist"""
-        if os.path.exists(self.rustc_stamp_path):
-            os.unlink(self.rustc_stamp_path)
-        self.assertTrue(self.build.program_out_of_date(self.rustc_stamp_path, self.key))
+        if os.path.exists(self.crablangc_stamp_path):
+            os.unlink(self.crablangc_stamp_path)
+        self.assertTrue(self.build.program_out_of_date(self.crablangc_stamp_path, self.key))
 
     def test_dates_are_different(self):
         """Return True when the dates are different"""
-        with open(self.rustc_stamp_path, "w") as rustc_stamp:
-            rustc_stamp.write("2017-06-14None")
-        self.assertTrue(self.build.program_out_of_date(self.rustc_stamp_path, self.key))
+        with open(self.crablangc_stamp_path, "w") as crablangc_stamp:
+            crablangc_stamp.write("2017-06-14None")
+        self.assertTrue(self.build.program_out_of_date(self.crablangc_stamp_path, self.key))
 
     def test_same_dates(self):
         """Return False both dates match"""
-        with open(self.rustc_stamp_path, "w") as rustc_stamp:
-            rustc_stamp.write("2017-06-15None")
-        self.assertFalse(self.build.program_out_of_date(self.rustc_stamp_path, self.key))
+        with open(self.crablangc_stamp_path, "w") as crablangc_stamp:
+            crablangc_stamp.write("2017-06-15None")
+        self.assertFalse(self.build.program_out_of_date(self.crablangc_stamp_path, self.key))
 
 
 class GenerateAndParseConfig(unittest.TestCase):
@@ -83,7 +83,7 @@ class GenerateAndParseConfig(unittest.TestCase):
         section_order, sections, targets = configure.parse_args(args)
         buffer = StringIO()
         configure.write_config_toml(buffer, section_order, targets, sections)
-        build = bootstrap.RustBuild()
+        build = bootstrap.CrabLangBuild()
         build.config_toml = buffer.getvalue()
 
         try:

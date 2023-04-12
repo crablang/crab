@@ -48,7 +48,7 @@ pub mod locks {
 }
 
 // SAFETY: must be called only once during runtime initialization.
-// NOTE: this is not guaranteed to run, for example when Rust code is called externally.
+// NOTE: this is not guaranteed to run, for example when CrabLang code is called externally.
 pub unsafe fn init(argc: isize, argv: *const *const u8, _sigpipe: u8) {
     unsafe {
         args::init(argc, argv);
@@ -79,7 +79,7 @@ pub fn sgx_ineffective<T>(v: T) -> crate::io::Result<T> {
     if SGX_INEFFECTIVE_ERROR.load(Ordering::Relaxed) {
         Err(crate::io::const_io_error!(
             ErrorKind::Uncategorized,
-            "operation can't be trusted to have any effect on SGX",
+            "operation can't be tcrablanged to have any effect on SGX",
         ))
     } else {
         Ok(v)
@@ -140,7 +140,7 @@ pub fn abort_internal() -> ! {
 #[cfg(not(test))]
 #[no_mangle]
 // NB. used by both libunwind and libpanic_abort
-pub extern "C" fn __rust_abort() {
+pub extern "C" fn __crablang_abort() {
     abort_internal();
 }
 

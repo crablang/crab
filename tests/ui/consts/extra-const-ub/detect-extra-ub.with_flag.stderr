@@ -30,4 +30,4 @@ LL |     let _x: &u32 = transmute(&[0u8; 4]);
 
 error: aborting due to 4 previous errors
 
-For more information about this error, try `rustc --explain E0080`.
+For more information about this error, try `crablangc --explain E0080`.

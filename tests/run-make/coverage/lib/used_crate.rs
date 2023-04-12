@@ -4,7 +4,7 @@ use std::fmt::Debug;
 
 pub fn used_function() {
     // Initialize test constants in a way that cannot be determined at compile time, to ensure
-    // rustc and LLVM cannot optimize out statements (or coverage counters) downstream from
+    // crablangc and LLVM cannot optimize out statements (or coverage counters) downstream from
     // dependent conditions.
     let is_true = std::env::args().len() == 1;
     let mut countdown = 0;
@@ -78,7 +78,7 @@ fn use_this_lib_crate() {
 // generic functions with:
 //
 // ```shell
-// $ `rustc -Zunstable-options -C instrument-coverage=except-unused-generics ...`
+// $ `crablangc -Zunstable-options -C instrument-coverage=except-unused-generics ...`
 // ```
 //
 // Even though this function is used by `uses_crate.rs` (and

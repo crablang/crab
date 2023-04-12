@@ -13,7 +13,7 @@ LL | extern "C" {
 LL |     type B<'a> where 'a: 'static;
    |           ^^^^ help: remove the generic parameters
    |
-   = note: for more information, visit https://doc.rust-lang.org/std/keyword.extern.html
+   = note: for more information, visit https://doc.crablang.org/std/keyword.extern.html
 
 error: `type`s inside `extern` blocks cannot have `where` clauses
   --> $DIR/foreign-ty-semantic-fail.rs:8:16
@@ -24,7 +24,7 @@ LL | extern "C" {
 LL |     type B<'a> where 'a: 'static;
    |                ^^^^^^^^^^^^^^^^^ help: remove the `where` clause
    |
-   = note: for more information, visit https://doc.rust-lang.org/std/keyword.extern.html
+   = note: for more information, visit https://doc.crablang.org/std/keyword.extern.html
 
 error: `type`s inside `extern` blocks cannot have generic parameters
   --> $DIR/foreign-ty-semantic-fail.rs:11:11
@@ -35,7 +35,7 @@ LL | extern "C" {
 LL |     type C<T: Ord> where T: 'static;
    |           ^^^^^^^^ help: remove the generic parameters
    |
-   = note: for more information, visit https://doc.rust-lang.org/std/keyword.extern.html
+   = note: for more information, visit https://doc.crablang.org/std/keyword.extern.html
 
 error: `type`s inside `extern` blocks cannot have `where` clauses
   --> $DIR/foreign-ty-semantic-fail.rs:11:20
@@ -46,7 +46,7 @@ LL | extern "C" {
 LL |     type C<T: Ord> where T: 'static;
    |                    ^^^^^^^^^^^^^^^^ help: remove the `where` clause
    |
-   = note: for more information, visit https://doc.rust-lang.org/std/keyword.extern.html
+   = note: for more information, visit https://doc.crablang.org/std/keyword.extern.html
 
 error: incorrect `type` inside `extern` block
   --> $DIR/foreign-ty-semantic-fail.rs:14:10
@@ -59,7 +59,7 @@ LL |     type D = u8;
    |          |
    |          cannot have a body
    |
-   = note: for more information, visit https://doc.rust-lang.org/std/keyword.extern.html
+   = note: for more information, visit https://doc.crablang.org/std/keyword.extern.html
 
 error: aborting due to 6 previous errors
 

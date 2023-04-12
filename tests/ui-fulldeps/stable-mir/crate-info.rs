@@ -6,19 +6,19 @@
 // ignore-remote
 // edition: 2021
 
-#![feature(rustc_private)]
+#![feature(crablangc_private)]
 
-extern crate rustc_driver;
-extern crate rustc_hir;
-extern crate rustc_interface;
-extern crate rustc_middle;
-extern crate rustc_smir;
+extern crate crablangc_driver;
+extern crate crablangc_hir;
+extern crate crablangc_interface;
+extern crate crablangc_middle;
+extern crate crablangc_smir;
 
-use rustc_driver::{Callbacks, Compilation, RunCompiler};
-use rustc_hir::def::DefKind;
-use rustc_interface::{interface, Queries};
-use rustc_middle::ty::TyCtxt;
-use rustc_smir::{rustc_internal, stable_mir};
+use crablangc_driver::{Callbacks, Compilation, RunCompiler};
+use crablangc_hir::def::DefKind;
+use crablangc_interface::{interface, Queries};
+use crablangc_middle::ty::TyCtxt;
+use crablangc_smir::{crablangc_internal, stable_mir};
 use std::io::Write;
 
 const CRATE_NAME: &str = "input";
@@ -59,7 +59,7 @@ fn get_item<'a>(
     item: (DefKind, &str),
 ) -> Option<&'a stable_mir::CrateItem> {
     items.iter().find(|crate_item| {
-        let def_id = rustc_internal::item_def_id(crate_item);
+        let def_id = crablangc_internal::item_def_id(crate_item);
         tcx.def_kind(def_id) == item.0 && tcx.def_path_str(def_id) == item.1
     })
 }
@@ -72,13 +72,13 @@ fn main() {
     let path = "input.rs";
     generate_input(&path).unwrap();
     let args = vec![
-        "rustc".to_string(),
+        "crablangc".to_string(),
         "--crate-type=lib".to_string(),
         "--crate-name".to_string(),
         CRATE_NAME.to_string(),
         path.to_string(),
     ];
-    rustc_driver::catch_fatal_errors(|| {
+    crablangc_driver::catch_fatal_errors(|| {
         RunCompiler::new(&args, &mut SMirCalls {}).run().unwrap();
     })
     .unwrap();

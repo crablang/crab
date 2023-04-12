@@ -1,9 +1,9 @@
 // ignore-tidy-linelength
 
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 
 pub mod Bar {
-  #[rustc_on_unimplemented = "test error `{Self}` with `{Bar}` `{Baz}` `{Quux}` in `{Foo}`"]
+  #[crablangc_on_unimplemented = "test error `{Self}` with `{Bar}` `{Baz}` `{Quux}` in `{Foo}`"]
   pub trait Foo<Bar, Baz, Quux> {}
 }
 
@@ -13,7 +13,7 @@ fn foobar<U: Clone, T: Foo<u8, U, u32>>() -> T {
     panic!()
 }
 
-#[rustc_on_unimplemented="a collection of type `{Self}` cannot be built from an iterator over elements of type `{A}`"]
+#[crablangc_on_unimplemented="a collection of type `{Self}` cannot be built from an iterator over elements of type `{A}`"]
 trait MyFromIterator<A> {
     /// Builds a container with elements from an external iterator.
     fn my_from_iter<T: Iterator<Item=A>>(iterator: T) -> Self;

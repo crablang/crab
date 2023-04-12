@@ -35,4 +35,4 @@ LL | fn func2<'a>(_arg: &Thing<'a>) -> &'a () { unimplemented!() }
 
 error: aborting due to 3 previous errors
 
-For more information about this error, try `rustc --explain E0106`.
+For more information about this error, try `crablangc --explain E0106`.

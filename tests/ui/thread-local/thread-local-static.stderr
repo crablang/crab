@@ -4,7 +4,7 @@ error[E0658]: mutable references are not allowed in constant functions
 LL | const fn g(x: &mut [u32; 8]) {
    |            ^
    |
-   = note: see issue #57349 <https://github.com/rust-lang/rust/issues/57349> for more information
+   = note: see issue #57349 <https://github.com/crablang/crablang/issues/57349> for more information
    = help: add `#![feature(const_mut_refs)]` to the crate attributes to enable
 
 error[E0625]: thread-local statics cannot be accessed at compile-time
@@ -27,7 +27,7 @@ error[E0658]: mutable references are not allowed in constant functions
 LL |     std::mem::swap(x, &mut STATIC_VAR_2)
    |                       ^^^^^^^^^^^^^^^^^
    |
-   = note: see issue #57349 <https://github.com/rust-lang/rust/issues/57349> for more information
+   = note: see issue #57349 <https://github.com/crablang/crablang/issues/57349> for more information
    = help: add `#![feature(const_mut_refs)]` to the crate attributes to enable
 
 error[E0133]: use of mutable static is unsafe and requires unsafe function or block
@@ -41,4 +41,4 @@ LL |     std::mem::swap(x, &mut STATIC_VAR_2)
 error: aborting due to 5 previous errors
 
 Some errors have detailed explanations: E0013, E0133, E0625, E0658.
-For more information about an error, try `rustc --explain E0013`.
+For more information about an error, try `crablangc --explain E0013`.

@@ -10,4 +10,4 @@ LL |     let x = foo("baz");
 
 error: aborting due to previous error
 
-For more information about this error, try `rustc --explain E0618`.
+For more information about this error, try `crablangc --explain E0618`.

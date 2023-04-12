@@ -19,7 +19,7 @@ LL | fn dĳkstra() {}
 error: identifier contains uncommon Unicode codepoints
   --> $DIR/lint-uncommon-codepoints.rs:9:9
    |
-LL |     let ㇻㇲㇳ = "rust";
+LL |     let ㇻㇲㇳ = "crablang";
    |         ^^^^^^
 
 warning: constant `µ` should have an upper case name

@@ -1,10 +1,10 @@
 use std::error::Error;
 use std::path::{Path, PathBuf};
-use yaml_rust::{Yaml, YamlEmitter, YamlLoader};
+use yaml_crablang::{Yaml, YamlEmitter, YamlLoader};
 
 /// List of directories containing files to expand. The first tuple element is the source
 /// directory, while the second tuple element is the destination directory.
-#[rustfmt::skip]
+#[crablangfmt::skip]
 static TO_EXPAND: &[(&str, &str)] = &[
     ("src/ci/github-actions", ".github/workflows"),
 ];

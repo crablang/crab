@@ -29,7 +29,7 @@ pub enum GeneratorState<Y, R> {
 /// The trait implemented by builtin generator types.
 ///
 /// Generators, also commonly referred to as coroutines, are currently an
-/// experimental language feature in Rust. Added in [RFC 2033] generators are
+/// experimental language feature in CrabLang. Added in [RFC 2033] generators are
 /// currently intended to primarily provide a building block for async/await
 /// syntax but will likely extend to also providing an ergonomic definition for
 /// iterators and other primitives.
@@ -38,7 +38,7 @@ pub enum GeneratorState<Y, R> {
 /// further RFC for stabilization. At this time, though, the syntax is
 /// closure-like:
 ///
-/// ```rust
+/// ```crablang
 /// #![feature(generators, generator_trait)]
 ///
 /// use std::ops::{Generator, GeneratorState};
@@ -63,7 +63,7 @@ pub enum GeneratorState<Y, R> {
 ///
 /// More documentation of generators can be found in the [unstable book].
 ///
-/// [RFC 2033]: https://github.com/rust-lang/rfcs/pull/2033
+/// [RFC 2033]: https://github.com/crablang/rfcs/pull/2033
 /// [unstable book]: ../../unstable-book/language-features/generators.html
 #[lang = "generator"]
 #[unstable(feature = "generator_trait", issue = "43122")]

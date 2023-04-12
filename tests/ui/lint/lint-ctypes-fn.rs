@@ -1,4 +1,4 @@
-#![feature(rustc_private)]
+#![feature(crablangc_private)]
 
 #![allow(private_in_public)]
 #![deny(improper_ctypes_definitions)]
@@ -27,9 +27,9 @@ pub type I32Pair = (i32, i32);
 #[repr(C)]
 pub struct ZeroSize;
 
-pub type RustFn = fn();
+pub type CrabLangFn = fn();
 
-pub type RustBadRet = extern "C" fn() -> Box<u32>;
+pub type CrabLangBadRet = extern "C" fn() -> Box<u32>;
 
 pub type CVoidRet = ();
 
@@ -42,7 +42,7 @@ pub struct TransparentI128(i128);
 pub struct TransparentStr(&'static str);
 
 #[repr(transparent)]
-pub struct TransparentBadFn(RustBadRet);
+pub struct TransparentBadFn(CrabLangBadRet);
 
 #[repr(transparent)]
 pub struct TransparentInt(u32);
@@ -115,13 +115,13 @@ pub extern "C" fn zero_size_phantom_toplevel() -> PhantomData<bool> {
     Default::default()
 }
 
-pub extern "C" fn fn_type(p: RustFn) { }
+pub extern "C" fn fn_type(p: CrabLangFn) { }
 //~^ ERROR uses type `fn()`
 
 pub extern "C" fn fn_type2(p: fn()) { }
 //~^ ERROR uses type `fn()`
 
-pub extern "C" fn fn_contained(p: RustBadRet) { }
+pub extern "C" fn fn_contained(p: CrabLangBadRet) { }
 
 pub extern "C" fn transparent_i128(p: TransparentI128) { }
 //~^ ERROR: uses type `i128`

@@ -6,7 +6,7 @@
 //
 // Mostly this ensures two things:
 // 1. That let and let else temporary drop order is the same.
-//    This is a specific design request: https://github.com/rust-lang/rust/pull/93628#issuecomment-1047140316
+//    This is a specific design request: https://github.com/crablang/crablang/pull/93628#issuecomment-1047140316
 // 2. That the else block truly only runs after the
 //    temporaries have dropped.
 //

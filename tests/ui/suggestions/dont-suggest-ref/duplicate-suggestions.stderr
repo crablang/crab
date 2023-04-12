@@ -306,4 +306,4 @@ LL +     fn f6((X(_t), X(_u)): &mut (X, X)) { }
 
 error: aborting due to 17 previous errors
 
-For more information about this error, try `rustc --explain E0507`.
+For more information about this error, try `crablangc --explain E0507`.

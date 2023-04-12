@@ -27,7 +27,7 @@ pub(super) const unsafe fn from_u32_unchecked(i: u32) -> char {
 }
 
 #[stable(feature = "char_convert", since = "1.13.0")]
-#[rustc_const_unstable(feature = "const_convert", issue = "88674")]
+#[crablangc_const_unstable(feature = "const_convert", issue = "88674")]
 impl const From<char> for u32 {
     /// Converts a [`char`] into a [`u32`].
     ///
@@ -47,7 +47,7 @@ impl const From<char> for u32 {
 }
 
 #[stable(feature = "more_char_conversions", since = "1.51.0")]
-#[rustc_const_unstable(feature = "const_convert", issue = "88674")]
+#[crablangc_const_unstable(feature = "const_convert", issue = "88674")]
 impl const From<char> for u64 {
     /// Converts a [`char`] into a [`u64`].
     ///
@@ -63,13 +63,13 @@ impl const From<char> for u64 {
     #[inline]
     fn from(c: char) -> Self {
         // The char is casted to the value of the code point, then zero-extended to 64 bit.
-        // See [https://doc.rust-lang.org/reference/expressions/operator-expr.html#semantics]
+        // See [https://doc.crablang.org/reference/expressions/operator-expr.html#semantics]
         c as u64
     }
 }
 
 #[stable(feature = "more_char_conversions", since = "1.51.0")]
-#[rustc_const_unstable(feature = "const_convert", issue = "88674")]
+#[crablangc_const_unstable(feature = "const_convert", issue = "88674")]
 impl const From<char> for u128 {
     /// Converts a [`char`] into a [`u128`].
     ///
@@ -85,7 +85,7 @@ impl const From<char> for u128 {
     #[inline]
     fn from(c: char) -> Self {
         // The char is casted to the value of the code point, then zero-extended to 128 bit.
-        // See [https://doc.rust-lang.org/reference/expressions/operator-expr.html#semantics]
+        // See [https://doc.crablang.org/reference/expressions/operator-expr.html#semantics]
         c as u128
     }
 }
@@ -123,7 +123,7 @@ impl TryFrom<char> for u8 {
 /// for a superset of Windows-1252 that fills the remaining blanks with corresponding
 /// C0 and C1 control codes.
 #[stable(feature = "char_convert", since = "1.13.0")]
-#[rustc_const_unstable(feature = "const_convert", issue = "88674")]
+#[crablangc_const_unstable(feature = "const_convert", issue = "88674")]
 impl const From<u8> for char {
     /// Converts a [`u8`] into a [`char`].
     ///

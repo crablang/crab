@@ -2,11 +2,11 @@ use clippy_utils::consts::{constant_full_int, constant_simple, Constant, FullInt
 use clippy_utils::diagnostics::span_lint_and_sugg;
 use clippy_utils::source::snippet_with_applicability;
 use clippy_utils::{clip, peel_hir_expr_refs, unsext};
-use rustc_errors::Applicability;
-use rustc_hir::{BinOpKind, Expr, ExprKind, Node};
-use rustc_lint::LateContext;
-use rustc_middle::ty;
-use rustc_span::source_map::Span;
+use crablangc_errors::Applicability;
+use crablangc_hir::{BinOpKind, Expr, ExprKind, Node};
+use crablangc_lint::LateContext;
+use crablangc_middle::ty;
+use crablangc_span::source_map::Span;
 
 use super::IDENTITY_OP;
 

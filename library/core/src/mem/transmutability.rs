@@ -5,7 +5,7 @@
 /// notwithstanding whatever safety checks you have asked the compiler to [`Assume`] are satisfied.
 #[unstable(feature = "transmutability", issue = "99571")]
 #[lang = "transmute_trait"]
-#[rustc_on_unimplemented(
+#[crablangc_on_unimplemented(
     message = "`{Src}` cannot be safely transmuted into `{Self}` in the defining scope of `{Context}`.",
     label = "`{Src}` cannot be safely transmuted into `{Self}` in the defining scope of `{Context}`."
 )]
@@ -25,7 +25,7 @@ pub struct Assume {
     pub alignment: bool,
 
     /// When `true`, the compiler assume that *you* are ensuring that lifetimes are not extended in a manner
-    /// that violates Rust's memory model.
+    /// that violates CrabLang's memory model.
     pub lifetimes: bool,
 
     /// When `true`, the compiler assumes that *you* have ensured that it is safe for you to violate the
@@ -83,9 +83,9 @@ impl Assume {
 }
 
 // FIXME(jswrenn): This const op is not actually usable. Why?
-// https://github.com/rust-lang/rust/pull/100726#issuecomment-1219928926
+// https://github.com/crablang/crablang/pull/100726#issuecomment-1219928926
 #[unstable(feature = "transmutability", issue = "99571")]
-#[rustc_const_unstable(feature = "transmutability", issue = "99571")]
+#[crablangc_const_unstable(feature = "transmutability", issue = "99571")]
 impl const core::ops::Add for Assume {
     type Output = Assume;
 
@@ -95,9 +95,9 @@ impl const core::ops::Add for Assume {
 }
 
 // FIXME(jswrenn): This const op is not actually usable. Why?
-// https://github.com/rust-lang/rust/pull/100726#issuecomment-1219928926
+// https://github.com/crablang/crablang/pull/100726#issuecomment-1219928926
 #[unstable(feature = "transmutability", issue = "99571")]
-#[rustc_const_unstable(feature = "transmutability", issue = "99571")]
+#[crablangc_const_unstable(feature = "transmutability", issue = "99571")]
 impl const core::ops::Sub for Assume {
     type Output = Assume;
 

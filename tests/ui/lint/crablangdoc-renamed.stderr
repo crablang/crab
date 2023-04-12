@@ -1,0 +1,14 @@
+error: lint `intra_doc_link_resolution_failure` has been removed: use `crablangdoc::broken_intra_doc_links` instead
+  --> $DIR/crablangdoc-renamed.rs:11:9
+   |
+LL | #![deny(intra_doc_link_resolution_failure)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+note: the lint level is defined here
+  --> $DIR/crablangdoc-renamed.rs:4:9
+   |
+LL | #![deny(renamed_and_removed_lints)]
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: aborting due to previous error
+

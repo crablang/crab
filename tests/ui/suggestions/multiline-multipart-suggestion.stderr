@@ -43,4 +43,4 @@
 
 [0m[1m[38;5;9merror[0m[0m[1m: aborting due to 3 previous errors[0m
 
-[0m[1mFor more information about this error, try `rustc --explain E0106`.[0m
+[0m[1mFor more information about this error, try `crablangc --explain E0106`.[0m

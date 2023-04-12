@@ -1,1 +1,1 @@
-WARN rustc_mir_build::thir::pattern::const_to_pat MIR const-checker found novel structural match violation. See #73448.
+WARN crablangc_mir_build::thir::pattern::const_to_pat MIR const-checker found novel structural match violation. See #73448.

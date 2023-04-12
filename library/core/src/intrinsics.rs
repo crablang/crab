@@ -1,7 +1,7 @@
 //! Compiler intrinsics.
 //!
-//! The corresponding definitions are in <https://github.com/rust-lang/rust/blob/master/compiler/rustc_codegen_llvm/src/intrinsic.rs>.
-//! The corresponding const implementations are in <https://github.com/rust-lang/rust/blob/master/compiler/rustc_const_eval/src/interpret/intrinsics.rs>.
+//! The corresponding definitions are in <https://github.com/crablang/crablang/blob/master/compiler/crablangc_codegen_llvm/src/intrinsic.rs>.
+//! The corresponding const implementations are in <https://github.com/crablang/crablang/blob/master/compiler/crablangc_const_eval/src/interpret/intrinsics.rs>.
 //!
 //! # Const intrinsics
 //!
@@ -9,12 +9,12 @@
 //! This includes changes in the stability of the constness.
 //!
 //! In order to make an intrinsic usable at compile-time, one needs to copy the implementation
-//! from <https://github.com/rust-lang/miri/blob/master/src/shims/intrinsics.rs> to
-//! <https://github.com/rust-lang/rust/blob/master/compiler/rustc_const_eval/src/interpret/intrinsics.rs> and add a
-//! `#[rustc_const_unstable(feature = "const_such_and_such", issue = "01234")]` to the intrinsic declaration.
+//! from <https://github.com/crablang/miri/blob/master/src/shims/intrinsics.rs> to
+//! <https://github.com/crablang/crablang/blob/master/compiler/crablangc_const_eval/src/interpret/intrinsics.rs> and add a
+//! `#[crablangc_const_unstable(feature = "const_such_and_such", issue = "01234")]` to the intrinsic declaration.
 //!
-//! If an intrinsic is supposed to be used from a `const fn` with a `rustc_const_stable` attribute,
-//! the intrinsic's attribute must be `rustc_const_stable`, too. Such a change should not be done
+//! If an intrinsic is supposed to be used from a `const fn` with a `crablangc_const_stable` attribute,
+//! the intrinsic's attribute must be `crablangc_const_stable`, too. Such a change should not be done
 //! without T-lang consultation, because it bakes a feature into the language that cannot be
 //! replicated in user code without compiler support.
 //!
@@ -66,7 +66,7 @@ pub mod mir;
 use crate::sync::atomic::{self, AtomicBool, AtomicI32, AtomicIsize, AtomicU32, Ordering};
 
 #[stable(feature = "drop_in_place", since = "1.8.0")]
-#[rustc_allowed_through_unstable_modules]
+#[crablangc_allowed_through_unstable_modules]
 #[deprecated(note = "no longer an intrinsic - use `ptr::drop_in_place` directly", since = "1.52.0")]
 #[inline]
 pub unsafe fn drop_in_place<T: ?Sized>(to_drop: *mut T) {
@@ -74,7 +74,7 @@ pub unsafe fn drop_in_place<T: ?Sized>(to_drop: *mut T) {
     unsafe { crate::ptr::drop_in_place(to_drop) }
 }
 
-extern "rust-intrinsic" {
+extern "crablang-intrinsic" {
     // N.B., these intrinsics take raw pointers because they mutate aliased
     // memory, which is not valid for either `&` or `&mut`.
 
@@ -786,13 +786,13 @@ extern "rust-intrinsic" {
     /// attached to the function.
     ///
     /// For example, dataflow uses this to inject static assertions so
-    /// that `rustc_peek(potentially_uninitialized)` would actually
+    /// that `crablangc_peek(potentially_uninitialized)` would actually
     /// double-check that dataflow did indeed compute that it is
     /// uninitialized at that point in the control flow.
     ///
     /// This intrinsic should not be used outside of the compiler.
-    #[rustc_safe_intrinsic]
-    pub fn rustc_peek<T>(_: T) -> T;
+    #[crablangc_safe_intrinsic]
+    pub fn crablangc_peek<T>(_: T) -> T;
 
     /// Aborts the execution of the process.
     ///
@@ -809,7 +809,7 @@ extern "rust-intrinsic" {
     /// On Unix, the
     /// process will probably terminate with a signal like `SIGABRT`, `SIGILL`, `SIGTRAP`, `SIGSEGV` or
     /// `SIGBUS`.  The precise behaviour is not guaranteed and not stable.
-    #[rustc_safe_intrinsic]
+    #[crablangc_safe_intrinsic]
     pub fn abort() -> !;
 
     /// Informs the optimizer that this point in the code is not reachable,
@@ -820,7 +820,7 @@ extern "rust-intrinsic" {
     /// reach code marked with this function.
     ///
     /// The stabilized version of this intrinsic is [`core::hint::unreachable_unchecked`].
-    #[rustc_const_stable(feature = "const_unreachable_unchecked", since = "1.57.0")]
+    #[crablangc_const_stable(feature = "const_unreachable_unchecked", since = "1.57.0")]
     pub fn unreachable() -> !;
 
     /// Informs the optimizer that a condition is always true.
@@ -833,7 +833,7 @@ extern "rust-intrinsic" {
     /// own, or if it does not enable any significant optimizations.
     ///
     /// This intrinsic does not have a stable counterpart.
-    #[rustc_const_unstable(feature = "const_assume", issue = "76972")]
+    #[crablangc_const_unstable(feature = "const_assume", issue = "76972")]
     pub fn assume(b: bool);
 
     /// Hints to the compiler that branch condition is likely to be true.
@@ -847,8 +847,8 @@ extern "rust-intrinsic" {
     /// any safety invariants.
     ///
     /// This intrinsic does not have a stable counterpart.
-    #[rustc_const_unstable(feature = "const_likely", issue = "none")]
-    #[rustc_safe_intrinsic]
+    #[crablangc_const_unstable(feature = "const_likely", issue = "none")]
+    #[crablangc_safe_intrinsic]
     pub fn likely(b: bool) -> bool;
 
     /// Hints to the compiler that branch condition is likely to be false.
@@ -862,8 +862,8 @@ extern "rust-intrinsic" {
     /// any safety invariants.
     ///
     /// This intrinsic does not have a stable counterpart.
-    #[rustc_const_unstable(feature = "const_likely", issue = "none")]
-    #[rustc_safe_intrinsic]
+    #[crablangc_const_unstable(feature = "const_likely", issue = "none")]
+    #[crablangc_safe_intrinsic]
     pub fn unlikely(b: bool) -> bool;
 
     /// Executes a breakpoint trap, for inspection by a debugger.
@@ -882,8 +882,8 @@ extern "rust-intrinsic" {
     /// items of the same type, including alignment padding.
     ///
     /// The stabilized version of this intrinsic is [`core::mem::size_of`].
-    #[rustc_const_stable(feature = "const_size_of", since = "1.40.0")]
-    #[rustc_safe_intrinsic]
+    #[crablangc_const_stable(feature = "const_size_of", since = "1.40.0")]
+    #[crablangc_safe_intrinsic]
     pub fn size_of<T>() -> usize;
 
     /// The minimum alignment of a type.
@@ -894,25 +894,25 @@ extern "rust-intrinsic" {
     /// any safety invariants.
     ///
     /// The stabilized version of this intrinsic is [`core::mem::align_of`].
-    #[rustc_const_stable(feature = "const_min_align_of", since = "1.40.0")]
-    #[rustc_safe_intrinsic]
+    #[crablangc_const_stable(feature = "const_min_align_of", since = "1.40.0")]
+    #[crablangc_safe_intrinsic]
     pub fn min_align_of<T>() -> usize;
     /// The preferred alignment of a type.
     ///
     /// This intrinsic does not have a stable counterpart.
-    /// It's "tracking issue" is [#91971](https://github.com/rust-lang/rust/issues/91971).
-    #[rustc_const_unstable(feature = "const_pref_align_of", issue = "91971")]
+    /// It's "tracking issue" is [#91971](https://github.com/crablang/crablang/issues/91971).
+    #[crablangc_const_unstable(feature = "const_pref_align_of", issue = "91971")]
     pub fn pref_align_of<T>() -> usize;
 
     /// The size of the referenced value in bytes.
     ///
     /// The stabilized version of this intrinsic is [`mem::size_of_val`].
-    #[rustc_const_unstable(feature = "const_size_of_val", issue = "46571")]
+    #[crablangc_const_unstable(feature = "const_size_of_val", issue = "46571")]
     pub fn size_of_val<T: ?Sized>(_: *const T) -> usize;
     /// The required alignment of the referenced value.
     ///
     /// The stabilized version of this intrinsic is [`core::mem::align_of_val`].
-    #[rustc_const_unstable(feature = "const_align_of_val", issue = "46571")]
+    #[crablangc_const_unstable(feature = "const_align_of_val", issue = "46571")]
     pub fn min_align_of_val<T: ?Sized>(_: *const T) -> usize;
 
     /// Gets a static string slice containing the name of a type.
@@ -923,8 +923,8 @@ extern "rust-intrinsic" {
     /// any safety invariants.
     ///
     /// The stabilized version of this intrinsic is [`core::any::type_name`].
-    #[rustc_const_unstable(feature = "const_type_name", issue = "63084")]
-    #[rustc_safe_intrinsic]
+    #[crablangc_const_unstable(feature = "const_type_name", issue = "63084")]
+    #[crablangc_safe_intrinsic]
     pub fn type_name<T: ?Sized>() -> &'static str;
 
     /// Gets an identifier which is globally unique to the specified type. This
@@ -937,31 +937,31 @@ extern "rust-intrinsic" {
     /// any safety invariants.
     ///
     /// The stabilized version of this intrinsic is [`core::any::TypeId::of`].
-    #[rustc_const_unstable(feature = "const_type_id", issue = "77125")]
-    #[rustc_safe_intrinsic]
+    #[crablangc_const_unstable(feature = "const_type_id", issue = "77125")]
+    #[crablangc_safe_intrinsic]
     pub fn type_id<T: ?Sized + 'static>() -> u64;
 
     /// A guard for unsafe functions that cannot ever be executed if `T` is uninhabited:
     /// This will statically either panic, or do nothing.
     ///
     /// This intrinsic does not have a stable counterpart.
-    #[rustc_const_stable(feature = "const_assert_type", since = "1.59.0")]
-    #[rustc_safe_intrinsic]
+    #[crablangc_const_stable(feature = "const_assert_type", since = "1.59.0")]
+    #[crablangc_safe_intrinsic]
     pub fn assert_inhabited<T>();
 
     /// A guard for unsafe functions that cannot ever be executed if `T` does not permit
     /// zero-initialization: This will statically either panic, or do nothing.
     ///
     /// This intrinsic does not have a stable counterpart.
-    #[rustc_const_unstable(feature = "const_assert_type2", issue = "none")]
-    #[rustc_safe_intrinsic]
+    #[crablangc_const_unstable(feature = "const_assert_type2", issue = "none")]
+    #[crablangc_safe_intrinsic]
     pub fn assert_zero_valid<T>();
 
     /// A guard for `std::mem::uninitialized`. This will statically either panic, or do nothing.
     ///
     /// This intrinsic does not have a stable counterpart.
-    #[rustc_const_unstable(feature = "const_assert_type2", issue = "none")]
-    #[rustc_safe_intrinsic]
+    #[crablangc_const_unstable(feature = "const_assert_type2", issue = "none")]
+    #[crablangc_safe_intrinsic]
     pub fn assert_mem_uninitialized_valid<T>();
 
     /// Gets a reference to a static `Location` indicating where it was called.
@@ -972,8 +972,8 @@ extern "rust-intrinsic" {
     /// any safety invariants.
     ///
     /// Consider using [`core::panic::Location::caller`] instead.
-    #[rustc_const_unstable(feature = "const_caller_location", issue = "76156")]
-    #[rustc_safe_intrinsic]
+    #[crablangc_const_unstable(feature = "const_caller_location", issue = "76156")]
+    #[crablangc_safe_intrinsic]
     pub fn caller_location() -> &'static crate::panic::Location<'static>;
 
     /// Moves a value out of scope without running drop glue.
@@ -985,8 +985,8 @@ extern "rust-intrinsic" {
     /// it does not require an `unsafe` block.
     /// Therefore, implementations must not require the user to uphold
     /// any safety invariants.
-    #[rustc_const_unstable(feature = "const_intrinsic_forget", issue = "none")]
-    #[rustc_safe_intrinsic]
+    #[crablangc_const_unstable(feature = "const_intrinsic_forget", issue = "none")]
+    #[crablangc_safe_intrinsic]
     pub fn forget<T: ?Sized>(_: T);
 
     /// Reinterprets the bits of a value of one type as another type.
@@ -1010,7 +1010,7 @@ extern "rust-intrinsic" {
     /// Transmuting pointers to integers in a `const` context is [undefined behavior][ub].
     /// Any attempt to use the resulting value for integer operations will abort const-evaluation.
     /// (And even outside `const`, such transmutation is touching on many unspecified aspects of the
-    /// Rust memory model and should be avoided. See below for alternatives.)
+    /// CrabLang memory model and should be avoided. See below for alternatives.)
     ///
     /// Because `transmute` is a by-value operation, alignment of the *transmuted values
     /// themselves* is not a concern. As with any other function, the compiler already ensures
@@ -1044,7 +1044,7 @@ extern "rust-intrinsic" {
     /// ```
     ///
     /// Extending a lifetime, or shortening an invariant lifetime. This is
-    /// advanced, very unsafe Rust!
+    /// advanced, very unsafe CrabLang!
     ///
     /// ```
     /// struct R<'a>(&'a i32);
@@ -1096,7 +1096,7 @@ extern "rust-intrinsic" {
     ///
     /// Note that using `transmute` to turn a pointer to a `usize` is (as noted above) [undefined
     /// behavior][ub] in `const` contexts. Also outside of consts, this operation might not behave
-    /// as expected -- this is touching on many unspecified aspects of the Rust memory model.
+    /// as expected -- this is touching on many unspecified aspects of the CrabLang memory model.
     /// Depending on what the code is doing, the following alternatives are preferable to
     /// pointer-to-integer transmutation:
     /// - If the code just wants to store data of arbitrary type in some buffer and needs to pick a
@@ -1133,16 +1133,16 @@ extern "rust-intrinsic" {
     ///
     /// ```
     /// // this is not a good way to do this.
-    /// let slice = unsafe { std::mem::transmute::<&str, &[u8]>("Rust") };
+    /// let slice = unsafe { std::mem::transmute::<&str, &[u8]>("CrabLang") };
     /// assert_eq!(slice, &[82, 117, 115, 116]);
     ///
     /// // You could use `str::as_bytes`
-    /// let slice = "Rust".as_bytes();
+    /// let slice = "CrabLang".as_bytes();
     /// assert_eq!(slice, &[82, 117, 115, 116]);
     ///
     /// // Or, just use a byte string, if you have control over the string
     /// // literal
-    /// assert_eq!(b"Rust", &[82, 117, 115, 116]);
+    /// assert_eq!(b"CrabLang", &[82, 117, 115, 116]);
     /// ```
     ///
     /// Turning a `Vec<&T>` into a `Vec<Option<&T>>`.
@@ -1246,10 +1246,10 @@ extern "rust-intrinsic" {
     ///     }
     /// }
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
-    #[rustc_allowed_through_unstable_modules]
-    #[rustc_const_stable(feature = "const_transmute", since = "1.56.0")]
-    #[rustc_diagnostic_item = "transmute"]
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    #[crablangc_allowed_through_unstable_modules]
+    #[crablangc_const_stable(feature = "const_transmute", since = "1.56.0")]
+    #[crablangc_diagnostic_item = "transmute"]
     pub fn transmute<Src, Dst>(src: Src) -> Dst;
 
     /// Returns `true` if the actual type given as `T` requires drop
@@ -1265,8 +1265,8 @@ extern "rust-intrinsic" {
     /// any safety invariants.
     ///
     /// The stabilized version of this intrinsic is [`mem::needs_drop`](crate::mem::needs_drop).
-    #[rustc_const_stable(feature = "const_needs_drop", since = "1.40.0")]
-    #[rustc_safe_intrinsic]
+    #[crablangc_const_stable(feature = "const_needs_drop", since = "1.40.0")]
+    #[crablangc_safe_intrinsic]
     pub fn needs_drop<T: ?Sized>() -> bool;
 
     /// Calculates the offset from a pointer.
@@ -1283,7 +1283,7 @@ extern "rust-intrinsic" {
     ///
     /// The stabilized version of this intrinsic is [`pointer::offset`].
     #[must_use = "returns a new pointer rather than modifying its argument"]
-    #[rustc_const_stable(feature = "const_ptr_offset", since = "1.61.0")]
+    #[crablangc_const_stable(feature = "const_ptr_offset", since = "1.61.0")]
     pub fn offset<T>(dst: *const T, offset: isize) -> *const T;
 
     /// Calculates the offset from a pointer, potentially wrapping.
@@ -1300,7 +1300,7 @@ extern "rust-intrinsic" {
     ///
     /// The stabilized version of this intrinsic is [`pointer::wrapping_offset`].
     #[must_use = "returns a new pointer rather than modifying its argument"]
-    #[rustc_const_stable(feature = "const_ptr_offset", since = "1.61.0")]
+    #[crablangc_const_stable(feature = "const_ptr_offset", since = "1.61.0")]
     pub fn arith_offset<T>(dst: *const T, offset: isize) -> *const T;
 
     /// Masks out bits of the pointer according to a mask.
@@ -1311,7 +1311,7 @@ extern "rust-intrinsic" {
     /// any safety invariants.
     ///
     /// Consider using [`pointer::mask`] instead.
-    #[rustc_safe_intrinsic]
+    #[crablangc_safe_intrinsic]
     pub fn ptr_mask<T>(ptr: *const T, mask: usize) -> *const T;
 
     /// Equivalent to the appropriate `llvm.memcpy.p0i8.0i8.*` intrinsic, with
@@ -1503,7 +1503,7 @@ extern "rust-intrinsic" {
     ///
     /// The stabilized version of this intrinsic is
     /// [`f32::min`]
-    #[rustc_safe_intrinsic]
+    #[crablangc_safe_intrinsic]
     pub fn minnumf32(x: f32, y: f32) -> f32;
     /// Returns the minimum of two `f64` values.
     ///
@@ -1514,7 +1514,7 @@ extern "rust-intrinsic" {
     ///
     /// The stabilized version of this intrinsic is
     /// [`f64::min`]
-    #[rustc_safe_intrinsic]
+    #[crablangc_safe_intrinsic]
     pub fn minnumf64(x: f64, y: f64) -> f64;
     /// Returns the maximum of two `f32` values.
     ///
@@ -1525,7 +1525,7 @@ extern "rust-intrinsic" {
     ///
     /// The stabilized version of this intrinsic is
     /// [`f32::max`]
-    #[rustc_safe_intrinsic]
+    #[crablangc_safe_intrinsic]
     pub fn maxnumf32(x: f32, y: f32) -> f32;
     /// Returns the maximum of two `f64` values.
     ///
@@ -1536,7 +1536,7 @@ extern "rust-intrinsic" {
     ///
     /// The stabilized version of this intrinsic is
     /// [`f64::max`]
-    #[rustc_safe_intrinsic]
+    #[crablangc_safe_intrinsic]
     pub fn maxnumf64(x: f64, y: f64) -> f64;
 
     /// Copies the sign from `y` to `x` for `f32` values.
@@ -1660,7 +1660,7 @@ extern "rust-intrinsic" {
     pub fn frem_fast<T: Copy>(a: T, b: T) -> T;
 
     /// Convert with LLVM’s fptoui/fptosi, which may return undef for values out of range
-    /// (<https://github.com/rust-lang/rust/issues/10184>)
+    /// (<https://github.com/crablang/crablang/issues/10184>)
     ///
     /// Stabilized as [`f32::to_int_unchecked`] and [`f64::to_int_unchecked`].
     pub fn float_to_int_unchecked<Float: Copy, Int: Copy>(value: Float) -> Int;
@@ -1675,8 +1675,8 @@ extern "rust-intrinsic" {
     /// The stabilized versions of this intrinsic are available on the integer
     /// primitives via the `count_ones` method. For example,
     /// [`u32::count_ones`]
-    #[rustc_const_stable(feature = "const_ctpop", since = "1.40.0")]
-    #[rustc_safe_intrinsic]
+    #[crablangc_const_stable(feature = "const_ctpop", since = "1.40.0")]
+    #[crablangc_safe_intrinsic]
     pub fn ctpop<T: Copy>(x: T) -> T;
 
     /// Returns the number of leading unset bits (zeroes) in an integer type `T`.
@@ -1713,8 +1713,8 @@ extern "rust-intrinsic" {
     /// let num_leading = ctlz(x);
     /// assert_eq!(num_leading, 16);
     /// ```
-    #[rustc_const_stable(feature = "const_ctlz", since = "1.40.0")]
-    #[rustc_safe_intrinsic]
+    #[crablangc_const_stable(feature = "const_ctlz", since = "1.40.0")]
+    #[crablangc_safe_intrinsic]
     pub fn ctlz<T: Copy>(x: T) -> T;
 
     /// Like `ctlz`, but extra-unsafe as it returns `undef` when
@@ -1733,7 +1733,7 @@ extern "rust-intrinsic" {
     /// let num_leading = unsafe { ctlz_nonzero(x) };
     /// assert_eq!(num_leading, 3);
     /// ```
-    #[rustc_const_stable(feature = "constctlz", since = "1.50.0")]
+    #[crablangc_const_stable(feature = "constctlz", since = "1.50.0")]
     pub fn ctlz_nonzero<T: Copy>(x: T) -> T;
 
     /// Returns the number of trailing unset bits (zeroes) in an integer type `T`.
@@ -1770,8 +1770,8 @@ extern "rust-intrinsic" {
     /// let num_trailing = cttz(x);
     /// assert_eq!(num_trailing, 16);
     /// ```
-    #[rustc_const_stable(feature = "const_cttz", since = "1.40.0")]
-    #[rustc_safe_intrinsic]
+    #[crablangc_const_stable(feature = "const_cttz", since = "1.40.0")]
+    #[crablangc_safe_intrinsic]
     pub fn cttz<T: Copy>(x: T) -> T;
 
     /// Like `cttz`, but extra-unsafe as it returns `undef` when
@@ -1790,7 +1790,7 @@ extern "rust-intrinsic" {
     /// let num_trailing = unsafe { cttz_nonzero(x) };
     /// assert_eq!(num_trailing, 3);
     /// ```
-    #[rustc_const_stable(feature = "const_cttz_nonzero", since = "1.53.0")]
+    #[crablangc_const_stable(feature = "const_cttz_nonzero", since = "1.53.0")]
     pub fn cttz_nonzero<T: Copy>(x: T) -> T;
 
     /// Reverses the bytes in an integer type `T`.
@@ -1803,8 +1803,8 @@ extern "rust-intrinsic" {
     /// The stabilized versions of this intrinsic are available on the integer
     /// primitives via the `swap_bytes` method. For example,
     /// [`u32::swap_bytes`]
-    #[rustc_const_stable(feature = "const_bswap", since = "1.40.0")]
-    #[rustc_safe_intrinsic]
+    #[crablangc_const_stable(feature = "const_bswap", since = "1.40.0")]
+    #[crablangc_safe_intrinsic]
     pub fn bswap<T: Copy>(x: T) -> T;
 
     /// Reverses the bits in an integer type `T`.
@@ -1817,8 +1817,8 @@ extern "rust-intrinsic" {
     /// The stabilized versions of this intrinsic are available on the integer
     /// primitives via the `reverse_bits` method. For example,
     /// [`u32::reverse_bits`]
-    #[rustc_const_stable(feature = "const_bitreverse", since = "1.40.0")]
-    #[rustc_safe_intrinsic]
+    #[crablangc_const_stable(feature = "const_bitreverse", since = "1.40.0")]
+    #[crablangc_safe_intrinsic]
     pub fn bitreverse<T: Copy>(x: T) -> T;
 
     /// Performs checked integer addition.
@@ -1831,8 +1831,8 @@ extern "rust-intrinsic" {
     /// The stabilized versions of this intrinsic are available on the integer
     /// primitives via the `overflowing_add` method. For example,
     /// [`u32::overflowing_add`]
-    #[rustc_const_stable(feature = "const_int_overflow", since = "1.40.0")]
-    #[rustc_safe_intrinsic]
+    #[crablangc_const_stable(feature = "const_int_overflow", since = "1.40.0")]
+    #[crablangc_safe_intrinsic]
     pub fn add_with_overflow<T: Copy>(x: T, y: T) -> (T, bool);
 
     /// Performs checked integer subtraction
@@ -1845,8 +1845,8 @@ extern "rust-intrinsic" {
     /// The stabilized versions of this intrinsic are available on the integer
     /// primitives via the `overflowing_sub` method. For example,
     /// [`u32::overflowing_sub`]
-    #[rustc_const_stable(feature = "const_int_overflow", since = "1.40.0")]
-    #[rustc_safe_intrinsic]
+    #[crablangc_const_stable(feature = "const_int_overflow", since = "1.40.0")]
+    #[crablangc_safe_intrinsic]
     pub fn sub_with_overflow<T: Copy>(x: T, y: T) -> (T, bool);
 
     /// Performs checked integer multiplication
@@ -1859,15 +1859,15 @@ extern "rust-intrinsic" {
     /// The stabilized versions of this intrinsic are available on the integer
     /// primitives via the `overflowing_mul` method. For example,
     /// [`u32::overflowing_mul`]
-    #[rustc_const_stable(feature = "const_int_overflow", since = "1.40.0")]
-    #[rustc_safe_intrinsic]
+    #[crablangc_const_stable(feature = "const_int_overflow", since = "1.40.0")]
+    #[crablangc_safe_intrinsic]
     pub fn mul_with_overflow<T: Copy>(x: T, y: T) -> (T, bool);
 
     /// Performs an exact division, resulting in undefined behavior where
     /// `x % y != 0` or `y == 0` or `x == T::MIN && y == -1`
     ///
     /// This intrinsic does not have a stable counterpart.
-    #[rustc_const_unstable(feature = "const_exact_div", issue = "none")]
+    #[crablangc_const_unstable(feature = "const_exact_div", issue = "none")]
     pub fn exact_div<T: Copy>(x: T, y: T) -> T;
 
     /// Performs an unchecked division, resulting in undefined behavior
@@ -1876,7 +1876,7 @@ extern "rust-intrinsic" {
     /// Safe wrappers for this intrinsic are available on the integer
     /// primitives via the `checked_div` method. For example,
     /// [`u32::checked_div`]
-    #[rustc_const_stable(feature = "const_int_unchecked_div", since = "1.52.0")]
+    #[crablangc_const_stable(feature = "const_int_unchecked_div", since = "1.52.0")]
     pub fn unchecked_div<T: Copy>(x: T, y: T) -> T;
     /// Returns the remainder of an unchecked division, resulting in
     /// undefined behavior when `y == 0` or `x == T::MIN && y == -1`
@@ -1884,7 +1884,7 @@ extern "rust-intrinsic" {
     /// Safe wrappers for this intrinsic are available on the integer
     /// primitives via the `checked_rem` method. For example,
     /// [`u32::checked_rem`]
-    #[rustc_const_stable(feature = "const_int_unchecked_rem", since = "1.52.0")]
+    #[crablangc_const_stable(feature = "const_int_unchecked_rem", since = "1.52.0")]
     pub fn unchecked_rem<T: Copy>(x: T, y: T) -> T;
 
     /// Performs an unchecked left shift, resulting in undefined behavior when
@@ -1893,7 +1893,7 @@ extern "rust-intrinsic" {
     /// Safe wrappers for this intrinsic are available on the integer
     /// primitives via the `checked_shl` method. For example,
     /// [`u32::checked_shl`]
-    #[rustc_const_stable(feature = "const_int_unchecked", since = "1.40.0")]
+    #[crablangc_const_stable(feature = "const_int_unchecked", since = "1.40.0")]
     pub fn unchecked_shl<T: Copy>(x: T, y: T) -> T;
     /// Performs an unchecked right shift, resulting in undefined behavior when
     /// `y < 0` or `y >= N`, where N is the width of T in bits.
@@ -1901,28 +1901,28 @@ extern "rust-intrinsic" {
     /// Safe wrappers for this intrinsic are available on the integer
     /// primitives via the `checked_shr` method. For example,
     /// [`u32::checked_shr`]
-    #[rustc_const_stable(feature = "const_int_unchecked", since = "1.40.0")]
+    #[crablangc_const_stable(feature = "const_int_unchecked", since = "1.40.0")]
     pub fn unchecked_shr<T: Copy>(x: T, y: T) -> T;
 
     /// Returns the result of an unchecked addition, resulting in
     /// undefined behavior when `x + y > T::MAX` or `x + y < T::MIN`.
     ///
     /// This intrinsic does not have a stable counterpart.
-    #[rustc_const_unstable(feature = "const_int_unchecked_arith", issue = "none")]
+    #[crablangc_const_unstable(feature = "const_int_unchecked_arith", issue = "none")]
     pub fn unchecked_add<T: Copy>(x: T, y: T) -> T;
 
     /// Returns the result of an unchecked subtraction, resulting in
     /// undefined behavior when `x - y > T::MAX` or `x - y < T::MIN`.
     ///
     /// This intrinsic does not have a stable counterpart.
-    #[rustc_const_unstable(feature = "const_int_unchecked_arith", issue = "none")]
+    #[crablangc_const_unstable(feature = "const_int_unchecked_arith", issue = "none")]
     pub fn unchecked_sub<T: Copy>(x: T, y: T) -> T;
 
     /// Returns the result of an unchecked multiplication, resulting in
     /// undefined behavior when `x * y > T::MAX` or `x * y < T::MIN`.
     ///
     /// This intrinsic does not have a stable counterpart.
-    #[rustc_const_unstable(feature = "const_int_unchecked_arith", issue = "none")]
+    #[crablangc_const_unstable(feature = "const_int_unchecked_arith", issue = "none")]
     pub fn unchecked_mul<T: Copy>(x: T, y: T) -> T;
 
     /// Performs rotate left.
@@ -1935,8 +1935,8 @@ extern "rust-intrinsic" {
     /// The stabilized versions of this intrinsic are available on the integer
     /// primitives via the `rotate_left` method. For example,
     /// [`u32::rotate_left`]
-    #[rustc_const_stable(feature = "const_int_rotate", since = "1.40.0")]
-    #[rustc_safe_intrinsic]
+    #[crablangc_const_stable(feature = "const_int_rotate", since = "1.40.0")]
+    #[crablangc_safe_intrinsic]
     pub fn rotate_left<T: Copy>(x: T, y: T) -> T;
 
     /// Performs rotate right.
@@ -1949,8 +1949,8 @@ extern "rust-intrinsic" {
     /// The stabilized versions of this intrinsic are available on the integer
     /// primitives via the `rotate_right` method. For example,
     /// [`u32::rotate_right`]
-    #[rustc_const_stable(feature = "const_int_rotate", since = "1.40.0")]
-    #[rustc_safe_intrinsic]
+    #[crablangc_const_stable(feature = "const_int_rotate", since = "1.40.0")]
+    #[crablangc_safe_intrinsic]
     pub fn rotate_right<T: Copy>(x: T, y: T) -> T;
 
     /// Returns (a + b) mod 2<sup>N</sup>, where N is the width of T in bits.
@@ -1963,8 +1963,8 @@ extern "rust-intrinsic" {
     /// The stabilized versions of this intrinsic are available on the integer
     /// primitives via the `wrapping_add` method. For example,
     /// [`u32::wrapping_add`]
-    #[rustc_const_stable(feature = "const_int_wrapping", since = "1.40.0")]
-    #[rustc_safe_intrinsic]
+    #[crablangc_const_stable(feature = "const_int_wrapping", since = "1.40.0")]
+    #[crablangc_safe_intrinsic]
     pub fn wrapping_add<T: Copy>(a: T, b: T) -> T;
     /// Returns (a - b) mod 2<sup>N</sup>, where N is the width of T in bits.
     ///
@@ -1976,8 +1976,8 @@ extern "rust-intrinsic" {
     /// The stabilized versions of this intrinsic are available on the integer
     /// primitives via the `wrapping_sub` method. For example,
     /// [`u32::wrapping_sub`]
-    #[rustc_const_stable(feature = "const_int_wrapping", since = "1.40.0")]
-    #[rustc_safe_intrinsic]
+    #[crablangc_const_stable(feature = "const_int_wrapping", since = "1.40.0")]
+    #[crablangc_safe_intrinsic]
     pub fn wrapping_sub<T: Copy>(a: T, b: T) -> T;
     /// Returns (a * b) mod 2<sup>N</sup>, where N is the width of T in bits.
     ///
@@ -1989,8 +1989,8 @@ extern "rust-intrinsic" {
     /// The stabilized versions of this intrinsic are available on the integer
     /// primitives via the `wrapping_mul` method. For example,
     /// [`u32::wrapping_mul`]
-    #[rustc_const_stable(feature = "const_int_wrapping", since = "1.40.0")]
-    #[rustc_safe_intrinsic]
+    #[crablangc_const_stable(feature = "const_int_wrapping", since = "1.40.0")]
+    #[crablangc_safe_intrinsic]
     pub fn wrapping_mul<T: Copy>(a: T, b: T) -> T;
 
     /// Computes `a + b`, saturating at numeric bounds.
@@ -2003,8 +2003,8 @@ extern "rust-intrinsic" {
     /// The stabilized versions of this intrinsic are available on the integer
     /// primitives via the `saturating_add` method. For example,
     /// [`u32::saturating_add`]
-    #[rustc_const_stable(feature = "const_int_saturating", since = "1.40.0")]
-    #[rustc_safe_intrinsic]
+    #[crablangc_const_stable(feature = "const_int_saturating", since = "1.40.0")]
+    #[crablangc_safe_intrinsic]
     pub fn saturating_add<T: Copy>(a: T, b: T) -> T;
     /// Computes `a - b`, saturating at numeric bounds.
     ///
@@ -2016,8 +2016,8 @@ extern "rust-intrinsic" {
     /// The stabilized versions of this intrinsic are available on the integer
     /// primitives via the `saturating_sub` method. For example,
     /// [`u32::saturating_sub`]
-    #[rustc_const_stable(feature = "const_int_saturating", since = "1.40.0")]
-    #[rustc_safe_intrinsic]
+    #[crablangc_const_stable(feature = "const_int_saturating", since = "1.40.0")]
+    #[crablangc_safe_intrinsic]
     pub fn saturating_sub<T: Copy>(a: T, b: T) -> T;
 
     /// This is an implementation detail of [`crate::ptr::read`] and should
@@ -2027,7 +2027,7 @@ extern "rust-intrinsic" {
     /// projections (`read_via_copy(p)`, not `read_via_copy(*p)`) so that it
     /// trivially obeys runtime-MIR rules about derefs in operands.
     #[cfg(not(bootstrap))]
-    #[rustc_const_unstable(feature = "const_ptr_read", issue = "80377")]
+    #[crablangc_const_unstable(feature = "const_ptr_read", issue = "80377")]
     pub fn read_via_copy<T>(p: *const T) -> T;
 
     /// Returns the value of the discriminant for the variant in 'v';
@@ -2039,8 +2039,8 @@ extern "rust-intrinsic" {
     /// any safety invariants.
     ///
     /// The stabilized version of this intrinsic is [`core::mem::discriminant`].
-    #[rustc_const_unstable(feature = "const_discriminant", issue = "69821")]
-    #[rustc_safe_intrinsic]
+    #[crablangc_const_unstable(feature = "const_discriminant", issue = "69821")]
+    #[crablangc_safe_intrinsic]
     pub fn discriminant_value<T>(v: &T) -> <T as DiscriminantKind>::Discriminant;
 
     /// Returns the number of variants of the type `T` cast to a `usize`;
@@ -2052,11 +2052,11 @@ extern "rust-intrinsic" {
     /// any safety invariants.
     ///
     /// The to-be-stabilized version of this intrinsic is [`mem::variant_count`].
-    #[rustc_const_unstable(feature = "variant_count", issue = "73662")]
-    #[rustc_safe_intrinsic]
+    #[crablangc_const_unstable(feature = "variant_count", issue = "73662")]
+    #[crablangc_safe_intrinsic]
     pub fn variant_count<T>() -> usize;
 
-    /// Rust's "try catch" construct which invokes the function pointer `try_fn`
+    /// CrabLang's "try catch" construct which invokes the function pointer `try_fn`
     /// with the data pointer `data`.
     ///
     /// The third argument is a function called if a panic occurs. This function
@@ -2070,11 +2070,11 @@ extern "rust-intrinsic" {
     pub fn nontemporal_store<T>(ptr: *mut T, val: T);
 
     /// See documentation of `<*const T>::offset_from` for details.
-    #[rustc_const_stable(feature = "const_ptr_offset_from", since = "1.65.0")]
+    #[crablangc_const_stable(feature = "const_ptr_offset_from", since = "1.65.0")]
     pub fn ptr_offset_from<T>(ptr: *const T, base: *const T) -> isize;
 
     /// See documentation of `<*const T>::sub_ptr` for details.
-    #[rustc_const_unstable(feature = "const_ptr_sub_ptr", issue = "95892")]
+    #[crablangc_const_unstable(feature = "const_ptr_sub_ptr", issue = "95892")]
     pub fn ptr_offset_from_unsigned<T>(ptr: *const T, base: *const T) -> usize;
 
     /// See documentation of `<*const T>::guaranteed_eq` for details.
@@ -2086,8 +2086,8 @@ extern "rust-intrinsic" {
     /// it does not require an `unsafe` block.
     /// Therefore, implementations must not require the user to uphold
     /// any safety invariants.
-    #[rustc_const_unstable(feature = "const_raw_ptr_comparison", issue = "53020")]
-    #[rustc_safe_intrinsic]
+    #[crablangc_const_unstable(feature = "const_raw_ptr_comparison", issue = "53020")]
+    #[crablangc_safe_intrinsic]
     pub fn ptr_guaranteed_cmp<T>(ptr: *const T, other: *const T) -> u8;
 
     /// Allocates a block of memory at compile time.
@@ -2098,7 +2098,7 @@ extern "rust-intrinsic" {
     /// - The `align` argument must be a power of two.
     ///    - At compile time, a compile error occurs if this constraint is violated.
     ///    - At runtime, it is not checked.
-    #[rustc_const_unstable(feature = "const_heap", issue = "79597")]
+    #[crablangc_const_unstable(feature = "const_heap", issue = "79597")]
     pub fn const_allocate(size: usize, align: usize) -> *mut u8;
 
     /// Deallocates a memory which allocated by `intrinsics::const_allocate` at compile time.
@@ -2111,7 +2111,7 @@ extern "rust-intrinsic" {
     ///    - At runtime, it is not checked.
     /// - If the `ptr` is created in an another const, this intrinsic doesn't deallocate it.
     /// - If the `ptr` is pointing to a local variable, this intrinsic doesn't deallocate it.
-    #[rustc_const_unstable(feature = "const_heap", issue = "79597")]
+    #[crablangc_const_unstable(feature = "const_heap", issue = "79597")]
     pub fn const_deallocate(ptr: *mut u8, size: usize, align: usize);
 
     /// Determines whether the raw bytes of the two values are equal.
@@ -2135,14 +2135,14 @@ extern "rust-intrinsic" {
     ///
     /// (The implementation is allowed to branch on the results of comparisons,
     /// which is UB if any of their inputs are `undef`.)
-    #[rustc_const_unstable(feature = "const_intrinsic_raw_eq", issue = "none")]
+    #[crablangc_const_unstable(feature = "const_intrinsic_raw_eq", issue = "none")]
     pub fn raw_eq<T>(a: &T, b: &T) -> bool;
 
     /// See documentation of [`std::hint::black_box`] for details.
     ///
     /// [`std::hint::black_box`]: crate::hint::black_box
-    #[rustc_const_unstable(feature = "const_black_box", issue = "none")]
-    #[rustc_safe_intrinsic]
+    #[crablangc_const_unstable(feature = "const_black_box", issue = "none")]
+    #[crablangc_safe_intrinsic]
     pub fn black_box<T>(dummy: T) -> T;
 
     /// `ptr` must point to a vtable.
@@ -2205,7 +2205,7 @@ extern "rust-intrinsic" {
     /// `unreachable_unchecked` is actually being reached. The bug is in *crate A*,
     /// which violates the principle that a `const fn` must behave the same at
     /// compile-time and at run-time. The unsafe code in crate B is fine.
-    #[rustc_const_unstable(feature = "const_eval_select", issue = "none")]
+    #[crablangc_const_unstable(feature = "const_eval_select", issue = "none")]
     pub fn const_eval_select<ARG: Tuple, F, G, RET>(
         arg: ARG,
         called_in_const: F,
@@ -2223,7 +2223,7 @@ extern "rust-intrinsic" {
 }
 
 // Some functions are defined here because they accidentally got made
-// available in this module on stable. See <https://github.com/rust-lang/rust/issues/15702>.
+// available in this module on stable. See <https://github.com/crablang/crablang/issues/15702>.
 // (`transmute` also falls into this category, but it cannot be wrapped due to the
 // check that `T` and `U` have the same size.)
 
@@ -2384,14 +2384,14 @@ pub(crate) fn is_nonoverlapping<T>(src: *const T, dst: *const T, count: usize) -
 ///
 /// [`Vec::append`]: ../../std/vec/struct.Vec.html#method.append
 #[doc(alias = "memcpy")]
-#[stable(feature = "rust1", since = "1.0.0")]
-#[rustc_allowed_through_unstable_modules]
-#[rustc_const_stable(feature = "const_intrinsic_copy", since = "1.63.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
+#[crablangc_allowed_through_unstable_modules]
+#[crablangc_const_stable(feature = "const_intrinsic_copy", since = "1.63.0")]
 #[inline]
 #[cfg_attr(miri, track_caller)] // even without panics, this helps for Miri backtraces
 pub const unsafe fn copy_nonoverlapping<T>(src: *const T, dst: *mut T, count: usize) {
-    extern "rust-intrinsic" {
-        #[rustc_const_stable(feature = "const_intrinsic_copy", since = "1.63.0")]
+    extern "crablang-intrinsic" {
+        #[crablangc_const_stable(feature = "const_intrinsic_copy", since = "1.63.0")]
         pub fn copy_nonoverlapping<T>(src: *const T, dst: *mut T, count: usize);
     }
 
@@ -2449,7 +2449,7 @@ pub const unsafe fn copy_nonoverlapping<T>(src: *const T, dst: *mut T, count: us
 ///
 /// # Examples
 ///
-/// Efficiently create a Rust vector from an unsafe buffer:
+/// Efficiently create a CrabLang vector from an unsafe buffer:
 ///
 /// ```
 /// use std::ptr;
@@ -2474,14 +2474,14 @@ pub const unsafe fn copy_nonoverlapping<T>(src: *const T, dst: *mut T, count: us
 /// }
 /// ```
 #[doc(alias = "memmove")]
-#[stable(feature = "rust1", since = "1.0.0")]
-#[rustc_allowed_through_unstable_modules]
-#[rustc_const_stable(feature = "const_intrinsic_copy", since = "1.63.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
+#[crablangc_allowed_through_unstable_modules]
+#[crablangc_const_stable(feature = "const_intrinsic_copy", since = "1.63.0")]
 #[inline]
 #[cfg_attr(miri, track_caller)] // even without panics, this helps for Miri backtraces
 pub const unsafe fn copy<T>(src: *const T, dst: *mut T, count: usize) {
-    extern "rust-intrinsic" {
-        #[rustc_const_stable(feature = "const_intrinsic_copy", since = "1.63.0")]
+    extern "crablang-intrinsic" {
+        #[crablangc_const_stable(feature = "const_intrinsic_copy", since = "1.63.0")]
         fn copy<T>(src: *const T, dst: *mut T, count: usize);
     }
 
@@ -2519,7 +2519,7 @@ pub const unsafe fn copy<T>(src: *const T, dst: *mut T, count: usize) {
 /// later if the written bytes are not a valid representation of some `T`. For instance, the
 /// following is an **incorrect** use of this function:
 ///
-/// ```rust,no_run
+/// ```crablang,no_run
 /// unsafe {
 ///     let mut value: u8 = 0;
 ///     let ptr: *mut bool = &mut value as *mut u8 as *mut bool;
@@ -2546,14 +2546,14 @@ pub const unsafe fn copy<T>(src: *const T, dst: *mut T, count: usize) {
 /// assert_eq!(vec, [0xfefefefe, 0xfefefefe, 0, 0]);
 /// ```
 #[doc(alias = "memset")]
-#[stable(feature = "rust1", since = "1.0.0")]
-#[rustc_allowed_through_unstable_modules]
-#[rustc_const_unstable(feature = "const_ptr_write", issue = "86302")]
+#[stable(feature = "crablang1", since = "1.0.0")]
+#[crablangc_allowed_through_unstable_modules]
+#[crablangc_const_unstable(feature = "const_ptr_write", issue = "86302")]
 #[inline]
 #[cfg_attr(miri, track_caller)] // even without panics, this helps for Miri backtraces
 pub const unsafe fn write_bytes<T>(dst: *mut T, val: u8, count: usize) {
-    extern "rust-intrinsic" {
-        #[rustc_const_unstable(feature = "const_ptr_write", issue = "86302")]
+    extern "crablang-intrinsic" {
+        #[crablangc_const_unstable(feature = "const_ptr_write", issue = "86302")]
         fn write_bytes<T>(dst: *mut T, val: u8, count: usize);
     }
 

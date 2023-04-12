@@ -21,7 +21,7 @@
 // error-pattern: allocated by main thread
 
 #![feature(raw_ref_op)]
-#![feature(rustc_private)]
+#![feature(crablangc_private)]
 extern crate libc;
 
 use std::mem;

@@ -1,7 +1,7 @@
 //@compile-flags: -Zmiri-ignore-leaks
 
 // Tests operations not perfomable through C++'s atomic API
-// but doable in safe (at least sound) Rust.
+// but doable in safe (at least sound) CrabLang.
 
 #![feature(atomic_from_mut)]
 

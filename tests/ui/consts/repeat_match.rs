@@ -1,6 +1,6 @@
 // run-pass
 
-// https://github.com/rust-lang/rust/issues/45044
+// https://github.com/crablang/crablang/issues/45044
 
 const X: [u8; 1] = [0; 1];
 

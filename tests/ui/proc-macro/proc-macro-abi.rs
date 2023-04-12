@@ -26,6 +26,6 @@ pub extern fn abi3(a: TokenStream) -> TokenStream {
 }
 
 #[proc_macro]
-pub extern "Rust" fn abi4(a: TokenStream) -> TokenStream {
+pub extern "CrabLang" fn abi4(a: TokenStream) -> TokenStream {
     a
 }

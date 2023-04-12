@@ -80,7 +80,7 @@ pub struct Config {
     pub omit_git_hash: bool,
     pub exclude: Vec<TaskPath>,
     pub include_default_paths: bool,
-    pub rustc_error_format: Option<String>,
+    pub crablangc_error_format: Option<String>,
     pub json_output: bool,
     pub test_compare_mode: bool,
     pub color: Color,
@@ -107,9 +107,9 @@ pub struct Config {
 
     /// `None` if we shouldn't download CI compiler artifacts, or the commit to download if we should.
     #[cfg(not(test))]
-    download_rustc_commit: Option<String>,
+    download_crablangc_commit: Option<String>,
     #[cfg(test)]
-    pub download_rustc_commit: Option<String>,
+    pub download_crablangc_commit: Option<String>,
 
     pub deny_warnings: bool,
     pub backtrace_on_ice: bool,
@@ -149,34 +149,34 @@ pub struct Config {
     pub llvm_ldflags: Option<String>,
     pub llvm_use_libcxx: bool,
 
-    // rust codegen options
-    pub rust_optimize: bool,
-    pub rust_codegen_units: Option<u32>,
-    pub rust_codegen_units_std: Option<u32>,
-    pub rust_debug_assertions: bool,
-    pub rust_debug_assertions_std: bool,
-    pub rust_overflow_checks: bool,
-    pub rust_overflow_checks_std: bool,
-    pub rust_debug_logging: bool,
-    pub rust_debuginfo_level_rustc: u32,
-    pub rust_debuginfo_level_std: u32,
-    pub rust_debuginfo_level_tools: u32,
-    pub rust_debuginfo_level_tests: u32,
-    pub rust_split_debuginfo: SplitDebuginfo,
-    pub rust_rpath: bool,
-    pub rustc_parallel: bool,
-    pub rustc_default_linker: Option<String>,
-    pub rust_optimize_tests: bool,
-    pub rust_dist_src: bool,
-    pub rust_codegen_backends: Vec<Interned<String>>,
-    pub rust_verify_llvm_ir: bool,
-    pub rust_thin_lto_import_instr_limit: Option<u32>,
-    pub rust_remap_debuginfo: bool,
-    pub rust_new_symbol_mangling: Option<bool>,
-    pub rust_profile_use: Option<String>,
-    pub rust_profile_generate: Option<String>,
-    pub rust_lto: RustcLto,
-    pub rust_validate_mir_opts: Option<u32>,
+    // crablang codegen options
+    pub crablang_optimize: bool,
+    pub crablang_codegen_units: Option<u32>,
+    pub crablang_codegen_units_std: Option<u32>,
+    pub crablang_debug_assertions: bool,
+    pub crablang_debug_assertions_std: bool,
+    pub crablang_overflow_checks: bool,
+    pub crablang_overflow_checks_std: bool,
+    pub crablang_debug_logging: bool,
+    pub crablang_debuginfo_level_crablangc: u32,
+    pub crablang_debuginfo_level_std: u32,
+    pub crablang_debuginfo_level_tools: u32,
+    pub crablang_debuginfo_level_tests: u32,
+    pub crablang_split_debuginfo: SplitDebuginfo,
+    pub crablang_rpath: bool,
+    pub crablangc_parallel: bool,
+    pub crablangc_default_linker: Option<String>,
+    pub crablang_optimize_tests: bool,
+    pub crablang_dist_src: bool,
+    pub crablang_codegen_backends: Vec<Interned<String>>,
+    pub crablang_verify_llvm_ir: bool,
+    pub crablang_thin_lto_import_instr_limit: Option<u32>,
+    pub crablang_remap_debuginfo: bool,
+    pub crablang_new_symbol_mangling: Option<bool>,
+    pub crablang_profile_use: Option<String>,
+    pub crablang_profile_generate: Option<String>,
+    pub crablang_lto: CrabLangcLto,
+    pub crablang_validate_mir_opts: Option<u32>,
     pub llvm_profile_use: Option<String>,
     pub llvm_profile_generate: bool,
     pub llvm_libunwind_default: Option<LlvmLibunwind>,
@@ -198,7 +198,7 @@ pub struct Config {
     pub dist_include_mingw_linker: bool,
 
     // libstd features
-    pub backtrace: bool, // support for RUST_BACKTRACE
+    pub backtrace: bool, // support for CRABLANG_BACKTRACE
 
     // misc
     pub low_priority: bool,
@@ -228,16 +228,16 @@ pub struct Config {
     pub cargo_native_static: bool,
     pub configure_args: Vec<String>,
     pub out: PathBuf,
-    pub rust_info: channel::GitInfo,
+    pub crablang_info: channel::GitInfo,
 
     // These are either the stage0 downloaded binaries or the locally installed ones.
     pub initial_cargo: PathBuf,
-    pub initial_rustc: PathBuf,
+    pub initial_crablangc: PathBuf,
 
     #[cfg(not(test))]
-    initial_rustfmt: RefCell<RustfmtState>,
+    initial_crablangfmt: RefCell<CrabLangfmtState>,
     #[cfg(test)]
-    pub initial_rustfmt: RefCell<RustfmtState>,
+    pub initial_crablangfmt: RefCell<CrabLangfmtState>,
 }
 
 #[derive(Default, Deserialize)]
@@ -246,7 +246,7 @@ pub struct Stage0Metadata {
     pub compiler: CompilerMetadata,
     pub config: Stage0Config,
     pub checksums_sha256: HashMap<String, String>,
-    pub rustfmt: Option<RustfmtMetadata>,
+    pub crablangfmt: Option<CrabLangfmtMetadata>,
 }
 #[derive(Default, Deserialize)]
 #[cfg_attr(test, derive(Clone))]
@@ -266,22 +266,22 @@ pub struct Stage0Config {
 }
 #[derive(Default, Deserialize)]
 #[cfg_attr(test, derive(Clone))]
-pub struct RustfmtMetadata {
+pub struct CrabLangfmtMetadata {
     pub date: String,
     pub version: String,
 }
 
 #[derive(Clone, Debug)]
-pub enum RustfmtState {
+pub enum CrabLangfmtState {
     SystemToolchain(PathBuf),
     Downloaded(PathBuf),
     Unavailable,
     LazyEvaluated,
 }
 
-impl Default for RustfmtState {
+impl Default for CrabLangfmtState {
     fn default() -> Self {
-        RustfmtState::LazyEvaluated
+        CrabLangfmtState::LazyEvaluated
     }
 }
 
@@ -306,7 +306,7 @@ impl FromStr for LlvmLibunwind {
             "no" => Ok(Self::No),
             "in-tree" => Ok(Self::InTree),
             "system" => Ok(Self::System),
-            invalid => Err(format!("Invalid value '{}' for rust.llvm-libunwind config.", invalid)),
+            invalid => Err(format!("Invalid value '{}' for crablang.llvm-libunwind config.", invalid)),
         }
     }
 }
@@ -339,7 +339,7 @@ impl std::str::FromStr for SplitDebuginfo {
 
 impl SplitDebuginfo {
     /// Returns the default `-Csplit-debuginfo` value for the current target. See the comment for
-    /// `rust.split-debuginfo` in `config.example.toml`.
+    /// `crablang.split-debuginfo` in `config.example.toml`.
     fn default_for_platform(target: &str) -> Self {
         if target.contains("apple") {
             SplitDebuginfo::Unpacked
@@ -351,9 +351,9 @@ impl SplitDebuginfo {
     }
 }
 
-/// LTO mode used for compiling rustc itself.
+/// LTO mode used for compiling crablangc itself.
 #[derive(Default, Clone, PartialEq)]
-pub enum RustcLto {
+pub enum CrabLangcLto {
     Off,
     #[default]
     ThinLocal,
@@ -361,16 +361,16 @@ pub enum RustcLto {
     Fat,
 }
 
-impl std::str::FromStr for RustcLto {
+impl std::str::FromStr for CrabLangcLto {
     type Err = String;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s {
-            "thin-local" => Ok(RustcLto::ThinLocal),
-            "thin" => Ok(RustcLto::Thin),
-            "fat" => Ok(RustcLto::Fat),
-            "off" => Ok(RustcLto::Off),
-            _ => Err(format!("Invalid value for rustc LTO: {}", s)),
+            "thin-local" => Ok(CrabLangcLto::ThinLocal),
+            "thin" => Ok(CrabLangcLto::Thin),
+            "fat" => Ok(CrabLangcLto::Fat),
+            "off" => Ok(CrabLangcLto::Off),
+            _ => Err(format!("Invalid value for crablangc LTO: {}", s)),
         }
     }
 }
@@ -403,7 +403,7 @@ impl TargetSelection {
         Self { triple, file }
     }
 
-    pub fn rustc_target_arg(&self) -> &str {
+    pub fn crablangc_target_arg(&self) -> &str {
         self.file.as_ref().unwrap_or(&self.triple)
     }
 
@@ -448,7 +448,7 @@ impl PartialEq<&str> for TargetSelection {
 pub struct Target {
     /// Some(path to llvm-config) if using an external LLVM.
     pub llvm_config: Option<PathBuf>,
-    pub llvm_has_rust_patches: Option<bool>,
+    pub llvm_has_crablang_patches: Option<bool>,
     /// Some(path to FileCheck) if one was specified.
     pub llvm_filecheck: Option<PathBuf>,
     pub llvm_libunwind: Option<LlvmLibunwind>,
@@ -494,7 +494,7 @@ struct TomlConfig {
     build: Option<Build>,
     install: Option<Install>,
     llvm: Option<Llvm>,
-    rust: Option<Rust>,
+    crablang: Option<CrabLang>,
     target: Option<HashMap<String, TomlTarget>>,
     dist: Option<Dist>,
     profile: Option<String>,
@@ -507,7 +507,7 @@ trait Merge {
 impl Merge for TomlConfig {
     fn merge(
         &mut self,
-        TomlConfig { build, install, llvm, rust, dist, target, profile: _, changelog_seen: _ }: Self,
+        TomlConfig { build, install, llvm, crablang, dist, target, profile: _, changelog_seen: _ }: Self,
     ) {
         fn do_merge<T: Merge>(x: &mut Option<T>, y: Option<T>) {
             if let Some(new) = y {
@@ -521,14 +521,14 @@ impl Merge for TomlConfig {
         do_merge(&mut self.build, build);
         do_merge(&mut self.install, install);
         do_merge(&mut self.llvm, llvm);
-        do_merge(&mut self.rust, rust);
+        do_merge(&mut self.crablang, crablang);
         do_merge(&mut self.dist, dist);
         assert!(target.is_none(), "merging target-specific config is not currently supported");
     }
 }
 
 // We are using a decl macro instead of a derive proc macro here to reduce the compile time of
-// rustbuild.
+// crablangbuild.
 macro_rules! define_config {
     ($(#[$attr:meta])* struct $name:ident {
         $($field:ident: Option<$field_ty:ty> = $field_key:literal,)*
@@ -550,7 +550,7 @@ macro_rules! define_config {
 
         // The following is a trimmed version of what serde_derive generates. All parts not relevant
         // for toml deserialization have been removed. This reduces the binary size and improves
-        // compile time of rustbuild.
+        // compile time of crablangbuild.
         impl<'de> Deserialize<'de> for $name {
             fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
             where
@@ -624,8 +624,8 @@ define_config! {
         target: Option<Vec<String>> = "target",
         build_dir: Option<String> = "build-dir",
         cargo: Option<String> = "cargo",
-        rustc: Option<String> = "rustc",
-        rustfmt: Option<PathBuf> = "rustfmt",
+        crablangc: Option<String> = "crablangc",
+        crablangfmt: Option<PathBuf> = "crablangfmt",
         docs: Option<bool> = "docs",
         compiler_docs: Option<bool> = "compiler-docs",
         library_docs_private_items: Option<bool> = "library-docs-private-items",
@@ -735,8 +735,8 @@ impl Default for StringOrBool {
 }
 
 define_config! {
-    /// TOML representation of how the Rust build is configured.
-    struct Rust {
+    /// TOML representation of how the CrabLang build is configured.
+    struct CrabLang {
         optimize: Option<bool> = "optimize",
         debug: Option<bool> = "debug",
         codegen_units: Option<u32> = "codegen-units",
@@ -747,7 +747,7 @@ define_config! {
         overflow_checks_std: Option<bool> = "overflow-checks-std",
         debug_logging: Option<bool> = "debug-logging",
         debuginfo_level: Option<u32> = "debuginfo-level",
-        debuginfo_level_rustc: Option<u32> = "debuginfo-level-rustc",
+        debuginfo_level_crablangc: Option<u32> = "debuginfo-level-crablangc",
         debuginfo_level_std: Option<u32> = "debuginfo-level-std",
         debuginfo_level_tools: Option<u32> = "debuginfo-level-tools",
         debuginfo_level_tests: Option<u32> = "debuginfo-level-tests",
@@ -784,7 +784,7 @@ define_config! {
         profile_generate: Option<String> = "profile-generate",
         profile_use: Option<String> = "profile-use",
         // ignored; this is set from an env var set by bootstrap.py
-        download_rustc: Option<StringOrBool> = "download-rustc",
+        download_crablangc: Option<StringOrBool> = "download-crablangc",
         lto: Option<String> = "lto",
         validate_mir_opts: Option<u32> = "validate-mir-opts",
     }
@@ -800,7 +800,7 @@ define_config! {
         default_linker: Option<PathBuf> = "default-linker",
         linker: Option<String> = "linker",
         llvm_config: Option<String> = "llvm-config",
-        llvm_has_rust_patches: Option<bool> = "llvm-has-rust-patches",
+        llvm_has_crablang_patches: Option<bool> = "llvm-has-crablang-patches",
         llvm_filecheck: Option<String> = "llvm-filecheck",
         llvm_libunwind: Option<String> = "llvm-libunwind",
         android_ndk: Option<String> = "android-ndk",
@@ -824,16 +824,16 @@ impl Config {
         config.ninja_in_file = true;
         config.llvm_static_stdcpp = false;
         config.backtrace = true;
-        config.rust_optimize = true;
-        config.rust_optimize_tests = true;
+        config.crablang_optimize = true;
+        config.crablang_optimize_tests = true;
         config.submodules = None;
         config.docs = true;
         config.docs_minification = true;
-        config.rust_rpath = true;
+        config.crablang_rpath = true;
         config.channel = "dev".to_string();
         config.codegen_tests = true;
-        config.rust_dist_src = true;
-        config.rust_codegen_backends = vec![INTERNER.intern_str("llvm")];
+        config.crablang_dist_src = true;
+        config.crablang_codegen_backends = vec![INTERNER.intern_str("llvm")];
         config.deny_warnings = true;
         config.bindir = "bin".into();
         config.dist_include_mingw_linker = true;
@@ -883,7 +883,7 @@ impl Config {
         // Set flags.
         config.exclude = flags.exclude.into_iter().map(|path| TaskPath::parse(path)).collect();
         config.include_default_paths = flags.include_default_paths;
-        config.rustc_error_format = flags.rustc_error_format;
+        config.crablangc_error_format = flags.crablangc_error_format;
         config.json_output = flags.json_output;
         config.on_fail = flags.on_fail;
         config.jobs = flags.jobs.map(threads_from_config);
@@ -950,7 +950,7 @@ impl Config {
         }
 
         if cfg!(test) {
-            // Use the build directory of the original x.py invocation, so that we can set `initial_rustc` properly.
+            // Use the build directory of the original x.py invocation, so that we can set `initial_crablangc` properly.
             config.out = Path::new(
                 &env::var_os("CARGO_TARGET_DIR").expect("cargo test directly is not supported"),
             )
@@ -963,18 +963,18 @@ impl Config {
 
         config.stage0_metadata = t!(serde_json::from_slice::<Stage0Metadata>(&stage0_json));
 
-        // Read from `--config`, then `RUST_BOOTSTRAP_CONFIG`, then `./config.toml`, then `config.toml` in the root directory.
+        // Read from `--config`, then `CRABLANG_BOOTSTRAP_CONFIG`, then `./config.toml`, then `config.toml` in the root directory.
         let toml_path = flags
             .config
             .clone()
-            .or_else(|| env::var_os("RUST_BOOTSTRAP_CONFIG").map(PathBuf::from));
+            .or_else(|| env::var_os("CRABLANG_BOOTSTRAP_CONFIG").map(PathBuf::from));
         let using_default_path = toml_path.is_none();
         let mut toml_path = toml_path.unwrap_or_else(|| PathBuf::from("config.toml"));
         if using_default_path && !toml_path.exists() {
             toml_path = config.src.join(toml_path);
         }
 
-        // Give a hard error if `--config` or `RUST_BOOTSTRAP_CONFIG` are set to a missing path,
+        // Give a hard error if `--config` or `CRABLANG_BOOTSTRAP_CONFIG` are set to a missing path,
         // but not if `config.toml` hasn't been created.
         let mut toml = if !using_default_path || toml_path.exists() {
             config.config = Some(toml_path.clone());
@@ -1009,16 +1009,16 @@ impl Config {
             config.out = crate::util::absolute(&config.out);
         }
 
-        config.initial_rustc = build.rustc.map(PathBuf::from).unwrap_or_else(|| {
+        config.initial_crablangc = build.crablangc.map(PathBuf::from).unwrap_or_else(|| {
             config.download_beta_toolchain();
-            config.out.join(config.build.triple).join("stage0/bin/rustc")
+            config.out.join(config.build.triple).join("stage0/bin/crablangc")
         });
         config.initial_cargo = build
             .cargo
             .map(PathBuf::from)
             .unwrap_or_else(|| config.out.join(config.build.triple).join("stage0/bin/cargo"));
 
-        // NOTE: it's important this comes *after* we set `initial_rustc` just above.
+        // NOTE: it's important this comes *after* we set `initial_crablangc` just above.
         if config.dry_run() {
             let dir = config.out.join("tmp-dry-run");
             t!(fs::create_dir_all(&dir));
@@ -1092,91 +1092,91 @@ impl Config {
         let mut overflow_checks_std = None;
         let mut debug_logging = None;
         let mut debuginfo_level = None;
-        let mut debuginfo_level_rustc = None;
+        let mut debuginfo_level_crablangc = None;
         let mut debuginfo_level_std = None;
         let mut debuginfo_level_tools = None;
         let mut debuginfo_level_tests = None;
         let mut optimize = None;
         let mut omit_git_hash = None;
 
-        if let Some(rust) = toml.rust {
-            debug = rust.debug;
-            debug_assertions = rust.debug_assertions;
-            debug_assertions_std = rust.debug_assertions_std;
-            overflow_checks = rust.overflow_checks;
-            overflow_checks_std = rust.overflow_checks_std;
-            debug_logging = rust.debug_logging;
-            debuginfo_level = rust.debuginfo_level;
-            debuginfo_level_rustc = rust.debuginfo_level_rustc;
-            debuginfo_level_std = rust.debuginfo_level_std;
-            debuginfo_level_tools = rust.debuginfo_level_tools;
-            debuginfo_level_tests = rust.debuginfo_level_tests;
-            config.rust_split_debuginfo = rust
+        if let Some(crablang) = toml.crablang {
+            debug = crablang.debug;
+            debug_assertions = crablang.debug_assertions;
+            debug_assertions_std = crablang.debug_assertions_std;
+            overflow_checks = crablang.overflow_checks;
+            overflow_checks_std = crablang.overflow_checks_std;
+            debug_logging = crablang.debug_logging;
+            debuginfo_level = crablang.debuginfo_level;
+            debuginfo_level_crablangc = crablang.debuginfo_level_crablangc;
+            debuginfo_level_std = crablang.debuginfo_level_std;
+            debuginfo_level_tools = crablang.debuginfo_level_tools;
+            debuginfo_level_tests = crablang.debuginfo_level_tests;
+            config.crablang_split_debuginfo = crablang
                 .split_debuginfo
                 .as_deref()
                 .map(SplitDebuginfo::from_str)
-                .map(|v| v.expect("invalid value for rust.split_debuginfo"))
+                .map(|v| v.expect("invalid value for crablang.split_debuginfo"))
                 .unwrap_or(SplitDebuginfo::default_for_platform(&config.build.triple));
-            optimize = rust.optimize;
-            omit_git_hash = rust.omit_git_hash;
-            config.rust_new_symbol_mangling = rust.new_symbol_mangling;
-            set(&mut config.rust_optimize_tests, rust.optimize_tests);
-            set(&mut config.codegen_tests, rust.codegen_tests);
-            set(&mut config.rust_rpath, rust.rpath);
-            set(&mut config.jemalloc, rust.jemalloc);
-            set(&mut config.test_compare_mode, rust.test_compare_mode);
-            set(&mut config.backtrace, rust.backtrace);
-            set(&mut config.channel, rust.channel);
-            config.description = rust.description;
-            set(&mut config.rust_dist_src, rust.dist_src);
-            set(&mut config.verbose_tests, rust.verbose_tests);
+            optimize = crablang.optimize;
+            omit_git_hash = crablang.omit_git_hash;
+            config.crablang_new_symbol_mangling = crablang.new_symbol_mangling;
+            set(&mut config.crablang_optimize_tests, crablang.optimize_tests);
+            set(&mut config.codegen_tests, crablang.codegen_tests);
+            set(&mut config.crablang_rpath, crablang.rpath);
+            set(&mut config.jemalloc, crablang.jemalloc);
+            set(&mut config.test_compare_mode, crablang.test_compare_mode);
+            set(&mut config.backtrace, crablang.backtrace);
+            set(&mut config.channel, crablang.channel);
+            config.description = crablang.description;
+            set(&mut config.crablang_dist_src, crablang.dist_src);
+            set(&mut config.verbose_tests, crablang.verbose_tests);
             // in the case "false" is set explicitly, do not overwrite the command line args
-            if let Some(true) = rust.incremental {
+            if let Some(true) = crablang.incremental {
                 config.incremental = true;
             }
-            set(&mut config.use_lld, rust.use_lld);
-            set(&mut config.lld_enabled, rust.lld);
-            set(&mut config.llvm_tools_enabled, rust.llvm_tools);
-            config.rustc_parallel = rust.parallel_compiler.unwrap_or(false);
-            config.rustc_default_linker = rust.default_linker;
-            config.musl_root = rust.musl_root.map(PathBuf::from);
-            config.save_toolstates = rust.save_toolstates.map(PathBuf::from);
-            set(&mut config.deny_warnings, flags.deny_warnings.or(rust.deny_warnings));
-            set(&mut config.backtrace_on_ice, rust.backtrace_on_ice);
-            set(&mut config.rust_verify_llvm_ir, rust.verify_llvm_ir);
-            config.rust_thin_lto_import_instr_limit = rust.thin_lto_import_instr_limit;
-            set(&mut config.rust_remap_debuginfo, rust.remap_debuginfo);
-            set(&mut config.control_flow_guard, rust.control_flow_guard);
-            config.llvm_libunwind_default = rust
+            set(&mut config.use_lld, crablang.use_lld);
+            set(&mut config.lld_enabled, crablang.lld);
+            set(&mut config.llvm_tools_enabled, crablang.llvm_tools);
+            config.crablangc_parallel = crablang.parallel_compiler.unwrap_or(false);
+            config.crablangc_default_linker = crablang.default_linker;
+            config.musl_root = crablang.musl_root.map(PathBuf::from);
+            config.save_toolstates = crablang.save_toolstates.map(PathBuf::from);
+            set(&mut config.deny_warnings, flags.deny_warnings.or(crablang.deny_warnings));
+            set(&mut config.backtrace_on_ice, crablang.backtrace_on_ice);
+            set(&mut config.crablang_verify_llvm_ir, crablang.verify_llvm_ir);
+            config.crablang_thin_lto_import_instr_limit = crablang.thin_lto_import_instr_limit;
+            set(&mut config.crablang_remap_debuginfo, crablang.remap_debuginfo);
+            set(&mut config.control_flow_guard, crablang.control_flow_guard);
+            config.llvm_libunwind_default = crablang
                 .llvm_libunwind
-                .map(|v| v.parse().expect("failed to parse rust.llvm-libunwind"));
+                .map(|v| v.parse().expect("failed to parse crablang.llvm-libunwind"));
 
-            if let Some(ref backends) = rust.codegen_backends {
-                config.rust_codegen_backends =
+            if let Some(ref backends) = crablang.codegen_backends {
+                config.crablang_codegen_backends =
                     backends.iter().map(|s| INTERNER.intern_str(s)).collect();
             }
 
-            config.rust_codegen_units = rust.codegen_units.map(threads_from_config);
-            config.rust_codegen_units_std = rust.codegen_units_std.map(threads_from_config);
-            config.rust_profile_use = flags.rust_profile_use.or(rust.profile_use);
-            config.rust_profile_generate = flags.rust_profile_generate.or(rust.profile_generate);
-            config.download_rustc_commit = config.download_ci_rustc_commit(rust.download_rustc);
+            config.crablang_codegen_units = crablang.codegen_units.map(threads_from_config);
+            config.crablang_codegen_units_std = crablang.codegen_units_std.map(threads_from_config);
+            config.crablang_profile_use = flags.crablang_profile_use.or(crablang.profile_use);
+            config.crablang_profile_generate = flags.crablang_profile_generate.or(crablang.profile_generate);
+            config.download_crablangc_commit = config.download_ci_crablangc_commit(crablang.download_crablangc);
 
-            config.rust_lto = rust
+            config.crablang_lto = crablang
                 .lto
                 .as_deref()
-                .map(|value| RustcLto::from_str(value).unwrap())
+                .map(|value| CrabLangcLto::from_str(value).unwrap())
                 .unwrap_or_default();
-            config.rust_validate_mir_opts = rust.validate_mir_opts;
+            config.crablang_validate_mir_opts = crablang.validate_mir_opts;
         } else {
-            config.rust_profile_use = flags.rust_profile_use;
-            config.rust_profile_generate = flags.rust_profile_generate;
+            config.crablang_profile_use = flags.crablang_profile_use;
+            config.crablang_profile_generate = flags.crablang_profile_generate;
         }
 
-        // rust_info must be set before is_ci_llvm_available() is called.
+        // crablang_info must be set before is_ci_llvm_available() is called.
         let default = config.channel == "dev";
         config.omit_git_hash = omit_git_hash.unwrap_or(default);
-        config.rust_info = GitInfo::new(config.omit_git_hash, &config.src);
+        config.crablang_info = GitInfo::new(config.omit_git_hash, &config.src);
 
         if let Some(llvm) = toml.llvm {
             match llvm.ccache {
@@ -1275,14 +1275,14 @@ impl Config {
                 if let Some(ref s) = cfg.llvm_config {
                     target.llvm_config = Some(config.src.join(s));
                 }
-                target.llvm_has_rust_patches = cfg.llvm_has_rust_patches;
+                target.llvm_has_crablang_patches = cfg.llvm_has_crablang_patches;
                 if let Some(ref s) = cfg.llvm_filecheck {
                     target.llvm_filecheck = Some(config.src.join(s));
                 }
                 target.llvm_libunwind = cfg
                     .llvm_libunwind
                     .as_ref()
-                    .map(|v| v.parse().expect("failed to parse rust.llvm-libunwind"));
+                    .map(|v| v.parse().expect("failed to parse crablang.llvm-libunwind"));
                 if let Some(ref s) = cfg.android_ndk {
                     target.ndk = Some(config.src.join(s));
                 }
@@ -1329,16 +1329,16 @@ impl Config {
             config.dist_upload_addr = t.upload_addr;
             config.dist_compression_formats = t.compression_formats;
             set(&mut config.dist_compression_profile, t.compression_profile);
-            set(&mut config.rust_dist_src, t.src_tarball);
+            set(&mut config.crablang_dist_src, t.src_tarball);
             set(&mut config.missing_tools, t.missing_tools);
             set(&mut config.dist_include_mingw_linker, t.include_mingw_linker)
         }
 
-        if let Some(r) = build.rustfmt {
-            *config.initial_rustfmt.borrow_mut() = if r.exists() {
-                RustfmtState::SystemToolchain(r)
+        if let Some(r) = build.crablangfmt {
+            *config.initial_crablangfmt.borrow_mut() = if r.exists() {
+                CrabLangfmtState::SystemToolchain(r)
             } else {
-                RustfmtState::Unavailable
+                CrabLangfmtState::Unavailable
             };
         }
 
@@ -1348,17 +1348,17 @@ impl Config {
         config.llvm_assertions = llvm_assertions.unwrap_or(false);
         config.llvm_tests = llvm_tests.unwrap_or(false);
         config.llvm_plugins = llvm_plugins.unwrap_or(false);
-        config.rust_optimize = optimize.unwrap_or(true);
+        config.crablang_optimize = optimize.unwrap_or(true);
 
         let default = debug == Some(true);
-        config.rust_debug_assertions = debug_assertions.unwrap_or(default);
-        config.rust_debug_assertions_std =
-            debug_assertions_std.unwrap_or(config.rust_debug_assertions);
-        config.rust_overflow_checks = overflow_checks.unwrap_or(default);
-        config.rust_overflow_checks_std =
-            overflow_checks_std.unwrap_or(config.rust_overflow_checks);
+        config.crablang_debug_assertions = debug_assertions.unwrap_or(default);
+        config.crablang_debug_assertions_std =
+            debug_assertions_std.unwrap_or(config.crablang_debug_assertions);
+        config.crablang_overflow_checks = overflow_checks.unwrap_or(default);
+        config.crablang_overflow_checks_std =
+            overflow_checks_std.unwrap_or(config.crablang_overflow_checks);
 
-        config.rust_debug_logging = debug_logging.unwrap_or(config.rust_debug_assertions);
+        config.crablang_debug_logging = debug_logging.unwrap_or(config.crablang_debug_assertions);
 
         let with_defaults = |debuginfo_level_specific: Option<u32>| {
             debuginfo_level_specific.or(debuginfo_level).unwrap_or(if debug == Some(true) {
@@ -1367,24 +1367,24 @@ impl Config {
                 0
             })
         };
-        config.rust_debuginfo_level_rustc = with_defaults(debuginfo_level_rustc);
-        config.rust_debuginfo_level_std = with_defaults(debuginfo_level_std);
-        config.rust_debuginfo_level_tools = with_defaults(debuginfo_level_tools);
-        config.rust_debuginfo_level_tests = debuginfo_level_tests.unwrap_or(0);
+        config.crablang_debuginfo_level_crablangc = with_defaults(debuginfo_level_crablangc);
+        config.crablang_debuginfo_level_std = with_defaults(debuginfo_level_std);
+        config.crablang_debuginfo_level_tools = with_defaults(debuginfo_level_tools);
+        config.crablang_debuginfo_level_tests = debuginfo_level_tests.unwrap_or(0);
 
-        let download_rustc = config.download_rustc_commit.is_some();
-        // See https://github.com/rust-lang/compiler-team/issues/326
+        let download_crablangc = config.download_crablangc_commit.is_some();
+        // See https://github.com/crablang/compiler-team/issues/326
         config.stage = match config.cmd {
             Subcommand::Check { .. } => flags.stage.or(build.check_stage).unwrap_or(0),
-            // `download-rustc` only has a speed-up for stage2 builds. Default to stage2 unless explicitly overridden.
+            // `download-crablangc` only has a speed-up for stage2 builds. Default to stage2 unless explicitly overridden.
             Subcommand::Doc { .. } => {
-                flags.stage.or(build.doc_stage).unwrap_or(if download_rustc { 2 } else { 0 })
+                flags.stage.or(build.doc_stage).unwrap_or(if download_crablangc { 2 } else { 0 })
             }
             Subcommand::Build { .. } => {
-                flags.stage.or(build.build_stage).unwrap_or(if download_rustc { 2 } else { 1 })
+                flags.stage.or(build.build_stage).unwrap_or(if download_crablangc { 2 } else { 1 })
             }
             Subcommand::Test { .. } => {
-                flags.stage.or(build.test_stage).unwrap_or(if download_rustc { 2 } else { 1 })
+                flags.stage.or(build.test_stage).unwrap_or(if download_crablangc { 2 } else { 1 })
             }
             Subcommand::Bench { .. } => flags.stage.or(build.bench_stage).unwrap_or(2),
             Subcommand::Dist { .. } => flags.stage.or(build.dist_stage).unwrap_or(2),
@@ -1447,7 +1447,7 @@ impl Config {
     /// Bootstrap embeds a version number into the name of shared libraries it uploads in CI.
     /// Return the version it would have used for the given commit.
     pub(crate) fn artifact_version_part(&self, commit: &str) -> String {
-        let (channel, version) = if self.rust_info.is_managed_git_subrepository() {
+        let (channel, version) = if self.crablang_info.is_managed_git_subrepository() {
             let mut channel = self.git();
             channel.arg("show").arg(format!("{}:src/ci/channel", commit));
             let channel = output(&mut channel);
@@ -1548,42 +1548,42 @@ impl Config {
         llvm_link_shared
     }
 
-    /// Return whether we will use a downloaded, pre-compiled version of rustc, or just build from source.
-    pub(crate) fn download_rustc(&self) -> bool {
-        self.download_rustc_commit().is_some()
+    /// Return whether we will use a downloaded, pre-compiled version of crablangc, or just build from source.
+    pub(crate) fn download_crablangc(&self) -> bool {
+        self.download_crablangc_commit().is_some()
     }
 
-    pub(crate) fn download_rustc_commit(&self) -> Option<&'static str> {
-        static DOWNLOAD_RUSTC: OnceCell<Option<String>> = OnceCell::new();
-        if self.dry_run() && DOWNLOAD_RUSTC.get().is_none() {
+    pub(crate) fn download_crablangc_commit(&self) -> Option<&'static str> {
+        static DOWNLOAD_CRABLANGC: OnceCell<Option<String>> = OnceCell::new();
+        if self.dry_run() && DOWNLOAD_CRABLANGC.get().is_none() {
             // avoid trying to actually download the commit
             return None;
         }
 
-        DOWNLOAD_RUSTC
-            .get_or_init(|| match &self.download_rustc_commit {
+        DOWNLOAD_CRABLANGC
+            .get_or_init(|| match &self.download_crablangc_commit {
                 None => None,
                 Some(commit) => {
-                    self.download_ci_rustc(commit);
+                    self.download_ci_crablangc(commit);
                     Some(commit.clone())
                 }
             })
             .as_deref()
     }
 
-    pub(crate) fn initial_rustfmt(&self) -> Option<PathBuf> {
-        match &mut *self.initial_rustfmt.borrow_mut() {
-            RustfmtState::SystemToolchain(p) | RustfmtState::Downloaded(p) => Some(p.clone()),
-            RustfmtState::Unavailable => None,
-            r @ RustfmtState::LazyEvaluated => {
+    pub(crate) fn initial_crablangfmt(&self) -> Option<PathBuf> {
+        match &mut *self.initial_crablangfmt.borrow_mut() {
+            CrabLangfmtState::SystemToolchain(p) | CrabLangfmtState::Downloaded(p) => Some(p.clone()),
+            CrabLangfmtState::Unavailable => None,
+            r @ CrabLangfmtState::LazyEvaluated => {
                 if self.dry_run() {
                     return Some(PathBuf::new());
                 }
-                let path = self.maybe_download_rustfmt();
+                let path = self.maybe_download_crablangfmt();
                 *r = if let Some(p) = &path {
-                    RustfmtState::Downloaded(p.clone())
+                    CrabLangfmtState::Downloaded(p.clone())
                 } else {
-                    RustfmtState::Unavailable
+                    CrabLangfmtState::Unavailable
                 };
                 path
             }
@@ -1613,7 +1613,7 @@ impl Config {
     }
 
     pub fn llvm_enabled(&self) -> bool {
-        self.rust_codegen_backends.contains(&INTERNER.intern_str("llvm"))
+        self.crablang_codegen_backends.contains(&INTERNER.intern_str("llvm"))
     }
 
     pub fn llvm_libunwind(&self, target: TargetSelection) -> LlvmLibunwind {
@@ -1628,23 +1628,23 @@ impl Config {
             })
     }
 
-    pub fn submodules(&self, rust_info: &GitInfo) -> bool {
-        self.submodules.unwrap_or(rust_info.is_managed_git_subrepository())
+    pub fn submodules(&self, crablang_info: &GitInfo) -> bool {
+        self.submodules.unwrap_or(crablang_info.is_managed_git_subrepository())
     }
 
     pub fn default_codegen_backend(&self) -> Option<Interned<String>> {
-        self.rust_codegen_backends.get(0).cloned()
+        self.crablang_codegen_backends.get(0).cloned()
     }
 
     /// Returns the commit to download, or `None` if we shouldn't download CI artifacts.
-    fn download_ci_rustc_commit(&self, download_rustc: Option<StringOrBool>) -> Option<String> {
-        // If `download-rustc` is not set, default to rebuilding.
-        let if_unchanged = match download_rustc {
+    fn download_ci_crablangc_commit(&self, download_crablangc: Option<StringOrBool>) -> Option<String> {
+        // If `download-crablangc` is not set, default to rebuilding.
+        let if_unchanged = match download_crablangc {
             None | Some(StringOrBool::Bool(false)) => return None,
             Some(StringOrBool::Bool(true)) => false,
             Some(StringOrBool::String(s)) if s == "if-unchanged" => true,
             Some(StringOrBool::String(other)) => {
-                panic!("unrecognized option for download-rustc: {}", other)
+                panic!("unrecognized option for download-crablangc: {}", other)
             }
         };
 
@@ -1664,9 +1664,9 @@ impl Config {
         );
         let commit = merge_base.trim_end();
         if commit.is_empty() {
-            println!("error: could not find commit hash for downloading rustc");
+            println!("error: could not find commit hash for downloading crablangc");
             println!("help: maybe your repository history is too shallow?");
-            println!("help: consider disabling `download-rustc`");
+            println!("help: consider disabling `download-crablangc`");
             println!("help: or fetch enough history to include one upstream commit");
             crate::detail_exit(1);
         }
@@ -1682,13 +1682,13 @@ impl Config {
                 if self.verbose > 0 {
                     println!(
                         "warning: saw changes to compiler/ or library/ since {commit}; \
-                            ignoring `download-rustc`"
+                            ignoring `download-crablangc`"
                     );
                 }
                 return None;
             }
             println!(
-                "warning: `download-rustc` is enabled, but there are changes to \
+                "warning: `download-crablangc` is enabled, but there are changes to \
                     compiler/ or library/"
             );
         }

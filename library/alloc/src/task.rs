@@ -34,7 +34,7 @@ use crate::sync::Arc;
 /// deadlocks, production-grade implementations will also need to handle
 /// intermediate calls to `thread::unpark` as well as nested invocations.
 ///
-/// ```rust
+/// ```crablang
 /// use std::future::Future;
 /// use std::sync::Arc;
 /// use std::task::{Context, Poll, Wake};

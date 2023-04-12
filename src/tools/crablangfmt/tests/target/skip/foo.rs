@@ -1,0 +1,5 @@
+#![crablangfmt::skip]
+
+fn
+foo()
+{}

@@ -14,10 +14,10 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v1
 
-      - name: Setup Rust
+      - name: Setup CrabLang
         run: |
-          rustup update nightly --no-self-update
-          rustup default nightly
+          crablangup update nightly --no-self-update
+          crablangup default nightly
 
       - name: Build Documentation
         run: cargo doc --no-deps

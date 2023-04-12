@@ -1,5 +1,5 @@
-// run-rustfix
-// https://github.com/rust-lang/rust/issues/79076
+// run-crablangfix
+// https://github.com/crablang/crablang/issues/79076
 
 use std::cmp::PartialEq;
 

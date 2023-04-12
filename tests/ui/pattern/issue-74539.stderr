@@ -34,4 +34,4 @@ LL |         E::A(x @ .., _) => {
 
 error: aborting due to 3 previous errors
 
-For more information about this error, try `rustc --explain E0023`.
+For more information about this error, try `crablangc --explain E0023`.

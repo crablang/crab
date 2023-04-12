@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 use std::ops::Deref;
 struct Bar(u8);
 struct Foo(Bar);

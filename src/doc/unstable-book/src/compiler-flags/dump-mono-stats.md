@@ -11,4 +11,4 @@ See also `-Z dump-mono-stats-format` and `-Z print-mono-items`. Unlike `print-mo
 `dump-mono-stats` aggregates monomorphized items by definition and includes a size estimate of how
 large the item is when codegened.
 
-See <https://rustc-dev-guide.rust-lang.org/backend/monomorph.html> for an overview of monomorphized items.
+See <https://crablangc-dev-guide.crablang.org/backend/monomorph.html> for an overview of monomorphized items.

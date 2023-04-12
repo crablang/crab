@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 pub fn foo(_const: *const f32, _mut: *mut i64) {}
 
 fn main() {

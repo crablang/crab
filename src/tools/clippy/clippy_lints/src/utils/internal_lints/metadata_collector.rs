@@ -1,5 +1,5 @@
 //! This lint is used to collect metadata about clippy lints. This metadata is exported as a json
-//! file and then used to generate the [clippy lint list](https://rust-lang.github.io/rust-clippy/master/index.html)
+//! file and then used to generate the [clippy lint list](https://crablang.github.io/crablang-clippy/master/index.html)
 //!
 //! This module and therefore the entire lint is guarded by a feature flag called `internal`
 //!
@@ -15,16 +15,16 @@ use clippy_utils::ty::{match_type, walk_ptrs_ty_depth};
 use clippy_utils::{last_path_segment, match_def_path, match_function_call, match_path, paths};
 use if_chain::if_chain;
 use itertools::Itertools;
-use rustc_ast as ast;
-use rustc_data_structures::fx::FxHashMap;
-use rustc_hir::{
+use crablangc_ast as ast;
+use crablangc_data_structures::fx::FxHashMap;
+use crablangc_hir::{
     self as hir, def::DefKind, intravisit, intravisit::Visitor, Closure, ExprKind, Item, ItemKind, Mutability, QPath,
 };
-use rustc_lint::{CheckLintNameResult, LateContext, LateLintPass, LintContext, LintId};
-use rustc_middle::hir::nested_filter;
-use rustc_session::{declare_tool_lint, impl_lint_pass};
-use rustc_span::symbol::Ident;
-use rustc_span::{sym, Loc, Span, Symbol};
+use crablangc_lint::{CheckLintNameResult, LateContext, LateLintPass, LintContext, LintId};
+use crablangc_middle::hir::nested_filter;
+use crablangc_session::{declare_tool_lint, impl_lint_pass};
+use crablangc_span::symbol::Ident;
+use crablangc_span::{sym, Loc, Span, Symbol};
 use serde::{ser::SerializeStruct, Serialize, Serializer};
 use std::collections::{BTreeSet, BinaryHeap};
 use std::fmt;
@@ -109,7 +109,7 @@ declare_clippy_lint! {
     ///
     /// ### Why is this bad?
     /// This is not a bad thing but definitely a hacky way to do it. See
-    /// issue [#4310](https://github.com/rust-lang/rust-clippy/issues/4310) for a discussion
+    /// issue [#4310](https://github.com/crablang/crablang-clippy/issues/4310) for a discussion
     /// about the implementation.
     ///
     /// ### Known problems
@@ -298,10 +298,10 @@ fn replace_produces(lint_name: &str, docs: &mut String, clippy_project_root: &Pa
     'outer: loop {
         // Find the start of the example
 
-        // ```rust
+        // ```crablang
         loop {
             match lines.next() {
-                Some(line) if line.trim_start().starts_with("```rust") => {
+                Some(line) if line.trim_start().starts_with("```crablang") => {
                     if line.contains("ignore") || line.contains("no_run") {
                         // A {{produces}} marker may have been put on a ignored code block by mistake,
                         // just seek to the end of the code block and continue checking.
@@ -495,7 +495,7 @@ impl SerializableSpan {
 #[derive(Debug, Clone, Default, PartialEq, Eq, PartialOrd, Ord)]
 struct ApplicabilityInfo {
     /// Indicates if any of the lint emissions uses multiple spans. This is related to
-    /// [rustfix#141](https://github.com/rust-lang/rustfix/issues/141) as such suggestions can
+    /// [crablangfix#141](https://github.com/crablang/crablangfix/issues/141) as such suggestions can
     /// currently not be applied automatically.
     is_multi_part_suggestion: bool,
     applicability: Option<usize>,
@@ -568,7 +568,7 @@ impl ClippyConfiguration {
             self.lints
                 .iter()
                 .map(|name| name.to_string().split_whitespace().next().unwrap().to_string())
-                .map(|name| format!("* [{name}](https://rust-lang.github.io/rust-clippy/master/index.html#{name})"))
+                .map(|name| format!("* [{name}](https://crablang.github.io/crablang-clippy/master/index.html#{name})"))
                 .join("\n"),
         )
     }
@@ -584,12 +584,12 @@ fn collect_configs() -> Vec<ClippyConfiguration> {
 
 /// This parses the field documentation of the config struct.
 ///
-/// ```rust, ignore
+/// ```crablang, ignore
 /// parse_config_field_doc(cx, "Lint: LINT_NAME_1, LINT_NAME_2. Papa penguin, papa penguin")
 /// ```
 ///
 /// Would yield:
-/// ```rust, ignore
+/// ```crablang, ignore
 /// Some(["lint_name_1", "lint_name_2"], "Papa penguin, papa penguin")
 /// ```
 fn parse_config_field_doc(doc_comment: &str) -> Option<(Vec<String>, String)> {
@@ -640,7 +640,7 @@ impl fmt::Display for ClippyConfiguration {
 // ==================================================================
 impl<'hir> LateLintPass<'hir> for MetadataCollector {
     /// Collecting lint declarations like:
-    /// ```rust, ignore
+    /// ```crablang, ignore
     /// declare_clippy_lint! {
     ///     /// ### What it does
     ///     /// Something IDK.
@@ -704,7 +704,7 @@ impl<'hir> LateLintPass<'hir> for MetadataCollector {
     /// Collecting constant applicability from the actual lint emissions
     ///
     /// Example:
-    /// ```rust, ignore
+    /// ```crablang, ignore
     /// span_lint_and_sugg(
     ///     cx,
     ///     SOME_LINT,
@@ -778,12 +778,12 @@ fn extract_attr_docs(cx: &LateContext<'_>, item: &Item<'_>) -> Option<String> {
 /// * Ensures that code blocks only contain language information
 fn cleanup_docs(docs_collection: &Vec<String>) -> String {
     let mut in_code_block = false;
-    let mut is_code_block_rust = false;
+    let mut is_code_block_crablang = false;
 
     let mut docs = String::new();
     for line in docs_collection {
-        // Rustdoc hides code lines starting with `# ` and this removes them from Clippy's lint list :)
-        if is_code_block_rust && line.trim_start().starts_with("# ") {
+        // CrabLangdoc hides code lines starting with `# ` and this removes them from Clippy's lint list :)
+        if is_code_block_crablang && line.trim_start().starts_with("# ") {
             continue;
         }
 
@@ -791,19 +791,19 @@ fn cleanup_docs(docs_collection: &Vec<String>) -> String {
         docs.push('\n');
         if let Some(info) = line.trim_start().strip_prefix("```") {
             in_code_block = !in_code_block;
-            is_code_block_rust = false;
+            is_code_block_crablang = false;
             if in_code_block {
                 let lang = info
                     .trim()
                     .split(',')
-                    // remove rustdoc directives
+                    // remove crablangdoc directives
                     .find(|&s| !matches!(s, "" | "ignore" | "no_run" | "should_panic"))
-                    // if no language is present, fill in "rust"
-                    .unwrap_or("rust");
+                    // if no language is present, fill in "crablang"
+                    .unwrap_or("crablang");
                 docs.push_str("```");
                 docs.push_str(lang);
 
-                is_code_block_rust = lang == "rust";
+                is_code_block_crablang = lang == "crablang";
                 continue;
             }
         }

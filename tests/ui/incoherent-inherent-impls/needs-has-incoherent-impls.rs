@@ -1,5 +1,5 @@
 // aux-build:extern-crate.rs
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 extern crate extern_crate;
 
 impl extern_crate::StructWithAttr {
@@ -7,7 +7,7 @@ impl extern_crate::StructWithAttr {
     fn foo() {}
 }
 impl extern_crate::StructWithAttr {
-    #[rustc_allow_incoherent_impl]
+    #[crablangc_allow_incoherent_impl]
     fn bar() {}
 }
 impl extern_crate::StructNoAttr {
@@ -16,7 +16,7 @@ impl extern_crate::StructNoAttr {
 }
 impl extern_crate::StructNoAttr {
     //~^ ERROR cannot define inherent `impl` for a type outside of the crate
-    #[rustc_allow_incoherent_impl]
+    #[crablangc_allow_incoherent_impl]
     fn bar() {}
 }
 impl extern_crate::EnumWithAttr {
@@ -24,7 +24,7 @@ impl extern_crate::EnumWithAttr {
     fn foo() {}
 }
 impl extern_crate::EnumWithAttr {
-    #[rustc_allow_incoherent_impl]
+    #[crablangc_allow_incoherent_impl]
     fn bar() {}
 }
 impl extern_crate::EnumNoAttr {
@@ -33,7 +33,7 @@ impl extern_crate::EnumNoAttr {
 }
 impl extern_crate::EnumNoAttr {
     //~^ ERROR cannot define inherent `impl` for a type outside of the crate
-    #[rustc_allow_incoherent_impl]
+    #[crablangc_allow_incoherent_impl]
     fn bar() {}
 }
 

@@ -1,6 +1,6 @@
 //! Implementation of [the WTF-8 encoding](https://simonsapin.github.io/wtf-8/).
 //!
-//! This library uses Rust’s type system to maintain
+//! This library uses CrabLang’s type system to maintain
 //! [well-formedness](https://simonsapin.github.io/wtf-8/#well-formed),
 //! like the `String` and `&str` types do for UTF-8.
 //!
@@ -917,7 +917,7 @@ impl<'a> Iterator for Wtf8CodePoints<'a> {
 }
 
 /// Generates a wide character sequence for potentially ill-formed UTF-16.
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[derive(Clone)]
 pub struct EncodeWide<'a> {
     code_points: Wtf8CodePoints<'a>,
@@ -925,7 +925,7 @@ pub struct EncodeWide<'a> {
 }
 
 // Copied from libunicode/u_str.rs
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<'a> Iterator for EncodeWide<'a> {
     type Item = u16;
 

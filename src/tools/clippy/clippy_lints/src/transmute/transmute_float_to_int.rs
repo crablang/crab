@@ -2,11 +2,11 @@ use super::TRANSMUTE_FLOAT_TO_INT;
 use clippy_utils::diagnostics::span_lint_and_then;
 use clippy_utils::sugg;
 use if_chain::if_chain;
-use rustc_ast as ast;
-use rustc_errors::Applicability;
-use rustc_hir::{Expr, ExprKind, UnOp};
-use rustc_lint::LateContext;
-use rustc_middle::ty::{self, Ty};
+use crablangc_ast as ast;
+use crablangc_errors::Applicability;
+use crablangc_hir::{Expr, ExprKind, UnOp};
+use crablangc_lint::LateContext;
+use crablangc_middle::ty::{self, Ty};
 
 /// Checks for `transmute_float_to_int` lint.
 /// Returns `true` if it's triggered, otherwise returns `false`.

@@ -1,13 +1,13 @@
-#![feature(rustc_private)]
+#![feature(crablangc_private)]
 
-extern crate rustc_driver;
-extern crate rustc_interface;
-extern crate rustc_session;
-extern crate rustc_span;
+extern crate crablangc_driver;
+extern crate crablangc_interface;
+extern crate crablangc_session;
+extern crate crablangc_span;
 
-use rustc_interface::interface;
-use rustc_session::config::{Input, Options, OutputType, OutputTypes};
-use rustc_span::source_map::FileName;
+use crablangc_interface::interface;
+use crablangc_session::config::{Input, Options, OutputType, OutputTypes};
+use crablangc_span::source_map::FileName;
 
 use std::path::PathBuf;
 
@@ -19,7 +19,7 @@ fn main() {
     let args: Vec<String> = std::env::args().collect();
 
     if args.len() < 4 {
-        panic!("expected rustc path");
+        panic!("expected crablangc path");
     }
 
     let tmpdir = PathBuf::from(&args[1]);
@@ -38,7 +38,7 @@ fn compile(code: String, output: PathBuf, sysroot: PathBuf) {
     opts.output_types = OutputTypes::new(&[(OutputType::Exe, None)]);
     opts.maybe_sysroot = Some(sysroot);
 
-    if let Ok(linker) = std::env::var("RUSTC_LINKER") {
+    if let Ok(linker) = std::env::var("CRABLANGC_LINKER") {
         opts.cg.linker = Some(linker.into());
     }
 
@@ -59,7 +59,7 @@ fn compile(code: String, output: PathBuf, sysroot: PathBuf) {
         register_lints: None,
         override_queries: None,
         make_codegen_backend: None,
-        registry: rustc_driver::diagnostics_registry(),
+        registry: crablangc_driver::diagnostics_registry(),
     };
 
     interface::run_compiler(config, |compiler| {

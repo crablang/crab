@@ -3,7 +3,7 @@
 
 pub struct Error(std::num::NonZeroU32);
 
-extern "Rust" {
+extern "CrabLang" {
     fn foo(dest: &mut [u8]) -> Result<(), Error>;
 }
 

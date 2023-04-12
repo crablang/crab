@@ -1,6 +1,6 @@
 // check-pass
 // edition:2018
-// issue: https://github.com/rust-lang/rust/issues/97534
+// issue: https://github.com/crablang/crablang/issues/97534
 
 macro_rules! m {
     () => {
@@ -61,7 +61,7 @@ a3!{}
 use c4 as a4;
 a4!{}
 
-// https://github.com/rust-lang/rust/pull/108729#issuecomment-1474750675
+// https://github.com/crablang/crablang/pull/108729#issuecomment-1474750675
 // reversed
 use d5 as d6;
 use d4 as d5;

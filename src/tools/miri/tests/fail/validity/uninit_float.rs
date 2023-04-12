@@ -1,5 +1,5 @@
 #![allow(deprecated, invalid_value)]
-// This test is adapted from https://github.com/rust-lang/miri/issues/1340#issue-600900312.
+// This test is adapted from https://github.com/crablang/miri/issues/1340#issue-600900312.
 
 fn main() {
     // Deliberately using `mem::uninitialized` to make sure that despite all the mitigations, we consider this UB.

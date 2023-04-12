@@ -1,5 +1,5 @@
 // This is a test adapted from a minimization of the code from
-// rust-lang/rust#52934, where an accidental disabling of
+// crablang/crablang#52934, where an accidental disabling of
 // two-phase-borrows (in the initial 2018 edition integration) broke
 // Clippy, but the scenarios where it was breaking were subtle enough
 // that we decided it warranted its own unit test, and pnkfelix
@@ -27,7 +27,7 @@ impl <'a> SpanlessHash<'a> {
         match *e {
             Expr::Closure(eid) => {
                 // Accepted by AST-borrowck for erroneous reasons
-                // (rust-lang/rust#38899).
+                // (crablang/crablang#38899).
                 //
                 // Not okay without two-phase borrows: the implicit
                 // `&mut self` of the receiver is evaluated first, and

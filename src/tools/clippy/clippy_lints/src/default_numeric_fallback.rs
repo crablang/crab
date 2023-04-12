@@ -2,18 +2,18 @@ use clippy_utils::diagnostics::span_lint_hir_and_then;
 use clippy_utils::source::snippet_opt;
 use clippy_utils::{get_parent_node, numeric_literal};
 use if_chain::if_chain;
-use rustc_ast::ast::{LitFloatType, LitIntType, LitKind};
-use rustc_errors::Applicability;
-use rustc_hir::{
+use crablangc_ast::ast::{LitFloatType, LitIntType, LitKind};
+use crablangc_errors::Applicability;
+use crablangc_hir::{
     intravisit::{walk_expr, walk_stmt, Visitor},
     Body, Expr, ExprKind, HirId, ItemKind, Lit, Node, Stmt, StmtKind,
 };
-use rustc_lint::{LateContext, LateLintPass, LintContext};
-use rustc_middle::{
+use crablangc_lint::{LateContext, LateLintPass, LintContext};
+use crablangc_middle::{
     lint::in_external_macro,
     ty::{self, FloatTy, IntTy, PolyFnSig, Ty},
 };
-use rustc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
 use std::iter;
 
 declare_clippy_lint! {
@@ -25,7 +25,7 @@ declare_clippy_lint! {
     /// types at the end of type inference, then integer type is bound to `i32`, and similarly
     /// floating type is bound to `f64`.
     ///
-    /// See [RFC0212](https://github.com/rust-lang/rfcs/blob/master/text/0212-restore-int-fallback.md) for more information about the fallback.
+    /// See [RFC0212](https://github.com/crablang/rfcs/blob/master/text/0212-restore-int-fallback.md) for more information about the fallback.
     ///
     /// ### Why is this bad?
     /// For those who are very careful about types, default numeric fallback
@@ -35,13 +35,13 @@ declare_clippy_lint! {
     /// This lint can only be allowed at the function level or above.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// let i = 10;
     /// let f = 1.23;
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// let i = 10i32;
     /// let f = 1.23f64;
     /// ```

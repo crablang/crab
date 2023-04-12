@@ -52,7 +52,7 @@ impl Drop for TempDir {
 pub fn tmpdir() -> TempDir {
     let p = env::temp_dir();
     let mut r = test_rng();
-    let ret = p.join(&format!("rust-{}", r.next_u32()));
+    let ret = p.join(&format!("crablang-{}", r.next_u32()));
     fs::create_dir(&ret).unwrap();
     TempDir(ret)
 }

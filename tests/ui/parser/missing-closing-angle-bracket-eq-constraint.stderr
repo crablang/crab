@@ -63,4 +63,4 @@ LL |   let v: Vec<_> : Vec<'a = vec![];
 
 error: aborting due to 5 previous errors
 
-For more information about this error, try `rustc --explain E0282`.
+For more information about this error, try `crablangc --explain E0282`.

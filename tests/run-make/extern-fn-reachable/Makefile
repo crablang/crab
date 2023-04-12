@@ -17,7 +17,7 @@ endif
 TARGET_RPATH_DIR:=$(TARGET_RPATH_DIR):$(TMPDIR)
 
 all:
-	$(RUSTC) dylib.rs -o $(TMPDIR)/libdylib.so -C prefer-dynamic
+	$(CRABLANGC) dylib.rs -o $(TMPDIR)/libdylib.so -C prefer-dynamic
 
 	[ "$$($(NM) $(TMPDIR)/libdylib.so | grep -v __imp_ | grep -c fun1)" -eq "1" ]
 	[ "$$($(NM) $(TMPDIR)/libdylib.so | grep -v __imp_ | grep -c fun2)" -eq "1" ]

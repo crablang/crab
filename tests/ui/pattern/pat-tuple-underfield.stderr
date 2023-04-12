@@ -164,4 +164,4 @@ LL |         Point4(   a, ..) => {}
 error: aborting due to 10 previous errors
 
 Some errors have detailed explanations: E0023, E0532.
-For more information about an error, try `rustc --explain E0023`.
+For more information about an error, try `crablangc --explain E0023`.

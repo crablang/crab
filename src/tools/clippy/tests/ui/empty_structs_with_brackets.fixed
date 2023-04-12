@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 #![warn(clippy::empty_structs_with_brackets)]
 #![allow(dead_code)]
 

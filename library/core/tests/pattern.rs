@@ -442,7 +442,7 @@ fn test_reverse_search_shared_bytes() {
 
 #[test]
 fn double_ended_regression_test() {
-    // https://github.com/rust-lang/rust/issues/47175
+    // https://github.com/crablang/crablang/issues/47175
     // Ensures that double ended searching comes to a convergence
     search_asserts!(
         "abcdeabcdeabcde",

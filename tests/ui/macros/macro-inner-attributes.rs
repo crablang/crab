@@ -1,4 +1,4 @@
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 
 macro_rules! test { ($nm:ident,
                      #[$a:meta],
@@ -12,7 +12,7 @@ test!(b,
       #[cfg(not(qux))],
       pub fn bar() { });
 
-#[rustc_dummy]
+#[crablangc_dummy]
 fn main() {
     a::bar();
     //~^ ERROR failed to resolve: use of undeclared crate or module `a`

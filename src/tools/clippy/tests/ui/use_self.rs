@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 // aux-build:proc_macro_derive.rs
 
 #![warn(clippy::use_self)]
@@ -207,7 +207,7 @@ mod issue3410 {
 }
 
 #[allow(clippy::no_effect, path_statements)]
-mod rustfix {
+mod crablangfix {
     mod nested {
         pub struct A;
     }

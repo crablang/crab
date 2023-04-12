@@ -1,6 +1,6 @@
-#![feature(const_trait_impl, min_specialization, rustc_attrs)]
+#![feature(const_trait_impl, min_specialization, crablangc_attrs)]
 
-#[rustc_specialization_trait]
+#[crablangc_specialization_trait]
 #[const_trait]
 pub trait Sup {}
 

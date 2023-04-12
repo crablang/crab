@@ -77,7 +77,7 @@
 +         _7 = <fn() -> ! {sleep} as Fn<()>>::call(move _5, const ()) -> [return: bb1, unwind: bb3]; // scope 2 at $DIR/inline_diverging.rs:28:13: 28:16
 +                                          // mir::Constant
 +                                          // + span: $DIR/inline_diverging.rs:28:13: 28:14
-+                                          // + literal: Const { ty: for<'a> extern "rust-call" fn(&'a fn() -> ! {sleep}, ()) -> <fn() -> ! {sleep} as FnOnce<()>>::Output {<fn() -> ! {sleep} as Fn<()>>::call}, val: Value(<ZST>) }
++                                          // + literal: Const { ty: for<'a> extern "crablang-call" fn(&'a fn() -> ! {sleep}, ()) -> <fn() -> ! {sleep} as FnOnce<()>>::Output {<fn() -> ! {sleep} as Fn<()>>::call}, val: Value(<ZST>) }
       }
   }
   

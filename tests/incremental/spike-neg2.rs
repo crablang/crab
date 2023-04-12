@@ -1,5 +1,5 @@
 // A variant of the first "spike" test that serves to test the
-// `rustc_partition_reused` and `rustc_partition_codegened` tests.
+// `crablangc_partition_reused` and `crablangc_partition_codegened` tests.
 // Here we change and say that the `y` module will be codegened (when
 // in fact it will not), and then indicate that the test itself
 // should-fail (because an error will be reported, and hence the
@@ -8,11 +8,11 @@
 // revisions:rpass1 rpass2
 // should-fail
 
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 
-#![rustc_partition_reused(module="spike_neg2", cfg="rpass2")]
-#![rustc_partition_codegened(module="spike_neg2-x", cfg="rpass2")]
-#![rustc_partition_codegened(module="spike_neg2-y", cfg="rpass2")] // this is wrong!
+#![crablangc_partition_reused(module="spike_neg2", cfg="rpass2")]
+#![crablangc_partition_codegened(module="spike_neg2-x", cfg="rpass2")]
+#![crablangc_partition_codegened(module="spike_neg2-y", cfg="rpass2")] // this is wrong!
 
 mod x {
     pub struct X {

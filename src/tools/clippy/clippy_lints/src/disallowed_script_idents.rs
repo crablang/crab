@@ -1,8 +1,8 @@
 use clippy_utils::diagnostics::span_lint;
-use rustc_ast::ast;
-use rustc_data_structures::fx::FxHashSet;
-use rustc_lint::{EarlyContext, EarlyLintPass, Level, LintContext};
-use rustc_session::{declare_tool_lint, impl_lint_pass};
+use crablangc_ast::ast;
+use crablangc_data_structures::fx::FxHashSet;
+use crablangc_lint::{EarlyContext, EarlyLintPass, Level, LintContext};
+use crablangc_session::{declare_tool_lint, impl_lint_pass};
 use unicode_script::{Script, UnicodeScript};
 
 declare_clippy_lint! {
@@ -27,10 +27,10 @@ declare_clippy_lint! {
     /// Note that if you only want to allow plain English, you might want to use
     /// built-in [`non_ascii_idents`] lint instead.
     ///
-    /// [`non_ascii_idents`]: https://doc.rust-lang.org/rustc/lints/listing/allowed-by-default.html#non-ascii-idents
+    /// [`non_ascii_idents`]: https://doc.crablang.org/crablangc/lints/listing/allowed-by-default.html#non-ascii-idents
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// // Assuming that `clippy.toml` contains the following line:
     /// // allowed-locales = ["Latin", "Cyrillic"]
     /// let counter = 10; // OK, latin is allowed.
@@ -65,7 +65,7 @@ impl_lint_pass!(DisallowedScriptIdents => [DISALLOWED_SCRIPT_IDENTS]);
 impl EarlyLintPass for DisallowedScriptIdents {
     fn check_crate(&mut self, cx: &EarlyContext<'_>, _: &ast::Crate) {
         // Implementation is heavily inspired by the implementation of [`non_ascii_idents`] lint:
-        // https://github.com/rust-lang/rust/blob/master/compiler/rustc_lint/src/non_ascii_idents.rs
+        // https://github.com/crablang/crablang/blob/master/compiler/crablangc_lint/src/non_ascii_idents.rs
 
         let check_disallowed_script_idents = cx.builder.lint_level(DISALLOWED_SCRIPT_IDENTS).0 != Level::Allow;
         if !check_disallowed_script_idents {

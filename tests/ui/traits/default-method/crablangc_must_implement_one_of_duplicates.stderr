@@ -1,0 +1,34 @@
+error: functions names are duplicated
+  --> $DIR/crablangc_must_implement_one_of_duplicates.rs:3:31
+   |
+LL | #[crablangc_must_implement_one_of(a, a)]
+   |                               ^  ^
+   |
+   = note: all `#[crablangc_must_implement_one_of]` arguments must be unique
+
+error: functions names are duplicated
+  --> $DIR/crablangc_must_implement_one_of_duplicates.rs:9:34
+   |
+LL | #[crablangc_must_implement_one_of(b, a, a, c, b, c)]
+   |                                  ^  ^
+   |
+   = note: all `#[crablangc_must_implement_one_of]` arguments must be unique
+
+error: functions names are duplicated
+  --> $DIR/crablangc_must_implement_one_of_duplicates.rs:9:31
+   |
+LL | #[crablangc_must_implement_one_of(b, a, a, c, b, c)]
+   |                               ^           ^
+   |
+   = note: all `#[crablangc_must_implement_one_of]` arguments must be unique
+
+error: functions names are duplicated
+  --> $DIR/crablangc_must_implement_one_of_duplicates.rs:9:40
+   |
+LL | #[crablangc_must_implement_one_of(b, a, a, c, b, c)]
+   |                                        ^     ^
+   |
+   = note: all `#[crablangc_must_implement_one_of]` arguments must be unique
+
+error: aborting due to 4 previous errors
+

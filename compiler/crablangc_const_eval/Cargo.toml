@@ -1,0 +1,26 @@
+[package]
+name = "crablangc_const_eval"
+version = "0.0.0"
+edition = "2021"
+
+[lib]
+
+[dependencies]
+tracing = "0.1"
+either = "1"
+crablangc_apfloat = { path = "../crablangc_apfloat" }
+crablangc_ast = { path = "../crablangc_ast" }
+crablangc_attr = { path = "../crablangc_attr" }
+crablangc_data_structures = { path = "../crablangc_data_structures" }
+crablangc_errors = { path = "../crablangc_errors" }
+crablangc_hir = { path = "../crablangc_hir" }
+crablangc_index = { path = "../crablangc_index" }
+crablangc_infer = { path = "../crablangc_infer" }
+crablangc_macros = { path = "../crablangc_macros" }
+crablangc_middle = { path = "../crablangc_middle" }
+crablangc_mir_dataflow = { path = "../crablangc_mir_dataflow" }
+crablangc_session = { path = "../crablangc_session" }
+crablangc_target = { path = "../crablangc_target" }
+crablangc_trait_selection = { path = "../crablangc_trait_selection" }
+crablangc_span = { path = "../crablangc_span" }
+crablangc_type_ir = { path = "../crablangc_type_ir" }

@@ -14,8 +14,8 @@ LL |         x.unwrap()
    |
    = note: requirement occurs because of the type `Invariant<'_>`, which makes the generic argument `'_` invariant
    = note: the struct `Invariant<'a>` is invariant over the parameter `'a`
-   = help: see <https://doc.rust-lang.org/nomicon/subtyping.html> for more information about variance
+   = help: see <https://doc.crablang.org/nomicon/subtyping.html> for more information about variance
 
 error: aborting due to previous error
 
-For more information about this error, try `rustc --explain E0521`.
+For more information about this error, try `crablangc --explain E0521`.

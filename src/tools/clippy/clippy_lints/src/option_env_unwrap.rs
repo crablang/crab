@@ -1,10 +1,10 @@
 use clippy_utils::diagnostics::span_lint_and_help;
 use clippy_utils::is_direct_expn_of;
 use if_chain::if_chain;
-use rustc_ast::ast::{Expr, ExprKind, MethodCall};
-use rustc_lint::{EarlyContext, EarlyLintPass};
-use rustc_session::{declare_lint_pass, declare_tool_lint};
-use rustc_span::sym;
+use crablangc_ast::ast::{Expr, ExprKind, MethodCall};
+use crablangc_lint::{EarlyContext, EarlyLintPass};
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_span::sym;
 
 declare_clippy_lint! {
     /// ### What it does
@@ -17,13 +17,13 @@ declare_clippy_lint! {
     /// catches it at compile-time.
     ///
     /// ### Example
-    /// ```rust,no_run
+    /// ```crablang,no_run
     /// let _ = option_env!("HOME").unwrap();
     /// ```
     ///
     /// Is better expressed as:
     ///
-    /// ```rust,no_run
+    /// ```crablang,no_run
     /// let _ = env!("HOME");
     /// ```
     #[clippy::version = "1.43.0"]

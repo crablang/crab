@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT OR Apache-2.0
-// SPDX-FileCopyrightText: The Rust Project Developers (see https://thanks.rust-lang.org)
+// SPDX-FileCopyrightText: The CrabLang Project Developers (see https://thanks.crablang.org)
 
 macro_rules! assert_approx_eq {
     ($a:expr, $b:expr) => {{

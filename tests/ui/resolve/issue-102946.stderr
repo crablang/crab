@@ -23,4 +23,4 @@ LL | impl Error for std::str::Utf8Error {
 error: aborting due to 2 previous errors
 
 Some errors have detailed explanations: E0223, E0405.
-For more information about an error, try `rustc --explain E0223`.
+For more information about an error, try `crablangc --explain E0223`.

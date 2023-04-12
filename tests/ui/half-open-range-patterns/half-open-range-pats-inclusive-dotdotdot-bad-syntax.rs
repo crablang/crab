@@ -1,6 +1,6 @@
 // Test that `...X` range-to patterns are syntactically invalid.
 //
-// See https://github.com/rust-lang/rust/pull/67258#issuecomment-565656155
+// See https://github.com/crablang/crablang/pull/67258#issuecomment-565656155
 // for the reason why. To summarize, we might want to introduce `...expr` as
 // an expression form for splatting (or "untupling") in an expression context.
 // While there is no syntactic ambiguity with `...X` in a pattern context,

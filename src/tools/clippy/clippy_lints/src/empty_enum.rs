@@ -1,9 +1,9 @@
 //! lint when there is an enum with no variants
 
 use clippy_utils::diagnostics::span_lint_and_help;
-use rustc_hir::{Item, ItemKind};
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_hir::{Item, ItemKind};
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
 
 declare_clippy_lint! {
     /// ### What it does
@@ -19,16 +19,16 @@ declare_clippy_lint! {
     /// or a wrapper around it, because `!` has more extensive
     /// compiler support (type inference, etc...) and wrappers
     /// around it are the conventional way to define an uninhabited type.
-    /// For further information visit [never type documentation](https://doc.rust-lang.org/std/primitive.never.html)
+    /// For further information visit [never type documentation](https://doc.crablang.org/std/primitive.never.html)
     ///
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// enum Test {}
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// #![feature(never_type)]
     ///
     /// struct Test(!);

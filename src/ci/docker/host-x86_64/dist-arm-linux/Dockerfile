@@ -10,14 +10,14 @@ WORKDIR /build
 
 COPY scripts/musl-patch-configure.diff /build/
 COPY scripts/musl-toolchain.sh /build/
-# We need to mitigate rust-lang/rust#34978 when compiling musl itself as well
+# We need to mitigate crablang/crablang#34978 when compiling musl itself as well
 RUN CFLAGS="-Wa,--compress-debug-sections=none -Wl,--compress-debug-sections=none" \
     CXXFLAGS="-Wa,--compress-debug-sections=none -Wl,--compress-debug-sections=none" \
     bash musl-toolchain.sh aarch64 && rm -rf build
 
-COPY scripts/rustbuild-setup.sh /scripts/
-RUN sh /scripts/rustbuild-setup.sh
-USER rustbuild
+COPY scripts/crablangbuild-setup.sh /scripts/
+RUN sh /scripts/crablangbuild-setup.sh
+USER crablangbuild
 WORKDIR /tmp
 
 COPY host-x86_64/dist-arm-linux/arm-linux-gnueabi.config host-x86_64/dist-arm-linux/build-toolchains.sh /tmp/
@@ -36,6 +36,6 @@ ENV CC_arm_unknown_linux_gnueabi=arm-unknown-linux-gnueabi-gcc \
 
 ENV HOSTS=arm-unknown-linux-gnueabi,aarch64-unknown-linux-musl
 
-ENV RUST_CONFIGURE_ARGS --enable-full-tools --disable-docs --musl-root-aarch64=/usr/local/aarch64-linux-musl \
+ENV CRABLANG_CONFIGURE_ARGS --enable-full-tools --disable-docs --musl-root-aarch64=/usr/local/aarch64-linux-musl \
     --set target.aarch64-unknown-linux-musl.crt-static=false
 ENV SCRIPT python3 ../x.py dist --host $HOSTS --target $HOSTS

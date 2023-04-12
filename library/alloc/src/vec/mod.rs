@@ -51,7 +51,7 @@
 //!
 //! [`push`]: Vec::push
 
-#![stable(feature = "rust1", since = "1.0.0")]
+#![stable(feature = "crablang1", since = "1.0.0")]
 
 #[cfg(not(no_global_oom_handling))]
 use core::cmp;
@@ -96,7 +96,7 @@ mod cow;
 
 #[cfg(not(no_global_oom_handling))]
 pub(crate) use self::in_place_collect::AsVecIntoIter;
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub use self::into_iter::IntoIter;
 
 mod into_iter;
@@ -255,7 +255,7 @@ mod spec_extend;
 /// let u: &[_] = &v;
 /// ```
 ///
-/// In Rust, it's more common to pass slices as arguments rather than vectors
+/// In CrabLang, it's more common to pass slices as arguments rather than vectors
 /// when you just want to provide read access. The same goes for [`String`] and
 /// [`&str`].
 ///
@@ -302,7 +302,7 @@ mod spec_extend;
 /// `from_raw_parts` to recover the `Vec` and then dropping it.
 ///
 /// If a `Vec` *has* allocated memory, then the memory it points to is on the heap
-/// (as defined by the allocator Rust is configured to use by default), and its
+/// (as defined by the allocator CrabLang is configured to use by default), and its
 /// pointer points to [`len`] initialized, contiguous elements in order (what
 /// you would see if you coerced it to a slice), followed by <code>[capacity] - [len]</code>
 /// logically uninitialized, contiguous elements.
@@ -393,9 +393,9 @@ mod spec_extend;
 /// [`reserve`]: Vec::reserve
 /// [`MaybeUninit`]: core::mem::MaybeUninit
 /// [owned slice]: Box
-#[stable(feature = "rust1", since = "1.0.0")]
-#[cfg_attr(not(test), rustc_diagnostic_item = "Vec")]
-#[rustc_insignificant_dtor]
+#[stable(feature = "crablang1", since = "1.0.0")]
+#[cfg_attr(not(test), crablangc_diagnostic_item = "Vec")]
+#[crablangc_insignificant_dtor]
 pub struct Vec<T, #[unstable(feature = "allocator_api", issue = "32838")] A: Allocator = Global> {
     buf: RawVec<T, A>,
     len: usize,
@@ -417,8 +417,8 @@ impl<T> Vec<T> {
     /// let mut vec: Vec<i32> = Vec::new();
     /// ```
     #[inline]
-    #[rustc_const_stable(feature = "const_vec_new", since = "1.39.0")]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[crablangc_const_stable(feature = "const_vec_new", since = "1.39.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[must_use]
     pub const fn new() -> Self {
         Vec { buf: RawVec::NEW, len: 0 }
@@ -476,7 +476,7 @@ impl<T> Vec<T> {
     /// ```
     #[cfg(not(no_global_oom_handling))]
     #[inline]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[must_use]
     pub fn with_capacity(capacity: usize) -> Self {
         Self::with_capacity_in(capacity, Global)
@@ -562,7 +562,7 @@ impl<T> Vec<T> {
     ///
     /// Using memory that was allocated elsewhere:
     ///
-    /// ```rust
+    /// ```crablang
     /// #![feature(allocator_api)]
     ///
     /// use std::alloc::{AllocError, Allocator, Global, Layout};
@@ -586,7 +586,7 @@ impl<T> Vec<T> {
     /// }
     /// ```
     #[inline]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub unsafe fn from_raw_parts(ptr: *mut T, length: usize, capacity: usize) -> Self {
         unsafe { Self::from_raw_parts_in(ptr, length, capacity, Global) }
     }
@@ -760,7 +760,7 @@ impl<T, A: Allocator> Vec<T, A> {
     ///
     /// Using memory that was allocated elsewhere:
     ///
-    /// ```rust
+    /// ```crablang
     /// use std::alloc::{alloc, Layout};
     ///
     /// fn main() {
@@ -883,7 +883,7 @@ impl<T, A: Allocator> Vec<T, A> {
     /// assert_eq!(vec.capacity(), 10);
     /// ```
     #[inline]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn capacity(&self) -> usize {
         self.buf.capacity()
     }
@@ -906,7 +906,7 @@ impl<T, A: Allocator> Vec<T, A> {
     /// assert!(vec.capacity() >= 11);
     /// ```
     #[cfg(not(no_global_oom_handling))]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn reserve(&mut self, additional: usize) {
         self.buf.reserve(self.len, additional);
     }
@@ -936,7 +936,7 @@ impl<T, A: Allocator> Vec<T, A> {
     /// assert!(vec.capacity() >= 11);
     /// ```
     #[cfg(not(no_global_oom_handling))]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn reserve_exact(&mut self, additional: usize) {
         self.buf.reserve_exact(self.len, additional);
     }
@@ -1036,7 +1036,7 @@ impl<T, A: Allocator> Vec<T, A> {
     /// assert!(vec.capacity() >= 3);
     /// ```
     #[cfg(not(no_global_oom_handling))]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn shrink_to_fit(&mut self) {
         // The capacity is never less than the length, and there's nothing to do when
         // they are equal, so we can avoid the panic case in `RawVec::shrink_to_fit`
@@ -1098,7 +1098,7 @@ impl<T, A: Allocator> Vec<T, A> {
     /// assert_eq!(slice.into_vec().capacity(), 3);
     /// ```
     #[cfg(not(no_global_oom_handling))]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn into_boxed_slice(mut self) -> Box<[T], A> {
         unsafe {
             self.shrink_to_fit();
@@ -1151,7 +1151,7 @@ impl<T, A: Allocator> Vec<T, A> {
     ///
     /// [`clear`]: Vec::clear
     /// [`drain`]: Vec::drain
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn truncate(&mut self, len: usize) {
         // This is safe because:
         //
@@ -1361,7 +1361,7 @@ impl<T, A: Allocator> Vec<T, A> {
     /// Normally, here, one would use [`clear`] instead to correctly drop
     /// the contents and thus not leak memory.
     #[inline]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub unsafe fn set_len(&mut self, new_len: usize) {
         debug_assert!(new_len <= self.capacity());
 
@@ -1393,7 +1393,7 @@ impl<T, A: Allocator> Vec<T, A> {
     /// assert_eq!(v, ["baz", "qux"]);
     /// ```
     #[inline]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn swap_remove(&mut self, index: usize) -> T {
         #[cold]
         #[inline(never)]
@@ -1434,7 +1434,7 @@ impl<T, A: Allocator> Vec<T, A> {
     /// assert_eq!(vec, [1, 4, 2, 3, 5]);
     /// ```
     #[cfg(not(no_global_oom_handling))]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn insert(&mut self, index: usize, element: T) {
         #[cold]
         #[inline(never)]
@@ -1494,7 +1494,7 @@ impl<T, A: Allocator> Vec<T, A> {
     /// assert_eq!(v.remove(1), 2);
     /// assert_eq!(v, [1, 3]);
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[track_caller]
     pub fn remove(&mut self, index: usize) -> T {
         #[cold]
@@ -1550,7 +1550,7 @@ impl<T, A: Allocator> Vec<T, A> {
     /// vec.retain(|_| *iter.next().unwrap());
     /// assert_eq!(vec, [2, 3, 5]);
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn retain<F>(&mut self, mut f: F)
     where
         F: FnMut(&T) -> bool,
@@ -1823,7 +1823,7 @@ impl<T, A: Allocator> Vec<T, A> {
     /// ```
     #[cfg(not(no_global_oom_handling))]
     #[inline]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn push(&mut self, value: T) {
         // This will panic or abort if we would allocate > isize::MAX bytes
         // or if the length increment would overflow for zero-sized types.
@@ -1898,7 +1898,7 @@ impl<T, A: Allocator> Vec<T, A> {
     /// assert_eq!(vec, [1, 2]);
     /// ```
     #[inline]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn pop(&mut self) -> Option<T> {
         if self.len == 0 {
             None
@@ -2022,7 +2022,7 @@ impl<T, A: Allocator> Vec<T, A> {
     /// assert!(v.is_empty());
     /// ```
     #[inline]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn clear(&mut self) {
         let elems: *mut [T] = self.as_mut_slice();
 
@@ -2048,7 +2048,7 @@ impl<T, A: Allocator> Vec<T, A> {
     /// assert_eq!(a.len(), 3);
     /// ```
     #[inline]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn len(&self) -> usize {
         self.len
     }
@@ -2064,7 +2064,7 @@ impl<T, A: Allocator> Vec<T, A> {
     /// v.push(1);
     /// assert!(!v.is_empty());
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn is_empty(&self) -> bool {
         self.len() == 0
     }
@@ -2160,7 +2160,7 @@ impl<T, A: Allocator> Vec<T, A> {
     {
         let len = self.len();
         if new_len > len {
-            self.extend_trusted(iter::repeat_with(f).take(new_len - len));
+            self.extend_tcrablanged(iter::repeat_with(f).take(new_len - len));
         } else {
             self.truncate(new_len);
         }
@@ -2171,7 +2171,7 @@ impl<T, A: Allocator> Vec<T, A> {
     /// `'a`. If the type has only static references, or none at all, then this
     /// may be chosen to be `'static`.
     ///
-    /// As of Rust 1.57, this method does not reallocate or shrink the `Vec`,
+    /// As of CrabLang 1.57, this method does not reallocate or shrink the `Vec`,
     /// so the leaked allocation may include unused capacity that is not part
     /// of the returned slice.
     ///
@@ -2370,7 +2370,7 @@ impl<T: Clone, A: Allocator> Vec<T, A> {
     /// it to this `Vec`. The `other` slice is traversed in-order.
     ///
     /// Note that this function is same as [`extend`] except that it is
-    /// specialized to work with slices instead. If and when Rust gets
+    /// specialized to work with slices instead. If and when CrabLang gets
     /// specialization this function will likely be deprecated (but still
     /// available).
     ///
@@ -2535,7 +2535,7 @@ impl<T: PartialEq, A: Allocator> Vec<T, A> {
     ///
     /// assert_eq!(vec, [1, 2, 3, 2]);
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     pub fn dedup(&mut self) {
         self.dedup_by(|a, b| a == b)
@@ -2548,7 +2548,7 @@ impl<T: PartialEq, A: Allocator> Vec<T, A> {
 
 #[doc(hidden)]
 #[cfg(not(no_global_oom_handling))]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub fn from_elem<T: Clone>(elem: T, n: usize) -> Vec<T> {
     <T as SpecFromElem>::from_elem(elem, n, Global)
 }
@@ -2619,7 +2619,7 @@ impl<T: Copy, A: Allocator> ExtendFromWithinSpec for Vec<T, A> {
 // Common trait implementations for Vec
 ////////////////////////////////////////////////////////////////////////////////
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T, A: Allocator> ops::Deref for Vec<T, A> {
     type Target = [T];
 
@@ -2629,7 +2629,7 @@ impl<T, A: Allocator> ops::Deref for Vec<T, A> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T, A: Allocator> ops::DerefMut for Vec<T, A> {
     #[inline]
     fn deref_mut(&mut self) -> &mut [T] {
@@ -2638,7 +2638,7 @@ impl<T, A: Allocator> ops::DerefMut for Vec<T, A> {
 }
 
 #[cfg(not(no_global_oom_handling))]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: Clone, A: Allocator + Clone> Clone for Vec<T, A> {
     #[cfg(not(test))]
     fn clone(&self) -> Self {
@@ -2673,7 +2673,7 @@ impl<T: Clone, A: Allocator + Clone> Clone for Vec<T, A> {
 /// let s: &[u8] = &[0xa8, 0x3c, 0x09];
 /// assert_eq!(b.hash_one(v), b.hash_one(s));
 /// ```
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: Hash, A: Allocator> Hash for Vec<T, A> {
     #[inline]
     fn hash<H: Hasher>(&self, state: &mut H) {
@@ -2681,8 +2681,8 @@ impl<T: Hash, A: Allocator> Hash for Vec<T, A> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
-#[rustc_on_unimplemented(
+#[stable(feature = "crablang1", since = "1.0.0")]
+#[crablangc_on_unimplemented(
     message = "vector indices are of type `usize` or ranges of `usize`",
     label = "vector indices are of type `usize` or ranges of `usize`"
 )]
@@ -2695,8 +2695,8 @@ impl<T, I: SliceIndex<[T]>, A: Allocator> Index<I> for Vec<T, A> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
-#[rustc_on_unimplemented(
+#[stable(feature = "crablang1", since = "1.0.0")]
+#[crablangc_on_unimplemented(
     message = "vector indices are of type `usize` or ranges of `usize`",
     label = "vector indices are of type `usize` or ranges of `usize`"
 )]
@@ -2708,7 +2708,7 @@ impl<T, I: SliceIndex<[T]>, A: Allocator> IndexMut<I> for Vec<T, A> {
 }
 
 #[cfg(not(no_global_oom_handling))]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T> FromIterator<T> for Vec<T> {
     #[inline]
     fn from_iter<I: IntoIterator<Item = T>>(iter: I) -> Vec<T> {
@@ -2716,7 +2716,7 @@ impl<T> FromIterator<T> for Vec<T> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T, A: Allocator> IntoIterator for Vec<T, A> {
     type Item = T;
     type IntoIter = IntoIter<T, A>;
@@ -2761,7 +2761,7 @@ impl<T, A: Allocator> IntoIterator for Vec<T, A> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<'a, T, A: Allocator> IntoIterator for &'a Vec<T, A> {
     type Item = &'a T;
     type IntoIter = slice::Iter<'a, T>;
@@ -2771,7 +2771,7 @@ impl<'a, T, A: Allocator> IntoIterator for &'a Vec<T, A> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<'a, T, A: Allocator> IntoIterator for &'a mut Vec<T, A> {
     type Item = &'a mut T;
     type IntoIter = slice::IterMut<'a, T>;
@@ -2782,7 +2782,7 @@ impl<'a, T, A: Allocator> IntoIterator for &'a mut Vec<T, A> {
 }
 
 #[cfg(not(no_global_oom_handling))]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T, A: Allocator> Extend<T> for Vec<T, A> {
     #[inline]
     fn extend<I: IntoIterator<Item = T>>(&mut self, iter: I) {
@@ -2828,16 +2828,16 @@ impl<T, A: Allocator> Vec<T, A> {
         }
     }
 
-    // specific extend for `TrustedLen` iterators, called both by the specializations
+    // specific extend for `TcrablangedLen` iterators, called both by the specializations
     // and internal places where resolving specialization makes compilation slower
     #[cfg(not(no_global_oom_handling))]
-    fn extend_trusted(&mut self, iterator: impl iter::TrustedLen<Item = T>) {
+    fn extend_tcrablanged(&mut self, iterator: impl iter::TcrablangedLen<Item = T>) {
         let (low, high) = iterator.size_hint();
         if let Some(additional) = high {
             debug_assert_eq!(
                 low,
                 additional,
-                "TrustedLen iterator's size hint is not exact: {:?}",
+                "TcrablangedLen iterator's size hint is not exact: {:?}",
                 (low, high)
             );
             self.reserve(additional);
@@ -2853,7 +2853,7 @@ impl<T, A: Allocator> Vec<T, A> {
                 });
             }
         } else {
-            // Per TrustedLen contract a `None` upper bound means that the iterator length
+            // Per TcrablangedLen contract a `None` upper bound means that the iterator length
             // truly exceeds usize::MAX, which would eventually lead to a capacity overflow anyway.
             // Since the other branch already panics eagerly (via `reserve()`) we do the same here.
             // This avoids additional codegen for a fallback code path which would eventually
@@ -2991,7 +2991,7 @@ impl<'a, T: Copy + 'a, A: Allocator + 'a> Extend<&'a T> for Vec<T, A> {
 }
 
 /// Implements comparison of vectors, [lexicographically](core::cmp::Ord#lexicographical-comparison).
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: PartialOrd, A: Allocator> PartialOrd for Vec<T, A> {
     #[inline]
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
@@ -2999,11 +2999,11 @@ impl<T: PartialOrd, A: Allocator> PartialOrd for Vec<T, A> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: Eq, A: Allocator> Eq for Vec<T, A> {}
 
 /// Implements ordering of vectors, [lexicographically](core::cmp::Ord#lexicographical-comparison).
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: Ord, A: Allocator> Ord for Vec<T, A> {
     #[inline]
     fn cmp(&self, other: &Self) -> Ordering {
@@ -3011,7 +3011,7 @@ impl<T: Ord, A: Allocator> Ord for Vec<T, A> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 unsafe impl<#[may_dangle] T, A: Allocator> Drop for Vec<T, A> {
     fn drop(&mut self) {
         unsafe {
@@ -3024,8 +3024,8 @@ unsafe impl<#[may_dangle] T, A: Allocator> Drop for Vec<T, A> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
-#[rustc_const_unstable(feature = "const_default_impls", issue = "87864")]
+#[stable(feature = "crablang1", since = "1.0.0")]
+#[crablangc_const_unstable(feature = "const_default_impls", issue = "87864")]
 impl<T> const Default for Vec<T> {
     /// Creates an empty `Vec<T>`.
     ///
@@ -3035,14 +3035,14 @@ impl<T> const Default for Vec<T> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: fmt::Debug, A: Allocator> fmt::Debug for Vec<T, A> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         fmt::Debug::fmt(&**self, f)
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T, A: Allocator> AsRef<Vec<T, A>> for Vec<T, A> {
     fn as_ref(&self) -> &Vec<T, A> {
         self
@@ -3056,7 +3056,7 @@ impl<T, A: Allocator> AsMut<Vec<T, A>> for Vec<T, A> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T, A: Allocator> AsRef<[T]> for Vec<T, A> {
     fn as_ref(&self) -> &[T] {
         self
@@ -3071,7 +3071,7 @@ impl<T, A: Allocator> AsMut<[T]> for Vec<T, A> {
 }
 
 #[cfg(not(no_global_oom_handling))]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: Clone> From<&[T]> for Vec<T> {
     /// Allocate a `Vec<T>` and fill it by cloning `s`'s items.
     ///
@@ -3202,7 +3202,7 @@ impl<T, A: Allocator> From<Vec<T, A>> for Box<[T], A> {
 }
 
 #[cfg(not(no_global_oom_handling))]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl From<&str> for Vec<u8> {
     /// Allocate a `Vec<u8>` and fill it with a UTF-8 string.
     ///

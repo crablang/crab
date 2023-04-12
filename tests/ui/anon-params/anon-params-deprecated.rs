@@ -3,7 +3,7 @@
 
 // check-pass
 // edition:2015
-// run-rustfix
+// run-crablangfix
 
 trait T {
     fn foo(i32); //~ WARNING anonymous parameters are deprecated

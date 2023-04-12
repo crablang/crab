@@ -2,7 +2,7 @@
 
 /// Should not trigger an ICE in `SpanlessEq` / `consts::constant`
 ///
-/// Issue: https://github.com/rust-lang/rust-clippy/issues/1782
+/// Issue: https://github.com/crablang/crablang-clippy/issues/1782
 use std::{mem, ptr};
 
 fn spanless_eq_ice() {

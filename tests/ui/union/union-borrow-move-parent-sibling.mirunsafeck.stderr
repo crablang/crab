@@ -81,4 +81,4 @@ LL |     use_borrow(a);
 error: aborting due to 7 previous errors
 
 Some errors have detailed explanations: E0382, E0502, E0507.
-For more information about an error, try `rustc --explain E0382`.
+For more information about an error, try `crablangc --explain E0382`.

@@ -2,18 +2,18 @@ use clippy_utils::diagnostics::{span_lint, span_lint_and_sugg, span_lint_and_the
 use clippy_utils::source::snippet_with_context;
 use clippy_utils::{get_item_name, get_parent_as_impl, is_lint_allowed, peel_ref_operators, sugg::Sugg};
 use if_chain::if_chain;
-use rustc_ast::ast::LitKind;
-use rustc_errors::Applicability;
-use rustc_hir::def_id::DefIdSet;
-use rustc_hir::{
+use crablangc_ast::ast::LitKind;
+use crablangc_errors::Applicability;
+use crablangc_hir::def_id::DefIdSet;
+use crablangc_hir::{
     def::Res, def_id::DefId, lang_items::LangItem, AssocItemKind, BinOpKind, Expr, ExprKind, FnRetTy, GenericArg,
     GenericBound, ImplItem, ImplItemKind, ImplicitSelfKind, Item, ItemKind, Mutability, Node, PathSegment, PrimTy,
     QPath, TraitItemRef, TyKind, TypeBindingKind,
 };
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_middle::ty::{self, AssocKind, FnSig, Ty};
-use rustc_session::{declare_lint_pass, declare_tool_lint};
-use rustc_span::{
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_middle::ty::{self, AssocKind, FnSig, Ty};
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_span::{
     source_map::{Span, Spanned, Symbol},
     symbol::sym,
 };
@@ -214,7 +214,7 @@ fn check_trait_items(cx: &LateContext<'_>, visited_trait: &Item<'_>, trait_items
     // fill the set with current and super traits
     fn fill_trait_set(traitt: DefId, set: &mut DefIdSet, cx: &LateContext<'_>) {
         if set.insert(traitt) {
-            for supertrait in rustc_trait_selection::traits::supertrait_def_ids(cx.tcx, traitt) {
+            for supertrait in crablangc_trait_selection::traits::supertrait_def_ids(cx.tcx, traitt) {
                 fill_trait_set(supertrait, set, cx);
             }
         }
@@ -265,7 +265,7 @@ fn extract_future_output<'tcx>(cx: &LateContext<'tcx>, ty: Ty<'tcx>) -> Option<&
         let GenericBound::LangItemTrait(LangItem::Future, _, _, generic_args) = &opaque.bounds[0] &&
         generic_args.bindings.len() == 1 &&
         let TypeBindingKind::Equality {
-            term: rustc_hir::Term::Ty(rustc_hir::Ty {kind: TyKind::Path(QPath::Resolved(_, path)), .. }),
+            term: crablangc_hir::Term::Ty(crablangc_hir::Ty {kind: TyKind::Path(QPath::Resolved(_, path)), .. }),
         } = &generic_args.bindings[0].kind &&
         path.segments.len() == 1 {
             return Some(&path.segments[0]);
@@ -280,7 +280,7 @@ fn is_first_generic_integral<'tcx>(segment: &'tcx PathSegment<'tcx>) -> bool {
             return false;
         }
         let arg = &generic_args.args[0];
-        if let GenericArg::Type(rustc_hir::Ty {
+        if let GenericArg::Type(crablangc_hir::Ty {
             kind: TyKind::Path(QPath::Resolved(_, path)),
             ..
         }) = arg

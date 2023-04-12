@@ -1,8 +1,8 @@
-use rustc_hir as hir;
-use rustc_hir::intravisit::FnKind;
-use rustc_lint::{LateContext, LintContext};
-use rustc_middle::lint::in_external_macro;
-use rustc_span::Span;
+use crablangc_hir as hir;
+use crablangc_hir::intravisit::FnKind;
+use crablangc_lint::{LateContext, LintContext};
+use crablangc_middle::lint::in_external_macro;
+use crablangc_span::Span;
 
 use clippy_utils::diagnostics::span_lint;
 use clippy_utils::source::snippet_opt;

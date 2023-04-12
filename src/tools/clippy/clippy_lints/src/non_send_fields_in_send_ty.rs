@@ -2,14 +2,14 @@ use clippy_utils::diagnostics::span_lint_and_then;
 use clippy_utils::source::snippet;
 use clippy_utils::ty::{implements_trait, is_copy};
 use clippy_utils::{is_lint_allowed, match_def_path, paths};
-use rustc_ast::ImplPolarity;
-use rustc_hir::def_id::DefId;
-use rustc_hir::{FieldDef, Item, ItemKind, Node};
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_middle::lint::in_external_macro;
-use rustc_middle::ty::{self, subst::GenericArgKind, Ty};
-use rustc_session::{declare_tool_lint, impl_lint_pass};
-use rustc_span::sym;
+use crablangc_ast::ImplPolarity;
+use crablangc_hir::def_id::DefId;
+use crablangc_hir::{FieldDef, Item, ItemKind, Node};
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_middle::lint::in_external_macro;
+use crablangc_middle::ty::{self, subst::GenericArgKind, Ty};
+use crablangc_session::{declare_tool_lint, impl_lint_pass};
+use crablangc_span::sym;
 
 declare_clippy_lint! {
     /// ### What it does
@@ -26,8 +26,8 @@ declare_clippy_lint! {
     /// that is different from the thread that created it.
     ///
     /// See:
-    /// * [*The Rustonomicon* about *Send and Sync*](https://doc.rust-lang.org/nomicon/send-and-sync.html)
-    /// * [The documentation of `Send`](https://doc.rust-lang.org/std/marker/trait.Send.html)
+    /// * [*The CrabLangonomicon* about *Send and Sync*](https://doc.crablang.org/nomicon/send-and-sync.html)
+    /// * [The documentation of `Send`](https://doc.crablang.org/std/marker/trait.Send.html)
     ///
     /// ### Known Problems
     /// This lint relies on heuristics to distinguish types that are actually
@@ -37,7 +37,7 @@ declare_clippy_lint! {
     /// you have a suggestion on how this heuristic can be improved.
     ///
     /// ### Example
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// struct ExampleStruct<T> {
     ///     rc_is_not_send: Rc<String>,
     ///     unbounded_generic_field: T,
@@ -46,7 +46,7 @@ declare_clippy_lint! {
     /// // This impl is unsound because it allows sending `!Send` types through `ExampleStruct`
     /// unsafe impl<T> Send for ExampleStruct<T> {}
     /// ```
-    /// Use thread-safe types like [`std::sync::Arc`](https://doc.rust-lang.org/std/sync/struct.Arc.html)
+    /// Use thread-safe types like [`std::sync::Arc`](https://doc.crablang.org/std/sync/struct.Arc.html)
     /// or specify correct bounds on generic type parameters (`T: Send`).
     #[clippy::version = "1.57.0"]
     pub NON_SEND_FIELDS_IN_SEND_TY,

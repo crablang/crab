@@ -4,9 +4,9 @@ error[E0658]: the `#[const_eval_limit]` attribute is an experimental feature
 LL | #![const_eval_limit="42"]
    | ^^^^^^^^^^^^^^^^^^^^^^^^^
    |
-   = note: see issue #67217 <https://github.com/rust-lang/rust/issues/67217> for more information
+   = note: see issue #67217 <https://github.com/crablang/crablang/issues/67217> for more information
    = help: add `#![feature(const_eval_limit)]` to the crate attributes to enable
 
 error: aborting due to previous error
 
-For more information about this error, try `rustc --explain E0658`.
+For more information about this error, try `crablangc --explain E0658`.

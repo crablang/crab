@@ -7,8 +7,8 @@
 #![feature(prelude_import)]
 
 #![test_macros::identity_attr]
-#![rustfmt::skip]
+#![crablangfmt::skip]
 #![test_macros::identity_attr]
-#![rustfmt::skip]
+#![crablangfmt::skip]
 
 fn main() {}

@@ -1,7 +1,7 @@
 # ignore-cross-compile
 include ../tools.mk
 
-TARGET_SYSROOT := $(shell $(RUSTC) --print sysroot)/lib/rustlib/$(TARGET)/lib
+TARGET_SYSROOT := $(shell $(CRABLANGC) --print sysroot)/lib/crablanglib/$(TARGET)/lib
 
 ifdef IS_MSVC
 LIBSTD := $(wildcard $(TARGET_SYSROOT)/libstd-*.dll.lib)
@@ -24,5 +24,5 @@ $(call RUN_BINFILE,foo): $(call DYLIB,foo)
 endif
 
 $(call DYLIB,foo):
-	$(RUSTC) -C prefer-dynamic bar.rs
-	$(RUSTC) foo.rs
+	$(CRABLANGC) -C prefer-dynamic bar.rs
+	$(CRABLANGC) foo.rs

@@ -23,7 +23,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 RUN curl -sL https://nodejs.org/dist/v16.9.0/node-v16.9.0-linux-x64.tar.xz | tar -xJ
 ENV PATH="/node-v16.9.0-linux-x64/bin:${PATH}"
-ENV RUST_CONFIGURE_ARGS="--set rust.validate-mir-opts=3"
+ENV CRABLANG_CONFIGURE_ARGS="--set crablang.validate-mir-opts=3"
 
 # Install es-check
 # Pin its version to prevent unrelated CI failures due to future es-check versions.
@@ -45,13 +45,13 @@ ENV SCRIPT python3 ../x.py --stage 2 test src/tools/expand-yaml-anchors && \
            python3 ../x.py test --stage 0 src/tools/compiletest && \
            python3 ../x.py test --stage 0 core alloc std test proc_macro && \
            # Build both public and internal documentation.
-           RUSTDOCFLAGS=\"--document-private-items --document-hidden-items\" python3 ../x.py doc --stage 0 compiler && \
-           RUSTDOCFLAGS=\"--document-private-items --document-hidden-items\" python3 ../x.py doc --stage 0 library/test && \
+           CRABLANGDOCFLAGS=\"--document-private-items --document-hidden-items\" python3 ../x.py doc --stage 0 compiler && \
+           CRABLANGDOCFLAGS=\"--document-private-items --document-hidden-items\" python3 ../x.py doc --stage 0 library/test && \
            /scripts/validate-toolstate.sh && \
            /scripts/validate-error-codes.sh && \
            reuse lint && \
            # Runs checks to ensure that there are no ES5 issues in our JS code.
-           es-check es6 ../src/librustdoc/html/static/js/*.js && \
-           eslint -c ../src/librustdoc/html/static/.eslintrc.js ../src/librustdoc/html/static/js/*.js && \
-           eslint -c ../src/tools/rustdoc-js/.eslintrc.js ../src/tools/rustdoc-js/tester.js && \
-           eslint -c ../src/tools/rustdoc-gui/.eslintrc.js ../src/tools/rustdoc-gui/tester.js
+           es-check es6 ../src/libcrablangdoc/html/static/js/*.js && \
+           eslint -c ../src/libcrablangdoc/html/static/.eslintrc.js ../src/libcrablangdoc/html/static/js/*.js && \
+           eslint -c ../src/tools/crablangdoc-js/.eslintrc.js ../src/tools/crablangdoc-js/tester.js && \
+           eslint -c ../src/tools/crablangdoc-gui/.eslintrc.js ../src/tools/crablangdoc-gui/tester.js

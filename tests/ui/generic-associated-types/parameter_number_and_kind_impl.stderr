@@ -59,4 +59,4 @@ LL |     type C<T> = T;
 error: aborting due to 6 previous errors
 
 Some errors have detailed explanations: E0049, E0195.
-For more information about an error, try `rustc --explain E0049`.
+For more information about an error, try `crablangc --explain E0049`.

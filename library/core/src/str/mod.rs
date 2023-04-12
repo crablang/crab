@@ -4,7 +4,7 @@
 //!
 //! [`std::str`]: ../../std/str/index.html
 
-#![stable(feature = "rust1", since = "1.0.0")]
+#![stable(feature = "crablang1", since = "1.0.0")]
 
 mod converts;
 mod count;
@@ -26,29 +26,29 @@ mod lossy;
 #[unstable(feature = "utf8_chunks", issue = "99543")]
 pub use lossy::{Utf8Chunk, Utf8Chunks};
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub use converts::{from_utf8, from_utf8_unchecked};
 
 #[stable(feature = "str_mut_extras", since = "1.20.0")]
 pub use converts::{from_utf8_mut, from_utf8_unchecked_mut};
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub use error::{ParseBoolError, Utf8Error};
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub use traits::FromStr;
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub use iter::{Bytes, CharIndices, Chars, Lines, SplitWhitespace};
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[allow(deprecated)]
 pub use iter::LinesAny;
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub use iter::{RSplit, RSplitTerminator, Split, SplitTerminator};
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub use iter::{RSplitN, SplitN};
 
 #[stable(feature = "str_matches", since = "1.2.0")]
@@ -79,7 +79,7 @@ use iter::{MatchesInternal, SplitNInternal};
 #[inline(never)]
 #[cold]
 #[track_caller]
-#[rustc_allow_const_fn_unstable(const_eval_select)]
+#[crablangc_allow_const_fn_unstable(const_eval_select)]
 const fn slice_error_fail(s: &str, begin: usize, end: usize) -> ! {
     // SAFETY: panics for both branches
     unsafe {
@@ -152,8 +152,8 @@ impl str {
     /// assert_eq!("ƒoo".len(), 4); // fancy f!
     /// assert_eq!("ƒoo".chars().count(), 3);
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
-    #[rustc_const_stable(feature = "const_str_len", since = "1.39.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    #[crablangc_const_stable(feature = "const_str_len", since = "1.39.0")]
     #[must_use]
     #[inline]
     pub const fn len(&self) -> usize {
@@ -173,8 +173,8 @@ impl str {
     /// let s = "not empty";
     /// assert!(!s.is_empty());
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
-    #[rustc_const_stable(feature = "const_str_is_empty", since = "1.39.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    #[crablangc_const_stable(feature = "const_str_is_empty", since = "1.39.0")]
     #[must_use]
     #[inline]
     pub const fn is_empty(&self) -> bool {
@@ -206,7 +206,7 @@ impl str {
     /// ```
     #[must_use]
     #[stable(feature = "is_char_boundary", since = "1.9.0")]
-    #[rustc_const_unstable(feature = "const_is_char_boundary", issue = "none")]
+    #[crablangc_const_unstable(feature = "const_is_char_boundary", issue = "none")]
     #[inline]
     pub const fn is_char_boundary(&self, index: usize) -> bool {
         // 0 is always ok.
@@ -317,8 +317,8 @@ impl str {
     /// let bytes = "bors".as_bytes();
     /// assert_eq!(b"bors", bytes);
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
-    #[rustc_const_stable(feature = "str_as_bytes", since = "1.39.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    #[crablangc_const_stable(feature = "str_as_bytes", since = "1.39.0")]
     #[must_use]
     #[inline(always)]
     #[allow(unused_attributes)]
@@ -393,8 +393,8 @@ impl str {
     /// let s = "Hello";
     /// let ptr = s.as_ptr();
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
-    #[rustc_const_stable(feature = "rustc_str_as_ptr", since = "1.32.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    #[crablangc_const_stable(feature = "crablangc_str_as_ptr", since = "1.32.0")]
     #[must_use]
     #[inline(always)]
     pub const fn as_ptr(&self) -> *const u8 {
@@ -436,7 +436,7 @@ impl str {
     /// assert!(v.get(..42).is_none());
     /// ```
     #[stable(feature = "str_checked_slicing", since = "1.20.0")]
-    #[rustc_const_unstable(feature = "const_slice_index", issue = "none")]
+    #[crablangc_const_unstable(feature = "const_slice_index", issue = "none")]
     #[inline]
     pub const fn get<I: ~const SliceIndex<str>>(&self, i: I) -> Option<&I::Output> {
         i.get(self)
@@ -469,7 +469,7 @@ impl str {
     /// assert_eq!("HEllo", v);
     /// ```
     #[stable(feature = "str_checked_slicing", since = "1.20.0")]
-    #[rustc_const_unstable(feature = "const_slice_index", issue = "none")]
+    #[crablangc_const_unstable(feature = "const_slice_index", issue = "none")]
     #[inline]
     pub const fn get_mut<I: ~const SliceIndex<str>>(&mut self, i: I) -> Option<&mut I::Output> {
         i.get_mut(self)
@@ -502,7 +502,7 @@ impl str {
     /// }
     /// ```
     #[stable(feature = "str_checked_slicing", since = "1.20.0")]
-    #[rustc_const_unstable(feature = "const_slice_index", issue = "none")]
+    #[crablangc_const_unstable(feature = "const_slice_index", issue = "none")]
     #[inline]
     pub const unsafe fn get_unchecked<I: ~const SliceIndex<str>>(&self, i: I) -> &I::Output {
         // SAFETY: the caller must uphold the safety contract for `get_unchecked`;
@@ -538,7 +538,7 @@ impl str {
     /// }
     /// ```
     #[stable(feature = "str_checked_slicing", since = "1.20.0")]
-    #[rustc_const_unstable(feature = "const_slice_index", issue = "none")]
+    #[crablangc_const_unstable(feature = "const_slice_index", issue = "none")]
     #[inline]
     pub const unsafe fn get_unchecked_mut<I: ~const SliceIndex<str>>(
         &mut self,
@@ -592,7 +592,7 @@ impl str {
     ///     assert_eq!("world", s.slice_unchecked(7, 12));
     /// }
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[deprecated(since = "1.29.0", note = "use `get_unchecked(begin..end)` instead")]
     #[must_use]
     #[inline]
@@ -738,7 +738,7 @@ impl str {
     /// It's important to remember that [`char`] represents a Unicode Scalar
     /// Value, and might not match your idea of what a 'character' is. Iteration
     /// over grapheme clusters may be what you actually want. This functionality
-    /// is not provided by Rust's standard library, check crates.io instead.
+    /// is not provided by CrabLang's standard library, check crates.io instead.
     ///
     /// # Examples
     ///
@@ -777,7 +777,7 @@ impl str {
     ///
     /// assert_eq!(None, chars.next());
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     pub fn chars(&self) -> Chars<'_> {
         Chars { iter: self.as_bytes().iter() }
@@ -834,7 +834,7 @@ impl str {
     ///
     /// assert_eq!(None, char_indices.next());
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     pub fn char_indices(&self) -> CharIndices<'_> {
         CharIndices { front_offset: 0, iter: self.chars() }
@@ -859,7 +859,7 @@ impl str {
     ///
     /// assert_eq!(None, bytes.next());
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     pub fn bytes(&self) -> Bytes<'_> {
         Bytes(self.as_bytes().iter().copied())
@@ -911,7 +911,7 @@ impl str {
     #[must_use = "this returns the split string as an iterator, \
                   without modifying the original"]
     #[stable(feature = "split_whitespace", since = "1.1.0")]
-    #[cfg_attr(not(test), rustc_diagnostic_item = "str_split_whitespace")]
+    #[cfg_attr(not(test), crablangc_diagnostic_item = "str_split_whitespace")]
     #[inline]
     pub fn split_whitespace(&self) -> SplitWhitespace<'_> {
         SplitWhitespace { inner: self.split(IsWhitespace).filter(IsNotEmpty) }
@@ -1008,14 +1008,14 @@ impl str {
     ///
     /// assert_eq!(None, lines.next());
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     pub fn lines(&self) -> Lines<'_> {
         Lines(self.split_inclusive('\n').map(LinesMap))
     }
 
     /// An iterator over the lines of a string.
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[deprecated(since = "1.4.0", note = "use lines() instead now")]
     #[inline]
     #[allow(deprecated)]
@@ -1065,7 +1065,7 @@ impl str {
     /// assert!(bananas.contains("nana"));
     /// assert!(!bananas.contains("apples"));
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     pub fn contains<'a, P: Pattern<'a>>(&'a self, pat: P) -> bool {
         pat.is_contained_in(self)
@@ -1092,7 +1092,7 @@ impl str {
     /// assert!(bananas.starts_with("bana"));
     /// assert!(!bananas.starts_with("nana"));
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn starts_with<'a, P: Pattern<'a>>(&'a self, pat: P) -> bool {
         pat.is_prefix_of(self)
     }
@@ -1118,7 +1118,7 @@ impl str {
     /// assert!(bananas.ends_with("anas"));
     /// assert!(!bananas.ends_with("nana"));
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn ends_with<'a, P>(&'a self, pat: P) -> bool
     where
         P: Pattern<'a, Searcher: ReverseSearcher<'a>>,
@@ -1168,7 +1168,7 @@ impl str {
     ///
     /// assert_eq!(s.find(x), None);
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     pub fn find<'a, P: Pattern<'a>>(&'a self, pat: P) -> Option<usize> {
         pat.into_searcher(self).next_match().map(|(i, _)| i)
@@ -1214,7 +1214,7 @@ impl str {
     ///
     /// assert_eq!(s.rfind(x), None);
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     pub fn rfind<'a, P>(&'a self, pat: P) -> Option<usize>
     where
@@ -1313,7 +1313,7 @@ impl str {
     /// and end of the string.
     ///
     /// ```
-    /// let f: Vec<_> = "rust".split("").collect();
+    /// let f: Vec<_> = "crablang".split("").collect();
     /// assert_eq!(f, &["", "r", "u", "s", "t", ""]);
     /// ```
     ///
@@ -1336,7 +1336,7 @@ impl str {
     /// Use [`split_whitespace`] for this behavior.
     ///
     /// [`split_whitespace`]: str::split_whitespace
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     pub fn split<'a, P: Pattern<'a>>(&'a self, pat: P) -> Split<'a, P> {
         Split(SplitInternal {
@@ -1431,7 +1431,7 @@ impl str {
     /// let v: Vec<&str> = "abc1defXghi".rsplit(|c| c == '1' || c == 'X').collect();
     /// assert_eq!(v, ["ghi", "def", "abc"]);
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     pub fn rsplit<'a, P>(&'a self, pat: P) -> RSplit<'a, P>
     where
@@ -1482,7 +1482,7 @@ impl str {
     /// let v: Vec<&str> = "A.B:C.D".split_terminator(&['.', ':'][..]).collect();
     /// assert_eq!(v, ["A", "B", "C", "D"]);
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     pub fn split_terminator<'a, P: Pattern<'a>>(&'a self, pat: P) -> SplitTerminator<'a, P> {
         SplitTerminator(SplitInternal { allow_trailing_empty: false, ..self.split(pat).0 })
@@ -1528,7 +1528,7 @@ impl str {
     /// let v: Vec<&str> = "A.B:C.D".rsplit_terminator(&['.', ':'][..]).collect();
     /// assert_eq!(v, ["D", "C", "B", "A"]);
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     pub fn rsplit_terminator<'a, P>(&'a self, pat: P) -> RSplitTerminator<'a, P>
     where
@@ -1583,7 +1583,7 @@ impl str {
     /// let v: Vec<&str> = "abc1defXghi".splitn(2, |c| c == '1' || c == 'X').collect();
     /// assert_eq!(v, ["abc", "defXghi"]);
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     pub fn splitn<'a, P: Pattern<'a>>(&'a self, n: usize, pat: P) -> SplitN<'a, P> {
         SplitN(SplitNInternal { iter: self.split(pat).0, count: n })
@@ -1632,7 +1632,7 @@ impl str {
     /// let v: Vec<&str> = "abc1defXghi".rsplitn(2, |c| c == '1' || c == 'X').collect();
     /// assert_eq!(v, ["ghi", "abc1def"]);
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     pub fn rsplitn<'a, P>(&'a self, n: usize, pat: P) -> RSplitN<'a, P>
     where
@@ -1862,8 +1862,8 @@ impl str {
     #[inline]
     #[must_use = "this returns the trimmed string as a slice, \
                   without modifying the original"]
-    #[stable(feature = "rust1", since = "1.0.0")]
-    #[cfg_attr(not(test), rustc_diagnostic_item = "str_trim")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    #[cfg_attr(not(test), crablangc_diagnostic_item = "str_trim")]
     pub fn trim(&self) -> &str {
         self.trim_matches(|c: char| c.is_whitespace())
     }
@@ -1902,7 +1902,7 @@ impl str {
     #[must_use = "this returns the trimmed string as a new slice, \
                   without modifying the original"]
     #[stable(feature = "trim_direction", since = "1.30.0")]
-    #[cfg_attr(not(test), rustc_diagnostic_item = "str_trim_start")]
+    #[cfg_attr(not(test), crablangc_diagnostic_item = "str_trim_start")]
     pub fn trim_start(&self) -> &str {
         self.trim_start_matches(|c: char| c.is_whitespace())
     }
@@ -1941,7 +1941,7 @@ impl str {
     #[must_use = "this returns the trimmed string as a new slice, \
                   without modifying the original"]
     #[stable(feature = "trim_direction", since = "1.30.0")]
-    #[cfg_attr(not(test), rustc_diagnostic_item = "str_trim_end")]
+    #[cfg_attr(not(test), crablangc_diagnostic_item = "str_trim_end")]
     pub fn trim_end(&self) -> &str {
         self.trim_end_matches(|c: char| c.is_whitespace())
     }
@@ -1980,7 +1980,7 @@ impl str {
     #[must_use = "this returns the trimmed string as a new slice, \
                   without modifying the original"]
     #[inline]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[deprecated(since = "1.33.0", note = "superseded by `trim_start`", suggestion = "trim_start")]
     pub fn trim_left(&self) -> &str {
         self.trim_start()
@@ -2020,7 +2020,7 @@ impl str {
     #[must_use = "this returns the trimmed string as a new slice, \
                   without modifying the original"]
     #[inline]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[deprecated(since = "1.33.0", note = "superseded by `trim_end`", suggestion = "trim_end")]
     pub fn trim_right(&self) -> &str {
         self.trim_end()
@@ -2054,7 +2054,7 @@ impl str {
     /// ```
     #[must_use = "this returns the trimmed string as a new slice, \
                   without modifying the original"]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn trim_matches<'a, P>(&'a self, pat: P) -> &'a str
     where
         P: Pattern<'a, Searcher: DoubleEndedSearcher<'a>>,
@@ -2248,7 +2248,7 @@ impl str {
     /// let x: &[_] = &['1', '2'];
     /// assert_eq!("12foo1bar12".trim_left_matches(x), "foo1bar12");
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[deprecated(
         since = "1.33.0",
         note = "superseded by `trim_start_matches`",
@@ -2291,7 +2291,7 @@ impl str {
     /// ```
     /// assert_eq!("1fooX".trim_right_matches(|c| c == '1' || c == 'X'), "1foo");
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[deprecated(
         since = "1.33.0",
         note = "superseded by `trim_end_matches`",
@@ -2348,7 +2348,7 @@ impl str {
     /// assert!(nope.is_err());
     /// ```
     #[inline]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn parse<F: FromStr>(&self) -> Result<F, F::Err> {
         FromStr::from_str(self)
     }
@@ -2573,7 +2573,7 @@ impl str {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl AsRef<[u8]> for str {
     #[inline]
     fn as_ref(&self) -> &[u8] {
@@ -2581,8 +2581,8 @@ impl AsRef<[u8]> for str {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
-#[rustc_const_unstable(feature = "const_default_impls", issue = "87864")]
+#[stable(feature = "crablang1", since = "1.0.0")]
+#[crablangc_const_unstable(feature = "const_default_impls", issue = "87864")]
 impl const Default for &str {
     /// Creates an empty str
     #[inline]
@@ -2656,5 +2656,5 @@ impl_fn_for_zst! {
 }
 
 // This is required to make `impl From<&str> for Box<dyn Error>` and `impl<E> From<E> for Box<dyn Error>` not overlap.
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl !crate::error::Error for &str {}

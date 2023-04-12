@@ -72,4 +72,4 @@ LL |     || set(&mut x);
 error: aborting due to 8 previous errors
 
 Some errors have detailed explanations: E0594, E0596.
-For more information about an error, try `rustc --explain E0594`.
+For more information about an error, try `crablangc --explain E0594`.

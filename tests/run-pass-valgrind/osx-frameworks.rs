@@ -1,6 +1,6 @@
 // pretty-expanded FIXME #23616
 
-#![feature(rustc_private)]
+#![feature(crablangc_private)]
 
 extern crate libc;
 

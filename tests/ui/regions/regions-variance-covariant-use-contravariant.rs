@@ -8,7 +8,7 @@
 // Covariant<'foo> <: Covariant<'static> because
 // 'foo <= 'static
 struct Covariant<'a> {
-    f: extern "Rust" fn(&'a isize)
+    f: extern "CrabLang" fn(&'a isize)
 }
 
 fn use_<'short,'long>(c: Covariant<'long>,

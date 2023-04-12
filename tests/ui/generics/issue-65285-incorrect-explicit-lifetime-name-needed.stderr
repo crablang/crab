@@ -42,4 +42,4 @@ LL | fn bar<'b, L: X<'b, &'b Nested<i32>>>(){}
 error: aborting due to 3 previous errors
 
 Some errors have detailed explanations: E0106, E0637.
-For more information about an error, try `rustc --explain E0106`.
+For more information about an error, try `crablangc --explain E0106`.

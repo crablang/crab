@@ -1,7 +1,7 @@
 // edition:2018
 
 #![deny(unused_extern_crates)]
-#![feature(test, rustc_private)]
+#![feature(test, crablangc_private)]
 
 extern crate libc;
 //~^ ERROR unused extern crate

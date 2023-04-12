@@ -1,7 +1,7 @@
 // revisions: edition2018 edition2021
 //[edition2018] edition:2018
 //[edition2021] edition:2021
-// run-rustfix
+// run-crablangfix
 // aux-build:wildcard_imports_helper.rs
 
 #![warn(clippy::wildcard_imports)]
@@ -149,7 +149,7 @@ fn test_reexported() {
     let _ = ExportedEnum::A;
 }
 
-#[rustfmt::skip]
+#[crablangfmt::skip]
 fn test_weird_formatting() {
     use crate:: in_fn_test::exported;
     use crate:: fn_mod::foo;

@@ -1,5 +1,5 @@
 // check-pass
-// run-rustfix
+// run-crablangfix
 
 fn main() {
     println!("Hello {:.1}!", f = 0.02f32);

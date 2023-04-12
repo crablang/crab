@@ -1,8 +1,8 @@
 use crate::intrinsics;
 use crate::iter::adapters::zip::try_get_unchecked;
 use crate::iter::{
-    DoubleEndedIterator, ExactSizeIterator, FusedIterator, TrustedLen, TrustedRandomAccess,
-    TrustedRandomAccessNoCoerce,
+    DoubleEndedIterator, ExactSizeIterator, FusedIterator, TcrablangedLen, TcrablangedRandomAccess,
+    TcrablangedRandomAccessNoCoerce,
 };
 use crate::ops::Try;
 
@@ -13,11 +13,11 @@ use crate::ops::Try;
 /// for more.
 #[derive(Clone, Debug)]
 #[must_use = "iterators are lazy and do nothing unless consumed"]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub struct Fuse<I> {
     // NOTE: for `I: FusedIterator`, we never bother setting `None`, but
     // we still have to be prepared for that state due to variance.
-    // See rust-lang/rust#85863
+    // See crablang/crablang#85863
     iter: Option<I>,
 }
 impl<I> Fuse<I> {
@@ -31,7 +31,7 @@ impl<I> FusedIterator for Fuse<I> where I: Iterator {}
 
 // Any specialized implementation here is made internal
 // to avoid exposing default fns outside this trait.
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<I> Iterator for Fuse<I>
 where
     I: Iterator,
@@ -104,7 +104,7 @@ where
     #[inline]
     unsafe fn __iterator_get_unchecked(&mut self, idx: usize) -> Self::Item
     where
-        Self: TrustedRandomAccessNoCoerce,
+        Self: TcrablangedRandomAccessNoCoerce,
     {
         match self.iter {
             // SAFETY: the caller must uphold the contract for
@@ -116,7 +116,7 @@ where
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<I> DoubleEndedIterator for Fuse<I>
 where
     I: DoubleEndedIterator,
@@ -161,7 +161,7 @@ where
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<I> ExactSizeIterator for Fuse<I>
 where
     I: ExactSizeIterator,
@@ -181,7 +181,7 @@ where
     }
 }
 
-#[stable(feature = "default_iters", since = "CURRENT_RUSTC_VERSION")]
+#[stable(feature = "default_iters", since = "CURRENT_CRABLANGC_VERSION")]
 impl<I: Default> Default for Fuse<I> {
     /// Creates a `Fuse` iterator from the default value of `I`.
     ///
@@ -196,26 +196,26 @@ impl<I: Default> Default for Fuse<I> {
     }
 }
 
-#[unstable(feature = "trusted_len", issue = "37572")]
-// SAFETY: `TrustedLen` requires that an accurate length is reported via `size_hint()`. As `Fuse`
+#[unstable(feature = "tcrablanged_len", issue = "37572")]
+// SAFETY: `TcrablangedLen` requires that an accurate length is reported via `size_hint()`. As `Fuse`
 // is just forwarding this to the wrapped iterator `I` this property is preserved and it is safe to
-// implement `TrustedLen` here.
-unsafe impl<I> TrustedLen for Fuse<I> where I: TrustedLen {}
+// implement `TcrablangedLen` here.
+unsafe impl<I> TcrablangedLen for Fuse<I> where I: TcrablangedLen {}
 
 #[doc(hidden)]
-#[unstable(feature = "trusted_random_access", issue = "none")]
-// SAFETY: `TrustedRandomAccess` requires that `size_hint()` must be exact and cheap to call, and
+#[unstable(feature = "tcrablanged_random_access", issue = "none")]
+// SAFETY: `TcrablangedRandomAccess` requires that `size_hint()` must be exact and cheap to call, and
 // `Iterator::__iterator_get_unchecked()` must be implemented accordingly.
 //
 // This is safe to implement as `Fuse` is just forwarding these to the wrapped iterator `I`, which
 // preserves these properties.
-unsafe impl<I> TrustedRandomAccess for Fuse<I> where I: TrustedRandomAccess {}
+unsafe impl<I> TcrablangedRandomAccess for Fuse<I> where I: TcrablangedRandomAccess {}
 
 #[doc(hidden)]
-#[unstable(feature = "trusted_random_access", issue = "none")]
-unsafe impl<I> TrustedRandomAccessNoCoerce for Fuse<I>
+#[unstable(feature = "tcrablanged_random_access", issue = "none")]
+unsafe impl<I> TcrablangedRandomAccessNoCoerce for Fuse<I>
 where
-    I: TrustedRandomAccessNoCoerce,
+    I: TcrablangedRandomAccessNoCoerce,
 {
     const MAY_HAVE_SIDE_EFFECT: bool = I::MAY_HAVE_SIDE_EFFECT;
 }

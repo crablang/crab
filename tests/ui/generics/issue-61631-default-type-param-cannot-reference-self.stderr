@@ -36,4 +36,4 @@ LL | union Usized<'a, P: Sized = [Self]> { x: i32, y: Option<&'a P> }
 
 error: aborting due to 6 previous errors
 
-For more information about this error, try `rustc --explain E0735`.
+For more information about this error, try `crablangc --explain E0735`.

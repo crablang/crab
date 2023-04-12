@@ -1,10 +1,10 @@
 // This test checks the debuginfo for the expected 3 vtables is generated for correct names and number
 // of entries.
 
-// Use the v0 symbol mangling scheme to codegen order independent of rustc version.
+// Use the v0 symbol mangling scheme to codegen order independent of crablangc version.
 // Unnamed items like shims are generated in lexicographical order of their symbol name and in the
-// legacy mangling scheme rustc version and generic parameters are both hashed into a single part
-// of the name, thus randomizing item order with respect to rustc version.
+// legacy mangling scheme crablangc version and generic parameters are both hashed into a single part
+// of the name, thus randomizing item order with respect to crablangc version.
 
 // compile-flags: -Cdebuginfo=2 -Copt-level=0 -Csymbol-mangling-version=v0
 // ignore-tidy-linelength

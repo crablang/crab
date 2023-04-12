@@ -10,8 +10,8 @@
 // [*] It excludes `Copy` in some cases, because that changes the code
 // generated for `Clone`.
 //
-// [*] It excludes `RustcEncodable` and `RustDecodable`, which are obsolete and
-// also require the `rustc_serialize` crate.
+// [*] It excludes `CrabLangcEncodable` and `CrabLangDecodable`, which are obsolete and
+// also require the `crablangc_serialize` crate.
 
 #![crate_type = "lib"]
 #![allow(dead_code)]

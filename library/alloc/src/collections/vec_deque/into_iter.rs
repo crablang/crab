@@ -1,4 +1,4 @@
-use core::iter::{FusedIterator, TrustedLen};
+use core::iter::{FusedIterator, TcrablangedLen};
 use core::num::NonZeroUsize;
 use core::{array, fmt, mem::MaybeUninit, ops::Try, ptr};
 
@@ -14,7 +14,7 @@ use super::VecDeque;
 /// [`into_iter`]: VecDeque::into_iter
 /// [`IntoIterator`]: core::iter::IntoIterator
 #[derive(Clone)]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub struct IntoIter<
     T,
     #[unstable(feature = "allocator_api", issue = "32838")] A: Allocator = Global,
@@ -39,7 +39,7 @@ impl<T: fmt::Debug, A: Allocator> fmt::Debug for IntoIter<T, A> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T, A: Allocator> Iterator for IntoIter<T, A> {
     type Item = T;
 
@@ -176,7 +176,7 @@ impl<T, A: Allocator> Iterator for IntoIter<T, A> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T, A: Allocator> DoubleEndedIterator for IntoIter<T, A> {
     #[inline]
     fn next_back(&mut self) -> Option<T> {
@@ -247,7 +247,7 @@ impl<T, A: Allocator> DoubleEndedIterator for IntoIter<T, A> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T, A: Allocator> ExactSizeIterator for IntoIter<T, A> {
     #[inline]
     fn is_empty(&self) -> bool {
@@ -258,5 +258,5 @@ impl<T, A: Allocator> ExactSizeIterator for IntoIter<T, A> {
 #[stable(feature = "fused", since = "1.26.0")]
 impl<T, A: Allocator> FusedIterator for IntoIter<T, A> {}
 
-#[unstable(feature = "trusted_len", issue = "37572")]
-unsafe impl<T, A: Allocator> TrustedLen for IntoIter<T, A> {}
+#[unstable(feature = "tcrablanged_len", issue = "37572")]
+unsafe impl<T, A: Allocator> TcrablangedLen for IntoIter<T, A> {}

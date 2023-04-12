@@ -32,7 +32,7 @@ $(foreach arch,$(DARWIN),$(eval TARGETS += $(arch)-apple-darwin))
 all: $(TARGETS)
 
 define MK_TARGETS
-# compile the rust file to the given target, but only to asm and IR
+# compile the crablang file to the given target, but only to asm and IR
 # form, to avoid having to have an appropriate linker.
 #
 # we need some features because the integer SIMD instructions are not
@@ -40,7 +40,7 @@ define MK_TARGETS
 # on some platforms, but LLVM just prints a warning so that's fine for
 # now.
 $(1): simd.rs
-	$$(RUSTC) --target=$(1) --emit=llvm-ir,asm simd.rs \
+	$$(CRABLANGC) --target=$(1) --emit=llvm-ir,asm simd.rs \
                 -C target-feature='+neon,+sse2' -C extra-filename=-$(1)
 endef
 

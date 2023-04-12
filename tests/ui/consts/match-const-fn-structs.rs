@@ -1,7 +1,7 @@
 // run-pass
 #![allow(unused_variables)]
 
-// https://github.com/rust-lang/rust/issues/46114
+// https://github.com/crablang/crablang/issues/46114
 
 #[derive(Eq, PartialEq)]
 struct A { value: u32 }

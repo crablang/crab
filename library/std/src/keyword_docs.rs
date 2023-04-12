@@ -6,7 +6,7 @@
 /// uses that include turning pointers into addresses, addresses into pointers, and pointers into
 /// other pointers.
 ///
-/// ```rust
+/// ```crablang
 /// let thing1: u8 = 89.0 as u8;
 /// assert_eq!('B' as u32, 66);
 /// assert_eq!(thing1 as char, 'Y');
@@ -53,7 +53,7 @@ mod as_keyword {}
 /// When `break` is encountered, execution of the associated loop body is
 /// immediately terminated.
 ///
-/// ```rust
+/// ```crablang
 /// let mut last = 0;
 ///
 /// for x in 1..100 {
@@ -70,7 +70,7 @@ mod as_keyword {}
 /// A break expression is normally associated with the innermost loop enclosing the
 /// `break` but a label can be used to specify which enclosing loop is affected.
 ///
-/// ```rust
+/// ```crablang
 /// 'outer: for i in 1..=5 {
 ///     println!("outer iteration (i): {i}");
 ///
@@ -94,7 +94,7 @@ mod as_keyword {}
 /// If no value is specified, `break;` returns `()`.
 /// Every `break` within a loop must return the same type.
 ///
-/// ```rust
+/// ```crablang
 /// let (mut a, mut b) = (1, 1);
 /// let result = loop {
 ///     if b > 10 {
@@ -128,7 +128,7 @@ mod break_keyword {}
 /// make it a variable that gets carried around to each function that needs it. In these cases, the
 /// `const` keyword provides a convenient alternative to code duplication:
 ///
-/// ```rust
+/// ```crablang
 /// const THING: u32 = 0xABAD1DEA;
 ///
 /// let foo = 123 + THING;
@@ -142,16 +142,16 @@ mod break_keyword {}
 /// [`File`]: crate::fs::File
 ///
 /// The only lifetime allowed in a constant is `'static`, which is the lifetime that encompasses
-/// all others in a Rust program. For example, if you wanted to define a constant string, it would
+/// all others in a CrabLang program. For example, if you wanted to define a constant string, it would
 /// look like this:
 ///
-/// ```rust
-/// const WORDS: &'static str = "hello rust!";
+/// ```crablang
+/// const WORDS: &'static str = "hello crablang!";
 /// ```
 ///
 /// Thanks to static lifetime elision, you usually don't have to explicitly use `'static`:
 ///
-/// ```rust
+/// ```crablang
 /// const WORDS: &str = "hello convenience!";
 /// ```
 ///
@@ -164,7 +164,7 @@ mod break_keyword {}
 ///
 /// Constants, like statics, should always be in `SCREAMING_SNAKE_CASE`.
 ///
-/// For more detail on `const`, see the [Rust Book] or the [Reference].
+/// For more detail on `const`, see the [CrabLang Book] or the [Reference].
 ///
 /// ## Compile-time evaluable functions
 ///
@@ -179,10 +179,10 @@ mod break_keyword {}
 /// ## Other uses of `const`
 ///
 /// The `const` keyword is also used in raw pointers in combination with `mut`, as seen in `*const
-/// T` and `*mut T`. More about `const` as used in raw pointers can be read at the Rust docs for the [pointer primitive].
+/// T` and `*mut T`. More about `const` as used in raw pointers can be read at the CrabLang docs for the [pointer primitive].
 ///
 /// [pointer primitive]: pointer
-/// [Rust Book]: ../book/ch03-01-variables-and-mutability.html#constants
+/// [CrabLang Book]: ../book/ch03-01-variables-and-mutability.html#constants
 /// [Reference]: ../reference/items/constant-items.html
 /// [const-eval]: ../reference/const_eval.html
 mod const_keyword {}
@@ -194,7 +194,7 @@ mod const_keyword {}
 /// When `continue` is encountered, the current iteration is terminated, returning control to the
 /// loop head, typically continuing with the next iteration.
 ///
-/// ```rust
+/// ```crablang
 /// // Printing odd numbers by skipping even ones
 /// for number in 1..=10 {
 ///     if number % 2 == 0 {
@@ -207,7 +207,7 @@ mod const_keyword {}
 /// Like `break`, `continue` is normally associated with the innermost enclosing loop, but labels
 /// may be used to specify the affected loop.
 ///
-/// ```rust
+/// ```crablang
 /// // Print Odd numbers under 30 with unit <= 5
 /// 'tens: for ten in 0..3 {
 ///     '_units: for unit in 0..=9 {
@@ -229,17 +229,17 @@ mod continue_keyword {}
 
 #[doc(keyword = "crate")]
 //
-/// A Rust binary or library.
+/// A CrabLang binary or library.
 ///
 /// The primary use of the `crate` keyword is as a part of `extern crate` declarations, which are
 /// used to specify a dependency on a crate external to the one it's declared in. Crates are the
-/// fundamental compilation unit of Rust code, and can be seen as libraries or projects. More can
+/// fundamental compilation unit of CrabLang code, and can be seen as libraries or projects. More can
 /// be read about crates in the [Reference].
 ///
-/// ```rust ignore
+/// ```crablang ignore
 /// extern crate rand;
 /// extern crate my_crate as thing;
-/// extern crate std; // implicitly added to the root of every Rust project
+/// extern crate std; // implicitly added to the root of every CrabLang project
 /// ```
 ///
 /// The `as` keyword can be used to change what the crate is referred to as in your project. If a
@@ -248,7 +248,7 @@ mod continue_keyword {}
 /// `crate` can also be used as in conjunction with `pub` to signify that the item it's attached to
 /// is public only to other members of the same crate it's in.
 ///
-/// ```rust
+/// ```crablang
 /// # #[allow(unused_imports)]
 /// pub(crate) use std::io::Error as IoError;
 /// pub(crate) enum CoolMarkerType { }
@@ -277,7 +277,7 @@ mod crate_keyword {}
 /// As can be seen below, `else` must be followed by either: `if`, `if let`, or a block `{}` and it
 /// will return the value of that expression.
 ///
-/// ```rust
+/// ```crablang
 /// let result = if true == false {
 ///     "oh no"
 /// } else if "something" == "other thing" {
@@ -292,7 +292,7 @@ mod crate_keyword {}
 ///
 /// Here's another example but here we do not try and return an expression:
 ///
-/// ```rust
+/// ```crablang
 /// if true == false {
 ///     println!("oh no");
 /// } else if "something" == "other thing" {
@@ -309,9 +309,9 @@ mod crate_keyword {}
 /// There is possibly no limit to the number of `else` blocks that could follow an `if` expression
 /// however if you have several then a [`match`] expression might be preferable.
 ///
-/// Read more about control flow in the [Rust Book].
+/// Read more about control flow in the [CrabLang Book].
 ///
-/// [Rust Book]: ../book/ch03-05-control-flow.html#handling-multiple-conditions-with-else-if
+/// [CrabLang Book]: ../book/ch03-05-control-flow.html#handling-multiple-conditions-with-else-if
 /// [`match`]: keyword.match.html
 /// [`false`]: keyword.false.html
 /// [`if`]: keyword.if.html
@@ -321,12 +321,12 @@ mod else_keyword {}
 //
 /// A type that can be any one of several variants.
 ///
-/// Enums in Rust are similar to those of other compiled languages like C, but have important
-/// differences that make them considerably more powerful. What Rust calls enums are more commonly
+/// Enums in CrabLang are similar to those of other compiled languages like C, but have important
+/// differences that make them considerably more powerful. What CrabLang calls enums are more commonly
 /// known as [Algebraic Data Types][ADT] if you're coming from a functional programming background.
 /// The important detail is that each enum variant can have data to go along with it.
 ///
-/// ```rust
+/// ```crablang
 /// # struct Coord;
 /// enum SimpleEnum {
 ///     FirstVariant,
@@ -359,16 +359,16 @@ mod else_keyword {}
 ///
 /// Instantiating enum variants involves explicitly using the enum's name as its namespace,
 /// followed by one of its variants. `SimpleEnum::SecondVariant` would be an example from above.
-/// When data follows along with a variant, such as with rust's built-in [`Option`] type, the data
+/// When data follows along with a variant, such as with crablang's built-in [`Option`] type, the data
 /// is added as the type describes, for example `Option::Some(123)`. The same follows with
 /// struct-like variants, with things looking like `ComplexEnum::LotsOfThings { usual_struct_stuff:
 /// true, blah: "hello!".to_string(), }`. Empty Enums are similar to [`!`] in that they cannot be
 /// instantiated at all, and are used mainly to mess with the type system in interesting ways.
 ///
-/// For more information, take a look at the [Rust Book] or the [Reference]
+/// For more information, take a look at the [CrabLang Book] or the [Reference]
 ///
 /// [ADT]: https://en.wikipedia.org/wiki/Algebraic_data_type
-/// [Rust Book]: ../book/ch06-01-defining-an-enum.html
+/// [CrabLang Book]: ../book/ch06-01-defining-an-enum.html
 /// [Reference]: ../reference/items/enumerations.html
 mod enum_keyword {}
 
@@ -376,14 +376,14 @@ mod enum_keyword {}
 //
 /// Link to or import external code.
 ///
-/// The `extern` keyword is used in two places in Rust. One is in conjunction with the [`crate`]
-/// keyword to make your Rust code aware of other Rust crates in your project, i.e., `extern crate
+/// The `extern` keyword is used in two places in CrabLang. One is in conjunction with the [`crate`]
+/// keyword to make your CrabLang code aware of other CrabLang crates in your project, i.e., `extern crate
 /// lazy_static;`. The other use is in foreign function interfaces (FFI).
 ///
 /// `extern` is used in two different contexts within FFI. The first is in the form of external
-/// blocks, for declaring function interfaces that Rust code can call foreign code by.
+/// blocks, for declaring function interfaces that CrabLang code can call foreign code by.
 ///
-/// ```rust ignore
+/// ```crablang ignore
 /// #[link(name = "my_c_library")]
 /// extern "C" {
 ///     fn my_c_function(x: i32) -> bool;
@@ -391,13 +391,13 @@ mod enum_keyword {}
 /// ```
 ///
 /// This code would attempt to link with `libmy_c_library.so` on unix-like systems and
-/// `my_c_library.dll` on Windows at runtime, and panic if it can't find something to link to. Rust
-/// code could then use `my_c_function` as if it were any other unsafe Rust function. Working with
-/// non-Rust languages and FFI is inherently unsafe, so wrappers are usually built around C APIs.
+/// `my_c_library.dll` on Windows at runtime, and panic if it can't find something to link to. CrabLang
+/// code could then use `my_c_function` as if it were any other unsafe CrabLang function. Working with
+/// non-CrabLang languages and FFI is inherently unsafe, so wrappers are usually built around C APIs.
 ///
 /// The mirror use case of FFI is also done via the `extern` keyword:
 ///
-/// ```rust
+/// ```crablang
 /// #[no_mangle]
 /// pub extern "C" fn callable_from_c(x: i32) -> bool {
 ///     x % 3 == 0
@@ -407,10 +407,10 @@ mod enum_keyword {}
 /// If compiled as a dylib, the resulting .so could then be linked to from a C library, and the
 /// function could be used as if it was from any other library.
 ///
-/// For more information on FFI, check the [Rust book] or the [Reference].
+/// For more information on FFI, check the [CrabLang book] or the [Reference].
 ///
-/// [Rust book]:
-/// ../book/ch19-01-unsafe-rust.html#using-extern-functions-to-call-external-code
+/// [CrabLang book]:
+/// ../book/ch19-01-unsafe-crablang.html#using-extern-functions-to-call-external-code
 /// [Reference]: ../reference/items/external-blocks.html
 /// [`crate`]: keyword.crate.html
 mod extern_keyword {}
@@ -430,7 +430,7 @@ mod false_keyword {}
 //
 /// A function or function pointer.
 ///
-/// Functions are the primary way code is executed within Rust. Function blocks, usually just
+/// Functions are the primary way code is executed within CrabLang. Function blocks, usually just
 /// called functions, can be defined in a variety of different places and be assigned many
 /// different attributes and modifiers.
 ///
@@ -438,7 +438,7 @@ mod false_keyword {}
 /// but most functions will end up being inside [`impl`] blocks, either on another type itself, or
 /// as a trait impl for that type.
 ///
-/// ```rust
+/// ```crablang
 /// fn standalone_function() {
 ///     // code
 /// }
@@ -465,7 +465,7 @@ mod false_keyword {}
 /// functions can also declare a list of type parameters along with trait bounds that they fall
 /// into.
 ///
-/// ```rust
+/// ```crablang
 /// fn generic_function<T: Clone>(x: T) -> (T, T, T) {
 ///     (x.clone(), x.clone(), x.clone())
 /// }
@@ -484,12 +484,12 @@ mod false_keyword {}
 /// Along with being made public via `pub`, `fn` can also have an [`extern`] added for use in
 /// FFI.
 ///
-/// For more information on the various types of functions and how they're used, consult the [Rust
+/// For more information on the various types of functions and how they're used, consult the [CrabLang
 /// book] or the [Reference].
 ///
 /// [`impl`]: keyword.impl.html
 /// [`extern`]: keyword.extern.html
-/// [Rust book]: ../book/ch03-03-how-functions-work.html
+/// [CrabLang book]: ../book/ch03-03-how-functions-work.html
 /// [Reference]: ../reference/items/functions.html
 mod fn_keyword {}
 
@@ -506,10 +506,10 @@ mod fn_keyword {}
 /// * `for` is also used for [higher-ranked trait bounds] as in `for<'a> &'a T: PartialEq<i32>`.
 ///
 /// for-in-loops, or to be more precise, iterator loops, are a simple syntactic sugar over a common
-/// practice within Rust, which is to loop over anything that implements [`IntoIterator`] until the
+/// practice within CrabLang, which is to loop over anything that implements [`IntoIterator`] until the
 /// iterator returned by `.into_iter()` returns `None` (or the loop body uses `break`).
 ///
-/// ```rust
+/// ```crablang
 /// for i in 0..5 {
 ///     println!("{}", i * 2);
 /// }
@@ -535,7 +535,7 @@ mod fn_keyword {}
 ///
 /// A `for` loop expands as shown:
 ///
-/// ```rust
+/// ```crablang
 /// # fn code() { }
 /// # let iterator = 0..2;
 /// for loop_variable in iterator {
@@ -543,7 +543,7 @@ mod fn_keyword {}
 /// }
 /// ```
 ///
-/// ```rust
+/// ```crablang
 /// # fn code() { }
 /// # let iterator = 0..2;
 /// {
@@ -561,7 +561,7 @@ mod fn_keyword {}
 ///
 /// More details on the functionality shown can be seen at the [`IntoIterator`] docs.
 ///
-/// For more information on for-loops, see the [Rust book] or the [Reference].
+/// For more information on for-loops, see the [CrabLang book] or the [Reference].
 ///
 /// See also, [`loop`], [`while`].
 ///
@@ -570,7 +570,7 @@ mod fn_keyword {}
 /// [`loop`]: keyword.loop.html
 /// [`while`]: keyword.while.html
 /// [higher-ranked trait bounds]: ../reference/trait-bounds.html#higher-ranked-trait-bounds
-/// [Rust book]:
+/// [CrabLang book]:
 /// ../book/ch03-05-control-flow.html#looping-through-a-collection-with-for
 /// [Reference]: ../reference/expressions/loop-expr.html#iterator-loops
 mod for_keyword {}
@@ -582,7 +582,7 @@ mod for_keyword {}
 /// `if` is a familiar construct to most programmers, and is the main way you'll often do logic in
 /// your code. However, unlike in most languages, `if` blocks can also act as expressions.
 ///
-/// ```rust
+/// ```crablang
 /// # let rude = true;
 /// if 1 == 2 {
 ///     println!("whoops, mathematics broke");
@@ -607,7 +607,7 @@ mod for_keyword {}
 /// be used everywhere you'd expect. The third kind of `if` block is an `if let` block, which
 /// behaves similarly to using a `match` expression:
 ///
-/// ```rust
+/// ```crablang
 /// if let Some(x) = Some(123) {
 ///     // code
 ///     # let _ = x;
@@ -628,7 +628,7 @@ mod for_keyword {}
 ///
 /// Each kind of `if` expression can be mixed and matched as needed.
 ///
-/// ```rust
+/// ```crablang
 /// if true == false {
 ///     println!("oh no");
 /// } else if "something" == "other thing" {
@@ -640,12 +640,12 @@ mod for_keyword {}
 /// }
 /// ```
 ///
-/// The `if` keyword is used in one other place in Rust, namely as a part of pattern matching
+/// The `if` keyword is used in one other place in CrabLang, namely as a part of pattern matching
 /// itself, allowing patterns such as `Some(x) if x > 200` to be used.
 ///
-/// For more information on `if` expressions, see the [Rust book] or the [Reference].
+/// For more information on `if` expressions, see the [CrabLang book] or the [Reference].
 ///
-/// [Rust book]: ../book/ch03-05-control-flow.html#if-expressions
+/// [CrabLang book]: ../book/ch03-05-control-flow.html#if-expressions
 /// [Reference]: ../reference/expressions/if-expr.html
 mod if_keyword {}
 
@@ -662,7 +662,7 @@ mod if_keyword {}
 /// takes `self`, `&self`, or `&mut self` as its first argument, it can also be called using
 /// method-call syntax, a familiar feature to any object oriented programmer, like `foo.bar()`.
 ///
-/// ```rust
+/// ```crablang
 /// struct Example {
 ///     number: i32,
 /// }
@@ -692,20 +692,20 @@ mod if_keyword {}
 /// }
 /// ```
 ///
-/// For more information on implementations, see the [Rust book][book1] or the [Reference].
+/// For more information on implementations, see the [CrabLang book][book1] or the [Reference].
 ///
 /// The other use of the `impl` keyword is in `impl Trait` syntax, which can be seen as a shorthand
 /// for "a concrete type that implements this trait". Its primary use is working with closures,
 /// which have type definitions generated at compile time that can't be simply typed out.
 ///
-/// ```rust
+/// ```crablang
 /// fn thing_returning_closure() -> impl Fn(i32) -> bool {
 ///     println!("here's a closure for you!");
 ///     |x: i32| x % 3 == 0
 /// }
 /// ```
 ///
-/// For more information on `impl Trait` syntax, see the [Rust book][book2].
+/// For more information on `impl Trait` syntax, see the [CrabLang book][book2].
 ///
 /// [book1]: ../book/ch05-03-method-syntax.html
 /// [Reference]: ../reference/items/implementations.html
@@ -751,7 +751,7 @@ mod in_keyword {}
 /// The primary use for the `let` keyword is in `let` statements, which are used to introduce a new
 /// set of variables into the current scope, as given by a pattern.
 ///
-/// ```rust
+/// ```crablang
 /// # #![allow(unused_assignments)]
 /// let thing1: i32 = 100;
 /// let thing2 = 200 + thing1;
@@ -775,18 +775,18 @@ mod in_keyword {}
 ///
 /// The pattern is most commonly a single variable, which means no pattern matching is done and
 /// the expression given is bound to the variable. Apart from that, patterns used in `let` bindings
-/// can be as complicated as needed, given that the pattern is exhaustive. See the [Rust
+/// can be as complicated as needed, given that the pattern is exhaustive. See the [CrabLang
 /// book][book1] for more information on pattern matching. The type of the pattern is optionally
 /// given afterwards, but if left blank is automatically inferred by the compiler if possible.
 ///
-/// Variables in Rust are immutable by default, and require the `mut` keyword to be made mutable.
+/// Variables in CrabLang are immutable by default, and require the `mut` keyword to be made mutable.
 ///
 /// Multiple variables can be defined with the same name, known as shadowing. This doesn't affect
 /// the original variable in any way beyond being unable to directly access it beyond the point of
 /// shadowing. It continues to remain in scope, getting dropped only when it falls out of scope.
 /// Shadowed variables don't need to have the same type as the variables shadowing them.
 ///
-/// ```rust
+/// ```crablang
 /// let shadowing_example = true;
 /// let shadowing_example = 123.4;
 /// let shadowing_example = shadowing_example as u32;
@@ -799,7 +799,7 @@ mod in_keyword {}
 /// enumerations. `while let` also exists, which runs a loop with a pattern matched value until
 /// that pattern can't be matched.
 ///
-/// For more information on the `let` keyword, see the [Rust book][book2] or the [Reference]
+/// For more information on the `let` keyword, see the [CrabLang book][book2] or the [Reference]
 ///
 /// [book1]: ../book/ch06-02-match.html
 /// [`if`]: keyword.if.html
@@ -815,7 +815,7 @@ mod let_keyword {}
 /// expression before running the loop body, then runs the loop body if the conditional
 /// expression evaluates to `true`, or exits the loop otherwise.
 ///
-/// ```rust
+/// ```crablang
 /// let mut counter = 0;
 ///
 /// while counter < 10 {
@@ -827,7 +827,7 @@ mod let_keyword {}
 /// Like the [`for`] expression, we can use `break` and `continue`. A `while` expression
 /// cannot break with a value and always evaluates to `()` unlike [`loop`].
 ///
-/// ```rust
+/// ```crablang
 /// let mut i = 1;
 ///
 /// while i < 100 {
@@ -843,7 +843,7 @@ mod let_keyword {}
 /// expression, then runs the loop body if pattern matching succeeds, or exits the loop otherwise.
 /// We can use `break` and `continue` in `while let` expressions just like in `while`.
 ///
-/// ```rust
+/// ```crablang
 /// let mut counter = Some(0);
 ///
 /// while let Some(i) = counter {
@@ -869,10 +869,10 @@ mod while_keyword {}
 //
 /// Loop indefinitely.
 ///
-/// `loop` is used to define the simplest kind of loop supported in Rust. It runs the code inside
+/// `loop` is used to define the simplest kind of loop supported in CrabLang. It runs the code inside
 /// it until the code uses `break` or the program exits.
 ///
-/// ```rust
+/// ```crablang
 /// loop {
 ///     println!("hello world forever!");
 ///     # break;
@@ -889,10 +889,10 @@ mod while_keyword {}
 /// assert_eq!(i, 128);
 /// ```
 ///
-/// Unlike the other kinds of loops in Rust (`while`, `while let`, and `for`), loops can be used as
+/// Unlike the other kinds of loops in CrabLang (`while`, `while let`, and `for`), loops can be used as
 /// expressions that return values via `break`.
 ///
-/// ```rust
+/// ```crablang
 /// let mut i = 1;
 /// let something = loop {
 ///     i *= 2;
@@ -924,7 +924,7 @@ mod loop_keyword {}
 /// `_` in the `match`. Since `match` is an expression, values can also be
 /// returned.
 ///
-/// ```rust
+/// ```crablang
 /// let opt = Option::None::<usize>;
 /// let x = match opt {
 ///     Some(int) => int,
@@ -945,7 +945,7 @@ mod loop_keyword {}
 /// `match` can be used to gain access to the inner members of an enum
 /// and use them directly.
 ///
-/// ```rust
+/// ```crablang
 /// enum Outer {
 ///     Double(Option<u8>, Option<String>),
 ///     Single(Option<u8>),
@@ -1000,7 +1000,7 @@ mod mod_keyword {}
 /// `move` converts any variables captured by reference or mutable reference
 /// to variables captured by value.
 ///
-/// ```rust
+/// ```crablang
 /// let data = vec![1, 2, 3];
 /// let closure = move || println!("captured {data:?} by value");
 ///
@@ -1012,7 +1012,7 @@ mod mod_keyword {}
 /// a closure type are determined by *what* the closure does with captured
 /// values, not *how* it captures them:
 ///
-/// ```rust
+/// ```crablang
 /// fn create_fn() -> impl Fn() {
 ///     let text = "Fn".to_owned();
 ///     move || println!("This is a: {text}")
@@ -1024,7 +1024,7 @@ mod mod_keyword {}
 ///
 /// `move` is often used when [threads] are involved.
 ///
-/// ```rust
+/// ```crablang
 /// let data = vec![1, 2, 3];
 ///
 /// std::thread::spawn(move || {
@@ -1036,15 +1036,15 @@ mod mod_keyword {}
 ///
 /// `move` is also valid before an async block.
 ///
-/// ```rust
+/// ```crablang
 /// let capture = "hello".to_owned();
 /// let block = async move {
-///     println!("rust says {capture} from async block");
+///     println!("crablang says {capture} from async block");
 /// };
 /// ```
 ///
 /// For more information on the `move` keyword, see the [closures][closure] section
-/// of the Rust book or the [threads] section.
+/// of the CrabLang book or the [threads] section.
 ///
 /// [closure]: ../book/ch13-01-closures.html
 /// [threads]: ../book/ch16-01-threads.html#using-move-closures-with-threads
@@ -1058,7 +1058,7 @@ mod move_keyword {}
 /// which can be used anywhere you can bind a value to a variable name. Some
 /// examples:
 ///
-/// ```rust
+/// ```crablang
 /// // A mutable variable in the parameter list of a function.
 /// fn foo(mut x: u8, y: u8) -> u8 {
 ///     x += y;
@@ -1078,7 +1078,7 @@ mod move_keyword {}
 /// and must be unique: no other variables can have a mutable reference, nor a
 /// shared reference.
 ///
-/// ```rust
+/// ```crablang
 /// // Taking a mutable reference.
 /// fn push_two(v: &mut Vec<u8>) {
 ///     v.push(2);
@@ -1092,7 +1092,7 @@ mod move_keyword {}
 /// assert_eq!(v, vec![0, 1, 2]);
 /// ```
 ///
-/// ```rust,compile_fail,E0502
+/// ```crablang,compile_fail,E0502
 /// let mut v = vec![0, 1];
 /// let mut_ref_v = &mut v;
 /// ##[allow(unused)]
@@ -1117,10 +1117,10 @@ mod mut_keyword {}
 /// an identifier from a namespace.
 ///
 /// For more information on the `pub` keyword, please see the visibility section
-/// of the [reference] and for some examples, see [Rust by Example].
+/// of the [reference] and for some examples, see [CrabLang by Example].
 ///
 /// [reference]:../reference/visibility-and-privacy.html?highlight=pub#visibility-and-privacy
-/// [Rust by Example]:../rust-by-example/mod/visibility.html
+/// [CrabLang by Example]:../crablang-by-example/mod/visibility.html
 mod pub_keyword {}
 
 #[doc(keyword = "ref")]
@@ -1321,10 +1321,10 @@ mod return_keyword {}
 /// [Reference]: ../reference/items/associated-items.html#methods
 mod self_keyword {}
 
-// FIXME: Once rustdoc can handle URL conflicts on case insensitive file systems, we can remove the
+// FIXME: Once crablangdoc can handle URL conflicts on case insensitive file systems, we can remove the
 // three next lines and put back: `#[doc(keyword = "Self")]`.
 #[doc(alias = "Self")]
-#[allow(rustc::existing_doc_keyword)]
+#[allow(crablangc::existing_doc_keyword)]
 #[doc(keyword = "SelfTy")]
 //
 /// The implementing type within a [`trait`] or [`impl`] block, or the current type within a type
@@ -1411,7 +1411,7 @@ mod self_upper_keyword {}
 ///
 /// Static items cannot be moved:
 ///
-/// ```rust,compile_fail,E0507
+/// ```crablang,compile_fail,E0507
 /// static VEC: Vec<u32> = vec![];
 ///
 /// fn move_vec(v: Vec<u32>) -> Vec<u32> {
@@ -1429,7 +1429,7 @@ mod self_upper_keyword {}
 /// implement the [`Sync`] trait, ruling out interior mutability containers
 /// like [`RefCell`]. See the [Reference] for more information.
 ///
-/// ```rust
+/// ```crablang
 /// static FOO: [i32; 5] = [1, 2, 3, 4, 5];
 ///
 /// let r1 = &FOO as *const _;
@@ -1454,7 +1454,7 @@ mod self_upper_keyword {}
 ///
 /// In an [`extern`] block:
 ///
-/// ```rust,no_run
+/// ```crablang,no_run
 /// # #![allow(dead_code)]
 /// extern "C" {
 ///     static mut ERROR_MESSAGE: *mut std::os::raw::c_char;
@@ -1476,10 +1476,10 @@ mod static_keyword {}
 //
 /// A type that is composed of other types.
 ///
-/// Structs in Rust come in three flavors: Structs with named fields, tuple structs, and unit
+/// Structs in CrabLang come in three flavors: Structs with named fields, tuple structs, and unit
 /// structs.
 ///
-/// ```rust
+/// ```crablang
 /// struct Regular {
 ///     field1: f32,
 ///     field2: String,
@@ -1514,7 +1514,7 @@ mod static_keyword {}
 /// `new()`, but when that isn't available (or you're writing the constructor itself), struct
 /// literal syntax is used:
 ///
-/// ```rust
+/// ```crablang
 /// # struct Foo { field1: f32, field2: String, etc: bool }
 /// let example = Foo {
 ///     field1: 42.0,
@@ -1531,7 +1531,7 @@ mod static_keyword {}
 /// name, the assignment can be simplified from `field: field` into simply `field`. The following
 /// example of a hypothetical constructor demonstrates this:
 ///
-/// ```rust
+/// ```crablang
 /// struct User {
 ///     name: String,
 ///     admin: bool,
@@ -1551,7 +1551,7 @@ mod static_keyword {}
 /// struct that has the same values as most of a previous struct of the same type, called struct
 /// update syntax:
 ///
-/// ```rust
+/// ```crablang
 /// # struct Foo { field1: String, field2: () }
 /// # let thing = Foo { field1: "".to_string(), field2: () };
 /// let updated_thing = Foo {
@@ -1572,7 +1572,7 @@ mod static_keyword {}
 /// struct's list of fields can be omitted, it's usually kept for convenience in adding and
 /// removing fields down the line.
 ///
-/// For more information on structs, take a look at the [Rust Book][book] or the
+/// For more information on structs, take a look at the [CrabLang Book][book] or the
 /// [Reference][reference].
 ///
 /// [`PhantomData`]: marker::PhantomData
@@ -1584,7 +1584,7 @@ mod struct_keyword {}
 //
 /// The parent of the current [module].
 ///
-/// ```rust
+/// ```crablang
 /// # #![allow(dead_code)]
 /// # fn main() {}
 /// mod a {
@@ -1635,7 +1635,7 @@ mod super_keyword {}
 /// Traits are declared using the `trait` keyword. Types can implement them
 /// using [`impl`] `Trait` [`for`] `Type`:
 ///
-/// ```rust
+/// ```crablang
 /// trait Zero {
 ///     const ZERO: Self;
 ///     fn is_zero(&self) -> bool;
@@ -1656,7 +1656,7 @@ mod super_keyword {}
 ///
 /// With an associated type:
 ///
-/// ```rust
+/// ```crablang
 /// trait Builder {
 ///     type Built;
 ///
@@ -1666,7 +1666,7 @@ mod super_keyword {}
 ///
 /// Traits can be generic, with constraints or without:
 ///
-/// ```rust
+/// ```crablang
 /// trait MaybeFrom<T> {
 ///     fn maybe_from(value: T) -> Option<Self>
 ///     where
@@ -1677,7 +1677,7 @@ mod super_keyword {}
 /// Traits can build upon the requirements of other traits. In the example
 /// below `Iterator` is a **supertrait** and `ThreeIterator` is a **subtrait**:
 ///
-/// ```rust
+/// ```crablang
 /// trait ThreeIterator: std::iter::Iterator {
 ///     fn next_three(&mut self) -> Option<[Self::Item; 3]>;
 /// }
@@ -1685,7 +1685,7 @@ mod super_keyword {}
 ///
 /// Traits can be used in functions, as parameters:
 ///
-/// ```rust
+/// ```crablang
 /// # #![allow(dead_code)]
 /// fn debug_iter<I: Iterator>(it: I) where I::Item: std::fmt::Debug {
 ///     for elem in it {
@@ -1713,7 +1713,7 @@ mod super_keyword {}
 ///
 /// Or as return types:
 ///
-/// ```rust
+/// ```crablang
 /// # #![allow(dead_code)]
 /// fn from_zero_to(v: u8) -> impl Iterator<Item = u8> {
 ///     (0..v).into_iter()
@@ -1733,7 +1733,7 @@ mod super_keyword {}
 /// The syntax is the following: `dyn BaseTrait + AutoTrait1 + ... AutoTraitN`.
 /// Only one `BaseTrait` can be used so this will not compile:
 ///
-/// ```rust,compile_fail,E0225
+/// ```crablang,compile_fail,E0225
 /// trait A {}
 /// trait B {}
 ///
@@ -1742,7 +1742,7 @@ mod super_keyword {}
 ///
 /// Neither will this, which is a syntax error:
 ///
-/// ```rust,compile_fail
+/// ```crablang,compile_fail
 /// trait A {}
 /// trait B {}
 ///
@@ -1751,7 +1751,7 @@ mod super_keyword {}
 ///
 /// On the other hand, this is correct:
 ///
-/// ```rust
+/// ```crablang
 /// trait A {}
 ///
 /// let _: Box<dyn A + Send + Sync>;
@@ -1765,7 +1765,7 @@ mod super_keyword {}
 /// Some traits may be unsafe to implement. Using the [`unsafe`] keyword in
 /// front of the trait's declaration is used to mark this:
 ///
-/// ```rust
+/// ```crablang
 /// unsafe trait UnsafeTrait {}
 ///
 /// unsafe impl UnsafeTrait for i32 {}
@@ -1775,7 +1775,7 @@ mod super_keyword {}
 ///
 /// In the 2015 edition the parameters pattern was not needed for traits:
 ///
-/// ```rust,edition2015
+/// ```crablang,edition2015
 /// # #![allow(anonymous_parameters)]
 /// trait Tr {
 ///     fn f(i32);
@@ -1799,7 +1799,7 @@ mod trait_keyword {}
 ///
 /// ## Control structures that check for **true**
 ///
-/// Several of Rust's control structures will check for a `bool` condition evaluating to **true**.
+/// Several of CrabLang's control structures will check for a `bool` condition evaluating to **true**.
 ///
 ///   * The condition in an [`if`] expression must be of type `bool`.
 ///     Whenever that condition evaluates to **true**, the `if` expression takes
@@ -1828,7 +1828,7 @@ mod true_keyword {}
 ///
 /// `type` does **not** create a new type:
 ///
-/// ```rust
+/// ```crablang
 /// type Meters = u32;
 /// type Kilograms = u32;
 ///
@@ -1840,7 +1840,7 @@ mod true_keyword {}
 ///
 /// In traits, `type` is used to declare an [associated type]:
 ///
-/// ```rust
+/// ```crablang
 /// trait Iterator {
 ///     // associated type declaration
 ///     type Item;
@@ -1879,17 +1879,17 @@ mod type_keyword {}
 ///
 /// # Unsafe abilities
 ///
-/// **No matter what, Safe Rust can't cause Undefined Behavior**. This is
+/// **No matter what, Safe CrabLang can't cause Undefined Behavior**. This is
 /// referred to as [soundness]: a well-typed program actually has the desired
 /// properties. The [Nomicon][nomicon-soundness] has a more detailed explanation
 /// on the subject.
 ///
-/// To ensure soundness, Safe Rust is restricted enough that it can be
+/// To ensure soundness, Safe CrabLang is restricted enough that it can be
 /// automatically checked. Sometimes, however, it is necessary to write code
 /// that is correct for reasons which are too clever for the compiler to
-/// understand. In those cases, you need to use Unsafe Rust.
+/// understand. In those cases, you need to use Unsafe CrabLang.
 ///
-/// Here are the abilities Unsafe Rust has in addition to Safe Rust:
+/// Here are the abilities Unsafe CrabLang has in addition to Safe CrabLang:
 ///
 /// - Dereference [raw pointers]
 /// - Implement `unsafe` [`trait`]s
@@ -1906,7 +1906,7 @@ mod type_keyword {}
 /// Not all uses of `unsafe` are equivalent: some are here to mark the existence
 /// of a contract the programmer must check, others are to say "I have checked
 /// the contract, go ahead and do this". The following
-/// [discussion on Rust Internals] has more in-depth explanations about this but
+/// [discussion on CrabLang Internals] has more in-depth explanations about this but
 /// here is a summary of the main points:
 ///
 /// - `unsafe fn`: calling this function means abiding by a contract the
@@ -1925,7 +1925,7 @@ mod type_keyword {}
 /// `unsafe_op_in_unsafe_fn` lint can be enabled to warn against that and require explicit unsafe
 /// blocks even inside `unsafe fn`.
 ///
-/// See the [Rustnomicon] and the [Reference] for more information.
+/// See the [CrabLangnomicon] and the [Reference] for more information.
 ///
 /// # Examples
 ///
@@ -1936,7 +1936,7 @@ mod type_keyword {}
 /// declared as `extern "something" fn ...`). Mutable statics are always unsafe,
 /// wherever they are declared. Methods can also be declared as `unsafe`:
 ///
-/// ```rust
+/// ```crablang
 /// # #![allow(dead_code)]
 /// static mut FOO: &str = "hello";
 ///
@@ -1960,7 +1960,7 @@ mod type_keyword {}
 ///
 /// Traits can also be declared as `unsafe`:
 ///
-/// ```rust
+/// ```crablang
 /// unsafe trait UnsafeTrait {}
 /// ```
 ///
@@ -1970,7 +1970,7 @@ mod type_keyword {}
 /// extract from [`Vec::set_len`]. The `# Safety` section explains the contract
 /// that must be fulfilled to safely call the function.
 ///
-/// ```rust,ignore (stub-to-show-doc-example)
+/// ```crablang,ignore (stub-to-show-doc-example)
 /// /// Forces the length of the vector to `new_len`.
 /// ///
 /// /// This is a low-level operation that maintains none of the normal
@@ -1989,7 +1989,7 @@ mod type_keyword {}
 ///
 /// Performing `unsafe` operations requires an `unsafe {}` block:
 ///
-/// ```rust
+/// ```crablang
 /// # #![allow(dead_code)]
 /// #![deny(unsafe_op_in_unsafe_fn)]
 ///
@@ -2016,7 +2016,7 @@ mod type_keyword {}
 /// two combinations of safe `fn` in `unsafe trait` and `unsafe fn` in safe trait using two
 /// examples:
 ///
-/// ```rust
+/// ```crablang
 /// /// # Safety
 /// ///
 /// /// `make_even` must return an even number.
@@ -2049,7 +2049,7 @@ mod type_keyword {}
 ///
 /// It is also possible to have `unsafe fn` in a regular safe `trait`:
 ///
-/// ```rust
+/// ```crablang
 /// # #![feature(never_type)]
 /// #![deny(unsafe_op_in_unsafe_fn)]
 ///
@@ -2128,12 +2128,12 @@ mod type_keyword {}
 /// [`union`]: keyword.union.html
 /// [`impl`]: keyword.impl.html
 /// [raw pointers]: ../reference/types/pointer.html
-/// [memory safety]: ../book/ch19-01-unsafe-rust.html
-/// [Rustnomicon]: ../nomicon/index.html
+/// [memory safety]: ../book/ch19-01-unsafe-crablang.html
+/// [CrabLangnomicon]: ../nomicon/index.html
 /// [nomicon-soundness]: ../nomicon/safe-unsafe-meaning.html
-/// [soundness]: https://rust-lang.github.io/unsafe-code-guidelines/glossary.html#soundness-of-code--of-a-library
+/// [soundness]: https://crablang.github.io/unsafe-code-guidelines/glossary.html#soundness-of-code--of-a-library
 /// [Reference]: ../reference/unsafety.html
-/// [discussion on Rust Internals]: https://internals.rust-lang.org/t/what-does-unsafe-mean/6696
+/// [discussion on CrabLang Internals]: https://internals.crablang.org/t/what-does-unsafe-mean/6696
 mod unsafe_keyword {}
 
 #[doc(keyword = "use")]
@@ -2209,7 +2209,7 @@ mod use_keyword {}
 ///
 /// `where` can be used for constraints with traits:
 ///
-/// ```rust
+/// ```crablang
 /// fn new<T: Default>() -> T {
 ///     T::default()
 /// }
@@ -2233,7 +2233,7 @@ mod use_keyword {}
 /// This compiles because `longer` outlives `shorter`, thus the constraint is
 /// respected:
 ///
-/// ```rust
+/// ```crablang
 /// fn select<'short, 'long>(s1: &'short str, s2: &'long str, second: bool) -> &'short str
 /// where
 ///     'long: 'short,
@@ -2256,7 +2256,7 @@ mod use_keyword {}
 /// is missing: the `'b` lifetime is not known to live at least as long as `'a`
 /// which means this function cannot ensure it always returns a valid reference:
 ///
-/// ```rust,compile_fail
+/// ```crablang,compile_fail
 /// fn select<'a, 'b>(s1: &'a str, s2: &'b str, second: bool) -> &'a str
 /// {
 ///     if second { s2 } else { s1 }
@@ -2266,7 +2266,7 @@ mod use_keyword {}
 /// `where` can also be used to express more complicated constraints that cannot
 /// be written with the `<T: Trait>` syntax:
 ///
-/// ```rust
+/// ```crablang
 /// fn first_or_default<I>(mut i: I) -> I::Item
 /// where
 ///     I: Iterator,
@@ -2283,7 +2283,7 @@ mod use_keyword {}
 /// as can be seen with the [`Cow`](crate::borrow::Cow) type from the standard
 /// library:
 ///
-/// ```rust
+/// ```crablang
 /// # #![allow(dead_code)]
 /// pub enum Cow<'a, B>
 /// where
@@ -2294,7 +2294,7 @@ mod use_keyword {}
 /// }
 /// ```
 ///
-/// [RFC]: https://github.com/rust-lang/rfcs/blob/master/text/0135-where.md
+/// [RFC]: https://github.com/crablang/rfcs/blob/master/text/0135-where.md
 mod where_keyword {}
 
 // 2018 Edition keywords
@@ -2314,11 +2314,11 @@ mod where_keyword {}
 ///
 /// `async` is a keyword from the 2018 edition onwards.
 ///
-/// It is available for use in stable Rust from version 1.39 onwards.
+/// It is available for use in stable CrabLang from version 1.39 onwards.
 ///
 /// [`Future`]: future::Future
 /// [`.await`]: ../std/keyword.await.html
-/// [async book]: https://rust-lang.github.io/async-book/
+/// [async book]: https://crablang.github.io/async-book/
 mod async_keyword {}
 
 #[doc(keyword = "await")]
@@ -2334,10 +2334,10 @@ mod async_keyword {}
 ///
 /// `await` is a keyword from the 2018 edition onwards.
 ///
-/// It is available for use in stable Rust from version 1.39 onwards.
+/// It is available for use in stable CrabLang from version 1.39 onwards.
 ///
 /// [`Future`]: future::Future
-/// [async book]: https://rust-lang.github.io/async-book/
+/// [async book]: https://crablang.github.io/async-book/
 /// [`async`]: ../std/keyword.async.html
 mod await_keyword {}
 
@@ -2378,14 +2378,14 @@ mod dyn_keyword {}
 
 #[doc(keyword = "union")]
 //
-/// The [Rust equivalent of a C-style union][union].
+/// The [CrabLang equivalent of a C-style union][union].
 ///
 /// A `union` looks like a [`struct`] in terms of declaration, but all of its
 /// fields exist in the same memory, superimposed over one another. For instance,
 /// if we wanted some bits in memory that we sometimes interpret as a `u32` and
 /// sometimes as an `f32`, we could write:
 ///
-/// ```rust
+/// ```crablang
 /// union IntOrFloat {
 ///     i: u32,
 ///     f: f32,
@@ -2405,7 +2405,7 @@ mod dyn_keyword {}
 /// be used and it must match the name of one of the `union`'s field.
 /// Like reading from a `union`, pattern matching on a `union` requires `unsafe`.
 ///
-/// ```rust
+/// ```crablang
 /// union IntOrFloat {
 ///     i: u32,
 ///     f: f32,
@@ -2427,7 +2427,7 @@ mod dyn_keyword {}
 /// All fields in a `union` are all at the same place in memory which means
 /// borrowing one borrows the entire `union`, for the same lifetime:
 ///
-/// ```rust,compile_fail,E0502
+/// ```crablang,compile_fail,E0502
 /// union IntOrFloat {
 ///     i: u32,
 ///     f: f32,

@@ -4,14 +4,14 @@ use clippy_utils::path_to_local;
 use clippy_utils::source::snippet_with_context;
 use clippy_utils::ty::{implements_trait, is_type_diagnostic_item};
 use if_chain::if_chain;
-use rustc_data_structures::fx::FxHashSet;
-use rustc_errors::Applicability;
-use rustc_hir::def::{DefKind, Res};
-use rustc_hir::intravisit::{walk_expr, Visitor};
-use rustc_hir::{BindingAnnotation, Block, Expr, ExprKind, HirId, Mutability, Node, Pat, PatKind, Stmt, StmtKind};
-use rustc_lint::LateContext;
-use rustc_span::symbol::sym;
-use rustc_span::SyntaxContext;
+use crablangc_data_structures::fx::FxHashSet;
+use crablangc_errors::Applicability;
+use crablangc_hir::def::{DefKind, Res};
+use crablangc_hir::intravisit::{walk_expr, Visitor};
+use crablangc_hir::{BindingAnnotation, Block, Expr, ExprKind, HirId, Mutability, Node, Pat, PatKind, Stmt, StmtKind};
+use crablangc_lint::LateContext;
+use crablangc_span::symbol::sym;
+use crablangc_span::SyntaxContext;
 use std::iter::Iterator;
 
 /// Detects for loop pushing the same item into a Vec

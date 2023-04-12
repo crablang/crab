@@ -9,7 +9,7 @@ LL | |             )
    | |_____________^ constructing invalid value: encountered a dangling reference ($HEX[noalloc] has no provenance)
    |
    = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior
-   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information
+   = help: see https://doc.crablang.org/nightly/reference/behavior-considered-undefined.html for further information
    = note: BACKTRACE:
    = note: inside `main` at $DIR/branchless-select-i128-pointer.rs:LL:CC
 

@@ -1,12 +1,12 @@
 #![feature(prelude_import)]
 #![no_std]
-// This ensures that ICEs like rust#94953 don't happen
+// This ensures that ICEs like crablang#94953 don't happen
 // check-pass
 // compile-flags: -Z unpretty=expanded
 
 #![feature(lint_reasons)]
 #[prelude_import]
-use ::std::prelude::rust_2015::*;
+use ::std::prelude::crablang_2015::*;
 #[macro_use]
 extern crate std;
 

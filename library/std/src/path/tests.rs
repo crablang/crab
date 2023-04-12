@@ -440,15 +440,15 @@ pub fn test_decompositions_unix() {
     file_prefix: Some(".foo")
     );
 
-    t!("a/.rustfmt.toml",
-    iter: ["a", ".rustfmt.toml"],
+    t!("a/.crablangfmt.toml",
+    iter: ["a", ".crablangfmt.toml"],
     has_root: false,
     is_absolute: false,
     parent: Some("a"),
-    file_name: Some(".rustfmt.toml"),
-    file_stem: Some(".rustfmt"),
+    file_name: Some(".crablangfmt.toml"),
+    file_stem: Some(".crablangfmt"),
     extension: Some("toml"),
-    file_prefix: Some(".rustfmt")
+    file_prefix: Some(".crablangfmt")
     );
 
     t!("a/.x.y.z",
@@ -1542,8 +1542,8 @@ pub fn test_compare() {
     );
 
     if cfg!(windows) {
-        tc!(r"C:\src\rust\cargo-test\test\Cargo.toml",
-        r"c:\src\rust\cargo-test\test",
+        tc!(r"C:\src\crablang\cargo-test\test\Cargo.toml",
+        r"c:\src\crablang\cargo-test\test",
         eq: false,
         starts_with: true,
         ends_with: false,
@@ -1784,7 +1784,7 @@ fn bench_path_cmp_fast_path_buf_sort(b: &mut test::Bencher) {
 #[bench]
 #[cfg_attr(miri, ignore)] // Miri isn't fast...
 fn bench_path_cmp_fast_path_long(b: &mut test::Bencher) {
-    let prefix = "/my/home/is/my/castle/and/my/castle/has/a/rusty/workbench/";
+    let prefix = "/my/home/is/my/castle/and/my/castle/has/a/crablangy/workbench/";
     let paths: Vec<_> =
         (0..1000).map(|num| PathBuf::from(prefix).join(format!("file {num}.rs"))).collect();
 
@@ -1822,7 +1822,7 @@ fn bench_path_cmp_fast_path_short(b: &mut test::Bencher) {
 #[bench]
 #[cfg_attr(miri, ignore)] // Miri isn't fast...
 fn bench_path_hashset(b: &mut test::Bencher) {
-    let prefix = "/my/home/is/my/castle/and/my/castle/has/a/rusty/workbench/";
+    let prefix = "/my/home/is/my/castle/and/my/castle/has/a/crablangy/workbench/";
     let paths: Vec<_> =
         (0..1000).map(|num| PathBuf::from(prefix).join(format!("file {num}.rs"))).collect();
 
@@ -1841,7 +1841,7 @@ fn bench_path_hashset(b: &mut test::Bencher) {
 #[bench]
 #[cfg_attr(miri, ignore)] // Miri isn't fast...
 fn bench_path_hashset_miss(b: &mut test::Bencher) {
-    let prefix = "/my/home/is/my/castle/and/my/castle/has/a/rusty/workbench/";
+    let prefix = "/my/home/is/my/castle/and/my/castle/has/a/crablangy/workbench/";
     let paths: Vec<_> =
         (0..1000).map(|num| PathBuf::from(prefix).join(format!("file {num}.rs"))).collect();
 

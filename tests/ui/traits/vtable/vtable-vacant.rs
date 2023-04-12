@@ -1,17 +1,17 @@
 // build-fail
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 #![feature(negative_impls)]
 #![allow(where_clauses_object_safety)]
 
 // B --> A
 
-#[rustc_dump_vtable]
+#[crablangc_dump_vtable]
 trait A {
     fn foo_a1(&self) {}
     fn foo_a2(&self) where Self: Send {}
 }
 
-#[rustc_dump_vtable]
+#[crablangc_dump_vtable]
 trait B: A {
     //~^ error vtable
     fn foo_b1(&self) {}

@@ -75,7 +75,7 @@
 // 63 |   Unordered   |   Unordered   |       >       |    +?    |
 // 64 |   Unordered   |   Unordered   |   Unordered   |    +     |
 
-#![feature(decl_macro, rustc_attrs)]
+#![feature(decl_macro, crablangc_attrs)]
 
 struct Right;
 // struct Wrong; // not defined

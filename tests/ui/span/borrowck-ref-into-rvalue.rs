@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 fn main() {
     let msg;
     match Some("Hello".to_string()) {

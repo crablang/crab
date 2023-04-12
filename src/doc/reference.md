@@ -1,4 +1,4 @@
-% The Rust Reference has moved
+% The CrabLang Reference has moved
 
 We've split up the reference into chapters. Please find it at its new
-home [here](https://doc.rust-lang.org/stable/reference/introduction.html).
+home [here](https://doc.crablang.org/stable/reference/introduction.html).

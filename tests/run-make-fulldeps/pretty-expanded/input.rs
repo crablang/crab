@@ -2,11 +2,11 @@
 
 // #13544
 
-extern crate rustc_serialize;
+extern crate crablangc_serialize;
 
-#[derive(RustcEncodable)] pub struct A;
-#[derive(RustcEncodable)] pub struct B(isize);
-#[derive(RustcEncodable)] pub struct C { x: isize }
-#[derive(RustcEncodable)] pub enum D {}
-#[derive(RustcEncodable)] pub enum E { y }
-#[derive(RustcEncodable)] pub enum F { z(isize) }
+#[derive(CrabLangcEncodable)] pub struct A;
+#[derive(CrabLangcEncodable)] pub struct B(isize);
+#[derive(CrabLangcEncodable)] pub struct C { x: isize }
+#[derive(CrabLangcEncodable)] pub enum D {}
+#[derive(CrabLangcEncodable)] pub enum E { y }
+#[derive(CrabLangcEncodable)] pub enum F { z(isize) }

@@ -5,13 +5,13 @@ use std::iter;
 
 use log::trace;
 
-use rustc_apfloat::{Float, Round};
-use rustc_middle::ty::layout::{IntegerExt, LayoutOf};
-use rustc_middle::{
+use crablangc_apfloat::{Float, Round};
+use crablangc_middle::ty::layout::{IntegerExt, LayoutOf};
+use crablangc_middle::{
     mir,
     ty::{self, FloatTy, Ty},
 };
-use rustc_target::abi::{Integer, Size};
+use crablangc_target::abi::{Integer, Size};
 
 use crate::*;
 use atomic::EvalContextExt as _;
@@ -86,7 +86,7 @@ pub trait EvalContextExt<'mir, 'tcx: 'mir>: crate::MiriInterpCxExt<'mir, 'tcx> {
             }
             "const_allocate" => {
                 // For now, for compatibility with the run-time implementation of this, we just return null.
-                // See <https://github.com/rust-lang/rust/issues/93935>.
+                // See <https://github.com/crablang/crablang/issues/93935>.
                 this.write_null(dest)?;
             }
             "const_deallocate" => {
@@ -144,7 +144,7 @@ pub trait EvalContextExt<'mir, 'tcx: 'mir>: crate::MiriInterpCxExt<'mir, 'tcx> {
                 // Can be implemented in soft-floats.
                 this.write_scalar(Scalar::from_f64(f.abs()), dest)?;
             }
-            #[rustfmt::skip]
+            #[crablangfmt::skip]
             | "sinf32"
             | "cosf32"
             | "sqrtf32"
@@ -181,7 +181,7 @@ pub trait EvalContextExt<'mir, 'tcx: 'mir>: crate::MiriInterpCxExt<'mir, 'tcx> {
                 this.write_scalar(Scalar::from_u32(f.to_bits()), dest)?;
             }
 
-            #[rustfmt::skip]
+            #[crablangfmt::skip]
             | "sinf64"
             | "cosf64"
             | "sqrtf64"
@@ -218,7 +218,7 @@ pub trait EvalContextExt<'mir, 'tcx: 'mir>: crate::MiriInterpCxExt<'mir, 'tcx> {
                 this.write_scalar(Scalar::from_u64(f.to_bits()), dest)?;
             }
 
-            #[rustfmt::skip]
+            #[crablangfmt::skip]
             | "fadd_fast"
             | "fsub_fast"
             | "fmul_fast"
@@ -261,7 +261,7 @@ pub trait EvalContextExt<'mir, 'tcx: 'mir>: crate::MiriInterpCxExt<'mir, 'tcx> {
                 this.binop_ignore_overflow(op, &a, &b, dest)?;
             }
 
-            #[rustfmt::skip]
+            #[crablangfmt::skip]
             | "minnumf32"
             | "maxnumf32"
             | "copysignf32"
@@ -278,7 +278,7 @@ pub trait EvalContextExt<'mir, 'tcx: 'mir>: crate::MiriInterpCxExt<'mir, 'tcx> {
                 this.write_scalar(Scalar::from_f32(res), dest)?;
             }
 
-            #[rustfmt::skip]
+            #[crablangfmt::skip]
             | "minnumf64"
             | "maxnumf64"
             | "copysignf64"
@@ -315,7 +315,7 @@ pub trait EvalContextExt<'mir, 'tcx: 'mir>: crate::MiriInterpCxExt<'mir, 'tcx> {
 
             "fmaf32" => {
                 let [a, b, c] = check_arg_count(args)?;
-                // FIXME: Using host floats, to work around https://github.com/rust-lang/miri/issues/2468.
+                // FIXME: Using host floats, to work around https://github.com/crablang/miri/issues/2468.
                 let a = f32::from_bits(this.read_scalar(a)?.to_u32()?);
                 let b = f32::from_bits(this.read_scalar(b)?.to_u32()?);
                 let c = f32::from_bits(this.read_scalar(c)?.to_u32()?);
@@ -325,7 +325,7 @@ pub trait EvalContextExt<'mir, 'tcx: 'mir>: crate::MiriInterpCxExt<'mir, 'tcx> {
 
             "fmaf64" => {
                 let [a, b, c] = check_arg_count(args)?;
-                // FIXME: Using host floats, to work around https://github.com/rust-lang/miri/issues/2468.
+                // FIXME: Using host floats, to work around https://github.com/crablang/miri/issues/2468.
                 let a = f64::from_bits(this.read_scalar(a)?.to_u64()?);
                 let b = f64::from_bits(this.read_scalar(b)?.to_u64()?);
                 let c = f64::from_bits(this.read_scalar(c)?.to_u64()?);

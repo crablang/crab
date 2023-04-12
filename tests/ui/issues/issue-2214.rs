@@ -1,7 +1,7 @@
 // run-pass
 // ignore-wasm32-bare no libc to test ffi with
 // ignore-sgx no libc
-#![feature(rustc_private)]
+#![feature(crablangc_private)]
 
 extern crate libc;
 

@@ -1,6 +1,6 @@
 # ignore-cross-compile
 include ../tools.mk
 all:
-	$(RUSTC) bar.rs --crate-type=dylib -C prefer-dynamic
-	$(RUSTC) foo.rs
+	$(CRABLANGC) bar.rs --crate-type=dylib -C prefer-dynamic
+	$(CRABLANGC) foo.rs
 	$(call RUN,foo)

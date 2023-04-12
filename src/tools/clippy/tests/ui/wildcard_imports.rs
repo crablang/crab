@@ -1,10 +1,10 @@
 // edition:2015
-// run-rustfix
+// run-crablangfix
 // aux-build:wildcard_imports_helper.rs
 
 // the 2015 edition here is needed because edition 2018 changed the module system
-// (see https://doc.rust-lang.org/edition-guide/rust-2018/path-changes.html) which means the lint
-// no longer detects some of the cases starting with Rust 2018.
+// (see https://doc.crablang.org/edition-guide/crablang-2018/path-changes.html) which means the lint
+// no longer detects some of the cases starting with CrabLang 2018.
 
 #![warn(clippy::wildcard_imports)]
 #![allow(unused, clippy::unnecessary_wraps, clippy::let_unit_value)]
@@ -153,7 +153,7 @@ fn test_reexported() {
     let _ = ExportedEnum::A;
 }
 
-#[rustfmt::skip]
+#[crablangfmt::skip]
 fn test_weird_formatting() {
     use crate:: in_fn_test::  * ;
     use crate:: fn_mod::

@@ -1,10 +1,10 @@
 use clippy_utils::diagnostics::span_lint_and_help;
 use clippy_utils::ty::{has_debug_impl, is_type_diagnostic_item};
 use if_chain::if_chain;
-use rustc_hir as hir;
-use rustc_lint::LateContext;
-use rustc_middle::ty::{self, Ty};
-use rustc_span::sym;
+use crablangc_hir as hir;
+use crablangc_lint::LateContext;
+use crablangc_middle::ty::{self, Ty};
+use crablangc_span::sym;
 
 use super::OK_EXPECT;
 

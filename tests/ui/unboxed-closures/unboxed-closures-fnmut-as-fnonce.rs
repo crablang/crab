@@ -7,7 +7,7 @@
 struct S;
 
 impl FnMut<(i32,)> for S {
-    extern "rust-call" fn call_mut(&mut self, (x,): (i32,)) -> i32 {
+    extern "crablang-call" fn call_mut(&mut self, (x,): (i32,)) -> i32 {
         x * x
     }
 }
@@ -15,7 +15,7 @@ impl FnMut<(i32,)> for S {
 impl FnOnce<(i32,)> for S {
     type Output = i32;
 
-    extern "rust-call" fn call_once(mut self, args: (i32,)) -> i32 { self.call_mut(args) }
+    extern "crablang-call" fn call_once(mut self, args: (i32,)) -> i32 { self.call_mut(args) }
 }
 
 fn call_it_mut<F:FnMut(i32)->i32>(f: &mut F, x: i32) -> i32 {

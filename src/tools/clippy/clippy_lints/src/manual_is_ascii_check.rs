@@ -1,12 +1,12 @@
 use clippy_utils::msrvs::{self, Msrv};
 use clippy_utils::{diagnostics::span_lint_and_sugg, higher, in_constant, macros::root_macro_call, sugg::Sugg};
-use rustc_ast::ast::RangeLimits;
-use rustc_ast::LitKind::{Byte, Char};
-use rustc_errors::Applicability;
-use rustc_hir::{BorrowKind, Expr, ExprKind, PatKind, RangeEnd};
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_session::{declare_tool_lint, impl_lint_pass};
-use rustc_span::{def_id::DefId, sym, Span};
+use crablangc_ast::ast::RangeLimits;
+use crablangc_ast::LitKind::{Byte, Char};
+use crablangc_errors::Applicability;
+use crablangc_hir::{BorrowKind, Expr, ExprKind, PatKind, RangeEnd};
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_session::{declare_tool_lint, impl_lint_pass};
+use crablangc_span::{def_id::DefId, sym, Span};
 
 declare_clippy_lint! {
     /// ### What it does
@@ -18,7 +18,7 @@ declare_clippy_lint! {
     /// clear that it's not a specific subset of characters, but all
     /// ASCII (lowercase|uppercase|digit) characters.
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// fn main() {
     ///     assert!(matches!('x', 'a'..='z'));
     ///     assert!(matches!(b'X', b'A'..=b'Z'));
@@ -31,7 +31,7 @@ declare_clippy_lint! {
     /// }
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// fn main() {
     ///     assert!('x'.is_ascii_lowercase());
     ///     assert!(b'X'.is_ascii_uppercase());

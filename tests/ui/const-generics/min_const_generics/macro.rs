@@ -27,7 +27,7 @@ fn main() {
   let _ok = Example::<{
     #[macro_export]
     macro_rules! gimme_a_const {
-      ($rusty: ident) => {{ let $rusty = 3; *&$rusty }}
+      ($crablangy: ident) => {{ let $crablangy = 3; *&$crablangy }}
     }
     gimme_a_const!(run)
   }>;

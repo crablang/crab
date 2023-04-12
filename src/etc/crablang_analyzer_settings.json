@@ -1,0 +1,28 @@
+{
+    "crablang-analyzer.check.invocationLocation": "root",
+    "crablang-analyzer.check.invocationStrategy": "once",
+    "crablang-analyzer.check.overrideCommand": [
+        "python3",
+        "x.py",
+        "check",
+        "--json-output"
+    ],
+    "crablang-analyzer.linkedProjects": ["src/bootstrap/Cargo.toml", "Cargo.toml"],
+    "crablang-analyzer.crablangfmt.overrideCommand": [
+        "./build/host/crablangfmt/bin/crablangfmt",
+        "--edition=2021"
+    ],
+    "crablang-analyzer.procMacro.server": "./build/host/stage0/libexec/crablang-analyzer-proc-macro-srv",
+    "crablang-analyzer.procMacro.enable": true,
+    "crablang-analyzer.cargo.buildScripts.enable": true,
+    "crablang-analyzer.cargo.buildScripts.invocationLocation": "root",
+    "crablang-analyzer.cargo.buildScripts.invocationStrategy": "once",
+    "crablang-analyzer.cargo.buildScripts.overrideCommand": [
+        "python3",
+        "x.py",
+        "check",
+        "--json-output"
+    ],
+    "crablang-analyzer.cargo.sysrootSrc": "./library",
+    "crablang-analyzer.crablangc.source": "./Cargo.toml"
+}

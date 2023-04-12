@@ -2,7 +2,7 @@
 // the compiler assumed that `PartialEq` was always implemented on any
 // use of a `const` item in a pattern context, but the pre-existing
 // structural-match checking was too shallow
-// (see rust-lang/rust#62307), and so we hit cases where we were
+// (see crablang/crablang#62307), and so we hit cases where we were
 // trying to dispatch to `PartialEq` on types that did not implement
 // that trait.
 

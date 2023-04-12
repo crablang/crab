@@ -1,11 +1,11 @@
 use clippy_utils::diagnostics::span_lint_and_help;
 use clippy_utils::is_lint_allowed;
 use clippy_utils::macros::span_is_local;
-use rustc_hir::def_id::DefIdMap;
-use rustc_hir::{Impl, Item, ItemKind};
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_middle::ty::AssocItem;
-use rustc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_hir::def_id::DefIdMap;
+use crablangc_hir::{Impl, Item, ItemKind};
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_middle::ty::AssocItem;
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
 
 declare_clippy_lint! {
     /// ### What it does
@@ -21,7 +21,7 @@ declare_clippy_lint! {
     /// Indicates that a method is missing.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// trait Trait {
     ///     fn required();
     ///
@@ -35,7 +35,7 @@ declare_clippy_lint! {
     /// }
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// trait Trait {
     ///     fn required();
     ///

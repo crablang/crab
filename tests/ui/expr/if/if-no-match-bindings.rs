@@ -2,7 +2,7 @@
 // Specifically, we do not accept `if cond { ... }` where `cond: &mut? bool`.
 // Meanwhile, `match cond { true => ..., _ => ... }` does accept that.
 
-// FIXME(@rust-lang/lang-team): consider relaxing this?
+// FIXME(@crablang/lang-team): consider relaxing this?
 
 fn b_ref<'a>() -> &'a bool { &true }
 fn b_mut_ref<'a>() -> &'a mut bool { &mut true }

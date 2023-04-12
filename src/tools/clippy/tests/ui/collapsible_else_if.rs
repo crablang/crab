@@ -1,7 +1,7 @@
-// run-rustfix
+// run-crablangfix
 #![allow(clippy::assertions_on_constants, clippy::equatable_if_let)]
 
-#[rustfmt::skip]
+#[crablangfmt::skip]
 #[warn(clippy::collapsible_if)]
 #[warn(clippy::collapsible_else_if)]
 
@@ -90,7 +90,7 @@ fn main() {
     }
 }
 
-#[rustfmt::skip]
+#[crablangfmt::skip]
 #[allow(dead_code)]
 fn issue_7318() {
     if true { println!("I've been resolved!")

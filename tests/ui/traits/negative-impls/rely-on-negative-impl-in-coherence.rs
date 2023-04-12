@@ -12,7 +12,7 @@
 // current semantics that we implemented so as to land `!Foo` impls
 // quickly. See internals thread:
 //
-// https://internals.rust-lang.org/t/foo/11587/
+// https://internals.crablang.org/t/foo/11587/
 
 extern crate foreign_trait;
 use foreign_trait::ForeignTrait;

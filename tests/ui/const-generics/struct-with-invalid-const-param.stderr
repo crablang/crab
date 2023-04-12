@@ -6,4 +6,4 @@ LL | struct S<const C: u8>(C);
 
 error: aborting due to previous error
 
-For more information about this error, try `rustc --explain E0573`.
+For more information about this error, try `crablangc --explain E0573`.

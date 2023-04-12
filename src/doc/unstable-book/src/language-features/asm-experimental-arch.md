@@ -2,7 +2,7 @@
 
 The tracking issue for this feature is: [#93335]
 
-[#93335]: https://github.com/rust-lang/rust/issues/93335
+[#93335]: https://github.com/crablang/crablang/issues/93335
 
 ------------------------
 

@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 
 // Check that capturing a mutable reference by move and assigning to its
 // referent doesn't make the unused mut lint think that it is mutable.

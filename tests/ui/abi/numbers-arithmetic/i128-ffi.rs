@@ -8,7 +8,7 @@
 // ignore-windows
 // ignore-32bit
 
-#[link(name = "rust_test_helpers", kind = "static")]
+#[link(name = "crablang_test_helpers", kind = "static")]
 extern "C" {
     fn identity(f: u128) -> u128;
     fn square(f: i128) -> i128;

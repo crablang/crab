@@ -61,10 +61,10 @@ class ValueBuilder:
 
 
 def unwrap_unique_or_non_null(unique_or_nonnull):
-    # BACKCOMPAT: rust 1.32
-    # https://github.com/rust-lang/rust/commit/7a0911528058e87d22ea305695f4047572c5e067
-    # BACKCOMPAT: rust 1.60
-    # https://github.com/rust-lang/rust/commit/2a91eeac1a2d27dd3de1bf55515d765da20fd86f
+    # BACKCOMPAT: crablang 1.32
+    # https://github.com/crablang/crablang/commit/7a0911528058e87d22ea305695f4047572c5e067
+    # BACKCOMPAT: crablang 1.60
+    # https://github.com/crablang/crablang/commit/2a91eeac1a2d27dd3de1bf55515d765da20fd86f
     ptr = unique_or_nonnull.GetChildMemberWithName("pointer")
     return ptr if ptr.TypeIsPointerType() else ptr.GetChildAtIndex(0)
 
@@ -268,9 +268,9 @@ class StdVecSyntheticProvider:
 
     struct Vec<T> { buf: RawVec<T>, len: usize }
     struct RawVec<T> { ptr: Unique<T>, cap: usize, ... }
-    rust 1.31.1: struct Unique<T: ?Sized> { pointer: NonZero<*const T>, ... }
-    rust 1.33.0: struct Unique<T: ?Sized> { pointer: *const T, ... }
-    rust 1.62.0: struct Unique<T: ?Sized> { pointer: NonNull<T>, ... }
+    crablang 1.31.1: struct Unique<T: ?Sized> { pointer: NonZero<*const T>, ... }
+    crablang 1.33.0: struct Unique<T: ?Sized> { pointer: *const T, ... }
+    crablang 1.62.0: struct Unique<T: ?Sized> { pointer: NonNull<T>, ... }
     struct NonZero<T>(T)
     struct NonNull<T> { pointer: *const T }
     """
@@ -402,7 +402,7 @@ class StdVecDequeSyntheticProvider:
         return True
 
 
-# BACKCOMPAT: rust 1.35
+# BACKCOMPAT: crablang 1.35
 class StdOldHashMapSyntheticProvider:
     """Pretty-printer for std::collections::hash::map::HashMap<K, V, S>
 
@@ -561,7 +561,7 @@ class StdHashMapSyntheticProvider:
         if self.show_values:
             hashbrown_hashmap = self.valobj.GetChildMemberWithName("base")
         else:
-            # BACKCOMPAT: rust 1.47
+            # BACKCOMPAT: crablang 1.47
             # HashSet wraps either std HashMap or hashbrown::HashSet, which both
             # wrap hashbrown::HashMap, so either way we "unwrap" twice.
             hashbrown_hashmap = self.valobj.GetChildAtIndex(0).GetChildAtIndex(0)
@@ -583,8 +583,8 @@ class StdRcSyntheticProvider:
     """Pretty-printer for alloc::rc::Rc<T> and alloc::sync::Arc<T>
 
     struct Rc<T> { ptr: NonNull<RcBox<T>>, ... }
-    rust 1.31.1: struct NonNull<T> { pointer: NonZero<*const T> }
-    rust 1.33.0: struct NonNull<T> { pointer: *const T }
+    crablang 1.31.1: struct NonNull<T> { pointer: NonZero<*const T> }
+    crablang 1.33.0: struct NonNull<T> { pointer: *const T }
     struct NonZero<T>(T)
     struct RcBox<T> { strong: Cell<usize>, weak: Cell<usize>, value: T }
     struct Cell<T> { value: UnsafeCell<T> }

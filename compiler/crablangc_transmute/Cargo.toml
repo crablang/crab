@@ -1,0 +1,29 @@
+[package]
+name = "crablangc_transmute"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.crablang.org/cargo/reference/manifest.html
+
+[dependencies]
+tracing = "0.1"
+crablangc_data_structures = { path = "../crablangc_data_structures"}
+crablangc_hir = { path = "../crablangc_hir", optional = true}
+crablangc_infer = { path = "../crablangc_infer", optional = true}
+crablangc_macros = { path = "../crablangc_macros", optional = true}
+crablangc_middle = { path = "../crablangc_middle", optional = true}
+crablangc_span = { path = "../crablangc_span", optional = true}
+crablangc_target = { path = "../crablangc_target", optional = true}
+
+[features]
+crablangc = [
+    "crablangc_middle",
+    "crablangc_hir",
+    "crablangc_infer",
+    "crablangc_macros",
+    "crablangc_span",
+    "crablangc_target",
+]
+
+[dev-dependencies]
+itertools = "0.10.1"

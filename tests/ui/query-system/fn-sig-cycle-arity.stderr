@@ -6,4 +6,4 @@ LL |     fn dance(&self) -> _ {
 
 error: aborting due to previous error
 
-For more information about this error, try `rustc --explain E0121`.
+For more information about this error, try `crablangc --explain E0121`.

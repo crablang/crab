@@ -5,7 +5,7 @@
 
 #![allow(warnings)]
 fn main() {
-    extern "Rust" {
+    extern "CrabLang" {
      fn main();
     }
     unsafe { main(); }

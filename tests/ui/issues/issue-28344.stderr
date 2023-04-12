@@ -4,8 +4,8 @@ warning: trait objects without an explicit `dyn` are deprecated
 LL |     let x: u8 = BitXor::bitor(0 as u8, 0 as u8);
    |                 ^^^^^^
    |
-   = warning: this is accepted in the current edition (Rust 2015) but is a hard error in Rust 2021!
-   = note: for more information, see <https://doc.rust-lang.org/nightly/edition-guide/rust-2021/warnings-promoted-to-error.html>
+   = warning: this is accepted in the current edition (CrabLang 2015) but is a hard error in CrabLang 2021!
+   = note: for more information, see <https://doc.crablang.org/nightly/edition-guide/crablang-2021/warnings-promoted-to-error.html>
    = note: `#[warn(bare_trait_objects)]` on by default
 help: use `dyn`
    |
@@ -33,8 +33,8 @@ warning: trait objects without an explicit `dyn` are deprecated
 LL |     let g = BitXor::bitor;
    |             ^^^^^^
    |
-   = warning: this is accepted in the current edition (Rust 2015) but is a hard error in Rust 2021!
-   = note: for more information, see <https://doc.rust-lang.org/nightly/edition-guide/rust-2021/warnings-promoted-to-error.html>
+   = warning: this is accepted in the current edition (CrabLang 2015) but is a hard error in CrabLang 2021!
+   = note: for more information, see <https://doc.crablang.org/nightly/edition-guide/crablang-2021/warnings-promoted-to-error.html>
 help: use `dyn`
    |
 LL |     let g = <dyn BitXor>::bitor;
@@ -58,4 +58,4 @@ LL |     let g = BitXor::bitor;
 error: aborting due to 4 previous errors; 2 warnings emitted
 
 Some errors have detailed explanations: E0191, E0599.
-For more information about an error, try `rustc --explain E0191`.
+For more information about an error, try `crablangc --explain E0191`.

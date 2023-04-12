@@ -6,10 +6,10 @@ use clippy_utils::{
 };
 use core::ops::ControlFlow;
 use hir::{Expr, ExprKind, Local, PatKind, PathSegment, QPath, StmtKind};
-use rustc_errors::Applicability;
-use rustc_hir as hir;
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_errors::Applicability;
+use crablangc_hir as hir;
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
 
 declare_clippy_lint! {
     /// ### What it does
@@ -26,7 +26,7 @@ declare_clippy_lint! {
     /// a zero-byte read would allocate a `Vec` for it.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// use std::io;
     /// fn foo<F: io::Read>(mut f: F) {
     ///     let mut data = Vec::with_capacity(100);
@@ -34,7 +34,7 @@ declare_clippy_lint! {
     /// }
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// use std::io;
     /// fn foo<F: io::Read>(mut f: F) {
     ///     let mut data = Vec::with_capacity(100);

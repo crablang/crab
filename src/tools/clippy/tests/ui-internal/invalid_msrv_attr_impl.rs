@@ -1,19 +1,19 @@
-// run-rustfix
+// run-crablangfix
 
 #![deny(clippy::internal)]
 #![allow(clippy::missing_clippy_version_attribute)]
-#![feature(rustc_private)]
+#![feature(crablangc_private)]
 
-extern crate rustc_ast;
-extern crate rustc_hir;
-extern crate rustc_lint;
-extern crate rustc_middle;
+extern crate crablangc_ast;
+extern crate crablangc_hir;
+extern crate crablangc_lint;
+extern crate crablangc_middle;
 #[macro_use]
-extern crate rustc_session;
+extern crate crablangc_session;
 use clippy_utils::extract_msrv_attr;
 use clippy_utils::msrvs::Msrv;
-use rustc_hir::Expr;
-use rustc_lint::{EarlyContext, EarlyLintPass, LateContext, LateLintPass};
+use crablangc_hir::Expr;
+use crablangc_lint::{EarlyContext, EarlyLintPass, LateContext, LateLintPass};
 
 declare_lint! {
     pub TEST_LINT,
@@ -32,7 +32,7 @@ impl LateLintPass<'_> for Pass {
 }
 
 impl EarlyLintPass for Pass {
-    fn check_expr(&mut self, _: &EarlyContext<'_>, _: &rustc_ast::Expr) {}
+    fn check_expr(&mut self, _: &EarlyContext<'_>, _: &crablangc_ast::Expr) {}
 }
 
 fn main() {}

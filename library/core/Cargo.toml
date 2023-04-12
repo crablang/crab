@@ -2,8 +2,8 @@
 name = "core"
 version = "0.0.0"
 license = "MIT OR Apache-2.0"
-repository = "https://github.com/rust-lang/rust.git"
-description = "The Rust Core Library"
+repository = "https://github.com/crablang/crablang.git"
+description = "The CrabLang Core Library"
 autotests = false
 autobenches = false
 # If you update this, be sure to update it in a bunch of other places too!

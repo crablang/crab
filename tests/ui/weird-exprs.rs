@@ -182,7 +182,7 @@ fn function() {
     struct foo;
     impl FnOnce<()> for foo {
         type Output = foo;
-        extern "rust-call" fn call_once(self, _args: ()) -> Self::Output {
+        extern "crablang-call" fn call_once(self, _args: ()) -> Self::Output {
             foo
         }
     }

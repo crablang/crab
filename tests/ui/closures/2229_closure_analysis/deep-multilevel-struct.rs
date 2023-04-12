@@ -1,6 +1,6 @@
 // edition:2021
 
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 #![allow(unused)]
 
 #[derive(Debug)]
@@ -31,9 +31,9 @@ fn main() {
         }
     };
 
-    let c = #[rustc_capture_analysis]
+    let c = #[crablangc_capture_analysis]
     //~^ ERROR: attributes on expressions are experimental
-    //~| NOTE: see issue #15701 <https://github.com/rust-lang/rust/issues/15701>
+    //~| NOTE: see issue #15701 <https://github.com/crablang/crablang/issues/15701>
     || {
     //~^ ERROR: First Pass analysis includes:
     //~| ERROR: Min Capture analysis includes:

@@ -1,5 +1,5 @@
 // This test depends on a patch that was committed to upstream LLVM
-// before 4.0, formerly backported to the Rust LLVM fork.
+// before 4.0, formerly backported to the CrabLang LLVM fork.
 
 // ignore-windows
 // ignore-macos

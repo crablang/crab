@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 #![allow(dead_code)]
 
 fn duplicate_t<T>(t: T) -> (T, T) {
@@ -69,7 +69,7 @@ where
     (t, t) //~ use of moved value: `t`
 }
 
-#[rustfmt::skip]
+#[crablangfmt::skip]
 fn existing_colon<T:>(t: T) {
     //~^ HELP consider restricting type parameter `T`
     [t, t]; //~ use of moved value: `t`

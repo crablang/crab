@@ -3,13 +3,13 @@
 #![allow(dead_code)]
 // pretty-expanded FIXME #23616
 // ignore-wasm32-bare no libc to test ffi with
-#![feature(rustc_private)]
+#![feature(crablangc_private)]
 
-mod rustrt {
+mod crablangrt {
     extern crate libc;
 
     extern "C" {
-        pub fn rust_get_test_int() -> libc::intptr_t;
+        pub fn crablang_get_test_int() -> libc::intptr_t;
     }
 }
 

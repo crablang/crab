@@ -1041,7 +1041,7 @@ impl Command {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl fmt::Debug for Command {
     /// Format the program and arguments of a Command for display. Any
     /// non-utf8 data is lossily converted using the utf8 replacement
@@ -1331,7 +1331,7 @@ impl From<ChildStdin> for Stdio {
     ///
     /// `ChildStdin` will be converted to `Stdio` using `Stdio::from` under the hood.
     ///
-    /// ```rust,no_run
+    /// ```crablang,no_run
     /// use std::process::{Command, Stdio};
     ///
     /// let reverse = Command::new("rev")
@@ -1360,7 +1360,7 @@ impl From<ChildStdout> for Stdio {
     ///
     /// `ChildStdout` will be converted to `Stdio` using `Stdio::from` under the hood.
     ///
-    /// ```rust,no_run
+    /// ```crablang,no_run
     /// use std::process::{Command, Stdio};
     ///
     /// let hello = Command::new("echo")
@@ -1387,7 +1387,7 @@ impl From<ChildStderr> for Stdio {
     ///
     /// # Examples
     ///
-    /// ```rust,no_run
+    /// ```crablang,no_run
     /// use std::process::{Command, Stdio};
     ///
     /// let reverse = Command::new("rev")
@@ -1420,7 +1420,7 @@ impl From<fs::File> for Stdio {
     ///
     /// `File` will be converted to `Stdio` using `Stdio::from` under the hood.
     ///
-    /// ```rust,no_run
+    /// ```crablang,no_run
     /// use std::fs::File;
     /// use std::process::Command;
     ///
@@ -1505,7 +1505,7 @@ impl ExitStatus {
     ///
     /// # Examples
     ///
-    /// ```rust,no_run
+    /// ```crablang,no_run
     /// use std::process::Command;
     ///
     /// let status = Command::new("mkdir")
@@ -1815,7 +1815,7 @@ impl ExitCode {
     // likely want to isolate users anything that could restrict the platform specific
     // representation of an ExitCode
     //
-    // More info: https://internals.rust-lang.org/t/mini-pre-rfc-redesigning-process-exitstatus/5426
+    // More info: https://internals.crablang.org/t/mini-pre-rfc-redesigning-process-exitstatus/5426
     /// Convert an `ExitCode` into an i32
     #[unstable(
         feature = "process_exitcode_internals",
@@ -2064,7 +2064,7 @@ impl Child {
 ///
 /// process::exit(0x0100);
 /// ```
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub fn exit(code: i32) -> ! {
     crate::rt::cleanup();
     crate::sys::os::exit(code)
@@ -2079,12 +2079,12 @@ pub fn exit(code: i32) -> ! {
 /// process, no destructors on the current stack or any other thread's stack
 /// will be run.
 ///
-/// Rust IO buffers (eg, from `BufWriter`) will not be flushed.
+/// CrabLang IO buffers (eg, from `BufWriter`) will not be flushed.
 /// Likewise, C stdio buffers will (on most platforms) not be flushed.
 ///
 /// This is in contrast to the default behaviour of [`panic!`] which unwinds
 /// the current thread's stack and calls all destructors.
-/// When `panic="abort"` is set, either as an argument to `rustc` or in a
+/// When `panic="abort"` is set, either as an argument to `crablangc` or in a
 /// crate's Cargo.toml, [`panic!`] and `abort` are similar. However,
 /// [`panic!`] will still call the [panic hook] while `abort` will not.
 ///
@@ -2172,7 +2172,7 @@ pub fn id() -> u32 {
 /// to provide similar functionality.
 #[cfg_attr(not(test), lang = "termination")]
 #[stable(feature = "termination_trait_lib", since = "1.61.0")]
-#[rustc_on_unimplemented(on(
+#[crablangc_on_unimplemented(on(
     cause = "MainFunctionType",
     message = "`main` has invalid return type `{Self}`",
     label = "`main` can only return types that implement `{Termination}`"

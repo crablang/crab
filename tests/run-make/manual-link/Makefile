@@ -2,6 +2,6 @@
 include ../tools.mk
 
 all: $(TMPDIR)/libbar.a
-	$(RUSTC) foo.rs -lstatic=bar
-	$(RUSTC) main.rs
+	$(CRABLANGC) foo.rs -lstatic=bar
+	$(CRABLANGC) main.rs
 	$(call RUN,main)

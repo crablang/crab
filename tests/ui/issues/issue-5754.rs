@@ -10,7 +10,7 @@ struct TwoDoubles {
 }
 
 extern "C" {
-    fn rust_dbg_extern_identity_TwoDoubles(arg1: TwoDoubles) -> TwoDoubles;
+    fn crablang_dbg_extern_identity_TwoDoubles(arg1: TwoDoubles) -> TwoDoubles;
 }
 
 pub fn main() {}

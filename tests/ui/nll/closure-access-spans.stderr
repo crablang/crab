@@ -119,4 +119,4 @@ LL |     || x;
 error: aborting due to 9 previous errors
 
 Some errors have detailed explanations: E0382, E0499, E0500, E0502, E0503, E0505.
-For more information about an error, try `rustc --explain E0382`.
+For more information about an error, try `crablangc --explain E0382`.

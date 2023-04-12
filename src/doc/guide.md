@@ -1,4 +1,4 @@
-% The (old) Rust Guide
+% The (old) CrabLang Guide
 
 This content has moved into
-[the Rust Programming Language book](book/README.html).
+[the CrabLang Programming Language book](book/README.html).

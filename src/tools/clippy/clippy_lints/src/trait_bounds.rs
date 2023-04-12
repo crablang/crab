@@ -4,17 +4,17 @@ use clippy_utils::{SpanlessEq, SpanlessHash};
 use core::hash::{Hash, Hasher};
 use if_chain::if_chain;
 use itertools::Itertools;
-use rustc_data_structures::fx::{FxHashMap, FxHashSet};
-use rustc_data_structures::unhash::UnhashMap;
-use rustc_errors::Applicability;
-use rustc_hir::def::Res;
-use rustc_hir::{
+use crablangc_data_structures::fx::{FxHashMap, FxHashSet};
+use crablangc_data_structures::unhash::UnhashMap;
+use crablangc_errors::Applicability;
+use crablangc_hir::def::Res;
+use crablangc_hir::{
     GenericArg, GenericBound, Generics, Item, ItemKind, Node, Path, PathSegment, PredicateOrigin, QPath,
     TraitBoundModifier, TraitItem, TraitRef, Ty, TyKind, WherePredicate,
 };
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_session::{declare_tool_lint, impl_lint_pass};
-use rustc_span::{BytePos, Span};
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_session::{declare_tool_lint, impl_lint_pass};
+use crablangc_span::{BytePos, Span};
 use std::collections::hash_map::Entry;
 
 declare_clippy_lint! {
@@ -26,12 +26,12 @@ declare_clippy_lint! {
     /// less readable than combining the bounds
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// pub fn foo<T>(t: T) where T: Copy, T: Clone {}
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// pub fn foo<T>(t: T) where T: Copy + Clone {}
     /// ```
     #[clippy::version = "1.38.0"]
@@ -50,12 +50,12 @@ declare_clippy_lint! {
     /// less readable than specifying them only once.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// fn func<T: Clone + Default>(arg: T) where T: Clone + Default {}
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// # mod hidden {
     /// fn func<T: Clone + Default>(arg: T) {}
     /// # }
@@ -65,19 +65,19 @@ declare_clippy_lint! {
     /// fn func<T>(arg: T) where T: Clone + Default {}
     /// ```
     ///
-    /// ```rust
+    /// ```crablang
     /// fn foo<T: Default + Default>(bar: T) {}
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// fn foo<T: Default>(bar: T) {}
     /// ```
     ///
-    /// ```rust
+    /// ```crablang
     /// fn foo<T>(bar: T) where T: Default + Default {}
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// fn foo<T>(bar: T) where T: Default {}
     /// ```
     #[clippy::version = "1.47.0"]

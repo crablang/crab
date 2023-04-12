@@ -4,7 +4,7 @@ error: equality constraints are not yet supported in `where` clauses
 LL | fn dent_object_2<COLOR>(c: dyn BoxCar) where <dyn BoxCar as Vehicle>::Color = COLOR {
    |                                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ not supported
    |
-   = note: see issue #20041 <https://github.com/rust-lang/rust/issues/20041> for more information
+   = note: see issue #20041 <https://github.com/crablang/crablang/issues/20041> for more information
 
 error[E0221]: ambiguous associated type `Color` in bounds of `C`
   --> $DIR/associated-type-projection-from-multiple-supertraits.rs:19:32
@@ -97,4 +97,4 @@ LL | fn dent_object_2<COLOR>(c: dyn BoxCar) where <dyn BoxCar as Vehicle>::Color
 error: aborting due to 6 previous errors
 
 Some errors have detailed explanations: E0191, E0221, E0222.
-For more information about an error, try `rustc --explain E0191`.
+For more information about an error, try `crablangc --explain E0191`.

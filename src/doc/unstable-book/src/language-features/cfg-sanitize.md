@@ -2,7 +2,7 @@
 
 The tracking issue for this feature is: [#39699]
 
-[#39699]: https://github.com/rust-lang/rust/issues/39699
+[#39699]: https://github.com/crablang/crablang/issues/39699
 
 ------------------------
 
@@ -11,7 +11,7 @@ depending on whether a particular sanitizer is enabled or not.
 
 ## Examples
 
-```rust
+```crablang
 #![feature(cfg_sanitize)]
 
 #[cfg(sanitize = "thread")]

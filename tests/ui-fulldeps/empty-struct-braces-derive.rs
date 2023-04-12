@@ -1,17 +1,17 @@
 // run-pass
 // `#[derive(Trait)]` works for empty structs/variants with braces or parens.
 
-#![feature(rustc_private)]
+#![feature(crablangc_private)]
 
-extern crate rustc_macros;
-extern crate rustc_serialize;
+extern crate crablangc_macros;
+extern crate crablangc_serialize;
 
-// Necessary to pull in object code as the rest of the rustc crates are shipped only as rmeta
+// Necessary to pull in object code as the rest of the crablangc crates are shipped only as rmeta
 // files.
 #[allow(unused_extern_crates)]
-extern crate rustc_driver;
+extern crate crablangc_driver;
 
-use rustc_macros::{Decodable, Encodable};
+use crablangc_macros::{Decodable, Encodable};
 
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Default, Debug, Encodable, Decodable)]
 struct S {}

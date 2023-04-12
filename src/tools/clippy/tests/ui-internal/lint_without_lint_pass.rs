@@ -1,13 +1,13 @@
 #![deny(clippy::internal)]
 #![allow(clippy::missing_clippy_version_attribute)]
-#![feature(rustc_private)]
+#![feature(crablangc_private)]
 
 #[macro_use]
-extern crate rustc_middle;
+extern crate crablangc_middle;
 #[macro_use]
-extern crate rustc_session;
-extern crate rustc_lint;
-use rustc_lint::LintPass;
+extern crate crablangc_session;
+extern crate crablangc_lint;
+use crablangc_lint::LintPass;
 
 declare_tool_lint! {
     pub clippy::TEST_LINT,

@@ -1,4 +1,4 @@
-// rust-lang/rust#53675: At one point the compiler errored when a test
+// crablang/crablang#53675: At one point the compiler errored when a test
 // named `panic` used the `assert!` macro in expression position.
 
 // check-pass

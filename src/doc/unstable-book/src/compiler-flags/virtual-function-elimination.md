@@ -16,7 +16,7 @@ functions are actually called and remove the unused functions.
 At the time of writing this flag may remove vtable functions too eagerly. One
 such example is in this code:
 
-```rust
+```crablang
 trait Foo { fn foo(&self) { println!("foo") } }
 
 impl Foo for usize {}
@@ -36,4 +36,4 @@ optimized out, if unused. However, with `make_foo` you can produce a wrapped
 to inlining of `f`, `Foo::foo` can then be called from a foreign crate. This can
 lead to miscompilations.
 
-[Clto]: ../../rustc/codegen-options/index.html#lto
+[Clto]: ../../crablangc/codegen-options/index.html#lto

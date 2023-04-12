@@ -1,7 +1,7 @@
 // run-pass
 // Issue #33540
 // We previously used to generate a 3-armed boolean `SwitchInt` in the
-// MIR of the function `foo` below. #33583 changed rustc to
+// MIR of the function `foo` below. #33583 changed crablangc to
 // generate an `If` terminator instead. This test is to just ensure
 // sanity in that we generate an if-else chain giving the correct
 // results.

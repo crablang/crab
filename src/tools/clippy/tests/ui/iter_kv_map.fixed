@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 
 #![warn(clippy::iter_kv_map)]
 #![allow(unused_mut, clippy::redundant_clone, clippy::suspicious_map, clippy::map_identity)]

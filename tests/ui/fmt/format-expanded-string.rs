@@ -4,7 +4,7 @@
 extern crate format_string_proc_macro;
 
 
-// If the format string is another macro invocation, rustc would previously
+// If the format string is another macro invocation, crablangc would previously
 // compute nonsensical spans, such as:
 //
 //   error: invalid format string: unmatched `}` found

@@ -25,7 +25,7 @@ use alloc::alloc::alloc;
 
 #[target_feature(enable = "sse2")]
 //~^ ERROR attribute should be applied to a function
-extern "Rust" {}
+extern "CrabLang" {}
 //~^ NOTE not a function
 
 #[target_feature = "+sse2"]

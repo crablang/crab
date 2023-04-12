@@ -6,9 +6,9 @@ use std::task::Poll;
 
 use log::trace;
 
-use rustc_middle::ty;
-use rustc_target::abi::{HasDataLayout, Size};
-use rustc_target::spec::abi::Abi;
+use crablangc_middle::ty;
+use crablangc_target::abi::{HasDataLayout, Size};
+use crablangc_target::spec::abi::Abi;
 
 use crate::*;
 
@@ -289,7 +289,7 @@ trait EvalContextPrivExt<'mir, 'tcx: 'mir>: crate::MiriInterpCxExt<'mir, 'tcx> {
 
         // Windows has a special magic linker section that is run on certain events.
         // Instead of searching for that section and supporting arbitrary hooks in there
-        // (that would be basically https://github.com/rust-lang/miri/issues/450),
+        // (that would be basically https://github.com/crablang/miri/issues/450),
         // we specifically look up the static in libstd that we know is placed
         // in that section.
         if !this.have_module(&["std"]) {

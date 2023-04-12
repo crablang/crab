@@ -146,4 +146,4 @@ LL | fn trait_bound_generic<I: T<A = u8, B = u16>>(_i: I) {
 
 error: aborting due to 10 previous errors
 
-For more information about this error, try `rustc --explain E0107`.
+For more information about this error, try `crablangc --explain E0107`.

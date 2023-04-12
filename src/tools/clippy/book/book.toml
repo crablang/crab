@@ -1,18 +1,18 @@
 [book]
-authors = ["The Rust Clippy Developers"]
+authors = ["The CrabLang Clippy Developers"]
 language = "en"
 multilingual = false
 src = "src"
 title = "Clippy Documentation"
 
-[rust]
+[crablang]
 edition = "2018"
 
 [output.html]
-edit-url-template = "https://github.com/rust-lang/rust-clippy/edit/master/book/{path}"
-git-repository-url = "https://github.com/rust-lang/rust-clippy/tree/master/book"
+edit-url-template = "https://github.com/crablang/crablang-clippy/edit/master/book/{path}"
+git-repository-url = "https://github.com/crablang/crablang-clippy/tree/master/book"
 mathjax-support = true
-site-url = "/rust-clippy/"
+site-url = "/crablang-clippy/"
 
 [output.html.playground]
 editable = true

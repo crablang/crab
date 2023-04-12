@@ -6,8 +6,8 @@ use std::{ffi::OsStr, fs::File, io::Read, path::Path};
 pub fn filter_dirs(path: &Path) -> bool {
     let skip = [
         "tidy-test-file",
-        "compiler/rustc_codegen_cranelift",
-        "compiler/rustc_codegen_gcc",
+        "compiler/crablangc_codegen_cranelift",
+        "compiler/crablangc_codegen_gcc",
         "src/llvm-project",
         "library/backtrace",
         "library/portable-simd",
@@ -16,15 +16,15 @@ pub fn filter_dirs(path: &Path) -> bool {
         "src/tools/clippy",
         "src/tools/miri",
         "src/tools/rls",
-        "src/tools/rust-analyzer",
-        "src/tools/rust-installer",
-        "src/tools/rustfmt",
+        "src/tools/crablang-analyzer",
+        "src/tools/crablang-installer",
+        "src/tools/crablangfmt",
         "src/doc/book",
         "src/doc/edition-guide",
         "src/doc/embedded-book",
         "src/doc/nomicon",
-        "src/doc/rust-by-example",
-        "src/doc/rustc-dev-guide",
+        "src/doc/crablang-by-example",
+        "src/doc/crablangc-dev-guide",
         "src/doc/reference",
         // Filter RLS output directories
         "target/rls",
@@ -35,7 +35,7 @@ pub fn filter_dirs(path: &Path) -> bool {
 }
 
 /// Filter for only files that end in `.rs`.
-pub fn filter_not_rust(path: &Path) -> bool {
+pub fn filter_not_crablang(path: &Path) -> bool {
     path.extension() != Some(OsStr::new("rs")) && !path.is_dir()
 }
 

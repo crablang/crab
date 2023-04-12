@@ -98,7 +98,7 @@ pub mod parse;
 
 macro_rules! from_str_float_impl {
     ($t:ty) => {
-        #[stable(feature = "rust1", since = "1.0.0")]
+        #[stable(feature = "crablang1", since = "1.0.0")]
         impl FromStr for $t {
             type Err = ParseFloatError;
 
@@ -178,7 +178,7 @@ from_str_float_impl!(f64);
 /// }
 /// ```
 #[derive(Debug, Clone, PartialEq, Eq)]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub struct ParseFloatError {
     kind: FloatErrorKind,
 }
@@ -189,7 +189,7 @@ enum FloatErrorKind {
     Invalid,
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl Error for ParseFloatError {
     #[allow(deprecated)]
     fn description(&self) -> &str {
@@ -200,7 +200,7 @@ impl Error for ParseFloatError {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl fmt::Display for ParseFloatError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         #[allow(deprecated)]

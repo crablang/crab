@@ -2,13 +2,13 @@ use clippy_utils::diagnostics::{span_lint, span_lint_and_then};
 use clippy_utils::macros::{find_format_args, format_arg_removal_span, root_macro_call_first_node, MacroCall};
 use clippy_utils::source::{expand_past_previous_comma, snippet_opt};
 use clippy_utils::{is_in_cfg_test, is_in_test_function};
-use rustc_ast::token::LitKind;
-use rustc_ast::{FormatArgPosition, FormatArgs, FormatArgsPiece, FormatOptions, FormatPlaceholder, FormatTrait};
-use rustc_errors::Applicability;
-use rustc_hir::{Expr, Impl, Item, ItemKind};
-use rustc_lint::{LateContext, LateLintPass, LintContext};
-use rustc_session::{declare_tool_lint, impl_lint_pass};
-use rustc_span::{sym, BytePos};
+use crablangc_ast::token::LitKind;
+use crablangc_ast::{FormatArgPosition, FormatArgs, FormatArgsPiece, FormatOptions, FormatPlaceholder, FormatTrait};
+use crablangc_errors::Applicability;
+use crablangc_hir::{Expr, Impl, Item, ItemKind};
+use crablangc_lint::{LateContext, LateLintPass, LintContext};
+use crablangc_session::{declare_tool_lint, impl_lint_pass};
+use crablangc_span::{sym, BytePos};
 
 declare_clippy_lint! {
     /// ### What it does
@@ -19,12 +19,12 @@ declare_clippy_lint! {
     /// You should use `println!()`, which is simpler.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// println!("");
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// println!();
     /// ```
     #[clippy::version = "pre 1.29.0"]
@@ -43,12 +43,12 @@ declare_clippy_lint! {
     /// newline.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// # let name = "World";
     /// print!("Hello {}!\n", name);
     /// ```
     /// use println!() instead
-    /// ```rust
+    /// ```crablang
     /// # let name = "World";
     /// println!("Hello {}!", name);
     /// ```
@@ -71,7 +71,7 @@ declare_clippy_lint! {
     /// Only catches `print!` and `println!` calls.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// println!("Hello world!");
     /// ```
     #[clippy::version = "pre 1.29.0"]
@@ -93,7 +93,7 @@ declare_clippy_lint! {
     /// Only catches `eprint!` and `eprintln!` calls.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// eprintln!("Hello world!");
     /// ```
     #[clippy::version = "1.50.0"]
@@ -109,10 +109,10 @@ declare_clippy_lint! {
     ///
     /// ### Why is this bad?
     /// The purpose of the `Debug` trait is to facilitate
-    /// debugging Rust code. It should not be used in user-facing output.
+    /// debugging CrabLang code. It should not be used in user-facing output.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// # let foo = "bar";
     /// println!("{:?}", foo);
     /// ```
@@ -128,15 +128,15 @@ declare_clippy_lint! {
     ///
     /// ### Why is this bad?
     /// Using literals as `println!` args is inefficient
-    /// (c.f., https://github.com/matthiaskrgr/rust-str-bench) and unnecessary
+    /// (c.f., https://github.com/matthiaskrgr/crablang-str-bench) and unnecessary
     /// (i.e., just put the literal in the format string)
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// println!("{}", "foo");
     /// ```
     /// use the literal without formatting:
-    /// ```rust
+    /// ```crablang
     /// println!("foo");
     /// ```
     #[clippy::version = "pre 1.29.0"]
@@ -154,14 +154,14 @@ declare_clippy_lint! {
     /// You should use `writeln!(buf)`, which is simpler.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// # use std::fmt::Write;
     /// # let mut buf = String::new();
     /// writeln!(buf, "");
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// # use std::fmt::Write;
     /// # let mut buf = String::new();
     /// writeln!(buf);
@@ -183,7 +183,7 @@ declare_clippy_lint! {
     /// newline.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// # use std::fmt::Write;
     /// # let mut buf = String::new();
     /// # let name = "World";
@@ -191,7 +191,7 @@ declare_clippy_lint! {
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// # use std::fmt::Write;
     /// # let mut buf = String::new();
     /// # let name = "World";
@@ -209,18 +209,18 @@ declare_clippy_lint! {
     ///
     /// ### Why is this bad?
     /// Using literals as `writeln!` args is inefficient
-    /// (c.f., https://github.com/matthiaskrgr/rust-str-bench) and unnecessary
+    /// (c.f., https://github.com/matthiaskrgr/crablang-str-bench) and unnecessary
     /// (i.e., just put the literal in the format string)
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// # use std::fmt::Write;
     /// # let mut buf = String::new();
     /// writeln!(buf, "{}", "foo");
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// # use std::fmt::Write;
     /// # let mut buf = String::new();
     /// writeln!(buf, "foo");
@@ -458,7 +458,7 @@ fn check_literal(cx: &LateContext<'_>, format_args: &FormatArgs, name: &str) {
             && let index = arg_index(argument)
             && counts[index] == 1
             && let Some(arg) = format_args.arguments.by_index(index)
-            && let rustc_ast::ExprKind::Lit(lit) = &arg.expr.kind
+            && let crablangc_ast::ExprKind::Lit(lit) = &arg.expr.kind
             && !arg.expr.span.from_expansion()
             && let Some(value_string) = snippet_opt(cx, arg.expr.span)
     {

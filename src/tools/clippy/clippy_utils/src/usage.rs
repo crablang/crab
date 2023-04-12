@@ -1,16 +1,16 @@
 use crate as utils;
 use crate::visitors::{for_each_expr, for_each_expr_with_closures, Descend};
 use core::ops::ControlFlow;
-use rustc_hir as hir;
-use rustc_hir::intravisit::{self, Visitor};
-use rustc_hir::HirIdSet;
-use rustc_hir::{Expr, ExprKind, HirId, Node};
-use rustc_hir_typeck::expr_use_visitor::{Delegate, ExprUseVisitor, PlaceBase, PlaceWithHirId};
-use rustc_infer::infer::TyCtxtInferExt;
-use rustc_lint::LateContext;
-use rustc_middle::hir::nested_filter;
-use rustc_middle::mir::FakeReadCause;
-use rustc_middle::ty;
+use crablangc_hir as hir;
+use crablangc_hir::intravisit::{self, Visitor};
+use crablangc_hir::HirIdSet;
+use crablangc_hir::{Expr, ExprKind, HirId, Node};
+use crablangc_hir_typeck::expr_use_visitor::{Delegate, ExprUseVisitor, PlaceBase, PlaceWithHirId};
+use crablangc_infer::infer::TyCtxtInferExt;
+use crablangc_lint::LateContext;
+use crablangc_middle::hir::nested_filter;
+use crablangc_middle::mir::FakeReadCause;
+use crablangc_middle::ty;
 
 /// Returns a set of mutated local variable IDs, or `None` if mutations could not be determined.
 pub fn mutated_variables<'tcx>(expr: &'tcx Expr<'_>, cx: &LateContext<'tcx>) -> Option<HirIdSet> {
@@ -73,7 +73,7 @@ impl<'tcx> Delegate<'tcx> for MutVarsDelegate {
         self.update(cmt);
     }
 
-    fn fake_read(&mut self, _: &rustc_hir_typeck::expr_use_visitor::PlaceWithHirId<'tcx>, _: FakeReadCause, _: HirId) {}
+    fn fake_read(&mut self, _: &crablangc_hir_typeck::expr_use_visitor::PlaceWithHirId<'tcx>, _: FakeReadCause, _: HirId) {}
 }
 
 pub struct ParamBindingIdCollector {

@@ -1,4 +1,4 @@
-// This is a regression test for issue https://github.com/rust-lang/rust/issues/106629.
+// This is a regression test for issue https://github.com/crablang/crablang/issues/106629.
 // It ensures that transparent types where all fields are PhantomData are marked as
 // FFI-safe.
 

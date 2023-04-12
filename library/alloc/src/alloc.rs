@@ -17,26 +17,26 @@ pub use core::alloc::*;
 #[cfg(test)]
 mod tests;
 
-extern "Rust" {
-    // These are the magic symbols to call the global allocator. rustc generates
+extern "CrabLang" {
+    // These are the magic symbols to call the global allocator. crablangc generates
     // them to call `__rg_alloc` etc. if there is a `#[global_allocator]` attribute
     // (the code expanding that attribute macro generates those functions), or to call
     // the default implementations in std (`__rdl_alloc` etc. in `library/std/src/alloc.rs`)
     // otherwise.
-    // The rustc fork of LLVM 14 and earlier also special-cases these function names to be able to optimize them
+    // The crablangc fork of LLVM 14 and earlier also special-cases these function names to be able to optimize them
     // like `malloc`, `realloc`, and `free`, respectively.
-    #[rustc_allocator]
-    #[rustc_nounwind]
-    fn __rust_alloc(size: usize, align: usize) -> *mut u8;
-    #[rustc_deallocator]
-    #[rustc_nounwind]
-    fn __rust_dealloc(ptr: *mut u8, size: usize, align: usize);
-    #[rustc_reallocator]
-    #[rustc_nounwind]
-    fn __rust_realloc(ptr: *mut u8, old_size: usize, align: usize, new_size: usize) -> *mut u8;
-    #[rustc_allocator_zeroed]
-    #[rustc_nounwind]
-    fn __rust_alloc_zeroed(size: usize, align: usize) -> *mut u8;
+    #[crablangc_allocator]
+    #[crablangc_nounwind]
+    fn __crablang_alloc(size: usize, align: usize) -> *mut u8;
+    #[crablangc_deallocator]
+    #[crablangc_nounwind]
+    fn __crablang_dealloc(ptr: *mut u8, size: usize, align: usize);
+    #[crablangc_reallocator]
+    #[crablangc_nounwind]
+    fn __crablang_realloc(ptr: *mut u8, old_size: usize, align: usize, new_size: usize) -> *mut u8;
+    #[crablangc_allocator_zeroed]
+    #[crablangc_nounwind]
+    fn __crablang_alloc_zeroed(size: usize, align: usize) -> *mut u8;
 }
 
 /// The global memory allocator.
@@ -90,7 +90,7 @@ pub use std::alloc::Global;
 #[must_use = "losing the pointer will leak memory"]
 #[inline]
 pub unsafe fn alloc(layout: Layout) -> *mut u8 {
-    unsafe { __rust_alloc(layout.size(), layout.align()) }
+    unsafe { __crablang_alloc(layout.size(), layout.align()) }
 }
 
 /// Deallocate memory with the global allocator.
@@ -108,7 +108,7 @@ pub unsafe fn alloc(layout: Layout) -> *mut u8 {
 #[stable(feature = "global_alloc", since = "1.28.0")]
 #[inline]
 pub unsafe fn dealloc(ptr: *mut u8, layout: Layout) {
-    unsafe { __rust_dealloc(ptr, layout.size(), layout.align()) }
+    unsafe { __crablang_dealloc(ptr, layout.size(), layout.align()) }
 }
 
 /// Reallocate memory with the global allocator.
@@ -127,7 +127,7 @@ pub unsafe fn dealloc(ptr: *mut u8, layout: Layout) {
 #[must_use = "losing the pointer will leak memory"]
 #[inline]
 pub unsafe fn realloc(ptr: *mut u8, layout: Layout, new_size: usize) -> *mut u8 {
-    unsafe { __rust_realloc(ptr, layout.size(), layout.align(), new_size) }
+    unsafe { __crablang_realloc(ptr, layout.size(), layout.align(), new_size) }
 }
 
 /// Allocate zero-initialized memory with the global allocator.
@@ -161,7 +161,7 @@ pub unsafe fn realloc(ptr: *mut u8, layout: Layout, new_size: usize) -> *mut u8 
 #[must_use = "losing the pointer will leak memory"]
 #[inline]
 pub unsafe fn alloc_zeroed(layout: Layout) -> *mut u8 {
-    unsafe { __rust_alloc_zeroed(layout.size(), layout.align()) }
+    unsafe { __crablang_alloc_zeroed(layout.size(), layout.align()) }
 }
 
 #[cfg(not(test))]
@@ -346,11 +346,11 @@ pub(crate) unsafe fn box_free<T: ?Sized, A: Allocator>(ptr: Unique<T>, alloc: A)
 // # Allocation error handler
 
 #[cfg(not(no_global_oom_handling))]
-extern "Rust" {
-    // This is the magic symbol to call the global alloc error handler. rustc generates
+extern "CrabLang" {
+    // This is the magic symbol to call the global alloc error handler. crablangc generates
     // it to call `__rg_oom` if there is a `#[alloc_error_handler]`, or to call the
     // default implementations below (`__rdl_oom`) otherwise.
-    fn __rust_alloc_error_handler(size: usize, align: usize) -> !;
+    fn __crablang_alloc_error_handler(size: usize, align: usize) -> !;
 }
 
 /// Abort on memory allocation error or failure.
@@ -366,7 +366,7 @@ extern "Rust" {
 /// [`set_alloc_error_hook`]: ../../std/alloc/fn.set_alloc_error_hook.html
 /// [`take_alloc_error_hook`]: ../../std/alloc/fn.take_alloc_error_hook.html
 #[stable(feature = "global_alloc", since = "1.28.0")]
-#[rustc_const_unstable(feature = "const_alloc_error", issue = "92523")]
+#[crablangc_const_unstable(feature = "const_alloc_error", issue = "92523")]
 #[cfg(all(not(no_global_oom_handling), not(test)))]
 #[cold]
 pub const fn handle_alloc_error(layout: Layout) -> ! {
@@ -376,7 +376,7 @@ pub const fn handle_alloc_error(layout: Layout) -> ! {
 
     fn rt_error(layout: Layout) -> ! {
         unsafe {
-            __rust_alloc_error_handler(layout.size(), layout.align());
+            __crablang_alloc_error_handler(layout.size(), layout.align());
         }
     }
 
@@ -392,18 +392,18 @@ pub use std::alloc::handle_alloc_error;
 #[allow(unused_attributes)]
 #[unstable(feature = "alloc_internals", issue = "none")]
 pub mod __alloc_error_handler {
-    // called via generated `__rust_alloc_error_handler` if there is no
+    // called via generated `__crablang_alloc_error_handler` if there is no
     // `#[alloc_error_handler]`.
-    #[rustc_std_internal_symbol]
+    #[crablangc_std_internal_symbol]
     pub unsafe fn __rdl_oom(size: usize, _align: usize) -> ! {
-        extern "Rust" {
-            // This symbol is emitted by rustc next to __rust_alloc_error_handler.
+        extern "CrabLang" {
+            // This symbol is emitted by crablangc next to __crablang_alloc_error_handler.
             // Its value depends on the -Zoom={panic,abort} compiler option.
-            static __rust_alloc_error_handler_should_panic: u8;
+            static __crablang_alloc_error_handler_should_panic: u8;
         }
 
         #[allow(unused_unsafe)]
-        if unsafe { __rust_alloc_error_handler_should_panic != 0 } {
+        if unsafe { __crablang_alloc_error_handler_should_panic != 0 } {
             panic!("memory allocation of {size} bytes failed")
         } else {
             core::panicking::panic_nounwind_fmt(format_args!(

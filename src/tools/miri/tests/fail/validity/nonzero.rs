@@ -1,9 +1,9 @@
 // gets masked by optimizations
 //@compile-flags: -Zmir-opt-level=0
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 #![allow(unused_attributes)]
 
-#[rustc_layout_scalar_valid_range_start(1)]
+#[crablangc_layout_scalar_valid_range_start(1)]
 #[repr(transparent)]
 pub(crate) struct NonZero<T>(pub(crate) T);
 

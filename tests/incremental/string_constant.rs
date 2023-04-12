@@ -3,7 +3,7 @@
 // build-pass (FIXME(62277): could be check-pass?)
 
 #![allow(warnings)]
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 #![crate_type = "rlib"]
 
 // Here the only thing which changes is the string constant in `x`.
@@ -17,7 +17,7 @@ pub mod x {
     }
 
     #[cfg(cfail2)]
-    #[rustc_clean(except = "hir_owner_nodes,promoted_mir", cfg = "cfail2")]
+    #[crablangc_clean(except = "hir_owner_nodes,promoted_mir", cfg = "cfail2")]
     pub fn x() {
         println!("{}", "2");
     }
@@ -26,7 +26,7 @@ pub mod x {
 pub mod y {
     use x;
 
-    #[rustc_clean(cfg = "cfail2")]
+    #[crablangc_clean(cfg = "cfail2")]
     pub fn y() {
         x::x();
     }
@@ -35,7 +35,7 @@ pub mod y {
 pub mod z {
     use y;
 
-    #[rustc_clean(cfg = "cfail2")]
+    #[crablangc_clean(cfg = "cfail2")]
     pub fn z() {
         y::y();
     }

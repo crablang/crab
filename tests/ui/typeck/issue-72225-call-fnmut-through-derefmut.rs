@@ -1,6 +1,6 @@
 // check-pass
 
-// rust-lang/rust#72225: confusing diagnostics when calling FnMut through DerefMut.
+// crablang/crablang#72225: confusing diagnostics when calling FnMut through DerefMut.
 
 use std::cell::RefCell;
 

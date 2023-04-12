@@ -1,10 +1,10 @@
 warning: the feature `generic_const_exprs` is incomplete and may not be safe to use and/or cause compiler crashes
   --> $DIR/closures.rs:3:12
    |
-LL | #![feature(generic_const_exprs, rustc_attrs)]
+LL | #![feature(generic_const_exprs, crablangc_attrs)]
    |            ^^^^^^^^^^^^^^^^^^^
    |
-   = note: see issue #76560 <https://github.com/rust-lang/rust/issues/76560> for more information
+   = note: see issue #76560 <https://github.com/crablang/crablang/issues/76560> for more information
    = note: `#[warn(incomplete_features)]` on by default
 
 error: item has unused generic parameters

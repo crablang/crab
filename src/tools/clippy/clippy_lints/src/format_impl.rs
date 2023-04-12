@@ -2,11 +2,11 @@ use clippy_utils::diagnostics::{span_lint, span_lint_and_sugg};
 use clippy_utils::macros::{is_format_macro, root_macro_call_first_node, FormatArg, FormatArgsExpn};
 use clippy_utils::{get_parent_as_impl, is_diag_trait_item, path_to_local, peel_ref_operators};
 use if_chain::if_chain;
-use rustc_errors::Applicability;
-use rustc_hir::{Expr, ExprKind, Impl, ImplItem, ImplItemKind, QPath};
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_session::{declare_tool_lint, impl_lint_pass};
-use rustc_span::{sym, symbol::kw, Symbol};
+use crablangc_errors::Applicability;
+use crablangc_hir::{Expr, ExprKind, Impl, ImplItem, ImplItemKind, QPath};
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_session::{declare_tool_lint, impl_lint_pass};
+use crablangc_span::{sym, symbol::kw, Symbol};
 
 declare_clippy_lint! {
     /// ### What it does
@@ -19,7 +19,7 @@ declare_clippy_lint! {
     ///
     /// ### Example
     ///
-    /// ```rust
+    /// ```crablang
     /// use std::fmt;
     ///
     /// struct Structure(i32);
@@ -31,7 +31,7 @@ declare_clippy_lint! {
     ///
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// use std::fmt;
     ///
     /// struct Structure(i32);
@@ -57,7 +57,7 @@ declare_clippy_lint! {
     /// should write to the `Formatter`, not stdout/stderr.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// use std::fmt::{Display, Error, Formatter};
     ///
     /// struct S;
@@ -70,7 +70,7 @@ declare_clippy_lint! {
     /// }
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// use std::fmt::{Display, Error, Formatter};
     ///
     /// struct S;

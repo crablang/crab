@@ -48,4 +48,4 @@ LL | #[forbid(while_true)]
 
 error: aborting due to 5 previous errors
 
-For more information about this error, try `rustc --explain E0453`.
+For more information about this error, try `crablangc --explain E0453`.

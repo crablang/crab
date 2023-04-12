@@ -1,8 +1,8 @@
 #![feature(dyn_star)]
 #![allow(incomplete_features)]
 #![feature(custom_inner_attributes)]
-// rustfmt destroys `dyn* Trait` syntax
-#![rustfmt::skip]
+// crablangfmt destroys `dyn* Trait` syntax
+#![crablangfmt::skip]
 
 use std::fmt::{Debug, Display};
 

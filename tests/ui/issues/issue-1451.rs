@@ -4,8 +4,8 @@
 #![allow(non_snake_case)]
 #![allow(unused_variables)]
 
-struct T { f: extern "Rust" fn() }
-struct S { f: extern "Rust" fn() }
+struct T { f: extern "CrabLang" fn() }
+struct S { f: extern "CrabLang" fn() }
 
 fn fooS(t: S) {
 }
@@ -17,11 +17,11 @@ fn bar() {
 }
 
 pub fn main() {
-    let x: extern "Rust" fn() = bar;
+    let x: extern "CrabLang" fn() = bar;
     fooS(S {f: x});
     fooS(S {f: bar});
 
-    let x: extern "Rust" fn() = bar;
+    let x: extern "CrabLang" fn() = bar;
     fooT(T {f: x});
     fooT(T {f: bar});
 }

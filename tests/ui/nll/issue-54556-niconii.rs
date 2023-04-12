@@ -1,5 +1,5 @@
 // This is a reduction of a concrete test illustrating a case that was
-// annoying to Rust developer niconii (see comment thread on #21114).
+// annoying to CrabLang developer niconii (see comment thread on #21114).
 //
 // With resolving issue #54556, pnkfelix hopes that the new diagnostic
 // output produced by NLL helps to *explain* the semantic significance

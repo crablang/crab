@@ -20,10 +20,10 @@ mod wrong_transmute;
 use clippy_utils::in_constant;
 use clippy_utils::msrvs::Msrv;
 use if_chain::if_chain;
-use rustc_hir::{Expr, ExprKind, QPath};
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_session::{declare_tool_lint, impl_lint_pass};
-use rustc_span::symbol::sym;
+use crablangc_hir::{Expr, ExprKind, QPath};
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_session::{declare_tool_lint, impl_lint_pass};
+use crablangc_span::symbol::sym;
 
 declare_clippy_lint! {
     /// ### What it does
@@ -58,7 +58,7 @@ declare_clippy_lint! {
     /// something complex is going on.
     ///
     /// ### Example
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// core::intrinsics::transmute(t); // where the result type is the same as `t`'s
     /// ```
     #[clippy::version = "pre 1.29.0"]
@@ -78,12 +78,12 @@ declare_clippy_lint! {
     ///
     /// ### Example
     ///
-    /// ```rust
+    /// ```crablang
     /// # let p: *const [i32] = &[];
     /// unsafe { std::mem::transmute::<*const [i32], *const [u16]>(p) };
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// # let p: *const [i32] = &[];
     /// p as *const [u16];
     /// ```
@@ -102,7 +102,7 @@ declare_clippy_lint! {
     /// pointer to that type.
     ///
     /// ### Example
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// core::intrinsics::transmute(t) // where the result type is the same as
     ///                                // `*t` or `&t`'s
     /// ```
@@ -120,13 +120,13 @@ declare_clippy_lint! {
     /// This can always be rewritten with `&` and `*`.
     ///
     /// ### Known problems
-    /// - `mem::transmute` in statics and constants is stable from Rust 1.46.0,
+    /// - `mem::transmute` in statics and constants is stable from CrabLang 1.46.0,
     /// while dereferencing raw pointer is not stable yet.
     /// If you need to do this in those places,
     /// you would have to use `transmute` instead.
     ///
     /// ### Example
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// unsafe {
     ///     let _: &T = std::mem::transmute(p); // where p: *const T
     /// }
@@ -155,11 +155,11 @@ declare_clippy_lint! {
     /// but has a semantically meaningful name.
     /// - You might want to handle `None` returned from [`from_u32`] instead of calling `unwrap`.
     ///
-    /// [`from_u32`]: https://doc.rust-lang.org/std/char/fn.from_u32.html
-    /// [`from_u32_unchecked`]: https://doc.rust-lang.org/std/char/fn.from_u32_unchecked.html
+    /// [`from_u32`]: https://doc.crablang.org/std/char/fn.from_u32.html
+    /// [`from_u32_unchecked`]: https://doc.crablang.org/std/char/fn.from_u32_unchecked.html
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// let x = 1_u32;
     /// unsafe {
     ///     let _: char = std::mem::transmute(x); // where x: u32
@@ -189,11 +189,11 @@ declare_clippy_lint! {
     /// but has a semantically meaningful name.
     /// - You might want to handle errors returned from [`from_utf8`] instead of calling `unwrap`.
     ///
-    /// [`from_utf8`]: https://doc.rust-lang.org/std/str/fn.from_utf8.html
-    /// [`from_utf8_unchecked`]: https://doc.rust-lang.org/std/str/fn.from_utf8_unchecked.html
+    /// [`from_utf8`]: https://doc.crablang.org/std/str/fn.from_utf8.html
+    /// [`from_utf8_unchecked`]: https://doc.crablang.org/std/str/fn.from_utf8_unchecked.html
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// let b: &[u8] = &[1_u8, 2_u8];
     /// unsafe {
     ///     let _: &str = std::mem::transmute(b); // where b: &[u8]
@@ -216,7 +216,7 @@ declare_clippy_lint! {
     /// This might result in an invalid in-memory representation of a `bool`.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// let x = 1_u8;
     /// unsafe {
     ///     let _: bool = std::mem::transmute(x); // where x: u8
@@ -240,7 +240,7 @@ declare_clippy_lint! {
     /// and safe.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// unsafe {
     ///     let _: f32 = std::mem::transmute(1_u32); // where x: u32
     /// }
@@ -264,12 +264,12 @@ declare_clippy_lint! {
     /// elsewhere. `new_unchecked` only works for the appropriate types instead.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// # use core::num::NonZeroU32;
     /// let _non_zero: NonZeroU32 = unsafe { std::mem::transmute(123) };
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// # use core::num::NonZeroU32;
     /// let _non_zero = unsafe { NonZeroU32::new_unchecked(123) };
     /// ```
@@ -288,7 +288,7 @@ declare_clippy_lint! {
     /// and safe.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// unsafe {
     ///     let _: u32 = std::mem::transmute(1f32);
     /// }
@@ -311,7 +311,7 @@ declare_clippy_lint! {
     /// is intuitive and safe.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// unsafe {
     ///     let x: [u8; 8] = std::mem::transmute(1i64);
     /// }
@@ -335,7 +335,7 @@ declare_clippy_lint! {
     /// written as casts.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// let ptr = &1u32 as *const u32;
     /// unsafe {
     ///     // pointer-to-pointer transmute
@@ -366,7 +366,7 @@ declare_clippy_lint! {
     /// collection, so we just lint the ones that come with `std`.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// // different size, therefore likely out-of-bounds memory access
     /// // You absolutely do not want this in your code!
     /// unsafe {
@@ -376,7 +376,7 @@ declare_clippy_lint! {
     ///
     /// You must always iterate, map and collect the values:
     ///
-    /// ```rust
+    /// ```crablang
     /// vec![2_u16].into_iter().map(u32::from).collect::<Vec<_>>();
     /// ```
     #[clippy::version = "1.40.0"]
@@ -395,15 +395,15 @@ declare_clippy_lint! {
     ///
     /// ### Known problems
     /// This lint has had multiple problems in the past and was moved to `nursery`. See issue
-    /// [#8496](https://github.com/rust-lang/rust-clippy/issues/8496) for more details.
+    /// [#8496](https://github.com/crablang/crablang-clippy/issues/8496) for more details.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// struct Foo<T>(u32, T);
     /// let _ = unsafe { core::mem::transmute::<Foo<u32>, Foo<i32>>(Foo(0u32, 0u32)) };
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// #[repr(C)]
     /// struct Foo<T>(u32, T);
     /// let _ = unsafe { core::mem::transmute::<Foo<u32>, Foo<i32>>(Foo(0u32, 0u32)) };
@@ -427,7 +427,7 @@ declare_clippy_lint! {
     /// call, aren't detectable yet.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// let null_ref: &u64 = unsafe { std::mem::transmute(0 as *const u64) };
     /// ```
     #[clippy::version = "1.35.0"]
@@ -443,7 +443,7 @@ declare_clippy_lint! {
     /// ### Why is this bad?
     /// Creating a null function pointer is undefined behavior.
     ///
-    /// More info: https://doc.rust-lang.org/nomicon/ffi.html#the-nullable-pointer-optimization
+    /// More info: https://doc.crablang.org/nomicon/ffi.html#the-nullable-pointer-optimization
     ///
     /// ### Known problems
     /// Not all cases can be detected at the moment of this writing.
@@ -451,11 +451,11 @@ declare_clippy_lint! {
     /// call, aren't detectable yet.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// let null_fn: fn() = unsafe { std::mem::transmute( std::ptr::null::<()>() ) };
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// let null_fn: Option<fn()> = None;
     /// ```
     #[clippy::version = "1.68.0"]
@@ -501,9 +501,9 @@ impl<'tcx> LateLintPass<'tcx> for Transmute {
             if cx.tcx.is_diagnostic_item(sym::transmute, def_id);
             then {
                 // Avoid suggesting non-const operations in const contexts:
-                // - from/to bits (https://github.com/rust-lang/rust/issues/73736)
-                // - dereferencing raw pointers (https://github.com/rust-lang/rust/issues/51911)
-                // - char conversions (https://github.com/rust-lang/rust/issues/89259)
+                // - from/to bits (https://github.com/crablang/crablang/issues/73736)
+                // - dereferencing raw pointers (https://github.com/crablang/crablang/issues/51911)
+                // - char conversions (https://github.com/crablang/crablang/issues/89259)
                 let const_context = in_constant(cx, e.hir_id);
 
                 let (from_ty, from_ty_adjusted) = match cx.typeck_results().expr_adjustments(arg) {

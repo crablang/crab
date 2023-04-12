@@ -3,9 +3,9 @@ use clippy_utils::is_from_proc_macro;
 use clippy_utils::msrvs::{self, Msrv};
 use clippy_utils::ty::same_type_and_consts;
 use if_chain::if_chain;
-use rustc_data_structures::fx::FxHashSet;
-use rustc_errors::Applicability;
-use rustc_hir::{
+use crablangc_data_structures::fx::FxHashSet;
+use crablangc_errors::Applicability;
+use crablangc_hir::{
     self as hir,
     def::{CtorOf, DefKind, Res},
     def_id::LocalDefId,
@@ -13,10 +13,10 @@ use rustc_hir::{
     Expr, ExprKind, FnRetTy, FnSig, GenericArg, GenericArgsParentheses, GenericParam, GenericParamKind, HirId, Impl, ImplItemKind, Item,
     ItemKind, Pat, PatKind, Path, QPath, Ty, TyKind,
 };
-use rustc_hir_analysis::hir_ty_to_ty;
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_session::{declare_tool_lint, impl_lint_pass};
-use rustc_span::Span;
+use crablangc_hir_analysis::hir_ty_to_ty;
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_session::{declare_tool_lint, impl_lint_pass};
+use crablangc_span::Span;
 
 declare_clippy_lint! {
     /// ### What it does
@@ -32,7 +32,7 @@ declare_clippy_lint! {
     /// - Unaddressed false negative in fn bodies of trait implementations
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// struct Foo;
     /// impl Foo {
     ///     fn new() -> Foo {
@@ -41,7 +41,7 @@ declare_clippy_lint! {
     /// }
     /// ```
     /// could be
-    /// ```rust
+    /// ```crablang
     /// struct Foo;
     /// impl Foo {
     ///     fn new() -> Self {
@@ -177,7 +177,7 @@ impl<'tcx> LateLintPass<'tcx> for UseSelf {
                 // avoids suggestions to e.g. replace `Vec<u8>` with `Vec<Self>`, in an `impl Trait
                 // for u8`, when the trait always uses `Vec<u8>`.
                 //
-                // See also https://github.com/rust-lang/rust-clippy/issues/2894.
+                // See also https://github.com/crablang/crablang-clippy/issues/2894.
                 for (impl_hir_ty, trait_sem_ty) in impl_inputs_outputs.zip(trait_method_sig.inputs_and_output) {
                     if trait_sem_ty.walk().any(|inner| inner == self_ty.into()) {
                         let mut visitor = SkipTyCollector::default();

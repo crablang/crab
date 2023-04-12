@@ -4,7 +4,7 @@
 //[v0]compile-flags: -C symbol-mangling-version=v0
 //[legacy]normalize-stderr-test: "h[\w{16}]+" -> "SYMBOL_HASH"
 
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 
 pub(crate) struct Foo<I, E>(I, E);
 
@@ -38,7 +38,7 @@ where
 {
     type Item = T;
 
-    #[rustc_symbol_name]
+    #[crablangc_symbol_name]
     //[legacy]~^ ERROR symbol-name(_ZN72_$LT$issue_75326..Foo$LT$I$C$E$GT$$u20$as$u20$issue_75326..Iterator2$GT$4next
     //[legacy]~| ERROR demangling(<issue_75326::Foo<I,E> as issue_75326::Iterator2>::next
     //[legacy]~| ERROR demangling-alt(<issue_75326::Foo<I,E> as issue_75326::Iterator2>::next)

@@ -7,7 +7,7 @@ LL | |     fn func() {}
 LL | | }
    | |_^
    |
-   = note: see issue #67792 <https://github.com/rust-lang/rust/issues/67792> for more information
+   = note: see issue #67792 <https://github.com/crablang/crablang/issues/67792> for more information
 
 error: function has missing const stability attribute
   --> $DIR/staged-api.rs:42:1

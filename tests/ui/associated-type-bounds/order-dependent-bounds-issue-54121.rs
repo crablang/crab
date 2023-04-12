@@ -1,6 +1,6 @@
 // check-pass
 
-// From https://github.com/rust-lang/rust/issues/54121/
+// From https://github.com/crablang/crablang/issues/54121/
 //
 // Whether the code compiled depended on the order of the trait bounds in
 // `type T: Tr<u8, u8> + Tr<u16, u16>`

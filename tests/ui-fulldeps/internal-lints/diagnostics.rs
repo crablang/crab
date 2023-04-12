@@ -1,22 +1,22 @@
 // compile-flags: -Z unstable-options
 
 #![crate_type = "lib"]
-#![feature(rustc_attrs)]
-#![feature(rustc_private)]
-#![deny(rustc::untranslatable_diagnostic)]
-#![deny(rustc::diagnostic_outside_of_impl)]
+#![feature(crablangc_attrs)]
+#![feature(crablangc_private)]
+#![deny(crablangc::untranslatable_diagnostic)]
+#![deny(crablangc::diagnostic_outside_of_impl)]
 
-extern crate rustc_errors;
-extern crate rustc_macros;
-extern crate rustc_session;
-extern crate rustc_span;
+extern crate crablangc_errors;
+extern crate crablangc_macros;
+extern crate crablangc_session;
+extern crate crablangc_span;
 
-use rustc_errors::{
+use crablangc_errors::{
     AddToDiagnostic, IntoDiagnostic, Diagnostic, DiagnosticBuilder,
     ErrorGuaranteed, Handler, DiagnosticMessage, SubdiagnosticMessage,
 };
-use rustc_macros::{fluent_messages, Diagnostic, Subdiagnostic};
-use rustc_span::Span;
+use crablangc_macros::{fluent_messages, Diagnostic, Subdiagnostic};
+use crablangc_span::Span;
 
 fluent_messages! { "./diagnostics.ftl" }
 
@@ -83,9 +83,9 @@ pub fn make_diagnostics<'a>(handler: &'a Handler) {
     //~^^ ERROR diagnostics should be created using translatable messages
 }
 
-// Check that `rustc_lint_diagnostics`-annotated functions aren't themselves linted.
+// Check that `crablangc_lint_diagnostics`-annotated functions aren't themselves linted.
 
-#[rustc_lint_diagnostics]
+#[crablangc_lint_diagnostics]
 pub fn skipped_because_of_annotation<'a>(handler: &'a Handler) {
     let _diag = handler.struct_err("untranslatable diagnostic"); // okay!
 }

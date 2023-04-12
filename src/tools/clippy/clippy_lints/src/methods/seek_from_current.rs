@@ -1,7 +1,7 @@
-use rustc_ast::ast::{LitIntType, LitKind};
-use rustc_errors::Applicability;
-use rustc_hir::{Expr, ExprKind};
-use rustc_lint::LateContext;
+use crablangc_ast::ast::{LitIntType, LitKind};
+use crablangc_errors::Applicability;
+use crablangc_hir::{Expr, ExprKind};
+use crablangc_lint::LateContext;
 
 use clippy_utils::{
     diagnostics::span_lint_and_sugg, get_trait_def_id, match_def_path, paths, source::snippet_with_applicability,

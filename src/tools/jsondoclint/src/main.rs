@@ -3,7 +3,7 @@ use std::io::{BufWriter, Write};
 use anyhow::{bail, Result};
 use clap::Parser;
 use fs_err as fs;
-use rustdoc_json_types::{Crate, Id, FORMAT_VERSION};
+use crablangdoc_json_types::{Crate, Id, FORMAT_VERSION};
 use serde::Serialize;
 use serde_json::Value;
 

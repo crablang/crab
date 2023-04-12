@@ -1,3 +1,3 @@
-#![deny(rust_2018_idioms)]
+#![deny(crablang_2018_idioms)]
 
 fn main() {}

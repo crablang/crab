@@ -1,4 +1,4 @@
-PRINT-BANG INPUT (DISPLAY): { #! [rustc_dummy] let a = "hello".len() ; matches! (a, 5) ; }
+PRINT-BANG INPUT (DISPLAY): { #! [crablangc_dummy] let a = "hello".len() ; matches! (a, 5) ; }
 PRINT-BANG INPUT (DEBUG): TokenStream [
     Group {
         delimiter: Brace,
@@ -17,7 +17,7 @@ PRINT-BANG INPUT (DEBUG): TokenStream [
                 delimiter: Bracket,
                 stream: TokenStream [
                     Ident {
-                        ident: "rustc_dummy",
+                        ident: "crablangc_dummy",
                         span: $DIR/pretty-print-tts.rs:15:8: 15:19 (#0),
                     },
                 ],

@@ -132,7 +132,7 @@ impl char {
     /// assert_eq!(None, c);
     /// ```
     #[stable(feature = "assoc_char_funcs", since = "1.52.0")]
-    #[rustc_const_stable(feature = "const_char_convert", since = "1.67.0")]
+    #[crablangc_const_stable(feature = "const_char_convert", since = "1.67.0")]
     #[must_use]
     #[inline]
     pub const fn from_u32(i: u32) -> Option<char> {
@@ -173,7 +173,7 @@ impl char {
     /// assert_eq!('❤', c);
     /// ```
     #[stable(feature = "assoc_char_funcs", since = "1.52.0")]
-    #[rustc_const_unstable(feature = "const_char_from_u32_unchecked", issue = "89259")]
+    #[crablangc_const_unstable(feature = "const_char_from_u32_unchecked", issue = "89259")]
     #[must_use]
     #[inline]
     pub const unsafe fn from_u32_unchecked(i: u32) -> char {
@@ -225,7 +225,7 @@ impl char {
     /// let _c = char::from_digit(1, 37);
     /// ```
     #[stable(feature = "assoc_char_funcs", since = "1.52.0")]
-    #[rustc_const_stable(feature = "const_char_convert", since = "1.67.0")]
+    #[crablangc_const_stable(feature = "const_char_convert", since = "1.67.0")]
     #[must_use]
     #[inline]
     pub const fn from_digit(num: u32, radix: u32) -> Option<char> {
@@ -272,7 +272,7 @@ impl char {
     /// // this panics
     /// '1'.is_digit(37);
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     pub fn is_digit(self, radix: u32) -> bool {
         self.to_digit(radix).is_some()
@@ -321,8 +321,8 @@ impl char {
     /// // this panics
     /// let _ = '1'.to_digit(37);
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
-    #[rustc_const_stable(feature = "const_char_convert", since = "1.67.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    #[crablangc_const_stable(feature = "const_char_convert", since = "1.67.0")]
     #[must_use = "this returns the result of the operation, \
                   without modifying the original"]
     #[inline]
@@ -344,7 +344,7 @@ impl char {
     /// Returns an iterator that yields the hexadecimal Unicode escape of a
     /// character as `char`s.
     ///
-    /// This will escape characters with the Rust syntax of the form
+    /// This will escape characters with the CrabLang syntax of the form
     /// `\u{NNNNNN}` where `NNNNNN` is a hexadecimal representation.
     ///
     /// # Examples
@@ -377,7 +377,7 @@ impl char {
     /// ```
     #[must_use = "this returns the escaped char as an iterator, \
                   without modifying the original"]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     pub fn escape_unicode(self) -> EscapeUnicode {
         let c = self as u32;
@@ -512,7 +512,7 @@ impl char {
     /// ```
     #[must_use = "this returns the escaped char as an iterator, \
                   without modifying the original"]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     pub fn escape_default(self) -> EscapeDefault {
         let init_state = match self {
@@ -571,8 +571,8 @@ impl char {
     /// // ... just like the &str
     /// assert_eq!(len, tokyo.len());
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
-    #[rustc_const_stable(feature = "const_char_len_utf", since = "1.52.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    #[crablangc_const_stable(feature = "const_char_len_utf", since = "1.52.0")]
     #[inline]
     pub const fn len_utf8(self) -> usize {
         len_utf8(self as u32)
@@ -602,8 +602,8 @@ impl char {
     /// let len = '💣'.len_utf16();
     /// assert_eq!(len, 2);
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
-    #[rustc_const_stable(feature = "const_char_len_utf", since = "1.52.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    #[crablangc_const_stable(feature = "const_char_len_utf", since = "1.52.0")]
     #[inline]
     pub const fn len_utf16(self) -> usize {
         let ch = self as u32;
@@ -703,7 +703,7 @@ impl char {
     /// assert!(!c.is_alphabetic());
     /// ```
     #[must_use]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     pub fn is_alphabetic(self) -> bool {
         match self {
@@ -744,8 +744,8 @@ impl char {
     /// assert!(!CAPITAL_DELTA_IS_LOWERCASE);
     /// ```
     #[must_use]
-    #[stable(feature = "rust1", since = "1.0.0")]
-    #[rustc_const_unstable(feature = "const_unicode_case_lookup", issue = "101400")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    #[crablangc_const_unstable(feature = "const_unicode_case_lookup", issue = "101400")]
     #[inline]
     pub const fn is_lowercase(self) -> bool {
         match self {
@@ -786,8 +786,8 @@ impl char {
     /// assert!(CAPITAL_DELTA_IS_UPPERCASE);
     /// ```
     #[must_use]
-    #[stable(feature = "rust1", since = "1.0.0")]
-    #[rustc_const_unstable(feature = "const_unicode_case_lookup", issue = "101400")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    #[crablangc_const_unstable(feature = "const_unicode_case_lookup", issue = "101400")]
     #[inline]
     pub const fn is_uppercase(self) -> bool {
         match self {
@@ -819,7 +819,7 @@ impl char {
     /// assert!(!'越'.is_whitespace());
     /// ```
     #[must_use]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     pub fn is_whitespace(self) -> bool {
         match self {
@@ -848,7 +848,7 @@ impl char {
     /// assert!('藏'.is_alphanumeric());
     /// ```
     #[must_use]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     pub fn is_alphanumeric(self) -> bool {
         self.is_alphabetic() || self.is_numeric()
@@ -874,7 +874,7 @@ impl char {
     /// assert!(!'q'.is_control());
     /// ```
     #[must_use]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     pub fn is_control(self) -> bool {
         unicode::Cc(self)
@@ -929,7 +929,7 @@ impl char {
     /// assert!(!'三'.is_numeric());
     /// ```
     #[must_use]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     pub fn is_numeric(self) -> bool {
         match self {
@@ -999,7 +999,7 @@ impl char {
     /// ```
     #[must_use = "this returns the lowercase character as a new iterator, \
                   without modifying the original"]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     pub fn to_lowercase(self) -> ToLowercase {
         ToLowercase(CaseMappingIter::new(conversions::to_lower(self)))
@@ -1091,7 +1091,7 @@ impl char {
     /// holds across languages.
     #[must_use = "this returns the uppercase character as a new iterator, \
                   without modifying the original"]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     pub fn to_uppercase(self) -> ToUppercase {
         ToUppercase(CaseMappingIter::new(conversions::to_upper(self)))
@@ -1110,7 +1110,7 @@ impl char {
     /// ```
     #[must_use]
     #[stable(feature = "ascii_methods_on_intrinsics", since = "1.23.0")]
-    #[rustc_const_stable(feature = "const_char_is_ascii", since = "1.32.0")]
+    #[crablangc_const_stable(feature = "const_char_is_ascii", since = "1.32.0")]
     #[inline]
     pub const fn is_ascii(&self) -> bool {
         *self as u32 <= 0x7F
@@ -1140,7 +1140,7 @@ impl char {
     /// [`to_uppercase()`]: #method.to_uppercase
     #[must_use = "to uppercase the value in-place, use `make_ascii_uppercase()`"]
     #[stable(feature = "ascii_methods_on_intrinsics", since = "1.23.0")]
-    #[rustc_const_stable(feature = "const_ascii_methods_on_intrinsics", since = "1.52.0")]
+    #[crablangc_const_stable(feature = "const_ascii_methods_on_intrinsics", since = "1.52.0")]
     #[inline]
     pub const fn to_ascii_uppercase(&self) -> char {
         if self.is_ascii_lowercase() {
@@ -1174,7 +1174,7 @@ impl char {
     /// [`to_lowercase()`]: #method.to_lowercase
     #[must_use = "to lowercase the value in-place, use `make_ascii_lowercase()`"]
     #[stable(feature = "ascii_methods_on_intrinsics", since = "1.23.0")]
-    #[rustc_const_stable(feature = "const_ascii_methods_on_intrinsics", since = "1.52.0")]
+    #[crablangc_const_stable(feature = "const_ascii_methods_on_intrinsics", since = "1.52.0")]
     #[inline]
     pub const fn to_ascii_lowercase(&self) -> char {
         if self.is_ascii_uppercase() {
@@ -1202,7 +1202,7 @@ impl char {
     ///
     /// [to_ascii_lowercase]: #method.to_ascii_lowercase
     #[stable(feature = "ascii_methods_on_intrinsics", since = "1.23.0")]
-    #[rustc_const_stable(feature = "const_ascii_methods_on_intrinsics", since = "1.52.0")]
+    #[crablangc_const_stable(feature = "const_ascii_methods_on_intrinsics", since = "1.52.0")]
     #[inline]
     pub const fn eq_ignore_ascii_case(&self, other: &char) -> bool {
         self.to_ascii_lowercase() == other.to_ascii_lowercase()
@@ -1288,7 +1288,7 @@ impl char {
     /// ```
     #[must_use]
     #[stable(feature = "ascii_ctype_on_intrinsics", since = "1.24.0")]
-    #[rustc_const_stable(feature = "const_ascii_ctype_on_intrinsics", since = "1.47.0")]
+    #[crablangc_const_stable(feature = "const_ascii_ctype_on_intrinsics", since = "1.47.0")]
     #[inline]
     pub const fn is_ascii_alphabetic(&self) -> bool {
         matches!(*self, 'A'..='Z' | 'a'..='z')
@@ -1322,7 +1322,7 @@ impl char {
     /// ```
     #[must_use]
     #[stable(feature = "ascii_ctype_on_intrinsics", since = "1.24.0")]
-    #[rustc_const_stable(feature = "const_ascii_ctype_on_intrinsics", since = "1.47.0")]
+    #[crablangc_const_stable(feature = "const_ascii_ctype_on_intrinsics", since = "1.47.0")]
     #[inline]
     pub const fn is_ascii_uppercase(&self) -> bool {
         matches!(*self, 'A'..='Z')
@@ -1356,7 +1356,7 @@ impl char {
     /// ```
     #[must_use]
     #[stable(feature = "ascii_ctype_on_intrinsics", since = "1.24.0")]
-    #[rustc_const_stable(feature = "const_ascii_ctype_on_intrinsics", since = "1.47.0")]
+    #[crablangc_const_stable(feature = "const_ascii_ctype_on_intrinsics", since = "1.47.0")]
     #[inline]
     pub const fn is_ascii_lowercase(&self) -> bool {
         matches!(*self, 'a'..='z')
@@ -1393,7 +1393,7 @@ impl char {
     /// ```
     #[must_use]
     #[stable(feature = "ascii_ctype_on_intrinsics", since = "1.24.0")]
-    #[rustc_const_stable(feature = "const_ascii_ctype_on_intrinsics", since = "1.47.0")]
+    #[crablangc_const_stable(feature = "const_ascii_ctype_on_intrinsics", since = "1.47.0")]
     #[inline]
     pub const fn is_ascii_alphanumeric(&self) -> bool {
         matches!(*self, '0'..='9' | 'A'..='Z' | 'a'..='z')
@@ -1427,7 +1427,7 @@ impl char {
     /// ```
     #[must_use]
     #[stable(feature = "ascii_ctype_on_intrinsics", since = "1.24.0")]
-    #[rustc_const_stable(feature = "const_ascii_ctype_on_intrinsics", since = "1.47.0")]
+    #[crablangc_const_stable(feature = "const_ascii_ctype_on_intrinsics", since = "1.47.0")]
     #[inline]
     pub const fn is_ascii_digit(&self) -> bool {
         matches!(*self, '0'..='9')
@@ -1459,7 +1459,7 @@ impl char {
     /// ```
     #[must_use]
     #[unstable(feature = "is_ascii_octdigit", issue = "101288")]
-    #[rustc_const_unstable(feature = "is_ascii_octdigit", issue = "101288")]
+    #[crablangc_const_unstable(feature = "is_ascii_octdigit", issue = "101288")]
     #[inline]
     pub const fn is_ascii_octdigit(&self) -> bool {
         matches!(*self, '0'..='7')
@@ -1496,7 +1496,7 @@ impl char {
     /// ```
     #[must_use]
     #[stable(feature = "ascii_ctype_on_intrinsics", since = "1.24.0")]
-    #[rustc_const_stable(feature = "const_ascii_ctype_on_intrinsics", since = "1.47.0")]
+    #[crablangc_const_stable(feature = "const_ascii_ctype_on_intrinsics", since = "1.47.0")]
     #[inline]
     pub const fn is_ascii_hexdigit(&self) -> bool {
         matches!(*self, '0'..='9' | 'A'..='F' | 'a'..='f')
@@ -1534,7 +1534,7 @@ impl char {
     /// ```
     #[must_use]
     #[stable(feature = "ascii_ctype_on_intrinsics", since = "1.24.0")]
-    #[rustc_const_stable(feature = "const_ascii_ctype_on_intrinsics", since = "1.47.0")]
+    #[crablangc_const_stable(feature = "const_ascii_ctype_on_intrinsics", since = "1.47.0")]
     #[inline]
     pub const fn is_ascii_punctuation(&self) -> bool {
         matches!(*self, '!'..='/' | ':'..='@' | '['..='`' | '{'..='~')
@@ -1568,7 +1568,7 @@ impl char {
     /// ```
     #[must_use]
     #[stable(feature = "ascii_ctype_on_intrinsics", since = "1.24.0")]
-    #[rustc_const_stable(feature = "const_ascii_ctype_on_intrinsics", since = "1.47.0")]
+    #[crablangc_const_stable(feature = "const_ascii_ctype_on_intrinsics", since = "1.47.0")]
     #[inline]
     pub const fn is_ascii_graphic(&self) -> bool {
         matches!(*self, '!'..='~')
@@ -1578,7 +1578,7 @@ impl char {
     /// U+0020 SPACE, U+0009 HORIZONTAL TAB, U+000A LINE FEED,
     /// U+000C FORM FEED, or U+000D CARRIAGE RETURN.
     ///
-    /// Rust uses the WhatWG Infra Standard's [definition of ASCII
+    /// CrabLang uses the WhatWG Infra Standard's [definition of ASCII
     /// whitespace][infra-aw]. There are several other definitions in
     /// wide use. For instance, [the POSIX locale][pct] includes
     /// U+000B VERTICAL TAB as well as all the above characters,
@@ -1619,7 +1619,7 @@ impl char {
     /// ```
     #[must_use]
     #[stable(feature = "ascii_ctype_on_intrinsics", since = "1.24.0")]
-    #[rustc_const_stable(feature = "const_ascii_ctype_on_intrinsics", since = "1.47.0")]
+    #[crablangc_const_stable(feature = "const_ascii_ctype_on_intrinsics", since = "1.47.0")]
     #[inline]
     pub const fn is_ascii_whitespace(&self) -> bool {
         matches!(*self, '\t' | '\n' | '\x0C' | '\r' | ' ')
@@ -1655,7 +1655,7 @@ impl char {
     /// ```
     #[must_use]
     #[stable(feature = "ascii_ctype_on_intrinsics", since = "1.24.0")]
-    #[rustc_const_stable(feature = "const_ascii_ctype_on_intrinsics", since = "1.47.0")]
+    #[crablangc_const_stable(feature = "const_ascii_ctype_on_intrinsics", since = "1.47.0")]
     #[inline]
     pub const fn is_ascii_control(&self) -> bool {
         matches!(*self, '\0'..='\x1F' | '\x7F')

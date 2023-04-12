@@ -1,7 +1,7 @@
 # Clippy's Lints
 
 Clippy offers a bunch of additional lints, to help its users write more correct
-and idiomatic Rust code. A full list of all lints, that can be filtered by
+and idiomatic CrabLang code. A full list of all lints, that can be filtered by
 category, lint level or keywords, can be found in the [Clippy lint
 documentation].
 
@@ -82,7 +82,7 @@ positives sometimes are intentional in order to prevent false negatives.
 ## Restriction
 
 The `clippy::restriction` group contains lints that will _restrict_ you from
-using certain parts of the Rust language. It is **not** recommended to enable
+using certain parts of the CrabLang language. It is **not** recommended to enable
 the whole group, but rather cherry-pick lints that are useful for your code base
 and your use case.
 
@@ -101,5 +101,5 @@ The `clippy::cargo` group gives you suggestions on how to improve your
 your crate and are not sure if you have all useful information in your
 `Cargo.toml`.
 
-[Clippy lint documentation]: https://rust-lang.github.io/rust-clippy/
-[Clippy 1.0 RFC]: https://github.com/rust-lang/rfcs/blob/master/text/2476-clippy-uno.md#lint-audit-and-categories
+[Clippy lint documentation]: https://crablang.github.io/crablang-clippy/
+[Clippy 1.0 RFC]: https://github.com/crablang/rfcs/blob/master/text/2476-clippy-uno.md#lint-audit-and-categories

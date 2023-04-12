@@ -4,7 +4,7 @@
 //! Serialization (with C ABI buffers) and unique integer handles are employed
 //! to allow safely interfacing between two copies of `proc_macro` built
 //! (from the same source) by different compilers with potentially mismatching
-//! Rust ABIs (e.g., stage0/bin/rustc vs stage1/bin/rustc during bootstrap).
+//! CrabLang ABIs (e.g., stage0/bin/crablangc vs stage1/bin/crablangc during bootstrap).
 
 #![deny(unsafe_code)]
 
@@ -20,10 +20,10 @@ use std::sync::Once;
 use std::thread;
 
 /// Higher-order macro describing the server RPC API, allowing automatic
-/// generation of type-safe Rust APIs, both client-side and server-side.
+/// generation of type-safe CrabLang APIs, both client-side and server-side.
 ///
 /// `with_api!(MySelf, my_self, my_macro)` expands to:
-/// ```rust,ignore (pseudo-code)
+/// ```crablang,ignore (pseudo-code)
 /// my_macro! {
 ///     // ...
 ///     Literal {
@@ -176,7 +176,7 @@ pub struct BridgeConfig<'a> {
     force_show_panics: bool,
 
     // Prevent Send and Sync impls. `!Send`/`!Sync` is the usual way of doing
-    // this, but that requires unstable features. rust-analyzer uses this code
+    // this, but that requires unstable features. crablang-analyzer uses this code
     // and avoids unstable features.
     _marker: marker::PhantomData<*mut ()>,
 }

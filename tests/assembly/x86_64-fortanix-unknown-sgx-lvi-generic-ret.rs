@@ -1,4 +1,4 @@
-// Test LVI ret hardening on generic rust code
+// Test LVI ret hardening on generic crablang code
 
 // assembly-output: emit-asm
 // compile-flags: --crate-type staticlib

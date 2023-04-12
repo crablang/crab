@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 
 // Issue #5746
 #![warn(clippy::redundant_pattern_matching)]

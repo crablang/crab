@@ -1,5 +1,5 @@
 #![deny(unused_doc_comments)]
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 
 macro_rules! foo { () => {}; }
 

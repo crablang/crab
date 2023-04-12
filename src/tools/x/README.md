@@ -5,6 +5,6 @@
 To install, run the following commands:
 
 ```
-$ cd rust/src/tools/x/
+$ cd crablang/src/tools/x/
 $ cargo install --path .
 ```

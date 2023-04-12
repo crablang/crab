@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 
 fn main() {
     'label: loop { break label };    //~ error: cannot find value `label` in this scope

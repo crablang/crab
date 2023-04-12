@@ -8,4 +8,4 @@ include ../tools.mk
 # `-z text` causes ld to error if there are any non-PIC sections
 
 all:
-	$(RUSTC) hello.rs -C link-args=-Wl,-z,text
+	$(CRABLANGC) hello.rs -C link-args=-Wl,-z,text

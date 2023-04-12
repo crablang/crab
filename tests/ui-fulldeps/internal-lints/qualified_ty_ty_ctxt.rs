@@ -1,12 +1,12 @@
 // compile-flags: -Z unstable-options
 
-#![feature(rustc_private)]
-#![deny(rustc::usage_of_qualified_ty)]
+#![feature(crablangc_private)]
+#![deny(crablangc::usage_of_qualified_ty)]
 #![allow(unused)]
 
-extern crate rustc_middle;
+extern crate crablangc_middle;
 
-use rustc_middle::ty::{self, Ty, TyCtxt};
+use crablangc_middle::ty::{self, Ty, TyCtxt};
 
 macro_rules! qualified_macro {
     ($a:ident) => {

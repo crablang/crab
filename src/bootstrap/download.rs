@@ -11,7 +11,7 @@ use once_cell::sync::OnceCell;
 use xz2::bufread::XzDecoder;
 
 use crate::{
-    config::RustfmtMetadata,
+    config::CrabLangfmtMetadata,
     llvm::detect_llvm_sha,
     t,
     util::{check_run, exe, program_out_of_date, try_run},
@@ -147,7 +147,7 @@ impl Config {
             const NIX_EXPR: &str = "
             with (import <nixpkgs> {});
             symlinkJoin {
-                name = \"rust-stage0-dependencies\";
+                name = \"crablang-stage0-dependencies\";
                 paths = [
                     zlib
                     patchelf
@@ -256,7 +256,7 @@ impl Config {
         }
 
         // `tarball` ends with `.tar.xz`; strip that suffix
-        // example: `rust-dev-nightly-x86_64-unknown-linux-gnu`
+        // example: `crablang-dev-nightly-x86_64-unknown-linux-gnu`
         let uncompressed_filename =
             Path::new(tarball.file_name().expect("missing tarball filename")).file_stem().unwrap();
         let directory_prefix = Path::new(Path::new(uncompressed_filename).file_stem().unwrap());
@@ -298,7 +298,7 @@ impl Config {
 
         self.verbose(&format!("verifying {}", path.display()));
         let mut hasher = sha2::Sha256::new();
-        // FIXME: this is ok for rustfmt (4.1 MB large at time of writing), but it seems memory-intensive for rustc and larger components.
+        // FIXME: this is ok for crablangfmt (4.1 MB large at time of writing), but it seems memory-intensive for crablangc and larger components.
         // Consider using streaming IO instead?
         let contents = if self.dry_run() { vec![] } else { t!(fs::read(path)) };
         hasher.update(&contents);
@@ -322,35 +322,35 @@ enum DownloadSource {
 
 /// Functions that are only ever called once, but named for clarify and to avoid thousand-line functions.
 impl Config {
-    pub(crate) fn maybe_download_rustfmt(&self) -> Option<PathBuf> {
-        let RustfmtMetadata { date, version } = self.stage0_metadata.rustfmt.as_ref()?;
+    pub(crate) fn maybe_download_crablangfmt(&self) -> Option<PathBuf> {
+        let CrabLangfmtMetadata { date, version } = self.stage0_metadata.crablangfmt.as_ref()?;
         let channel = format!("{version}-{date}");
 
         let host = self.build;
-        let bin_root = self.out.join(host.triple).join("rustfmt");
-        let rustfmt_path = bin_root.join("bin").join(exe("rustfmt", host));
-        let rustfmt_stamp = bin_root.join(".rustfmt-stamp");
-        if rustfmt_path.exists() && !program_out_of_date(&rustfmt_stamp, &channel) {
-            return Some(rustfmt_path);
+        let bin_root = self.out.join(host.triple).join("crablangfmt");
+        let crablangfmt_path = bin_root.join("bin").join(exe("crablangfmt", host));
+        let crablangfmt_stamp = bin_root.join(".crablangfmt-stamp");
+        if crablangfmt_path.exists() && !program_out_of_date(&crablangfmt_stamp, &channel) {
+            return Some(crablangfmt_path);
         }
 
         self.download_component(
             DownloadSource::Dist,
-            format!("rustfmt-{version}-{build}.tar.xz", build = host.triple),
-            "rustfmt-preview",
+            format!("crablangfmt-{version}-{build}.tar.xz", build = host.triple),
+            "crablangfmt-preview",
             &date,
-            "rustfmt",
+            "crablangfmt",
         );
         self.download_component(
             DownloadSource::Dist,
-            format!("rustc-{version}-{build}.tar.xz", build = host.triple),
-            "rustc",
+            format!("crablangc-{version}-{build}.tar.xz", build = host.triple),
+            "crablangc",
             &date,
-            "rustfmt",
+            "crablangfmt",
         );
 
         if self.should_fix_bins_and_dylibs() {
-            self.fix_bin_or_dylib(&bin_root.join("bin").join("rustfmt"));
+            self.fix_bin_or_dylib(&bin_root.join("bin").join("crablangfmt"));
             self.fix_bin_or_dylib(&bin_root.join("bin").join("cargo-fmt"));
             let lib_dir = bin_root.join("lib");
             for lib in t!(fs::read_dir(&lib_dir), lib_dir.display().to_string()) {
@@ -361,21 +361,21 @@ impl Config {
             }
         }
 
-        self.create(&rustfmt_stamp, &channel);
-        Some(rustfmt_path)
+        self.create(&crablangfmt_stamp, &channel);
+        Some(crablangfmt_path)
     }
 
-    pub(crate) fn download_ci_rustc(&self, commit: &str) {
+    pub(crate) fn download_ci_crablangc(&self, commit: &str) {
         self.verbose(&format!("using downloaded stage2 artifacts from CI (commit {commit})"));
 
         let version = self.artifact_version_part(commit);
-        // download-rustc doesn't need its own cargo, it can just use beta's. But it does need the
-        // `rustc_private` crates for tools.
-        let extra_components = ["rustc-dev"];
+        // download-crablangc doesn't need its own cargo, it can just use beta's. But it does need the
+        // `crablangc_private` crates for tools.
+        let extra_components = ["crablangc-dev"];
 
         self.download_toolchain(
             &version,
-            "ci-rustc",
+            "ci-crablangc",
             commit,
             &extra_components,
             Self::download_ci_component,
@@ -413,19 +413,19 @@ impl Config {
     ) {
         let host = self.build.triple;
         let bin_root = self.out.join(host).join(sysroot);
-        let rustc_stamp = bin_root.join(".rustc-stamp");
+        let crablangc_stamp = bin_root.join(".crablangc-stamp");
 
-        if !bin_root.join("bin").join(exe("rustc", self.build)).exists()
-            || program_out_of_date(&rustc_stamp, stamp_key)
+        if !bin_root.join("bin").join(exe("crablangc", self.build)).exists()
+            || program_out_of_date(&crablangc_stamp, stamp_key)
         {
             if bin_root.exists() {
                 t!(fs::remove_dir_all(&bin_root));
             }
-            let filename = format!("rust-std-{version}-{host}.tar.xz");
-            let pattern = format!("rust-std-{host}");
+            let filename = format!("crablang-std-{version}-{host}.tar.xz");
+            let pattern = format!("crablang-std-{host}");
             download_component(self, filename, &pattern, stamp_key);
-            let filename = format!("rustc-{version}-{host}.tar.xz");
-            download_component(self, filename, "rustc", stamp_key);
+            let filename = format!("crablangc-{version}-{host}.tar.xz");
+            download_component(self, filename, "crablangc", stamp_key);
 
             for component in extra_components {
                 let filename = format!("{component}-{version}-{host}.tar.xz");
@@ -433,10 +433,10 @@ impl Config {
             }
 
             if self.should_fix_bins_and_dylibs() {
-                self.fix_bin_or_dylib(&bin_root.join("bin").join("rustc"));
-                self.fix_bin_or_dylib(&bin_root.join("bin").join("rustdoc"));
+                self.fix_bin_or_dylib(&bin_root.join("bin").join("crablangc"));
+                self.fix_bin_or_dylib(&bin_root.join("bin").join("crablangdoc"));
                 self.fix_bin_or_dylib(
-                    &bin_root.join("libexec").join("rust-analyzer-proc-macro-srv"),
+                    &bin_root.join("libexec").join("crablang-analyzer-proc-macro-srv"),
                 );
                 let lib_dir = bin_root.join("lib");
                 for lib in t!(fs::read_dir(&lib_dir), lib_dir.display().to_string()) {
@@ -447,14 +447,14 @@ impl Config {
                 }
             }
 
-            t!(fs::write(rustc_stamp, stamp_key));
+            t!(fs::write(crablangc_stamp, stamp_key));
         }
     }
 
     /// Download a single component of a CI-built toolchain (not necessarily a published nightly).
     // NOTE: intentionally takes an owned string to avoid downloading multiple times by accident
     fn download_ci_component(&self, filename: String, prefix: &str, commit: &str) {
-        Self::download_component(self, DownloadSource::CI, filename, prefix, commit, "ci-rustc")
+        Self::download_component(self, DownloadSource::CI, filename, prefix, commit, "ci-crablangc")
     }
 
     fn download_component(
@@ -480,7 +480,7 @@ impl Config {
                 false,
             ),
             DownloadSource::Dist => {
-                let dist_server = env::var("RUSTUP_DIST_SERVER")
+                let dist_server = env::var("CRABLANGUP_DIST_SERVER")
                     .unwrap_or(self.stage0_metadata.config.dist_server.to_string());
                 // NOTE: make `dist` part of the URL because that's how it's stored in src/stage0.json
                 (dist_server, format!("dist/{key}/{filename}"), true)
@@ -488,14 +488,14 @@ impl Config {
         };
 
         // For the beta compiler, put special effort into ensuring the checksums are valid.
-        // FIXME: maybe we should do this for download-rustc as well? but it would be a pain to update
+        // FIXME: maybe we should do this for download-crablangc as well? but it would be a pain to update
         // this on each and every nightly ...
         let checksum = if should_verify {
             let error = format!(
                 "src/stage0.json doesn't contain a checksum for {url}. \
                 Pre-built artifacts might not be available for this \
-                target at this time, see https://doc.rust-lang.org/nightly\
-                /rustc/platform-support.html for more information."
+                target at this time, see https://doc.crablang.org/nightly\
+                /crablangc/platform-support.html for more information."
             );
             let sha256 = self.stage0_metadata.checksums_sha256.get(&url).expect(&error);
             if tarball.exists() {
@@ -534,7 +534,7 @@ impl Config {
         }
         let llvm_root = self.ci_llvm_root();
         let llvm_stamp = llvm_root.join(".llvm-stamp");
-        let llvm_sha = detect_llvm_sha(&self, self.rust_info.is_managed_git_subrepository());
+        let llvm_sha = detect_llvm_sha(&self, self.crablang_info.is_managed_git_subrepository());
         let key = format!("{}{}", llvm_sha, self.llvm_assertions);
         if program_out_of_date(&llvm_stamp, &key) && !self.dry_run() {
             self.download_ci_llvm(&llvm_sha);
@@ -544,12 +544,12 @@ impl Config {
                 }
             }
 
-            // Update the timestamp of llvm-config to force rustc_llvm to be
+            // Update the timestamp of llvm-config to force crablangc_llvm to be
             // rebuilt. This is a hacky workaround for a deficiency in Cargo where
             // the rerun-if-changed directive doesn't handle changes very well.
-            // https://github.com/rust-lang/cargo/issues/10791
+            // https://github.com/crablang/cargo/issues/10791
             // Cargo only compares the timestamp of the file relative to the last
-            // time `rustc_llvm` build script ran. However, the timestamps of the
+            // time `crablangc_llvm` build script ran. However, the timestamps of the
             // files in the tarball are in the past, so it doesn't trigger a
             // rebuild.
             let now = filetime::FileTime::from_system_time(std::time::SystemTime::now());
@@ -575,9 +575,9 @@ impl Config {
 
         let cache_prefix = format!("llvm-{}-{}", llvm_sha, llvm_assertions);
         let cache_dst = self.out.join("cache");
-        let rustc_cache = cache_dst.join(cache_prefix);
-        if !rustc_cache.exists() {
-            t!(fs::create_dir_all(&rustc_cache));
+        let crablangc_cache = cache_dst.join(cache_prefix);
+        if !crablangc_cache.exists() {
+            t!(fs::create_dir_all(&crablangc_cache));
         }
         let base = if llvm_assertions {
             &self.stage0_metadata.config.artifacts_with_llvm_assertions_server
@@ -585,13 +585,13 @@ impl Config {
             &self.stage0_metadata.config.artifacts_server
         };
         let version = self.artifact_version_part(llvm_sha);
-        let filename = format!("rust-dev-{}-{}.tar.xz", version, self.build.triple);
-        let tarball = rustc_cache.join(&filename);
+        let filename = format!("crablang-dev-{}-{}.tar.xz", version, self.build.triple);
+        let tarball = crablangc_cache.join(&filename);
         if !tarball.exists() {
             let help_on_error = "error: failed to download llvm from ci
 
     help: old builds get deleted after a certain time
-    help: if trying to compile an old commit of rustc, disable `download-ci-llvm` in config.toml:
+    help: if trying to compile an old commit of crablangc, disable `download-ci-llvm` in config.toml:
 
     [llvm]
     download-ci-llvm = false
@@ -599,6 +599,6 @@ impl Config {
             self.download_file(&format!("{base}/{llvm_sha}/{filename}"), &tarball, help_on_error);
         }
         let llvm_root = self.ci_llvm_root();
-        self.unpack(&tarball, &llvm_root, "rust-dev");
+        self.unpack(&tarball, &llvm_root, "crablang-dev");
     }
 }

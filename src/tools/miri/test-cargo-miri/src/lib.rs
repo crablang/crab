@@ -1,11 +1,11 @@
 /// Doc-test test
-/// ```rust
+/// ```crablang
 /// assert!(cargo_miri_test::make_true());
 /// ```
-/// ```rust,no_run
+/// ```crablang,no_run
 /// assert!(!cargo_miri_test::make_true());
 /// ```
-/// ```rust,compile_fail
+/// ```crablang,compile_fail
 /// assert!(cargo_miri_test::make_true() == 5);
 /// ```
 #[no_mangle]
@@ -16,7 +16,7 @@ pub fn make_true() -> bool {
     issue_1691::use_me()
 }
 
-/// ```rust
+/// ```crablang
 /// cargo_miri_test::miri_only_fn();
 /// ```
 #[cfg(miri)]

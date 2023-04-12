@@ -6,17 +6,17 @@ use clippy_utils::source::snippet_opt;
 use clippy_utils::ty::{get_iterator_item_ty, implements_trait, is_copy, peel_mid_ty_refs};
 use clippy_utils::visitors::find_all_ret_expressions;
 use clippy_utils::{fn_def_id, get_parent_expr, is_diag_item_method, is_diag_trait_item, return_ty};
-use rustc_errors::Applicability;
-use rustc_hir::{def_id::DefId, BorrowKind, Expr, ExprKind, ItemKind, Node};
-use rustc_hir_typeck::{FnCtxt, Inherited};
-use rustc_infer::infer::TyCtxtInferExt;
-use rustc_lint::LateContext;
-use rustc_middle::mir::Mutability;
-use rustc_middle::ty::adjustment::{Adjust, Adjustment, OverloadedDeref};
-use rustc_middle::ty::subst::{GenericArg, GenericArgKind, SubstsRef};
-use rustc_middle::ty::{self, Clause, EarlyBinder, ParamTy, PredicateKind, ProjectionPredicate, TraitPredicate, Ty};
-use rustc_span::{sym, Symbol};
-use rustc_trait_selection::traits::{query::evaluate_obligation::InferCtxtExt as _, Obligation, ObligationCause};
+use crablangc_errors::Applicability;
+use crablangc_hir::{def_id::DefId, BorrowKind, Expr, ExprKind, ItemKind, Node};
+use crablangc_hir_typeck::{FnCtxt, Inherited};
+use crablangc_infer::infer::TyCtxtInferExt;
+use crablangc_lint::LateContext;
+use crablangc_middle::mir::Mutability;
+use crablangc_middle::ty::adjustment::{Adjust, Adjustment, OverloadedDeref};
+use crablangc_middle::ty::subst::{GenericArg, GenericArgKind, SubstsRef};
+use crablangc_middle::ty::{self, Clause, EarlyBinder, ParamTy, PredicateKind, ProjectionPredicate, TraitPredicate, Ty};
+use crablangc_span::{sym, Symbol};
+use crablangc_trait_selection::traits::{query::evaluate_obligation::InferCtxtExt as _, Obligation, ObligationCause};
 
 use super::UNNECESSARY_TO_OWNED;
 
@@ -116,7 +116,7 @@ fn check_addr_of_expr(
         // * the method is `Cow::into_owned`
         // This restriction is to ensure there is no overlap between `redundant_clone` and this
         // lint. It also avoids the following false positive:
-        //  https://github.com/rust-lang/rust-clippy/issues/8759
+        //  https://github.com/crablang/crablang-clippy/issues/8759
         //   Arrays are a bit of a corner case. Non-copyable arrays are handled by
         // `redundant_clone`, but copyable arrays are not.
         if *referent_ty != receiver_ty
@@ -219,7 +219,7 @@ fn check_into_iter_call_arg(
             };
             // The next suggestion may be incorrect because the removal of the `to_owned`-like
             // function could cause the iterator to hold a reference to a resource that is used
-            // mutably. See https://github.com/rust-lang/rust-clippy/issues/8148.
+            // mutably. See https://github.com/crablang/crablang-clippy/issues/8148.
             span_lint_and_sugg(
                 cx,
                 UNNECESSARY_TO_OWNED,
@@ -389,7 +389,7 @@ fn can_change_type<'a>(cx: &LateContext<'a>, mut expr: &'a Expr<'a>, mut ty: Ty<
                     if let Some(arg_index) = recv.into_iter().chain(call_args).position(|arg| arg.hir_id == expr.hir_id)
                         && let Some(param_ty) = fn_sig.inputs().get(arg_index)
                         && let ty::Param(ParamTy { index: param_index , ..}) = param_ty.kind()
-                        // https://github.com/rust-lang/rust-clippy/issues/9504 and https://github.com/rust-lang/rust-clippy/issues/10021
+                        // https://github.com/crablang/crablang-clippy/issues/9504 and https://github.com/crablang/crablang-clippy/issues/10021
                         && (*param_index as usize) < call_substs.len()
                     {
                         if fn_sig

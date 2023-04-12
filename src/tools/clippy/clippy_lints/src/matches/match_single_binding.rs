@@ -2,10 +2,10 @@ use clippy_utils::diagnostics::span_lint_and_sugg;
 use clippy_utils::macros::HirNode;
 use clippy_utils::source::{indent_of, snippet, snippet_block_with_context, snippet_with_applicability};
 use clippy_utils::{get_parent_expr, is_refutable, peel_blocks};
-use rustc_errors::Applicability;
-use rustc_hir::{Arm, Expr, ExprKind, Node, PatKind, StmtKind};
-use rustc_lint::LateContext;
-use rustc_span::Span;
+use crablangc_errors::Applicability;
+use crablangc_hir::{Arm, Expr, ExprKind, Node, PatKind, StmtKind};
+use crablangc_lint::LateContext;
+use crablangc_span::Span;
 
 use super::MATCH_SINGLE_BINDING;
 

@@ -25,15 +25,15 @@ fn main() {
 }
 
 fn runtest(me: &str) {
-    env::remove_var("RUST_BACKTRACE");
-    env::remove_var("RUST_LIB_BACKTRACE");
+    env::remove_var("CRABLANG_BACKTRACE");
+    env::remove_var("CRABLANG_LIB_BACKTRACE");
 
-    let p = Command::new(me).arg("a").env("RUST_BACKTRACE", "1").output().unwrap();
+    let p = Command::new(me).arg("a").env("CRABLANG_BACKTRACE", "1").output().unwrap();
     assert!(p.status.success());
     assert!(String::from_utf8_lossy(&p.stdout).contains("stack backtrace:\n"));
     assert!(String::from_utf8_lossy(&p.stdout).contains("backtrace::main"));
 
-    let p = Command::new(me).arg("a").env("RUST_BACKTRACE", "0").output().unwrap();
+    let p = Command::new(me).arg("a").env("CRABLANG_BACKTRACE", "0").output().unwrap();
     assert!(p.status.success());
     assert!(String::from_utf8_lossy(&p.stdout).contains("disabled backtrace\n"));
 
@@ -43,8 +43,8 @@ fn runtest(me: &str) {
 
     let p = Command::new(me)
         .arg("a")
-        .env("RUST_LIB_BACKTRACE", "1")
-        .env("RUST_BACKTRACE", "1")
+        .env("CRABLANG_LIB_BACKTRACE", "1")
+        .env("CRABLANG_BACKTRACE", "1")
         .output()
         .unwrap();
     assert!(p.status.success());
@@ -52,8 +52,8 @@ fn runtest(me: &str) {
 
     let p = Command::new(me)
         .arg("a")
-        .env("RUST_LIB_BACKTRACE", "0")
-        .env("RUST_BACKTRACE", "1")
+        .env("CRABLANG_LIB_BACKTRACE", "0")
+        .env("CRABLANG_BACKTRACE", "1")
         .output()
         .unwrap();
     assert!(p.status.success());
@@ -61,8 +61,8 @@ fn runtest(me: &str) {
 
     let p = Command::new(me)
         .arg("force")
-        .env("RUST_LIB_BACKTRACE", "0")
-        .env("RUST_BACKTRACE", "0")
+        .env("CRABLANG_LIB_BACKTRACE", "0")
+        .env("CRABLANG_BACKTRACE", "0")
         .output()
         .unwrap();
     assert!(p.status.success());

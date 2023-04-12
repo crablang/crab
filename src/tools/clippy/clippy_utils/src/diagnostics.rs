@@ -1,4 +1,4 @@
-//! Clippy wrappers around rustc's diagnostic functions.
+//! Clippy wrappers around crablangc's diagnostic functions.
 //!
 //! These functions are used by the `INTERNAL_METADATA_COLLECTOR` lint to collect the corresponding
 //! lint applicability. Please make sure that you update the `LINT_EMISSION_FUNCTIONS` variable in
@@ -8,20 +8,20 @@
 //! Thank you!
 //! ~The `INTERNAL_METADATA_COLLECTOR` lint
 
-use rustc_errors::{Applicability, Diagnostic, MultiSpan};
-use rustc_hir::HirId;
-use rustc_lint::{LateContext, Lint, LintContext};
-use rustc_span::source_map::Span;
+use crablangc_errors::{Applicability, Diagnostic, MultiSpan};
+use crablangc_hir::HirId;
+use crablangc_lint::{LateContext, Lint, LintContext};
+use crablangc_span::source_map::Span;
 use std::env;
 
 fn docs_link(diag: &mut Diagnostic, lint: &'static Lint) {
     if env::var("CLIPPY_DISABLE_DOCS_LINKS").is_err() {
         if let Some(lint) = lint.name_lower().strip_prefix("clippy::") {
             diag.help(format!(
-                "for further information visit https://rust-lang.github.io/rust-clippy/{}/index.html#{lint}",
-                &option_env!("RUST_RELEASE_NUM").map_or("master".to_string(), |n| {
+                "for further information visit https://crablang.github.io/crablang-clippy/{}/index.html#{lint}",
+                &option_env!("CRABLANG_RELEASE_NUM").map_or("master".to_string(), |n| {
                     // extract just major + minor version and ignore patch versions
-                    format!("rust-{}", n.rsplit_once('.').unwrap().1)
+                    format!("crablang-{}", n.rsplit_once('.').unwrap().1)
                 })
             ));
         }
@@ -174,7 +174,7 @@ pub fn span_lint_hir_and_then(
 
 /// Add a span lint with a suggestion on how to fix it.
 ///
-/// These suggestions can be parsed by rustfix to allow it to automatically fix your code.
+/// These suggestions can be parsed by crablangfix to allow it to automatically fix your code.
 /// In the example below, `help` is `"try"` and `sugg` is the suggested replacement `".any(|x| x >
 /// 2)"`.
 ///
@@ -221,8 +221,8 @@ where
 
 /// Create a suggestion made from several `span → replacement`.
 ///
-/// rustfix currently doesn't support the automatic application of suggestions with
-/// multiple spans. This is tracked in issue [rustfix#141](https://github.com/rust-lang/rustfix/issues/141).
+/// crablangfix currently doesn't support the automatic application of suggestions with
+/// multiple spans. This is tracked in issue [crablangfix#141](https://github.com/crablang/crablangfix/issues/141).
 /// Suggestions with multiple spans will be silently ignored.
 pub fn multispan_sugg_with_applicability<I>(
     diag: &mut Diagnostic,

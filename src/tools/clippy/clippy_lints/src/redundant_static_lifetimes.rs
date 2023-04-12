@@ -1,10 +1,10 @@
 use clippy_utils::diagnostics::span_lint_and_then;
 use clippy_utils::msrvs::{self, Msrv};
 use clippy_utils::source::snippet;
-use rustc_ast::ast::{Item, ItemKind, Ty, TyKind, StaticItem, ConstItem};
-use rustc_errors::Applicability;
-use rustc_lint::{EarlyContext, EarlyLintPass};
-use rustc_session::{declare_tool_lint, impl_lint_pass};
+use crablangc_ast::ast::{Item, ItemKind, Ty, TyKind, StaticItem, ConstItem};
+use crablangc_errors::Applicability;
+use crablangc_lint::{EarlyContext, EarlyLintPass};
+use crablangc_session::{declare_tool_lint, impl_lint_pass};
 
 declare_clippy_lint! {
     /// ### What it does
@@ -64,7 +64,7 @@ impl RedundantStaticLifetimes {
                 if let Some(lifetime) = *optional_lifetime {
                     match borrow_type.ty.kind {
                         TyKind::Path(..) | TyKind::Slice(..) | TyKind::Array(..) | TyKind::Tup(..) => {
-                            if lifetime.ident.name == rustc_span::symbol::kw::StaticLifetime {
+                            if lifetime.ident.name == crablangc_span::symbol::kw::StaticLifetime {
                                 let snip = snippet(cx, borrow_type.ty.span, "<type>");
                                 let sugg = format!("&{}{snip}", borrow_type.mutbl.prefix_str());
                                 span_lint_and_then(

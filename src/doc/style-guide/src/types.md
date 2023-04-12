@@ -21,7 +21,7 @@ Parentheses used in types should not be surrounded by whitespace, e.g., `(Foo)`
 
 Avoid breaking lines in types where possible. Prefer breaking at outermost scope, e.g., prefer
 
-```rust
+```crablang
 Foo<
     Bar,
     Baz<Type1, Type2>,
@@ -30,7 +30,7 @@ Foo<
 
 to
 
-```rust
+```crablang
 Foo<Bar, Baz<
     Type1,
     Type2,
@@ -45,7 +45,7 @@ Generic types may be broken following the rules for generics.
 
 Types with `+` may be broken after any `+` using block indent and breaking before the `+`. When breaking such a type, all `+`s should be line broken, e.g.,
 
-```rust
+```crablang
 impl Clone
     + Copy
     + Debug

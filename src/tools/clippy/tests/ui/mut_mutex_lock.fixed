@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 #![allow(dead_code, unused_mut)]
 #![warn(clippy::mut_mutex_lock)]
 

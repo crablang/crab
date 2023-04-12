@@ -3,18 +3,18 @@
 // [rpass1]compile-flags: -Zincremental-ignore-spans
 // [rpass2]compile-flags: -Zincremental-ignore-spans
 
-#![feature(rustc_attrs)]
-#![rustc_partition_reused(module = "change_symbol_export_status-mod1", cfg = "rpass2")]
-#![rustc_partition_reused(module = "change_symbol_export_status-mod2", cfg = "rpass2")]
-#![rustc_partition_reused(module = "change_symbol_export_status-mod1", cfg = "rpass4")]
-#![rustc_partition_reused(module = "change_symbol_export_status-mod2", cfg = "rpass4")]
+#![feature(crablangc_attrs)]
+#![crablangc_partition_reused(module = "change_symbol_export_status-mod1", cfg = "rpass2")]
+#![crablangc_partition_reused(module = "change_symbol_export_status-mod2", cfg = "rpass2")]
+#![crablangc_partition_reused(module = "change_symbol_export_status-mod1", cfg = "rpass4")]
+#![crablangc_partition_reused(module = "change_symbol_export_status-mod2", cfg = "rpass4")]
 
 // This test case makes sure that a change in symbol visibility is detected by
 // our dependency tracking. We do this by changing a module's visibility to
 // `private` in rpass2, causing the contained function to go from `default` to
 // `hidden` visibility.
 // The function is marked with #[no_mangle] so it is considered for exporting
-// even from an executable. Plain Rust functions are only exported from Rust
+// even from an executable. Plain CrabLang functions are only exported from CrabLang
 // libraries, which our test infrastructure does not support.
 
 #[cfg(any(rpass1,rpass3))]

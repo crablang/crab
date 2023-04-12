@@ -19,7 +19,7 @@ impl Drop for ExternDrop {
     #[inline(always)]
     fn drop(&mut self) {
         // This call may potentially unwind.
-        extern "Rust" {
+        extern "CrabLang" {
             fn extern_drop();
         }
         unsafe {

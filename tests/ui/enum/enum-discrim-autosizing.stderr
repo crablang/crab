@@ -12,4 +12,4 @@ LL |     Bu64 = 0x8000_0000_0000_0000
 
 error: aborting due to previous error
 
-For more information about this error, try `rustc --explain E0081`.
+For more information about this error, try `crablangc --explain E0081`.

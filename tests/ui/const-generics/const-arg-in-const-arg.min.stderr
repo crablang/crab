@@ -22,7 +22,7 @@ error[E0658]: a non-static lifetime is not allowed in a `const`
 LL |     let _: [u8; faz::<'a>(&())];
    |                       ^^
    |
-   = note: see issue #76560 <https://github.com/rust-lang/rust/issues/76560> for more information
+   = note: see issue #76560 <https://github.com/crablang/crablang/issues/76560> for more information
    = help: add `#![feature(generic_const_exprs)]` to the crate attributes to enable
 
 error[E0658]: a non-static lifetime is not allowed in a `const`
@@ -31,7 +31,7 @@ error[E0658]: a non-static lifetime is not allowed in a `const`
 LL |     let _: [u8; baz::<'a>(&())];
    |                       ^^
    |
-   = note: see issue #76560 <https://github.com/rust-lang/rust/issues/76560> for more information
+   = note: see issue #76560 <https://github.com/crablang/crablang/issues/76560> for more information
    = help: add `#![feature(generic_const_exprs)]` to the crate attributes to enable
 
 error[E0658]: a non-static lifetime is not allowed in a `const`
@@ -40,7 +40,7 @@ error[E0658]: a non-static lifetime is not allowed in a `const`
 LL |     let _: [u8; faz::<'b>(&())];
    |                       ^^
    |
-   = note: see issue #76560 <https://github.com/rust-lang/rust/issues/76560> for more information
+   = note: see issue #76560 <https://github.com/crablang/crablang/issues/76560> for more information
    = help: add `#![feature(generic_const_exprs)]` to the crate attributes to enable
 
 error[E0658]: a non-static lifetime is not allowed in a `const`
@@ -49,7 +49,7 @@ error[E0658]: a non-static lifetime is not allowed in a `const`
 LL |     let _: [u8; baz::<'b>(&())];
    |                       ^^
    |
-   = note: see issue #76560 <https://github.com/rust-lang/rust/issues/76560> for more information
+   = note: see issue #76560 <https://github.com/crablang/crablang/issues/76560> for more information
    = help: add `#![feature(generic_const_exprs)]` to the crate attributes to enable
 
 error: generic parameters may not be used in const operations
@@ -67,7 +67,7 @@ error[E0658]: a non-static lifetime is not allowed in a `const`
 LL |     let _ = [0; faz::<'a>(&())];
    |                       ^^
    |
-   = note: see issue #76560 <https://github.com/rust-lang/rust/issues/76560> for more information
+   = note: see issue #76560 <https://github.com/crablang/crablang/issues/76560> for more information
    = help: add `#![feature(generic_const_exprs)]` to the crate attributes to enable
 
 error[E0658]: a non-static lifetime is not allowed in a `const`
@@ -76,7 +76,7 @@ error[E0658]: a non-static lifetime is not allowed in a `const`
 LL |     let _ = [0; baz::<'a>(&())];
    |                       ^^
    |
-   = note: see issue #76560 <https://github.com/rust-lang/rust/issues/76560> for more information
+   = note: see issue #76560 <https://github.com/crablang/crablang/issues/76560> for more information
    = help: add `#![feature(generic_const_exprs)]` to the crate attributes to enable
 
 error[E0658]: a non-static lifetime is not allowed in a `const`
@@ -85,7 +85,7 @@ error[E0658]: a non-static lifetime is not allowed in a `const`
 LL |     let _ = [0; faz::<'b>(&())];
    |                       ^^
    |
-   = note: see issue #76560 <https://github.com/rust-lang/rust/issues/76560> for more information
+   = note: see issue #76560 <https://github.com/crablang/crablang/issues/76560> for more information
    = help: add `#![feature(generic_const_exprs)]` to the crate attributes to enable
 
 error[E0658]: a non-static lifetime is not allowed in a `const`
@@ -94,7 +94,7 @@ error[E0658]: a non-static lifetime is not allowed in a `const`
 LL |     let _ = [0; baz::<'b>(&())];
    |                       ^^
    |
-   = note: see issue #76560 <https://github.com/rust-lang/rust/issues/76560> for more information
+   = note: see issue #76560 <https://github.com/crablang/crablang/issues/76560> for more information
    = help: add `#![feature(generic_const_exprs)]` to the crate attributes to enable
 
 error: generic parameters may not be used in const operations
@@ -121,7 +121,7 @@ error[E0658]: a non-static lifetime is not allowed in a `const`
 LL |     let _: Foo<{ faz::<'a>(&()) }>;
    |                        ^^
    |
-   = note: see issue #76560 <https://github.com/rust-lang/rust/issues/76560> for more information
+   = note: see issue #76560 <https://github.com/crablang/crablang/issues/76560> for more information
    = help: add `#![feature(generic_const_exprs)]` to the crate attributes to enable
 
 error[E0658]: a non-static lifetime is not allowed in a `const`
@@ -130,7 +130,7 @@ error[E0658]: a non-static lifetime is not allowed in a `const`
 LL |     let _: Foo<{ baz::<'a>(&()) }>;
    |                        ^^
    |
-   = note: see issue #76560 <https://github.com/rust-lang/rust/issues/76560> for more information
+   = note: see issue #76560 <https://github.com/crablang/crablang/issues/76560> for more information
    = help: add `#![feature(generic_const_exprs)]` to the crate attributes to enable
 
 error[E0658]: a non-static lifetime is not allowed in a `const`
@@ -139,7 +139,7 @@ error[E0658]: a non-static lifetime is not allowed in a `const`
 LL |     let _: Foo<{ faz::<'b>(&()) }>;
    |                        ^^
    |
-   = note: see issue #76560 <https://github.com/rust-lang/rust/issues/76560> for more information
+   = note: see issue #76560 <https://github.com/crablang/crablang/issues/76560> for more information
    = help: add `#![feature(generic_const_exprs)]` to the crate attributes to enable
 
 error[E0658]: a non-static lifetime is not allowed in a `const`
@@ -148,7 +148,7 @@ error[E0658]: a non-static lifetime is not allowed in a `const`
 LL |     let _: Foo<{ baz::<'b>(&()) }>;
    |                        ^^
    |
-   = note: see issue #76560 <https://github.com/rust-lang/rust/issues/76560> for more information
+   = note: see issue #76560 <https://github.com/crablang/crablang/issues/76560> for more information
    = help: add `#![feature(generic_const_exprs)]` to the crate attributes to enable
 
 error: generic parameters may not be used in const operations
@@ -175,7 +175,7 @@ error[E0658]: a non-static lifetime is not allowed in a `const`
 LL |     let _ = Foo::<{ faz::<'a>(&()) }>;
    |                           ^^
    |
-   = note: see issue #76560 <https://github.com/rust-lang/rust/issues/76560> for more information
+   = note: see issue #76560 <https://github.com/crablang/crablang/issues/76560> for more information
    = help: add `#![feature(generic_const_exprs)]` to the crate attributes to enable
 
 error[E0658]: a non-static lifetime is not allowed in a `const`
@@ -184,7 +184,7 @@ error[E0658]: a non-static lifetime is not allowed in a `const`
 LL |     let _ = Foo::<{ baz::<'a>(&()) }>;
    |                           ^^
    |
-   = note: see issue #76560 <https://github.com/rust-lang/rust/issues/76560> for more information
+   = note: see issue #76560 <https://github.com/crablang/crablang/issues/76560> for more information
    = help: add `#![feature(generic_const_exprs)]` to the crate attributes to enable
 
 error[E0658]: a non-static lifetime is not allowed in a `const`
@@ -193,7 +193,7 @@ error[E0658]: a non-static lifetime is not allowed in a `const`
 LL |     let _ = Foo::<{ faz::<'b>(&()) }>;
    |                           ^^
    |
-   = note: see issue #76560 <https://github.com/rust-lang/rust/issues/76560> for more information
+   = note: see issue #76560 <https://github.com/crablang/crablang/issues/76560> for more information
    = help: add `#![feature(generic_const_exprs)]` to the crate attributes to enable
 
 error[E0658]: a non-static lifetime is not allowed in a `const`
@@ -202,7 +202,7 @@ error[E0658]: a non-static lifetime is not allowed in a `const`
 LL |     let _ = Foo::<{ baz::<'b>(&()) }>;
    |                           ^^
    |
-   = note: see issue #76560 <https://github.com/rust-lang/rust/issues/76560> for more information
+   = note: see issue #76560 <https://github.com/crablang/crablang/issues/76560> for more information
    = help: add `#![feature(generic_const_exprs)]` to the crate attributes to enable
 
 error[E0747]: unresolved item provided when a constant was expected
@@ -356,4 +356,4 @@ LL | const fn faz<'a>(_: &'a ()) -> usize { 13 }
 error: aborting due to 36 previous errors
 
 Some errors have detailed explanations: E0658, E0747, E0794.
-For more information about an error, try `rustc --explain E0658`.
+For more information about an error, try `crablangc --explain E0658`.

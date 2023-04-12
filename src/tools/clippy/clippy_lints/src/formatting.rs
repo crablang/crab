@@ -2,11 +2,11 @@ use clippy_utils::diagnostics::{span_lint_and_help, span_lint_and_note};
 use clippy_utils::is_span_if;
 use clippy_utils::source::snippet_opt;
 use if_chain::if_chain;
-use rustc_ast::ast::{BinOpKind, Block, Expr, ExprKind, StmtKind, UnOp};
-use rustc_lint::{EarlyContext, EarlyLintPass, LintContext};
-use rustc_middle::lint::in_external_macro;
-use rustc_session::{declare_lint_pass, declare_tool_lint};
-use rustc_span::source_map::Span;
+use crablangc_ast::ast::{BinOpKind, Block, Expr, ExprKind, StmtKind, UnOp};
+use crablangc_lint::{EarlyContext, EarlyLintPass, LintContext};
+use crablangc_middle::lint::in_external_macro;
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_span::source_map::Span;
 
 declare_clippy_lint! {
     /// ### What it does
@@ -18,7 +18,7 @@ declare_clippy_lint! {
     /// confusing.
     ///
     /// ### Example
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// a =- 42; // confusing, should it be `a -= 42` or `a = -42`?
     /// ```
     #[clippy::version = "pre 1.29.0"]
@@ -37,7 +37,7 @@ declare_clippy_lint! {
     /// This is either a typo in the binary operator or confusing.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// # let foo = true;
     /// # let bar = false;
     /// // &&! looks like a different operator
@@ -45,7 +45,7 @@ declare_clippy_lint! {
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// # let foo = true;
     /// # let bar = false;
     /// if foo && !bar {}
@@ -66,7 +66,7 @@ declare_clippy_lint! {
     /// code is correct, it might look confusing.
     ///
     /// ### Example
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// if foo {
     /// } { // looks like an `else` is missing here
     /// }
@@ -102,7 +102,7 @@ declare_clippy_lint! {
     /// This could lead to unexpected results.
     ///
     /// ### Example
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// let a = &[
     ///     -1, -2, -3 // <= no comma here
     ///     -4, -5, -6
@@ -210,7 +210,7 @@ fn check_else(cx: &EarlyContext<'_>, expr: &Expr) {
         if !then.span.from_expansion() && !else_.span.from_expansion();
         if !in_external_macro(cx.sess(), expr.span);
 
-        // workaround for rust-lang/rust#43081
+        // workaround for crablang/crablang#43081
         if expr.span.lo().0 != 0 && expr.span.hi().0 != 0;
 
         // this will be a span from the closing ‘}’ of the “then” block (excluding) to

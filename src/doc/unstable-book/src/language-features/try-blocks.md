@@ -2,14 +2,14 @@
 
 The tracking issue for this feature is: [#31436]
 
-[#31436]: https://github.com/rust-lang/rust/issues/31436
+[#31436]: https://github.com/crablang/crablang/issues/31436
 
 ------------------------
 
 The `try_blocks` feature adds support for `try` blocks. A `try`
 block creates a new scope one can use the `?` operator in.
 
-```rust,edition2018
+```crablang,edition2018
 #![feature(try_blocks)]
 
 use std::num::ParseIntError;

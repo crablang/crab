@@ -1,5 +1,5 @@
 //! This module hacks in "implicit deref" for Simd's operators.
-//! Ideally, Rust would take care of this itself,
+//! Ideally, CrabLang would take care of this itself,
 //! and method calls usually handle the LHS implicitly.
 //! But this is not the case with arithmetic ops.
 use super::*;

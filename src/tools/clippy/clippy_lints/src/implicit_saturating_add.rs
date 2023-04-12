@@ -3,12 +3,12 @@ use clippy_utils::diagnostics::span_lint_and_sugg;
 use clippy_utils::get_parent_expr;
 use clippy_utils::source::snippet_with_context;
 use if_chain::if_chain;
-use rustc_ast::ast::{LitIntType, LitKind};
-use rustc_errors::Applicability;
-use rustc_hir::{BinOpKind, Block, Expr, ExprKind, Stmt, StmtKind};
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_middle::ty::{Int, IntTy, Ty, Uint, UintTy};
-use rustc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_ast::ast::{LitIntType, LitKind};
+use crablangc_errors::Applicability;
+use crablangc_hir::{BinOpKind, Block, Expr, ExprKind, Stmt, StmtKind};
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_middle::ty::{Int, IntTy, Ty, Uint, UintTy};
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
 
 declare_clippy_lint! {
     /// ### What it does
@@ -18,7 +18,7 @@ declare_clippy_lint! {
     /// The built-in function is more readable and may be faster.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     ///let mut u:u32 = 7000;
     ///
     /// if u != u32::MAX {
@@ -26,7 +26,7 @@ declare_clippy_lint! {
     /// }
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     ///let mut u:u32 = 7000;
     ///
     /// u = u.saturating_add(1);
@@ -112,7 +112,7 @@ fn get_const<'tcx>(cx: &LateContext<'tcx>, expr: &Expr<'tcx>) -> Option<(u128, B
 }
 
 fn invert_op(op: BinOpKind) -> Option<BinOpKind> {
-    use rustc_hir::BinOpKind::{Ge, Gt, Le, Lt, Ne};
+    use crablangc_hir::BinOpKind::{Ge, Gt, Le, Lt, Ne};
     match op {
         Lt => Some(Gt),
         Le => Some(Ge),

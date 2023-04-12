@@ -10,7 +10,7 @@ pub struct S {
     z: u64,
 }
 
-#[link(name = "rust_test_helpers", kind = "static")]
+#[link(name = "crablang_test_helpers", kind = "static")]
 extern "C" {
     pub fn get_x(x: S) -> u64;
     pub fn get_y(x: S) -> u64;

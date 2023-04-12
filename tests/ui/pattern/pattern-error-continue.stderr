@@ -59,4 +59,4 @@ LL | fn f(_c: char) {}
 error: aborting due to 5 previous errors
 
 Some errors have detailed explanations: E0023, E0308, E0433, E0532.
-For more information about an error, try `rustc --explain E0023`.
+For more information about an error, try `crablangc --explain E0023`.

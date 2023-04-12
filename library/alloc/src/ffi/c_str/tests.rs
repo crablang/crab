@@ -9,7 +9,7 @@ use core::hash::{Hash, Hasher};
 use core::hash::SipHasher13 as DefaultHasher;
 
 #[test]
-fn c_to_rust() {
+fn c_to_crablang() {
     let data = b"123\0";
     let ptr = data.as_ptr() as *const c_char;
     unsafe {

@@ -1,17 +1,17 @@
 // build-fail
 // compile-flags: -Copt-level=0 -Zpolymorphize=on
 
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 
 // This test checks that `T` is considered used in `foo`, because it is used in a predicate for
 // `I`, which is used.
 
-#[rustc_polymorphize_error]
+#[crablangc_polymorphize_error]
 fn bar<I>() {
     //~^ ERROR item has unused generic parameters
 }
 
-#[rustc_polymorphize_error]
+#[crablangc_polymorphize_error]
 fn foo<I, T>(_: I)
 //~^ ERROR item has unused generic parameters
 where
@@ -20,7 +20,7 @@ where
     bar::<I>()
 }
 
-#[rustc_polymorphize_error]
+#[crablangc_polymorphize_error]
 fn baz<I, T>(_: I)
 //~^ ERROR item has unused generic parameters
 where
@@ -40,7 +40,7 @@ where
 {
     type Item = T;
 
-    #[rustc_polymorphize_error]
+    #[crablangc_polymorphize_error]
     fn next(&mut self) -> Option<Self::Item> {
         self.find(|_| true)
         //~^ ERROR item has unused generic parameters
@@ -55,7 +55,7 @@ trait Baz<Z> {}
 impl Baz<u16> for u8 {}
 impl Baz<u32> for u16 {}
 
-#[rustc_polymorphize_error]
+#[crablangc_polymorphize_error]
 fn quux<A, B, C: Default>() -> usize
 //~^ ERROR item has unused generic parameters
 where
@@ -72,7 +72,7 @@ trait Foobar<F, G> {}
 
 impl Foobar<u32, u32> for () {}
 
-#[rustc_polymorphize_error]
+#[crablangc_polymorphize_error]
 fn foobar<F, G>() -> usize
 //~^ ERROR item has unused generic parameters
 where

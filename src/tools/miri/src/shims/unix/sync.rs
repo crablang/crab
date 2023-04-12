@@ -238,7 +238,7 @@ pub trait EvalContextExt<'mir, 'tcx: 'mir>: crate::MiriInterpCxExt<'mir, 'tcx> {
             // `PTHREAD_MUTEX_NORMAL` type has in some cases different behaviour
             // from the default mutex for which the type was not explicitly
             // specified. For a more detailed discussion, please see
-            // https://github.com/rust-lang/miri/issues/1419.
+            // https://github.com/crablang/miri/issues/1419.
             //
             // To distinguish these two cases in already constructed mutexes, we
             // use the same trick as glibc: for the case when
@@ -284,7 +284,7 @@ pub trait EvalContextExt<'mir, 'tcx: 'mir>: crate::MiriInterpCxExt<'mir, 'tcx> {
         //
         // However, the way libstd uses the pthread APIs works in our favor here, so we can get away with this.
         // This can always be revisited to have some external state to catch double-destroys
-        // but not complain about the above code. See https://github.com/rust-lang/miri/pull/1933
+        // but not complain about the above code. See https://github.com/crablang/miri/pull/1933
         this.write_uninit(&this.deref_operand(attr_op)?.into())?;
 
         Ok(0)
@@ -494,7 +494,7 @@ pub trait EvalContextExt<'mir, 'tcx: 'mir>: crate::MiriInterpCxExt<'mir, 'tcx> {
             // Relevant documentation:
             // https://pubs.opengroup.org/onlinepubs/9699919799/functions/pthread_rwlock_wrlock.html
             // An in-depth discussion on this topic:
-            // https://github.com/rust-lang/rust/issues/53127
+            // https://github.com/crablang/crablang/issues/53127
             //
             // FIXME: Detect and report the deadlock proactively. (We currently
             // report the deadlock only when no thread can continue execution,

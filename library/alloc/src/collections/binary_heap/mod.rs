@@ -141,10 +141,10 @@
 //! ```
 
 #![allow(missing_docs)]
-#![stable(feature = "rust1", since = "1.0.0")]
+#![stable(feature = "crablang1", since = "1.0.0")]
 
 use core::fmt;
-use core::iter::{FromIterator, FusedIterator, InPlaceIterable, SourceIter, TrustedLen};
+use core::iter::{FromIterator, FusedIterator, InPlaceIterable, SourceIter, TcrablangedLen};
 use core::mem::{self, swap, ManuallyDrop};
 use core::num::NonZeroUsize;
 use core::ops::{Deref, DerefMut};
@@ -270,8 +270,8 @@ mod tests;
 /// [pop]: BinaryHeap::pop
 /// [peek]: BinaryHeap::peek
 /// [peek\_mut]: BinaryHeap::peek_mut
-#[stable(feature = "rust1", since = "1.0.0")]
-#[cfg_attr(not(test), rustc_diagnostic_item = "BinaryHeap")]
+#[stable(feature = "crablang1", since = "1.0.0")]
+#[cfg_attr(not(test), crablangc_diagnostic_item = "BinaryHeap")]
 pub struct BinaryHeap<T> {
     data: Vec<T>,
 }
@@ -371,7 +371,7 @@ impl<'a, T: Ord> PeekMut<'a, T> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: Clone> Clone for BinaryHeap<T> {
     fn clone(&self) -> Self {
         BinaryHeap { data: self.data.clone() }
@@ -382,7 +382,7 @@ impl<T: Clone> Clone for BinaryHeap<T> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: Ord> Default for BinaryHeap<T> {
     /// Creates an empty `BinaryHeap<T>`.
     #[inline]
@@ -421,7 +421,7 @@ impl<T: Ord> BinaryHeap<T> {
     /// let mut heap = BinaryHeap::new();
     /// heap.push(4);
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[must_use]
     pub fn new() -> BinaryHeap<T> {
         BinaryHeap { data: vec![] }
@@ -442,7 +442,7 @@ impl<T: Ord> BinaryHeap<T> {
     /// let mut heap = BinaryHeap::with_capacity(10);
     /// heap.push(4);
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[must_use]
     pub fn with_capacity(capacity: usize) -> BinaryHeap<T> {
         BinaryHeap { data: Vec::with_capacity(capacity) }
@@ -502,7 +502,7 @@ impl<T: Ord> BinaryHeap<T> {
     /// # Time complexity
     ///
     /// The worst case cost of `pop` on a heap containing *n* elements is *O*(log(*n*)).
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn pop(&mut self) -> Option<T> {
         self.data.pop().map(|mut item| {
             if !self.is_empty() {
@@ -546,7 +546,7 @@ impl<T: Ord> BinaryHeap<T> {
     /// The worst case cost of a *single* call to `push` is *O*(*n*). The worst case
     /// occurs when capacity is exhausted and needs a resize. The resize cost
     /// has been amortized in the previous figures.
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn push(&mut self, item: T) {
         let old_len = self.len();
         self.data.push(item);
@@ -854,7 +854,7 @@ impl<T: Ord> BinaryHeap<T> {
     ///
     /// assert_eq!(heap.into_sorted_vec(), [-10, 2, 4])
     /// ```
-    #[stable(feature = "binary_heap_retain", since = "CURRENT_RUSTC_VERSION")]
+    #[stable(feature = "binary_heap_retain", since = "CURRENT_CRABLANGC_VERSION")]
     pub fn retain<F>(&mut self, mut f: F)
     where
         F: FnMut(&T) -> bool,
@@ -892,7 +892,7 @@ impl<T> BinaryHeap<T> {
     ///     println!("{x}");
     /// }
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn iter(&self) -> Iter<'_, T> {
         Iter { iter: self.data.iter() }
     }
@@ -938,7 +938,7 @@ impl<T> BinaryHeap<T> {
     ///
     /// Cost is *O*(1) in the worst case.
     #[must_use]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn peek(&self) -> Option<&T> {
         self.data.get(0)
     }
@@ -956,7 +956,7 @@ impl<T> BinaryHeap<T> {
     /// heap.push(4);
     /// ```
     #[must_use]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn capacity(&self) -> usize {
         self.data.capacity()
     }
@@ -987,7 +987,7 @@ impl<T> BinaryHeap<T> {
     /// ```
     ///
     /// [`reserve`]: BinaryHeap::reserve
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn reserve_exact(&mut self, additional: usize) {
         self.data.reserve_exact(additional);
     }
@@ -1013,7 +1013,7 @@ impl<T> BinaryHeap<T> {
     /// assert!(heap.capacity() >= 100);
     /// heap.push(4);
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn reserve(&mut self, additional: usize) {
         self.data.reserve(additional);
     }
@@ -1110,7 +1110,7 @@ impl<T> BinaryHeap<T> {
     /// heap.shrink_to_fit();
     /// assert!(heap.capacity() == 0);
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn shrink_to_fit(&mut self) {
         self.data.shrink_to_fit();
     }
@@ -1196,7 +1196,7 @@ impl<T> BinaryHeap<T> {
     /// assert_eq!(heap.len(), 2);
     /// ```
     #[must_use]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn len(&self) -> usize {
         self.data.len()
     }
@@ -1220,7 +1220,7 @@ impl<T> BinaryHeap<T> {
     /// assert!(!heap.is_empty());
     /// ```
     #[must_use]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn is_empty(&self) -> bool {
         self.len() == 0
     }
@@ -1270,7 +1270,7 @@ impl<T> BinaryHeap<T> {
     ///
     /// assert!(heap.is_empty());
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn clear(&mut self) {
         self.drain();
     }
@@ -1354,7 +1354,7 @@ impl<T> Drop for Hole<'_, T> {
 ///
 /// [`iter`]: BinaryHeap::iter
 #[must_use = "iterators are lazy and do nothing unless consumed"]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub struct Iter<'a, T: 'a> {
     iter: slice::Iter<'a, T>,
 }
@@ -1367,14 +1367,14 @@ impl<T: fmt::Debug> fmt::Debug for Iter<'_, T> {
 }
 
 // FIXME(#26925) Remove in favor of `#[derive(Clone)]`
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T> Clone for Iter<'_, T> {
     fn clone(&self) -> Self {
         Iter { iter: self.iter.clone() }
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<'a, T> Iterator for Iter<'a, T> {
     type Item = &'a T;
 
@@ -1394,7 +1394,7 @@ impl<'a, T> Iterator for Iter<'a, T> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<'a, T> DoubleEndedIterator for Iter<'a, T> {
     #[inline]
     fn next_back(&mut self) -> Option<&'a T> {
@@ -1402,7 +1402,7 @@ impl<'a, T> DoubleEndedIterator for Iter<'a, T> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T> ExactSizeIterator for Iter<'_, T> {
     fn is_empty(&self) -> bool {
         self.iter.is_empty()
@@ -1419,7 +1419,7 @@ impl<T> FusedIterator for Iter<'_, T> {}
 ///
 /// [`into_iter`]: BinaryHeap::into_iter
 /// [`IntoIterator`]: core::iter::IntoIterator
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[derive(Clone)]
 pub struct IntoIter<T> {
     iter: vec::IntoIter<T>,
@@ -1432,7 +1432,7 @@ impl<T: fmt::Debug> fmt::Debug for IntoIter<T> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T> Iterator for IntoIter<T> {
     type Item = T;
 
@@ -1447,7 +1447,7 @@ impl<T> Iterator for IntoIter<T> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T> DoubleEndedIterator for IntoIter<T> {
     #[inline]
     fn next_back(&mut self) -> Option<T> {
@@ -1455,7 +1455,7 @@ impl<T> DoubleEndedIterator for IntoIter<T> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T> ExactSizeIterator for IntoIter<T> {
     fn is_empty(&self) -> bool {
         self.iter.is_empty()
@@ -1465,7 +1465,7 @@ impl<T> ExactSizeIterator for IntoIter<T> {
 #[stable(feature = "fused", since = "1.26.0")]
 impl<T> FusedIterator for IntoIter<T> {}
 
-#[stable(feature = "default_iters", since = "CURRENT_RUSTC_VERSION")]
+#[stable(feature = "default_iters", since = "CURRENT_CRABLANGC_VERSION")]
 impl<T> Default for IntoIter<T> {
     /// Creates an empty `binary_heap::IntoIter`.
     ///
@@ -1533,8 +1533,8 @@ impl<T: Ord> ExactSizeIterator for IntoIterSorted<T> {}
 #[unstable(feature = "binary_heap_into_iter_sorted", issue = "59278")]
 impl<T: Ord> FusedIterator for IntoIterSorted<T> {}
 
-#[unstable(feature = "trusted_len", issue = "37572")]
-unsafe impl<T: Ord> TrustedLen for IntoIterSorted<T> {}
+#[unstable(feature = "tcrablanged_len", issue = "37572")]
+unsafe impl<T: Ord> TcrablangedLen for IntoIterSorted<T> {}
 
 /// A draining iterator over the elements of a `BinaryHeap`.
 ///
@@ -1635,8 +1635,8 @@ impl<T: Ord> ExactSizeIterator for DrainSorted<'_, T> {}
 #[unstable(feature = "binary_heap_drain_sorted", issue = "59278")]
 impl<T: Ord> FusedIterator for DrainSorted<'_, T> {}
 
-#[unstable(feature = "trusted_len", issue = "37572")]
-unsafe impl<T: Ord> TrustedLen for DrainSorted<'_, T> {}
+#[unstable(feature = "tcrablanged_len", issue = "37572")]
+unsafe impl<T: Ord> TcrablangedLen for DrainSorted<'_, T> {}
 
 #[stable(feature = "binary_heap_extras_15", since = "1.5.0")]
 impl<T: Ord> From<Vec<T>> for BinaryHeap<T> {
@@ -1677,14 +1677,14 @@ impl<T> From<BinaryHeap<T>> for Vec<T> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: Ord> FromIterator<T> for BinaryHeap<T> {
     fn from_iter<I: IntoIterator<Item = T>>(iter: I) -> BinaryHeap<T> {
         BinaryHeap::from(iter.into_iter().collect::<Vec<_>>())
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T> IntoIterator for BinaryHeap<T> {
     type Item = T;
     type IntoIter = IntoIter<T>;
@@ -1712,7 +1712,7 @@ impl<T> IntoIterator for BinaryHeap<T> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<'a, T> IntoIterator for &'a BinaryHeap<T> {
     type Item = &'a T;
     type IntoIter = Iter<'a, T>;
@@ -1722,7 +1722,7 @@ impl<'a, T> IntoIterator for &'a BinaryHeap<T> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: Ord> Extend<T> for BinaryHeap<T> {
     #[inline]
     fn extend<I: IntoIterator<Item = T>>(&mut self, iter: I) {

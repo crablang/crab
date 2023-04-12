@@ -3,9 +3,9 @@ FROM ubuntu:20.04
 COPY scripts/cross-apt-packages.sh /scripts/
 RUN sh /scripts/cross-apt-packages.sh
 
-COPY scripts/rustbuild-setup.sh /scripts/
-RUN sh /scripts/rustbuild-setup.sh
-USER rustbuild
+COPY scripts/crablangbuild-setup.sh /scripts/
+RUN sh /scripts/crablangbuild-setup.sh
+USER crablangbuild
 WORKDIR /tmp
 
 USER root
@@ -24,5 +24,5 @@ ENV \
 
 ENV HOSTS=powerpc64le-unknown-linux-gnu
 
-ENV RUST_CONFIGURE_ARGS --enable-extended --enable-profiler --disable-docs
+ENV CRABLANG_CONFIGURE_ARGS --enable-extended --enable-profiler --disable-docs
 ENV SCRIPT python3 ../x.py dist --host $HOSTS --target $HOSTS

@@ -84,4 +84,4 @@ LL | }
 error: aborting due to 6 previous errors
 
 Some errors have detailed explanations: E0505, E0597.
-For more information about an error, try `rustc --explain E0505`.
+For more information about an error, try `crablangc --explain E0505`.

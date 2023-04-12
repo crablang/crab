@@ -318,11 +318,11 @@ impl Error for VarError {
 /// Sets the environment variable `key` to the value `value` for the currently running
 /// process.
 ///
-/// Note that while concurrent access to environment variables is safe in Rust,
+/// Note that while concurrent access to environment variables is safe in CrabLang,
 /// some platforms only expose inherently unsafe non-threadsafe APIs for
 /// inspecting the environment. As a result, extra care needs to be taken when
 /// auditing calls to unsafe external FFI functions to ensure that any external
-/// environment accesses are properly synchronized with accesses in Rust.
+/// environment accesses are properly synchronized with accesses in CrabLang.
 ///
 /// Discussion of this unsafety on Unix may be found in:
 ///
@@ -356,11 +356,11 @@ fn _set_var(key: &OsStr, value: &OsStr) {
 
 /// Removes an environment variable from the environment of the currently running process.
 ///
-/// Note that while concurrent access to environment variables is safe in Rust,
+/// Note that while concurrent access to environment variables is safe in CrabLang,
 /// some platforms only expose inherently unsafe non-threadsafe APIs for
 /// inspecting the environment. As a result extra care needs to be taken when
 /// auditing calls to unsafe external FFI functions to ensure that any external
-/// environment accesses are properly synchronized with accesses in Rust.
+/// environment accesses are properly synchronized with accesses in CrabLang.
 ///
 /// Discussion of this unsafety on Unix may be found in:
 ///
@@ -654,7 +654,7 @@ pub fn temp_dir() -> PathBuf {
 ///
 /// # Security
 ///
-/// The output of this function should not be trusted for anything
+/// The output of this function should not be tcrablanged for anything
 /// that might have security implications. Basically, if users can run
 /// the executable, they can change the output arbitrarily.
 ///

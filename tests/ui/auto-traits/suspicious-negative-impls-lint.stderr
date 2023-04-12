@@ -5,7 +5,7 @@ LL | impl !Send for ContainsVec<u32> {}
    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
    |
    = warning: this will change its meaning in a future release!
-   = note: for more information, see issue #93367 <https://github.com/rust-lang/rust/issues/93367>
+   = note: for more information, see issue #93367 <https://github.com/crablang/crablang/issues/93367>
    = note: `u32` is not a generic parameter
 note: try using the same sequence of generic parameters as the struct definition
   --> $DIR/suspicious-negative-impls-lint.rs:6:1
@@ -25,7 +25,7 @@ LL | impl<T> !Send for WithPhantomDataSend<*const T, u8> {}
    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
    |
    = warning: this will change its meaning in a future release!
-   = note: for more information, see issue #93367 <https://github.com/rust-lang/rust/issues/93367>
+   = note: for more information, see issue #93367 <https://github.com/crablang/crablang/issues/93367>
    = note: `*const T` is not a generic parameter
 note: try using the same sequence of generic parameters as the struct definition
   --> $DIR/suspicious-negative-impls-lint.rs:11:1
@@ -40,7 +40,7 @@ LL | impl<T> !Sync for WithLifetime<'static, Option<T>> {}
    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
    |
    = warning: this will change its meaning in a future release!
-   = note: for more information, see issue #93367 <https://github.com/rust-lang/rust/issues/93367>
+   = note: for more information, see issue #93367 <https://github.com/crablang/crablang/issues/93367>
    = note: `Option<T>` is not a generic parameter
 note: try using the same sequence of generic parameters as the struct definition
   --> $DIR/suspicious-negative-impls-lint.rs:16:1

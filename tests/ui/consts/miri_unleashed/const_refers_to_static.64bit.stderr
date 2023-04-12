@@ -22,7 +22,7 @@ error[E0080]: it is undefined behavior to use this value
 LL | const REF_INTERIOR_MUT: &usize = {
    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ constructing invalid value: encountered a reference pointing to a static variable in a constant
    |
-   = note: The rules on what exactly is undefined behavior aren't clear, so this check might be overzealous. Please open an issue on the rustc repository if you believe it should not be considered undefined behavior.
+   = note: The rules on what exactly is undefined behavior aren't clear, so this check might be overzealous. Please open an issue on the crablangc repository if you believe it should not be considered undefined behavior.
    = note: the raw bytes of the constant (size: 8, align: 8) {
                ╾───────alloc4────────╼                         │ ╾──────╼
            }
@@ -33,7 +33,7 @@ error[E0080]: it is undefined behavior to use this value
 LL | const READ_IMMUT: &usize = {
    | ^^^^^^^^^^^^^^^^^^^^^^^^ constructing invalid value: encountered a reference pointing to a static variable in a constant
    |
-   = note: The rules on what exactly is undefined behavior aren't clear, so this check might be overzealous. Please open an issue on the rustc repository if you believe it should not be considered undefined behavior.
+   = note: The rules on what exactly is undefined behavior aren't clear, so this check might be overzealous. Please open an issue on the crablangc repository if you believe it should not be considered undefined behavior.
    = note: the raw bytes of the constant (size: 8, align: 8) {
                ╾───────alloc5────────╼                         │ ╾──────╼
            }
@@ -78,4 +78,4 @@ LL |     &FOO
 
 error: aborting due to 5 previous errors; 1 warning emitted
 
-For more information about this error, try `rustc --explain E0080`.
+For more information about this error, try `crablangc --explain E0080`.

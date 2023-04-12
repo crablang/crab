@@ -1,7 +1,7 @@
 PRINT-DERIVE INPUT (DISPLAY): struct Foo
 {
     field :
-    [bool ; { #[rustc_dummy] struct Inner { other_inner_field : u8, } 0 }]
+    [bool ; { #[crablangc_dummy] struct Inner { other_inner_field : u8, } 0 }]
 }
 PRINT-DERIVE INPUT (DEBUG): TokenStream [
     Ident {
@@ -48,7 +48,7 @@ PRINT-DERIVE INPUT (DEBUG): TokenStream [
                                 delimiter: Bracket,
                                 stream: TokenStream [
                                     Ident {
-                                        ident: "rustc_dummy",
+                                        ident: "crablangc_dummy",
                                         span: $DIR/expand-to-derive.rs:27:28: 27:39 (#0),
                                     },
                                 ],

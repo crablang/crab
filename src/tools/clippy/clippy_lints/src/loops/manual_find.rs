@@ -5,12 +5,12 @@ use clippy_utils::{
     source::snippet_with_applicability, ty::implements_trait,
 };
 use if_chain::if_chain;
-use rustc_errors::Applicability;
-use rustc_hir::{
+use crablangc_errors::Applicability;
+use crablangc_hir::{
     def::Res, lang_items::LangItem, BindingAnnotation, Block, Expr, ExprKind, HirId, Node, Pat, PatKind, Stmt, StmtKind,
 };
-use rustc_lint::LateContext;
-use rustc_span::source_map::Span;
+use crablangc_lint::LateContext;
+use crablangc_span::source_map::Span;
 
 pub(super) fn check<'tcx>(
     cx: &LateContext<'tcx>,

@@ -41,4 +41,4 @@ LL |     fn foo<const N: usize>(&self) -> Self::B<{N}>;
 error: aborting due to 5 previous errors
 
 Some errors have detailed explanations: E0183, E0220, E0229, E0407.
-For more information about an error, try `rustc --explain E0183`.
+For more information about an error, try `crablangc --explain E0183`.

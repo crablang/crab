@@ -10,13 +10,13 @@ include ../tools.mk
 
 all:
 	mkdir $(TMPDIR)/other
-	$(RUSTC) foo.rs --crate-type=dylib -C prefer-dynamic
+	$(CRABLANGC) foo.rs --crate-type=dylib -C prefer-dynamic
 	mv $(call DYLIB,foo) $(TMPDIR)/other
-	$(RUSTC) foo.rs --crate-type=dylib -C prefer-dynamic
-	$(RUSTC) bar.rs -L $(TMPDIR)/other
+	$(CRABLANGC) foo.rs --crate-type=dylib -C prefer-dynamic
+	$(CRABLANGC) bar.rs -L $(TMPDIR)/other
 	rm -rf $(TMPDIR)
 	mkdir -p $(TMPDIR)/other
-	$(RUSTC) foo.rs --crate-type=rlib
+	$(CRABLANGC) foo.rs --crate-type=rlib
 	mv $(TMPDIR)/libfoo.rlib $(TMPDIR)/other
-	$(RUSTC) foo.rs --crate-type=rlib
-	$(RUSTC) bar.rs -L $(TMPDIR)/other
+	$(CRABLANGC) foo.rs --crate-type=rlib
+	$(CRABLANGC) bar.rs -L $(TMPDIR)/other

@@ -12,4 +12,4 @@ LL |     let sqsum = get_slice().map(|i| i * i).sum();
 
 error: aborting due to previous error
 
-For more information about this error, try `rustc --explain E0599`.
+For more information about this error, try `crablangc --explain E0599`.

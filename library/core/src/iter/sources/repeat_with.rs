@@ -1,5 +1,5 @@
 use crate::fmt;
-use crate::iter::{FusedIterator, TrustedLen};
+use crate::iter::{FusedIterator, TcrablangedLen};
 use crate::ops::Try;
 
 /// Creates a new iterator that repeats elements of type `A` endlessly by
@@ -45,7 +45,7 @@ use crate::ops::Try;
 ///
 /// Using mutation and going finite:
 ///
-/// ```rust
+/// ```crablang
 /// use std::iter;
 ///
 /// // From the zeroth to the third power of two:
@@ -119,5 +119,5 @@ impl<A, F: FnMut() -> A> Iterator for RepeatWith<F> {
 #[stable(feature = "iterator_repeat_with", since = "1.28.0")]
 impl<A, F: FnMut() -> A> FusedIterator for RepeatWith<F> {}
 
-#[unstable(feature = "trusted_len", issue = "37572")]
-unsafe impl<A, F: FnMut() -> A> TrustedLen for RepeatWith<F> {}
+#[unstable(feature = "tcrablanged_len", issue = "37572")]
+unsafe impl<A, F: FnMut() -> A> TcrablangedLen for RepeatWith<F> {}

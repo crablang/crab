@@ -6,12 +6,12 @@ use clippy_utils::ty::implements_trait;
 use clippy_utils::visitors::{for_each_expr, Descend};
 use core::ops::ControlFlow;
 use if_chain::if_chain;
-use rustc_errors::Applicability;
-use rustc_hir::{BlockCheckMode, Expr, ExprKind};
-use rustc_lint::{LateContext, LateLintPass, LintContext};
-use rustc_middle::lint::in_external_macro;
-use rustc_session::{declare_lint_pass, declare_tool_lint};
-use rustc_span::sym;
+use crablangc_errors::Applicability;
+use crablangc_hir::{BlockCheckMode, Expr, ExprKind};
+use crablangc_lint::{LateContext, LateLintPass, LintContext};
+use crablangc_middle::lint::in_external_macro;
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_span::sym;
 
 declare_clippy_lint! {
     /// ### What it does
@@ -22,7 +22,7 @@ declare_clippy_lint! {
     /// Style, using blocks in the condition makes it hard to read.
     ///
     /// ### Examples
-    /// ```rust
+    /// ```crablang
     /// # fn somefunc() -> bool { true };
     /// if { true } { /* ... */ }
     ///
@@ -30,7 +30,7 @@ declare_clippy_lint! {
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// # fn somefunc() -> bool { true };
     /// if true { /* ... */ }
     ///

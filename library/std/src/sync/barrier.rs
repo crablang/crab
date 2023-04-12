@@ -30,7 +30,7 @@ use crate::sync::{Condvar, Mutex};
 ///     handle.join().unwrap();
 /// }
 /// ```
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub struct Barrier {
     lock: Mutex<BarrierState>,
     cvar: Condvar,
@@ -54,7 +54,7 @@ struct BarrierState {
 /// let barrier = Barrier::new(1);
 /// let barrier_wait_result = barrier.wait();
 /// ```
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub struct BarrierWaitResult(bool);
 
 #[stable(feature = "std_debug", since = "1.16.0")]
@@ -79,7 +79,7 @@ impl Barrier {
     ///
     /// let barrier = Barrier::new(10);
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[must_use]
     pub fn new(n: usize) -> Barrier {
         Barrier {
@@ -122,7 +122,7 @@ impl Barrier {
     ///     handle.join().unwrap();
     /// }
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn wait(&self) -> BarrierWaitResult {
         let mut lock = self.lock.lock().unwrap();
         let local_gen = lock.generation_id;
@@ -166,7 +166,7 @@ impl BarrierWaitResult {
     /// let barrier_wait_result = barrier.wait();
     /// println!("{:?}", barrier_wait_result.is_leader());
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[must_use]
     pub fn is_leader(&self) -> bool {
         self.0

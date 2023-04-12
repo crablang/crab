@@ -1,5 +1,5 @@
 // check-pass
-// run-rustfix
+// run-crablangfix
 
 #![warn(ellipsis_inclusive_range_patterns)]
 

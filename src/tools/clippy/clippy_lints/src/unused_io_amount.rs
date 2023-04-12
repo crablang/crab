@@ -1,9 +1,9 @@
 use clippy_utils::diagnostics::{span_lint, span_lint_and_help};
 use clippy_utils::{is_trait_method, is_try, match_trait_method, paths};
-use rustc_hir as hir;
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_session::{declare_lint_pass, declare_tool_lint};
-use rustc_span::sym;
+use crablangc_hir as hir;
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_span::sym;
 
 declare_clippy_lint! {
     /// ### What it does
@@ -29,7 +29,7 @@ declare_clippy_lint! {
     /// Detects only common patterns.
     ///
     /// ### Examples
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// use std::io;
     /// fn foo<W: io::Write>(w: &mut W) -> io::Result<()> {
     ///     // must be `w.write_all(b"foo")?;`

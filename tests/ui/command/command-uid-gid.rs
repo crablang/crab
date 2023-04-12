@@ -4,7 +4,7 @@
 // ignore-sgx
 // ignore-fuchsia no '/bin/sh', '/bin/ls'
 
-#![feature(rustc_private)]
+#![feature(crablangc_private)]
 
 fn main() {
     #[cfg(unix)]

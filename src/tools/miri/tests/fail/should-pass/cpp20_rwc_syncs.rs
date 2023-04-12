@@ -2,7 +2,7 @@
 
 // https://plv.mpi-sws.org/scfix/paper.pdf
 // 2.2 Second Problem: SC Fences are Too Weak
-// This test should pass under the C++20 model Rust is using.
+// This test should pass under the C++20 model CrabLang is using.
 // Unfortunately, Miri's weak memory emulation only follows the C++11 model
 // as we don't know how to correctly emulate C++20's revised SC semantics,
 // so we have to stick to C++11 emulation from existing research.
@@ -24,7 +24,7 @@ fn reads_value(loc: &AtomicUsize, val: usize) -> usize {
 fn static_atomic(val: usize) -> &'static AtomicUsize {
     let ret = Box::leak(Box::new(AtomicUsize::new(val)));
     // A workaround to put the initialization value in the store buffer.
-    // See https://github.com/rust-lang/miri/issues/2164
+    // See https://github.com/crablang/miri/issues/2164
     ret.load(Relaxed);
     ret
 }

@@ -5,12 +5,12 @@
 //    [v0]compile-flags: -C symbol-mangling-version=v0
 //[legacy]normalize-stderr-test: "h[[:xdigit:]]{16}" -> "h[HASH]"
 //    [v0]normalize-stderr-test: "c\[.*?\]" -> "c[HASH]"
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 
 pub struct Unsigned<const F: u8>;
 
 impl Unsigned<11> {
-    #[rustc_symbol_name]
+    #[crablangc_symbol_name]
     //[v0]~^ ERROR symbol-name(_RNvMCs
     //[v0]~| ERROR demangling(<c[
     //[v0]~| ERROR demangling-alt(<c::Unsigned<11>>::f)
@@ -23,7 +23,7 @@ impl Unsigned<11> {
 pub struct Signed<const F: i16>;
 
 impl Signed<-152> {
-    #[rustc_symbol_name]
+    #[crablangc_symbol_name]
     //[v0]~^ ERROR symbol-name(_RNvMs_Cs
     //[v0]~| ERROR demangling(<c[
     //[v0]~| ERROR demangling-alt(<c::Signed<-152>>::f)
@@ -36,7 +36,7 @@ impl Signed<-152> {
 pub struct Bool<const F: bool>;
 
 impl Bool<true> {
-    #[rustc_symbol_name]
+    #[crablangc_symbol_name]
     //[v0]~^ ERROR symbol-name(_RNvMs0_Cs
     //[v0]~| ERROR demangling(<c[
     //[v0]~| ERROR demangling-alt(<c::Bool<true>>::f)
@@ -49,7 +49,7 @@ impl Bool<true> {
 pub struct Char<const F: char>;
 
 impl Char<'∂'> {
-    #[rustc_symbol_name]
+    #[crablangc_symbol_name]
     //[v0]~^ ERROR symbol-name(_RNvMs1_Cs
     //[v0]~| ERROR demangling(<c[
     //[v0]~| ERROR demangling-alt(<c::Char<'∂'>>::f)

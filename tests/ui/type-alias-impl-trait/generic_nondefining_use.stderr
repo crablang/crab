@@ -27,4 +27,4 @@ LL |     7u32
 
 error: aborting due to 3 previous errors
 
-For more information about this error, try `rustc --explain E0792`.
+For more information about this error, try `crablangc --explain E0792`.

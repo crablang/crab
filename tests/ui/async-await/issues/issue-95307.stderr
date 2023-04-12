@@ -8,7 +8,7 @@ LL |     async fn new() -> [u8; _];
    |
    = note: `async` trait functions are not currently supported
    = note: consider using the `async-trait` crate: https://crates.io/crates/async-trait
-   = note: see issue #91611 <https://github.com/rust-lang/rust/issues/91611> for more information
+   = note: see issue #91611 <https://github.com/crablang/crablang/issues/91611> for more information
    = help: add `#![feature(async_fn_in_trait)]` to the crate attributes to enable
 
 error: in expressions, `_` can only be used on the left-hand side of an assignment
@@ -23,10 +23,10 @@ error[E0658]: using `_` for array lengths is unstable
 LL |     async fn new() -> [u8; _];
    |                            ^
    |
-   = note: see issue #85077 <https://github.com/rust-lang/rust/issues/85077> for more information
+   = note: see issue #85077 <https://github.com/crablang/crablang/issues/85077> for more information
    = help: add `#![feature(generic_arg_infer)]` to the crate attributes to enable
 
 error: aborting due to 3 previous errors
 
 Some errors have detailed explanations: E0658, E0706.
-For more information about an error, try `rustc --explain E0658`.
+For more information about an error, try `crablangc --explain E0658`.

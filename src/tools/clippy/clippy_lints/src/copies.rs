@@ -8,16 +8,16 @@ use clippy_utils::{
 };
 use core::iter;
 use core::ops::ControlFlow;
-use rustc_errors::Applicability;
-use rustc_hir::def_id::DefIdSet;
-use rustc_hir::intravisit;
-use rustc_hir::{BinOpKind, Block, Expr, ExprKind, HirId, HirIdSet, Stmt, StmtKind};
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_middle::query::Key;
-use rustc_session::{declare_tool_lint, impl_lint_pass};
-use rustc_span::hygiene::walk_chain;
-use rustc_span::source_map::SourceMap;
-use rustc_span::{BytePos, Span, Symbol};
+use crablangc_errors::Applicability;
+use crablangc_hir::def_id::DefIdSet;
+use crablangc_hir::intravisit;
+use crablangc_hir::{BinOpKind, Block, Expr, ExprKind, HirId, HirIdSet, Stmt, StmtKind};
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_middle::query::Key;
+use crablangc_session::{declare_tool_lint, impl_lint_pass};
+use crablangc_span::hygiene::walk_chain;
+use crablangc_span::source_map::SourceMap;
+use crablangc_span::{BytePos, Span, Symbol};
 use std::borrow::Cow;
 
 declare_clippy_lint! {
@@ -133,7 +133,7 @@ declare_clippy_lint! {
     /// ### Known problems
     /// * The lint doesn't check if the moved expressions modify values that are being used in
     ///   the if condition. The suggestion can in that case modify the behavior of the program.
-    ///   See [rust-clippy#7452](https://github.com/rust-lang/rust-clippy/issues/7452)
+    ///   See [crablang-clippy#7452](https://github.com/crablang/crablang-clippy/issues/7452)
     ///
     /// ### Example
     /// ```ignore
@@ -272,7 +272,7 @@ fn lint_branches_sharing_code<'tcx>(
         let suggestion = reindent_multiline(Cow::Borrowed(&suggestion), true, indent);
 
         let span = span.with_hi(last_block.span.hi());
-        // Improve formatting if the inner block has indention (i.e. normal Rust formatting)
+        // Improve formatting if the inner block has indention (i.e. normal CrabLang formatting)
         let test_span = Span::new(span.lo() - BytePos(4), span.lo(), span.ctxt(), span.parent());
         let span = if snippet_opt(cx, test_span).map_or(false, |snip| snip == "    ") {
             span.with_lo(test_span.lo())

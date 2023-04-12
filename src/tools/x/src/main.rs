@@ -1,4 +1,4 @@
-//! Run bootstrap from any subdirectory of a rust compiler checkout.
+//! Run bootstrap from any subdirectory of a crablang compiler checkout.
 //!
 //! We prefer `exec`, to avoid adding an extra process in the process tree.
 //! However, since `exec` isn't available on Windows, we indirect through
@@ -134,7 +134,7 @@ fn main() {
     }
 
     eprintln!(
-        "x.py not found. Please run inside of a checkout of `https://github.com/rust-lang/rust`."
+        "x.py not found. Please run inside of a checkout of `https://github.com/crablang/crablang`."
     );
 
     process::exit(1);

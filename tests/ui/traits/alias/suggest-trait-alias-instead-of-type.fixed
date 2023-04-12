@@ -1,6 +1,6 @@
 // Regression test of #43913.
 
-// run-rustfix
+// run-crablangfix
 
 #![feature(trait_alias)]
 #![allow(bare_trait_objects, dead_code)]

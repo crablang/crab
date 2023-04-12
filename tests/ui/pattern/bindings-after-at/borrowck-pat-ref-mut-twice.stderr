@@ -316,4 +316,4 @@ LL |     fn f4_also_moved(ref mut a @ ref mut b @ c: U) {}
 error: aborting due to 31 previous errors
 
 Some errors have detailed explanations: E0382, E0499.
-For more information about an error, try `rustc --explain E0382`.
+For more information about an error, try `crablangc --explain E0382`.

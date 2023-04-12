@@ -1,0 +1,30 @@
+[package]
+name = "crablangc_hir_analysis"
+version = "0.0.0"
+edition = "2021"
+
+[lib]
+test = false
+doctest = false
+
+[dependencies]
+crablangc_arena = { path = "../crablangc_arena" }
+crablangc_macros = { path = "../crablangc_macros" }
+crablangc_middle = { path = "../crablangc_middle" }
+crablangc_attr = { path = "../crablangc_attr" }
+crablangc_data_structures = { path = "../crablangc_data_structures" }
+crablangc_errors = { path = "../crablangc_errors" }
+crablangc_hir = { path = "../crablangc_hir" }
+crablangc_target = { path = "../crablangc_target" }
+crablangc_session = { path = "../crablangc_session" }
+smallvec = { version = "1.8.1", features = ["union", "may_dangle"] }
+crablangc_ast = { path = "../crablangc_ast" }
+crablangc_span = { path = "../crablangc_span" }
+crablangc_index = { path = "../crablangc_index" }
+crablangc_infer = { path = "../crablangc_infer" }
+crablangc_trait_selection = { path = "../crablangc_trait_selection" }
+crablangc_lint = { path = "../crablangc_lint" }
+crablangc_type_ir = { path = "../crablangc_type_ir" }
+crablangc_feature = { path = "../crablangc_feature" }
+thin-vec = "0.2.12"
+tracing = "0.1"

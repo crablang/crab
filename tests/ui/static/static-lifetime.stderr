@@ -13,4 +13,4 @@ LL | impl<'a, A: Clone> Arbitrary for ::std::borrow::Cow<'a, A> {}
 
 error: aborting due to previous error
 
-For more information about this error, try `rustc --explain E0478`.
+For more information about this error, try `crablangc --explain E0478`.

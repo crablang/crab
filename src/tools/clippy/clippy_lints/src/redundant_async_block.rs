@@ -1,9 +1,9 @@
 use clippy_utils::{diagnostics::span_lint_and_sugg, source::snippet};
-use rustc_ast::ast::{Expr, ExprKind, Stmt, StmtKind};
-use rustc_ast::visit::Visitor as AstVisitor;
-use rustc_errors::Applicability;
-use rustc_lint::{EarlyContext, EarlyLintPass};
-use rustc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_ast::ast::{Expr, ExprKind, Stmt, StmtKind};
+use crablangc_ast::visit::Visitor as AstVisitor;
+use crablangc_errors::Applicability;
+use crablangc_lint::{EarlyContext, EarlyLintPass};
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
 
 declare_clippy_lint! {
     /// ### What it does
@@ -13,7 +13,7 @@ declare_clippy_lint! {
     /// It is simpler and more efficient to use the future directly.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// async fn f() -> i32 {
     ///     1 + 2
     /// }
@@ -23,7 +23,7 @@ declare_clippy_lint! {
     /// };
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// async fn f() -> i32 {
     ///     1 + 2
     /// }
@@ -82,7 +82,7 @@ impl<'ast> AstVisitor<'ast> for AwaitDetector {
     fn visit_expr(&mut self, ex: &'ast Expr) {
         match (&ex.kind, self.await_found) {
             (ExprKind::Await(_), _) => self.await_found = true,
-            (_, false) => rustc_ast::visit::walk_expr(self, ex),
+            (_, false) => crablangc_ast::visit::walk_expr(self, ex),
             _ => (),
         }
     }
@@ -112,7 +112,7 @@ impl<'ast> AstVisitor<'ast> for CaptureDetector {
         match (&ex.kind, self.capture_found) {
             (ExprKind::Await(fut), _) if matches!(fut.kind, ExprKind::Path(..)) => (),
             (ExprKind::Path(_, path), _) if path.segments.len() == 1 => self.capture_found = true,
-            (_, false) => rustc_ast::visit::walk_expr(self, ex),
+            (_, false) => crablangc_ast::visit::walk_expr(self, ex),
             _ => (),
         }
     }

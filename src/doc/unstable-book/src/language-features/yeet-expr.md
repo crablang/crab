@@ -2,7 +2,7 @@
 
 The tracking issue for this feature is: [#96373]
 
-[#96373]: https://github.com/rust-lang/rust/issues/96373
+[#96373]: https://github.com/crablang/crablang/issues/96373
 
 ------------------------
 
@@ -11,7 +11,7 @@ which can be used to early-exit from a function or `try` block.
 
 These are highly experimental, thus the placeholder syntax.
 
-```rust,edition2021
+```crablang,edition2021
 #![feature(yeet_expr)]
 
 fn foo() -> Result<String, i32> {

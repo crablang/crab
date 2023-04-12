@@ -26,12 +26,12 @@ mod wild_in_or_pats;
 use clippy_utils::msrvs::{self, Msrv};
 use clippy_utils::source::{snippet_opt, walk_span_to_context};
 use clippy_utils::{higher, in_constant, is_span_match};
-use rustc_hir::{Arm, Expr, ExprKind, Local, MatchSource, Pat};
-use rustc_lexer::{tokenize, TokenKind};
-use rustc_lint::{LateContext, LateLintPass, LintContext};
-use rustc_middle::lint::in_external_macro;
-use rustc_session::{declare_tool_lint, impl_lint_pass};
-use rustc_span::{Span, SpanData, SyntaxContext};
+use crablangc_hir::{Arm, Expr, ExprKind, Local, MatchSource, Pat};
+use crablangc_lexer::{tokenize, TokenKind};
+use crablangc_lint::{LateContext, LateLintPass, LintContext};
+use crablangc_middle::lint::in_external_macro;
+use crablangc_session::{declare_tool_lint, impl_lint_pass};
+use crablangc_span::{Span, SpanData, SyntaxContext};
 
 declare_clippy_lint! {
     /// ### What it does
@@ -42,7 +42,7 @@ declare_clippy_lint! {
     /// Just readability – `if let` nests less than a `match`.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// # fn bar(stool: &str) {}
     /// # let x = Some("abc");
     /// match x {
@@ -52,7 +52,7 @@ declare_clippy_lint! {
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// # fn bar(stool: &str) {}
     /// # let x = Some("abc");
     /// if let Some(ref foo) = x {
@@ -79,7 +79,7 @@ declare_clippy_lint! {
     /// ### Example
     /// Using `match`:
     ///
-    /// ```rust
+    /// ```crablang
     /// # fn bar(foo: &usize) {}
     /// # let other_ref: usize = 1;
     /// # let x: Option<&usize> = Some(&1);
@@ -91,7 +91,7 @@ declare_clippy_lint! {
     ///
     /// Using `if let` with `else`:
     ///
-    /// ```rust
+    /// ```crablang
     /// # fn bar(foo: &usize) {}
     /// # let other_ref: usize = 1;
     /// # let x: Option<&usize> = Some(&1);
@@ -118,7 +118,7 @@ declare_clippy_lint! {
     /// destructuring adds nothing to the code.
     ///
     /// ### Example
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// match x {
     ///     &A(ref y) => foo(y),
     ///     &B => bar(),
@@ -127,7 +127,7 @@ declare_clippy_lint! {
     /// ```
     ///
     /// Use instead:
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// match *x {
     ///     A(ref y) => foo(y),
     ///     B => bar(),
@@ -149,7 +149,7 @@ declare_clippy_lint! {
     /// It makes the code less readable.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// # fn foo() {}
     /// # fn bar() {}
     /// let condition: bool = true;
@@ -159,7 +159,7 @@ declare_clippy_lint! {
     /// }
     /// ```
     /// Use if/else instead:
-    /// ```rust
+    /// ```crablang
     /// # fn foo() {}
     /// # fn bar() {}
     /// let condition: bool = true;
@@ -184,7 +184,7 @@ declare_clippy_lint! {
     /// less obvious.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// let x = 5;
     /// match x {
     ///     1..=10 => println!("1 ... 10"),
@@ -208,7 +208,7 @@ declare_clippy_lint! {
     /// catching all exceptions in java with `catch(Exception)`
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// let x: Result<i32, &str> = Ok(3);
     /// match x {
     ///     Ok(_) => println!("ok"),
@@ -230,7 +230,7 @@ declare_clippy_lint! {
     /// Using `as_ref()` or `as_mut()` instead is shorter.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// let x: Option<()> = None;
     ///
     /// let r: Option<&()> = match x {
@@ -240,7 +240,7 @@ declare_clippy_lint! {
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// let x: Option<()> = None;
     ///
     /// let r: Option<&()> = x.as_ref();
@@ -263,7 +263,7 @@ declare_clippy_lint! {
     /// variants, and also may not use correct path to enum if it's not present in the current scope.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// # enum Foo { A(usize), B(usize) }
     /// # let x = Foo::B(1);
     /// match x {
@@ -273,7 +273,7 @@ declare_clippy_lint! {
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// # enum Foo { A(usize), B(usize) }
     /// # let x = Foo::B(1);
     /// match x {
@@ -299,7 +299,7 @@ declare_clippy_lint! {
     /// if it's not present in the current scope.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// # enum Foo { A, B, C }
     /// # let x = Foo::B;
     /// match x {
@@ -310,7 +310,7 @@ declare_clippy_lint! {
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// # enum Foo { A, B, C }
     /// # let x = Foo::B;
     /// match x {
@@ -334,7 +334,7 @@ declare_clippy_lint! {
     /// It makes the code less readable, especially to spot wildcard pattern use in match arm.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// # let s = "foo";
     /// match s {
     ///     "a" => {},
@@ -343,7 +343,7 @@ declare_clippy_lint! {
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// # let s = "foo";
     /// match s {
     ///     "a" => {},
@@ -365,7 +365,7 @@ declare_clippy_lint! {
     /// Just readability – `let` doesn't nest, whereas a `match` does.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// enum Wrapper {
     ///     Data(i32),
     /// }
@@ -378,7 +378,7 @@ declare_clippy_lint! {
     /// ```
     ///
     /// The correct use would be:
-    /// ```rust
+    /// ```crablang
     /// enum Wrapper {
     ///     Data(i32),
     /// }
@@ -404,7 +404,7 @@ declare_clippy_lint! {
     /// is actually binding temporary value, bringing a 'dropped while borrowed' error.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// # let a = 1;
     /// # let b = 2;
     /// match (a, b) {
@@ -415,7 +415,7 @@ declare_clippy_lint! {
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// # let a = 1;
     /// # let b = 2;
     /// let (c, d) = (a, b);
@@ -435,7 +435,7 @@ declare_clippy_lint! {
     /// matching all enum variants explicitly.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// # struct A { a: i32 }
     /// let a = A { a: 5 };
     ///
@@ -446,7 +446,7 @@ declare_clippy_lint! {
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// # struct A { a: i32 }
     /// # let a = A { a: 5 };
     /// match a {
@@ -474,11 +474,11 @@ declare_clippy_lint! {
     /// `while let` will drop the value at the end of the block, both `if` and `while` will drop the
     /// value before entering the block. For most types this change will not matter, but for a few
     /// types this will not be an acceptable change (e.g. locks). See the
-    /// [reference](https://doc.rust-lang.org/reference/destructors.html#drop-scopes) for more about
+    /// [reference](https://doc.crablang.org/reference/destructors.html#drop-scopes) for more about
     /// drop order.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// # use std::task::Poll;
     /// # use std::net::{IpAddr, Ipv4Addr, Ipv6Addr};
     /// if let Ok(_) = Ok::<i32, i32>(42) {}
@@ -497,7 +497,7 @@ declare_clippy_lint! {
     ///
     /// The more idiomatic use would be:
     ///
-    /// ```rust
+    /// ```crablang
     /// # use std::task::Poll;
     /// # use std::net::{IpAddr, Ipv4Addr, Ipv6Addr};
     /// if Ok::<i32, i32>(42).is_ok() {}
@@ -529,7 +529,7 @@ declare_clippy_lint! {
     /// `cfg` attributes that remove an arm evaluating to `false`.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// let x = Some(5);
     ///
     /// let a = match x {
@@ -545,7 +545,7 @@ declare_clippy_lint! {
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// let x = Some(5);
     /// let a = matches!(x, Some(0));
     /// ```
@@ -562,15 +562,15 @@ declare_clippy_lint! {
     /// ### Why is this bad?
     /// This is probably a copy & paste error. If arm bodies
     /// are the same on purpose, you can factor them
-    /// [using `|`](https://doc.rust-lang.org/book/patterns.html#multiple-patterns).
+    /// [using `|`](https://doc.crablang.org/book/patterns.html#multiple-patterns).
     ///
     /// ### Known problems
     /// False positive possible with order dependent `match`
     /// (see issue
-    /// [#860](https://github.com/rust-lang/rust-clippy/issues/860)).
+    /// [#860](https://github.com/crablang/crablang-clippy/issues/860)).
     ///
     /// ### Example
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// match foo {
     ///     Bar => bar(),
     ///     Quz => quz(),
@@ -579,7 +579,7 @@ declare_clippy_lint! {
     /// ```
     ///
     /// This should probably be
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// match foo {
     ///     Bar => bar(),
     ///     Quz => quz(),
@@ -588,7 +588,7 @@ declare_clippy_lint! {
     /// ```
     ///
     /// or if the original code was not a typo:
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// match foo {
     ///     Bar | Baz => bar(), // <= shows the intent better
     ///     Quz => quz(),
@@ -609,7 +609,7 @@ declare_clippy_lint! {
     /// This `match` block does nothing and might not be what the coder intended.
     ///
     /// ### Example
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// fn foo() -> Result<(), i32> {
     ///     match result {
     ///         Ok(val) => Ok(val),
@@ -628,7 +628,7 @@ declare_clippy_lint! {
     ///
     /// Could be replaced as
     ///
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// fn foo() -> Result<(), i32> {
     ///     result
     /// }
@@ -655,7 +655,7 @@ declare_clippy_lint! {
     /// It is unnecessarily verbose and complex.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// fn func(opt: Option<Result<u64, String>>) {
     ///     let n = match opt {
     ///         Some(n) => match n {
@@ -667,7 +667,7 @@ declare_clippy_lint! {
     /// }
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// fn func(opt: Option<Result<u64, String>>) {
     ///     let n = match opt {
     ///         Some(Ok(n)) => n,
@@ -689,7 +689,7 @@ declare_clippy_lint! {
     /// Concise code helps focusing on behavior instead of boilerplate.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// let foo: Option<i32> = None;
     /// match foo {
     ///     Some(v) => v,
@@ -698,7 +698,7 @@ declare_clippy_lint! {
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// let foo: Option<i32> = None;
     /// foo.unwrap_or(1);
     /// ```
@@ -716,7 +716,7 @@ declare_clippy_lint! {
     /// This can panic at runtime.
     ///
     /// ### Example
-    /// ```rust, no_run
+    /// ```crablang, no_run
     /// let arr = vec![0, 1, 2, 3];
     /// let idx = 1;
     ///
@@ -728,7 +728,7 @@ declare_clippy_lint! {
     /// ```
     ///
     /// Use instead:
-    /// ```rust, no_run
+    /// ```crablang, no_run
     /// let arr = vec![0, 1, 2, 3];
     /// let idx = 1;
     ///
@@ -752,7 +752,7 @@ declare_clippy_lint! {
     /// The arm is unreachable, which is likely a mistake
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// # let text = "Foo";
     /// match &*text.to_ascii_lowercase() {
     ///     "foo" => {},
@@ -761,7 +761,7 @@ declare_clippy_lint! {
     /// }
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// # let text = "Foo";
     /// match &*text.to_ascii_lowercase() {
     ///     "foo" => {},
@@ -793,7 +793,7 @@ declare_clippy_lint! {
     /// the match block and thus will not unlock.
     ///
     /// ### Example
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// # use std::sync::Mutex;
     /// # struct State {}
     /// # impl State {
@@ -814,7 +814,7 @@ declare_clippy_lint! {
     /// println!("All done!");
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// # use std::sync::Mutex;
     /// # struct State {}
     /// # impl State {
@@ -852,7 +852,7 @@ declare_clippy_lint! {
     /// always return), it is more clear to write `return Err(x)`.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// fn foo(fail: bool) -> Result<i32, String> {
     ///     if fail {
     ///       Err("failed")?;
@@ -862,7 +862,7 @@ declare_clippy_lint! {
     /// ```
     /// Could be written:
     ///
-    /// ```rust
+    /// ```crablang
     /// fn foo(fail: bool) -> Result<i32, String> {
     ///     if fail {
     ///       return Err("failed".into());
@@ -884,14 +884,14 @@ declare_clippy_lint! {
     /// Using the `map` method is clearer and more concise.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// match Some(0) {
     ///     Some(x) => Some(x + 1),
     ///     None => None,
     /// };
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// Some(0).map(|x| x + 1);
     /// ```
     #[clippy::version = "1.52.0"]
@@ -908,7 +908,7 @@ declare_clippy_lint! {
     /// Using the `filter` method is clearer and more concise.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// match Some(0) {
     ///     Some(x) => if x % 2 == 0 {
     ///                     Some(x)
@@ -919,7 +919,7 @@ declare_clippy_lint! {
     /// };
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// Some(0).filter(|&x| x % 2 == 0);
     /// ```
     #[clippy::version = "1.66.0"]

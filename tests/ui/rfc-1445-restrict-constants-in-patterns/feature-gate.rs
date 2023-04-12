@@ -7,7 +7,7 @@
 // gate-test-structural_match
 
 #![allow(unused)]
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 #![cfg_attr(with_gate, feature(structural_match))]
 
 
@@ -17,8 +17,8 @@ struct Foo {
 
 const FOO: Foo = Foo { x: 0 };
 
-#[rustc_error]
-fn main() { //[with_gate]~ ERROR fatal error triggered by #[rustc_error]
+#[crablangc_error]
+fn main() { //[with_gate]~ ERROR fatal error triggered by #[crablangc_error]
     let y = Foo { x: 1 };
     match y {
         FOO => { }

@@ -1,9 +1,9 @@
 use clippy_utils::diagnostics::span_lint_and_help;
 use clippy_utils::is_trait_method;
 use clippy_utils::ty::is_type_diagnostic_item;
-use rustc_hir::{Expr, ExprKind, QPath};
-use rustc_lint::LateContext;
-use rustc_span::sym;
+use crablangc_hir::{Expr, ExprKind, QPath};
+use crablangc_lint::LateContext;
+use crablangc_span::sym;
 
 use super::VERBOSE_FILE_READS;
 

@@ -22,4 +22,4 @@ LL |     let my_var: String<String?>;
 
 error: aborting due to 2 previous errors
 
-For more information about this error, try `rustc --explain E0214`.
+For more information about this error, try `crablangc --explain E0214`.

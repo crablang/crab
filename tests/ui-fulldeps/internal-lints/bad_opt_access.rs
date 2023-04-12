@@ -4,11 +4,11 @@
 // that have wrapper functions which should be used.
 
 #![crate_type = "lib"]
-#![feature(rustc_private)]
-#![deny(rustc::bad_opt_access)]
+#![feature(crablangc_private)]
+#![deny(crablangc::bad_opt_access)]
 
-extern crate rustc_session;
-use rustc_session::Session;
+extern crate crablangc_session;
+use crablangc_session::Session;
 
 pub fn access_bad_option(sess: Session) {
     let _ = sess.opts.cg.split_debuginfo;

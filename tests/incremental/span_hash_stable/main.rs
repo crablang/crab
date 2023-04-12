@@ -7,7 +7,7 @@
 // revisions:rpass1 rpass2
 // compile-flags: -g -Z query-dep-graph
 
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 
 mod auxiliary;
 

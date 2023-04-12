@@ -6,12 +6,12 @@
 // needs-llvm-components: arm
 
 #![crate_type = "lib"]
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 #![feature(no_core, lang_items)]
 #![feature(isa_attribute)]
 #![no_core]
 
-#[rustc_builtin_macro]
+#[crablangc_builtin_macro]
 #[macro_export]
 macro_rules! asm {
     ("assembly template",

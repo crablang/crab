@@ -11,8 +11,8 @@
 
 #![macro_export]
 //~^ ERROR: `macro_export` attribute cannot be used at crate level
-#![rustc_main] //~ ERROR: the `#[rustc_main]` attribute is used internally to specify
-//~^ ERROR: `rustc_main` attribute cannot be used at crate level
+#![crablangc_main] //~ ERROR: the `#[crablangc_main]` attribute is used internally to specify
+//~^ ERROR: `crablangc_main` attribute cannot be used at crate level
 #![start]
 //~^ ERROR: `start` attribute cannot be used at crate level
 #![repr()]
@@ -41,7 +41,7 @@ mod inline {
     //~^ ERROR attribute must be of the form
     //~| WARN this was previously accepted
     //~| NOTE #[deny(ill_formed_attribute_input)]` on by default
-    //~| NOTE for more information, see issue #57571 <https://github.com/rust-lang/rust/issues/57571>
+    //~| NOTE for more information, see issue #57571 <https://github.com/crablang/crablang/issues/57571>
 
     #[inline] struct S;
     //~^ ERROR attribute should be applied to function or closure

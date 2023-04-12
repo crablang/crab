@@ -5,7 +5,7 @@
 
 #![feature(proc_macro_hygiene)]
 #![feature(stmt_expr_attributes)]
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 #![allow(dead_code)]
 
 #![no_std] // Don't load unnecessary hygiene information from std
@@ -32,7 +32,7 @@ fn print_str(string: &'static str) {
 macro_rules! make_stmt {
     ($stmt:stmt) => {
         #[print_attr]
-        #[rustc_dummy]
+        #[crablangc_dummy]
         $stmt; // This semicolon is *not* passed to the macro,
                // since `$stmt` is already a statement.
     }
@@ -64,13 +64,13 @@ fn main() {
     second_make_stmt!(#[allow(dead_code)] struct Bar {});
 
     #[print_attr]
-    #[rustc_dummy]
+    #[crablangc_dummy]
     struct Other {};
 
     // The macro also sees a semicolon,
     // for consistency with the `ItemWithSemi` case above.
     #[print_attr]
-    #[rustc_dummy]
+    #[crablangc_dummy]
     struct NonBracedStruct;
 
     #[expect_expr]

@@ -9,7 +9,7 @@ pub trait Sized { }
 pub trait Copy { }
 impl Copy for u32 {}
 
-extern "rust-intrinsic" {
+extern "crablang-intrinsic" {
     pub fn transmute<T, U>(e: T) -> U;
 }
 

@@ -2,6 +2,6 @@
 include ../tools.mk
 
 all:
-	$(RUSTC) lib.rs
-	$(RUSTC) main.rs
+	$(CRABLANGC) lib.rs
+	$(CRABLANGC) main.rs
 	$(call RUN,main)

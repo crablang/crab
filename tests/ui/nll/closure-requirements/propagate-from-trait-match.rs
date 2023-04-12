@@ -6,7 +6,7 @@
 
 // compile-flags:-Zverbose
 
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 #![allow(dead_code)]
 
 trait Trait<'a> {}
@@ -24,7 +24,7 @@ where
 {
 }
 
-#[rustc_regions]
+#[crablangc_regions]
 fn supply<'a, T>(value: T)
 where
     T: Trait<'a>,

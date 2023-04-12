@@ -1,10 +1,10 @@
 use clippy_utils::diagnostics::span_lint_and_then;
 use clippy_utils::is_trait_method;
 use clippy_utils::source::snippet;
-use rustc_errors::Applicability;
-use rustc_hir::Expr;
-use rustc_lint::LateContext;
-use rustc_span::sym;
+use crablangc_errors::Applicability;
+use crablangc_hir::Expr;
+use crablangc_lint::LateContext;
+use crablangc_span::sym;
 
 use super::UNIT_HASH;
 

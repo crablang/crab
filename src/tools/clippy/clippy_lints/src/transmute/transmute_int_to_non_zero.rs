@@ -1,14 +1,14 @@
 use super::TRANSMUTE_INT_TO_NON_ZERO;
 use clippy_utils::diagnostics::span_lint_and_then;
 use clippy_utils::sugg;
-use rustc_errors::Applicability;
-use rustc_hir::Expr;
-use rustc_lint::LateContext;
-use rustc_middle::{
+use crablangc_errors::Applicability;
+use crablangc_hir::Expr;
+use crablangc_lint::LateContext;
+use crablangc_middle::{
     query::Key,
     ty::{self, Ty},
 };
-use rustc_span::symbol::sym;
+use crablangc_span::symbol::sym;
 
 /// Checks for `transmute_int_to_non_zero` lint.
 /// Returns `true` if it's triggered, otherwise returns `false`.

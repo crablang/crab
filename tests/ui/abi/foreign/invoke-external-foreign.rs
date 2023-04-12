@@ -12,6 +12,6 @@ extern crate foreign_lib;
 
 pub fn main() {
     unsafe {
-        let _foo = foreign_lib::rustrt::rust_get_test_int();
+        let _foo = foreign_lib::crablangrt::crablang_get_test_int();
     }
 }

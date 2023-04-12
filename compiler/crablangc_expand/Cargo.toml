@@ -1,0 +1,28 @@
+[package]
+name = "crablangc_expand"
+version = "0.0.0"
+edition = "2021"
+build = false
+
+[lib]
+doctest = false
+
+[dependencies]
+crossbeam-channel = "0.5.0"
+crablangc_ast_passes = { path = "../crablangc_ast_passes" }
+crablangc_ast = { path = "../crablangc_ast" }
+crablangc_ast_pretty = { path = "../crablangc_ast_pretty" }
+crablangc_attr = { path = "../crablangc_attr" }
+crablangc_data_structures = { path = "../crablangc_data_structures" }
+crablangc_errors = { path = "../crablangc_errors" }
+crablangc_feature = { path = "../crablangc_feature" }
+crablangc_lexer = { path = "../crablangc_lexer" }
+crablangc_lint_defs = { path = "../crablangc_lint_defs" }
+crablangc_macros = { path = "../crablangc_macros" }
+crablangc_parse = { path = "../crablangc_parse" }
+crablangc_serialize = { path = "../crablangc_serialize" }
+crablangc_session = { path = "../crablangc_session" }
+crablangc_span = { path = "../crablangc_span" }
+smallvec = { version = "1.8.1", features = ["union", "may_dangle"] }
+thin-vec = "0.2.12"
+tracing = "0.1"

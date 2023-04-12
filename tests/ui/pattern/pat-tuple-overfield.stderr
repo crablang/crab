@@ -309,4 +309,4 @@ LL |         E1::Z1(_, _) => {}
 error: aborting due to 19 previous errors
 
 Some errors have detailed explanations: E0023, E0308, E0530, E0532.
-For more information about an error, try `rustc --explain E0023`.
+For more information about an error, try `crablangc --explain E0023`.

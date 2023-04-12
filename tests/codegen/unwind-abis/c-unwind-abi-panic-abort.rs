@@ -1,14 +1,14 @@
 // compile-flags: -C panic=abort
 
-// Test that `nounwind` attributes are also applied to extern `C-unwind` Rust functions
+// Test that `nounwind` attributes are also applied to extern `C-unwind` CrabLang functions
 // when the code is compiled with `panic=abort`.
 
 #![crate_type = "lib"]
 #![feature(c_unwind)]
 
-// CHECK: @rust_item_that_can_unwind() unnamed_addr [[ATTR0:#[0-9]+]]
+// CHECK: @crablang_item_that_can_unwind() unnamed_addr [[ATTR0:#[0-9]+]]
 #[no_mangle]
-pub unsafe extern "C-unwind" fn rust_item_that_can_unwind() {
+pub unsafe extern "C-unwind" fn crablang_item_that_can_unwind() {
     // Handle both legacy and v0 symbol mangling.
     // CHECK: call void @{{.*core9panicking19panic_cannot_unwind}}
     may_unwind();

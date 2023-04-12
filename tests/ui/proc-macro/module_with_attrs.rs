@@ -1,4 +1,4 @@
 // ignore-test
 
-#![rustfmt::skip]
+#![crablangfmt::skip]
 #![print_attr]

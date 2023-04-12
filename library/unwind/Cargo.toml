@@ -2,7 +2,7 @@
 name = "unwind"
 version = "0.0.0"
 license = "MIT OR Apache-2.0"
-repository = "https://github.com/rust-lang/rust.git"
+repository = "https://github.com/crablang/crablang.git"
 edition = "2021"
 include = [
   '/libunwind/*',
@@ -15,7 +15,7 @@ doc = false
 
 [dependencies]
 core = { path = "../core" }
-libc = { version = "0.2.79", features = ['rustc-dep-of-std'], default-features = false }
+libc = { version = "0.2.79", features = ['crablangc-dep-of-std'], default-features = false }
 compiler_builtins = "0.1.0"
 cfg-if = "1.0"
 

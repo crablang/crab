@@ -1,6 +1,6 @@
 use crate::*;
-use rustc_middle::ty::layout::LayoutOf;
-use rustc_target::spec::abi::Abi;
+use crablangc_middle::ty::layout::LayoutOf;
+use crablangc_target::spec::abi::Abi;
 
 impl<'mir, 'tcx> EvalContextExt<'mir, 'tcx> for crate::MiriInterpCx<'mir, 'tcx> {}
 pub trait EvalContextExt<'mir, 'tcx: 'mir>: crate::MiriInterpCxExt<'mir, 'tcx> {

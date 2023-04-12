@@ -1,7 +1,7 @@
 // Test cases where we put various lifetime constraints on trait
 // associated constants.
 
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 
 use std::option::Option;
 

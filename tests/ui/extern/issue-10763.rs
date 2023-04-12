@@ -2,6 +2,6 @@
 #![allow(dead_code)]
 // pretty-expanded FIXME #23616
 
-extern "Rust" fn foo() {}
+extern "CrabLang" fn foo() {}
 
 fn main() {}

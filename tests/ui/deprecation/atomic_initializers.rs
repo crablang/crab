@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 // check-pass
 
 #[allow(deprecated, unused_imports)]

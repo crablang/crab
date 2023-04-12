@@ -4,7 +4,7 @@ The tracking issue for this feature is [#29625]
 
 See Also: [`unboxed_closures`](../language-features/unboxed-closures.md)
 
-[#29625]: https://github.com/rust-lang/rust/issues/29625
+[#29625]: https://github.com/crablang/crablang/issues/29625
 
 ----
 
@@ -13,7 +13,7 @@ for creating custom closure-like types.
 
 [`Fn*`]: ../../std/ops/trait.Fn.html
 
-```rust
+```crablang
 #![feature(unboxed_closures)]
 #![feature(fn_traits)]
 
@@ -23,7 +23,7 @@ struct Adder {
 
 impl FnOnce<(u32, )> for Adder {
     type Output = u32;
-    extern "rust-call" fn call_once(self, b: (u32, )) -> Self::Output {
+    extern "crablang-call" fn call_once(self, b: (u32, )) -> Self::Output {
         self.a + b.0
     }
 }

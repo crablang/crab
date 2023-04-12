@@ -8,7 +8,7 @@ mod repeat_n;
 mod repeat_with;
 mod successors;
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub use self::repeat::{repeat, Repeat};
 
 #[stable(feature = "iter_empty", since = "1.2.0")]

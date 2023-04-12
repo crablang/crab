@@ -75,4 +75,4 @@ LL |     fn another_bound<'x: 't>(self, x: Inv<'x>, y: Inv<'t>) {
 error: aborting due to 6 previous errors
 
 Some errors have detailed explanations: E0195, E0276, E0308.
-For more information about an error, try `rustc --explain E0195`.
+For more information about an error, try `crablangc --explain E0195`.

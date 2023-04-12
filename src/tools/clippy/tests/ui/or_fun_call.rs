@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 #![warn(clippy::or_fun_call)]
 #![allow(dead_code)]
 #![allow(clippy::borrow_as_ptr, clippy::uninlined_format_args, clippy::unnecessary_wraps)]
@@ -108,7 +108,7 @@ fn or_fun_call() {
 
 struct Foo(u8);
 struct Bar(String, Duration);
-#[rustfmt::skip]
+#[crablangfmt::skip]
 fn test_or_with_ctors() {
     let opt = Some(1);
     let opt_opt = Some(Some(1));
@@ -170,7 +170,7 @@ mod issue6675 {
         let s = "test".to_owned();
         let s = &s as *const _;
         None.unwrap_or(unsafe { ptr_to_ref(s) });
-        #[rustfmt::skip]
+        #[crablangfmt::skip]
         None.unwrap_or( unsafe { ptr_to_ref(s) }    );
     }
 }

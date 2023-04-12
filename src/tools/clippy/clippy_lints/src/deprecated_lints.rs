@@ -140,10 +140,10 @@ declare_deprecated_lint! {
     /// Nothing. This lint has been deprecated.
     ///
     /// ### Deprecation reason
-    /// This lint has been superseded by #[must_use] in rustc.
+    /// This lint has been superseded by #[must_use] in crablangc.
     #[clippy::version = "1.39.0"]
     pub UNUSED_COLLECT,
-    "`collect` has been marked as #[must_use] in rustc and that covers all cases of this lint"
+    "`collect` has been marked as #[must_use] in crablangc and that covers all cases of this lint"
 }
 
 declare_deprecated_lint! {

@@ -3,9 +3,9 @@ mod unit_arg;
 mod unit_cmp;
 mod utils;
 
-use rustc_hir::{Expr, Local};
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_hir::{Expr, Local};
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
 
 declare_clippy_lint! {
     /// ### What it does
@@ -16,7 +16,7 @@ declare_clippy_lint! {
     /// binding one is kind of pointless.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// let x = {
     ///     1;
     /// };
@@ -38,7 +38,7 @@ declare_clippy_lint! {
     /// adds semicolons at the end of the operands.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// # fn foo() {};
     /// # fn bar() {};
     /// # fn baz() {};
@@ -51,7 +51,7 @@ declare_clippy_lint! {
     /// }
     /// ```
     /// is equal to
-    /// ```rust
+    /// ```crablang
     /// # fn foo() {};
     /// # fn bar() {};
     /// # fn baz() {};
@@ -63,7 +63,7 @@ declare_clippy_lint! {
     /// ```
     ///
     /// For asserts:
-    /// ```rust
+    /// ```crablang
     /// # fn foo() {};
     /// # fn bar() {};
     /// assert_eq!({ foo(); }, { bar(); });
@@ -84,7 +84,7 @@ declare_clippy_lint! {
     /// This is likely the result of an accidental semicolon.
     ///
     /// ### Example
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// foo({
     ///     let a = bar();
     ///     baz(a);

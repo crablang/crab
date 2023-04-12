@@ -122,13 +122,13 @@ unsafe extern "C" fn invalid_may_unwind() {
 
 #[naked]
 pub unsafe fn default_abi() {
-    //~^ WARN Rust ABI is unsupported in naked functions
+    //~^ WARN CrabLang ABI is unsupported in naked functions
     asm!("", options(noreturn));
 }
 
 #[naked]
-pub unsafe fn rust_abi() {
-    //~^ WARN Rust ABI is unsupported in naked functions
+pub unsafe fn crablang_abi() {
+    //~^ WARN CrabLang ABI is unsupported in naked functions
     asm!("", options(noreturn));
 }
 

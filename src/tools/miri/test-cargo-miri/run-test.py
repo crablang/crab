@@ -124,7 +124,7 @@ def test_cargo_miri_run():
     )
 
 def test_cargo_miri_test():
-    # rustdoc is not run on foreign targets
+    # crablangdoc is not run on foreign targets
     is_foreign = 'MIRI_TEST_TARGET' in os.environ
     default_ref = "test.cross-target.stdout.ref" if is_foreign else "test.default.stdout.ref"
     filter_ref = "test.filter.cross-target.stdout.ref" if is_foreign else "test.filter.stdout.ref"
@@ -176,8 +176,8 @@ def test_cargo_miri_test():
 
 os.chdir(os.path.dirname(os.path.realpath(__file__)))
 os.environ["CARGO_TARGET_DIR"] = "target" # this affects the location of the target directory that we need to check
-os.environ["RUST_TEST_NOCAPTURE"] = "0" # this affects test output, so make sure it is not set
-os.environ["RUST_TEST_THREADS"] = "1" # avoid non-deterministic output due to concurrent test runs
+os.environ["CRABLANG_TEST_NOCAPTURE"] = "0" # this affects test output, so make sure it is not set
+os.environ["CRABLANG_TEST_THREADS"] = "1" # avoid non-deterministic output due to concurrent test runs
 
 target_str = " for target {}".format(os.environ['MIRI_TEST_TARGET']) if 'MIRI_TEST_TARGET' in os.environ else ""
 print(CGREEN + CBOLD + "## Running `cargo miri` tests{}".format(target_str) + CEND)

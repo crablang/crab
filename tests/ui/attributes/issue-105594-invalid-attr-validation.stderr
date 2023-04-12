@@ -14,7 +14,7 @@ LL | #[cmse_nonsecure_entry]
 LL | static _B: () = ();
    | ------------------- not a function definition
 
-error[E0775]: `#[cmse_nonsecure_entry]` is only valid for targets with the TrustZone-M extension
+error[E0775]: `#[cmse_nonsecure_entry]` is only valid for targets with the TcrablangZone-M extension
   --> $DIR/issue-105594-invalid-attr-validation.rs:12:1
    |
 LL | #[cmse_nonsecure_entry]
@@ -23,4 +23,4 @@ LL | #[cmse_nonsecure_entry]
 error: aborting due to 3 previous errors
 
 Some errors have detailed explanations: E0739, E0775.
-For more information about an error, try `rustc --explain E0739`.
+For more information about an error, try `crablangc --explain E0739`.

@@ -5,7 +5,7 @@ build-stage = 0
 test-stage = 0
 bench-stage = 0
 
-[rust]
+[crablang]
 # This greatly increases the speed of rebuilds, especially when there are only minor changes. However, it makes the initial build slightly slower.
 incremental = true
 # Make the compiler and standard library faster to build, at the expense of a ~20% runtime slowdown.

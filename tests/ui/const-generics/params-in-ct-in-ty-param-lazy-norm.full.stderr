@@ -12,4 +12,4 @@ LL | struct Bar<T = [u8; N], const N: usize>(T);
 
 error: aborting due to 2 previous errors
 
-For more information about this error, try `rustc --explain E0128`.
+For more information about this error, try `crablangc --explain E0128`.

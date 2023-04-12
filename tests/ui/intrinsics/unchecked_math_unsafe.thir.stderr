@@ -24,4 +24,4 @@ LL |     let mul = std::intrinsics::unchecked_mul(x, y);
 
 error: aborting due to 3 previous errors
 
-For more information about this error, try `rustc --explain E0133`.
+For more information about this error, try `crablangc --explain E0133`.

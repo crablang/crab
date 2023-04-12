@@ -34,4 +34,4 @@ LL |     fn foo<T: Default + std::marker::Copy>() -> Self::E {
 error: aborting due to 3 previous errors
 
 Some errors have detailed explanations: E0276, E0277.
-For more information about an error, try `rustc --explain E0276`.
+For more information about an error, try `crablangc --explain E0276`.

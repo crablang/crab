@@ -29,7 +29,7 @@ body:
       value: |
         I tried this code:
 
-        ```rust
+        ```crablang
         <code>
         ```
 
@@ -44,10 +44,10 @@ body:
     id: version
     attributes:
       label: Version
-      description: "Rust version (`rustc -Vv`)"
+      description: "CrabLang version (`crablangc -Vv`)"
       placeholder: |
-        rustc 1.46.0-nightly (f455e46ea 2020-06-20)
-        binary: rustc
+        crablangc 1.46.0-nightly (f455e46ea 2020-06-20)
+        binary: crablangc
         commit-hash: f455e46eae1a227d735091091144601b467e1565
         commit-date: 2020-06-20
         host: x86_64-unknown-linux-gnu
@@ -62,7 +62,7 @@ body:
         Additional labels can be added to this issue by including the following
         command
       placeholder: |
-        @rustbot label +<label>
+        @crablangbot label +<label>
 
         Common labels for this issue type are:
         * `I-suggestion-causes-error`

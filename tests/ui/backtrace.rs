@@ -48,7 +48,7 @@ fn expected(fn_name: &str) -> String {
 #[cfg(not(panic = "abort"))]
 fn contains_verbose_expected(s: &str, fn_name: &str) -> bool {
     // HACK(eddyb) work around the fact that verbosely demangled stack traces
-    // (from `RUST_BACKTRACE=full`, or, as is the case here, panic-in-panic)
+    // (from `CRABLANG_BACKTRACE=full`, or, as is the case here, panic-in-panic)
     // may contain symbols with hashes in them, i.e. `backtrace[...]::`.
     let prefix = " backtrace";
     let suffix = &format!("::{}", fn_name);
@@ -63,7 +63,7 @@ fn contains_verbose_expected(s: &str, fn_name: &str) -> bool {
 
 fn runtest(me: &str) {
     // Make sure that the stack trace is printed
-    let p = template(me).arg("fail").env("RUST_BACKTRACE", "1").spawn().unwrap();
+    let p = template(me).arg("fail").env("CRABLANG_BACKTRACE", "1").spawn().unwrap();
     let out = p.wait_with_output().unwrap();
     assert!(!out.status.success());
     let s = str::from_utf8(&out.stderr).unwrap();
@@ -72,9 +72,9 @@ fn runtest(me: &str) {
     assert!(s.contains(" 0:"), "the frame number should start at 0");
 
     // Make sure the stack trace is *not* printed
-    // (Remove RUST_BACKTRACE from our own environment, in case developer
+    // (Remove CRABLANG_BACKTRACE from our own environment, in case developer
     // is running `make check` with it on.)
-    let p = template(me).arg("fail").env_remove("RUST_BACKTRACE").spawn().unwrap();
+    let p = template(me).arg("fail").env_remove("CRABLANG_BACKTRACE").spawn().unwrap();
     let out = p.wait_with_output().unwrap();
     assert!(!out.status.success());
     let s = str::from_utf8(&out.stderr).unwrap();
@@ -82,9 +82,9 @@ fn runtest(me: &str) {
             "bad output2: {}", s);
 
     // Make sure the stack trace is *not* printed
-    // (RUST_BACKTRACE=0 acts as if it were unset from our own environment,
+    // (CRABLANG_BACKTRACE=0 acts as if it were unset from our own environment,
     // in case developer is running `make check` with it set.)
-    let p = template(me).arg("fail").env("RUST_BACKTRACE","0").spawn().unwrap();
+    let p = template(me).arg("fail").env("CRABLANG_BACKTRACE","0").spawn().unwrap();
     let out = p.wait_with_output().unwrap();
     assert!(!out.status.success());
     let s = str::from_utf8(&out.stderr).unwrap();
@@ -105,7 +105,7 @@ fn runtest(me: &str) {
 
         // Make sure a stack trace isn't printed too many times
         let p = template(me).arg("double-fail")
-                                    .env("RUST_BACKTRACE", "1").spawn().unwrap();
+                                    .env("CRABLANG_BACKTRACE", "1").spawn().unwrap();
         let out = p.wait_with_output().unwrap();
         assert!(!out.status.success());
         let s = str::from_utf8(&out.stderr).unwrap();

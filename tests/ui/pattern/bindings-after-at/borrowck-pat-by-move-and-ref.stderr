@@ -347,4 +347,4 @@ LL |     fn f3(ref mut a @ [b, mut c]: [U; 2]) {}
 
 error: aborting due to 36 previous errors
 
-For more information about this error, try `rustc --explain E0382`.
+For more information about this error, try `crablangc --explain E0382`.

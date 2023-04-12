@@ -2,7 +2,7 @@
 // compile-flags: -O -Zhuman-readable-cgu-names -Cllvm-args=-import-instr-limit=10
 // build-pass
 
-// rust-lang/rust#59535:
+// crablang/crablang#59535:
 //
 // This is analogous to cgu_invalidated_when_import_removed.rs, but it covers
 // the other direction:

@@ -11,7 +11,7 @@ fn plus_one(value: usize) -> usize {
     value + 1
 }
 
-#[rustfmt::skip]
+#[crablangfmt::skip]
 fn option_map_unit_fn() {
 
     x.field.map(|value| { do_nothing(value); do_nothing(value) });

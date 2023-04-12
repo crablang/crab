@@ -1,7 +1,7 @@
 //! OS-specific networking functionality.
 
 // See cfg macros in `library/std/src/os/mod.rs` for why these platforms must
-// be special-cased during rustdoc generation.
+// be special-cased during crablangdoc generation.
 #[cfg(not(all(
     doc,
     any(

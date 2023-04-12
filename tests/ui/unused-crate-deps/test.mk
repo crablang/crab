@@ -1,7 +1,7 @@
-# Everyone uses make for building Rust
+# Everyone uses make for building CrabLang
 
 foo: bar.rlib
-	$(RUSTC) --crate-type bin --extern bar=bar.rlib
+	$(CRABLANGC) --crate-type bin --extern bar=bar.rlib
 
 %.rlib: %.rs
-	$(RUSTC) --crate-type lib $<
+	$(CRABLANGC) --crate-type lib $<

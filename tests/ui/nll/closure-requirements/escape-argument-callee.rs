@@ -14,9 +14,9 @@
 
 // compile-flags:-Zverbose
 
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 
-#[rustc_regions]
+#[crablangc_regions]
 fn test() {
     let x = 44;
     let mut p = &x;

@@ -175,7 +175,7 @@ pub fn hard_coded_allowed() {
     let _ = inferred_wrapping + inferred_wrapping;
 }
 
-#[rustfmt::skip]
+#[crablangfmt::skip]
 pub fn const_ops_should_not_trigger_the_lint() {
     const _: i32 = { let mut n = 1; n += 1; n };
     let _ = const { let mut n = 1; n += 1; n };

@@ -6,4 +6,4 @@ LL |     Foo::A { x: 6, ..orig };
 
 error: aborting due to previous error
 
-For more information about this error, try `rustc --explain E0436`.
+For more information about this error, try `crablangc --explain E0436`.

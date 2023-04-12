@@ -1,5 +1,5 @@
 // Regression test for various ICEs inspired by
-// https://github.com/rust-lang/rust/issues/83921#issuecomment-814640734
+// https://github.com/crablang/crablang/issues/83921#issuecomment-814640734
 
 // compile-flags: -Zdeduplicate-diagnostics=yes
 

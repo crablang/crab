@@ -5,11 +5,11 @@
 // Verify we sanitize the special tokens for the LLVM inline-assembly, ensuring people won't
 // inadvertently rely on the LLVM-specific syntax and features.
 #![no_core]
-#![feature(no_core, lang_items, rustc_attrs)]
+#![feature(no_core, lang_items, crablangc_attrs)]
 #![crate_type = "rlib"]
 #![allow(named_asm_labels)]
 
-#[rustc_builtin_macro]
+#[crablangc_builtin_macro]
 macro_rules! asm {
     () => {};
 }

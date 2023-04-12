@@ -3,7 +3,7 @@
 // compile-flags: -Z span-debug
 // aux-build:test-macros.rs
 
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 
 #![no_std] // Don't load unnecessary hygiene information from std
 extern crate std;
@@ -23,7 +23,7 @@ capture_item! {
 }
 
 capture_item! {
-    #[rustc_dummy]
+    #[crablangc_dummy]
     /// Another comment comment
     struct Bar {}
 }

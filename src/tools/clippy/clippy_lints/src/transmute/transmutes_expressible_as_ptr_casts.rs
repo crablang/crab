@@ -2,10 +2,10 @@ use super::utils::check_cast;
 use super::TRANSMUTES_EXPRESSIBLE_AS_PTR_CASTS;
 use clippy_utils::diagnostics::span_lint_and_sugg;
 use clippy_utils::sugg::Sugg;
-use rustc_errors::Applicability;
-use rustc_hir::Expr;
-use rustc_lint::LateContext;
-use rustc_middle::ty::{cast::CastKind, Ty};
+use crablangc_errors::Applicability;
+use crablangc_hir::Expr;
+use crablangc_lint::LateContext;
+use crablangc_middle::ty::{cast::CastKind, Ty};
 
 /// Checks for `transmutes_expressible_as_ptr_casts` lint.
 /// Returns `true` if it's triggered, otherwise returns `false`.

@@ -2,7 +2,7 @@
 // These are different files so that relative links work properly without
 // having to have `CARGO_PKG_NAME` set, but conceptually they should always be the same.
 #[cfg_attr(bootstrap, doc(primitive = "bool"))]
-#[cfg_attr(not(bootstrap), rustc_doc_primitive = "bool")]
+#[cfg_attr(not(bootstrap), crablangc_doc_primitive = "bool")]
 #[doc(alias = "true")]
 #[doc(alias = "false")]
 /// The boolean type.
@@ -61,11 +61,11 @@
 /// assert_eq!(true as i32, 1);
 /// assert_eq!(false as i32, 0);
 /// ```
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 mod prim_bool {}
 
 #[cfg_attr(bootstrap, doc(primitive = "never"))]
-#[cfg_attr(not(bootstrap), rustc_doc_primitive = "never")]
+#[cfg_attr(not(bootstrap), crablangc_doc_primitive = "never")]
 #[doc(alias = "!")]
 //
 /// The `!` type, also called "never".
@@ -127,7 +127,7 @@ mod prim_bool {}
 /// When implementing this trait for [`String`] we need to pick a type for [`Err`]. And since
 /// converting a string into a string will never result in an error, the appropriate type is `!`.
 /// (Currently the type actually used is an enum with no variants, though this is only because `!`
-/// was added to Rust at a later date and it may change in the future.) With an [`Err`] type of
+/// was added to CrabLang at a later date and it may change in the future.) With an [`Err`] type of
 /// `!`, if we have to call [`String::from_str`] for some reason the result will be a
 /// [`Result<String, !>`] which we can unpack like this:
 ///
@@ -231,7 +231,7 @@ mod prim_bool {}
 /// `u32`. Since `u32` is a concrete type, `!` can and will be coerced to it. See issue [#36375]
 /// for more information on this quirk of `!`.
 ///
-/// [#36375]: https://github.com/rust-lang/rust/issues/36375
+/// [#36375]: https://github.com/crablang/crablang/issues/36375
 ///
 /// As it turns out, though, most traits can have an `impl` for `!`. Take [`Debug`]
 /// for example:
@@ -277,8 +277,8 @@ mod prim_bool {}
 mod prim_never {}
 
 #[cfg_attr(bootstrap, doc(primitive = "char"))]
-#[cfg_attr(not(bootstrap), rustc_doc_primitive = "char")]
-#[allow(rustdoc::invalid_rust_codeblocks)]
+#[cfg_attr(not(bootstrap), crablangc_doc_primitive = "char")]
+#[allow(crablangdoc::invalid_crablang_codeblocks)]
 /// A character type.
 ///
 /// The `char` type represents a single character. More specifically, since
@@ -398,11 +398,11 @@ mod prim_never {}
 /// assert_eq!(12, std::mem::size_of_val(&s[..]));
 /// assert_eq!(32, std::mem::size_of_val(&v[..]));
 /// ```
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 mod prim_char {}
 
 #[cfg_attr(bootstrap, doc(primitive = "unit"))]
-#[cfg_attr(not(bootstrap), rustc_doc_primitive = "unit")]
+#[cfg_attr(not(bootstrap), crablangc_doc_primitive = "unit")]
 #[doc(alias = "(")]
 #[doc(alias = ")")]
 #[doc(alias = "()")]
@@ -414,7 +414,7 @@ mod prim_char {}
 /// commonly seen implicitly: functions without a `-> ...` implicitly
 /// have return type `()`, that is, these are equivalent:
 ///
-/// ```rust
+/// ```crablang
 /// fn long() -> () {}
 ///
 /// fn short() {}
@@ -424,7 +424,7 @@ mod prim_char {}
 /// expression at the end of a block, making the expression (and thus
 /// the block) evaluate to `()`. For example,
 ///
-/// ```rust
+/// ```crablang
 /// fn returns_i64() -> i64 {
 ///     1i64
 /// }
@@ -440,17 +440,17 @@ mod prim_char {}
 /// };
 /// ```
 ///
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 mod prim_unit {}
 
 // Required to make auto trait impls render.
-// See src/librustdoc/passes/collect_trait_impls.rs:collect_trait_impls
+// See src/libcrablangdoc/passes/collect_trait_impls.rs:collect_trait_impls
 #[doc(hidden)]
 impl () {}
 
 // Fake impl that's only really used for docs.
 #[cfg(doc)]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl Clone for () {
     fn clone(&self) -> Self {
         loop {}
@@ -459,13 +459,13 @@ impl Clone for () {
 
 // Fake impl that's only really used for docs.
 #[cfg(doc)]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl Copy for () {
     // empty
 }
 
 #[cfg_attr(bootstrap, doc(primitive = "pointer"))]
-#[cfg_attr(not(bootstrap), rustc_doc_primitive = "pointer")]
+#[cfg_attr(not(bootstrap), crablangc_doc_primitive = "pointer")]
 #[doc(alias = "ptr")]
 #[doc(alias = "*")]
 #[doc(alias = "*const")]
@@ -475,7 +475,7 @@ impl Copy for () {
 ///
 /// *[See also the `std::ptr` module](ptr).*
 ///
-/// Working with raw pointers in Rust is uncommon, typically limited to a few patterns.
+/// Working with raw pointers in CrabLang is uncommon, typically limited to a few patterns.
 /// Raw pointers can be unaligned or [`null`]. However, when a raw pointer is
 /// dereferenced (using the `*` operator), it must be non-null and aligned.
 ///
@@ -554,7 +554,7 @@ impl Copy for () {
 /// ## 4. Get it from C.
 ///
 /// ```
-/// # #![feature(rustc_private)]
+/// # #![feature(crablangc_private)]
 /// extern crate libc;
 ///
 /// use std::mem;
@@ -568,9 +568,9 @@ impl Copy for () {
 /// }
 /// ```
 ///
-/// Usually you wouldn't literally use `malloc` and `free` from Rust,
+/// Usually you wouldn't literally use `malloc` and `free` from CrabLang,
 /// but C APIs hand out a lot of pointers generally, so are a common source
-/// of raw pointers in Rust.
+/// of raw pointers in CrabLang.
 ///
 /// [`null`]: ptr::null
 /// [`null_mut`]: ptr::null_mut
@@ -579,13 +579,13 @@ impl Copy for () {
 #[doc = concat!("[`into_raw`]: ", include_str!("../primitive_docs/box_into_raw.md"))]
 /// [`drop`]: mem::drop
 /// [`write`]: ptr::write
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 mod prim_pointer {}
 
 #[cfg_attr(bootstrap, doc(primitive = "array"))]
-#[cfg_attr(not(bootstrap), rustc_doc_primitive = "array")]
+#[cfg_attr(not(bootstrap), crablangc_doc_primitive = "array")]
 #[doc(alias = "[]")]
-#[doc(alias = "[T;N]")] // unfortunately, rustdoc doesn't have fuzzy search for aliases
+#[doc(alias = "[T;N]")] // unfortunately, crablangdoc doesn't have fuzzy search for aliases
 #[doc(alias = "[T; N]")]
 /// A fixed-size array, denoted `[T; N]`, for the element type, `T`, and the
 /// non-negative compile-time constant size, `N`.
@@ -681,14 +681,14 @@ mod prim_pointer {}
 ///
 /// # Editions
 ///
-/// Prior to Rust 1.53, arrays did not implement [`IntoIterator`] by value, so the method call
+/// Prior to CrabLang 1.53, arrays did not implement [`IntoIterator`] by value, so the method call
 /// `array.into_iter()` auto-referenced into a [slice iterator](slice::iter). Right now, the old
-/// behavior is preserved in the 2015 and 2018 editions of Rust for compatibility, ignoring
+/// behavior is preserved in the 2015 and 2018 editions of CrabLang for compatibility, ignoring
 /// [`IntoIterator`] by value. In the future, the behavior on the 2015 and 2018 edition
 /// might be made consistent to the behavior of later editions.
 ///
-/// ```rust,edition2018
-/// // Rust 2015 and 2018:
+/// ```crablang,edition2018
+/// // CrabLang 2015 and 2018:
 ///
 /// # #![allow(array_into_iter)] // override our `deny(warnings)`
 /// let array: [i32; 3] = [0; 3];
@@ -715,8 +715,8 @@ mod prim_pointer {}
 /// Starting in the 2021 edition, `array.into_iter()` uses `IntoIterator` normally to iterate
 /// by value, and `iter()` should be used to iterate by reference like previous editions.
 ///
-/// ```rust,edition2021
-/// // Rust 2021:
+/// ```crablang,edition2021
+/// // CrabLang 2021:
 ///
 /// let array: [i32; 3] = [0; 3];
 ///
@@ -740,12 +740,12 @@ mod prim_pointer {}
 /// avoid the `into_iter` syntax on those editions. If an edition update is not
 /// viable/desired, there are multiple alternatives:
 /// * use `iter`, equivalent to the old behavior, creating references
-/// * use [`IntoIterator::into_iter`], equivalent to the post-2021 behavior (Rust 1.53+)
+/// * use [`IntoIterator::into_iter`], equivalent to the post-2021 behavior (CrabLang 1.53+)
 /// * replace `for ... in array.into_iter() {` with `for ... in array {`,
-///   equivalent to the post-2021 behavior (Rust 1.53+)
+///   equivalent to the post-2021 behavior (CrabLang 1.53+)
 ///
-/// ```rust,edition2018
-/// // Rust 2015 and 2018:
+/// ```crablang,edition2018
+/// // CrabLang 2015 and 2018:
 ///
 /// let array: [i32; 3] = [0; 3];
 ///
@@ -781,11 +781,11 @@ mod prim_pointer {}
 /// [`Borrow`]: borrow::Borrow
 /// [`BorrowMut`]: borrow::BorrowMut
 /// [slice pattern]: ../reference/patterns.html#slice-patterns
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 mod prim_array {}
 
 #[cfg_attr(bootstrap, doc(primitive = "slice"))]
-#[cfg_attr(not(bootstrap), rustc_doc_primitive = "slice")]
+#[cfg_attr(not(bootstrap), crablangc_doc_primitive = "slice")]
 #[doc(alias = "[")]
 #[doc(alias = "]")]
 #[doc(alias = "[]")]
@@ -874,11 +874,11 @@ mod prim_array {}
 /// [`.splitn`]: slice::splitn
 /// [`.chunks`]: slice::chunks
 /// [`.windows`]: slice::windows
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 mod prim_slice {}
 
 #[cfg_attr(bootstrap, doc(primitive = "str"))]
-#[cfg_attr(not(bootstrap), rustc_doc_primitive = "str")]
+#[cfg_attr(not(bootstrap), crablangc_doc_primitive = "str")]
 /// String slices.
 ///
 /// *[See also the `std::str` module](crate::str).*
@@ -942,11 +942,11 @@ mod prim_slice {}
 /// Note: This example shows the internals of `&str`. `unsafe` should not be
 /// used to get a string slice under normal circumstances. Use `as_str`
 /// instead.
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 mod prim_str {}
 
 #[cfg_attr(bootstrap, doc(primitive = "tuple"))]
-#[cfg_attr(not(bootstrap), rustc_doc_primitive = "tuple")]
+#[cfg_attr(not(bootstrap), crablangc_doc_primitive = "tuple")]
 #[doc(alias = "(")]
 #[doc(alias = ")")]
 #[doc(alias = "()")]
@@ -977,7 +977,7 @@ mod prim_str {}
 /// Tuples are a *sequence*. This means that they can be accessed by position;
 /// this is called 'tuple indexing', and it looks like this:
 ///
-/// ```rust
+/// ```crablang
 /// let tuple = ("hello", 5, 'c');
 ///
 /// assert_eq!(tuple.0, "hello");
@@ -991,16 +991,16 @@ mod prim_str {}
 ///
 /// For more about tuples, see [the book](../book/ch03-02-data-types.html#the-tuple-type).
 ///
-// Hardcoded anchor in src/librustdoc/html/format.rs
+// Hardcoded anchor in src/libcrablangdoc/html/format.rs
 // linked to as `#trait-implementations-1`
 /// # Trait implementations
 ///
 /// In this documentation the shorthand `(T₁, T₂, …, Tₙ)` is used to represent tuples of varying
 /// length. When that is used, any trait bound expressed on `T` applies to each element of the
 /// tuple independently. Note that this is a convenience notation to avoid repetitive
-/// documentation, not valid Rust syntax.
+/// documentation, not valid CrabLang syntax.
 ///
-/// Due to a temporary restriction in Rust’s type system, the following traits are only
+/// Due to a temporary restriction in CrabLang’s type system, the following traits are only
 /// implemented on tuples of arity 12 or less. In the future, this may change:
 ///
 /// * [`PartialEq`]
@@ -1062,17 +1062,17 @@ mod prim_str {}
 /// assert_eq!(y, 5);
 /// ```
 ///
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 mod prim_tuple {}
 
 // Required to make auto trait impls render.
-// See src/librustdoc/passes/collect_trait_impls.rs:collect_trait_impls
+// See src/libcrablangdoc/passes/collect_trait_impls.rs:collect_trait_impls
 #[doc(hidden)]
 impl<T> (T,) {}
 
 // Fake impl that's only really used for docs.
 #[cfg(doc)]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[doc(fake_variadic)]
 /// This trait is implemented on arbitrary-length tuples.
 impl<T: Clone> Clone for (T,) {
@@ -1083,7 +1083,7 @@ impl<T: Clone> Clone for (T,) {
 
 // Fake impl that's only really used for docs.
 #[cfg(doc)]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[doc(fake_variadic)]
 /// This trait is implemented on arbitrary-length tuples.
 impl<T: Copy> Copy for (T,) {
@@ -1091,7 +1091,7 @@ impl<T: Copy> Copy for (T,) {
 }
 
 #[cfg_attr(bootstrap, doc(primitive = "f32"))]
-#[cfg_attr(not(bootstrap), rustc_doc_primitive = "f32")]
+#[cfg_attr(not(bootstrap), crablangc_doc_primitive = "f32")]
 /// A 32-bit floating point type (specifically, the "binary32" type defined in IEEE 754-2008).
 ///
 /// This type can represent a wide range of decimal numbers, like `3.5`, `27`,
@@ -1130,7 +1130,7 @@ impl<T: Copy> Copy for (T,) {
 ///     page only explicitly document behavior on NaN operands if this default
 ///     is deviated from.
 ///   - Lastly, there are multiple bit patterns that are considered NaN.
-///     Rust does not currently guarantee that the bit patterns of NaN are
+///     CrabLang does not currently guarantee that the bit patterns of NaN are
 ///     preserved over arithmetic operations, and they are not guaranteed to be
 ///     portable or even fully deterministic! This means that there may be some
 ///     surprising results upon inspecting the bit patterns,
@@ -1154,11 +1154,11 @@ impl<T: Copy> Copy for (T,) {
 /// *[See also the `std::f32::consts` module](crate::f32::consts).*
 ///
 /// [wikipedia]: https://en.wikipedia.org/wiki/Single-precision_floating-point_format
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 mod prim_f32 {}
 
 #[cfg_attr(bootstrap, doc(primitive = "f64"))]
-#[cfg_attr(not(bootstrap), rustc_doc_primitive = "f64")]
+#[cfg_attr(not(bootstrap), crablangc_doc_primitive = "f64")]
 /// A 64-bit floating point type (specifically, the "binary64" type defined in IEEE 754-2008).
 ///
 /// This type is very similar to [`f32`], but has increased
@@ -1170,103 +1170,103 @@ mod prim_f32 {}
 ///
 /// [`f32`]: prim@f32
 /// [wikipedia]: https://en.wikipedia.org/wiki/Double-precision_floating-point_format
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 mod prim_f64 {}
 
 #[cfg_attr(bootstrap, doc(primitive = "i8"))]
-#[cfg_attr(not(bootstrap), rustc_doc_primitive = "i8")]
+#[cfg_attr(not(bootstrap), crablangc_doc_primitive = "i8")]
 //
 /// The 8-bit signed integer type.
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 mod prim_i8 {}
 
 #[cfg_attr(bootstrap, doc(primitive = "i16"))]
-#[cfg_attr(not(bootstrap), rustc_doc_primitive = "i16")]
+#[cfg_attr(not(bootstrap), crablangc_doc_primitive = "i16")]
 //
 /// The 16-bit signed integer type.
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 mod prim_i16 {}
 
 #[cfg_attr(bootstrap, doc(primitive = "i32"))]
-#[cfg_attr(not(bootstrap), rustc_doc_primitive = "i32")]
+#[cfg_attr(not(bootstrap), crablangc_doc_primitive = "i32")]
 //
 /// The 32-bit signed integer type.
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 mod prim_i32 {}
 
 #[cfg_attr(bootstrap, doc(primitive = "i64"))]
-#[cfg_attr(not(bootstrap), rustc_doc_primitive = "i64")]
+#[cfg_attr(not(bootstrap), crablangc_doc_primitive = "i64")]
 //
 /// The 64-bit signed integer type.
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 mod prim_i64 {}
 
 #[cfg_attr(bootstrap, doc(primitive = "i128"))]
-#[cfg_attr(not(bootstrap), rustc_doc_primitive = "i128")]
+#[cfg_attr(not(bootstrap), crablangc_doc_primitive = "i128")]
 //
 /// The 128-bit signed integer type.
 #[stable(feature = "i128", since = "1.26.0")]
 mod prim_i128 {}
 
 #[cfg_attr(bootstrap, doc(primitive = "u8"))]
-#[cfg_attr(not(bootstrap), rustc_doc_primitive = "u8")]
+#[cfg_attr(not(bootstrap), crablangc_doc_primitive = "u8")]
 //
 /// The 8-bit unsigned integer type.
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 mod prim_u8 {}
 
 #[cfg_attr(bootstrap, doc(primitive = "u16"))]
-#[cfg_attr(not(bootstrap), rustc_doc_primitive = "u16")]
+#[cfg_attr(not(bootstrap), crablangc_doc_primitive = "u16")]
 //
 /// The 16-bit unsigned integer type.
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 mod prim_u16 {}
 
 #[cfg_attr(bootstrap, doc(primitive = "u32"))]
-#[cfg_attr(not(bootstrap), rustc_doc_primitive = "u32")]
+#[cfg_attr(not(bootstrap), crablangc_doc_primitive = "u32")]
 //
 /// The 32-bit unsigned integer type.
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 mod prim_u32 {}
 
 #[cfg_attr(bootstrap, doc(primitive = "u64"))]
-#[cfg_attr(not(bootstrap), rustc_doc_primitive = "u64")]
+#[cfg_attr(not(bootstrap), crablangc_doc_primitive = "u64")]
 //
 /// The 64-bit unsigned integer type.
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 mod prim_u64 {}
 
 #[cfg_attr(bootstrap, doc(primitive = "u128"))]
-#[cfg_attr(not(bootstrap), rustc_doc_primitive = "u128")]
+#[cfg_attr(not(bootstrap), crablangc_doc_primitive = "u128")]
 //
 /// The 128-bit unsigned integer type.
 #[stable(feature = "i128", since = "1.26.0")]
 mod prim_u128 {}
 
 #[cfg_attr(bootstrap, doc(primitive = "isize"))]
-#[cfg_attr(not(bootstrap), rustc_doc_primitive = "isize")]
+#[cfg_attr(not(bootstrap), crablangc_doc_primitive = "isize")]
 //
 /// The pointer-sized signed integer type.
 ///
 /// The size of this primitive is how many bytes it takes to reference any
 /// location in memory. For example, on a 32 bit target, this is 4 bytes
 /// and on a 64 bit target, this is 8 bytes.
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 mod prim_isize {}
 
 #[cfg_attr(bootstrap, doc(primitive = "usize"))]
-#[cfg_attr(not(bootstrap), rustc_doc_primitive = "usize")]
+#[cfg_attr(not(bootstrap), crablangc_doc_primitive = "usize")]
 //
 /// The pointer-sized unsigned integer type.
 ///
 /// The size of this primitive is how many bytes it takes to reference any
 /// location in memory. For example, on a 32 bit target, this is 4 bytes
 /// and on a 64 bit target, this is 8 bytes.
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 mod prim_usize {}
 
 #[cfg_attr(bootstrap, doc(primitive = "reference"))]
-#[cfg_attr(not(bootstrap), rustc_doc_primitive = "reference")]
+#[cfg_attr(not(bootstrap), crablangc_doc_primitive = "reference")]
 #[doc(alias = "&")]
 #[doc(alias = "&mut")]
 //
@@ -1378,14 +1378,14 @@ mod prim_usize {}
 /// * [`DoubleEndedIterator`]
 /// * [`ExactSizeIterator`]
 /// * [`FusedIterator`]
-/// * [`TrustedLen`]
+/// * [`TcrablangedLen`]
 /// * [`io::Write`]
 /// * [`Read`]
 /// * [`Seek`]
 /// * [`BufRead`]
 ///
 /// [`FusedIterator`]: iter::FusedIterator
-/// [`TrustedLen`]: iter::TrustedLen
+/// [`TcrablangedLen`]: iter::TcrablangedLen
 #[doc = concat!("[`Seek`]: ", include_str!("../primitive_docs/io_seek.md"))]
 #[doc = concat!("[`BufRead`]: ", include_str!("../primitive_docs/io_bufread.md"))]
 #[doc = concat!("[`Read`]: ", include_str!("../primitive_docs/io_read.md"))]
@@ -1395,11 +1395,11 @@ mod prim_usize {}
 /// work on references as well as they do on owned values! The implementations described here are
 /// meant for generic contexts, where the final type `T` is a type parameter or otherwise not
 /// locally known.
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 mod prim_ref {}
 
 #[cfg_attr(bootstrap, doc(primitive = "fn"))]
-#[cfg_attr(not(bootstrap), rustc_doc_primitive = "fn")]
+#[cfg_attr(not(bootstrap), crablangc_doc_primitive = "fn")]
 //
 /// Function pointers, like `fn(usize) -> bool`.
 ///
@@ -1458,8 +1458,8 @@ mod prim_ref {}
 ///
 /// On top of that, function pointers can vary based on what ABI they use. This
 /// is achieved by adding the `extern` keyword before the type, followed by the
-/// ABI in question. The default ABI is "Rust", i.e., `fn()` is the exact same
-/// type as `extern "Rust" fn()`. A pointer to a function with C ABI would have
+/// ABI in question. The default ABI is "CrabLang", i.e., `fn()` is the exact same
+/// type as `extern "CrabLang" fn()`. A pointer to a function with C ABI would have
 /// type `extern "C" fn()`.
 ///
 /// `extern "ABI" { ... }` blocks declare functions with ABI "ABI". The default
@@ -1474,7 +1474,7 @@ mod prim_ref {}
 /// ### Variadic functions
 ///
 /// Extern function declarations with the "C" or "cdecl" ABIs can also be *variadic*, allowing them
-/// to be called with a variable number of arguments. Normal Rust functions, even those with an
+/// to be called with a variable number of arguments. Normal CrabLang functions, even those with an
 /// `extern "ABI"`, cannot be variadic. For more information, see [the nomicon's section on
 /// variadic functions][nomicon-variadic].
 ///
@@ -1491,7 +1491,7 @@ mod prim_ref {}
 ///
 /// This zero-sized type *coerces* to a regular function pointer. For example:
 ///
-/// ```rust
+/// ```crablang
 /// use std::mem;
 ///
 /// fn bar(x: i32) {}
@@ -1513,14 +1513,14 @@ mod prim_ref {}
 ///
 /// You cast function pointers directly to integers:
 ///
-/// ```rust
+/// ```crablang
 /// let fnptr: fn(i32) -> i32 = |x| x+2;
 /// let fnptr_addr = fnptr as usize;
 /// ```
 ///
 /// However, a direct cast back is not possible. You need to use `transmute`:
 ///
-/// ```rust
+/// ```crablang
 /// # #[cfg(not(miri))] { // FIXME: use strict provenance APIs once they are stable, then remove this `cfg`
 /// # let fnptr: fn(i32) -> i32 = |x| x+2;
 /// # let fnptr_addr = fnptr as usize;
@@ -1541,10 +1541,10 @@ mod prim_ref {}
 ///
 /// In this documentation the shorthand `fn (T₁, T₂, …, Tₙ)` is used to represent non-variadic
 /// function pointers of varying length. Note that this is a convenience notation to avoid
-/// repetitive documentation, not valid Rust syntax.
+/// repetitive documentation, not valid CrabLang syntax.
 ///
-/// Due to a temporary restriction in Rust's type system, these traits are only implemented on
-/// functions that take 12 arguments or less, with the `"Rust"` and `"C"` ABIs. In the future, this
+/// Due to a temporary restriction in CrabLang's type system, these traits are only implemented on
+/// functions that take 12 arguments or less, with the `"CrabLang"` and `"C"` ABIs. In the future, this
 /// may change:
 ///
 /// * [`PartialEq`]
@@ -1574,17 +1574,17 @@ mod prim_ref {}
 ///
 /// In addition, all *safe* function pointers implement [`Fn`], [`FnMut`], and [`FnOnce`], because
 /// these traits are specially known to the compiler.
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 mod prim_fn {}
 
 // Required to make auto trait impls render.
-// See src/librustdoc/passes/collect_trait_impls.rs:collect_trait_impls
+// See src/libcrablangdoc/passes/collect_trait_impls.rs:collect_trait_impls
 #[doc(hidden)]
 impl<Ret, T> fn(T) -> Ret {}
 
 // Fake impl that's only really used for docs.
 #[cfg(doc)]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[doc(fake_variadic)]
 /// This trait is implemented on function pointers with any number of arguments.
 impl<Ret, T> Clone for fn(T) -> Ret {
@@ -1595,7 +1595,7 @@ impl<Ret, T> Clone for fn(T) -> Ret {
 
 // Fake impl that's only really used for docs.
 #[cfg(doc)]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[doc(fake_variadic)]
 /// This trait is implemented on function pointers with any number of arguments.
 impl<Ret, T> Copy for fn(T) -> Ret {

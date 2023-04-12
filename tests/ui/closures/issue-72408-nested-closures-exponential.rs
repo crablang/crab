@@ -5,7 +5,7 @@
 // Wrapping one closure with another leads to doubling
 // the amount of types in the type tree.
 //
-// This test ensures that rust can handle
+// This test ensures that crablang can handle
 // deeply nested type trees with a lot
 // of duplicated subtrees.
 

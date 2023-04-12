@@ -5,7 +5,7 @@
 
 use std::rc::Rc;
 
-// Examples from the "deref coercions" RFC, at rust-lang/rfcs#241.
+// Examples from the "deref coercions" RFC, at crablang/rfcs#241.
 
 fn use_ref<T>(_: &T) {}
 fn use_mut<T>(_: &mut T) {}

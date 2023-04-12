@@ -1,5 +1,5 @@
 // run-pass
 
 #![allow(stable_features)]
-#![feature(rust1)]
+#![feature(crablang1)]
 pub fn main() { }

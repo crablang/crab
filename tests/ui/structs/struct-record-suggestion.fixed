@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 #[derive(Debug, Default, Eq, PartialEq)]
 struct A {
     b: u32,

@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 // aux-build:proc_macros.rs
 
 #![allow(unused_variables, dead_code, clippy::derive_partial_eq_without_eq)]

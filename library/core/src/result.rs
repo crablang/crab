@@ -105,7 +105,7 @@
 //! file.write_all(b"important message");
 //! ```
 //!
-//! If you *do* write that in Rust, the compiler will give you a
+//! If you *do* write that in CrabLang, the compiler will give you a
 //! warning (by default, controlled by the `unused_must_use` lint).
 //!
 //! You might instead, if you don't want to handle the error, simply
@@ -486,9 +486,9 @@
 //! assert_eq!(res, Ok(42));
 //! ```
 
-#![stable(feature = "rust1", since = "1.0.0")]
+#![stable(feature = "crablang1", since = "1.0.0")]
 
-use crate::iter::{self, FromIterator, FusedIterator, TrustedLen};
+use crate::iter::{self, FromIterator, FusedIterator, TcrablangedLen};
 use crate::marker::Destruct;
 use crate::ops::{self, ControlFlow, Deref, DerefMut};
 use crate::{convert, fmt, hint};
@@ -498,18 +498,18 @@ use crate::{convert, fmt, hint};
 /// See the [module documentation](self) for details.
 #[derive(Copy, PartialEq, PartialOrd, Eq, Ord, Debug, Hash)]
 #[must_use = "this `Result` may be an `Err` variant, which should be handled"]
-#[rustc_diagnostic_item = "Result"]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[crablangc_diagnostic_item = "Result"]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub enum Result<T, E> {
     /// Contains the success value
     #[lang = "Ok"]
-    #[stable(feature = "rust1", since = "1.0.0")]
-    Ok(#[stable(feature = "rust1", since = "1.0.0")] T),
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    Ok(#[stable(feature = "crablang1", since = "1.0.0")] T),
 
     /// Contains the error value
     #[lang = "Err"]
-    #[stable(feature = "rust1", since = "1.0.0")]
-    Err(#[stable(feature = "rust1", since = "1.0.0")] E),
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    Err(#[stable(feature = "crablang1", since = "1.0.0")] E),
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -533,9 +533,9 @@ impl<T, E> Result<T, E> {
     /// assert_eq!(x.is_ok(), false);
     /// ```
     #[must_use = "if you intended to assert that this is ok, consider `.unwrap()` instead"]
-    #[rustc_const_stable(feature = "const_result_basics", since = "1.48.0")]
+    #[crablangc_const_stable(feature = "const_result_basics", since = "1.48.0")]
     #[inline]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub const fn is_ok(&self) -> bool {
         matches!(*self, Ok(_))
     }
@@ -556,7 +556,7 @@ impl<T, E> Result<T, E> {
     /// ```
     #[must_use]
     #[inline]
-    #[stable(feature = "is_some_and", since = "CURRENT_RUSTC_VERSION")]
+    #[stable(feature = "is_some_and", since = "CURRENT_CRABLANGC_VERSION")]
     pub fn is_ok_and(self, f: impl FnOnce(T) -> bool) -> bool {
         match self {
             Err(_) => false,
@@ -576,9 +576,9 @@ impl<T, E> Result<T, E> {
     /// assert_eq!(x.is_err(), true);
     /// ```
     #[must_use = "if you intended to assert that this is err, consider `.unwrap_err()` instead"]
-    #[rustc_const_stable(feature = "const_result_basics", since = "1.48.0")]
+    #[crablangc_const_stable(feature = "const_result_basics", since = "1.48.0")]
     #[inline]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub const fn is_err(&self) -> bool {
         !self.is_ok()
     }
@@ -601,7 +601,7 @@ impl<T, E> Result<T, E> {
     /// ```
     #[must_use]
     #[inline]
-    #[stable(feature = "is_some_and", since = "CURRENT_RUSTC_VERSION")]
+    #[stable(feature = "is_some_and", since = "CURRENT_CRABLANGC_VERSION")]
     pub fn is_err_and(self, f: impl FnOnce(E) -> bool) -> bool {
         match self {
             Ok(_) => false,
@@ -628,8 +628,8 @@ impl<T, E> Result<T, E> {
     /// assert_eq!(x.ok(), None);
     /// ```
     #[inline]
-    #[stable(feature = "rust1", since = "1.0.0")]
-    #[rustc_const_unstable(feature = "const_result_drop", issue = "92384")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    #[crablangc_const_unstable(feature = "const_result_drop", issue = "92384")]
     pub const fn ok(self) -> Option<T>
     where
         E: ~const Destruct,
@@ -657,8 +657,8 @@ impl<T, E> Result<T, E> {
     /// assert_eq!(x.err(), Some("Nothing here"));
     /// ```
     #[inline]
-    #[stable(feature = "rust1", since = "1.0.0")]
-    #[rustc_const_unstable(feature = "const_result_drop", issue = "92384")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    #[crablangc_const_unstable(feature = "const_result_drop", issue = "92384")]
     pub const fn err(self) -> Option<E>
     where
         T: ~const Destruct,
@@ -690,8 +690,8 @@ impl<T, E> Result<T, E> {
     /// assert_eq!(x.as_ref(), Err(&"Error"));
     /// ```
     #[inline]
-    #[rustc_const_stable(feature = "const_result_basics", since = "1.48.0")]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[crablangc_const_stable(feature = "const_result_basics", since = "1.48.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub const fn as_ref(&self) -> Result<&T, &E> {
         match *self {
             Ok(ref x) => Ok(x),
@@ -720,8 +720,8 @@ impl<T, E> Result<T, E> {
     /// assert_eq!(x.unwrap_err(), 0);
     /// ```
     #[inline]
-    #[stable(feature = "rust1", since = "1.0.0")]
-    #[rustc_const_unstable(feature = "const_result", issue = "82814")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    #[crablangc_const_unstable(feature = "const_result", issue = "82814")]
     pub const fn as_mut(&mut self) -> Result<&mut T, &mut E> {
         match *self {
             Ok(ref mut x) => Ok(x),
@@ -753,7 +753,7 @@ impl<T, E> Result<T, E> {
     /// }
     /// ```
     #[inline]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn map<U, F: FnOnce(T) -> U>(self, op: F) -> Result<U, E> {
         match self {
             Ok(t) => Ok(op(t)),
@@ -834,7 +834,7 @@ impl<T, E> Result<T, E> {
     /// assert_eq!(x.map_err(stringify), Err("error code: 13".to_string()));
     /// ```
     #[inline]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn map_err<F, O: FnOnce(E) -> F>(self, op: O) -> Result<T, F> {
         match self {
             Ok(t) => Ok(t),
@@ -959,7 +959,7 @@ impl<T, E> Result<T, E> {
     /// assert_eq!(x.iter().next(), None);
     /// ```
     #[inline]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn iter(&self) -> Iter<'_, T> {
         Iter { inner: self.as_ref().ok() }
     }
@@ -982,7 +982,7 @@ impl<T, E> Result<T, E> {
     /// assert_eq!(x.iter_mut().next(), None);
     /// ```
     #[inline]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn iter_mut(&mut self) -> IterMut<'_, T> {
         IterMut { inner: self.as_mut().ok() }
     }
@@ -1079,7 +1079,7 @@ impl<T, E> Result<T, E> {
     /// ```
     #[inline]
     #[track_caller]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn unwrap(self) -> T
     where
         E: fmt::Debug,
@@ -1174,7 +1174,7 @@ impl<T, E> Result<T, E> {
     /// ```
     #[inline]
     #[track_caller]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn unwrap_err(self) -> E
     where
         T: fmt::Debug,
@@ -1287,8 +1287,8 @@ impl<T, E> Result<T, E> {
     /// assert_eq!(x.and(y), Ok("different result type"));
     /// ```
     #[inline]
-    #[rustc_const_unstable(feature = "const_result_drop", issue = "92384")]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[crablangc_const_unstable(feature = "const_result_drop", issue = "92384")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub const fn and<U>(self, res: Result<U, E>) -> Result<U, E>
     where
         T: ~const Destruct,
@@ -1334,7 +1334,7 @@ impl<T, E> Result<T, E> {
     /// assert_eq!(should_fail.unwrap_err().kind(), ErrorKind::NotFound);
     /// ```
     #[inline]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn and_then<U, F: FnOnce(T) -> Result<U, E>>(self, op: F) -> Result<U, E> {
         match self {
             Ok(t) => op(t),
@@ -1370,8 +1370,8 @@ impl<T, E> Result<T, E> {
     /// assert_eq!(x.or(y), Ok(2));
     /// ```
     #[inline]
-    #[rustc_const_unstable(feature = "const_result_drop", issue = "92384")]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[crablangc_const_unstable(feature = "const_result_drop", issue = "92384")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub const fn or<F>(self, res: Result<T, F>) -> Result<T, F>
     where
         T: ~const Destruct,
@@ -1403,7 +1403,7 @@ impl<T, E> Result<T, E> {
     /// assert_eq!(Err(3).or_else(err).or_else(err), Err(3));
     /// ```
     #[inline]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn or_else<F, O: FnOnce(E) -> Result<T, F>>(self, op: O) -> Result<T, F> {
         match self {
             Ok(t) => Ok(t),
@@ -1430,8 +1430,8 @@ impl<T, E> Result<T, E> {
     /// assert_eq!(x.unwrap_or(default), default);
     /// ```
     #[inline]
-    #[rustc_const_unstable(feature = "const_result_drop", issue = "92384")]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[crablangc_const_unstable(feature = "const_result_drop", issue = "92384")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub const fn unwrap_or(self, default: T) -> T
     where
         T: ~const Destruct,
@@ -1457,7 +1457,7 @@ impl<T, E> Result<T, E> {
     /// assert_eq!(Err("foo").unwrap_or_else(count), 3);
     /// ```
     #[inline]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn unwrap_or_else<F: FnOnce(E) -> T>(self, op: F) -> T {
         match self {
             Ok(t) => t,
@@ -1472,7 +1472,7 @@ impl<T, E> Result<T, E> {
     ///
     /// Calling this method on an [`Err`] is *[undefined behavior]*.
     ///
-    /// [undefined behavior]: https://doc.rust-lang.org/reference/behavior-considered-undefined.html
+    /// [undefined behavior]: https://doc.crablang.org/reference/behavior-considered-undefined.html
     ///
     /// # Examples
     ///
@@ -1504,7 +1504,7 @@ impl<T, E> Result<T, E> {
     ///
     /// Calling this method on an [`Ok`] is *[undefined behavior]*.
     ///
-    /// [undefined behavior]: https://doc.rust-lang.org/reference/behavior-considered-undefined.html
+    /// [undefined behavior]: https://doc.crablang.org/reference/behavior-considered-undefined.html
     ///
     /// # Examples
     ///
@@ -1636,7 +1636,7 @@ impl<T, E> Result<Option<T>, E> {
     /// ```
     #[inline]
     #[stable(feature = "transpose_result", since = "1.33.0")]
-    #[rustc_const_unstable(feature = "const_result", issue = "82814")]
+    #[crablangc_const_unstable(feature = "const_result", issue = "82814")]
     pub const fn transpose(self) -> Option<Result<T, E>> {
         match self {
             Ok(Some(x)) => Some(Ok(x)),
@@ -1703,8 +1703,8 @@ fn unwrap_failed<T>(_msg: &str, _error: &T) -> ! {
 // Trait implementations
 /////////////////////////////////////////////////////////////////////////////
 
-#[stable(feature = "rust1", since = "1.0.0")]
-#[rustc_const_unstable(feature = "const_clone", issue = "91805")]
+#[stable(feature = "crablang1", since = "1.0.0")]
+#[crablangc_const_unstable(feature = "const_clone", issue = "91805")]
 impl<T, E> const Clone for Result<T, E>
 where
     T: ~const Clone + ~const Destruct,
@@ -1728,7 +1728,7 @@ where
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T, E> IntoIterator for Result<T, E> {
     type Item = T;
     type IntoIter = IntoIter<T>;
@@ -1784,12 +1784,12 @@ impl<'a, T, E> IntoIterator for &'a mut Result<T, E> {
 ///
 /// Created by [`Result::iter`].
 #[derive(Debug)]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub struct Iter<'a, T: 'a> {
     inner: Option<&'a T>,
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<'a, T> Iterator for Iter<'a, T> {
     type Item = &'a T;
 
@@ -1804,7 +1804,7 @@ impl<'a, T> Iterator for Iter<'a, T> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<'a, T> DoubleEndedIterator for Iter<'a, T> {
     #[inline]
     fn next_back(&mut self) -> Option<&'a T> {
@@ -1812,16 +1812,16 @@ impl<'a, T> DoubleEndedIterator for Iter<'a, T> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T> ExactSizeIterator for Iter<'_, T> {}
 
 #[stable(feature = "fused", since = "1.26.0")]
 impl<T> FusedIterator for Iter<'_, T> {}
 
-#[unstable(feature = "trusted_len", issue = "37572")]
-unsafe impl<A> TrustedLen for Iter<'_, A> {}
+#[unstable(feature = "tcrablanged_len", issue = "37572")]
+unsafe impl<A> TcrablangedLen for Iter<'_, A> {}
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T> Clone for Iter<'_, T> {
     #[inline]
     fn clone(&self) -> Self {
@@ -1833,12 +1833,12 @@ impl<T> Clone for Iter<'_, T> {
 ///
 /// Created by [`Result::iter_mut`].
 #[derive(Debug)]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub struct IterMut<'a, T: 'a> {
     inner: Option<&'a mut T>,
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<'a, T> Iterator for IterMut<'a, T> {
     type Item = &'a mut T;
 
@@ -1853,7 +1853,7 @@ impl<'a, T> Iterator for IterMut<'a, T> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<'a, T> DoubleEndedIterator for IterMut<'a, T> {
     #[inline]
     fn next_back(&mut self) -> Option<&'a mut T> {
@@ -1861,14 +1861,14 @@ impl<'a, T> DoubleEndedIterator for IterMut<'a, T> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T> ExactSizeIterator for IterMut<'_, T> {}
 
 #[stable(feature = "fused", since = "1.26.0")]
 impl<T> FusedIterator for IterMut<'_, T> {}
 
-#[unstable(feature = "trusted_len", issue = "37572")]
-unsafe impl<A> TrustedLen for IterMut<'_, A> {}
+#[unstable(feature = "tcrablanged_len", issue = "37572")]
+unsafe impl<A> TcrablangedLen for IterMut<'_, A> {}
 
 /// An iterator over the value in a [`Ok`] variant of a [`Result`].
 ///
@@ -1879,12 +1879,12 @@ unsafe impl<A> TrustedLen for IterMut<'_, A> {}
 ///
 /// [`into_iter`]: IntoIterator::into_iter
 #[derive(Clone, Debug)]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub struct IntoIter<T> {
     inner: Option<T>,
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T> Iterator for IntoIter<T> {
     type Item = T;
 
@@ -1899,7 +1899,7 @@ impl<T> Iterator for IntoIter<T> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T> DoubleEndedIterator for IntoIter<T> {
     #[inline]
     fn next_back(&mut self) -> Option<T> {
@@ -1907,20 +1907,20 @@ impl<T> DoubleEndedIterator for IntoIter<T> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T> ExactSizeIterator for IntoIter<T> {}
 
 #[stable(feature = "fused", since = "1.26.0")]
 impl<T> FusedIterator for IntoIter<T> {}
 
-#[unstable(feature = "trusted_len", issue = "37572")]
-unsafe impl<A> TrustedLen for IntoIter<A> {}
+#[unstable(feature = "tcrablanged_len", issue = "37572")]
+unsafe impl<A> TcrablangedLen for IntoIter<A> {}
 
 /////////////////////////////////////////////////////////////////////////////
 // FromIterator
 /////////////////////////////////////////////////////////////////////////////
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<A, E, V: FromIterator<A>> FromIterator<Result<A, E>> for Result<V, E> {
     /// Takes each element in the `Iterator`: if it is an `Err`, no further
     /// elements are taken, and the `Err` is returned. Should no `Err` occur, a
@@ -1971,7 +1971,7 @@ impl<A, E, V: FromIterator<A>> FromIterator<Result<A, E>> for Result<V, E> {
 }
 
 #[unstable(feature = "try_trait_v2", issue = "84277")]
-#[rustc_const_unstable(feature = "const_convert", issue = "88674")]
+#[crablangc_const_unstable(feature = "const_convert", issue = "88674")]
 impl<T, E> const ops::Try for Result<T, E> {
     type Output = T;
     type Residual = Result<convert::Infallible, E>;
@@ -1991,7 +1991,7 @@ impl<T, E> const ops::Try for Result<T, E> {
 }
 
 #[unstable(feature = "try_trait_v2", issue = "84277")]
-#[rustc_const_unstable(feature = "const_convert", issue = "88674")]
+#[crablangc_const_unstable(feature = "const_convert", issue = "88674")]
 impl<T, E, F: ~const From<E>> const ops::FromResidual<Result<convert::Infallible, E>>
     for Result<T, F>
 {
@@ -2013,7 +2013,7 @@ impl<T, E, F: From<E>> ops::FromResidual<ops::Yeet<E>> for Result<T, F> {
 }
 
 #[unstable(feature = "try_trait_v2_residual", issue = "91285")]
-#[rustc_const_unstable(feature = "const_try", issue = "74935")]
+#[crablangc_const_unstable(feature = "const_try", issue = "74935")]
 impl<T, E> const ops::Residual<T> for Result<convert::Infallible, E> {
     type TryType = Result<T, E>;
 }

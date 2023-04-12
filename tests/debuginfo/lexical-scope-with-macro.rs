@@ -88,7 +88,7 @@
 // lldbr-check:(i32) b = 34
 // lldb-command:continue
 
-// Don't test this with rust-enabled lldb for now; see issue #48807
+// Don't test this with crablang-enabled lldb for now; see issue #48807
 // lldbg-command:print a
 // lldbg-check:[...]$8 = 110
 // lldbg-command:print b

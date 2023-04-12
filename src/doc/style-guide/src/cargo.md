@@ -2,7 +2,7 @@
 
 ## Formatting conventions
 
-Use the same line width and indentation as Rust code.
+Use the same line width and indentation as CrabLang code.
 
 Put a blank line between the last key-value pair in a section and the header of
 the next section. Do not place a blank line between section headers and the
@@ -31,7 +31,7 @@ after the opening square bracket, indent each item by one indentation level,
 put a comma after each item (including the last), and put the closing square
 bracket at the start of a line by itself after the last item.
 
-```rust
+```crablang
 authors = [
     "A Uthor <a.uthor@example.org>",
     "Another Author <author@example.net>",

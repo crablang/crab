@@ -4,7 +4,7 @@ warning: the feature `unsized_locals` is incomplete and may not be safe to use a
 LL | #![feature(unsized_locals)]
    |            ^^^^^^^^^^^^^^
    |
-   = note: see issue #48055 <https://github.com/rust-lang/rust/issues/48055> for more information
+   = note: see issue #48055 <https://github.com/crablang/crablang/issues/48055> for more information
    = note: `#[warn(incomplete_features)]` on by default
 
 error: the `foo` method cannot be invoked on a trait object

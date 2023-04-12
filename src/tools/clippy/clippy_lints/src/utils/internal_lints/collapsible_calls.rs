@@ -2,11 +2,11 @@ use clippy_utils::diagnostics::span_lint_and_sugg;
 use clippy_utils::source::snippet;
 use clippy_utils::{is_expr_path_def_path, is_lint_allowed, peel_blocks_with_stmt, SpanlessEq};
 use if_chain::if_chain;
-use rustc_errors::Applicability;
-use rustc_hir as hir;
-use rustc_hir::{Closure, Expr, ExprKind};
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_errors::Applicability;
+use crablangc_hir as hir;
+use crablangc_hir::{Closure, Expr, ExprKind};
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
 
 use std::borrow::{Borrow, Cow};
 
@@ -26,7 +26,7 @@ declare_clippy_lint! {
     /// convenient, readable and less error prone.
     ///
     /// ### Example
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// span_lint_and_then(cx, TEST_LINT, expr.span, lint_msg, |diag| {
     ///     diag.span_suggestion(
     ///         expr.span,
@@ -50,7 +50,7 @@ declare_clippy_lint! {
     /// ```
     ///
     /// Use instead:
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// span_lint_and_sugg(
     ///     cx,
     ///     TEST_LINT,

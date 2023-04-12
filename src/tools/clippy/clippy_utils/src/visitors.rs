@@ -1,18 +1,18 @@
 use crate::ty::needs_ordered_drop;
 use crate::{get_enclosing_block, path_to_local_id};
 use core::ops::ControlFlow;
-use rustc_hir as hir;
-use rustc_hir::def::{CtorKind, DefKind, Res};
-use rustc_hir::intravisit::{self, walk_block, walk_expr, Visitor};
-use rustc_hir::{
+use crablangc_hir as hir;
+use crablangc_hir::def::{CtorKind, DefKind, Res};
+use crablangc_hir::intravisit::{self, walk_block, walk_expr, Visitor};
+use crablangc_hir::{
     AnonConst, Arm, Block, BlockCheckMode, Body, BodyId, Expr, ExprKind, HirId, ItemId, ItemKind, Let, Pat, QPath,
     Stmt, UnOp, UnsafeSource, Unsafety,
 };
-use rustc_lint::LateContext;
-use rustc_middle::hir::nested_filter;
-use rustc_middle::ty::adjustment::Adjust;
-use rustc_middle::ty::{self, Ty, TyCtxt, TypeckResults};
-use rustc_span::Span;
+use crablangc_lint::LateContext;
+use crablangc_middle::hir::nested_filter;
+use crablangc_middle::ty::adjustment::Adjust;
+use crablangc_middle::ty::{self, Ty, TyCtxt, TypeckResults};
+use crablangc_span::Span;
 
 mod internal {
     /// Trait for visitor functions to control whether or not to descend to child nodes. Implemented
@@ -468,7 +468,7 @@ pub fn contains_unsafe_block<'tcx>(cx: &LateContext<'tcx>, e: &'tcx Expr<'tcx>) 
 /// of the give expression.
 ///
 /// e.g. for the following expression
-/// ```rust,ignore
+/// ```crablang,ignore
 /// if foo {
 ///     f(0)
 /// } else {

@@ -1,4 +1,4 @@
-// Tests that HRTBs are correctly accepted -- https://github.com/rust-lang/rust/issues/50301
+// Tests that HRTBs are correctly accepted -- https://github.com/crablang/crablang/issues/50301
 // check-pass
 trait Trait
 where

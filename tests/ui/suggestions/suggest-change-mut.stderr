@@ -38,4 +38,4 @@ LL |         stream_reader.read_until(b'\n', &mut buffer).expect("Reading into b
 error: aborting due to 2 previous errors
 
 Some errors have detailed explanations: E0277, E0599.
-For more information about an error, try `rustc --explain E0277`.
+For more information about an error, try `crablangc --explain E0277`.

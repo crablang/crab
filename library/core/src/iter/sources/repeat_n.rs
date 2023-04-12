@@ -1,4 +1,4 @@
-use crate::iter::{FusedIterator, TrustedLen};
+use crate::iter::{FusedIterator, TcrablangedLen};
 use crate::mem::ManuallyDrop;
 use crate::num::NonZeroUsize;
 
@@ -193,5 +193,5 @@ impl<A: Clone> DoubleEndedIterator for RepeatN<A> {
 #[unstable(feature = "iter_repeat_n", issue = "104434")]
 impl<A: Clone> FusedIterator for RepeatN<A> {}
 
-#[unstable(feature = "trusted_len", issue = "37572")]
-unsafe impl<A: Clone> TrustedLen for RepeatN<A> {}
+#[unstable(feature = "tcrablanged_len", issue = "37572")]
+unsafe impl<A: Clone> TcrablangedLen for RepeatN<A> {}

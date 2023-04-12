@@ -1,9 +1,9 @@
 use smallvec::SmallVec;
 use std::fmt;
 
-use rustc_middle::mir::interpret::{alloc_range, AllocId, AllocRange, InterpError};
-use rustc_span::{Span, SpanData};
-use rustc_target::abi::Size;
+use crablangc_middle::mir::interpret::{alloc_range, AllocId, AllocRange, InterpError};
+use crablangc_span::{Span, SpanData};
+use crablangc_target::abi::Size;
 
 use crate::borrow_tracker::{
     stacked_borrows::{err_sb_ub, Permission},

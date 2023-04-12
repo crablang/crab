@@ -1,6 +1,6 @@
 // compile-flags: --edition=2021
 
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 
 use core::any::Any;
 use core::marker::PhantomData;
@@ -15,7 +15,7 @@ fn main() {
     //~| ERROR evaluate(Binder(TraitPredicate(<MaskedStorage<GenericComp2<Pos>> as std::marker::Sized>, polarity:Positive), [])) = Ok(EvaluatedToOkModuloRegions)
 }
 
-#[rustc_evaluate_where_clauses]
+#[crablangc_evaluate_where_clauses]
 fn test<T: Sized>(_: T) {}
 
 fn make<T>() -> T {

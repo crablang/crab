@@ -17,7 +17,7 @@ static mut A: u8 = 0;
 static mut B: u8 = 0;
 static mut C: u8 = 0;
 
-// Regression test for https://github.com/rust-lang/rust/issues/96191.
+// Regression test for https://github.com/crablang/crablang/issues/96191.
 #[thread_local]
 static READ_ONLY: u8 = 42;
 

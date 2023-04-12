@@ -1,14 +1,14 @@
 use clippy_utils::diagnostics::{span_lint, span_lint_and_then};
-use rustc_ast::ast::{
+use crablangc_ast::ast::{
     self, Arm, AssocItem, AssocItemKind, Attribute, Block, FnDecl, Item, ItemKind, Local, Pat, PatKind,
 };
-use rustc_ast::visit::{walk_block, walk_expr, walk_pat, Visitor};
-use rustc_lint::{EarlyContext, EarlyLintPass, LintContext};
-use rustc_middle::lint::in_external_macro;
-use rustc_session::{declare_tool_lint, impl_lint_pass};
-use rustc_span::source_map::Span;
-use rustc_span::sym;
-use rustc_span::symbol::{Ident, Symbol};
+use crablangc_ast::visit::{walk_block, walk_expr, walk_pat, Visitor};
+use crablangc_lint::{EarlyContext, EarlyLintPass, LintContext};
+use crablangc_middle::lint::in_external_macro;
+use crablangc_session::{declare_tool_lint, impl_lint_pass};
+use crablangc_span::source_map::Span;
+use crablangc_span::sym;
+use crablangc_span::symbol::{Ident, Symbol};
 use std::cmp::Ordering;
 
 declare_clippy_lint! {
@@ -63,7 +63,7 @@ declare_clippy_lint! {
     /// descriptive name.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// let _1 = 1;
     /// let ___1 = 1;
     /// let __1___2 = 11;
@@ -120,7 +120,7 @@ impl<'a, 'tcx> SimilarNamesLocalVisitor<'a, 'tcx> {
 
 // this list contains lists of names that are allowed to be similar
 // the assumption is that no name is ever contained in multiple lists.
-#[rustfmt::skip]
+#[crablangfmt::skip]
 const ALLOWED_TO_BE_SIMILAR: &[&[&str]] = &[
     &["parsed", "parser"],
     &["lhs", "rhs"],
@@ -151,7 +151,7 @@ impl<'a, 'tcx, 'b> Visitor<'tcx> for SimilarNamesNameVisitor<'a, 'tcx, 'b> {
                 }
             },
             // just go through the first pattern, as either all patterns
-            // bind the same bindings or rustc would have errored much earlier
+            // bind the same bindings or crablangc would have errored much earlier
             PatKind::Or(ref pats) => self.visit_pat(&pats[0]),
             _ => walk_pat(self, pat),
         }

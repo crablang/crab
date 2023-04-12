@@ -105,7 +105,7 @@ impl WaitTimeoutResult {
 ///     started = cvar.wait(started).unwrap();
 /// }
 /// ```
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub struct Condvar {
     inner: sys::Condvar,
 }
@@ -121,8 +121,8 @@ impl Condvar {
     ///
     /// let condvar = Condvar::new();
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
-    #[rustc_const_stable(feature = "const_locks", since = "1.63.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    #[crablangc_const_stable(feature = "const_locks", since = "1.63.0")]
     #[must_use]
     #[inline]
     pub const fn new() -> Condvar {
@@ -184,7 +184,7 @@ impl Condvar {
     ///     started = cvar.wait(started).unwrap();
     /// }
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn wait<'a, T>(&self, guard: MutexGuard<'a, T>) -> LockResult<MutexGuard<'a, T>> {
         let poisoned = unsafe {
             let lock = mutex::guard_lock(&guard);
@@ -304,7 +304,7 @@ impl Condvar {
     ///     }
     /// }
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[deprecated(since = "1.6.0", note = "replaced by `std::sync::Condvar::wait_timeout`")]
     pub fn wait_timeout_ms<'a, T>(
         &self,
@@ -502,7 +502,7 @@ impl Condvar {
     ///     started = cvar.wait(started).unwrap();
     /// }
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn notify_one(&self) {
         self.inner.notify_one()
     }
@@ -542,7 +542,7 @@ impl Condvar {
     ///     started = cvar.wait(started).unwrap();
     /// }
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn notify_all(&self) {
         self.inner.notify_all()
     }

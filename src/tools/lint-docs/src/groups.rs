@@ -5,16 +5,16 @@ use std::fmt::Write;
 use std::fs;
 use std::process::Command;
 
-/// Descriptions of rustc lint groups.
+/// Descriptions of crablangc lint groups.
 static GROUP_DESCRIPTIONS: &[(&str, &str)] = &[
     ("unused", "Lints that detect things being declared but not used, or excess syntax"),
     ("let-underscore", "Lints that detect wildcard let bindings that are likely to be invalid"),
-    ("rustdoc", "Rustdoc-specific lints"),
-    ("rust-2018-idioms", "Lints to nudge you toward idiomatic features of Rust 2018"),
+    ("crablangdoc", "CrabLangdoc-specific lints"),
+    ("crablang-2018-idioms", "Lints to nudge you toward idiomatic features of CrabLang 2018"),
     ("nonstandard-style", "Violation of standard naming conventions"),
     ("future-incompatible", "Lints that detect code that has future-compatibility problems"),
-    ("rust-2018-compatibility", "Lints used to transition code from the 2015 edition to 2018"),
-    ("rust-2021-compatibility", "Lints used to transition code from the 2018 edition to 2021"),
+    ("crablang-2018-compatibility", "Lints used to transition code from the 2015 edition to 2018"),
+    ("crablang-2021-compatibility", "Lints used to transition code from the 2018 edition to 2021"),
 ];
 
 type LintGroups = BTreeMap<String, BTreeSet<String>>;
@@ -28,17 +28,17 @@ impl<'a> LintExtractor<'a> {
             .map_err(|e| format!("could not read {}: {}", groups_path.display(), e))?;
         let new_contents =
             contents.replace("{{groups-table}}", &self.make_groups_table(lints, &groups)?);
-        // Delete the output because rustbuild uses hard links in its copies.
+        // Delete the output because crablangbuild uses hard links in its copies.
         let _ = fs::remove_file(&groups_path);
         fs::write(&groups_path, new_contents)
             .map_err(|e| format!("could not write to {}: {}", groups_path.display(), e))?;
         Ok(())
     }
 
-    /// Collects the group names from rustc.
+    /// Collects the group names from crablangc.
     fn collect_groups(&self) -> Result<LintGroups, Box<dyn Error>> {
         let mut result = BTreeMap::new();
-        let mut cmd = Command::new(self.rustc_path);
+        let mut cmd = Command::new(self.crablangc_path);
         cmd.arg("-Whelp");
         let output = cmd.output().map_err(|e| format!("failed to run command {:?}\n{}", cmd, e))?;
         if !output.status.success() {
@@ -122,7 +122,7 @@ impl<'a> LintExtractor<'a> {
                 Some(def) => def,
                 None => {
                     let msg = format!(
-                        "`rustc -W help` defined lint `{}` but that lint does not \
+                        "`crablangc -W help` defined lint `{}` but that lint does not \
                         appear to exist\n\
                         Check that the lint definition includes the appropriate doc comments.",
                         lint_name

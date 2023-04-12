@@ -1,27 +1,27 @@
-#![feature(rustc_private)]
+#![feature(crablangc_private)]
 #![deny(warnings)]
 
-extern crate rustc_codegen_ssa;
-extern crate rustc_data_structures;
-extern crate rustc_driver;
-extern crate rustc_errors;
-extern crate rustc_hir;
-extern crate rustc_metadata;
-extern crate rustc_middle;
-extern crate rustc_session;
-extern crate rustc_span;
-extern crate rustc_symbol_mangling;
-extern crate rustc_target;
+extern crate crablangc_codegen_ssa;
+extern crate crablangc_data_structures;
+extern crate crablangc_driver;
+extern crate crablangc_errors;
+extern crate crablangc_hir;
+extern crate crablangc_metadata;
+extern crate crablangc_middle;
+extern crate crablangc_session;
+extern crate crablangc_span;
+extern crate crablangc_symbol_mangling;
+extern crate crablangc_target;
 
-use rustc_codegen_ssa::traits::CodegenBackend;
-use rustc_codegen_ssa::{CodegenResults, CrateInfo};
-use rustc_data_structures::fx::FxHashMap;
-use rustc_errors::ErrorGuaranteed;
-use rustc_metadata::EncodedMetadata;
-use rustc_middle::dep_graph::{WorkProduct, WorkProductId};
-use rustc_middle::ty::TyCtxt;
-use rustc_session::config::OutputFilenames;
-use rustc_session::Session;
+use crablangc_codegen_ssa::traits::CodegenBackend;
+use crablangc_codegen_ssa::{CodegenResults, CrateInfo};
+use crablangc_data_structures::fx::FxHashMap;
+use crablangc_errors::ErrorGuaranteed;
+use crablangc_metadata::EncodedMetadata;
+use crablangc_middle::dep_graph::{WorkProduct, WorkProductId};
+use crablangc_middle::ty::TyCtxt;
+use crablangc_session::config::OutputFilenames;
+use crablangc_session::Session;
 use std::any::Any;
 
 struct TheBackend;
@@ -62,7 +62,7 @@ impl CodegenBackend for TheBackend {
         codegen_results: CodegenResults,
         outputs: &OutputFilenames,
     ) -> Result<(), ErrorGuaranteed> {
-        use rustc_session::{config::CrateType, output::out_filename};
+        use crablangc_session::{config::CrateType, output::out_filename};
         use std::io::Write;
         let crate_name = codegen_results.crate_info.local_crate_name;
         for &crate_type in sess.opts.crate_types.iter() {
@@ -77,8 +77,8 @@ impl CodegenBackend for TheBackend {
     }
 }
 
-/// This is the entrypoint for a hot plugged rustc_codegen_llvm
+/// This is the entrypoint for a hot plugged crablangc_codegen_llvm
 #[no_mangle]
-pub fn __rustc_codegen_backend() -> Box<dyn CodegenBackend> {
+pub fn __crablangc_codegen_backend() -> Box<dyn CodegenBackend> {
     Box::new(TheBackend)
 }

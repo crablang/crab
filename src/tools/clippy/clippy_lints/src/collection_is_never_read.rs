@@ -3,11 +3,11 @@ use clippy_utils::ty::is_type_diagnostic_item;
 use clippy_utils::visitors::for_each_expr_with_closures;
 use clippy_utils::{get_enclosing_block, get_parent_node, path_to_local_id};
 use core::ops::ControlFlow;
-use rustc_hir::{Block, ExprKind, HirId, Local, Node, PatKind};
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_session::{declare_lint_pass, declare_tool_lint};
-use rustc_span::symbol::sym;
-use rustc_span::Symbol;
+use crablangc_hir::{Block, ExprKind, HirId, Local, Node, PatKind};
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_span::symbol::sym;
+use crablangc_span::Symbol;
 
 declare_clippy_lint! {
     /// ### What it does
@@ -20,7 +20,7 @@ declare_clippy_lint! {
     /// instead.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// # let samples = vec![3, 1, 2];
     /// let mut sorted_samples = samples.clone();
     /// sorted_samples.sort();
@@ -29,7 +29,7 @@ declare_clippy_lint! {
     /// }
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// # let samples = vec![3, 1, 2];
     /// let mut sorted_samples = samples.clone();
     /// sorted_samples.sort();

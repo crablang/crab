@@ -1,4 +1,4 @@
-// This ensures that ICEs like rust#94953 don't happen
+// This ensures that ICEs like crablang#94953 don't happen
 // check-pass
 // compile-flags: -Z unpretty=expanded
 

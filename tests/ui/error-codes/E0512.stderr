@@ -9,4 +9,4 @@ LL |     unsafe { takes_u8(::std::mem::transmute(0u16)); }
 
 error: aborting due to previous error
 
-For more information about this error, try `rustc --explain E0512`.
+For more information about this error, try `crablangc --explain E0512`.

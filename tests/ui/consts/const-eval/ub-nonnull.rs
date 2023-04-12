@@ -1,7 +1,7 @@
 // Strip out raw byte dumps to make comparison platform-independent:
 // normalize-stderr-test "(the raw bytes of the constant) \(size: [0-9]*, align: [0-9]*\)" -> "$1 (size: $$SIZE, align: $$ALIGN)"
 // normalize-stderr-test "([0-9a-f][0-9a-f] |╾─*a(lloc)?[0-9]+(\+[a-z0-9]+)?─*╼ )+ *│.*" -> "HEX_DUMP"
-#![feature(rustc_attrs, ptr_metadata)]
+#![feature(crablangc_attrs, ptr_metadata)]
 #![allow(invalid_value)] // make sure we cannot allow away the errors tested here
 
 use std::mem;
@@ -35,16 +35,16 @@ const UNINIT: NonZeroU8 = unsafe { MaybeUninit { uninit: () }.init };
 //~^ ERROR evaluation of constant value failed
 //~| uninitialized
 
-// Also test other uses of rustc_layout_scalar_valid_range_start
+// Also test other uses of crablangc_layout_scalar_valid_range_start
 
-#[rustc_layout_scalar_valid_range_start(10)]
-#[rustc_layout_scalar_valid_range_end(30)]
+#[crablangc_layout_scalar_valid_range_start(10)]
+#[crablangc_layout_scalar_valid_range_end(30)]
 struct RestrictedRange1(u32);
 const BAD_RANGE1: RestrictedRange1 = unsafe { RestrictedRange1(42) };
 //~^ ERROR it is undefined behavior to use this value
 
-#[rustc_layout_scalar_valid_range_start(30)]
-#[rustc_layout_scalar_valid_range_end(10)]
+#[crablangc_layout_scalar_valid_range_start(30)]
+#[crablangc_layout_scalar_valid_range_end(10)]
 struct RestrictedRange2(u32);
 const BAD_RANGE2: RestrictedRange2 = unsafe { RestrictedRange2(20) };
 //~^ ERROR it is undefined behavior to use this value

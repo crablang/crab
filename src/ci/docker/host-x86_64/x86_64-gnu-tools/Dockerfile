@@ -79,10 +79,10 @@ COPY host-x86_64/x86_64-gnu-tools/browser-ui-test.version /tmp/
 # the local version of the package is different than the one used by the CI.
 RUN npm install -g browser-ui-test@$(head -n 1 /tmp/browser-ui-test.version) --unsafe-perm=true
 
-ENV RUST_CONFIGURE_ARGS \
+ENV CRABLANG_CONFIGURE_ARGS \
   --build=x86_64-unknown-linux-gnu \
   --save-toolstates=/tmp/toolstate/toolstates.json
 
 ENV SCRIPT /tmp/checktools.sh ../x.py && \
-  NODE_PATH=`npm root -g` python3 ../x.py test tests/rustdoc-gui --stage 2 \
+  NODE_PATH=`npm root -g` python3 ../x.py test tests/crablangdoc-gui --stage 2 \
     --test-args "'--no-sandbox --jobs 1'"

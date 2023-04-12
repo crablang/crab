@@ -110,9 +110,9 @@ fn main() {
     run_unformatted_tests();
 }
 
-#[rustfmt::skip]
+#[crablangfmt::skip]
 fn run_unformatted_tests() {
-    // Skip rustfmt here on purpose so the suggestion does not fit in one line
+    // Skip crablangfmt here on purpose so the suggestion does not fit in one line
     for n in vec![
         Some(1),
         Some(2),

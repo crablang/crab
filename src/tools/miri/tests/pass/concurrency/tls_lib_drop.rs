@@ -27,7 +27,7 @@ thread_local! {
 fn check_destructors() {
     // We use the same value for both of them, since destructor order differs between Miri on Linux
     // (which uses `register_dtor_fallback`, in the end using a single pthread_key to manage a
-    // thread-local linked list of dtors to call), real Linux rustc (which uses
+    // thread-local linked list of dtors to call), real Linux crablangc (which uses
     // `__cxa_thread_atexit_impl`), and Miri on Windows.
     thread::spawn(|| {
         A.with(|f| {

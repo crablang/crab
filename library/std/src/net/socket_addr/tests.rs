@@ -122,8 +122,8 @@ fn ipv6_socket_addr_to_string() {
 
 #[test]
 fn bind_udp_socket_bad() {
-    // rust-lang/rust#53957: This is a regression test for a parsing problem
-    // discovered as part of issue rust-lang/rust#23076, where we were
+    // crablang/crablang#53957: This is a regression test for a parsing problem
+    // discovered as part of issue crablang/crablang#23076, where we were
     // incorrectly parsing invalid input and then that would result in a
     // successful `UdpSocket` binding when we would expect failure.
     //

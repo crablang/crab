@@ -2,21 +2,21 @@ use std::{collections::hash_map::Entry, io::Write, iter, path::Path};
 
 use log::trace;
 
-use rustc_apfloat::Float;
-use rustc_ast::expand::allocator::AllocatorKind;
-use rustc_hir::{
+use crablangc_apfloat::Float;
+use crablangc_ast::expand::allocator::AllocatorKind;
+use crablangc_hir::{
     def::DefKind,
     def_id::{CrateNum, DefId, LOCAL_CRATE},
 };
-use rustc_middle::middle::{
+use crablangc_middle::middle::{
     codegen_fn_attrs::CodegenFnAttrFlags, dependency_format::Linkage,
     exported_symbols::ExportedSymbol,
 };
-use rustc_middle::mir;
-use rustc_middle::ty;
-use rustc_session::config::CrateType;
-use rustc_span::Symbol;
-use rustc_target::{
+use crablangc_middle::mir;
+use crablangc_middle::ty;
+use crablangc_session::config::CrateType;
+use crablangc_span::Symbol;
+use crablangc_target::{
     abi::{Align, Size},
     spec::abi::Abi,
 };
@@ -164,14 +164,14 @@ pub trait EvalContextExt<'mir, 'tcx: 'mir>: crate::MiriInterpCxExt<'mir, 'tcx> {
                     .expect("interpreting a non-executable crate");
                 for cnum in iter::once(LOCAL_CRATE).chain(
                     dependency_format.1.iter().enumerate().filter_map(|(num, &linkage)| {
-                        // We add 1 to the number because that's what rustc also does everywhere it
+                        // We add 1 to the number because that's what crablangc also does everywhere it
                         // calls `CrateNum::new`...
                         #[allow(clippy::integer_arithmetic)]
                         (linkage != Linkage::NotLinked).then_some(CrateNum::new(num + 1))
                     }),
                 ) {
-                    // We can ignore `_export_info` here: we are a Rust crate, and everything is exported
-                    // from a Rust crate.
+                    // We can ignore `_export_info` here: we are a CrabLang crate, and everything is exported
+                    // from a CrabLang crate.
                     for &(symbol, _export_info) in tcx.exported_symbols(cnum) {
                         if let ExportedSymbol::NonGeneric(def_id) = symbol {
                             let attrs = tcx.codegen_fn_attrs(def_id);
@@ -279,7 +279,7 @@ pub trait EvalContextExt<'mir, 'tcx: 'mir>: crate::MiriInterpCxExt<'mir, 'tcx> {
                         // We don't use `check_shim` here because we are just forwarding to the lang
                         // item. Argument count checking will be performed when the returned `Body` is
                         // called.
-                        this.check_abi_and_shim_symbol_clash(abi, Abi::Rust, link_name)?;
+                        this.check_abi_and_shim_symbol_clash(abi, Abi::CrabLang, link_name)?;
                         let panic_impl_id = tcx.lang_items().panic_impl().unwrap();
                         let panic_impl_instance = ty::Instance::mono(tcx, panic_impl_id);
                         return Ok(Some((
@@ -287,7 +287,7 @@ pub trait EvalContextExt<'mir, 'tcx: 'mir>: crate::MiriInterpCxExt<'mir, 'tcx> {
                             panic_impl_instance,
                         )));
                     }
-                    #[rustfmt::skip]
+                    #[crablangfmt::skip]
                     | "exit"
                     | "ExitProcess"
                     => {
@@ -344,7 +344,7 @@ pub trait EvalContextExt<'mir, 'tcx: 'mir>: crate::MiriInterpCxExt<'mir, 'tcx> {
         Ok(None)
     }
 
-    /// Emulates calling the internal __rust_* allocator functions
+    /// Emulates calling the internal __crablang_* allocator functions
     fn emulate_allocator(
         &mut self,
         symbol: Symbol,
@@ -431,7 +431,7 @@ pub trait EvalContextExt<'mir, 'tcx: 'mir>: crate::MiriInterpCxExt<'mir, 'tcx> {
         match link_name.as_str() {
             // Miri-specific extern functions
             "miri_get_alloc_id" => {
-                let [ptr] = this.check_shim(abi, Abi::Rust, link_name, args)?;
+                let [ptr] = this.check_shim(abi, Abi::CrabLang, link_name, args)?;
                 let ptr = this.read_pointer(ptr)?;
                 let (alloc_id, _, _) = this.ptr_get_alloc_id(ptr).map_err(|_e| {
                     err_machine_stop!(TerminationInfo::Abort(format!(
@@ -441,7 +441,7 @@ pub trait EvalContextExt<'mir, 'tcx: 'mir>: crate::MiriInterpCxExt<'mir, 'tcx> {
                 this.write_scalar(Scalar::from_u64(alloc_id.0.get()), dest)?;
             }
             "miri_print_borrow_state" => {
-                let [id, show_unnamed] = this.check_shim(abi, Abi::Rust, link_name, args)?;
+                let [id, show_unnamed] = this.check_shim(abi, Abi::CrabLang, link_name, args)?;
                 let id = this.read_scalar(id)?.to_u64()?;
                 let show_unnamed = this.read_scalar(show_unnamed)?.to_bool()?;
                 if let Some(id) = std::num::NonZeroU64::new(id) {
@@ -451,7 +451,7 @@ pub trait EvalContextExt<'mir, 'tcx: 'mir>: crate::MiriInterpCxExt<'mir, 'tcx> {
             "miri_pointer_name" => {
                 // This associates a name to a tag. Very useful for debugging, and also makes
                 // tests more strict.
-                let [ptr, nth_parent, name] = this.check_shim(abi, Abi::Rust, link_name, args)?;
+                let [ptr, nth_parent, name] = this.check_shim(abi, Abi::CrabLang, link_name, args)?;
                 let ptr = this.read_pointer(ptr)?;
                 let nth_parent = this.read_scalar(nth_parent)?.to_u8()?;
                 let name = this.read_byte_slice(name)?;
@@ -462,7 +462,7 @@ pub trait EvalContextExt<'mir, 'tcx: 'mir>: crate::MiriInterpCxExt<'mir, 'tcx> {
                 this.give_pointer_debug_name(ptr, nth_parent, &name)?;
             }
             "miri_static_root" => {
-                let [ptr] = this.check_shim(abi, Abi::Rust, link_name, args)?;
+                let [ptr] = this.check_shim(abi, Abi::CrabLang, link_name, args)?;
                 let ptr = this.read_pointer(ptr)?;
                 let (alloc_id, offset, _) = this.ptr_get_alloc_id(ptr)?;
                 if offset != Size::ZERO {
@@ -473,7 +473,7 @@ pub trait EvalContextExt<'mir, 'tcx: 'mir>: crate::MiriInterpCxExt<'mir, 'tcx> {
                 this.machine.static_roots.push(alloc_id);
             }
             "miri_host_to_target_path" => {
-                let [ptr, out, out_size] = this.check_shim(abi, Abi::Rust, link_name, args)?;
+                let [ptr, out, out_size] = this.check_shim(abi, Abi::CrabLang, link_name, args)?;
                 let ptr = this.read_pointer(ptr)?;
                 let out = this.read_pointer(out)?;
                 let out_size = this.read_scalar(out_size)?.to_target_usize(this)?;
@@ -514,7 +514,7 @@ pub trait EvalContextExt<'mir, 'tcx: 'mir>: crate::MiriInterpCxExt<'mir, 'tcx> {
             // Writes some bytes to the interpreter's stdout/stderr. See the
             // README for details.
             "miri_write_to_stdout" | "miri_write_to_stderr" => {
-                let [msg] = this.check_shim(abi, Abi::Rust, link_name, args)?;
+                let [msg] = this.check_shim(abi, Abi::CrabLang, link_name, args)?;
                 let msg = this.read_byte_slice(msg)?;
                 // Note: we're ignoring errors writing to host stdout/stderr.
                 let _ignore = match link_name.as_str() {
@@ -556,9 +556,9 @@ pub trait EvalContextExt<'mir, 'tcx: 'mir>: crate::MiriInterpCxExt<'mir, 'tcx> {
                 this.write_pointer(res, dest)?;
             }
 
-            // Rust allocation
-            "__rust_alloc" | "miri_alloc" => {
-                let [size, align] = this.check_shim(abi, Abi::Rust, link_name, args)?;
+            // CrabLang allocation
+            "__crablang_alloc" | "miri_alloc" => {
+                let [size, align] = this.check_shim(abi, Abi::CrabLang, link_name, args)?;
                 let size = this.read_target_usize(size)?;
                 let align = this.read_target_usize(align)?;
 
@@ -566,7 +566,7 @@ pub trait EvalContextExt<'mir, 'tcx: 'mir>: crate::MiriInterpCxExt<'mir, 'tcx> {
                     Self::check_alloc_request(size, align)?;
 
                     let memory_kind = match link_name.as_str() {
-                        "__rust_alloc" => MiriMemoryKind::Rust,
+                        "__crablang_alloc" => MiriMemoryKind::CrabLang,
                         "miri_alloc" => MiriMemoryKind::Miri,
                         _ => unreachable!(),
                     };
@@ -581,7 +581,7 @@ pub trait EvalContextExt<'mir, 'tcx: 'mir>: crate::MiriInterpCxExt<'mir, 'tcx> {
                 };
 
                 match link_name.as_str() {
-                    "__rust_alloc" =>
+                    "__crablang_alloc" =>
                         return this.emulate_allocator(Symbol::intern("__rg_alloc"), default),
                     "miri_alloc" => {
                         default(this)?;
@@ -590,8 +590,8 @@ pub trait EvalContextExt<'mir, 'tcx: 'mir>: crate::MiriInterpCxExt<'mir, 'tcx> {
                     _ => unreachable!(),
                 }
             }
-            "__rust_alloc_zeroed" => {
-                let [size, align] = this.check_shim(abi, Abi::Rust, link_name, args)?;
+            "__crablang_alloc_zeroed" => {
+                let [size, align] = this.check_shim(abi, Abi::CrabLang, link_name, args)?;
                 let size = this.read_target_usize(size)?;
                 let align = this.read_target_usize(align)?;
 
@@ -601,7 +601,7 @@ pub trait EvalContextExt<'mir, 'tcx: 'mir>: crate::MiriInterpCxExt<'mir, 'tcx> {
                     let ptr = this.allocate_ptr(
                         Size::from_bytes(size),
                         Align::from_bytes(align).unwrap(),
-                        MiriMemoryKind::Rust.into(),
+                        MiriMemoryKind::CrabLang.into(),
                     )?;
 
                     // We just allocated this, the access is definitely in-bounds.
@@ -613,15 +613,15 @@ pub trait EvalContextExt<'mir, 'tcx: 'mir>: crate::MiriInterpCxExt<'mir, 'tcx> {
                     this.write_pointer(ptr, dest)
                 });
             }
-            "__rust_dealloc" | "miri_dealloc" => {
-                let [ptr, old_size, align] = this.check_shim(abi, Abi::Rust, link_name, args)?;
+            "__crablang_dealloc" | "miri_dealloc" => {
+                let [ptr, old_size, align] = this.check_shim(abi, Abi::CrabLang, link_name, args)?;
                 let ptr = this.read_pointer(ptr)?;
                 let old_size = this.read_target_usize(old_size)?;
                 let align = this.read_target_usize(align)?;
 
                 let default = |this: &mut MiriInterpCx<'mir, 'tcx>| {
                     let memory_kind = match link_name.as_str() {
-                        "__rust_dealloc" => MiriMemoryKind::Rust,
+                        "__crablang_dealloc" => MiriMemoryKind::CrabLang,
                         "miri_dealloc" => MiriMemoryKind::Miri,
                         _ => unreachable!(),
                     };
@@ -635,7 +635,7 @@ pub trait EvalContextExt<'mir, 'tcx: 'mir>: crate::MiriInterpCxExt<'mir, 'tcx> {
                 };
 
                 match link_name.as_str() {
-                    "__rust_dealloc" =>
+                    "__crablang_dealloc" =>
                         return this.emulate_allocator(Symbol::intern("__rg_dealloc"), default),
                     "miri_dealloc" => {
                         default(this)?;
@@ -644,9 +644,9 @@ pub trait EvalContextExt<'mir, 'tcx: 'mir>: crate::MiriInterpCxExt<'mir, 'tcx> {
                     _ => unreachable!(),
                 }
             }
-            "__rust_realloc" => {
+            "__crablang_realloc" => {
                 let [ptr, old_size, align, new_size] =
-                    this.check_shim(abi, Abi::Rust, link_name, args)?;
+                    this.check_shim(abi, Abi::CrabLang, link_name, args)?;
                 let ptr = this.read_pointer(ptr)?;
                 let old_size = this.read_target_usize(old_size)?;
                 let align = this.read_target_usize(align)?;
@@ -662,7 +662,7 @@ pub trait EvalContextExt<'mir, 'tcx: 'mir>: crate::MiriInterpCxExt<'mir, 'tcx> {
                         Some((Size::from_bytes(old_size), align)),
                         Size::from_bytes(new_size),
                         align,
-                        MiriMemoryKind::Rust.into(),
+                        MiriMemoryKind::CrabLang.into(),
                     )?;
                     this.write_pointer(new_ptr, dest)
                 });
@@ -746,7 +746,7 @@ pub trait EvalContextExt<'mir, 'tcx: 'mir>: crate::MiriInterpCxExt<'mir, 'tcx> {
             }
 
             // math functions (note that there are also intrinsics for some other functions)
-            #[rustfmt::skip]
+            #[crablangfmt::skip]
             | "cbrtf"
             | "coshf"
             | "sinhf"
@@ -776,7 +776,7 @@ pub trait EvalContextExt<'mir, 'tcx: 'mir>: crate::MiriInterpCxExt<'mir, 'tcx> {
                 };
                 this.write_scalar(Scalar::from_u32(res.to_bits()), dest)?;
             }
-            #[rustfmt::skip]
+            #[crablangfmt::skip]
             | "_hypotf"
             | "hypotf"
             | "atan2f"
@@ -797,7 +797,7 @@ pub trait EvalContextExt<'mir, 'tcx: 'mir>: crate::MiriInterpCxExt<'mir, 'tcx> {
                 };
                 this.write_scalar(Scalar::from_u32(res.to_bits()), dest)?;
             }
-            #[rustfmt::skip]
+            #[crablangfmt::skip]
             | "cbrt"
             | "cosh"
             | "sinh"
@@ -827,7 +827,7 @@ pub trait EvalContextExt<'mir, 'tcx: 'mir>: crate::MiriInterpCxExt<'mir, 'tcx> {
                 };
                 this.write_scalar(Scalar::from_u64(res.to_bits()), dest)?;
             }
-            #[rustfmt::skip]
+            #[crablangfmt::skip]
             | "_hypot"
             | "hypot"
             | "atan2"
@@ -846,7 +846,7 @@ pub trait EvalContextExt<'mir, 'tcx: 'mir>: crate::MiriInterpCxExt<'mir, 'tcx> {
                 };
                 this.write_scalar(Scalar::from_u64(res.to_bits()), dest)?;
             }
-            #[rustfmt::skip]
+            #[crablangfmt::skip]
             | "_ldexp"
             | "ldexp"
             | "scalbn"

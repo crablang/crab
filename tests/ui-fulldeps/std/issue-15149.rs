@@ -31,7 +31,7 @@ fn test() {
     let my_path = env::current_exe().unwrap();
     let my_dir = my_path.parent().unwrap();
 
-    let child_dir = PathBuf::from(env::var_os("RUST_TEST_TMPDIR").unwrap());
+    let child_dir = PathBuf::from(env::var_os("CRABLANG_TEST_TMPDIR").unwrap());
     let child_dir = child_dir.join("issue-15140-child");
     fs::create_dir_all(&child_dir).unwrap();
 

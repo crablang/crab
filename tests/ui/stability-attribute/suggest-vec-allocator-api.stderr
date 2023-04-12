@@ -6,7 +6,7 @@ LL |     let _: Vec<u8, _> = vec![];
    |                |
    |                help: consider wrapping the inner types in tuple: `(u8, _)`
    |
-   = note: see issue #32838 <https://github.com/rust-lang/rust/issues/32838> for more information
+   = note: see issue #32838 <https://github.com/crablang/crablang/issues/32838> for more information
    = help: add `#![feature(allocator_api)]` to the crate attributes to enable
 
 error[E0658]: use of unstable library feature 'allocator_api'
@@ -15,7 +15,7 @@ error[E0658]: use of unstable library feature 'allocator_api'
 LL |         _> = vec![];
    |         ^
    |
-   = note: see issue #32838 <https://github.com/rust-lang/rust/issues/32838> for more information
+   = note: see issue #32838 <https://github.com/crablang/crablang/issues/32838> for more information
    = help: add `#![feature(allocator_api)]` to the crate attributes to enable
 help: consider wrapping the inner types in tuple
    |
@@ -30,7 +30,7 @@ error[E0658]: use of unstable library feature 'allocator_api'
 LL |     let _boxed: Box<u32, _> = Box::new(10);
    |                          ^
    |
-   = note: see issue #32838 <https://github.com/rust-lang/rust/issues/32838> for more information
+   = note: see issue #32838 <https://github.com/crablang/crablang/issues/32838> for more information
    = help: add `#![feature(allocator_api)]` to the crate attributes to enable
 
 error[E0658]: use of unstable library feature 'allocator_api'
@@ -41,9 +41,9 @@ LL |     let _ = Vec::<u16, _>::new();
    |                   |
    |                   help: consider wrapping the inner types in tuple: `(u16, _)`
    |
-   = note: see issue #32838 <https://github.com/rust-lang/rust/issues/32838> for more information
+   = note: see issue #32838 <https://github.com/crablang/crablang/issues/32838> for more information
    = help: add `#![feature(allocator_api)]` to the crate attributes to enable
 
 error: aborting due to 4 previous errors
 
-For more information about this error, try `rustc --explain E0658`.
+For more information about this error, try `crablangc --explain E0658`.

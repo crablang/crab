@@ -24,7 +24,7 @@ use core::cell::Cell;
 use core::convert::TryFrom;
 use core::iter::*;
 
-pub fn is_trusted_len<I: TrustedLen>(_: I) {}
+pub fn is_tcrablanged_len<I: TcrablangedLen>(_: I) {}
 
 #[test]
 fn test_multi_iter() {

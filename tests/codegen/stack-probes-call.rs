@@ -20,5 +20,5 @@ trait Sized {}
 #[no_mangle]
 pub fn foo() {
 // CHECK: @foo() unnamed_addr #0
-// CHECK: attributes #0 = { {{.*}}"probe-stack"="__rust_probestack"{{.*}} }
+// CHECK: attributes #0 = { {{.*}}"probe-stack"="__crablang_probestack"{{.*}} }
 }

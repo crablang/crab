@@ -12,17 +12,17 @@
 //! code was written, and check if the span contains that text. Note this will only work correctly
 //! if the span is not from a `macro_rules` based macro.
 
-use rustc_ast::ast::{IntTy, LitIntType, LitKind, StrStyle, UintTy};
-use rustc_hir::{
+use crablangc_ast::ast::{IntTy, LitIntType, LitKind, StrStyle, UintTy};
+use crablangc_hir::{
     intravisit::FnKind, Block, BlockCheckMode, Body, Closure, Destination, Expr, ExprKind, FieldDef, FnHeader, HirId,
     Impl, ImplItem, ImplItemKind, IsAuto, Item, ItemKind, LoopSource, MatchSource, Node, QPath, TraitItem,
     TraitItemKind, UnOp, UnsafeSource, Unsafety, Variant, VariantData, YieldSource,
 };
-use rustc_lint::{LateContext, LintContext};
-use rustc_middle::ty::TyCtxt;
-use rustc_session::Session;
-use rustc_span::{Span, Symbol};
-use rustc_target::spec::abi::Abi;
+use crablangc_lint::{LateContext, LintContext};
+use crablangc_middle::ty::TyCtxt;
+use crablangc_session::Session;
+use crablangc_span::{Span, Symbol};
+use crablangc_target::spec::abi::Abi;
 
 /// The search pattern to look for. Used by `span_matches_pat`
 #[derive(Clone, Copy)]
@@ -174,7 +174,7 @@ fn fn_header_search_pat(header: FnHeader) -> Pat {
         Pat::Str("const")
     } else if header.is_unsafe() {
         Pat::Str("unsafe")
-    } else if header.abi != Abi::Rust {
+    } else if header.abi != Abi::CrabLang {
         Pat::Str("extern")
     } else {
         Pat::MultiStr(&["fn", "extern"])

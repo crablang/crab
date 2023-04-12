@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 #![warn(clippy::to_string_in_format_args)]
 #![allow(unused)]
 #![allow(
@@ -99,7 +99,7 @@ fn main() {
     println!("{}", Z(1));
     println!("{}", **x);
     println!("{}", ***x_ref);
-    // https://github.com/rust-lang/rust-clippy/issues/7903
+    // https://github.com/crablang/crablang-clippy/issues/7903
     println!("{foo}{bar}", foo = "foo", bar = "bar");
     println!("{foo}{bar}", foo = "foo", bar = "bar");
     println!("{foo}{bar}", bar = "bar", foo = "foo");
@@ -113,7 +113,7 @@ fn main() {
     println!("{foo}{foo}", foo = "foo".to_string());
     my_macro!();
     println!("error: something failed at {}", my_other_macro!());
-    // https://github.com/rust-lang/rust-clippy/issues/7903
+    // https://github.com/crablang/crablang-clippy/issues/7903
     println!("{foo}{foo:?}", foo = "foo".to_string());
     print!("{}", (Location::caller()));
     print!("{}", ((Location::caller())));
@@ -128,7 +128,7 @@ fn issue8643(vendor_id: usize, product_id: usize, name: &str) {
     );
 }
 
-// https://github.com/rust-lang/rust-clippy/issues/8855
+// https://github.com/crablang/crablang-clippy/issues/8855
 mod issue_8855 {
     #![allow(dead_code)]
 
@@ -152,7 +152,7 @@ mod issue_8855 {
     }
 }
 
-// https://github.com/rust-lang/rust-clippy/issues/9256
+// https://github.com/crablang/crablang-clippy/issues/9256
 mod issue_9256 {
     #![allow(dead_code)]
 

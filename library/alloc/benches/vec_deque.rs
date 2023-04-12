@@ -237,7 +237,7 @@ fn bench_extend_vec(b: &mut Bencher) {
 }
 
 #[bench]
-fn bench_extend_trustedlen(b: &mut Bencher) {
+fn bench_extend_tcrablangedlen(b: &mut Bencher) {
     let mut ring: VecDeque<u16> = VecDeque::with_capacity(1000);
 
     b.iter(|| {
@@ -247,7 +247,7 @@ fn bench_extend_trustedlen(b: &mut Bencher) {
 }
 
 #[bench]
-fn bench_extend_chained_trustedlen(b: &mut Bencher) {
+fn bench_extend_chained_tcrablangedlen(b: &mut Bencher) {
     let mut ring: VecDeque<u16> = VecDeque::with_capacity(1000);
 
     b.iter(|| {

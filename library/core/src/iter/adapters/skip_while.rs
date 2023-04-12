@@ -10,7 +10,7 @@ use crate::ops::Try;
 /// [`skip_while`]: Iterator::skip_while
 /// [`Iterator`]: trait.Iterator.html
 #[must_use = "iterators are lazy and do nothing unless consumed"]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[derive(Clone)]
 pub struct SkipWhile<I, P> {
     iter: I,
@@ -31,7 +31,7 @@ impl<I: fmt::Debug, P> fmt::Debug for SkipWhile<I, P> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<I: Iterator, P> Iterator for SkipWhile<I, P>
 where
     P: FnMut(&I::Item) -> bool,

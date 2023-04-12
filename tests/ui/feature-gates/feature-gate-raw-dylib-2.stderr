@@ -4,7 +4,7 @@ error[E0658]: `#[link_ordinal]` is unstable on x86
 LL |     #[link_ordinal(42)]
    |     ^^^^^^^^^^^^^^^^^^^
    |
-   = note: see issue #58713 <https://github.com/rust-lang/rust/issues/58713> for more information
+   = note: see issue #58713 <https://github.com/crablang/crablang/issues/58713> for more information
    = help: add `#![feature(raw_dylib)]` to the crate attributes to enable
 
 error[E0658]: `#[link_ordinal]` is unstable on x86
@@ -13,9 +13,9 @@ error[E0658]: `#[link_ordinal]` is unstable on x86
 LL |     #[link_ordinal(5)]
    |     ^^^^^^^^^^^^^^^^^^
    |
-   = note: see issue #58713 <https://github.com/rust-lang/rust/issues/58713> for more information
+   = note: see issue #58713 <https://github.com/crablang/crablang/issues/58713> for more information
    = help: add `#![feature(raw_dylib)]` to the crate attributes to enable
 
 error: aborting due to 2 previous errors
 
-For more information about this error, try `rustc --explain E0658`.
+For more information about this error, try `crablangc --explain E0658`.

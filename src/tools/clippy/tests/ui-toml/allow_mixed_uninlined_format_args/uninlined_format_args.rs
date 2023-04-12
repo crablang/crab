@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 #![warn(clippy::uninlined_format_args)]
 
 fn main() {

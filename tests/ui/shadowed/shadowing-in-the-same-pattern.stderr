@@ -13,4 +13,4 @@ LL |     let (a, a) = (1, 1);
 error: aborting due to 2 previous errors
 
 Some errors have detailed explanations: E0415, E0416.
-For more information about an error, try `rustc --explain E0415`.
+For more information about an error, try `crablangc --explain E0415`.

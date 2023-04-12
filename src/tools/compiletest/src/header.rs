@@ -73,10 +73,10 @@ pub struct TestProps {
     // to build and pass with the `--extern` flag.
     pub aux_crates: Vec<(String, String)>,
     // Environment settings to use for compiling
-    pub rustc_env: Vec<(String, String)>,
+    pub crablangc_env: Vec<(String, String)>,
     // Environment variables to unset prior to compiling.
-    // Variables are unset before applying 'rustc_env'.
-    pub unset_rustc_env: Vec<String>,
+    // Variables are unset before applying 'crablangc_env'.
+    pub unset_crablangc_env: Vec<String>,
     // Environment settings to use during execution
     pub exec_env: Vec<(String, String)>,
     // Build documentation for all specified aux-builds as well
@@ -139,7 +139,7 @@ pub struct TestProps {
     ignore_pass: bool,
     // How far this test should proceed to start failing.
     pub fail_mode: Option<FailMode>,
-    // rustdoc will test the output of the `--test` option
+    // crablangdoc will test the output of the `--test` option
     pub check_test_line_numbers_match: bool,
     // customized normalization rules
     pub normalize_stdout: Vec<(String, String)>,
@@ -147,11 +147,11 @@ pub struct TestProps {
     pub failure_status: i32,
     // For UI tests, allows compiler to exit with arbitrary failure status
     pub dont_check_failure_status: bool,
-    // Whether or not `rustfix` should apply the `CodeSuggestion`s of this test and compile the
-    // resulting Rust code.
-    pub run_rustfix: bool,
-    // If true, `rustfix` will only apply `MachineApplicable` suggestions.
-    pub rustfix_only_machine_applicable: bool,
+    // Whether or not `crablangfix` should apply the `CodeSuggestion`s of this test and compile the
+    // resulting CrabLang code.
+    pub run_crablangfix: bool,
+    // If true, `crablangfix` will only apply `MachineApplicable` suggestions.
+    pub crablangfix_only_machine_applicable: bool,
     pub assembly_output: Option<String>,
     // If true, the test is expected to ICE
     pub should_ice: bool,
@@ -159,7 +159,7 @@ pub struct TestProps {
     pub stderr_per_bitwidth: bool,
     // The MIR opt to unit test, if any
     pub mir_unit_test: Option<String>,
-    // Whether to tell `rustc` to remap the "src base" directory to a fake
+    // Whether to tell `crablangc` to remap the "src base" directory to a fake
     // directory.
     pub remap_src_base: bool,
 }
@@ -183,15 +183,15 @@ mod directives {
     pub const AUX_BUILD: &'static str = "aux-build";
     pub const AUX_CRATE: &'static str = "aux-crate";
     pub const EXEC_ENV: &'static str = "exec-env";
-    pub const RUSTC_ENV: &'static str = "rustc-env";
-    pub const UNSET_RUSTC_ENV: &'static str = "unset-rustc-env";
+    pub const CRABLANGC_ENV: &'static str = "crablangc-env";
+    pub const UNSET_CRABLANGC_ENV: &'static str = "unset-crablangc-env";
     pub const FORBID_OUTPUT: &'static str = "forbid-output";
     pub const CHECK_TEST_LINE_NUMBERS_MATCH: &'static str = "check-test-line-numbers-match";
     pub const IGNORE_PASS: &'static str = "ignore-pass";
     pub const FAILURE_STATUS: &'static str = "failure-status";
     pub const DONT_CHECK_FAILURE_STATUS: &'static str = "dont-check-failure-status";
-    pub const RUN_RUSTFIX: &'static str = "run-rustfix";
-    pub const RUSTFIX_ONLY_MACHINE_APPLICABLE: &'static str = "rustfix-only-machine-applicable";
+    pub const RUN_CRABLANGFIX: &'static str = "run-crablangfix";
+    pub const CRABLANGFIX_ONLY_MACHINE_APPLICABLE: &'static str = "crablangfix-only-machine-applicable";
     pub const ASSEMBLY_OUTPUT: &'static str = "assembly-output";
     pub const STDERR_PER_BITWIDTH: &'static str = "stderr-per-bitwidth";
     pub const INCREMENTAL: &'static str = "incremental";
@@ -213,8 +213,8 @@ impl TestProps {
             aux_builds: vec![],
             aux_crates: vec![],
             revisions: vec![],
-            rustc_env: vec![],
-            unset_rustc_env: vec![],
+            crablangc_env: vec![],
+            unset_crablangc_env: vec![],
             exec_env: vec![],
             build_aux_docs: false,
             force_host: false,
@@ -238,8 +238,8 @@ impl TestProps {
             normalize_stderr: vec![],
             failure_status: -1,
             dont_check_failure_status: false,
-            run_rustfix: false,
-            rustfix_only_machine_applicable: false,
+            run_crablangfix: false,
+            crablangfix_only_machine_applicable: false,
             assembly_output: None,
             should_ice: false,
             stderr_per_bitwidth: false,
@@ -281,7 +281,7 @@ impl TestProps {
         // Set a consistent (short) prefix to avoid issues, but only in CI to avoid regressing the
         // contributor experience.
         if CiEnv::is_ci() {
-            self.remap_src_base = config.mode == Mode::Ui && !config.suite.contains("rustdoc");
+            self.remap_src_base = config.mode == Mode::Ui && !config.suite.contains("crablangdoc");
         }
 
         let mut has_edition = false;
@@ -368,14 +368,14 @@ impl TestProps {
                 );
                 config.push_name_value_directive(
                     ln,
-                    RUSTC_ENV,
-                    &mut self.rustc_env,
+                    CRABLANGC_ENV,
+                    &mut self.crablangc_env,
                     Config::parse_env,
                 );
                 config.push_name_value_directive(
                     ln,
-                    UNSET_RUSTC_ENV,
-                    &mut self.unset_rustc_env,
+                    UNSET_CRABLANGC_ENV,
+                    &mut self.unset_crablangc_env,
                     |r| r,
                 );
                 config.push_name_value_directive(ln, FORBID_OUTPUT, &mut self.forbid_output, |r| r);
@@ -410,11 +410,11 @@ impl TestProps {
                     &mut self.dont_check_failure_status,
                 );
 
-                config.set_name_directive(ln, RUN_RUSTFIX, &mut self.run_rustfix);
+                config.set_name_directive(ln, RUN_CRABLANGFIX, &mut self.run_crablangfix);
                 config.set_name_directive(
                     ln,
-                    RUSTFIX_ONLY_MACHINE_APPLICABLE,
-                    &mut self.rustfix_only_machine_applicable,
+                    CRABLANGFIX_ONLY_MACHINE_APPLICABLE,
+                    &mut self.crablangfix_only_machine_applicable,
                 );
                 config.set_name_value_directive(
                     ln,
@@ -470,7 +470,7 @@ impl TestProps {
             self.incremental = true;
         }
 
-        for key in &["RUST_TEST_NOCAPTURE", "RUST_TEST_THREADS"] {
+        for key in &["CRABLANG_TEST_NOCAPTURE", "CRABLANG_TEST_THREADS"] {
             if let Ok(val) = env::var(key) {
                 if self.exec_env.iter().find(|&&(ref x, _)| x == key).is_none() {
                     self.exec_env.push(((*key).to_owned(), val))
@@ -702,7 +702,7 @@ impl Config {
         }
     }
 
-    pub fn find_rust_src_root(&self) -> Option<PathBuf> {
+    pub fn find_crablang_src_root(&self) -> Option<PathBuf> {
         let mut path = self.src_base.clone();
         let path_postfix = Path::new("src/etc/lldb_batchmode.py");
 
@@ -876,8 +876,8 @@ pub fn make_test_description<R: Read>(
     let mut ignore_message = None;
     let mut should_fail = false;
 
-    let rustc_has_profiler_support = env::var_os("RUSTC_PROFILER_SUPPORT").is_some();
-    let rustc_has_sanitizer_support = env::var_os("RUSTC_SANITIZER_SUPPORT").is_some();
+    let crablangc_has_profiler_support = env::var_os("CRABLANGC_PROFILER_SUPPORT").is_some();
+    let crablangc_has_sanitizer_support = env::var_os("CRABLANGC_SANITIZER_SUPPORT").is_some();
     let has_asm_support = config.has_asm_support();
     let has_asan = util::ASAN_SUPPORTED_TARGETS.contains(&&*config.target);
     let has_cfi = util::CFI_SUPPORTED_TARGETS.contains(&&*config.target);
@@ -891,24 +891,24 @@ pub fn make_test_description<R: Read>(
     let has_shadow_call_stack = util::SHADOWCALLSTACK_SUPPORTED_TARGETS.contains(&&*config.target);
     let has_xray = util::XRAY_SUPPORTED_TARGETS.contains(&&*config.target);
 
-    // For tests using the `needs-rust-lld` directive (e.g. for `-Zgcc-ld=lld`), we need to find
-    // whether `rust-lld` is present in the compiler under test.
+    // For tests using the `needs-crablang-lld` directive (e.g. for `-Zgcc-ld=lld`), we need to find
+    // whether `crablang-lld` is present in the compiler under test.
     //
     // The --compile-lib-path is the path to host shared libraries, but depends on the OS. For
     // example:
     // - on linux, it can be <sysroot>/lib
     // - on windows, it can be <sysroot>/bin
     //
-    // However, `rust-lld` is only located under the lib path, so we look for it there.
-    let has_rust_lld = config
+    // However, `crablang-lld` is only located under the lib path, so we look for it there.
+    let has_crablang_lld = config
         .compile_lib_path
         .parent()
         .expect("couldn't traverse to the parent of the specified --compile-lib-path")
         .join("lib")
-        .join("rustlib")
+        .join("crablanglib")
         .join(&config.target)
         .join("bin")
-        .join(if config.host.contains("windows") { "rust-lld.exe" } else { "rust-lld" })
+        .join(if config.host.contains("windows") { "crablang-lld.exe" } else { "crablang-lld" })
         .exists();
 
     fn is_on_path(file: &'static str) -> impl Fn() -> bool {
@@ -985,10 +985,10 @@ pub fn make_test_description<R: Read>(
             config.run_clang_based_tests_with.is_none() && config.parse_needs_matching_clang(ln)
         );
         reason!(!has_asm_support && config.parse_name_directive(ln, "needs-asm-support"));
-        reason!(!rustc_has_profiler_support && config.parse_needs_profiler_support(ln));
+        reason!(!crablangc_has_profiler_support && config.parse_needs_profiler_support(ln));
         reason!(!config.run_enabled() && config.parse_name_directive(ln, "needs-run-enabled"));
         reason!(
-            !rustc_has_sanitizer_support
+            !crablangc_has_sanitizer_support
                 && config.parse_name_directive(ln, "needs-sanitizer-support")
         );
         reason!(!has_asan && config.parse_name_directive(ln, "needs-sanitizer-address"));
@@ -1013,7 +1013,7 @@ pub fn make_test_description<R: Read>(
         reason!(config.debugger == Some(Debugger::Cdb) && ignore_cdb(config, ln));
         reason!(config.debugger == Some(Debugger::Gdb) && ignore_gdb(config, ln));
         reason!(config.debugger == Some(Debugger::Lldb) && ignore_lldb(config, ln));
-        reason!(!has_rust_lld && config.parse_name_directive(ln, "needs-rust-lld"));
+        reason!(!has_crablang_lld && config.parse_name_directive(ln, "needs-crablang-lld"));
         reason!(config.parse_name_directive(ln, "needs-i686-dlltool") && !has_i686_dlltool());
         reason!(config.parse_name_directive(ln, "needs-x86_64-dlltool") && !has_x86_64_dlltool());
         should_fail |= config.parse_name_directive(ln, "should-fail");
@@ -1104,7 +1104,7 @@ fn ignore_lldb(config: &Config, line: &str) -> bool {
             // version
             actual_version < min_version
         } else {
-            line.starts_with("rust-lldb") && !config.lldb_native_rust
+            line.starts_with("crablang-lldb") && !config.lldb_native_crablang
         }
     } else {
         false

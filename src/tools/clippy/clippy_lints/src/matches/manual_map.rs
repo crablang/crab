@@ -4,10 +4,10 @@ use clippy_utils::diagnostics::span_lint_and_sugg;
 
 use clippy_utils::{is_res_lang_ctor, path_res};
 
-use rustc_hir::LangItem::OptionSome;
-use rustc_hir::{Arm, Block, BlockCheckMode, Expr, ExprKind, Pat, UnsafeSource};
-use rustc_lint::LateContext;
-use rustc_span::SyntaxContext;
+use crablangc_hir::LangItem::OptionSome;
+use crablangc_hir::{Arm, Block, BlockCheckMode, Expr, ExprKind, Pat, UnsafeSource};
+use crablangc_lint::LateContext;
+use crablangc_span::SyntaxContext;
 
 pub(super) fn check_match<'tcx>(
     cx: &LateContext<'tcx>,

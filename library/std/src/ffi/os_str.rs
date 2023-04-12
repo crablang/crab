@@ -16,7 +16,7 @@ use crate::sys::os_str::{Buf, Slice};
 use crate::sys_common::{AsInner, FromInner, IntoInner};
 
 /// A type that can represent owned, mutable platform-native strings, but is
-/// cheaply inter-convertible with Rust strings.
+/// cheaply inter-convertible with CrabLang strings.
 ///
 /// The need for this type arises from the fact that:
 ///
@@ -26,10 +26,10 @@ use crate::sys_common::{AsInner, FromInner, IntoInner};
 /// * On Windows, strings are often arbitrary sequences of non-zero 16-bit
 ///   values, interpreted as UTF-16 when it is valid to do so.
 ///
-/// * In Rust, strings are always valid UTF-8, which may contain zeros.
+/// * In CrabLang, strings are always valid UTF-8, which may contain zeros.
 ///
-/// `OsString` and [`OsStr`] bridge this gap by simultaneously representing Rust
-/// and platform-native string values, and in particular allowing a Rust string
+/// `OsString` and [`OsStr`] bridge this gap by simultaneously representing CrabLang
+/// and platform-native string values, and in particular allowing a CrabLang string
 /// to be converted into an "OS" string with no cost if possible. A consequence
 /// of this is that `OsString` instances are *not* `NUL` terminated; in order
 /// to pass to e.g., Unix system call, you should create a [`CStr`].
@@ -63,11 +63,11 @@ use crate::sys_common::{AsInner, FromInner, IntoInner};
 ///
 /// # Creating an `OsString`
 ///
-/// **From a Rust string**: `OsString` implements
+/// **From a CrabLang string**: `OsString` implements
 /// <code>[From]<[String]></code>, so you can use <code>my_string.[into]\()</code> to
-/// create an `OsString` from a normal Rust string.
+/// create an `OsString` from a normal CrabLang string.
 ///
-/// **From slices:** Just like you can start with an empty Rust
+/// **From slices:** Just like you can start with an empty CrabLang
 /// [`String`] and then [`String::push_str`] some <code>&[str]</code>
 /// sub-string slices into it, you can create an empty `OsString` with
 /// the [`OsString::new`] method and then push string slices into it with the
@@ -87,8 +87,8 @@ use crate::sys_common::{AsInner, FromInner, IntoInner};
 /// [`CStr`]: crate::ffi::CStr
 /// [conversions]: super#conversions
 /// [into]: Into::into
-#[cfg_attr(not(test), rustc_diagnostic_item = "OsString")]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[cfg_attr(not(test), crablangc_diagnostic_item = "OsString")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub struct OsString {
     inner: Buf,
 }
@@ -109,8 +109,8 @@ impl crate::sealed::Sealed for OsString {}
 /// the traits which `OsStr` implements for [conversions] from/to native representations.
 ///
 /// [conversions]: super#conversions
-#[cfg_attr(not(test), rustc_diagnostic_item = "OsStr")]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[cfg_attr(not(test), crablangc_diagnostic_item = "OsStr")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 // FIXME:
 // `OsStr::from_inner` current implementation relies
 // on `OsStr` being layout-compatible with `Slice`.
@@ -135,7 +135,7 @@ impl OsString {
     ///
     /// let os_string = OsString::new();
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[must_use]
     #[inline]
     pub fn new() -> OsString {
@@ -153,7 +153,7 @@ impl OsString {
     /// let os_str = OsStr::new("foo");
     /// assert_eq!(os_string.as_os_str(), os_str);
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[must_use]
     #[inline]
     pub fn as_os_str(&self) -> &OsStr {
@@ -173,7 +173,7 @@ impl OsString {
     /// let string = os_string.into_string();
     /// assert_eq!(string, Ok(String::from("foo")));
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     pub fn into_string(self) -> Result<String, OsString> {
         self.inner.into_string().map_err(|buf| OsString { inner: buf })
@@ -190,7 +190,7 @@ impl OsString {
     /// os_string.push("bar");
     /// assert_eq!(&os_string, "foobar");
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     pub fn push<T: AsRef<OsStr>>(&mut self, s: T) {
         self.inner.push_slice(&s.as_ref().inner)
@@ -468,7 +468,7 @@ impl OsString {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl From<String> for OsString {
     /// Converts a [`String`] into an [`OsString`].
     ///
@@ -479,7 +479,7 @@ impl From<String> for OsString {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: ?Sized + AsRef<OsStr>> From<&T> for OsString {
     /// Copies any value implementing <code>[AsRef]&lt;[OsStr]&gt;</code>
     /// into a newly allocated [`OsString`].
@@ -488,7 +488,7 @@ impl<T: ?Sized + AsRef<OsStr>> From<&T> for OsString {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl ops::Index<ops::RangeFull> for OsString {
     type Output = OsStr;
 
@@ -506,7 +506,7 @@ impl ops::IndexMut<ops::RangeFull> for OsString {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl ops::Deref for OsString {
     type Target = OsStr;
 
@@ -533,7 +533,7 @@ impl Default for OsString {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl Clone for OsString {
     #[inline]
     fn clone(&self) -> Self {
@@ -546,14 +546,14 @@ impl Clone for OsString {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl fmt::Debug for OsString {
     fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
         fmt::Debug::fmt(&**self, formatter)
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl PartialEq for OsString {
     #[inline]
     fn eq(&self, other: &OsString) -> bool {
@@ -561,7 +561,7 @@ impl PartialEq for OsString {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl PartialEq<str> for OsString {
     #[inline]
     fn eq(&self, other: &str) -> bool {
@@ -569,7 +569,7 @@ impl PartialEq<str> for OsString {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl PartialEq<OsString> for str {
     #[inline]
     fn eq(&self, other: &OsString) -> bool {
@@ -593,10 +593,10 @@ impl<'a> PartialEq<OsString> for &'a str {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl Eq for OsString {}
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl PartialOrd for OsString {
     #[inline]
     fn partial_cmp(&self, other: &OsString) -> Option<cmp::Ordering> {
@@ -620,7 +620,7 @@ impl PartialOrd for OsString {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl PartialOrd<str> for OsString {
     #[inline]
     fn partial_cmp(&self, other: &str) -> Option<cmp::Ordering> {
@@ -628,7 +628,7 @@ impl PartialOrd<str> for OsString {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl Ord for OsString {
     #[inline]
     fn cmp(&self, other: &OsString) -> cmp::Ordering {
@@ -636,7 +636,7 @@ impl Ord for OsString {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl Hash for OsString {
     #[inline]
     fn hash<H: Hasher>(&self, state: &mut H) {
@@ -663,7 +663,7 @@ impl OsStr {
     /// let os_str = OsStr::new("foo");
     /// ```
     #[inline]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn new<S: AsRef<OsStr> + ?Sized>(s: &S) -> &OsStr {
         s.as_ref()
     }
@@ -696,7 +696,7 @@ impl OsStr {
     /// let os_str = OsStr::new("foo");
     /// assert_eq!(os_str.to_str(), Some("foo"));
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[must_use = "this returns the result of the operation, \
                   without modifying the original"]
     #[inline]
@@ -749,7 +749,7 @@ impl OsStr {
     ///     assert_eq!(os_str.to_string_lossy(), "fo�o");
     /// }
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[must_use = "this returns the result of the operation, \
                   without modifying the original"]
     #[inline]
@@ -768,7 +768,7 @@ impl OsStr {
     /// let os_string = os_str.to_os_string();
     /// assert_eq!(os_string, OsString::from("foo"));
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[must_use = "this returns the result of the operation, \
                   without modifying the original"]
     #[inline]
@@ -804,7 +804,7 @@ impl OsStr {
     /// The length returned is that of the underlying storage used by `OsStr`.
     /// As discussed in the [`OsString`] introduction, [`OsString`] and `OsStr`
     /// store strings in a form best suited for cheap inter-conversion between
-    /// native-platform and Rust string forms, which may differ significantly
+    /// native-platform and CrabLang string forms, which may differ significantly
     /// from both of them, including in storage size and encoding.
     ///
     /// This number is simply useful for passing to other methods, like
@@ -1128,7 +1128,7 @@ impl Default for &OsStr {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl PartialEq for OsStr {
     #[inline]
     fn eq(&self, other: &OsStr) -> bool {
@@ -1136,7 +1136,7 @@ impl PartialEq for OsStr {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl PartialEq<str> for OsStr {
     #[inline]
     fn eq(&self, other: &str) -> bool {
@@ -1144,7 +1144,7 @@ impl PartialEq<str> for OsStr {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl PartialEq<OsStr> for str {
     #[inline]
     fn eq(&self, other: &OsStr) -> bool {
@@ -1152,10 +1152,10 @@ impl PartialEq<OsStr> for str {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl Eq for OsStr {}
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl PartialOrd for OsStr {
     #[inline]
     fn partial_cmp(&self, other: &OsStr) -> Option<cmp::Ordering> {
@@ -1179,7 +1179,7 @@ impl PartialOrd for OsStr {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl PartialOrd<str> for OsStr {
     #[inline]
     fn partial_cmp(&self, other: &str) -> Option<cmp::Ordering> {
@@ -1190,7 +1190,7 @@ impl PartialOrd<str> for OsStr {
 // FIXME (#19470): cannot provide PartialOrd<OsStr> for str until we
 // have more flexible coherence rules.
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl Ord for OsStr {
     #[inline]
     fn cmp(&self, other: &OsStr) -> cmp::Ordering {
@@ -1240,7 +1240,7 @@ impl_cmp!(Cow<'a, OsStr>, OsStr);
 impl_cmp!(Cow<'a, OsStr>, &'b OsStr);
 impl_cmp!(Cow<'a, OsStr>, OsString);
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl Hash for OsStr {
     #[inline]
     fn hash<H: Hasher>(&self, state: &mut H) {
@@ -1248,7 +1248,7 @@ impl Hash for OsStr {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl fmt::Debug for OsStr {
     fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
         fmt::Debug::fmt(&self.inner, formatter)
@@ -1278,7 +1278,7 @@ impl<S: Borrow<OsStr>> alloc::slice::Join<&OsStr> for [S] {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl Borrow<OsStr> for OsString {
     #[inline]
     fn borrow(&self) -> &OsStr {
@@ -1286,7 +1286,7 @@ impl Borrow<OsStr> for OsString {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl ToOwned for OsStr {
     type Owned = OsString;
     #[inline]
@@ -1299,7 +1299,7 @@ impl ToOwned for OsStr {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl AsRef<OsStr> for OsStr {
     #[inline]
     fn as_ref(&self) -> &OsStr {
@@ -1307,7 +1307,7 @@ impl AsRef<OsStr> for OsStr {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl AsRef<OsStr> for OsString {
     #[inline]
     fn as_ref(&self) -> &OsStr {
@@ -1315,7 +1315,7 @@ impl AsRef<OsStr> for OsString {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl AsRef<OsStr> for str {
     #[inline]
     fn as_ref(&self) -> &OsStr {
@@ -1323,7 +1323,7 @@ impl AsRef<OsStr> for str {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl AsRef<OsStr> for String {
     #[inline]
     fn as_ref(&self) -> &OsStr {

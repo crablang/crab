@@ -1,8 +1,8 @@
 use clippy_utils::diagnostics::span_lint;
-use rustc_hir::{Expr, ExprKind};
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_session::{declare_lint_pass, declare_tool_lint};
-use rustc_span::sym;
+use crablangc_hir::{Expr, ExprKind};
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_span::sym;
 
 declare_clippy_lint! {
     /// ### What it does
@@ -14,7 +14,7 @@ declare_clippy_lint! {
     /// destructor, possibly causing leaks.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// # use std::mem;
     /// # use std::rc::Rc;
     /// mem::forget(Rc::new(55))

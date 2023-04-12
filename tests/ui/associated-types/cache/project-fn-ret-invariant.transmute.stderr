@@ -9,7 +9,7 @@ LL |     bar(foo, x)
    |
    = note: requirement occurs because of the type `Type<'_>`, which makes the generic argument `'_` invariant
    = note: the struct `Type<'a>` is invariant over the parameter `'a`
-   = help: see <https://doc.rust-lang.org/nomicon/subtyping.html> for more information about variance
+   = help: see <https://doc.crablang.org/nomicon/subtyping.html> for more information about variance
 
 error: aborting due to previous error
 

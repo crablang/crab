@@ -4,7 +4,7 @@
 // subsequent allowance of a lint group containing it (here, `nonstandard_style`). See
 // Issue #42873.
 
-// If you turn off deduplicate diagnostics (which rustc turns on by default but
+// If you turn off deduplicate diagnostics (which crablangc turns on by default but
 // compiletest turns off when it runs ui tests), then the errors are
 // (unfortunately) repeated here because the checking is done as we read in the
 // errors, and currently that happens two or three different times, depending on

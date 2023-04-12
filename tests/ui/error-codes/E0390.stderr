@@ -16,4 +16,4 @@ LL | impl fn(Foo) {}
 
 error: aborting due to 2 previous errors
 
-For more information about this error, try `rustc --explain E0390`.
+For more information about this error, try `crablangc --explain E0390`.

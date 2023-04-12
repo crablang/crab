@@ -4,7 +4,7 @@
 // incremental
 // compile-flags: -Z query-dep-graph
 
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 #![allow(warnings)]
 
 fn main() { }
@@ -16,7 +16,7 @@ pub trait Foo: Sized {
 mod x {
     use Foo;
 
-    #[rustc_if_this_changed]
+    #[crablangc_if_this_changed]
     impl Foo for char { }
 
     impl Foo for u32 { }
@@ -25,22 +25,22 @@ mod x {
 mod y {
     use Foo;
 
-    #[rustc_then_this_would_need(typeck)] //~ ERROR OK
+    #[crablangc_then_this_would_need(typeck)] //~ ERROR OK
     pub fn with_char() {
         char::method('a');
     }
 
-    #[rustc_then_this_would_need(typeck)] //~ ERROR OK
+    #[crablangc_then_this_would_need(typeck)] //~ ERROR OK
     pub fn take_foo_with_char() {
         take_foo::<char>('a');
     }
 
-    #[rustc_then_this_would_need(typeck)] //~ ERROR OK
+    #[crablangc_then_this_would_need(typeck)] //~ ERROR OK
     pub fn with_u32() {
         u32::method(22);
     }
 
-    #[rustc_then_this_would_need(typeck)] //~ ERROR OK
+    #[crablangc_then_this_would_need(typeck)] //~ ERROR OK
     pub fn take_foo_with_u32() {
         take_foo::<u32>(22);
     }
@@ -53,7 +53,7 @@ mod z {
 
     // These are expected to yield errors, because changes to `x`
     // affect the BODY of `y`, but not its signature.
-    #[rustc_then_this_would_need(typeck)] //~ ERROR no path
+    #[crablangc_then_this_would_need(typeck)] //~ ERROR no path
     pub fn z() {
         y::with_char();
         y::with_u32();

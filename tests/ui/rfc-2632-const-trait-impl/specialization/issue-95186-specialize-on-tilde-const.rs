@@ -3,11 +3,11 @@
 // check-pass
 
 #![feature(const_trait_impl)]
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 #![feature(min_specialization)]
 
 #[const_trait]
-#[rustc_specialization_trait]
+#[crablangc_specialization_trait]
 trait Specialize {}
 
 #[const_trait]

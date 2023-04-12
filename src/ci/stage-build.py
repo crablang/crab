@@ -35,7 +35,7 @@ LLVM_PGO_CRATES = [
     "hyper-0.14.18"
 ]
 
-RUSTC_PGO_CRATES = [
+CRABLANGC_PGO_CRATES = [
     "externs",
     "ctfe-stress-5",
     "cargo-0.60.0",
@@ -72,14 +72,14 @@ class Pipeline:
     def build_artifacts(self) -> Path:
         return self.build_root() / "build" / PGO_HOST
 
-    def rustc_stage_0(self) -> Path:
-        return self.build_artifacts() / "stage0" / "bin" / "rustc"
+    def crablangc_stage_0(self) -> Path:
+        return self.build_artifacts() / "stage0" / "bin" / "crablangc"
 
     def cargo_stage_0(self) -> Path:
         return self.build_artifacts() / "stage0" / "bin" / "cargo"
 
-    def rustc_stage_2(self) -> Path:
-        return self.build_artifacts() / "stage2" / "bin" / "rustc"
+    def crablangc_stage_2(self) -> Path:
+        return self.build_artifacts() / "stage2" / "bin" / "crablangc"
 
     def opt_artifacts(self) -> Path:
         raise NotImplementedError
@@ -90,26 +90,26 @@ class Pipeline:
     def llvm_profile_merged_file(self) -> Path:
         return self.opt_artifacts() / "llvm-pgo.profdata"
 
-    def rustc_perf_dir(self) -> Path:
-        return self.opt_artifacts() / "rustc-perf"
+    def crablangc_perf_dir(self) -> Path:
+        return self.opt_artifacts() / "crablangc-perf"
 
-    def build_rustc_perf(self):
+    def build_crablangc_perf(self):
         raise NotImplementedError()
 
-    def rustc_profile_dir_root(self) -> Path:
-        return self.opt_artifacts() / "rustc-pgo"
+    def crablangc_profile_dir_root(self) -> Path:
+        return self.opt_artifacts() / "crablangc-pgo"
 
-    def rustc_profile_merged_file(self) -> Path:
-        return self.opt_artifacts() / "rustc-pgo.profdata"
+    def crablangc_profile_merged_file(self) -> Path:
+        return self.opt_artifacts() / "crablangc-pgo.profdata"
 
-    def rustc_profile_template_path(self) -> Path:
+    def crablangc_profile_template_path(self) -> Path:
         """
         The profile data is written into a single filepath that is being repeatedly merged when each
-        rustc invocation ends. Empirically, this can result in some profiling data being lost. That's
+        crablangc invocation ends. Empirically, this can result in some profiling data being lost. That's
         why we override the profile path to include the PID. This will produce many more profiling
-        files, but the resulting profile will produce a slightly faster rustc binary.
+        files, but the resulting profile will produce a slightly faster crablangc binary.
         """
-        return self.rustc_profile_dir_root() / "default_%m_%p.profraw"
+        return self.crablangc_profile_dir_root() / "default_%m_%p.profraw"
 
     def supports_bolt(self) -> bool:
         raise NotImplementedError
@@ -126,7 +126,7 @@ class LinuxPipeline(Pipeline):
         return Path("/checkout")
 
     def downloaded_llvm_dir(self) -> Path:
-        return Path("/rustroot")
+        return Path("/crablangroot")
 
     def build_root(self) -> Path:
         return self.checkout_path() / "obj"
@@ -134,15 +134,15 @@ class LinuxPipeline(Pipeline):
     def opt_artifacts(self) -> Path:
         return Path("/tmp/tmp-multistage/opt-artifacts")
 
-    def build_rustc_perf(self):
-        # /tmp/rustc-perf comes from the Dockerfile
-        shutil.copytree("/tmp/rustc-perf", self.rustc_perf_dir())
-        cmd(["chown", "-R", f"{getpass.getuser()}:", self.rustc_perf_dir()])
+    def build_crablangc_perf(self):
+        # /tmp/crablangc-perf comes from the Dockerfile
+        shutil.copytree("/tmp/crablangc-perf", self.crablangc_perf_dir())
+        cmd(["chown", "-R", f"{getpass.getuser()}:", self.crablangc_perf_dir()])
 
-        with change_cwd(self.rustc_perf_dir()):
+        with change_cwd(self.crablangc_perf_dir()):
             cmd([self.cargo_stage_0(), "build", "-p", "collector"], env=dict(
-                RUSTC=str(self.rustc_stage_0()),
-                RUSTC_BOOTSTRAP="1"
+                CRABLANGC=str(self.crablangc_stage_0()),
+                CRABLANGC_BOOTSTRAP="1"
             ))
 
     def supports_bolt(self) -> bool:
@@ -157,7 +157,7 @@ class WindowsPipeline(Pipeline):
         return self.checkout_dir
 
     def downloaded_llvm_dir(self) -> Path:
-        return self.checkout_path() / "citools" / "clang-rust"
+        return self.checkout_path() / "citools" / "clang-crablang"
 
     def build_root(self) -> Path:
         return self.checkout_path()
@@ -165,44 +165,44 @@ class WindowsPipeline(Pipeline):
     def opt_artifacts(self) -> Path:
         return self.checkout_path() / "opt-artifacts"
 
-    def rustc_stage_0(self) -> Path:
-        return super().rustc_stage_0().with_suffix(".exe")
+    def crablangc_stage_0(self) -> Path:
+        return super().crablangc_stage_0().with_suffix(".exe")
 
     def cargo_stage_0(self) -> Path:
         return super().cargo_stage_0().with_suffix(".exe")
 
-    def rustc_stage_2(self) -> Path:
-        return super().rustc_stage_2().with_suffix(".exe")
+    def crablangc_stage_2(self) -> Path:
+        return super().crablangc_stage_2().with_suffix(".exe")
 
-    def build_rustc_perf(self):
-        # rustc-perf version from 2023-03-15
+    def build_crablangc_perf(self):
+        # crablangc-perf version from 2023-03-15
         perf_commit = "9dfaa35193154b690922347ee1141a06ec87a199"
-        rustc_perf_zip_path = self.opt_artifacts() / "perf.zip"
+        crablangc_perf_zip_path = self.opt_artifacts() / "perf.zip"
 
-        def download_rustc_perf():
+        def download_crablangc_perf():
             download_file(
-                f"https://github.com/rust-lang/rustc-perf/archive/{perf_commit}.zip",
-                rustc_perf_zip_path
+                f"https://github.com/crablang/crablangc-perf/archive/{perf_commit}.zip",
+                crablangc_perf_zip_path
             )
             with change_cwd(self.opt_artifacts()):
-                unpack_archive(rustc_perf_zip_path)
-                move_path(Path(f"rustc-perf-{perf_commit}"), self.rustc_perf_dir())
-                delete_file(rustc_perf_zip_path)
+                unpack_archive(crablangc_perf_zip_path)
+                move_path(Path(f"crablangc-perf-{perf_commit}"), self.crablangc_perf_dir())
+                delete_file(crablangc_perf_zip_path)
 
-        retry_action(download_rustc_perf, "Download rustc-perf")
+        retry_action(download_crablangc_perf, "Download crablangc-perf")
 
-        with change_cwd(self.rustc_perf_dir()):
+        with change_cwd(self.crablangc_perf_dir()):
             cmd([self.cargo_stage_0(), "build", "-p", "collector"], env=dict(
-                RUSTC=str(self.rustc_stage_0()),
-                RUSTC_BOOTSTRAP="1"
+                CRABLANGC=str(self.crablangc_stage_0()),
+                CRABLANGC_BOOTSTRAP="1"
             ))
 
-    def rustc_profile_template_path(self) -> Path:
+    def crablangc_profile_template_path(self) -> Path:
         """
-        On Windows, we don't have enough space to use separate files for each rustc invocation.
+        On Windows, we don't have enough space to use separate files for each crablangc invocation.
         Therefore, we use a single file for the generated profiles.
         """
-        return self.rustc_profile_dir_root() / "default_%m.profraw"
+        return self.crablangc_profile_dir_root() / "default_%m.profraw"
 
     def supports_bolt(self) -> bool:
         return False
@@ -333,7 +333,7 @@ def load_last_metrics(path: Path) -> BuildStep:
     invocation = metrics["invocations"][-1]
 
     def parse(entry) -> Optional[BuildStep]:
-        if "kind" not in entry or entry["kind"] != "rustbuild_step":
+        if "kind" not in entry or entry["kind"] != "crablangbuild_step":
             return None
         type = entry.get("type", "")
         duration = entry.get("duration_excluding_children_sec", 0)
@@ -464,41 +464,41 @@ def run_compiler_benchmarks(
     # Compile libcore, both in opt-level=0 and opt-level=3
     with change_cwd(pipeline.build_root()):
         cmd([
-            pipeline.rustc_stage_2(),
+            pipeline.crablangc_stage_2(),
             "--edition", "2021",
             "--crate-type", "lib",
             str(pipeline.checkout_path() / "library/core/src/lib.rs"),
             "--out-dir", pipeline.opt_artifacts()
-        ], env=dict(RUSTC_BOOTSTRAP="1", **env))
+        ], env=dict(CRABLANGC_BOOTSTRAP="1", **env))
 
         cmd([
-            pipeline.rustc_stage_2(),
+            pipeline.crablangc_stage_2(),
             "--edition", "2021",
             "--crate-type", "lib",
             "-Copt-level=3",
             str(pipeline.checkout_path() / "library/core/src/lib.rs"),
             "--out-dir", pipeline.opt_artifacts()
-        ], env=dict(RUSTC_BOOTSTRAP="1", **env))
+        ], env=dict(CRABLANGC_BOOTSTRAP="1", **env))
 
-    # Run rustc-perf benchmarks
+    # Run crablangc-perf benchmarks
     # Benchmark using profile_local with eprintln, which essentially just means
-    # don't actually benchmark -- just make sure we run rustc a bunch of times.
-    with change_cwd(pipeline.rustc_perf_dir()):
+    # don't actually benchmark -- just make sure we run crablangc a bunch of times.
+    with change_cwd(pipeline.crablangc_perf_dir()):
         cmd([
             pipeline.cargo_stage_0(),
             "run",
             "-p", "collector", "--bin", "collector", "--",
             "profile_local", "eprintln",
-            pipeline.rustc_stage_2(),
+            pipeline.crablangc_stage_2(),
             "--id", "Test",
             "--cargo", pipeline.cargo_stage_0(),
             "--profiles", ",".join(profiles),
             "--scenarios", ",".join(scenarios),
             "--include", ",".join(crates)
         ], env=dict(
-            RUST_LOG="collector=debug",
-            RUSTC=str(pipeline.rustc_stage_0()),
-            RUSTC_BOOTSTRAP="1",
+            CRABLANG_LOG="collector=debug",
+            CRABLANGC=str(pipeline.crablangc_stage_0()),
+            CRABLANGC_BOOTSTRAP="1",
             **env
         ))
 
@@ -554,7 +554,7 @@ def get_files(directory: Path, filter: Optional[Callable[[Path], bool]] = None) 
             yield path
 
 
-def build_rustc(
+def build_crablangc(
         pipeline: Pipeline,
         args: List[str],
         env: Optional[Dict[str, str]] = None
@@ -609,39 +609,39 @@ def gather_llvm_profiles(pipeline: Pipeline):
     delete_directory(pipeline.llvm_profile_dir_root())
 
 
-def gather_rustc_profiles(pipeline: Pipeline):
-    LOGGER.info("Running benchmarks with PGO instrumented rustc")
+def gather_crablangc_profiles(pipeline: Pipeline):
+    LOGGER.info("Running benchmarks with PGO instrumented crablangc")
 
-    # Here we're profiling the `rustc` frontend, so we also include `Check`.
+    # Here we're profiling the `crablangc` frontend, so we also include `Check`.
     # The benchmark set includes various stress tests that put the frontend under pressure.
     run_compiler_benchmarks(
         pipeline,
         profiles=["Check", "Debug", "Opt"],
         scenarios=["All"],
-        crates=RUSTC_PGO_CRATES,
+        crates=CRABLANGC_PGO_CRATES,
         env=dict(
-            LLVM_PROFILE_FILE=str(pipeline.rustc_profile_template_path())
+            LLVM_PROFILE_FILE=str(pipeline.crablangc_profile_template_path())
         )
     )
 
-    profile_path = pipeline.rustc_profile_merged_file()
-    LOGGER.info(f"Merging Rustc PGO profiles to {profile_path}")
+    profile_path = pipeline.crablangc_profile_merged_file()
+    LOGGER.info(f"Merging CrabLangc PGO profiles to {profile_path}")
     cmd([
         pipeline.build_artifacts() / "llvm" / "bin" / "llvm-profdata",
         "merge",
         "-o", profile_path,
-        pipeline.rustc_profile_dir_root()
+        pipeline.crablangc_profile_dir_root()
     ])
 
-    LOGGER.info("Rustc PGO statistics")
+    LOGGER.info("CrabLangc PGO statistics")
     LOGGER.info(f"{profile_path}: {format_bytes(get_path_size(profile_path))}")
     LOGGER.info(
-        f"{pipeline.rustc_profile_dir_root()}: {format_bytes(get_path_size(pipeline.rustc_profile_dir_root()))}")
-    LOGGER.info(f"Profile file count: {count_files(pipeline.rustc_profile_dir_root())}")
+        f"{pipeline.crablangc_profile_dir_root()}: {format_bytes(get_path_size(pipeline.crablangc_profile_dir_root()))}")
+    LOGGER.info(f"Profile file count: {count_files(pipeline.crablangc_profile_dir_root())}")
 
     # We don't need the individual .profraw files now that they have been merged
     # into a final .profdata
-    delete_directory(pipeline.rustc_profile_dir_root())
+    delete_directory(pipeline.crablangc_profile_dir_root())
 
 
 def gather_llvm_bolt_profiles(pipeline: Pipeline):
@@ -672,7 +672,7 @@ def gather_llvm_bolt_profiles(pipeline: Pipeline):
 
 def clear_llvm_files(pipeline: Pipeline):
     """
-    Rustbuild currently doesn't support rebuilding LLVM when PGO options
+    CrabLangbuild currently doesn't support rebuilding LLVM when PGO options
     change (or any other llvm-related options); so just clear out the relevant
     directories ourselves.
     """
@@ -693,7 +693,7 @@ def print_binary_sizes(pipeline: Pipeline):
         for path in paths:
             path_str = f"{path.name}:"
             print(f"{path_str:<50}{format_bytes(path.stat().st_size):>14}", file=output)
-        LOGGER.info(f"Rustc binary size\n{output.getvalue()}")
+        LOGGER.info(f"CrabLangc binary size\n{output.getvalue()}")
 
 
 def print_free_disk_space(pipeline: Pipeline):
@@ -731,15 +731,15 @@ def record_metrics(pipeline: Pipeline, timer: Timer):
     assert len(llvm_steps) > 0
     llvm_duration = sum(step.duration for step in llvm_steps)
 
-    rustc_steps = tuple(metrics.find_all_by_type("bootstrap::compile::Rustc"))
-    assert len(rustc_steps) > 0
-    rustc_duration = sum(step.duration for step in rustc_steps)
+    crablangc_steps = tuple(metrics.find_all_by_type("bootstrap::compile::CrabLangc"))
+    assert len(crablangc_steps) > 0
+    crablangc_duration = sum(step.duration for step in crablangc_steps)
 
-    # The LLVM step is part of the Rustc step
-    rustc_duration -= llvm_duration
+    # The LLVM step is part of the CrabLangc step
+    crablangc_duration -= llvm_duration
 
     timer.add_duration("LLVM", llvm_duration)
-    timer.add_duration("Rustc", rustc_duration)
+    timer.add_duration("CrabLangc", crablangc_duration)
 
     log_metrics(metrics)
 
@@ -749,17 +749,17 @@ def execute_build_pipeline(timer: Timer, pipeline: Pipeline, final_build_args: L
     shutil.rmtree(pipeline.opt_artifacts(), ignore_errors=True)
     os.makedirs(pipeline.opt_artifacts(), exist_ok=True)
 
-    pipeline.build_rustc_perf()
+    pipeline.build_crablangc_perf()
 
-    # Stage 1: Build rustc + PGO instrumented LLVM
+    # Stage 1: Build crablangc + PGO instrumented LLVM
     with timer.section("Stage 1 (LLVM PGO)") as stage1:
-        with stage1.section("Build rustc and LLVM") as rustc_build:
-            build_rustc(pipeline, args=[
+        with stage1.section("Build crablangc and LLVM") as crablangc_build:
+            build_crablangc(pipeline, args=[
                 "--llvm-profile-generate"
             ], env=dict(
                 LLVM_PROFILE_DIR=str(pipeline.llvm_profile_dir_root() / "prof-%p")
             ))
-            record_metrics(pipeline, rustc_build)
+            record_metrics(pipeline, crablangc_build)
 
         with stage1.section("Gather profiles"):
             gather_llvm_profiles(pipeline)
@@ -771,37 +771,37 @@ def execute_build_pipeline(timer: Timer, pipeline: Pipeline, final_build_args: L
         pipeline.llvm_profile_merged_file()
     ]
 
-    # Stage 2: Build PGO instrumented rustc + LLVM
-    with timer.section("Stage 2 (rustc PGO)") as stage2:
-        with stage2.section("Build rustc and LLVM") as rustc_build:
-            build_rustc(pipeline, args=[
-                "--rust-profile-generate",
-                pipeline.rustc_profile_dir_root()
+    # Stage 2: Build PGO instrumented crablangc + LLVM
+    with timer.section("Stage 2 (crablangc PGO)") as stage2:
+        with stage2.section("Build crablangc and LLVM") as crablangc_build:
+            build_crablangc(pipeline, args=[
+                "--crablang-profile-generate",
+                pipeline.crablangc_profile_dir_root()
             ])
-            record_metrics(pipeline, rustc_build)
+            record_metrics(pipeline, crablangc_build)
 
         with stage2.section("Gather profiles"):
-            gather_rustc_profiles(pipeline)
+            gather_crablangc_profiles(pipeline)
         print_free_disk_space(pipeline)
 
     clear_llvm_files(pipeline)
     final_build_args += [
-        "--rust-profile-use",
-        pipeline.rustc_profile_merged_file()
+        "--crablang-profile-use",
+        pipeline.crablangc_profile_merged_file()
     ]
 
-    # Stage 3: Build rustc + BOLT instrumented LLVM
+    # Stage 3: Build crablangc + BOLT instrumented LLVM
     if pipeline.supports_bolt():
         with timer.section("Stage 3 (LLVM BOLT)") as stage3:
-            with stage3.section("Build rustc and LLVM") as rustc_build:
-                build_rustc(pipeline, args=[
+            with stage3.section("Build crablangc and LLVM") as crablangc_build:
+                build_crablangc(pipeline, args=[
                     "--llvm-profile-use",
                     pipeline.llvm_profile_merged_file(),
                     "--llvm-bolt-profile-generate",
-                    "--rust-profile-use",
-                    pipeline.rustc_profile_merged_file()
+                    "--crablang-profile-use",
+                    pipeline.crablangc_profile_merged_file()
                 ])
-                record_metrics(pipeline, rustc_build)
+                record_metrics(pipeline, crablangc_build)
 
             with stage3.section("Gather profiles"):
                 gather_llvm_bolt_profiles(pipeline)
@@ -813,7 +813,7 @@ def execute_build_pipeline(timer: Timer, pipeline: Pipeline, final_build_args: L
             pipeline.llvm_bolt_profile_merged_file()
         ]
 
-    # Stage 4: Build PGO optimized rustc + PGO/BOLT optimized LLVM
+    # Stage 4: Build PGO optimized crablangc + PGO/BOLT optimized LLVM
     with timer.section("Stage 4 (final build)") as stage4:
         cmd(final_build_args)
         record_metrics(pipeline, stage4)

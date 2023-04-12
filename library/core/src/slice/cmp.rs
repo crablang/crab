@@ -17,7 +17,7 @@ extern "C" {
     fn memcmp(s1: *const u8, s2: *const u8, n: usize) -> ffi::c_int;
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<A, B> PartialEq<[B]> for [A]
 where
     A: PartialEq<B>,
@@ -31,11 +31,11 @@ where
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: Eq> Eq for [T] {}
 
 /// Implements comparison of vectors [lexicographically](Ord#lexicographical-comparison).
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: Ord> Ord for [T] {
     fn cmp(&self, other: &[T]) -> Ordering {
         SliceOrd::compare(self, other)
@@ -43,7 +43,7 @@ impl<T: Ord> Ord for [T] {
 }
 
 /// Implements comparison of vectors [lexicographically](Ord#lexicographical-comparison).
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: PartialOrd> PartialOrd for [T] {
     fn partial_cmp(&self, other: &[T]) -> Option<Ordering> {
         SlicePartialOrd::partial_compare(self, other)
@@ -138,7 +138,7 @@ impl<A: AlwaysApplicableOrd> SlicePartialOrd for A {
     }
 }
 
-#[rustc_specialization_trait]
+#[crablangc_specialization_trait]
 trait AlwaysApplicableOrd: SliceOrd + Ord {}
 
 macro_rules! always_applicable_ord {

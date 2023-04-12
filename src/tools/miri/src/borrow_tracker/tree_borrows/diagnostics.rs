@@ -1,4 +1,4 @@
-use rustc_data_structures::fx::FxHashMap;
+use crablangc_data_structures::fx::FxHashMap;
 
 use std::fmt;
 use std::ops::Range;

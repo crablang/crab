@@ -98,4 +98,4 @@ LL |     let (B(A(a, _) | B(a)) | A(a, A(a, _) | B(a))) = B(B(1));
 error: aborting due to 15 previous errors
 
 Some errors have detailed explanations: E0308, E0408, E0416.
-For more information about an error, try `rustc --explain E0308`.
+For more information about an error, try `crablangc --explain E0308`.

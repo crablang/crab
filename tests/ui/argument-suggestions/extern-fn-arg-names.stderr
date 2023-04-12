@@ -23,4 +23,4 @@ LL |     dstfn(1, /* dst */);
 error: aborting due to 2 previous errors
 
 Some errors have detailed explanations: E0061, E0412.
-For more information about an error, try `rustc --explain E0061`.
+For more information about an error, try `crablangc --explain E0061`.

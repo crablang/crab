@@ -1,4 +1,4 @@
-//! Build configuration for Rust's release channels.
+//! Build configuration for CrabLang's release channels.
 //!
 //! Implements the stable/beta/nightly channel distinctions by setting various
 //! flags like the `unstable_features`, calculating variables like `release` and

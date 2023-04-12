@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 #![warn(clippy::transmutes_expressible_as_ptr_casts)]
 // These two warnings currently cover the cases transmutes_expressible_as_ptr_casts
 // would otherwise be responsible for
@@ -8,7 +8,7 @@
 
 use std::mem::{size_of, transmute};
 
-// rustc_hir_analysis::check::cast contains documentation about when a cast `e as U` is
+// crablangc_hir_analysis::check::cast contains documentation about when a cast `e as U` is
 // valid, which we quote from below.
 fn main() {
     // We should see an error message for each transmute, and no error messages for

@@ -4,11 +4,11 @@
 
 use clippy_utils::diagnostics::span_lint;
 use clippy_utils::ty::is_type_diagnostic_item;
-use rustc_hir::Expr;
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_middle::ty::{self, Ty};
-use rustc_session::{declare_lint_pass, declare_tool_lint};
-use rustc_span::sym;
+use crablangc_hir::Expr;
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_middle::ty::{self, Ty};
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_span::sym;
 
 declare_clippy_lint! {
     /// ### What it does
@@ -22,21 +22,21 @@ declare_clippy_lint! {
     ///
     /// On the other hand, `Mutex`es are, in general, easier to
     /// verify correctness. An atomic does not behave the same as
-    /// an equivalent mutex. See [this issue](https://github.com/rust-lang/rust-clippy/issues/4295)'s commentary for more details.
+    /// an equivalent mutex. See [this issue](https://github.com/crablang/crablang-clippy/issues/4295)'s commentary for more details.
     ///
     /// ### Known problems
     /// This lint cannot detect if the mutex is actually used
     /// for waiting before a critical section.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// # let y = true;
     /// # use std::sync::Mutex;
     /// let x = Mutex::new(&y);
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// # let y = true;
     /// # use std::sync::atomic::AtomicBool;
     /// let x = AtomicBool::new(y);
@@ -62,13 +62,13 @@ declare_clippy_lint! {
     /// for waiting before a critical section.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// # use std::sync::Mutex;
     /// let x = Mutex::new(0usize);
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// # use std::sync::atomic::AtomicUsize;
     /// let x = AtomicUsize::new(0usize);
     /// ```

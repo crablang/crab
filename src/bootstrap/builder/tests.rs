@@ -13,22 +13,22 @@ fn configure_with_args(cmd: &[String], host: &[&str], target: &[&str]) -> Config
     config.dry_run = DryRun::SelfCheck;
 
     // Ignore most submodules, since we don't need them for a dry run.
-    // But make sure to check out the `doc` and `rust-analyzer` submodules, since some steps need them
+    // But make sure to check out the `doc` and `crablang-analyzer` submodules, since some steps need them
     // just to know which commands to run.
     let submodule_build = Build::new(Config {
         // don't include LLVM, so CI doesn't require ninja/cmake to be installed
-        rust_codegen_backends: vec![],
+        crablang_codegen_backends: vec![],
         ..Config::parse(&["check".to_owned()])
     });
     submodule_build.update_submodule(Path::new("src/doc/book"));
-    submodule_build.update_submodule(Path::new("src/tools/rust-analyzer"));
+    submodule_build.update_submodule(Path::new("src/tools/crablang-analyzer"));
     config.submodules = Some(false);
 
     config.ninja_in_file = false;
     // try to avoid spurious failures in dist where we create/delete each others file
     // HACK: rather than pull in `tempdir`, use the one that cargo has conveniently created for us
     let dir = Path::new(env!("OUT_DIR"))
-        .join("tmp-rustbuild-tests")
+        .join("tmp-crablangbuild-tests")
         .join(&thread::current().name().unwrap_or("unknown").replace(":", "-"));
     t!(fs::create_dir_all(&dir));
     config.out = dir;
@@ -66,9 +66,9 @@ macro_rules! std {
     };
 }
 
-macro_rules! rustc {
+macro_rules! crablangc {
     ($host:ident => $target:ident, stage = $stage:literal) => {
-        compile::Rustc::new(
+        compile::CrabLangc::new(
             Compiler { host: TargetSelection::from_user(stringify!($host)), stage: $stage },
             TargetSelection::from_user(stringify!($target)),
         )
@@ -113,7 +113,7 @@ fn test_exclude() {
     assert!(!cache.contains::<test::Tidy>());
 
     // Ensure other tests are not affected.
-    assert!(cache.contains::<test::RustdocUi>());
+    assert!(cache.contains::<test::CrabLangdocUi>());
 }
 
 #[test]
@@ -162,14 +162,14 @@ mod defaults {
             &[std!(A => A, stage = 0), std!(A => A, stage = 1),]
         );
         assert!(!cache.all::<compile::Assemble>().is_empty());
-        // Make sure rustdoc is only built once.
+        // Make sure crablangdoc is only built once.
         assert_eq!(
-            first(cache.all::<tool::Rustdoc>()),
-            // Recall that rustdoc stages are off-by-one
+            first(cache.all::<tool::CrabLangdoc>()),
+            // Recall that crablangdoc stages are off-by-one
             // - this is the compiler it's _linked_ to, not built with.
-            &[tool::Rustdoc { compiler: Compiler { host: a, stage: 1 } }],
+            &[tool::CrabLangdoc { compiler: Compiler { host: a, stage: 1 } }],
         );
-        assert_eq!(first(cache.all::<compile::Rustc>()), &[rustc!(A => A, stage = 0)],);
+        assert_eq!(first(cache.all::<compile::CrabLangc>()), &[crablangc!(A => A, stage = 0)],);
     }
 
     #[test]
@@ -181,12 +181,12 @@ mod defaults {
         assert_eq!(first(cache.all::<compile::Std>()), &[std!(A => A, stage = 0)]);
         assert!(!cache.all::<compile::Assemble>().is_empty());
         assert_eq!(
-            first(cache.all::<tool::Rustdoc>()),
-            // This is the beta rustdoc.
-            // Add an assert here to make sure this is the only rustdoc built.
-            &[tool::Rustdoc { compiler: Compiler { host: a, stage: 0 } }],
+            first(cache.all::<tool::CrabLangdoc>()),
+            // This is the beta crablangdoc.
+            // Add an assert here to make sure this is the only crablangdoc built.
+            &[tool::CrabLangdoc { compiler: Compiler { host: a, stage: 0 } }],
         );
-        assert!(cache.all::<compile::Rustc>().is_empty());
+        assert!(cache.all::<compile::CrabLangc>().is_empty());
     }
 
     #[test]
@@ -198,10 +198,10 @@ mod defaults {
         let b = TargetSelection::from_user("B");
 
         // Ideally, this build wouldn't actually have `target: a`
-        // rustdoc/rustcc/std here (the user only requested a host=B build, so
+        // crablangdoc/crablangcc/std here (the user only requested a host=B build, so
         // there's not really a need for us to build for target A in this case
         // (since we're producing stage 1 libraries/binaries).  But currently
-        // rustbuild is just a bit buggy here; this should be fixed though.
+        // crablangbuild is just a bit buggy here; this should be fixed though.
         assert_eq!(
             first(cache.all::<compile::Std>()),
             &[
@@ -220,15 +220,15 @@ mod defaults {
             ]
         );
         assert_eq!(
-            first(cache.all::<tool::Rustdoc>()),
+            first(cache.all::<tool::CrabLangdoc>()),
             &[
-                tool::Rustdoc { compiler: Compiler { host: a, stage: 1 } },
-                tool::Rustdoc { compiler: Compiler { host: b, stage: 1 } },
+                tool::CrabLangdoc { compiler: Compiler { host: a, stage: 1 } },
+                tool::CrabLangdoc { compiler: Compiler { host: b, stage: 1 } },
             ],
         );
         assert_eq!(
-            first(cache.all::<compile::Rustc>()),
-            &[rustc!(A => A, stage = 0), rustc!(A => B, stage = 0),]
+            first(cache.all::<compile::CrabLangc>()),
+            &[crablangc!(A => A, stage = 0), crablangc!(A => B, stage = 0),]
         );
     }
 
@@ -240,19 +240,19 @@ mod defaults {
         let mut cache = run_build(&[], config);
         let a = TargetSelection::from_user("A");
 
-        // error_index_generator uses stage 0 to share rustdoc artifacts with the
-        // rustdoc tool.
+        // error_index_generator uses stage 0 to share crablangdoc artifacts with the
+        // crablangdoc tool.
         assert_eq!(first(cache.all::<doc::ErrorIndex>()), &[doc::ErrorIndex { target: a },]);
         assert_eq!(
             first(cache.all::<tool::ErrorIndex>()),
             &[tool::ErrorIndex { compiler: Compiler { host: a, stage: 0 } }]
         );
         // docs should be built with the beta compiler, not with the stage0 artifacts.
-        // recall that rustdoc is off-by-one: `stage` is the compiler rustdoc is _linked_ to,
+        // recall that crablangdoc is off-by-one: `stage` is the compiler crablangdoc is _linked_ to,
         // not the one it was built by.
         assert_eq!(
-            first(cache.all::<tool::Rustdoc>()),
-            &[tool::Rustdoc { compiler: Compiler { host: a, stage: 0 } },]
+            first(cache.all::<tool::CrabLangdoc>()),
+            &[tool::CrabLangdoc { compiler: Compiler { host: a, stage: 0 } },]
         );
     }
 }
@@ -275,18 +275,18 @@ mod dist {
         assert_eq!(first(cache.all::<dist::Docs>()), &[dist::Docs { host: a },]);
         assert_eq!(first(cache.all::<dist::Mingw>()), &[dist::Mingw { host: a },]);
         assert_eq!(
-            first(cache.all::<dist::Rustc>()),
-            &[dist::Rustc { compiler: Compiler { host: a, stage: 2 } },]
+            first(cache.all::<dist::CrabLangc>()),
+            &[dist::CrabLangc { compiler: Compiler { host: a, stage: 2 } },]
         );
         assert_eq!(
             first(cache.all::<dist::Std>()),
             &[dist::Std { compiler: Compiler { host: a, stage: 1 }, target: a },]
         );
         assert_eq!(first(cache.all::<dist::Src>()), &[dist::Src]);
-        // Make sure rustdoc is only built once.
+        // Make sure crablangdoc is only built once.
         assert_eq!(
-            first(cache.all::<tool::Rustdoc>()),
-            &[tool::Rustdoc { compiler: Compiler { host: a, stage: 2 } },]
+            first(cache.all::<tool::CrabLangdoc>()),
+            &[tool::CrabLangdoc { compiler: Compiler { host: a, stage: 2 } },]
         );
     }
 
@@ -306,8 +306,8 @@ mod dist {
             &[dist::Mingw { host: a }, dist::Mingw { host: b },]
         );
         assert_eq!(
-            first(cache.all::<dist::Rustc>()),
-            &[dist::Rustc { compiler: Compiler { host: a, stage: 2 } },]
+            first(cache.all::<dist::CrabLangc>()),
+            &[dist::CrabLangc { compiler: Compiler { host: a, stage: 2 } },]
         );
         assert_eq!(
             first(cache.all::<dist::Std>()),
@@ -335,10 +335,10 @@ mod dist {
             &[dist::Mingw { host: a }, dist::Mingw { host: b },]
         );
         assert_eq!(
-            first(cache.all::<dist::Rustc>()),
+            first(cache.all::<dist::CrabLangc>()),
             &[
-                dist::Rustc { compiler: Compiler { host: a, stage: 2 } },
-                dist::Rustc { compiler: Compiler { host: b, stage: 2 } },
+                dist::CrabLangc { compiler: Compiler { host: a, stage: 2 } },
+                dist::CrabLangc { compiler: Compiler { host: b, stage: 2 } },
             ]
         );
         assert_eq!(
@@ -371,12 +371,12 @@ mod dist {
         let mut cache = run_build(&[], config);
 
         assert_eq!(
-            first(cache.all::<dist::Rustc>()),
-            &[dist::Rustc { compiler: Compiler { host: b, stage: 2 } },]
+            first(cache.all::<dist::CrabLangc>()),
+            &[dist::CrabLangc { compiler: Compiler { host: b, stage: 2 } },]
         );
         assert_eq!(
-            first(cache.all::<compile::Rustc>()),
-            &[rustc!(A => A, stage = 0), rustc!(A => B, stage = 1),]
+            first(cache.all::<compile::CrabLangc>()),
+            &[crablangc!(A => A, stage = 0), crablangc!(A => B, stage = 1),]
         );
     }
 
@@ -397,10 +397,10 @@ mod dist {
             &[dist::Mingw { host: a }, dist::Mingw { host: b }, dist::Mingw { host: c },]
         );
         assert_eq!(
-            first(cache.all::<dist::Rustc>()),
+            first(cache.all::<dist::CrabLangc>()),
             &[
-                dist::Rustc { compiler: Compiler { host: a, stage: 2 } },
-                dist::Rustc { compiler: Compiler { host: b, stage: 2 } },
+                dist::CrabLangc { compiler: Compiler { host: a, stage: 2 } },
+                dist::CrabLangc { compiler: Compiler { host: b, stage: 2 } },
             ]
         );
         assert_eq!(
@@ -446,10 +446,10 @@ mod dist {
             &[dist::Mingw { host: a }, dist::Mingw { host: b },]
         );
         assert_eq!(
-            first(cache.all::<dist::Rustc>()),
+            first(cache.all::<dist::CrabLangc>()),
             &[
-                dist::Rustc { compiler: Compiler { host: a, stage: 2 } },
-                dist::Rustc { compiler: Compiler { host: b, stage: 2 } },
+                dist::CrabLangc { compiler: Compiler { host: a, stage: 2 } },
+                dist::CrabLangc { compiler: Compiler { host: b, stage: 2 } },
             ]
         );
         assert_eq!(
@@ -487,7 +487,7 @@ mod dist {
         let mut builder = Builder::new(&build);
         builder.run_step_descriptions(
             &Builder::get_step_descriptions(Kind::Build),
-            &["compiler/rustc".into(), "library".into()],
+            &["compiler/crablangc".into(), "library".into()],
         );
 
         assert_eq!(
@@ -503,13 +503,13 @@ mod dist {
         );
         assert_eq!(builder.cache.all::<compile::Assemble>().len(), 5);
         assert_eq!(
-            first(builder.cache.all::<compile::Rustc>()),
+            first(builder.cache.all::<compile::CrabLangc>()),
             &[
-                rustc!(A => A, stage = 0),
-                rustc!(A => A, stage = 1),
-                rustc!(A => A, stage = 2),
-                rustc!(A => B, stage = 1),
-                rustc!(A => B, stage = 2),
+                crablangc!(A => A, stage = 0),
+                crablangc!(A => A, stage = 1),
+                crablangc!(A => A, stage = 2),
+                crablangc!(A => B, stage = 1),
+                crablangc!(A => B, stage = 2),
             ]
         );
     }
@@ -536,8 +536,8 @@ mod dist {
             ]
         );
         assert_eq!(
-            first(builder.cache.all::<compile::Rustc>()),
-            &[rustc!(A => A, stage = 0), rustc!(A => A, stage = 1),]
+            first(builder.cache.all::<compile::CrabLangc>()),
+            &[crablangc!(A => A, stage = 0), crablangc!(A => A, stage = 1),]
         );
     }
 
@@ -548,13 +548,13 @@ mod dist {
         config.cmd = Subcommand::Test {
             paths: vec!["library/std".into()],
             test_args: vec![],
-            rustc_args: vec![],
+            crablangc_args: vec![],
             fail_fast: true,
             doc_tests: DocTests::No,
             bless: false,
             force_rerun: false,
             compare_mode: None,
-            rustfix_coverage: false,
+            crablangfix_coverage: false,
             pass: None,
             run: None,
             only_modified: false,
@@ -571,7 +571,7 @@ mod dist {
         );
 
         // Ensure we don't build any compiler artifacts.
-        assert!(!builder.cache.contains::<compile::Rustc>());
+        assert!(!builder.cache.contains::<compile::CrabLangc>());
         assert_eq!(
             first(builder.cache.all::<test::Crate>()),
             &[test::Crate {
@@ -594,8 +594,8 @@ mod dist {
         builder.run_step_descriptions(&Builder::get_step_descriptions(Kind::Doc), &[]);
         let a = TargetSelection::from_user("A");
 
-        // error_index_generator uses stage 1 to share rustdoc artifacts with the
-        // rustdoc tool.
+        // error_index_generator uses stage 1 to share crablangdoc artifacts with the
+        // crablangdoc tool.
         assert_eq!(
             first(builder.cache.all::<doc::ErrorIndex>()),
             &[doc::ErrorIndex { target: a },]
@@ -604,11 +604,11 @@ mod dist {
             first(builder.cache.all::<tool::ErrorIndex>()),
             &[tool::ErrorIndex { compiler: Compiler { host: a, stage: 1 } }]
         );
-        // This is actually stage 1, but Rustdoc::run swaps out the compiler with
+        // This is actually stage 1, but CrabLangdoc::run swaps out the compiler with
         // stage minus 1 if --stage is not 0. Very confusing!
         assert_eq!(
-            first(builder.cache.all::<tool::Rustdoc>()),
-            &[tool::Rustdoc { compiler: Compiler { host: a, stage: 2 } },]
+            first(builder.cache.all::<tool::CrabLangdoc>()),
+            &[tool::CrabLangdoc { compiler: Compiler { host: a, stage: 2 } },]
         );
     }
 
@@ -619,18 +619,18 @@ mod dist {
         config.cmd = Subcommand::Test {
             paths: vec![],
             test_args: vec![],
-            rustc_args: vec![],
+            crablangc_args: vec![],
             fail_fast: true,
             doc_tests: DocTests::Yes,
             bless: false,
             force_rerun: false,
             compare_mode: None,
-            rustfix_coverage: false,
+            crablangfix_coverage: false,
             pass: None,
             run: None,
             only_modified: false,
         };
-        // Make sure rustfmt binary not being found isn't an error.
+        // Make sure crablangfmt binary not being found isn't an error.
         config.channel = "beta".to_string();
         let build = Build::new(config);
         let mut builder = Builder::new(&build);
@@ -638,8 +638,8 @@ mod dist {
         builder.run_step_descriptions(&Builder::get_step_descriptions(Kind::Test), &[]);
         let a = TargetSelection::from_user("A");
 
-        // error_index_generator uses stage 1 to share rustdoc artifacts with the
-        // rustdoc tool.
+        // error_index_generator uses stage 1 to share crablangdoc artifacts with the
+        // crablangdoc tool.
         assert_eq!(
             first(builder.cache.all::<doc::ErrorIndex>()),
             &[doc::ErrorIndex { target: a },]
@@ -648,23 +648,23 @@ mod dist {
             first(builder.cache.all::<tool::ErrorIndex>()),
             &[tool::ErrorIndex { compiler: Compiler { host: a, stage: 1 } }]
         );
-        // Unfortunately rustdoc is built twice. Once from stage1 for compiletest
+        // Unfortunately crablangdoc is built twice. Once from stage1 for compiletest
         // (and other things), and once from stage0 for std crates. Ideally it
         // would only be built once. If someone wants to fix this, it might be
         // worth investigating if it would be possible to test std from stage1.
         // Note that the stages here are +1 than what they actually are because
-        // Rustdoc::run swaps out the compiler with stage minus 1 if --stage is
+        // CrabLangdoc::run swaps out the compiler with stage minus 1 if --stage is
         // not 0.
         //
         // The stage 0 copy is the one downloaded for bootstrapping. It is
         // (currently) needed to run "cargo test" on the linkchecker, and
         // should be relatively "free".
         assert_eq!(
-            first(builder.cache.all::<tool::Rustdoc>()),
+            first(builder.cache.all::<tool::CrabLangdoc>()),
             &[
-                tool::Rustdoc { compiler: Compiler { host: a, stage: 0 } },
-                tool::Rustdoc { compiler: Compiler { host: a, stage: 1 } },
-                tool::Rustdoc { compiler: Compiler { host: a, stage: 2 } },
+                tool::CrabLangdoc { compiler: Compiler { host: a, stage: 0 } },
+                tool::CrabLangdoc { compiler: Compiler { host: a, stage: 1 } },
+                tool::CrabLangdoc { compiler: Compiler { host: a, stage: 2 } },
             ]
         );
     }

@@ -1,14 +1,14 @@
 use clippy_utils::diagnostics::span_lint_and_note;
 use clippy_utils::source::snippet;
 use clippy_utils::visitors::is_local_used;
-use rustc_data_structures::fx::FxHashMap;
-use rustc_hir::def::Res;
-use rustc_hir::def_id::LocalDefId;
-use rustc_hir::hir_id::ItemLocalId;
-use rustc_hir::{Block, Body, BodyOwnerKind, Expr, ExprKind, HirId, Let, Node, Pat, PatKind, QPath, UnOp};
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_session::{declare_tool_lint, impl_lint_pass};
-use rustc_span::{Span, Symbol};
+use crablangc_data_structures::fx::FxHashMap;
+use crablangc_hir::def::Res;
+use crablangc_hir::def_id::LocalDefId;
+use crablangc_hir::hir_id::ItemLocalId;
+use crablangc_hir::{Block, Body, BodyOwnerKind, Expr, ExprKind, HirId, Let, Node, Pat, PatKind, QPath, UnOp};
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_session::{declare_tool_lint, impl_lint_pass};
+use crablangc_span::{Span, Symbol};
 
 declare_clippy_lint! {
     /// ### What it does
@@ -16,18 +16,18 @@ declare_clippy_lint! {
     /// scope, while just changing reference level or mutability.
     ///
     /// ### Why is this bad?
-    /// Not much, in fact it's a very common pattern in Rust
+    /// Not much, in fact it's a very common pattern in CrabLang
     /// code. Still, some may opt to avoid it in their code base, they can set this
     /// lint to `Warn`.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// # let x = 1;
     /// let x = &x;
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// # let x = 1;
     /// let y = &x; // use different variable name
     /// ```
@@ -43,18 +43,18 @@ declare_clippy_lint! {
     /// scope, while reusing the original value.
     ///
     /// ### Why is this bad?
-    /// Not too much, in fact it's a common pattern in Rust
+    /// Not too much, in fact it's a common pattern in CrabLang
     /// code. Still, some argue that name shadowing like this hurts readability,
     /// because a value may be bound to different things depending on position in
     /// the code.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// let x = 2;
     /// let x = x + 1;
     /// ```
     /// use different variable name:
-    /// ```rust
+    /// ```crablang
     /// let x = 2;
     /// let y = x + 1;
     /// ```
@@ -77,7 +77,7 @@ declare_clippy_lint! {
     /// names to bindings or introducing more scopes to contain the bindings.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// # let y = 1;
     /// # let z = 2;
     /// let x = y;
@@ -85,7 +85,7 @@ declare_clippy_lint! {
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// # let y = 1;
     /// # let z = 2;
     /// let x = y;

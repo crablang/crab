@@ -6,4 +6,4 @@ LL | extern crate doesnt_exist;
 
 error: aborting due to previous error
 
-For more information about this error, try `rustc --explain E0463`.
+For more information about this error, try `crablangc --explain E0463`.

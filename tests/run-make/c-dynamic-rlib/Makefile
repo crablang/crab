@@ -9,8 +9,8 @@ include ../tools.mk
 TARGET_RPATH_DIR:=$(TARGET_RPATH_DIR):$(TMPDIR)
 
 all: $(call DYLIB,cfoo)
-	$(RUSTC) foo.rs
-	$(RUSTC) bar.rs
+	$(CRABLANGC) foo.rs
+	$(CRABLANGC) bar.rs
 	$(call RUN,bar)
 	$(call REMOVE_DYLIBS,cfoo)
 	$(call FAIL,bar)

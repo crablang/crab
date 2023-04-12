@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 #![deny(clippy::inefficient_to_string)]
 
 use std::borrow::Cow;

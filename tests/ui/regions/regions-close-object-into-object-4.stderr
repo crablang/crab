@@ -71,4 +71,4 @@ LL | fn i<'a, T, U: 'static>(v: Box<dyn A<U>+'a>) -> Box<dyn X + 'static> {
 error: aborting due to 6 previous errors
 
 Some errors have detailed explanations: E0310, E0515.
-For more information about an error, try `rustc --explain E0310`.
+For more information about an error, try `crablangc --explain E0310`.

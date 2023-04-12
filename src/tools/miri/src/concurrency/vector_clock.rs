@@ -1,5 +1,5 @@
-use rustc_index::vec::Idx;
-use rustc_span::{Span, SpanData, DUMMY_SP};
+use crablangc_index::vec::Idx;
+use crablangc_span::{Span, SpanData, DUMMY_SP};
 use smallvec::SmallVec;
 use std::{
     cmp::Ordering,
@@ -381,7 +381,7 @@ impl IndexMut<VectorIdx> for VClock {
 mod tests {
 
     use super::{VClock, VTimestamp, VectorIdx};
-    use rustc_span::DUMMY_SP;
+    use crablangc_span::DUMMY_SP;
     use std::cmp::Ordering;
 
     #[test]

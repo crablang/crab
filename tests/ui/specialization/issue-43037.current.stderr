@@ -9,4 +9,4 @@ LL | impl<T> From<<A<T> as Z>::Assoc> for T {}
 
 error: aborting due to previous error
 
-For more information about this error, try `rustc --explain E0210`.
+For more information about this error, try `crablangc --explain E0210`.

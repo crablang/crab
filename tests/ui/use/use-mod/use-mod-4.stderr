@@ -39,4 +39,4 @@ LL | use foo::self;
 error: aborting due to 3 previous errors
 
 Some errors have detailed explanations: E0429, E0432.
-For more information about an error, try `rustc --explain E0429`.
+For more information about an error, try `crablangc --explain E0429`.

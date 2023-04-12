@@ -1,5 +1,5 @@
 // check-pass
-// From https://github.com/rust-lang/rust/issues/78549
+// From https://github.com/crablang/crablang/issues/78549
 
 fn main() {
     match "foo" {

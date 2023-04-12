@@ -17,7 +17,7 @@ fn main() {
         _ if { (|| { let bar = b; *bar = false; })();
                      false } => { },
         &mut true => { println!("You might think we should get here"); },
-        _ => panic!("surely we could never get here, since rustc warns it is unreachable."),
+        _ => panic!("surely we could never get here, since crablangc warns it is unreachable."),
     }
 
     let b = &mut true;

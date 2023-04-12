@@ -158,7 +158,7 @@ LL |     default const foo: u8;
    |     |
    |     help: try using a static value: `static`
    |
-   = note: for more information, visit https://doc.rust-lang.org/std/keyword.extern.html
+   = note: for more information, visit https://doc.crablang.org/std/keyword.extern.html
 
 error: a module cannot be `default`
   --> $DIR/default-on-wrong-item-kind.rs:41:5

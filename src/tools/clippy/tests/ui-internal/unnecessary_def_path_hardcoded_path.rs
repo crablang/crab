@@ -1,10 +1,10 @@
-#![feature(rustc_private)]
+#![feature(crablangc_private)]
 #![allow(unused)]
 #![warn(clippy::unnecessary_def_path)]
 
-extern crate rustc_hir;
+extern crate crablangc_hir;
 
-use rustc_hir::LangItem;
+use crablangc_hir::LangItem;
 
 fn main() {
     const DEREF_TRAIT: [&str; 4] = ["core", "ops", "deref", "Deref"];

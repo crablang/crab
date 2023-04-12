@@ -1,3 +1,3 @@
-% The Rust Project FAQ
+% The CrabLang Project FAQ
 
-This content has moved to [the website](https://www.rust-lang.org/).
+This content has moved to [the website](https://www.crablang.org/).

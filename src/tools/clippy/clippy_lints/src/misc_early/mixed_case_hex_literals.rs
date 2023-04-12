@@ -1,6 +1,6 @@
 use clippy_utils::diagnostics::span_lint;
-use rustc_lint::EarlyContext;
-use rustc_span::Span;
+use crablangc_lint::EarlyContext;
+use crablangc_span::Span;
 
 use super::MIXED_CASE_HEX_LITERALS;
 

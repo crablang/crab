@@ -1,7 +1,7 @@
 use clippy_utils::diagnostics::span_lint_and_help;
-use rustc_ast::ast::{Item, ItemKind};
-use rustc_lint::{EarlyContext, EarlyLintPass};
-use rustc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_ast::ast::{Item, ItemKind};
+use crablangc_lint::{EarlyContext, EarlyLintPass};
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
 
 declare_clippy_lint! {
     /// ### What it does
@@ -16,7 +16,7 @@ declare_clippy_lint! {
     /// * Data: relatively simple objects which group a bunch of related attributes together.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// pub struct Color {
     ///     pub r: u8,
     ///     pub g: u8,
@@ -24,7 +24,7 @@ declare_clippy_lint! {
     /// }
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// pub struct Color {
     ///     pub r: u8,
     ///     pub g: u8,

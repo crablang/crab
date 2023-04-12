@@ -3,12 +3,12 @@ use clippy_utils::source::snippet_with_applicability;
 use clippy_utils::ty::is_type_diagnostic_item;
 use clippy_utils::{get_parent_expr, is_res_lang_ctor, path_res};
 use if_chain::if_chain;
-use rustc_errors::Applicability;
-use rustc_hir::LangItem::ResultErr;
-use rustc_hir::{Expr, ExprKind, LangItem, MatchSource, QPath};
-use rustc_lint::LateContext;
-use rustc_middle::ty::{self, Ty};
-use rustc_span::{hygiene, sym};
+use crablangc_errors::Applicability;
+use crablangc_hir::LangItem::ResultErr;
+use crablangc_hir::{Expr, ExprKind, LangItem, MatchSource, QPath};
+use crablangc_lint::LateContext;
+use crablangc_middle::ty::{self, Ty};
+use crablangc_span::{hygiene, sym};
 
 use super::TRY_ERR;
 

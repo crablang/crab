@@ -1,6 +1,6 @@
 // run-pass
 // This is a regression test for something that only came up while
-// attempting to bootstrap librustc with new destructor lifetime
+// attempting to bootstrap libcrablangc with new destructor lifetime
 // semantics.
 
 

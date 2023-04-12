@@ -18,4 +18,4 @@ LL |     let x: Baz::Bar = 5;
 error: aborting due to 2 previous errors
 
 Some errors have detailed explanations: E0201, E0223.
-For more information about an error, try `rustc --explain E0201`.
+For more information about an error, try `crablangc --explain E0201`.

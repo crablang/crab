@@ -142,7 +142,7 @@ fn test_named_thread_truncation() {
     }
 
     let result = thread::Builder::new().name(long_name.clone()).spawn(move || {
-        // Rust remembers the full thread name itself.
+        // CrabLang remembers the full thread name itself.
         assert_eq!(thread::current().name(), Some(long_name.as_str()));
 
         // But the system is limited -- make sure we successfully set a truncation.

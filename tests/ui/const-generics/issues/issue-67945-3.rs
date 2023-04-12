@@ -1,5 +1,5 @@
 // Regression test for
-// https://github.com/rust-lang/rust/issues/67945#issuecomment-572617285
+// https://github.com/crablang/crablang/issues/67945#issuecomment-572617285
 // Make sure we don't emit an E0277 error.
 
 // revisions: full min

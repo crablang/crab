@@ -63,7 +63,7 @@
 // lldbg-check:[...]$1 = -1
 // lldbr-check:(isize) *int_ref = -1
 
-// NOTE: only rust-enabled lldb supports 32bit chars
+// NOTE: only crablang-enabled lldb supports 32bit chars
 // lldbr-command:print *char_ref
 // lldbr-check:(char) *char_ref = 97
 

@@ -73,14 +73,14 @@ RUN arm-linux-gnueabihf-gcc addentropy.c -o rootfs/addentropy -static
 
 # TODO: What is this?!
 # Source of the file: https://github.com/vfdev-5/qemu-rpi2-vexpress/raw/master/vexpress-v2p-ca15-tc1.dtb
-RUN curl -O https://ci-mirrors.rust-lang.org/rustc/vexpress-v2p-ca15-tc1.dtb
+RUN curl -O https://ci-mirrors.crablang.org/crablangc/vexpress-v2p-ca15-tc1.dtb
 
 COPY scripts/sccache.sh /scripts/
 RUN sh /scripts/sccache.sh
 
 COPY static/gitconfig /etc/gitconfig
 
-ENV RUST_CONFIGURE_ARGS --qemu-armhf-rootfs=/tmp/rootfs
+ENV CRABLANG_CONFIGURE_ARGS --qemu-armhf-rootfs=/tmp/rootfs
 ENV SCRIPT python3 ../x.py --stage 2 test --host='' --target arm-unknown-linux-gnueabihf
 
 ENV NO_CHANGE_USER=1

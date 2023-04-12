@@ -81,9 +81,9 @@ use super::Utf8Error;
 ///
 /// assert_eq!("💖", sparkle_heart);
 /// ```
-#[stable(feature = "rust1", since = "1.0.0")]
-#[rustc_const_stable(feature = "const_str_from_utf8_shared", since = "1.63.0")]
-#[rustc_allow_const_fn_unstable(str_internals)]
+#[stable(feature = "crablang1", since = "1.0.0")]
+#[crablangc_const_stable(feature = "const_str_from_utf8_shared", since = "1.63.0")]
+#[crablangc_allow_const_fn_unstable(str_internals)]
 pub const fn from_utf8(v: &[u8]) -> Result<&str, Utf8Error> {
     // FIXME: This should use `?` again, once it's `const`
     match run_utf8_validation(v) {
@@ -104,13 +104,13 @@ pub const fn from_utf8(v: &[u8]) -> Result<&str, Utf8Error> {
 /// ```
 /// use std::str;
 ///
-/// // "Hello, Rust!" as a mutable vector
-/// let mut hellorust = vec![72, 101, 108, 108, 111, 44, 32, 82, 117, 115, 116, 33];
+/// // "Hello, CrabLang!" as a mutable vector
+/// let mut hellocrablang = vec![72, 101, 108, 108, 111, 44, 32, 82, 117, 115, 116, 33];
 ///
 /// // As we know these bytes are valid, we can use `unwrap()`
-/// let outstr = str::from_utf8_mut(&mut hellorust).unwrap();
+/// let outstr = str::from_utf8_mut(&mut hellocrablang).unwrap();
 ///
-/// assert_eq!("Hello, Rust!", outstr);
+/// assert_eq!("Hello, CrabLang!", outstr);
 /// ```
 ///
 /// Incorrect bytes:
@@ -126,7 +126,7 @@ pub const fn from_utf8(v: &[u8]) -> Result<&str, Utf8Error> {
 /// See the docs for [`Utf8Error`] for more details on the kinds of
 /// errors that can be returned.
 #[stable(feature = "str_mut_extras", since = "1.20.0")]
-#[rustc_const_unstable(feature = "const_str_from_utf8", issue = "91006")]
+#[crablangc_const_unstable(feature = "const_str_from_utf8", issue = "91006")]
 pub const fn from_utf8_mut(v: &mut [u8]) -> Result<&mut str, Utf8Error> {
     // This should use `?` again, once it's `const`
     match run_utf8_validation(v) {
@@ -165,8 +165,8 @@ pub const fn from_utf8_mut(v: &mut [u8]) -> Result<&mut str, Utf8Error> {
 /// ```
 #[inline]
 #[must_use]
-#[stable(feature = "rust1", since = "1.0.0")]
-#[rustc_const_stable(feature = "const_str_from_utf8_unchecked", since = "1.55.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
+#[crablangc_const_stable(feature = "const_str_from_utf8_unchecked", since = "1.55.0")]
 pub const unsafe fn from_utf8_unchecked(v: &[u8]) -> &str {
     // SAFETY: the caller must guarantee that the bytes `v` are valid UTF-8.
     // Also relies on `&str` and `&[u8]` having the same layout.
@@ -193,7 +193,7 @@ pub const unsafe fn from_utf8_unchecked(v: &[u8]) -> &str {
 #[inline]
 #[must_use]
 #[stable(feature = "str_mut_extras", since = "1.20.0")]
-#[rustc_const_unstable(feature = "const_str_from_utf8_unchecked_mut", issue = "91005")]
+#[crablangc_const_unstable(feature = "const_str_from_utf8_unchecked_mut", issue = "91005")]
 pub const unsafe fn from_utf8_unchecked_mut(v: &mut [u8]) -> &mut str {
     // SAFETY: the caller must guarantee that the bytes `v`
     // are valid UTF-8, thus the cast to `*mut str` is safe.

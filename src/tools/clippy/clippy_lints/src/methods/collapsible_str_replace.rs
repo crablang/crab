@@ -3,9 +3,9 @@ use clippy_utils::source::snippet;
 use clippy_utils::visitors::for_each_expr;
 use clippy_utils::{eq_expr_value, get_parent_expr};
 use core::ops::ControlFlow;
-use rustc_errors::Applicability;
-use rustc_hir as hir;
-use rustc_lint::LateContext;
+use crablangc_errors::Applicability;
+use crablangc_hir as hir;
+use crablangc_lint::LateContext;
 use std::collections::VecDeque;
 
 use super::method_call;

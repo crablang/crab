@@ -142,7 +142,7 @@ struct ReprCAlign {
     last: [usize; 0],
 }
 
-// NOTE: because of https://doc.rust-lang.org/stable/reference/type-layout.html#primitive-representation-of-enums-with-fields and I'm not sure when in the compilation pipeline that would happen
+// NOTE: because of https://doc.crablang.org/stable/reference/type-layout.html#primitive-representation-of-enums-with-fields and I'm not sure when in the compilation pipeline that would happen
 #[repr(C)]
 enum DontLintAnonymousStructsFromDesuraging {
     A(u32),

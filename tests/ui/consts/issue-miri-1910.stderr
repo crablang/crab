@@ -17,4 +17,4 @@ LL |     (&foo as *const _ as *const u8).add(one_and_a_half_pointers).read();
 
 error: aborting due to previous error
 
-For more information about this error, try `rustc --explain E0080`.
+For more information about this error, try `crablangc --explain E0080`.

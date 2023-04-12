@@ -49,7 +49,7 @@ use windows::{
 
 pub unsafe fn setup(build: &mut Build) {
     // Enable the Windows Error Reporting dialog which msys disables,
-    // so we can JIT debug rustc
+    // so we can JIT debug crablangc
     let mode = SetErrorMode(THREAD_ERROR_MODE::default());
     let mode = THREAD_ERROR_MODE(mode);
     SetErrorMode(mode & !SEM_NOGPFAULTERRORBOX);

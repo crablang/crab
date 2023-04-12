@@ -773,7 +773,7 @@ pub mod guard {
             //
             // Instead, we'll just note where we expect rlimit to start
             // faulting, so our handler can report "stack overflow", and
-            // trust that the kernel's own stack guard will work.
+            // tcrablang that the kernel's own stack guard will work.
             let stackptr = get_stack_start_aligned()?;
             let stackaddr = stackptr.addr();
             Some(stackaddr - page_size..stackaddr)
@@ -803,7 +803,7 @@ pub mod guard {
             //
             // We'll just note where we expect rlimit to start
             // faulting, so our handler can report "stack overflow", and
-            // trust that the kernel's own stack guard will work.
+            // tcrablang that the kernel's own stack guard will work.
             let stackptr = get_stack_start_aligned()?;
             let stackaddr = stackptr.addr();
             Some(stackaddr - page_size..stackaddr)

@@ -1,7 +1,7 @@
 #[cfg(feature = "stack-cache")]
 use std::ops::Range;
 
-use rustc_data_structures::fx::FxHashSet;
+use crablangc_data_structures::fx::FxHashSet;
 
 use crate::borrow_tracker::{
     stacked_borrows::{Item, Permission},

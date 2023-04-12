@@ -48,4 +48,4 @@ LL | fn c() -> impl for<'a> Fn(&'a u8) -> (impl Debug + '_) {
 
 error: aborting due to 4 previous errors
 
-For more information about this error, try `rustc --explain E0106`.
+For more information about this error, try `crablangc --explain E0106`.

@@ -2,7 +2,7 @@
 
 The tracking issue for this feature is: [#38487]
 
-[#38487]: https://github.com/rust-lang/rust/issues/38487
+[#38487]: https://github.com/crablang/crablang/issues/38487
 
 ------------------------
 
@@ -12,7 +12,7 @@ the right calling convention to the interrupt handlers you define.
 
 <!-- NOTE(ignore) this example is specific to the msp430 target -->
 
-``` rust,ignore
+``` crablang,ignore
 #![feature(abi_msp430_interrupt)]
 #![no_std]
 

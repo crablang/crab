@@ -17,7 +17,7 @@ use super::{IntoIter, SpecExtend, SpecFromIterNested, Vec};
 /// |SpecFromIter                  +---->+SpecFromIterNested   |
 /// |where I:                      |  |  |where I:             |
 /// |  Iterator (default)----------+  |  |  Iterator (default) |
-/// |  vec::IntoIter               |  |  |  TrustedLen         |
+/// |  vec::IntoIter               |  |  |  TcrablangedLen         |
 /// |  SourceIterMarker---fallback-+  |  +---------------------+
 /// +---------------------------------+
 /// ```

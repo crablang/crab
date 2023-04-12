@@ -1,23 +1,23 @@
 //! Panic runtime for Miri.
 //!
 //! The core pieces of the runtime are:
-//! - An implementation of `__rust_maybe_catch_panic` that pushes the invoked stack frame with
-//!   some extra metadata derived from the panic-catching arguments of `__rust_maybe_catch_panic`.
+//! - An implementation of `__crablang_maybe_catch_panic` that pushes the invoked stack frame with
+//!   some extra metadata derived from the panic-catching arguments of `__crablang_maybe_catch_panic`.
 //! - A hack in `libpanic_unwind` that calls the `miri_start_panic` intrinsic instead of the
-//!   target-native panic runtime. (This lives in the rustc repo.)
+//!   target-native panic runtime. (This lives in the crablangc repo.)
 //! - An implementation of `miri_start_panic` that stores its argument (the panic payload), and then
 //!   immediately returns, but on the *unwind* edge (not the normal return edge), thus initiating unwinding.
-//! - A hook executed each time a frame is popped, such that if the frame pushed by `__rust_maybe_catch_panic`
+//! - A hook executed each time a frame is popped, such that if the frame pushed by `__crablang_maybe_catch_panic`
 //!   gets popped *during unwinding*, we take the panic payload and store it according to the extra
 //!   metadata we remembered when pushing said frame.
 
 use log::trace;
 
-use rustc_ast::Mutability;
-use rustc_middle::{mir, ty};
-use rustc_span::Symbol;
-use rustc_target::spec::abi::Abi;
-use rustc_target::spec::PanicStrategy;
+use crablangc_ast::Mutability;
+use crablangc_middle::{mir, ty};
+use crablangc_span::Symbol;
+use crablangc_target::spec::abi::Abi;
+use crablangc_target::spec::PanicStrategy;
 
 use crate::*;
 use helpers::check_arg_count;
@@ -60,7 +60,7 @@ pub trait EvalContextExt<'mir, 'tcx: 'mir>: crate::MiriInterpCxExt<'mir, 'tcx> {
         trace!("miri_start_panic: {:?}", this.frame().instance);
 
         // Get the raw pointer stored in arg[0] (the panic payload).
-        let [payload] = this.check_shim(abi, Abi::Rust, link_name, args)?;
+        let [payload] = this.check_shim(abi, Abi::CrabLang, link_name, args)?;
         let payload = this.read_scalar(payload)?;
         let thread = this.active_thread_mut();
         assert!(thread.panic_payload.is_none(), "the panic runtime should avoid double-panics");
@@ -86,7 +86,7 @@ pub trait EvalContextExt<'mir, 'tcx: 'mir>: crate::MiriInterpCxExt<'mir, 'tcx> {
         // If that unwinds, calls `catch_fn` with the first argument being `data` and
         // then second argument being a target-dependent `payload` (i.e. it is up to us to define
         // what that is), and returns 1.
-        // The `payload` is passed (by libstd) to `__rust_panic_cleanup`, which is then expected to
+        // The `payload` is passed (by libstd) to `__crablang_panic_cleanup`, which is then expected to
         // return a `Box<dyn Any + Send + 'static>`.
         // In Miri, `miri_start_panic` is passed exactly that type, so we make the `payload` simply
         // a pointer to `Box<dyn Any + Send + 'static>`.
@@ -102,7 +102,7 @@ pub trait EvalContextExt<'mir, 'tcx: 'mir>: crate::MiriInterpCxExt<'mir, 'tcx> {
         trace!("try_fn: {:?}", f_instance);
         this.call_function(
             f_instance,
-            Abi::Rust,
+            Abi::CrabLang,
             &[data.into()],
             None,
             // Directly return to caller.
@@ -153,7 +153,7 @@ pub trait EvalContextExt<'mir, 'tcx: 'mir>: crate::MiriInterpCxExt<'mir, 'tcx> {
             trace!("catch_fn: {:?}", f_instance);
             this.call_function(
                 f_instance,
-                Abi::Rust,
+                Abi::CrabLang,
                 &[catch_unwind.data.into(), payload.into()],
                 None,
                 // Directly return to caller of `try`.
@@ -182,7 +182,7 @@ pub trait EvalContextExt<'mir, 'tcx: 'mir>: crate::MiriInterpCxExt<'mir, 'tcx> {
         let panic = ty::Instance::mono(this.tcx.tcx, panic);
         this.call_function(
             panic,
-            Abi::Rust,
+            Abi::CrabLang,
             &[msg.to_ref(this)],
             None,
             StackPopCleanup::Goto { ret: None, unwind },
@@ -194,7 +194,7 @@ pub trait EvalContextExt<'mir, 'tcx: 'mir>: crate::MiriInterpCxExt<'mir, 'tcx> {
         msg: &mir::AssertMessage<'tcx>,
         unwind: mir::UnwindAction,
     ) -> InterpResult<'tcx> {
-        use rustc_middle::mir::AssertKind::*;
+        use crablangc_middle::mir::AssertKind::*;
         let this = self.eval_context_mut();
 
         match msg {
@@ -211,7 +211,7 @@ pub trait EvalContextExt<'mir, 'tcx: 'mir>: crate::MiriInterpCxExt<'mir, 'tcx> {
                 let panic_bounds_check = ty::Instance::mono(this.tcx.tcx, panic_bounds_check);
                 this.call_function(
                     panic_bounds_check,
-                    Abi::Rust,
+                    Abi::CrabLang,
                     &[index.into(), len.into()],
                     None,
                     StackPopCleanup::Goto { ret: None, unwind },
@@ -232,7 +232,7 @@ pub trait EvalContextExt<'mir, 'tcx: 'mir>: crate::MiriInterpCxExt<'mir, 'tcx> {
                     ty::Instance::mono(this.tcx.tcx, panic_misaligned_pointer_dereference);
                 this.call_function(
                     panic_misaligned_pointer_dereference,
-                    Abi::Rust,
+                    Abi::CrabLang,
                     &[required.into(), found.into()],
                     None,
                     StackPopCleanup::Goto { ret: None, unwind },

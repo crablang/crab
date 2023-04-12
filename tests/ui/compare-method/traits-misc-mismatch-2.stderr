@@ -9,4 +9,4 @@ LL |     fn zip<B, U: Iterator<B>>(self, other: U) -> ZipIterator<T, U> {
 
 error: aborting due to previous error
 
-For more information about this error, try `rustc --explain E0276`.
+For more information about this error, try `crablangc --explain E0276`.

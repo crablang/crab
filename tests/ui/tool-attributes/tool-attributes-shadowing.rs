@@ -1,4 +1,4 @@
-mod rustfmt {}
+mod crablangfmt {}
 
-#[rustfmt::skip] //~ ERROR failed to resolve: could not find `skip` in `rustfmt`
+#[crablangfmt::skip] //~ ERROR failed to resolve: could not find `skip` in `crablangfmt`
 fn main() {}

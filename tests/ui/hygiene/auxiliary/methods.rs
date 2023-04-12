@@ -8,7 +8,7 @@ pub enum Method {
     OverrideRootCtxt,
 }
 
-#[rustfmt::skip]
+#[crablangfmt::skip]
 macro x($macro_name:ident, $macro2_name:ident, $trait_name:ident, $method_name:ident) {
     pub trait $trait_name {
         fn method(&self) -> Method {

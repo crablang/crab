@@ -1,5 +1,5 @@
 // check-pass
-// run-rustfix
+// run-crablangfix
 
 fn main() {
     println!("{b} {}", a=1, b=2);

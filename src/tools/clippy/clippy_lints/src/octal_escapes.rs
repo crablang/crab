@@ -1,11 +1,11 @@
 use clippy_utils::diagnostics::span_lint_and_then;
-use rustc_ast::ast::{Expr, ExprKind};
-use rustc_ast::token::{Lit, LitKind};
-use rustc_errors::Applicability;
-use rustc_lint::{EarlyContext, EarlyLintPass, LintContext};
-use rustc_middle::lint::in_external_macro;
-use rustc_session::{declare_lint_pass, declare_tool_lint};
-use rustc_span::Span;
+use crablangc_ast::ast::{Expr, ExprKind};
+use crablangc_ast::token::{Lit, LitKind};
+use crablangc_errors::Applicability;
+use crablangc_lint::{EarlyContext, EarlyLintPass, LintContext};
+use crablangc_middle::lint::in_external_macro;
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_span::Span;
 use std::fmt::Write;
 
 declare_clippy_lint! {
@@ -17,7 +17,7 @@ declare_clippy_lint! {
     ///
     /// C and other languages support octal character escapes in strings, where
     /// a backslash is followed by up to three octal digits. For example, `\033`
-    /// stands for the ASCII character 27 (ESC). Rust does not support this
+    /// stands for the ASCII character 27 (ESC). CrabLang does not support this
     /// notation, but has the escape code `\0` which stands for a null
     /// byte/character, and any following digits do not form part of the escape
     /// sequence. Therefore, `\033` is not a compiler error but the result may
@@ -32,13 +32,13 @@ declare_clippy_lint! {
     /// can see it.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// let one = "\033[1m Bold? \033[0m";  // \033 intended as escape
     /// let two = "\033\0";                 // \033 intended as null-3-3
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// let one = "\x1b[1mWill this be bold?\x1b[0m";
     /// let two = "\x0033\x00";
     /// ```

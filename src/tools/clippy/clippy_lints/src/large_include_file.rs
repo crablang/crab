@@ -1,12 +1,12 @@
 use clippy_utils::diagnostics::span_lint_and_note;
 use clippy_utils::is_lint_allowed;
 use clippy_utils::macros::root_macro_call_first_node;
-use rustc_ast::LitKind;
-use rustc_hir::Expr;
-use rustc_hir::ExprKind;
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_session::{declare_tool_lint, impl_lint_pass};
-use rustc_span::sym;
+use crablangc_ast::LitKind;
+use crablangc_hir::Expr;
+use crablangc_hir::ExprKind;
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_session::{declare_tool_lint, impl_lint_pass};
+use crablangc_span::sym;
 
 declare_clippy_lint! {
     /// ### What it does
@@ -17,13 +17,13 @@ declare_clippy_lint! {
     /// Including large files can increase the size of the binary
     ///
     /// ### Example
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// let included_str = include_str!("very_large_file.txt");
     /// let included_bytes = include_bytes!("very_large_file.txt");
     /// ```
     ///
     /// Use instead:
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// use std::fs;
     ///
     /// // You can load the file at runtime

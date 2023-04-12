@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 fn e0658<F, G, H>(f: F, g: G, h: H) -> i32
 where
     F: Fn<i32, Output = i32>, //~ ERROR E0658

@@ -9,8 +9,8 @@
 //! after all!
 //!
 //! The current allocator here is the `dlmalloc` crate which we've got included
-//! in the rust-lang/rust repository as a submodule. The crate is a port of
-//! dlmalloc.c from C to Rust and is basically just so we can have "pure Rust"
+//! in the crablang/crablang repository as a submodule. The crate is a port of
+//! dlmalloc.c from C to CrabLang and is basically just so we can have "pure CrabLang"
 //! for now which is currently technically required (can't link with C yet).
 //!
 //! The crate itself provides a global allocator which on wasm has no

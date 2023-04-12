@@ -1,6 +1,6 @@
 // run-pass
 
-#![deny(rust_2021_incompatible_closure_captures)]
+#![deny(crablang_2021_incompatible_closure_captures)]
 
 #[derive(Debug)]
 struct Foo(i32);

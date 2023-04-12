@@ -2,7 +2,7 @@
 // Use that command to update this file and do not edit by hand.
 // Manual edits will be overwritten.
 
-// run-rustfix
+// run-crablangfix
 
 #![allow(clippy::almost_complete_range)]
 #![allow(clippy::disallowed_names)]

@@ -1,9 +1,9 @@
 #!/bin/sh
 #
 # This is a script that can be used in each book's CI to validate links using
-# the same tool as rust-lang/rust.
+# the same tool as crablang/crablang.
 #
-# This requires the rust-docs rustup component to be installed in the nightly
+# This requires the crablang-docs crablangup component to be installed in the nightly
 # toolchain.
 #
 # Usage:
@@ -25,12 +25,12 @@ then
     exit 1
 fi
 
-html_dir="$(rustc +nightly --print sysroot)/share/doc/rust/html"
+html_dir="$(crablangc +nightly --print sysroot)/share/doc/crablang/html"
 
 if [ ! -d "$html_dir" ]
 then
     echo "HTML docs are missing from sysroot: $html_dir"
-    echo "Make sure the nightly rust-docs rustup component is installed."
+    echo "Make sure the nightly crablang-docs crablangup component is installed."
     exit 1
 fi
 
@@ -85,8 +85,8 @@ fi
 if [ ! -e "linkchecker/main.rs" ] || [ "$iterative" = "0" ]
 then
     echo "Downloading linkchecker source..."
-    nightly_hash=$(rustc +nightly -Vv | grep commit-hash | cut -f2 -d" ")
-    url="https://raw.githubusercontent.com/rust-lang/rust"
+    nightly_hash=$(crablangc +nightly -Vv | grep commit-hash | cut -f2 -d" ")
+    url="https://raw.githubusercontent.com/crablang/crablang"
     mkdir linkchecker
     curl -o linkchecker/Cargo.toml ${url}/${nightly_hash}/src/tools/linkchecker/Cargo.toml
     curl -o linkchecker/main.rs ${url}/${nightly_hash}/src/tools/linkchecker/main.rs

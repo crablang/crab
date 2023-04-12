@@ -17,7 +17,7 @@ pub fn box_uninitialized() -> Box<MaybeUninit<usize>> {
     Box::new(MaybeUninit::uninit())
 }
 
-// https://github.com/rust-lang/rust/issues/58201
+// https://github.com/crablang/crablang/issues/58201
 #[no_mangle]
 pub fn box_uninitialized2() -> Box<MaybeUninit<[usize; 1024 * 1024]>> {
     // CHECK-LABEL: @box_uninitialized2
@@ -28,7 +28,7 @@ pub fn box_uninitialized2() -> Box<MaybeUninit<[usize; 1024 * 1024]>> {
     Box::new(MaybeUninit::uninit())
 }
 
-// Hide the LLVM 15+ `allocalign` attribute in the declaration of __rust_alloc
+// Hide the LLVM 15+ `allocalign` attribute in the declaration of __crablang_alloc
 // from the CHECK-NOT above. We don't check the attributes here because we can't rely
 // on all of them being set until LLVM 15.
-// CHECK: declare noalias{{.*}} @__rust_alloc(i{{[0-9]+}} noundef, i{{[0-9]+.*}} noundef)
+// CHECK: declare noalias{{.*}} @__crablang_alloc(i{{[0-9]+}} noundef, i{{[0-9]+.*}} noundef)

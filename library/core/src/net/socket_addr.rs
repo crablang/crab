@@ -28,14 +28,14 @@ use super::display_buffer::DisplayBuffer;
 /// assert_eq!(socket.is_ipv4(), true);
 /// ```
 #[derive(Copy, Clone, PartialEq, Eq, Hash, PartialOrd, Ord)]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub enum SocketAddr {
     /// An IPv4 socket address.
-    #[stable(feature = "rust1", since = "1.0.0")]
-    V4(#[stable(feature = "rust1", since = "1.0.0")] SocketAddrV4),
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    V4(#[stable(feature = "crablang1", since = "1.0.0")] SocketAddrV4),
     /// An IPv6 socket address.
-    #[stable(feature = "rust1", since = "1.0.0")]
-    V6(#[stable(feature = "rust1", since = "1.0.0")] SocketAddrV6),
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    V6(#[stable(feature = "crablang1", since = "1.0.0")] SocketAddrV6),
 }
 
 /// An IPv4 socket address.
@@ -64,7 +64,7 @@ pub enum SocketAddr {
 /// assert_eq!(socket.port(), 8080);
 /// ```
 #[derive(Copy, Clone, Eq, PartialEq)]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub struct SocketAddrV4 {
     ip: Ipv4Addr,
     port: u16,
@@ -97,7 +97,7 @@ pub struct SocketAddrV4 {
 /// assert_eq!(socket.port(), 8080);
 /// ```
 #[derive(Copy, Clone, Eq, PartialEq)]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub struct SocketAddrV6 {
     ip: Ipv6Addr,
     port: u16,
@@ -121,7 +121,7 @@ impl SocketAddr {
     /// ```
     #[stable(feature = "ip_addr", since = "1.7.0")]
     #[must_use]
-    #[rustc_const_stable(feature = "const_socketaddr", since = "1.69.0")]
+    #[crablangc_const_stable(feature = "const_socketaddr", since = "1.69.0")]
     pub const fn new(ip: IpAddr, port: u16) -> SocketAddr {
         match ip {
             IpAddr::V4(a) => SocketAddr::V4(SocketAddrV4::new(a, port)),
@@ -141,7 +141,7 @@ impl SocketAddr {
     /// ```
     #[must_use]
     #[stable(feature = "ip_addr", since = "1.7.0")]
-    #[rustc_const_stable(feature = "const_socketaddr", since = "1.69.0")]
+    #[crablangc_const_stable(feature = "const_socketaddr", since = "1.69.0")]
     pub const fn ip(&self) -> IpAddr {
         match *self {
             SocketAddr::V4(ref a) => IpAddr::V4(*a.ip()),
@@ -181,8 +181,8 @@ impl SocketAddr {
     /// assert_eq!(socket.port(), 8080);
     /// ```
     #[must_use]
-    #[stable(feature = "rust1", since = "1.0.0")]
-    #[rustc_const_stable(feature = "const_socketaddr", since = "1.69.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    #[crablangc_const_stable(feature = "const_socketaddr", since = "1.69.0")]
     pub const fn port(&self) -> u16 {
         match *self {
             SocketAddr::V4(ref a) => a.port(),
@@ -226,7 +226,7 @@ impl SocketAddr {
     /// ```
     #[must_use]
     #[stable(feature = "sockaddr_checker", since = "1.16.0")]
-    #[rustc_const_stable(feature = "const_socketaddr", since = "1.69.0")]
+    #[crablangc_const_stable(feature = "const_socketaddr", since = "1.69.0")]
     pub const fn is_ipv4(&self) -> bool {
         matches!(*self, SocketAddr::V4(_))
     }
@@ -248,7 +248,7 @@ impl SocketAddr {
     /// ```
     #[must_use]
     #[stable(feature = "sockaddr_checker", since = "1.16.0")]
-    #[rustc_const_stable(feature = "const_socketaddr", since = "1.69.0")]
+    #[crablangc_const_stable(feature = "const_socketaddr", since = "1.69.0")]
     pub const fn is_ipv6(&self) -> bool {
         matches!(*self, SocketAddr::V6(_))
     }
@@ -266,9 +266,9 @@ impl SocketAddrV4 {
     ///
     /// let socket = SocketAddrV4::new(Ipv4Addr::new(127, 0, 0, 1), 8080);
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[must_use]
-    #[rustc_const_stable(feature = "const_socketaddr", since = "1.69.0")]
+    #[crablangc_const_stable(feature = "const_socketaddr", since = "1.69.0")]
     pub const fn new(ip: Ipv4Addr, port: u16) -> SocketAddrV4 {
         SocketAddrV4 { ip, port }
     }
@@ -284,8 +284,8 @@ impl SocketAddrV4 {
     /// assert_eq!(socket.ip(), &Ipv4Addr::new(127, 0, 0, 1));
     /// ```
     #[must_use]
-    #[stable(feature = "rust1", since = "1.0.0")]
-    #[rustc_const_stable(feature = "const_socketaddr", since = "1.69.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    #[crablangc_const_stable(feature = "const_socketaddr", since = "1.69.0")]
     pub const fn ip(&self) -> &Ipv4Addr {
         &self.ip
     }
@@ -317,8 +317,8 @@ impl SocketAddrV4 {
     /// assert_eq!(socket.port(), 8080);
     /// ```
     #[must_use]
-    #[stable(feature = "rust1", since = "1.0.0")]
-    #[rustc_const_stable(feature = "const_socketaddr", since = "1.69.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    #[crablangc_const_stable(feature = "const_socketaddr", since = "1.69.0")]
     pub const fn port(&self) -> u16 {
         self.port
     }
@@ -357,9 +357,9 @@ impl SocketAddrV6 {
     ///
     /// let socket = SocketAddrV6::new(Ipv6Addr::new(0, 0, 0, 0, 0, 0, 0, 1), 8080, 0, 0);
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[must_use]
-    #[rustc_const_stable(feature = "const_socketaddr", since = "1.69.0")]
+    #[crablangc_const_stable(feature = "const_socketaddr", since = "1.69.0")]
     pub const fn new(ip: Ipv6Addr, port: u16, flowinfo: u32, scope_id: u32) -> SocketAddrV6 {
         SocketAddrV6 { ip, port, flowinfo, scope_id }
     }
@@ -375,8 +375,8 @@ impl SocketAddrV6 {
     /// assert_eq!(socket.ip(), &Ipv6Addr::new(0, 0, 0, 0, 0, 0, 0, 1));
     /// ```
     #[must_use]
-    #[stable(feature = "rust1", since = "1.0.0")]
-    #[rustc_const_stable(feature = "const_socketaddr", since = "1.69.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    #[crablangc_const_stable(feature = "const_socketaddr", since = "1.69.0")]
     pub const fn ip(&self) -> &Ipv6Addr {
         &self.ip
     }
@@ -408,8 +408,8 @@ impl SocketAddrV6 {
     /// assert_eq!(socket.port(), 8080);
     /// ```
     #[must_use]
-    #[stable(feature = "rust1", since = "1.0.0")]
-    #[rustc_const_stable(feature = "const_socketaddr", since = "1.69.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    #[crablangc_const_stable(feature = "const_socketaddr", since = "1.69.0")]
     pub const fn port(&self) -> u16 {
         self.port
     }
@@ -451,8 +451,8 @@ impl SocketAddrV6 {
     /// assert_eq!(socket.flowinfo(), 10);
     /// ```
     #[must_use]
-    #[stable(feature = "rust1", since = "1.0.0")]
-    #[rustc_const_stable(feature = "const_socketaddr", since = "1.69.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    #[crablangc_const_stable(feature = "const_socketaddr", since = "1.69.0")]
     pub const fn flowinfo(&self) -> u32 {
         self.flowinfo
     }
@@ -491,8 +491,8 @@ impl SocketAddrV6 {
     /// assert_eq!(socket.scope_id(), 78);
     /// ```
     #[must_use]
-    #[stable(feature = "rust1", since = "1.0.0")]
-    #[rustc_const_stable(feature = "const_socketaddr", since = "1.69.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    #[crablangc_const_stable(feature = "const_socketaddr", since = "1.69.0")]
     pub const fn scope_id(&self) -> u32 {
         self.scope_id
     }
@@ -545,7 +545,7 @@ impl<I: Into<IpAddr>> From<(I, u16)> for SocketAddr {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl fmt::Display for SocketAddr {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match *self {
@@ -555,14 +555,14 @@ impl fmt::Display for SocketAddr {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl fmt::Debug for SocketAddr {
     fn fmt(&self, fmt: &mut fmt::Formatter<'_>) -> fmt::Result {
         fmt::Display::fmt(self, fmt)
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl fmt::Display for SocketAddrV4 {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         // If there are no alignment requirements, write the socket address directly to `f`.
@@ -581,14 +581,14 @@ impl fmt::Display for SocketAddrV4 {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl fmt::Debug for SocketAddrV4 {
     fn fmt(&self, fmt: &mut fmt::Formatter<'_>) -> fmt::Result {
         fmt::Display::fmt(self, fmt)
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl fmt::Display for SocketAddrV6 {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         // If there are no alignment requirements, write the socket address directly to `f`.
@@ -615,7 +615,7 @@ impl fmt::Display for SocketAddrV6 {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl fmt::Debug for SocketAddrV6 {
     fn fmt(&self, fmt: &mut fmt::Formatter<'_>) -> fmt::Result {
         fmt::Display::fmt(self, fmt)
@@ -650,13 +650,13 @@ impl Ord for SocketAddrV6 {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl hash::Hash for SocketAddrV4 {
     fn hash<H: hash::Hasher>(&self, s: &mut H) {
         (self.port, self.ip).hash(s)
     }
 }
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl hash::Hash for SocketAddrV6 {
     fn hash<H: hash::Hasher>(&self, s: &mut H) {
         (self.port, &self.ip, self.flowinfo, self.scope_id).hash(s)

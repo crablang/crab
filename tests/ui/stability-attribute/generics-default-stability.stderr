@@ -466,4 +466,4 @@ LL |     let _: Struct5<isize> = Struct5 { field: 0 };
 
 error: aborting due to 28 previous errors; 40 warnings emitted
 
-For more information about this error, try `rustc --explain E0658`.
+For more information about this error, try `crablangc --explain E0658`.

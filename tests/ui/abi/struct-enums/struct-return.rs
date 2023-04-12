@@ -35,15 +35,15 @@ pub struct CharCharFloat {
     c: f32,
 }
 
-mod rustrt {
+mod crablangrt {
     use super::{CharCharDouble, CharCharFloat, Floats, Quad};
 
-    #[link(name = "rust_test_helpers", kind = "static")]
+    #[link(name = "crablang_test_helpers", kind = "static")]
     extern "C" {
-        pub fn rust_dbg_abi_1(q: Quad) -> Quad;
-        pub fn rust_dbg_abi_2(f: Floats) -> Floats;
-        pub fn rust_dbg_abi_3(a: CharCharDouble) -> CharCharDouble;
-        pub fn rust_dbg_abi_4(a: CharCharFloat) -> CharCharFloat;
+        pub fn crablang_dbg_abi_1(q: Quad) -> Quad;
+        pub fn crablang_dbg_abi_2(f: Floats) -> Floats;
+        pub fn crablang_dbg_abi_3(a: CharCharDouble) -> CharCharDouble;
+        pub fn crablang_dbg_abi_4(a: CharCharFloat) -> CharCharFloat;
     }
 }
 
@@ -55,7 +55,7 @@ fn test1() {
             c: 0xcccc_cccc_cccc_cccc,
             d: 0xdddd_dddd_dddd_dddd,
         };
-        let qq = rustrt::rust_dbg_abi_1(q);
+        let qq = crablangrt::crablang_dbg_abi_1(q);
         println!("a: {:x}", qq.a as usize);
         println!("b: {:x}", qq.b as usize);
         println!("c: {:x}", qq.c as usize);
@@ -71,7 +71,7 @@ fn test1() {
 fn test2() {
     unsafe {
         let f = Floats { a: 1.234567890e-15_f64, b: 0b_1010_1010, c: 1.0987654321e-15_f64 };
-        let ff = rustrt::rust_dbg_abi_2(f);
+        let ff = crablangrt::crablang_dbg_abi_2(f);
         println!("a: {}", ff.a as f64);
         println!("b: {}", ff.b as usize);
         println!("c: {}", ff.c as f64);
@@ -88,7 +88,7 @@ fn test2() {}
 fn test3() {
     unsafe {
         let a = CharCharDouble { a: 1, b: 2, c: 3. };
-        let b = rustrt::rust_dbg_abi_3(a);
+        let b = crablangrt::crablang_dbg_abi_3(a);
         println!("a: {}", b.a);
         println!("b: {}", b.b);
         println!("c: {}", b.c);
@@ -104,7 +104,7 @@ fn test3() {}
 fn test4() {
     unsafe {
         let a = CharCharFloat { a: 1, b: 2, c: 3. };
-        let b = rustrt::rust_dbg_abi_4(a);
+        let b = crablangrt::crablang_dbg_abi_4(a);
         println!("a: {}", b.a);
         println!("b: {}", b.b);
         println!("c: {}", b.c);

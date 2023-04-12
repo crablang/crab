@@ -9,14 +9,14 @@
 pub fn vec_zero_bytes(n: usize) -> Vec<u8> {
     // CHECK-NOT: call {{.*}}alloc::vec::from_elem
     // CHECK-NOT: call {{.*}}reserve
-    // CHECK-NOT: call {{.*}}__rust_alloc(
+    // CHECK-NOT: call {{.*}}__crablang_alloc(
     // CHECK-NOT: call {{.*}}llvm.memset
 
-    // CHECK: call {{.*}}__rust_alloc_zeroed(
+    // CHECK: call {{.*}}__crablang_alloc_zeroed(
 
     // CHECK-NOT: call {{.*}}alloc::vec::from_elem
     // CHECK-NOT: call {{.*}}reserve
-    // CHECK-NOT: call {{.*}}__rust_alloc(
+    // CHECK-NOT: call {{.*}}__crablang_alloc(
     // CHECK-NOT: call {{.*}}llvm.memset
 
     // CHECK: ret void
@@ -28,14 +28,14 @@ pub fn vec_zero_bytes(n: usize) -> Vec<u8> {
 pub fn vec_one_bytes(n: usize) -> Vec<u8> {
     // CHECK-NOT: call {{.*}}alloc::vec::from_elem
     // CHECK-NOT: call {{.*}}reserve
-    // CHECK-NOT: call {{.*}}__rust_alloc_zeroed(
+    // CHECK-NOT: call {{.*}}__crablang_alloc_zeroed(
 
-    // CHECK: call {{.*}}__rust_alloc(
+    // CHECK: call {{.*}}__crablang_alloc(
     // CHECK: call {{.*}}llvm.memset
 
     // CHECK-NOT: call {{.*}}alloc::vec::from_elem
     // CHECK-NOT: call {{.*}}reserve
-    // CHECK-NOT: call {{.*}}__rust_alloc_zeroed(
+    // CHECK-NOT: call {{.*}}__crablang_alloc_zeroed(
 
     // CHECK: ret void
     vec![1; n]
@@ -46,13 +46,13 @@ pub fn vec_one_bytes(n: usize) -> Vec<u8> {
 pub fn vec_zero_scalar(n: usize) -> Vec<i32> {
     // CHECK-NOT: call {{.*}}alloc::vec::from_elem
     // CHECK-NOT: call {{.*}}reserve
-    // CHECK-NOT: call {{.*}}__rust_alloc(
+    // CHECK-NOT: call {{.*}}__crablang_alloc(
 
-    // CHECK: call {{.*}}__rust_alloc_zeroed(
+    // CHECK: call {{.*}}__crablang_alloc_zeroed(
 
     // CHECK-NOT: call {{.*}}alloc::vec::from_elem
     // CHECK-NOT: call {{.*}}reserve
-    // CHECK-NOT: call {{.*}}__rust_alloc(
+    // CHECK-NOT: call {{.*}}__crablang_alloc(
 
     // CHECK: ret void
     vec![0; n]
@@ -63,13 +63,13 @@ pub fn vec_zero_scalar(n: usize) -> Vec<i32> {
 pub fn vec_one_scalar(n: usize) -> Vec<i32> {
     // CHECK-NOT: call {{.*}}alloc::vec::from_elem
     // CHECK-NOT: call {{.*}}reserve
-    // CHECK-NOT: call {{.*}}__rust_alloc_zeroed(
+    // CHECK-NOT: call {{.*}}__crablang_alloc_zeroed(
 
-    // CHECK: call {{.*}}__rust_alloc(
+    // CHECK: call {{.*}}__crablang_alloc(
 
     // CHECK-NOT: call {{.*}}alloc::vec::from_elem
     // CHECK-NOT: call {{.*}}reserve
-    // CHECK-NOT: call {{.*}}__rust_alloc_zeroed(
+    // CHECK-NOT: call {{.*}}__crablang_alloc_zeroed(
 
     // CHECK: ret void
     vec![1; n]
@@ -80,13 +80,13 @@ pub fn vec_one_scalar(n: usize) -> Vec<i32> {
 pub fn vec_zero_rgb48(n: usize) -> Vec<[u16; 3]> {
     // CHECK-NOT: call {{.*}}alloc::vec::from_elem
     // CHECK-NOT: call {{.*}}reserve
-    // CHECK-NOT: call {{.*}}__rust_alloc(
+    // CHECK-NOT: call {{.*}}__crablang_alloc(
 
-    // CHECK: call {{.*}}__rust_alloc_zeroed(
+    // CHECK: call {{.*}}__crablang_alloc_zeroed(
 
     // CHECK-NOT: call {{.*}}alloc::vec::from_elem
     // CHECK-NOT: call {{.*}}reserve
-    // CHECK-NOT: call {{.*}}__rust_alloc(
+    // CHECK-NOT: call {{.*}}__crablang_alloc(
 
     // CHECK: ret void
     vec![[0, 0, 0]; n]
@@ -97,13 +97,13 @@ pub fn vec_zero_rgb48(n: usize) -> Vec<[u16; 3]> {
 pub fn vec_zero_array_16(n: usize) -> Vec<[i64; 16]> {
     // CHECK-NOT: call {{.*}}alloc::vec::from_elem
     // CHECK-NOT: call {{.*}}reserve
-    // CHECK-NOT: call {{.*}}__rust_alloc(
+    // CHECK-NOT: call {{.*}}__crablang_alloc(
 
-    // CHECK: call {{.*}}__rust_alloc_zeroed(
+    // CHECK: call {{.*}}__crablang_alloc_zeroed(
 
     // CHECK-NOT: call {{.*}}alloc::vec::from_elem
     // CHECK-NOT: call {{.*}}reserve
-    // CHECK-NOT: call {{.*}}__rust_alloc(
+    // CHECK-NOT: call {{.*}}__crablang_alloc(
 
     // CHECK: ret void
     vec![[0_i64; 16]; n]
@@ -114,13 +114,13 @@ pub fn vec_zero_array_16(n: usize) -> Vec<[i64; 16]> {
 pub fn vec_zero_tuple(n: usize) -> Vec<(i16, u8, char)> {
     // CHECK-NOT: call {{.*}}alloc::vec::from_elem
     // CHECK-NOT: call {{.*}}reserve
-    // CHECK-NOT: call {{.*}}__rust_alloc(
+    // CHECK-NOT: call {{.*}}__crablang_alloc(
 
-    // CHECK: call {{.*}}__rust_alloc_zeroed(
+    // CHECK: call {{.*}}__crablang_alloc_zeroed(
 
     // CHECK-NOT: call {{.*}}alloc::vec::from_elem
     // CHECK-NOT: call {{.*}}reserve
-    // CHECK-NOT: call {{.*}}__rust_alloc(
+    // CHECK-NOT: call {{.*}}__crablang_alloc(
 
     // CHECK: ret void
     vec![(0, 0, '\0'); n]
@@ -131,13 +131,13 @@ pub fn vec_zero_tuple(n: usize) -> Vec<(i16, u8, char)> {
 pub fn vec_non_zero_tuple(n: usize) -> Vec<(i16, u8, char)> {
     // CHECK-NOT: call {{.*}}alloc::vec::from_elem
     // CHECK-NOT: call {{.*}}reserve
-    // CHECK-NOT: call {{.*}}__rust_alloc_zeroed(
+    // CHECK-NOT: call {{.*}}__crablang_alloc_zeroed(
 
-    // CHECK: call {{.*}}__rust_alloc(
+    // CHECK: call {{.*}}__crablang_alloc(
 
     // CHECK-NOT: call {{.*}}alloc::vec::from_elem
     // CHECK-NOT: call {{.*}}reserve
-    // CHECK-NOT: call {{.*}}__rust_alloc_zeroed(
+    // CHECK-NOT: call {{.*}}__crablang_alloc_zeroed(
 
     // CHECK: ret void
     vec![(0, 0, 'A'); n]

@@ -4,7 +4,7 @@
 Generate powers of five using Daniel Lemire's ``Eisel-Lemire algorithm`` for use in
 decimal to floating point conversions.
 
-Specifically, computes and outputs (as Rust code) a table of 10^e for some
+Specifically, computes and outputs (as CrabLang code) a table of 10^e for some
 range of exponents e. The output is one array of 128 bit significands.
 The base two exponents can be inferred using a logarithmic slope
 of the decimal exponent. The approximations are normalized and rounded perfectly,
@@ -29,7 +29,7 @@ HEADER = """
 """
 
 STATIC_WARNING = """
-// Use static to avoid long compile times: Rust compiler errors
+// Use static to avoid long compile times: CrabLang compiler errors
 // can have the entire table compiled multiple times, and then
 // emit code multiple times, even if it's stripped out in
 // the final binary.
@@ -94,7 +94,7 @@ def print_proper_powers(min_exp, max_exp, bias):
 
     # Print the powers.
     print(STATIC_WARNING.strip())
-    print('#[rustfmt::skip]')
+    print('#[crablangfmt::skip]')
     typ = '[(u64, u64); N_POWERS_OF_FIVE]'
     print('pub static POWER_OF_FIVE_128: {} = ['.format(typ))
     lo_mask = (1 << 64) - 1

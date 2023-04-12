@@ -1,5 +1,5 @@
 include ../tools.mk
 
 all:
-	$(RUSTC) -O foo.rs
-	$(RUSTC) -O -L $(TMPDIR) main.rs
+	$(CRABLANGC) -O foo.rs
+	$(CRABLANGC) -O -L $(TMPDIR) main.rs

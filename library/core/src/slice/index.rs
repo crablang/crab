@@ -6,8 +6,8 @@ use crate::intrinsics::unchecked_sub;
 use crate::ops;
 use crate::ptr;
 
-#[stable(feature = "rust1", since = "1.0.0")]
-#[rustc_const_unstable(feature = "const_slice_index", issue = "none")]
+#[stable(feature = "crablang1", since = "1.0.0")]
+#[crablangc_const_unstable(feature = "const_slice_index", issue = "none")]
 impl<T, I> const ops::Index<I> for [T]
 where
     I: ~const SliceIndex<[T]>,
@@ -20,8 +20,8 @@ where
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
-#[rustc_const_unstable(feature = "const_slice_index", issue = "none")]
+#[stable(feature = "crablang1", since = "1.0.0")]
+#[crablangc_const_unstable(feature = "const_slice_index", issue = "none")]
 impl<T, I> const ops::IndexMut<I> for [T]
 where
     I: ~const SliceIndex<[T]>,
@@ -35,7 +35,7 @@ where
 #[cfg_attr(not(feature = "panic_immediate_abort"), inline(never), cold)]
 #[cfg_attr(feature = "panic_immediate_abort", inline)]
 #[track_caller]
-#[rustc_const_unstable(feature = "const_slice_index", issue = "none")]
+#[crablangc_const_unstable(feature = "const_slice_index", issue = "none")]
 const fn slice_start_index_len_fail(index: usize, len: usize) -> ! {
     // SAFETY: we are just panicking here
     unsafe {
@@ -63,7 +63,7 @@ const fn slice_start_index_len_fail_ct(_: usize, _: usize) -> ! {
 #[cfg_attr(not(feature = "panic_immediate_abort"), inline(never), cold)]
 #[cfg_attr(feature = "panic_immediate_abort", inline)]
 #[track_caller]
-#[rustc_const_unstable(feature = "const_slice_index", issue = "none")]
+#[crablangc_const_unstable(feature = "const_slice_index", issue = "none")]
 const fn slice_end_index_len_fail(index: usize, len: usize) -> ! {
     // SAFETY: we are just panicking here
     unsafe {
@@ -87,7 +87,7 @@ const fn slice_end_index_len_fail_ct(_: usize, _: usize) -> ! {
 #[cfg_attr(not(feature = "panic_immediate_abort"), inline(never), cold)]
 #[cfg_attr(feature = "panic_immediate_abort", inline)]
 #[track_caller]
-#[rustc_const_unstable(feature = "const_slice_index", issue = "none")]
+#[crablangc_const_unstable(feature = "const_slice_index", issue = "none")]
 const fn slice_index_order_fail(index: usize, end: usize) -> ! {
     // SAFETY: we are just panicking here
     unsafe { const_eval_select((index, end), slice_index_order_fail_ct, slice_index_order_fail_rt) }
@@ -150,14 +150,14 @@ mod private_slice_index {
 /// Implementations of this trait have to promise that if the argument
 /// to `get_unchecked(_mut)` is a safe reference, then so is the result.
 #[stable(feature = "slice_get_slice", since = "1.28.0")]
-#[rustc_diagnostic_item = "SliceIndex"]
-#[rustc_on_unimplemented(
+#[crablangc_diagnostic_item = "SliceIndex"]
+#[crablangc_on_unimplemented(
     on(T = "str", label = "string indices are ranges of `usize`",),
     on(
         all(any(T = "str", T = "&str", T = "std::string::String"), _Self = "{integer}"),
         note = "you can use `.chars().nth()` or `.bytes().nth()`\n\
                 for more information, see chapter 8 in The Book: \
-                <https://doc.rust-lang.org/book/ch08-02-strings.html#indexing-into-strings>"
+                <https://doc.crablang.org/book/ch08-02-strings.html#indexing-into-strings>"
     ),
     message = "the type `{T}` cannot be indexed by `{Self}`",
     label = "slice indices are of type `usize` or ranges of `usize`"
@@ -183,7 +183,7 @@ pub unsafe trait SliceIndex<T: ?Sized>: private_slice_index::Sealed {
     /// Calling this method with an out-of-bounds index or a dangling `slice` pointer
     /// is *[undefined behavior]* even if the resulting reference is not used.
     ///
-    /// [undefined behavior]: https://doc.rust-lang.org/reference/behavior-considered-undefined.html
+    /// [undefined behavior]: https://doc.crablang.org/reference/behavior-considered-undefined.html
     #[unstable(feature = "slice_index_methods", issue = "none")]
     unsafe fn get_unchecked(self, slice: *const T) -> *const Self::Output;
 
@@ -192,7 +192,7 @@ pub unsafe trait SliceIndex<T: ?Sized>: private_slice_index::Sealed {
     /// Calling this method with an out-of-bounds index or a dangling `slice` pointer
     /// is *[undefined behavior]* even if the resulting reference is not used.
     ///
-    /// [undefined behavior]: https://doc.rust-lang.org/reference/behavior-considered-undefined.html
+    /// [undefined behavior]: https://doc.crablang.org/reference/behavior-considered-undefined.html
     #[unstable(feature = "slice_index_methods", issue = "none")]
     unsafe fn get_unchecked_mut(self, slice: *mut T) -> *mut Self::Output;
 
@@ -210,7 +210,7 @@ pub unsafe trait SliceIndex<T: ?Sized>: private_slice_index::Sealed {
 }
 
 #[stable(feature = "slice_get_slice_impls", since = "1.15.0")]
-#[rustc_const_unstable(feature = "const_slice_index", issue = "none")]
+#[crablangc_const_unstable(feature = "const_slice_index", issue = "none")]
 unsafe impl<T> const SliceIndex<[T]> for usize {
     type Output = T;
 
@@ -270,7 +270,7 @@ unsafe impl<T> const SliceIndex<[T]> for usize {
 
 /// Because `IndexRange` guarantees `start <= end`, fewer checks are needed here
 /// than there are for a general `Range<usize>` (which might be `100..3`).
-#[rustc_const_unstable(feature = "const_index_range_slice_index", issue = "none")]
+#[crablangc_const_unstable(feature = "const_index_range_slice_index", issue = "none")]
 unsafe impl<T> const SliceIndex<[T]> for ops::IndexRange {
     type Output = [T];
 
@@ -346,7 +346,7 @@ unsafe impl<T> const SliceIndex<[T]> for ops::IndexRange {
 }
 
 #[stable(feature = "slice_get_slice_impls", since = "1.15.0")]
-#[rustc_const_unstable(feature = "const_slice_index", issue = "none")]
+#[crablangc_const_unstable(feature = "const_slice_index", issue = "none")]
 unsafe impl<T> const SliceIndex<[T]> for ops::Range<usize> {
     type Output = [T];
 
@@ -427,7 +427,7 @@ unsafe impl<T> const SliceIndex<[T]> for ops::Range<usize> {
 }
 
 #[stable(feature = "slice_get_slice_impls", since = "1.15.0")]
-#[rustc_const_unstable(feature = "const_slice_index", issue = "none")]
+#[crablangc_const_unstable(feature = "const_slice_index", issue = "none")]
 unsafe impl<T> const SliceIndex<[T]> for ops::RangeTo<usize> {
     type Output = [T];
 
@@ -465,7 +465,7 @@ unsafe impl<T> const SliceIndex<[T]> for ops::RangeTo<usize> {
 }
 
 #[stable(feature = "slice_get_slice_impls", since = "1.15.0")]
-#[rustc_const_unstable(feature = "const_slice_index", issue = "none")]
+#[crablangc_const_unstable(feature = "const_slice_index", issue = "none")]
 unsafe impl<T> const SliceIndex<[T]> for ops::RangeFrom<usize> {
     type Output = [T];
 
@@ -511,7 +511,7 @@ unsafe impl<T> const SliceIndex<[T]> for ops::RangeFrom<usize> {
 }
 
 #[stable(feature = "slice_get_slice_impls", since = "1.15.0")]
-#[rustc_const_unstable(feature = "const_slice_index", issue = "none")]
+#[crablangc_const_unstable(feature = "const_slice_index", issue = "none")]
 unsafe impl<T> const SliceIndex<[T]> for ops::RangeFull {
     type Output = [T];
 
@@ -547,7 +547,7 @@ unsafe impl<T> const SliceIndex<[T]> for ops::RangeFull {
 }
 
 #[stable(feature = "inclusive_range", since = "1.26.0")]
-#[rustc_const_unstable(feature = "const_slice_index", issue = "none")]
+#[crablangc_const_unstable(feature = "const_slice_index", issue = "none")]
 unsafe impl<T> const SliceIndex<[T]> for ops::RangeInclusive<usize> {
     type Output = [T];
 
@@ -591,7 +591,7 @@ unsafe impl<T> const SliceIndex<[T]> for ops::RangeInclusive<usize> {
 }
 
 #[stable(feature = "inclusive_range", since = "1.26.0")]
-#[rustc_const_unstable(feature = "const_slice_index", issue = "none")]
+#[crablangc_const_unstable(feature = "const_slice_index", issue = "none")]
 unsafe impl<T> const SliceIndex<[T]> for ops::RangeToInclusive<usize> {
     type Output = [T];
 

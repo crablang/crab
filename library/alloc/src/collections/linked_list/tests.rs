@@ -393,7 +393,7 @@ fn test_26021() {
     // This caused the RHS's dtor to walk up into the LHS at drop and delete all of
     // its nodes.
     //
-    // https://github.com/rust-lang/rust/issues/26021
+    // https://github.com/crablang/crablang/issues/26021
     let mut v1 = LinkedList::new();
     v1.push_front(1);
     v1.push_front(1);

@@ -124,4 +124,4 @@ LL | trait Struct {}
 
 error: aborting due to 12 previous errors
 
-For more information about this error, try `rustc --explain E0405`.
+For more information about this error, try `crablangc --explain E0405`.

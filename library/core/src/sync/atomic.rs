@@ -4,10 +4,10 @@
 //! threads, and are the building blocks of other concurrent
 //! types.
 //!
-//! Rust atomics currently follow the same rules as [C++20 atomics][cpp], specifically `atomic_ref`.
-//! Basically, creating a *shared reference* to one of the Rust atomic types corresponds to creating
+//! CrabLang atomics currently follow the same rules as [C++20 atomics][cpp], specifically `atomic_ref`.
+//! Basically, creating a *shared reference* to one of the CrabLang atomic types corresponds to creating
 //! an `atomic_ref` in C++; the `atomic_ref` is destroyed when the lifetime of the shared reference
-//! ends. (A Rust atomic type that is exclusively owned or behind a mutable reference does *not*
+//! ends. (A CrabLang atomic type that is exclusively owned or behind a mutable reference does *not*
 //! correspond to an "atomic object" in C++, since it can be accessed via non-atomic operations.)
 //!
 //! This module defines atomic versions of a select number of primitive
@@ -26,7 +26,7 @@
 //!
 //! Atomic variables are safe to share between threads (they implement [`Sync`])
 //! but they do not themselves provide the mechanism for sharing and follow the
-//! [threading model](../../../std/thread/index.html#the-threading-model) of Rust.
+//! [threading model](../../../std/thread/index.html#the-threading-model) of CrabLang.
 //! The most common way to share an atomic variable is to put it into an [`Arc`][arc] (an
 //! atomically-reference-counted shared pointer).
 //!
@@ -118,10 +118,10 @@
 //! println!("live threads: {}", old_thread_count + 1);
 //! ```
 
-#![stable(feature = "rust1", since = "1.0.0")]
+#![stable(feature = "crablang1", since = "1.0.0")]
 #![cfg_attr(not(target_has_atomic_load_store = "8"), allow(dead_code))]
 #![cfg_attr(not(target_has_atomic_load_store = "8"), allow(unused_imports))]
-#![rustc_diagnostic_item = "atomic_mod"]
+#![crablangc_diagnostic_item = "atomic_mod"]
 
 use self::Ordering::*;
 
@@ -138,16 +138,16 @@ use crate::hint::spin_loop;
 /// **Note**: This type is only available on platforms that support atomic
 /// loads and stores of `u8`.
 #[cfg(target_has_atomic_load_store = "8")]
-#[stable(feature = "rust1", since = "1.0.0")]
-#[rustc_diagnostic_item = "AtomicBool"]
+#[stable(feature = "crablang1", since = "1.0.0")]
+#[crablangc_diagnostic_item = "AtomicBool"]
 #[repr(C, align(1))]
 pub struct AtomicBool {
     v: UnsafeCell<u8>,
 }
 
 #[cfg(target_has_atomic_load_store = "8")]
-#[stable(feature = "rust1", since = "1.0.0")]
-#[rustc_const_unstable(feature = "const_default_impls", issue = "87864")]
+#[stable(feature = "crablang1", since = "1.0.0")]
+#[crablangc_const_unstable(feature = "const_default_impls", issue = "87864")]
 impl const Default for AtomicBool {
     /// Creates an `AtomicBool` initialized to `false`.
     #[inline]
@@ -158,7 +158,7 @@ impl const Default for AtomicBool {
 
 // Send is implicitly implemented for AtomicBool.
 #[cfg(target_has_atomic_load_store = "8")]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 unsafe impl Sync for AtomicBool {}
 
 /// A raw pointer type which can be safely shared between threads.
@@ -168,8 +168,8 @@ unsafe impl Sync for AtomicBool {}
 /// **Note**: This type is only available on platforms that support atomic
 /// loads and stores of pointers. Its size depends on the target pointer's size.
 #[cfg(target_has_atomic_load_store = "ptr")]
-#[stable(feature = "rust1", since = "1.0.0")]
-#[cfg_attr(not(test), rustc_diagnostic_item = "AtomicPtr")]
+#[stable(feature = "crablang1", since = "1.0.0")]
+#[cfg_attr(not(test), crablangc_diagnostic_item = "AtomicPtr")]
 #[cfg_attr(target_pointer_width = "16", repr(C, align(2)))]
 #[cfg_attr(target_pointer_width = "32", repr(C, align(4)))]
 #[cfg_attr(target_pointer_width = "64", repr(C, align(8)))]
@@ -178,8 +178,8 @@ pub struct AtomicPtr<T> {
 }
 
 #[cfg(target_has_atomic_load_store = "ptr")]
-#[stable(feature = "rust1", since = "1.0.0")]
-#[rustc_const_unstable(feature = "const_default_impls", issue = "87864")]
+#[stable(feature = "crablang1", since = "1.0.0")]
+#[crablangc_const_unstable(feature = "const_default_impls", issue = "87864")]
 impl<T> const Default for AtomicPtr<T> {
     /// Creates a null `AtomicPtr<T>`.
     fn default() -> AtomicPtr<T> {
@@ -188,10 +188,10 @@ impl<T> const Default for AtomicPtr<T> {
 }
 
 #[cfg(target_has_atomic_load_store = "ptr")]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 unsafe impl<T> Send for AtomicPtr<T> {}
 #[cfg(target_has_atomic_load_store = "ptr")]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 unsafe impl<T> Sync for AtomicPtr<T> {}
 
 /// Atomic memory orderings
@@ -202,23 +202,23 @@ unsafe impl<T> Sync for AtomicPtr<T> {}
 /// operations synchronize other memory while additionally preserving a total order of such
 /// operations across all threads.
 ///
-/// Rust's memory orderings are [the same as those of
+/// CrabLang's memory orderings are [the same as those of
 /// C++20](https://en.cppreference.com/w/cpp/atomic/memory_order).
 ///
 /// For more information see the [nomicon].
 ///
 /// [nomicon]: ../../../nomicon/atomics.html
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[derive(Copy, Clone, Debug, Eq, PartialEq, Hash)]
 #[non_exhaustive]
-#[rustc_diagnostic_item = "Ordering"]
+#[crablangc_diagnostic_item = "Ordering"]
 pub enum Ordering {
     /// No ordering constraints, only atomic operations.
     ///
     /// Corresponds to [`memory_order_relaxed`] in C++20.
     ///
     /// [`memory_order_relaxed`]: https://en.cppreference.com/w/cpp/atomic/memory_order#Relaxed_ordering
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     Relaxed,
     /// When coupled with a store, all previous operations become ordered
     /// before any load of this value with [`Acquire`] (or stronger) ordering.
@@ -233,7 +233,7 @@ pub enum Ordering {
     /// Corresponds to [`memory_order_release`] in C++20.
     ///
     /// [`memory_order_release`]: https://en.cppreference.com/w/cpp/atomic/memory_order#Release-Acquire_ordering
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     Release,
     /// When coupled with a load, if the loaded value was written by a store operation with
     /// [`Release`] (or stronger) ordering, then all subsequent operations
@@ -248,7 +248,7 @@ pub enum Ordering {
     /// Corresponds to [`memory_order_acquire`] in C++20.
     ///
     /// [`memory_order_acquire`]: https://en.cppreference.com/w/cpp/atomic/memory_order#Release-Acquire_ordering
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     Acquire,
     /// Has the effects of both [`Acquire`] and [`Release`] together:
     /// For loads it uses [`Acquire`] ordering. For stores it uses the [`Release`] ordering.
@@ -262,7 +262,7 @@ pub enum Ordering {
     /// Corresponds to [`memory_order_acq_rel`] in C++20.
     ///
     /// [`memory_order_acq_rel`]: https://en.cppreference.com/w/cpp/atomic/memory_order#Release-Acquire_ordering
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     AcqRel,
     /// Like [`Acquire`]/[`Release`]/[`AcqRel`] (for load, store, and load-with-store
     /// operations, respectively) with the additional guarantee that all threads see all
@@ -271,13 +271,13 @@ pub enum Ordering {
     /// Corresponds to [`memory_order_seq_cst`] in C++20.
     ///
     /// [`memory_order_seq_cst`]: https://en.cppreference.com/w/cpp/atomic/memory_order#Sequentially-consistent_ordering
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     SeqCst,
 }
 
 /// An [`AtomicBool`] initialized to `false`.
 #[cfg(target_has_atomic_load_store = "8")]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[deprecated(
     since = "1.34.0",
     note = "the `new` function is now preferred",
@@ -298,8 +298,8 @@ impl AtomicBool {
     /// let atomic_false = AtomicBool::new(false);
     /// ```
     #[inline]
-    #[stable(feature = "rust1", since = "1.0.0")]
-    #[rustc_const_stable(feature = "const_atomic_new", since = "1.24.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    #[crablangc_const_stable(feature = "const_atomic_new", since = "1.24.0")]
     #[must_use]
     pub const fn new(v: bool) -> AtomicBool {
         AtomicBool { v: UnsafeCell::new(v as u8) }
@@ -343,7 +343,7 @@ impl AtomicBool {
     ///
     /// [valid]: crate::ptr#safety
     #[unstable(feature = "atomic_from_ptr", issue = "108652")]
-    #[rustc_const_unstable(feature = "atomic_from_ptr", issue = "108652")]
+    #[crablangc_const_unstable(feature = "atomic_from_ptr", issue = "108652")]
     pub const unsafe fn from_ptr<'a>(ptr: *mut bool) -> &'a AtomicBool {
         // SAFETY: guaranteed by the caller
         unsafe { &*ptr.cast() }
@@ -468,7 +468,7 @@ impl AtomicBool {
     /// ```
     #[inline]
     #[stable(feature = "atomic_access", since = "1.15.0")]
-    #[rustc_const_unstable(feature = "const_cell_into_inner", issue = "78729")]
+    #[crablangc_const_unstable(feature = "const_cell_into_inner", issue = "78729")]
     pub const fn into_inner(self) -> bool {
         self.v.into_inner() != 0
     }
@@ -492,7 +492,7 @@ impl AtomicBool {
     /// assert_eq!(some_bool.load(Ordering::Relaxed), true);
     /// ```
     #[inline]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[cfg_attr(miri, track_caller)] // even without panics, this helps for Miri backtraces
     pub fn load(&self, order: Ordering) -> bool {
         // SAFETY: any data races are prevented by atomic intrinsics and the raw
@@ -520,7 +520,7 @@ impl AtomicBool {
     /// assert_eq!(some_bool.load(Ordering::Relaxed), false);
     /// ```
     #[inline]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[cfg_attr(miri, track_caller)] // even without panics, this helps for Miri backtraces
     pub fn store(&self, val: bool, order: Ordering) {
         // SAFETY: any data races are prevented by atomic intrinsics and the raw
@@ -551,7 +551,7 @@ impl AtomicBool {
     /// assert_eq!(some_bool.load(Ordering::Relaxed), false);
     /// ```
     #[inline]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[cfg(target_has_atomic = "8")]
     #[cfg_attr(miri, track_caller)] // even without panics, this helps for Miri backtraces
     pub fn swap(&self, val: bool, order: Ordering) -> bool {
@@ -604,7 +604,7 @@ impl AtomicBool {
     /// assert_eq!(some_bool.load(Ordering::Relaxed), false);
     /// ```
     #[inline]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[deprecated(
         since = "1.50.0",
         note = "Use `compare_exchange` or `compare_exchange_weak` instead"
@@ -763,7 +763,7 @@ impl AtomicBool {
     /// assert_eq!(foo.load(Ordering::SeqCst), false);
     /// ```
     #[inline]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[cfg(target_has_atomic = "8")]
     #[cfg_attr(miri, track_caller)] // even without panics, this helps for Miri backtraces
     pub fn fetch_and(&self, val: bool, order: Ordering) -> bool {
@@ -805,7 +805,7 @@ impl AtomicBool {
     /// assert_eq!(foo.load(Ordering::SeqCst), true);
     /// ```
     #[inline]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[cfg(target_has_atomic = "8")]
     #[cfg_attr(miri, track_caller)] // even without panics, this helps for Miri backtraces
     pub fn fetch_nand(&self, val: bool, order: Ordering) -> bool {
@@ -857,7 +857,7 @@ impl AtomicBool {
     /// assert_eq!(foo.load(Ordering::SeqCst), false);
     /// ```
     #[inline]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[cfg(target_has_atomic = "8")]
     #[cfg_attr(miri, track_caller)] // even without panics, this helps for Miri backtraces
     pub fn fetch_or(&self, val: bool, order: Ordering) -> bool {
@@ -898,7 +898,7 @@ impl AtomicBool {
     /// assert_eq!(foo.load(Ordering::SeqCst), false);
     /// ```
     #[inline]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[cfg(target_has_atomic = "8")]
     #[cfg_attr(miri, track_caller)] // even without panics, this helps for Miri backtraces
     pub fn fetch_xor(&self, val: bool, order: Ordering) -> bool {
@@ -972,8 +972,8 @@ impl AtomicBool {
     /// # }
     /// ```
     #[inline]
-    #[stable(feature = "atomic_as_ptr", since = "CURRENT_RUSTC_VERSION")]
-    #[rustc_const_stable(feature = "atomic_as_ptr", since = "CURRENT_RUSTC_VERSION")]
+    #[stable(feature = "atomic_as_ptr", since = "CURRENT_CRABLANGC_VERSION")]
+    #[crablangc_const_stable(feature = "atomic_as_ptr", since = "CURRENT_CRABLANGC_VERSION")]
     pub const fn as_ptr(&self) -> *mut bool {
         self.v.get().cast()
     }
@@ -1011,7 +1011,7 @@ impl AtomicBool {
     ///
     /// # Examples
     ///
-    /// ```rust
+    /// ```crablang
     /// use std::sync::atomic::{AtomicBool, Ordering};
     ///
     /// let x = AtomicBool::new(false);
@@ -1057,8 +1057,8 @@ impl<T> AtomicPtr<T> {
     /// let atomic_ptr = AtomicPtr::new(ptr);
     /// ```
     #[inline]
-    #[stable(feature = "rust1", since = "1.0.0")]
-    #[rustc_const_stable(feature = "const_atomic_new", since = "1.24.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    #[crablangc_const_stable(feature = "const_atomic_new", since = "1.24.0")]
     pub const fn new(p: *mut T) -> AtomicPtr<T> {
         AtomicPtr { p: UnsafeCell::new(p) }
     }
@@ -1101,7 +1101,7 @@ impl<T> AtomicPtr<T> {
     ///
     /// [valid]: crate::ptr#safety
     #[unstable(feature = "atomic_from_ptr", issue = "108652")]
-    #[rustc_const_unstable(feature = "atomic_from_ptr", issue = "108652")]
+    #[crablangc_const_unstable(feature = "atomic_from_ptr", issue = "108652")]
     pub const unsafe fn from_ptr<'a>(ptr: *mut *mut T) -> &'a AtomicPtr<T> {
         // SAFETY: guaranteed by the caller
         unsafe { &*ptr.cast() }
@@ -1153,7 +1153,7 @@ impl<T> AtomicPtr<T> {
         // SAFETY:
         //  - the mutable reference guarantees unique ownership.
         //  - the alignment of `*mut T` and `Self` is the same on all platforms
-        //    supported by rust, as verified above.
+        //    supported by crablang, as verified above.
         unsafe { &mut *(v as *mut *mut T as *mut Self) }
     }
 
@@ -1229,7 +1229,7 @@ impl<T> AtomicPtr<T> {
         // SAFETY:
         //  - the mutable reference guarantees unique ownership.
         //  - the alignment of `*mut T` and `Self` is the same on all platforms
-        //    supported by rust, as verified above.
+        //    supported by crablang, as verified above.
         unsafe { &mut *(v as *mut [*mut T] as *mut [Self]) }
     }
 
@@ -1249,7 +1249,7 @@ impl<T> AtomicPtr<T> {
     /// ```
     #[inline]
     #[stable(feature = "atomic_access", since = "1.15.0")]
-    #[rustc_const_unstable(feature = "const_cell_into_inner", issue = "78729")]
+    #[crablangc_const_unstable(feature = "const_cell_into_inner", issue = "78729")]
     pub const fn into_inner(self) -> *mut T {
         self.p.into_inner()
     }
@@ -1274,7 +1274,7 @@ impl<T> AtomicPtr<T> {
     /// let value = some_ptr.load(Ordering::Relaxed);
     /// ```
     #[inline]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[cfg_attr(miri, track_caller)] // even without panics, this helps for Miri backtraces
     pub fn load(&self, order: Ordering) -> *mut T {
         // SAFETY: data races are prevented by atomic intrinsics.
@@ -1303,7 +1303,7 @@ impl<T> AtomicPtr<T> {
     /// some_ptr.store(other_ptr, Ordering::Relaxed);
     /// ```
     #[inline]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[cfg_attr(miri, track_caller)] // even without panics, this helps for Miri backtraces
     pub fn store(&self, ptr: *mut T, order: Ordering) {
         // SAFETY: data races are prevented by atomic intrinsics.
@@ -1335,7 +1335,7 @@ impl<T> AtomicPtr<T> {
     /// let value = some_ptr.swap(other_ptr, Ordering::Relaxed);
     /// ```
     #[inline]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[cfg(target_has_atomic = "ptr")]
     #[cfg_attr(miri, track_caller)] // even without panics, this helps for Miri backtraces
     pub fn swap(&self, ptr: *mut T, order: Ordering) -> *mut T {
@@ -1387,7 +1387,7 @@ impl<T> AtomicPtr<T> {
     /// let value = some_ptr.compare_and_swap(ptr, other_ptr, Ordering::Relaxed);
     /// ```
     #[inline]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[deprecated(
         since = "1.50.0",
         note = "Use `compare_exchange` or `compare_exchange_weak` instead"
@@ -1530,7 +1530,7 @@ impl<T> AtomicPtr<T> {
     ///
     /// # Examples
     ///
-    /// ```rust
+    /// ```crablang
     /// use std::sync::atomic::{AtomicPtr, Ordering};
     ///
     /// let ptr: *mut _ = &mut 5;
@@ -1907,8 +1907,8 @@ impl<T> AtomicPtr<T> {
     /// }
     /// ```
     #[inline]
-    #[stable(feature = "atomic_as_ptr", since = "CURRENT_RUSTC_VERSION")]
-    #[rustc_const_stable(feature = "atomic_as_ptr", since = "CURRENT_RUSTC_VERSION")]
+    #[stable(feature = "atomic_as_ptr", since = "CURRENT_CRABLANGC_VERSION")]
+    #[crablangc_const_stable(feature = "atomic_as_ptr", since = "CURRENT_CRABLANGC_VERSION")]
     pub const fn as_ptr(&self) -> *mut *mut T {
         self.p.get()
     }
@@ -1916,7 +1916,7 @@ impl<T> AtomicPtr<T> {
 
 #[cfg(target_has_atomic_load_store = "8")]
 #[stable(feature = "atomic_bool_from", since = "1.24.0")]
-#[rustc_const_unstable(feature = "const_convert", issue = "88674")]
+#[crablangc_const_unstable(feature = "const_convert", issue = "88674")]
 impl const From<bool> for AtomicBool {
     /// Converts a `bool` into an `AtomicBool`.
     ///
@@ -1935,7 +1935,7 @@ impl const From<bool> for AtomicBool {
 
 #[cfg(target_has_atomic_load_store = "ptr")]
 #[stable(feature = "atomic_from", since = "1.23.0")]
-#[rustc_const_unstable(feature = "const_convert", issue = "88674")]
+#[crablangc_const_unstable(feature = "const_convert", issue = "88674")]
 impl<T> const From<*mut T> for AtomicPtr<T> {
     /// Converts a `*mut T` into an `AtomicPtr<T>`.
     #[inline]
@@ -2002,7 +2002,7 @@ macro_rules! atomic_int {
         pub const $atomic_init: $atomic_type = $atomic_type::new(0);
 
         #[$stable]
-        #[rustc_const_unstable(feature = "const_default_impls", issue = "87864")]
+        #[crablangc_const_unstable(feature = "const_default_impls", issue = "87864")]
         impl const Default for $atomic_type {
             #[inline]
             fn default() -> Self {
@@ -2011,7 +2011,7 @@ macro_rules! atomic_int {
         }
 
         #[$stable_from]
-        #[rustc_const_unstable(feature = "const_num_from_num", issue = "87852")]
+        #[crablangc_const_unstable(feature = "const_num_from_num", issue = "87852")]
         impl const From<$int_type> for $atomic_type {
             #[doc = concat!("Converts an `", stringify!($int_type), "` into an `", stringify!($atomic_type), "`.")]
             #[inline]
@@ -2087,7 +2087,7 @@ macro_rules! atomic_int {
             ///
             /// [valid]: crate::ptr#safety
             #[unstable(feature = "atomic_from_ptr", issue = "108652")]
-            #[rustc_const_unstable(feature = "atomic_from_ptr", issue = "108652")]
+            #[crablangc_const_unstable(feature = "atomic_from_ptr", issue = "108652")]
             pub const unsafe fn from_ptr<'a>(ptr: *mut $int_type) -> &'a $atomic_type {
                 // SAFETY: guaranteed by the caller
                 unsafe { &*ptr.cast() }
@@ -2233,7 +2233,7 @@ macro_rules! atomic_int {
             /// ```
             #[inline]
             #[$stable_access]
-            #[rustc_const_unstable(feature = "const_cell_into_inner", issue = "78729")]
+            #[crablangc_const_unstable(feature = "const_cell_into_inner", issue = "78729")]
             pub const fn into_inner(self) -> $int_type {
                 self.v.into_inner()
             }
@@ -2711,7 +2711,7 @@ macro_rules! atomic_int {
             ///
             /// # Examples
             ///
-            /// ```rust
+            /// ```crablang
             #[doc = concat!($extra_feature, "use std::sync::atomic::{", stringify!($atomic_type), ", Ordering};")]
             ///
             #[doc = concat!("let x = ", stringify!($atomic_type), "::new(7);")]
@@ -2860,8 +2860,8 @@ macro_rules! atomic_int {
             /// # }
             /// ```
             #[inline]
-            #[stable(feature = "atomic_as_ptr", since = "CURRENT_RUSTC_VERSION")]
-            #[rustc_const_stable(feature = "atomic_as_ptr", since = "CURRENT_RUSTC_VERSION")]
+            #[stable(feature = "atomic_as_ptr", since = "CURRENT_CRABLANGC_VERSION")]
+            #[crablangc_const_stable(feature = "atomic_as_ptr", since = "CURRENT_CRABLANGC_VERSION")]
             pub const fn as_ptr(&self) -> *mut $int_type {
                 self.v.get()
             }
@@ -2879,9 +2879,9 @@ atomic_int! {
     stable(feature = "integer_atomics_stable", since = "1.34.0"),
     stable(feature = "integer_atomics_stable", since = "1.34.0"),
     stable(feature = "integer_atomics_stable", since = "1.34.0"),
-    rustc_const_stable(feature = "const_integer_atomics", since = "1.34.0"),
+    crablangc_const_stable(feature = "const_integer_atomics", since = "1.34.0"),
     unstable(feature = "integer_atomics", issue = "99069"),
-    cfg_attr(not(test), rustc_diagnostic_item = "AtomicI8"),
+    cfg_attr(not(test), crablangc_diagnostic_item = "AtomicI8"),
     "i8",
     "",
     atomic_min, atomic_max,
@@ -2899,9 +2899,9 @@ atomic_int! {
     stable(feature = "integer_atomics_stable", since = "1.34.0"),
     stable(feature = "integer_atomics_stable", since = "1.34.0"),
     stable(feature = "integer_atomics_stable", since = "1.34.0"),
-    rustc_const_stable(feature = "const_integer_atomics", since = "1.34.0"),
+    crablangc_const_stable(feature = "const_integer_atomics", since = "1.34.0"),
     unstable(feature = "integer_atomics", issue = "99069"),
-    cfg_attr(not(test), rustc_diagnostic_item = "AtomicU8"),
+    cfg_attr(not(test), crablangc_diagnostic_item = "AtomicU8"),
     "u8",
     "",
     atomic_umin, atomic_umax,
@@ -2919,9 +2919,9 @@ atomic_int! {
     stable(feature = "integer_atomics_stable", since = "1.34.0"),
     stable(feature = "integer_atomics_stable", since = "1.34.0"),
     stable(feature = "integer_atomics_stable", since = "1.34.0"),
-    rustc_const_stable(feature = "const_integer_atomics", since = "1.34.0"),
+    crablangc_const_stable(feature = "const_integer_atomics", since = "1.34.0"),
     unstable(feature = "integer_atomics", issue = "99069"),
-    cfg_attr(not(test), rustc_diagnostic_item = "AtomicI16"),
+    cfg_attr(not(test), crablangc_diagnostic_item = "AtomicI16"),
     "i16",
     "",
     atomic_min, atomic_max,
@@ -2939,9 +2939,9 @@ atomic_int! {
     stable(feature = "integer_atomics_stable", since = "1.34.0"),
     stable(feature = "integer_atomics_stable", since = "1.34.0"),
     stable(feature = "integer_atomics_stable", since = "1.34.0"),
-    rustc_const_stable(feature = "const_integer_atomics", since = "1.34.0"),
+    crablangc_const_stable(feature = "const_integer_atomics", since = "1.34.0"),
     unstable(feature = "integer_atomics", issue = "99069"),
-    cfg_attr(not(test), rustc_diagnostic_item = "AtomicU16"),
+    cfg_attr(not(test), crablangc_diagnostic_item = "AtomicU16"),
     "u16",
     "",
     atomic_umin, atomic_umax,
@@ -2959,9 +2959,9 @@ atomic_int! {
     stable(feature = "integer_atomics_stable", since = "1.34.0"),
     stable(feature = "integer_atomics_stable", since = "1.34.0"),
     stable(feature = "integer_atomics_stable", since = "1.34.0"),
-    rustc_const_stable(feature = "const_integer_atomics", since = "1.34.0"),
+    crablangc_const_stable(feature = "const_integer_atomics", since = "1.34.0"),
     unstable(feature = "integer_atomics", issue = "99069"),
-    cfg_attr(not(test), rustc_diagnostic_item = "AtomicI32"),
+    cfg_attr(not(test), crablangc_diagnostic_item = "AtomicI32"),
     "i32",
     "",
     atomic_min, atomic_max,
@@ -2979,9 +2979,9 @@ atomic_int! {
     stable(feature = "integer_atomics_stable", since = "1.34.0"),
     stable(feature = "integer_atomics_stable", since = "1.34.0"),
     stable(feature = "integer_atomics_stable", since = "1.34.0"),
-    rustc_const_stable(feature = "const_integer_atomics", since = "1.34.0"),
+    crablangc_const_stable(feature = "const_integer_atomics", since = "1.34.0"),
     unstable(feature = "integer_atomics", issue = "99069"),
-    cfg_attr(not(test), rustc_diagnostic_item = "AtomicU32"),
+    cfg_attr(not(test), crablangc_diagnostic_item = "AtomicU32"),
     "u32",
     "",
     atomic_umin, atomic_umax,
@@ -2999,9 +2999,9 @@ atomic_int! {
     stable(feature = "integer_atomics_stable", since = "1.34.0"),
     stable(feature = "integer_atomics_stable", since = "1.34.0"),
     stable(feature = "integer_atomics_stable", since = "1.34.0"),
-    rustc_const_stable(feature = "const_integer_atomics", since = "1.34.0"),
+    crablangc_const_stable(feature = "const_integer_atomics", since = "1.34.0"),
     unstable(feature = "integer_atomics", issue = "99069"),
-    cfg_attr(not(test), rustc_diagnostic_item = "AtomicI64"),
+    cfg_attr(not(test), crablangc_diagnostic_item = "AtomicI64"),
     "i64",
     "",
     atomic_min, atomic_max,
@@ -3019,9 +3019,9 @@ atomic_int! {
     stable(feature = "integer_atomics_stable", since = "1.34.0"),
     stable(feature = "integer_atomics_stable", since = "1.34.0"),
     stable(feature = "integer_atomics_stable", since = "1.34.0"),
-    rustc_const_stable(feature = "const_integer_atomics", since = "1.34.0"),
+    crablangc_const_stable(feature = "const_integer_atomics", since = "1.34.0"),
     unstable(feature = "integer_atomics", issue = "99069"),
-    cfg_attr(not(test), rustc_diagnostic_item = "AtomicU64"),
+    cfg_attr(not(test), crablangc_diagnostic_item = "AtomicU64"),
     "u64",
     "",
     atomic_umin, atomic_umax,
@@ -3039,9 +3039,9 @@ atomic_int! {
     unstable(feature = "integer_atomics", issue = "99069"),
     unstable(feature = "integer_atomics", issue = "99069"),
     unstable(feature = "integer_atomics", issue = "99069"),
-    rustc_const_stable(feature = "const_integer_atomics", since = "1.34.0"),
+    crablangc_const_stable(feature = "const_integer_atomics", since = "1.34.0"),
     unstable(feature = "integer_atomics", issue = "99069"),
-    cfg_attr(not(test), rustc_diagnostic_item = "AtomicI128"),
+    cfg_attr(not(test), crablangc_diagnostic_item = "AtomicI128"),
     "i128",
     "#![feature(integer_atomics)]\n\n",
     atomic_min, atomic_max,
@@ -3059,9 +3059,9 @@ atomic_int! {
     unstable(feature = "integer_atomics", issue = "99069"),
     unstable(feature = "integer_atomics", issue = "99069"),
     unstable(feature = "integer_atomics", issue = "99069"),
-    rustc_const_stable(feature = "const_integer_atomics", since = "1.34.0"),
+    crablangc_const_stable(feature = "const_integer_atomics", since = "1.34.0"),
     unstable(feature = "integer_atomics", issue = "99069"),
-    cfg_attr(not(test), rustc_diagnostic_item = "AtomicU128"),
+    cfg_attr(not(test), crablangc_diagnostic_item = "AtomicU128"),
     "u128",
     "#![feature(integer_atomics)]\n\n",
     atomic_umin, atomic_umax,
@@ -3077,15 +3077,15 @@ macro_rules! atomic_int_ptr_sized {
         atomic_int! {
             cfg(target_has_atomic = "ptr"),
             cfg(target_has_atomic_equal_alignment = "ptr"),
-            stable(feature = "rust1", since = "1.0.0"),
+            stable(feature = "crablang1", since = "1.0.0"),
             stable(feature = "extended_compare_and_swap", since = "1.10.0"),
             stable(feature = "atomic_debug", since = "1.3.0"),
             stable(feature = "atomic_access", since = "1.15.0"),
             stable(feature = "atomic_from", since = "1.23.0"),
             stable(feature = "atomic_nand", since = "1.27.0"),
-            rustc_const_stable(feature = "const_ptr_sized_atomics", since = "1.24.0"),
-            stable(feature = "rust1", since = "1.0.0"),
-            cfg_attr(not(test), rustc_diagnostic_item = "AtomicIsize"),
+            crablangc_const_stable(feature = "const_ptr_sized_atomics", since = "1.24.0"),
+            stable(feature = "crablang1", since = "1.0.0"),
+            cfg_attr(not(test), crablangc_diagnostic_item = "AtomicIsize"),
             "isize",
             "",
             atomic_min, atomic_max,
@@ -3098,15 +3098,15 @@ macro_rules! atomic_int_ptr_sized {
         atomic_int! {
             cfg(target_has_atomic = "ptr"),
             cfg(target_has_atomic_equal_alignment = "ptr"),
-            stable(feature = "rust1", since = "1.0.0"),
+            stable(feature = "crablang1", since = "1.0.0"),
             stable(feature = "extended_compare_and_swap", since = "1.10.0"),
             stable(feature = "atomic_debug", since = "1.3.0"),
             stable(feature = "atomic_access", since = "1.15.0"),
             stable(feature = "atomic_from", since = "1.23.0"),
             stable(feature = "atomic_nand", since = "1.27.0"),
-            rustc_const_stable(feature = "const_ptr_sized_atomics", since = "1.24.0"),
-            stable(feature = "rust1", since = "1.0.0"),
-            cfg_attr(not(test), rustc_diagnostic_item = "AtomicUsize"),
+            crablangc_const_stable(feature = "const_ptr_sized_atomics", since = "1.24.0"),
+            stable(feature = "crablang1", since = "1.0.0"),
+            cfg_attr(not(test), crablangc_diagnostic_item = "AtomicUsize"),
             "usize",
             "",
             atomic_umin, atomic_umax,
@@ -3492,8 +3492,8 @@ unsafe fn atomic_umin<T: Copy>(dst: *mut T, val: T, order: Ordering) -> T {
 /// }
 /// ```
 #[inline]
-#[stable(feature = "rust1", since = "1.0.0")]
-#[rustc_diagnostic_item = "fence"]
+#[stable(feature = "crablang1", since = "1.0.0")]
+#[crablangc_diagnostic_item = "fence"]
 #[cfg_attr(miri, track_caller)] // even without panics, this helps for Miri backtraces
 pub fn fence(order: Ordering) {
     // SAFETY: using an atomic fence is safe.
@@ -3576,7 +3576,7 @@ pub fn fence(order: Ordering) {
 /// [memory barriers]: https://www.kernel.org/doc/Documentation/memory-barriers.txt
 #[inline]
 #[stable(feature = "compiler_fences", since = "1.21.0")]
-#[rustc_diagnostic_item = "compiler_fence"]
+#[crablangc_diagnostic_item = "compiler_fence"]
 #[cfg_attr(miri, track_caller)] // even without panics, this helps for Miri backtraces
 pub fn compiler_fence(order: Ordering) {
     // SAFETY: using an atomic fence is safe.

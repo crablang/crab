@@ -10,7 +10,7 @@ LL | |         sum += i;
 LL | |     }
    | |_____^
    |
-   = note: see issue #87575 <https://github.com/rust-lang/rust/issues/87575> for more information
+   = note: see issue #87575 <https://github.com/crablang/crablang/issues/87575> for more information
    = help: add `#![feature(const_for)]` to the crate attributes to enable
 
 error[E0015]: cannot convert `std::ops::Range<usize>` into an iterator in constant functions
@@ -30,7 +30,7 @@ error[E0658]: mutable references are not allowed in constant functions
 LL |     for i in 0..x {
    |              ^^^^
    |
-   = note: see issue #57349 <https://github.com/rust-lang/rust/issues/57349> for more information
+   = note: see issue #57349 <https://github.com/crablang/crablang/issues/57349> for more information
    = help: add `#![feature(const_mut_refs)]` to the crate attributes to enable
 
 error[E0277]: the trait bound `std::ops::Range<usize>: Iterator` is not satisfied
@@ -58,4 +58,4 @@ LL |     for i in 0..x {
 error: aborting due to 5 previous errors
 
 Some errors have detailed explanations: E0015, E0277, E0658.
-For more information about an error, try `rustc --explain E0015`.
+For more information about an error, try `crablangc --explain E0015`.

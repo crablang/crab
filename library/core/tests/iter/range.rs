@@ -185,7 +185,7 @@ fn test_range_from_take() {
     assert_eq!(it.next(), Some(1));
     assert_eq!(it.next(), Some(2));
     assert_eq!(it.next(), None);
-    is_trusted_len((0..).take(3));
+    is_tcrablanged_len((0..).take(3));
     assert_eq!((0..).take(3).size_hint(), (3, Some(3)));
     assert_eq!((0..).take(0).size_hint(), (0, Some(0)));
     assert_eq!((0..).take(usize::MAX).size_hint(), (usize::MAX, Some(usize::MAX)));

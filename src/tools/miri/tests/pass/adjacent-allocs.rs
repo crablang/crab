@@ -27,7 +27,7 @@ fn test1() {
         // Allocate a new stack variable whose lifetime quickly ends.
         // If there's a chance that &m == ptr.add(1), then an int-to-ptr cast of
         // that value will have ambiguous provenance between n and m.
-        // See https://github.com/rust-lang/miri/issues/1866#issuecomment-985770125
+        // See https://github.com/crablang/miri/issues/1866#issuecomment-985770125
         {
             let m = 0u64;
             let _ = &m as *const u64;

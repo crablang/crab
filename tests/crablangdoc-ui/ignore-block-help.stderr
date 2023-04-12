@@ -1,0 +1,19 @@
+warning: could not parse code block as CrabLang code
+  --> $DIR/ignore-block-help.rs:3:5
+   |
+LL |   /// ```ignore (to-prevent-tidy-error)
+   |  _____^
+LL | | /// let heart = '❤️';
+LL | | /// ```
+   | |_______^
+   |
+help: `ignore` code blocks require valid CrabLang code for syntax highlighting; mark blocks that do not contain CrabLang code as text: ```text
+  --> $DIR/ignore-block-help.rs:3:5
+   |
+LL | /// ```ignore (to-prevent-tidy-error)
+   |     ^^^
+   = note: error from crablangc: character literal may only contain one codepoint
+   = note: `#[warn(crablangdoc::invalid_crablang_codeblocks)]` on by default
+
+warning: 1 warning emitted
+

@@ -1,6 +1,6 @@
 //! Collection types.
 
-#![stable(feature = "rust1", since = "1.0.0")]
+#![stable(feature = "crablang1", since = "1.0.0")]
 
 #[cfg(not(no_global_oom_handling))]
 pub mod binary_heap;
@@ -12,43 +12,43 @@ pub mod linked_list;
 pub mod vec_deque;
 
 #[cfg(not(no_global_oom_handling))]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub mod btree_map {
     //! An ordered map based on a B-Tree.
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub use super::btree::map::*;
 }
 
 #[cfg(not(no_global_oom_handling))]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub mod btree_set {
     //! An ordered set based on a B-Tree.
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub use super::btree::set::*;
 }
 
 #[cfg(not(no_global_oom_handling))]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[doc(no_inline)]
 pub use binary_heap::BinaryHeap;
 
 #[cfg(not(no_global_oom_handling))]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[doc(no_inline)]
 pub use btree_map::BTreeMap;
 
 #[cfg(not(no_global_oom_handling))]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[doc(no_inline)]
 pub use btree_set::BTreeSet;
 
 #[cfg(not(no_global_oom_handling))]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[doc(no_inline)]
 pub use linked_list::LinkedList;
 
 #[cfg(not(no_global_oom_handling))]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[doc(no_inline)]
 pub use vec_deque::VecDeque;
 
@@ -100,7 +100,7 @@ pub enum TryReserveErrorKind {
             reason = "\
             Enable exposing the allocator’s custom error value \
             if an associated type is added in the future: \
-            https://github.com/rust-lang/wg-allocators/issues/23"
+            https://github.com/crablang/wg-allocators/issues/23"
         )]
         non_exhaustive: (),
     },

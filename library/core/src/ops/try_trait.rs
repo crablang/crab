@@ -15,7 +15,7 @@ use crate::ops::ControlFlow;
 ///
 /// # Using `Try` in Generic Code
 ///
-/// `Iterator::try_fold` was stabilized to call back in Rust 1.27, but
+/// `Iterator::try_fold` was stabilized to call back in CrabLang 1.27, but
 /// this trait is much newer.  To illustrate the various associated types and
 /// methods, let's implement our own version.
 ///
@@ -113,7 +113,7 @@ use crate::ops::ControlFlow;
 /// }
 /// ```
 #[unstable(feature = "try_trait_v2", issue = "84277")]
-#[rustc_on_unimplemented(
+#[crablangc_on_unimplemented(
     on(
         all(from_desugaring = "TryBlock"),
         message = "a `try` block must return `Result` or `Option` \
@@ -223,7 +223,7 @@ pub trait Try: ~const FromResidual {
 /// Every `Try` type needs to be recreatable from its own associated
 /// `Residual` type, but can also have additional `FromResidual` implementations
 /// to support interconversion with other `Try` types.
-#[rustc_on_unimplemented(
+#[crablangc_on_unimplemented(
     on(
         all(
             from_desugaring = "QuestionMark",
@@ -303,7 +303,7 @@ pub trait Try: ~const FromResidual {
         parent_label = "this function should return `Result` or `Option` to accept `?`"
     ),
 )]
-#[rustc_diagnostic_item = "FromResidual"]
+#[crablangc_diagnostic_item = "FromResidual"]
 #[unstable(feature = "try_trait_v2", issue = "84277")]
 #[const_trait]
 pub trait FromResidual<R = <Self as Try>::Residual> {

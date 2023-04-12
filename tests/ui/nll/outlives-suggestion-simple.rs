@@ -51,7 +51,7 @@ impl<'a> Baz<'a> {
     }
 }
 
-// source: https://stackoverflow.com/questions/41204134/rust-lifetime-error
+// source: https://stackoverflow.com/questions/41204134/crablang-lifetime-error
 struct Bar2<'a> {
     bar: &'a str,
 }

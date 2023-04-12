@@ -38,7 +38,7 @@ pub struct Unique<T: ?Sized> {
     // for dropck to understand that we logically own a `T`.
     //
     // For details, see:
-    // https://github.com/rust-lang/rfcs/blob/master/text/0769-sound-generic-drop.md#phantom-data
+    // https://github.com/crablang/rfcs/blob/master/text/0769-sound-generic-drop.md#phantom-data
     _marker: PhantomData<T>,
 }
 
@@ -139,7 +139,7 @@ impl<T: ?Sized> Unique<T> {
 }
 
 #[unstable(feature = "ptr_internals", issue = "none")]
-#[rustc_const_unstable(feature = "const_clone", issue = "91805")]
+#[crablangc_const_unstable(feature = "const_clone", issue = "91805")]
 impl<T: ?Sized> const Clone for Unique<T> {
     #[inline]
     fn clone(&self) -> Self {

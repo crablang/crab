@@ -3,40 +3,40 @@
 #![feature(let_chains)]
 #![feature(lint_reasons)]
 #![feature(never_type)]
-#![feature(rustc_private)]
+#![feature(crablangc_private)]
 #![recursion_limit = "512"]
 #![cfg_attr(feature = "deny-warnings", deny(warnings))]
 #![allow(clippy::missing_errors_doc, clippy::missing_panics_doc, clippy::must_use_candidate)]
 // warn on the same lints as `clippy_lints`
 #![warn(trivial_casts, trivial_numeric_casts)]
-// warn on lints, that are included in `rust-lang/rust`s bootstrap
-#![warn(rust_2018_idioms, unused_lifetimes)]
-// warn on rustc internal lints
-#![warn(rustc::internal)]
+// warn on lints, that are included in `crablang/crablang`s bootstrap
+#![warn(crablang_2018_idioms, unused_lifetimes)]
+// warn on crablangc internal lints
+#![warn(crablangc::internal)]
 
 // FIXME: switch to something more ergonomic here, once available.
 // (Currently there is no way to opt into sysroot crates without `extern crate`.)
-extern crate rustc_ast;
-extern crate rustc_ast_pretty;
-extern crate rustc_attr;
-extern crate rustc_data_structures;
-// The `rustc_driver` crate seems to be required in order to use the `rust_ast` crate.
+extern crate crablangc_ast;
+extern crate crablangc_ast_pretty;
+extern crate crablangc_attr;
+extern crate crablangc_data_structures;
+// The `crablangc_driver` crate seems to be required in order to use the `crablang_ast` crate.
 #[allow(unused_extern_crates)]
-extern crate rustc_driver;
-extern crate rustc_errors;
-extern crate rustc_hir;
-extern crate rustc_hir_typeck;
-extern crate rustc_index;
-extern crate rustc_infer;
-extern crate rustc_lexer;
-extern crate rustc_lint;
-extern crate rustc_middle;
-extern crate rustc_mir_dataflow;
-extern crate rustc_parse_format;
-extern crate rustc_session;
-extern crate rustc_span;
-extern crate rustc_target;
-extern crate rustc_trait_selection;
+extern crate crablangc_driver;
+extern crate crablangc_errors;
+extern crate crablangc_hir;
+extern crate crablangc_hir_typeck;
+extern crate crablangc_index;
+extern crate crablangc_infer;
+extern crate crablangc_lexer;
+extern crate crablangc_lint;
+extern crate crablangc_middle;
+extern crate crablangc_mir_dataflow;
+extern crate crablangc_parse_format;
+extern crate crablangc_session;
+extern crate crablangc_span;
+extern crate crablangc_target;
+extern crate crablangc_trait_selection;
 
 #[macro_use]
 pub mod sym_helper;
@@ -77,58 +77,58 @@ use std::sync::OnceLock;
 use std::sync::{Mutex, MutexGuard};
 
 use if_chain::if_chain;
-use rustc_ast::ast::{self, LitKind};
-use rustc_ast::Attribute;
-use rustc_data_structures::fx::FxHashMap;
-use rustc_data_structures::unhash::UnhashMap;
-use rustc_hir::def::{DefKind, Res};
-use rustc_hir::def_id::{CrateNum, DefId, LocalDefId, LOCAL_CRATE};
-use rustc_hir::hir_id::{HirIdMap, HirIdSet};
-use rustc_hir::intravisit::{walk_expr, FnKind, Visitor};
-use rustc_hir::LangItem::{OptionNone, ResultErr, ResultOk};
-use rustc_hir::{
+use crablangc_ast::ast::{self, LitKind};
+use crablangc_ast::Attribute;
+use crablangc_data_structures::fx::FxHashMap;
+use crablangc_data_structures::unhash::UnhashMap;
+use crablangc_hir::def::{DefKind, Res};
+use crablangc_hir::def_id::{CrateNum, DefId, LocalDefId, LOCAL_CRATE};
+use crablangc_hir::hir_id::{HirIdMap, HirIdSet};
+use crablangc_hir::intravisit::{walk_expr, FnKind, Visitor};
+use crablangc_hir::LangItem::{OptionNone, ResultErr, ResultOk};
+use crablangc_hir::{
     self as hir, def, Arm, ArrayLen, BindingAnnotation, Block, BlockCheckMode, Body, Closure, Constness, Destination,
     Expr, ExprKind, FnDecl, HirId, Impl, ImplItem, ImplItemKind, ImplItemRef, IsAsync, Item, ItemKind, LangItem, Local,
     MatchSource, Mutability, Node, OwnerId, Param, Pat, PatKind, Path, PathSegment, PrimTy, QPath, Stmt, StmtKind,
     TraitItem, TraitItemKind, TraitItemRef, TraitRef, TyKind, UnOp,
 };
-use rustc_lexer::{tokenize, TokenKind};
-use rustc_lint::{LateContext, Level, Lint, LintContext};
-use rustc_middle::hir::place::PlaceBase;
-use rustc_middle::ty as rustc_ty;
-use rustc_middle::ty::adjustment::{Adjust, Adjustment, AutoBorrow};
-use rustc_middle::ty::binding::BindingMode;
-use rustc_middle::ty::fast_reject::SimplifiedType::{
+use crablangc_lexer::{tokenize, TokenKind};
+use crablangc_lint::{LateContext, Level, Lint, LintContext};
+use crablangc_middle::hir::place::PlaceBase;
+use crablangc_middle::ty as crablangc_ty;
+use crablangc_middle::ty::adjustment::{Adjust, Adjustment, AutoBorrow};
+use crablangc_middle::ty::binding::BindingMode;
+use crablangc_middle::ty::fast_reject::SimplifiedType::{
     ArraySimplifiedType, BoolSimplifiedType, CharSimplifiedType, FloatSimplifiedType, IntSimplifiedType,
     PtrSimplifiedType, SliceSimplifiedType, StrSimplifiedType, UintSimplifiedType,
 };
-use rustc_middle::ty::{
+use crablangc_middle::ty::{
     layout::IntegerExt, BorrowKind, ClosureKind, Ty, TyCtxt, TypeAndMut, TypeVisitableExt, UpvarCapture,
 };
-use rustc_middle::ty::{FloatTy, IntTy, UintTy};
-use rustc_span::hygiene::{ExpnKind, MacroKind};
-use rustc_span::source_map::SourceMap;
-use rustc_span::sym;
-use rustc_span::symbol::{kw, Ident, Symbol};
-use rustc_span::Span;
-use rustc_target::abi::Integer;
+use crablangc_middle::ty::{FloatTy, IntTy, UintTy};
+use crablangc_span::hygiene::{ExpnKind, MacroKind};
+use crablangc_span::source_map::SourceMap;
+use crablangc_span::sym;
+use crablangc_span::symbol::{kw, Ident, Symbol};
+use crablangc_span::Span;
+use crablangc_target::abi::Integer;
 
 use crate::consts::{constant, Constant};
 use crate::ty::{can_partially_move_ty, expr_sig, is_copy, is_recursively_primitive_type, ty_is_fn_once_param};
 use crate::visitors::for_each_expr;
 
-use rustc_middle::hir::nested_filter;
+use crablangc_middle::hir::nested_filter;
 
 #[macro_export]
 macro_rules! extract_msrv_attr {
     ($context:ident) => {
-        fn enter_lint_attrs(&mut self, cx: &rustc_lint::$context<'_>, attrs: &[rustc_ast::ast::Attribute]) {
-            let sess = rustc_lint::LintContext::sess(cx);
+        fn enter_lint_attrs(&mut self, cx: &crablangc_lint::$context<'_>, attrs: &[crablangc_ast::ast::Attribute]) {
+            let sess = crablangc_lint::LintContext::sess(cx);
             self.msrv.enter_lint_attrs(sess, attrs);
         }
 
-        fn exit_lint_attrs(&mut self, cx: &rustc_lint::$context<'_>, attrs: &[rustc_ast::ast::Attribute]) {
-            let sess = rustc_lint::LintContext::sess(cx);
+        fn exit_lint_attrs(&mut self, cx: &crablangc_lint::$context<'_>, attrs: &[crablangc_ast::ast::Attribute]) {
+            let sess = crablangc_lint::LintContext::sess(cx);
             self.msrv.exit_lint_attrs(sess, attrs);
         }
     };
@@ -190,7 +190,7 @@ pub fn find_binding_init<'tcx>(cx: &LateContext<'tcx>, hir_id: HirId) -> Option<
 ///
 /// # Example
 ///
-/// ```rust,ignore
+/// ```crablang,ignore
 /// if in_constant(cx, expr.hir_id) {
 ///     // Do something
 /// }
@@ -382,11 +382,11 @@ pub fn qpath_generic_tys<'tcx>(qpath: &QPath<'tcx>) -> impl Iterator<Item = &'tc
 ///
 /// Matches a `QPath` against a slice of segment string literals.
 ///
-/// There is also `match_path` if you are dealing with a `rustc_hir::Path` instead of a
-/// `rustc_hir::QPath`.
+/// There is also `match_path` if you are dealing with a `crablangc_hir::Path` instead of a
+/// `crablangc_hir::QPath`.
 ///
 /// # Examples
-/// ```rust,ignore
+/// ```crablang,ignore
 /// match_qpath(path, &["std", "rt", "begin_unwind"])
 /// ```
 pub fn match_qpath(path: &QPath<'_>, segments: &[&str]) -> bool {
@@ -436,18 +436,18 @@ pub fn is_path_diagnostic_item<'tcx>(
 ///
 /// Matches a `Path` against a slice of segment string literals.
 ///
-/// There is also `match_qpath` if you are dealing with a `rustc_hir::QPath` instead of a
-/// `rustc_hir::Path`.
+/// There is also `match_qpath` if you are dealing with a `crablangc_hir::QPath` instead of a
+/// `crablangc_hir::Path`.
 ///
 /// # Examples
 ///
-/// ```rust,ignore
+/// ```crablang,ignore
 /// if match_path(&trait_ref.path, &paths::HASH) {
 ///     // This is the `std::hash::Hash` trait.
 /// }
 ///
-/// if match_path(ty_path, &["rustc", "lint", "Lint"]) {
-///     // This is a `rustc_middle::lint::Lint`.
+/// if match_path(ty_path, &["crablangc", "lint", "Lint"]) {
+///     // This is a `crablangc_middle::lint::Lint`.
 /// }
 /// ```
 pub fn match_path(path: &Path<'_>, segments: &[&str]) -> bool {
@@ -518,7 +518,7 @@ fn find_primitive_impls<'tcx>(tcx: TyCtxt<'tcx>, name: &str) -> impl Iterator<It
         "str" => StrSimplifiedType,
         "array" => ArraySimplifiedType,
         "slice" => SliceSimplifiedType,
-        // FIXME: rustdoc documents these two using just `pointer`.
+        // FIXME: crablangdoc documents these two using just `pointer`.
         //
         // Maybe this is something we should do here too.
         "const_ptr" => PtrSimplifiedType(Mutability::Not),
@@ -699,7 +699,7 @@ pub fn get_trait_def_id(cx: &LateContext<'_>, path: &[&str]) -> Option<DefId> {
 ///
 /// Use this if you want to find the `TraitRef` of the `Add` trait in this example:
 ///
-/// ```rust
+/// ```crablang
 /// struct Point(isize, isize);
 ///
 /// impl std::ops::Add for Point {
@@ -858,7 +858,7 @@ pub fn is_default_equivalent(cx: &LateContext<'_>, e: &Expr<'_>) -> bool {
         ExprKind::Call(repl_func, []) => is_default_equivalent_call(cx, repl_func),
         ExprKind::Call(from_func, [ref arg]) => is_default_equivalent_from(cx, from_func, arg),
         ExprKind::Path(qpath) => is_res_lang_ctor(cx, cx.qpath_res(qpath, e.hir_id), OptionNone),
-        ExprKind::AddrOf(rustc_hir::BorrowKind::Ref, _, expr) => matches!(expr.kind, ExprKind::Array([])),
+        ExprKind::AddrOf(crablangc_hir::BorrowKind::Ref, _, expr) => matches!(expr.kind, ExprKind::Array([])),
         _ => false,
     }
 }
@@ -1032,7 +1032,7 @@ pub fn capture_local_usage(cx: &LateContext<'_>, e: &Expr<'_>) -> CaptureKind {
             .get(child_id)
             .map_or(&[][..], |x| &**x)
         {
-            if let rustc_ty::RawPtr(TypeAndMut { mutbl: mutability, .. }) | rustc_ty::Ref(_, _, mutability) =
+            if let crablangc_ty::RawPtr(TypeAndMut { mutbl: mutability, .. }) | crablangc_ty::Ref(_, _, mutability) =
                 *adjust.last().map_or(target, |a| a.target).kind()
             {
                 return CaptureKind::Ref(mutability);
@@ -1349,7 +1349,7 @@ pub fn get_enclosing_loop_or_multi_call_closure<'tcx>(
         match node {
             Node::Expr(e) => match e.kind {
                 ExprKind::Closure { .. } => {
-                    if let rustc_ty::Closure(_, subs) = cx.typeck_results().expr_ty(e).kind()
+                    if let crablangc_ty::Closure(_, subs) = cx.typeck_results().expr_ty(e).kind()
                         && subs.as_closure().kind() == ClosureKind::FnOnce
                     {
                         continue;
@@ -1517,9 +1517,9 @@ pub fn is_integer_literal(expr: &Expr<'_>, value: u128) -> bool {
 /// Returns `true` if the given `Expr` has been coerced before.
 ///
 /// Examples of coercions can be found in the Nomicon at
-/// <https://doc.rust-lang.org/nomicon/coercions.html>.
+/// <https://doc.crablang.org/nomicon/coercions.html>.
 ///
-/// See `rustc_middle::ty::adjustment::Adjustment` and `rustc_hir_analysis::check::coercion` for
+/// See `crablangc_middle::ty::adjustment::Adjustment` and `crablangc_hir_analysis::check::coercion` for
 /// more information on adjustments and coercions.
 pub fn is_adjusted(cx: &LateContext<'_>, e: &Expr<'_>) -> bool {
     cx.typeck_results().adjustments().get(e.hir_id).is_some()
@@ -1551,7 +1551,7 @@ pub fn is_expn_of(mut span: Span, name: &str) -> Option<Span> {
 /// Returns the pre-expansion span if the span directly comes from an expansion
 /// of the macro `name`.
 /// The difference with [`is_expn_of`] is that in
-/// ```rust
+/// ```crablang
 /// # macro_rules! foo { ($name:tt!$args:tt) => { $name!$args } }
 /// # macro_rules! bar { ($e:expr) => { $e } }
 /// foo!(bar!(42));
@@ -1602,7 +1602,7 @@ pub fn is_ctor_or_promotable_const_function(cx: &LateContext<'_>, expr: &Expr<'_
 }
 
 /// Returns `true` if a pattern is refutable.
-// TODO: should be implemented using rustc/mir_build/thir machinery
+// TODO: should be implemented using crablangc/mir_build/thir machinery
 pub fn is_refutable(cx: &LateContext<'_>, pat: &Pat<'_>) -> bool {
     fn is_enum_variant(cx: &LateContext<'_>, qpath: &QPath<'_>, id: HirId) -> bool {
         matches!(
@@ -1632,11 +1632,11 @@ pub fn is_refutable(cx: &LateContext<'_>, pat: &Pat<'_>) -> bool {
         PatKind::TupleStruct(ref qpath, pats, _) => is_enum_variant(cx, qpath, pat.hir_id) || are_refutable(cx, pats),
         PatKind::Slice(head, middle, tail) => {
             match &cx.typeck_results().node_type(pat.hir_id).kind() {
-                rustc_ty::Slice(..) => {
+                crablangc_ty::Slice(..) => {
                     // [..] is the only irrefutable slice pattern.
                     !head.is_empty() || middle.is_none() || !tail.is_empty()
                 },
-                rustc_ty::Array(..) => are_refutable(cx, head.iter().chain(middle).chain(tail.iter())),
+                crablangc_ty::Array(..) => are_refutable(cx, head.iter().chain(middle).chain(tail.iter())),
                 _ => {
                     // unreachable!()
                     true
@@ -1740,26 +1740,26 @@ pub fn strip_pat_refs<'hir>(mut pat: &'hir Pat<'hir>) -> &'hir Pat<'hir> {
     pat
 }
 
-pub fn int_bits(tcx: TyCtxt<'_>, ity: rustc_ty::IntTy) -> u64 {
+pub fn int_bits(tcx: TyCtxt<'_>, ity: crablangc_ty::IntTy) -> u64 {
     Integer::from_int_ty(&tcx, ity).size().bits()
 }
 
 #[expect(clippy::cast_possible_wrap)]
 /// Turn a constant int byte representation into an i128
-pub fn sext(tcx: TyCtxt<'_>, u: u128, ity: rustc_ty::IntTy) -> i128 {
+pub fn sext(tcx: TyCtxt<'_>, u: u128, ity: crablangc_ty::IntTy) -> i128 {
     let amt = 128 - int_bits(tcx, ity);
     ((u as i128) << amt) >> amt
 }
 
 #[expect(clippy::cast_sign_loss)]
 /// clip unused bytes
-pub fn unsext(tcx: TyCtxt<'_>, u: i128, ity: rustc_ty::IntTy) -> u128 {
+pub fn unsext(tcx: TyCtxt<'_>, u: i128, ity: crablangc_ty::IntTy) -> u128 {
     let amt = 128 - int_bits(tcx, ity);
     ((u as u128) << amt) >> amt
 }
 
 /// clip unused bytes
-pub fn clip(tcx: TyCtxt<'_>, u: u128, ity: rustc_ty::UintTy) -> u128 {
+pub fn clip(tcx: TyCtxt<'_>, u: u128, ity: crablangc_ty::UintTy) -> u128 {
     let bits = Integer::from_uint_ty(&tcx, ity).size().bits();
     let amt = 128 - bits;
     (u << amt) >> amt
@@ -1796,7 +1796,7 @@ pub fn any_parent_is_automatically_derived(tcx: TyCtxt<'_>, node: HirId) -> bool
 ///
 /// Usage:
 ///
-/// ```rust,ignore
+/// ```crablang,ignore
 /// if let Some(args) = match_function_call(cx, cmp_max_call, &paths::CMP_MAX);
 /// ```
 /// This function is deprecated. Use [`match_function_call_with_def_id`].
@@ -1964,10 +1964,10 @@ pub fn is_expr_identity_function(cx: &LateContext<'_>, expr: &Expr<'_>) -> bool 
         let mut expr = func.value;
         loop {
             match expr.kind {
-                #[rustfmt::skip]
+                #[crablangfmt::skip]
                 ExprKind::Block(&Block { stmts: [], expr: Some(e), .. }, _, )
                 | ExprKind::Ret(Some(e)) => expr = e,
-                #[rustfmt::skip]
+                #[crablangfmt::skip]
                 ExprKind::Block(&Block { stmts: [stmt], expr: None, .. }, _) => {
                     if_chain! {
                         if let StmtKind::Semi(e) | StmtKind::Expr(e) = stmt.kind;
@@ -2070,7 +2070,7 @@ pub fn is_no_core_crate(cx: &LateContext<'_>) -> bool {
 
 /// Check if parent of a hir node is a trait implementation block.
 /// For example, `f` in
-/// ```rust
+/// ```crablang
 /// # struct S;
 /// # trait Trait { fn f(); }
 /// impl Trait for S {
@@ -2095,7 +2095,7 @@ pub fn is_trait_impl_item(cx: &LateContext<'_>, hir_id: HirId) -> bool {
 /// }
 /// ```
 pub fn fn_has_unsatisfiable_preds(cx: &LateContext<'_>, did: DefId) -> bool {
-    use rustc_trait_selection::traits;
+    use crablangc_trait_selection::traits;
     let predicates = cx
         .tcx
         .predicates_of(did)
@@ -2142,9 +2142,9 @@ pub fn is_slice_of_primitives(cx: &LateContext<'_>, expr: &Expr<'_>) -> Option<S
     let expr_type = cx.typeck_results().expr_ty_adjusted(expr);
     let expr_kind = expr_type.kind();
     let is_primitive = match expr_kind {
-        rustc_ty::Slice(element_type) => is_recursively_primitive_type(*element_type),
-        rustc_ty::Ref(_, inner_ty, _) if matches!(inner_ty.kind(), &rustc_ty::Slice(_)) => {
-            if let rustc_ty::Slice(element_type) = inner_ty.kind() {
+        crablangc_ty::Slice(element_type) => is_recursively_primitive_type(*element_type),
+        crablangc_ty::Ref(_, inner_ty, _) if matches!(inner_ty.kind(), &crablangc_ty::Slice(_)) => {
+            if let crablangc_ty::Slice(element_type) = inner_ty.kind() {
                 is_recursively_primitive_type(*element_type)
             } else {
                 unreachable!()
@@ -2157,9 +2157,9 @@ pub fn is_slice_of_primitives(cx: &LateContext<'_>, expr: &Expr<'_>) -> Option<S
         // if we have wrappers like Array, Slice or Tuple, print these
         // and get the type enclosed in the slice ref
         match expr_type.peel_refs().walk().nth(1).unwrap().expect_ty().kind() {
-            rustc_ty::Slice(..) => return Some("slice".into()),
-            rustc_ty::Array(..) => return Some("array".into()),
-            rustc_ty::Tuple(..) => return Some("tuple".into()),
+            crablangc_ty::Slice(..) => return Some("slice".into()),
+            crablangc_ty::Array(..) => return Some("array".into()),
+            crablangc_ty::Tuple(..) => return Some("tuple".into()),
             _ => {
                 // is_recursively_primitive_type() should have taken care
                 // of the rest and we can rely on the type that is found
@@ -2330,7 +2330,7 @@ fn with_test_item_names(tcx: TyCtxt<'_>, module: LocalDefId, f: impl Fn(&[Symbol
                                 .hir()
                                 .attrs(item.hir_id())
                                 .iter()
-                                .any(|a| a.has_name(sym::rustc_test_marker));
+                                .any(|a| a.has_name(sym::crablangc_test_marker));
                             if has_test_marker {
                                 names.push(item.ident.name);
                             }

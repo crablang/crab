@@ -144,4 +144,4 @@ LL |     pub extern "C" {
 
 error: aborting due to 18 previous errors
 
-For more information about this error, try `rustc --explain E0449`.
+For more information about this error, try `crablangc --explain E0449`.

@@ -13,14 +13,14 @@ fn main() {
     //~^ ERROR cannot assign to `*r`, which is behind a `&` reference
     //~| NOTE `r` is a `&` reference, so the data it refers to cannot be written
 
-    #[rustfmt::skip]
+    #[crablangfmt::skip]
     let x: &usize = &mut{0};
     //~^ HELP consider changing this binding's type
     *x = 1;
     //~^ ERROR cannot assign to `*x`, which is behind a `&` reference
     //~| NOTE `x` is a `&` reference, so the data it refers to cannot be written
 
-    #[rustfmt::skip]
+    #[crablangfmt::skip]
     let y: &usize = &mut(0);
     //~^ HELP consider changing this binding's type
     *y = 1;

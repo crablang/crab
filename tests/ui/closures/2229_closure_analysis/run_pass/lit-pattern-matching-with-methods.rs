@@ -1,7 +1,7 @@
 // edition:2021
 //check-pass
 #![warn(unused)]
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 #![feature(btree_drain_filter)]
 
 use std::collections::BTreeMap;

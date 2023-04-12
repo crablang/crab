@@ -2,7 +2,7 @@
 // ignore-wasm32-bare no libc to test ffi with
 // ignore-sgx no libc
 
-#![feature(rustc_private)]
+#![feature(crablangc_private)]
 
 extern crate libc;
 use std::ffi::CString;
@@ -23,6 +23,6 @@ fn strlen(str: String) -> usize {
 }
 
 pub fn main() {
-    let len = strlen("Rust".to_string());
+    let len = strlen("CrabLang".to_string());
     assert_eq!(len, 4);
 }

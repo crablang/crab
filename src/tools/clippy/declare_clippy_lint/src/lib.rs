@@ -1,7 +1,7 @@
 #![feature(let_chains)]
 #![cfg_attr(feature = "deny-warnings", deny(warnings))]
-// warn on lints, that are included in `rust-lang/rust`s bootstrap
-#![warn(rust_2018_idioms, unused_lifetimes)]
+// warn on lints, that are included in `crablang/crablang`s bootstrap
+#![warn(crablang_2018_idioms, unused_lifetimes)]
 
 use proc_macro::TokenStream;
 use quote::{format_ident, quote};
@@ -95,7 +95,7 @@ impl Parse for ClippyLint {
 /// # Example
 ///
 /// ```
-/// use rustc_session::declare_tool_lint;
+/// use crablangc_session::declare_tool_lint;
 ///
 /// declare_clippy_lint! {
 ///     /// ### What it does
@@ -105,12 +105,12 @@ impl Parse for ClippyLint {
 ///     /// Supply the reason for linting the code.
 ///     ///
 ///     /// ### Example
-///     /// ```rust
+///     /// ```crablang
 ///     /// Insert a short example of code that triggers the lint
 ///     /// ```
 ///     ///
 ///     /// Use instead:
-///     /// ```rust
+///     /// ```crablang
 ///     /// Insert a short example of improved code that doesn't trigger the lint
 ///     /// ```
 ///     #[clippy::version = "1.65.0"]
@@ -119,7 +119,7 @@ impl Parse for ClippyLint {
 ///     "description"
 /// }
 /// ```
-/// [lint_naming]: https://rust-lang.github.io/rfcs/0344-conventions-galore.html#lints
+/// [lint_naming]: https://crablang.github.io/rfcs/0344-conventions-galore.html#lints
 #[proc_macro]
 pub fn declare_clippy_lint(input: TokenStream) -> TokenStream {
     let ClippyLint {

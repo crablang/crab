@@ -36,4 +36,4 @@ LL |     assert_eq!(<() as Tr>::B, 0);    // causes the error above
 
 error: aborting due to previous error
 
-For more information about this error, try `rustc --explain E0080`.
+For more information about this error, try `crablangc --explain E0080`.

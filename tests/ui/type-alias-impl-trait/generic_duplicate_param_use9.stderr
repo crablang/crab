@@ -59,4 +59,4 @@ LL | type Two<A, B: std::fmt::Debug> = impl Debug;
 
 error: aborting due to 5 previous errors
 
-For more information about this error, try `rustc --explain E0277`.
+For more information about this error, try `crablangc --explain E0277`.

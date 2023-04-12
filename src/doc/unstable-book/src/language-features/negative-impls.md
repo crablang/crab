@@ -2,13 +2,13 @@
 
 The tracking issue for this feature is [#68318].
 
-[#68318]: https://github.com/rust-lang/rust/issues/68318
+[#68318]: https://github.com/crablang/crablang/issues/68318
 
 ----
 
 With the feature gate `negative_impls`, you can write negative impls as well as positive ones:
 
-```rust
+```crablang
 #![feature(negative_impls)]
 trait DerefMut { }
 impl<T: ?Sized> !DerefMut for &T { }
@@ -49,7 +49,7 @@ marker type is `!AutoTrait`.
 
 ## Immediate uses
 
-Negative impls are used to declare that `&T: !DerefMut`  and `&mut T: !Clone`, as required to fix the soundness of `Pin` described in [#66544](https://github.com/rust-lang/rust/issues/66544).
+Negative impls are used to declare that `&T: !DerefMut`  and `&mut T: !Clone`, as required to fix the soundness of `Pin` described in [#66544](https://github.com/crablang/crablang/issues/66544).
 
 This serves two purposes:
 

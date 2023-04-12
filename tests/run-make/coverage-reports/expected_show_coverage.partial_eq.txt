@@ -30,7 +30,7 @@
    29|       |
    30|       |This test verifies a bug was fixed that otherwise generated this error:
    31|       |
-   32|       |thread 'rustc' panicked at 'No counters provided the source_hash for function:
+   32|       |thread 'crablangc' panicked at 'No counters provided the source_hash for function:
    33|       |    Instance {
    34|       |        def: Item(WithOptConstParam {
    35|       |            did: DefId(0:101 ~ autocfg[c44a]::version::{impl#2}::partial_cmp),

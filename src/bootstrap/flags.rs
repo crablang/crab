@@ -1,4 +1,4 @@
-//! Command-line interface of the rustbuild build system.
+//! Command-line interface of the crablangbuild build system.
 //!
 //! This module implements the command-line parsing of the build system which
 //! has various flags to configure how it's run.
@@ -56,7 +56,7 @@ pub struct Flags {
     pub incremental: bool,
     pub exclude: Vec<PathBuf>,
     pub include_default_paths: bool,
-    pub rustc_error_format: Option<String>,
+    pub crablangc_error_format: Option<String>,
     pub json_output: bool,
     pub dry_run: bool,
     pub color: Color,
@@ -67,8 +67,8 @@ pub struct Flags {
     // true => deny, false => warn
     pub deny_warnings: Option<bool>,
 
-    pub rust_profile_use: Option<String>,
-    pub rust_profile_generate: Option<String>,
+    pub crablang_profile_use: Option<String>,
+    pub crablang_profile_generate: Option<String>,
 
     pub llvm_profile_use: Option<String>,
     // LLVM doesn't support a custom location for generating profile
@@ -122,10 +122,10 @@ pub enum Subcommand {
         pass: Option<String>,
         run: Option<String>,
         test_args: Vec<String>,
-        rustc_args: Vec<String>,
+        crablangc_args: Vec<String>,
         fail_fast: bool,
         doc_tests: DocTests,
-        rustfix_coverage: bool,
+        crablangfix_coverage: bool,
         only_modified: bool,
     },
     Bench {
@@ -172,9 +172,9 @@ Usage: x.py <subcommand> [options] [<paths>...]
 Subcommands:
     build, b    Compile either the compiler or libraries
     check, c    Compile either the compiler or libraries, using cargo check
-    clippy      Run clippy (uses rustup/cargo-installed clippy binary)
+    clippy      Run clippy (uses crablangup/cargo-installed clippy binary)
     fix         Run cargo fix
-    fmt         Run rustfmt
+    fmt         Run crablangfmt
     test, t     Build and run some test suites
     bench       Build and run some benchmarks
     doc, d      Build documentation
@@ -213,7 +213,7 @@ To learn more about a subcommand, run `./x.py <subcommand> -h`",
             "",
             "stage",
             "stage to build (indicates compiler to use/test, e.g., stage 0 uses the \
-             bootstrap compiler, stage 1 the stage 0 rustc artifacts, etc.)",
+             bootstrap compiler, stage 1 the stage 0 crablangc artifacts, etc.)",
             "N",
         );
         opts.optmulti(
@@ -230,7 +230,7 @@ To learn more about a subcommand, run `./x.py <subcommand> -h`",
             (pass multiple times to keep e.g., both stages 0 and 1)",
             "N",
         );
-        opts.optopt("", "src", "path to the root of the rust checkout", "DIR");
+        opts.optopt("", "src", "path to the root of the crablang checkout", "DIR");
         let j_msg = format!(
             "number of jobs to run in parallel; \
              defaults to {} (this host's logical CPU count)",
@@ -244,17 +244,17 @@ To learn more about a subcommand, run `./x.py <subcommand> -h`",
             "if value is deny, will deny warnings, otherwise use default",
             "VALUE",
         );
-        opts.optopt("", "error-format", "rustc error format", "FORMAT");
+        opts.optopt("", "error-format", "crablangc error format", "FORMAT");
         opts.optflag("", "json-output", "use message-format=json");
-        opts.optopt("", "color", "whether to use color in cargo and rustc output", "STYLE");
+        opts.optopt("", "color", "whether to use color in cargo and crablangc output", "STYLE");
         opts.optopt(
             "",
-            "rust-profile-generate",
-            "generate PGO profile with rustc build",
+            "crablang-profile-generate",
+            "generate PGO profile with crablangc build",
             "PROFILE",
         );
-        opts.optopt("", "rust-profile-use", "use PGO profile for rustc build", "PROFILE");
-        opts.optflag("", "llvm-profile-generate", "generate PGO profile with llvm built for rustc");
+        opts.optopt("", "crablang-profile-use", "use PGO profile for crablangc build", "PROFILE");
+        opts.optflag("", "llvm-profile-generate", "generate PGO profile with llvm built for crablangc");
         opts.optopt("", "llvm-profile-use", "use PGO profile for llvm build", "PROFILE");
         opts.optmulti("A", "", "allow certain clippy lints", "OPT");
         opts.optmulti("D", "", "deny certain clippy lints", "OPT");
@@ -289,12 +289,12 @@ To learn more about a subcommand, run `./x.py <subcommand> -h`",
                     "",
                     "test-args",
                     "extra arguments to be passed for the test tool being used \
-                        (e.g. libtest, compiletest or rustdoc)",
+                        (e.g. libtest, compiletest or crablangdoc)",
                     "ARGS",
                 );
                 opts.optmulti(
                     "",
-                    "rustc-args",
+                    "crablangc-args",
                     "extra options to pass the compiler when running tests",
                     "ARGS",
                 );
@@ -318,9 +318,9 @@ To learn more about a subcommand, run `./x.py <subcommand> -h`",
                 opts.optopt("", "run", "whether to execute run-* tests", "auto | always | never");
                 opts.optflag(
                     "",
-                    "rustfix-coverage",
-                    "enable this to generate a Rustfix coverage file, which is saved in \
-                        `/<build_base>/rustfix_missing_coverage.txt`",
+                    "crablangfix-coverage",
+                    "enable this to generate a CrabLangfix coverage file, which is saved in \
+                        `/<build_base>/crablangfix_missing_coverage.txt`",
                 );
             }
             Kind::Check => {
@@ -495,7 +495,7 @@ Arguments:
         ./x.py test tests/ui --bless
         ./x.py test tests/ui --compare-mode chalk
 
-    Note that `test tests/* --stage N` does NOT depend on `build compiler/rustc --stage N`;
+    Note that `test tests/* --stage N` does NOT depend on `build compiler/crablangc --stage N`;
     just like `build library/std --stage N` it tests the compiler produced by the previous
     stage.
 
@@ -604,9 +604,9 @@ Arguments:
                 pass: matches.opt_str("pass"),
                 run: matches.opt_str("run"),
                 test_args: matches.opt_strs("test-args"),
-                rustc_args: matches.opt_strs("rustc-args"),
+                crablangc_args: matches.opt_strs("crablangc-args"),
                 fail_fast: !matches.opt_present("no-fail-fast"),
-                rustfix_coverage: matches.opt_present("rustfix-coverage"),
+                crablangfix_coverage: matches.opt_present("crablangfix-coverage"),
                 only_modified: matches.opt_present("only-modified"),
                 doc_tests: if matches.opt_present("doc") {
                     DocTests::Only
@@ -661,7 +661,7 @@ Arguments:
             stage: matches.opt_str("stage").map(|j| j.parse().expect("`stage` should be a number")),
             dry_run: matches.opt_present("dry-run"),
             on_fail: matches.opt_str("on-fail"),
-            rustc_error_format: matches.opt_str("error-format"),
+            crablangc_error_format: matches.opt_str("error-format"),
             json_output: matches.opt_present("json-output"),
             keep_stage: matches
                 .opt_strs("keep-stage")
@@ -707,8 +707,8 @@ Arguments:
             color: matches
                 .opt_get_default("color", Color::Auto)
                 .expect("`color` should be `always`, `never`, or `auto`"),
-            rust_profile_use: matches.opt_str("rust-profile-use"),
-            rust_profile_generate: matches.opt_str("rust-profile-generate"),
+            crablang_profile_use: matches.opt_str("crablang-profile-use"),
+            crablang_profile_generate: matches.opt_str("crablang-profile-generate"),
             llvm_profile_use: matches.opt_str("llvm-profile-use"),
             llvm_profile_generate: matches.opt_present("llvm-profile-generate"),
             llvm_bolt_profile_generate: matches.opt_present("llvm-bolt-profile-generate"),
@@ -746,10 +746,10 @@ impl Subcommand {
         }
     }
 
-    pub fn rustc_args(&self) -> Vec<&str> {
+    pub fn crablangc_args(&self) -> Vec<&str> {
         match *self {
-            Subcommand::Test { ref rustc_args, .. } => {
-                rustc_args.iter().flat_map(|s| s.split_whitespace()).collect()
+            Subcommand::Test { ref crablangc_args, .. } => {
+                crablangc_args.iter().flat_map(|s| s.split_whitespace()).collect()
             }
             _ => vec![],
         }
@@ -799,9 +799,9 @@ impl Subcommand {
         }
     }
 
-    pub fn rustfix_coverage(&self) -> bool {
+    pub fn crablangfix_coverage(&self) -> bool {
         match *self {
-            Subcommand::Test { rustfix_coverage, .. } => rustfix_coverage,
+            Subcommand::Test { crablangfix_coverage, .. } => crablangfix_coverage,
             _ => false,
         }
     }

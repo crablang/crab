@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 
 fn _f0(&_a: u32) {} //~ ERROR mismatched types
 fn _f1(&mut _a: u32) {} //~ ERROR mismatched types

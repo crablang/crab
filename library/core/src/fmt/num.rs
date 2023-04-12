@@ -149,7 +149,7 @@ radix! { UpperHex, 16, "0x", x @  0 ..=  9 => b'0' + x, x @ 10 ..= 15 => b'A' + 
 
 macro_rules! int_base {
     (fmt::$Trait:ident for $T:ident as $U:ident -> $Radix:ident) => {
-        #[stable(feature = "rust1", since = "1.0.0")]
+        #[stable(feature = "crablang1", since = "1.0.0")]
         impl fmt::$Trait for $T {
             fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
                 $Radix.fmt_int(*self as $U, f)
@@ -179,7 +179,7 @@ integer! { i64, u64 }
 integer! { i128, u128 }
 macro_rules! debug {
     ($($T:ident)*) => {$(
-        #[stable(feature = "rust1", since = "1.0.0")]
+        #[stable(feature = "crablang1", since = "1.0.0")]
         impl fmt::Debug for $T {
             #[inline]
             fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
@@ -273,7 +273,7 @@ macro_rules! impl_Display {
             f.pad_integral(is_nonnegative, "", buf_slice)
         }
 
-        $(#[stable(feature = "rust1", since = "1.0.0")]
+        $(#[stable(feature = "crablang1", since = "1.0.0")]
         impl fmt::Display for $t {
             #[allow(unused_comparisons)]
             fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
@@ -565,14 +565,14 @@ fn parse_u64_into<const N: usize>(mut n: u64, buf: &mut [MaybeUninit<u8>; N], cu
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl fmt::Display for u128 {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         fmt_u128(*self, true, f)
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl fmt::Display for i128 {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let is_nonnegative = *self >= 0;

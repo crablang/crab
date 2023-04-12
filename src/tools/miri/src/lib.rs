@@ -1,4 +1,4 @@
-#![feature(rustc_private)]
+#![feature(crablangc_private)]
 #![feature(map_try_insert)]
 #![feature(never_type)]
 #![feature(try_blocks)]
@@ -30,35 +30,35 @@
     clippy::bool_to_int_with_if,
     clippy::box_default,
     // We are not implementing queries here so it's fine
-    rustc::potential_query_instability
+    crablangc::potential_query_instability
 )]
 #![warn(
-    rust_2018_idioms,
+    crablang_2018_idioms,
     clippy::cast_possible_wrap, // unsigned -> signed
     clippy::cast_sign_loss, // signed -> unsigned
     clippy::cast_lossless,
     clippy::cast_possible_truncation,
 )]
-// Needed for rustdoc from bootstrap (with `-Znormalize-docs`).
+// Needed for crablangdoc from bootstrap (with `-Znormalize-docs`).
 #![recursion_limit = "256"]
 
-extern crate rustc_apfloat;
-extern crate rustc_ast;
+extern crate crablangc_apfloat;
+extern crate crablangc_ast;
 #[macro_use]
-extern crate rustc_middle;
-extern crate rustc_const_eval;
-extern crate rustc_data_structures;
-extern crate rustc_errors;
-extern crate rustc_hir;
-extern crate rustc_index;
-extern crate rustc_session;
-extern crate rustc_span;
-extern crate rustc_target;
+extern crate crablangc_middle;
+extern crate crablangc_const_eval;
+extern crate crablangc_data_structures;
+extern crate crablangc_errors;
+extern crate crablangc_hir;
+extern crate crablangc_index;
+extern crate crablangc_session;
+extern crate crablangc_span;
+extern crate crablangc_target;
 
-// Necessary to pull in object code as the rest of the rustc crates are shipped only as rmeta
+// Necessary to pull in object code as the rest of the crablangc crates are shipped only as rmeta
 // files.
 #[allow(unused_extern_crates)]
-extern crate rustc_driver;
+extern crate crablangc_driver;
 
 mod borrow_tracker;
 mod clock;
@@ -77,9 +77,9 @@ mod tag_gc;
 // Establish a "crate-wide prelude": we often import `crate::*`.
 
 // Make all those symbols available in the same place as our own.
-pub use rustc_const_eval::interpret::*;
+pub use crablangc_const_eval::interpret::*;
 // Resolve ambiguity.
-pub use rustc_const_eval::interpret::{self, AllocMap, PlaceTy, Provenance as _};
+pub use crablangc_const_eval::interpret::{self, AllocMap, PlaceTy, Provenance as _};
 
 pub use crate::shims::dlsym::{Dlsym, EvalContextExt as _};
 pub use crate::shims::env::{EnvVars, EvalContextExt as _};
@@ -122,7 +122,7 @@ pub use crate::operator::EvalContextExt as _;
 pub use crate::range_map::RangeMap;
 pub use crate::tag_gc::{EvalContextExt as _, VisitTags};
 
-/// Insert rustc arguments at the beginning of the argument list that Miri wants to be
+/// Insert crablangc arguments at the beginning of the argument list that Miri wants to be
 /// set per default, for maximal validation power.
 /// Also disable the MIR pass that inserts an alignment check on every pointer dereference. Miri
 /// does that too, and with a better error message.

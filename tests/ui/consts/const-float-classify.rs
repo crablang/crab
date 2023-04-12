@@ -58,7 +58,7 @@ impl const PartialEq<NonDet> for bool {
 
 // The result of the `is_sign` methods are not checked for correctness, since LLVM does not
 // guarantee anything about the signedness of NaNs. See
-// https://github.com/rust-lang/rust/issues/55131.
+// https://github.com/crablang/crablang/issues/55131.
 
 suite! {
                    [is_nan, is_infinite, is_finite, is_normal, is_sign_positive, is_sign_negative]

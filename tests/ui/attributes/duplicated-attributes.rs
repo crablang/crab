@@ -1,6 +1,6 @@
 // Test that, if an item is annotated with a builtin attribute more than once, a warning is
 // emitted.
-// Tests https://github.com/rust-lang/rust/issues/90979
+// Tests https://github.com/crablang/crablang/issues/90979
 
 // check-pass
 // compile-flags: --test

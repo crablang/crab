@@ -6,8 +6,8 @@ Files-Excluded:
 
 # Note that we're explicitly listing the individual files at the root of the
 # repository rather than just having `Files: *`. This is explicitly done to
-# help downstream forks of the Rust compiler: this way, the files they add
-# won't be automatically marked as authored by the Rust project.
+# help downstream forks of the CrabLang compiler: this way, the files they add
+# won't be automatically marked as authored by the CrabLang project.
 Files: compiler/*
        library/*
        tests/*
@@ -24,7 +24,7 @@ Files: compiler/*
        LICENSE-MIT
        README.md
        RELEASES.md
-       rustfmt.toml
+       crablangfmt.toml
        triagebot.toml
        x
        x.ps1
@@ -35,22 +35,22 @@ Files: compiler/*
        .gitignore
        .gitmodules
        .mailmap
-Copyright: The Rust Project Developers (see https://thanks.rust-lang.org)
+Copyright: The CrabLang Project Developers (see https://thanks.crablang.org)
 License: MIT or Apache-2.0
 
-Files: compiler/rustc_apfloat/*
+Files: compiler/crablangc_apfloat/*
 Copyright: LLVM APFloat authors
-           The Rust Project Developers (see https://thanks.rust-lang.org)
+           The CrabLang Project Developers (see https://thanks.crablang.org)
 License: NCSA AND (MIT OR Apache-2.0)
 
-Files: compiler/rustc_codegen_cranelift/src/cranelift_native.rs
+Files: compiler/crablangc_codegen_cranelift/src/cranelift_native.rs
 Copyright: The Cranelift Project Developers
-           The Rust Project Developers (see https://thanks.rust-lang.org)
+           The CrabLang Project Developers (see https://thanks.crablang.org)
 License: Apache-2.0 WITH LLVM-exception AND (Apache-2.0 OR MIT)
 
-Files: compiler/rustc_llvm/llvm-wrapper/SymbolWrapper.cpp
+Files: compiler/crablangc_llvm/llvm-wrapper/SymbolWrapper.cpp
 Copyright: LLVM authors
-           The Rust Project Developers (see https://thanks.rust-lang.org)
+           The CrabLang Project Developers (see https://thanks.crablang.org)
 License: Apache-2.0 WITH LLVM-exception AND (Apache-2.0 OR MIT)
 
 Files: library/core/src/unicode/unicode_data.rs
@@ -59,41 +59,41 @@ License: Unicode-DFS-2016
 
 Files: library/std/src/sync/mpmc/*
 Copyright: 2019 The Crossbeam Project Developers
-           The Rust Project Developers (see https://thanks.rust-lang.org)
+           The CrabLang Project Developers (see https://thanks.crablang.org)
 License: MIT OR Apache-2.0
 
 Files: library/std/src/sys/unix/locks/fuchsia_mutex.rs
 Copyright: 2016 The Fuchsia Authors
-           The Rust Project Developers (see https://thanks.rust-lang.org)
+           The CrabLang Project Developers (see https://thanks.crablang.org)
 License: BSD-2-Clause AND (MIT OR Apache-2.0)
 
-Files: src/test/rustdoc/auxiliary/enum-primitive.rs
+Files: src/test/crablangdoc/auxiliary/enum-primitive.rs
 Copyright: 2015 Anders Kaseorg <andersk@mit.edu>
 License: MIT
 
-Files: src/librustdoc/html/static/fonts/FiraSans*
+Files: src/libcrablangdoc/html/static/fonts/FiraSans*
 Copyright: 2014, Mozilla Foundation
            2014, Telefonica S.A.
 License: OFL-1.1
 
-Files: src/librustdoc/html/static/fonts/NanumBarun*
+Files: src/libcrablangdoc/html/static/fonts/NanumBarun*
 Copyright: 2010 NAVER Corporation
 License: OFL-1.1
 
-Files: src/librustdoc/html/static/fonts/SourceCodePro*
-       src/librustdoc/html/static/fonts/SourceSerif4*
+Files: src/libcrablangdoc/html/static/fonts/SourceCodePro*
+       src/libcrablangdoc/html/static/fonts/SourceSerif4*
 Copyright: 2010, 2012, 2014-2023, Adobe Systems Incorporated
 License: OFL-1.1
 
-Files: src/librustdoc/html/static/css/normalize.css
+Files: src/libcrablangdoc/html/static/css/normalize.css
 Copyright: Nicolas Gallagher and Jonathan Neal
 License: MIT
 
-Files: src/librustdoc/html/static/css/themes/ayu.css
+Files: src/libcrablangdoc/html/static/css/themes/ayu.css
 Copyright: Ike Ku, Jessica Stokes, Leon Guan
-           The Rust Project Developers (see https://thanks.rust-lang.org)
+           The CrabLang Project Developers (see https://thanks.crablang.org)
 License: MIT OR Apache-2.0
 
-Files: src/doc/rustc-dev-guide/mermaid.min.js
+Files: src/doc/crablangc-dev-guide/mermaid.min.js
 Copyright: Knut Sveidqvist
 License: MIT

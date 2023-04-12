@@ -1,25 +1,25 @@
 Short version for non-lawyers:
 
-The Rust Project is dual-licensed under Apache 2.0 and MIT
+The CrabLang Project is dual-licensed under Apache 2.0 and MIT
 terms.
 
 
 Longer version:
 
-Copyrights in the Rust project are retained by their contributors. No
-copyright assignment is required to contribute to the Rust project.
+Copyrights in the CrabLang project are retained by their contributors. No
+copyright assignment is required to contribute to the CrabLang project.
 
 Some files include explicit copyright notices and/or license notices.
 For full authorship information, see the version control history or
-https://thanks.rust-lang.org
+https://thanks.crablang.org
 
-Except as otherwise noted (below and/or in individual files), Rust is
+Except as otherwise noted (below and/or in individual files), CrabLang is
 licensed under the Apache License, Version 2.0 <LICENSE-APACHE> or
 <http://www.apache.org/licenses/LICENSE-2.0> or the MIT license
 <LICENSE-MIT> or <http://opensource.org/licenses/MIT>, at your option.
 
 
-The Rust Project includes packages written by third parties.
+The CrabLang Project includes packages written by third parties.
 The following third party packages are included, and carry
 their own copyright notices and license terms:
 

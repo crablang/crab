@@ -1,13 +1,13 @@
 use clippy_utils::diagnostics::span_lint_and_help;
 use clippy_utils::ty::is_must_use_ty;
 use clippy_utils::{nth_arg, return_ty};
-use rustc_hir::def_id::LocalDefId;
-use rustc_hir::intravisit::FnKind;
-use rustc_hir::{Body, FnDecl, OwnerId, TraitItem, TraitItemKind};
-use rustc_lint::{LateContext, LateLintPass, LintContext};
-use rustc_middle::lint::in_external_macro;
-use rustc_session::{declare_lint_pass, declare_tool_lint};
-use rustc_span::{sym, Span};
+use crablangc_hir::def_id::LocalDefId;
+use crablangc_hir::intravisit::FnKind;
+use crablangc_hir::{Body, FnDecl, OwnerId, TraitItem, TraitItemKind};
+use crablangc_lint::{LateContext, LateLintPass, LintContext};
+use crablangc_middle::lint::in_external_macro;
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_span::{sym, Span};
 
 declare_clippy_lint! {
     /// ### What it does
@@ -26,7 +26,7 @@ declare_clippy_lint! {
     /// if it was added on constructors for example.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// pub struct Bar;
     /// impl Bar {
     ///     // Missing attribute
@@ -37,7 +37,7 @@ declare_clippy_lint! {
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// # {
     /// // It's better to have the `#[must_use]` attribute on the method like this:
     /// pub struct Bar;

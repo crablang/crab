@@ -35,7 +35,7 @@ SIMD has a few special vocabulary terms you should know:
 
 * **Reducing/Reduce:** When an operation is "reducing" (functions named `reduce_*`), the lanes within a single vector are merged using some operation such as addition, returning the merged value as a scalar. For instance, a reducing add would return the sum of all the lanes' values.
 
-* **Target Feature:** Rust calls a CPU architecture extension a `target_feature`. Proper SIMD requires various CPU extensions to be enabled (details below). Don't confuse this with `feature`, which is a Cargo crate concept.
+* **Target Feature:** CrabLang calls a CPU architecture extension a `target_feature`. Proper SIMD requires various CPU extensions to be enabled (details below). Don't confuse this with `feature`, which is a Cargo crate concept.
 
 ## Target Features
 
@@ -43,7 +43,7 @@ When using SIMD, you should be familiar with the CPU feature set that you're tar
 
 On `arm` and `aarch64` it's fairly simple. There's just one CPU feature that controls if SIMD is available: `neon` (or "NEON", all caps, as the ARM docs often put it). Neon registers can be used as 64-bit or 128-bit. When doing 128-bit operations it just uses two 64-bit registers as a single 128-bit register.
 
-> By default, the `aarch64`, `arm`, and `thumb` Rust targets generally do not enable `neon` unless it's in the target string.
+> By default, the `aarch64`, `arm`, and `thumb` CrabLang targets generally do not enable `neon` unless it's in the target string.
 
 On `x86` and `x86_64` it's slightly more complicated. The SIMD support is split into many levels:
 * 128-bit: `sse`, `sse2`, `sse3`, `ssse3` (not a typo!), `sse4.1`, `sse4.2`, `sse4a` (AMD only)
@@ -52,13 +52,13 @@ On `x86` and `x86_64` it's slightly more complicated. The SIMD support is split 
 
 The list notes the bit widths available at each feature level, though the operations of the more advanced features can generally be used with the smaller register sizes as well. For example, new operations introduced in `avx` generally have a 128-bit form as well as a 256-bit form. This means that even if you only do 128-bit work you can still benefit from the later feature levels.
 
-> By default, the `i686` and `x86_64` Rust targets enable `sse` and `sse2`.
+> By default, the `i686` and `x86_64` CrabLang targets enable `sse` and `sse2`.
 
 ### Selecting Additional Target Features
 
-If you want to enable support for a target feature within your build, generally you should use a [target-feature](https://rust-lang.github.io/packed_simd/perf-guide/target-feature/rustflags.html#target-feature) setting within you `RUSTFLAGS` setting.
+If you want to enable support for a target feature within your build, generally you should use a [target-feature](https://crablang.github.io/packed_simd/perf-guide/target-feature/crablangflags.html#target-feature) setting within you `CRABLANGFLAGS` setting.
 
-If you know that you're targeting a specific CPU you can instead use the [target-cpu](https://rust-lang.github.io/packed_simd/perf-guide/target-feature/rustflags.html#target-cpu) flag and the compiler will enable the correct set of features for that CPU.
+If you know that you're targeting a specific CPU you can instead use the [target-cpu](https://crablang.github.io/packed_simd/perf-guide/target-feature/crablangflags.html#target-cpu) flag and the compiler will enable the correct set of features for that CPU.
 
 The [Steam Hardware Survey](https://store.steampowered.com/hwsurvey/Steam-Hardware-Software-Survey-Welcome-to-Steam) is one of the few places with data on how common various CPU features are. The dataset is limited to "the kinds of computers owned by people who play computer games", so the info only covers `x86`/`x86_64`, and it also probably skews to slightly higher quality computers than average. Still, we can see that the `sse` levels have very high support, `avx` and `avx2` are quite common as well, and the `avx-512` family is still so early in adoption you can barely find it in consumer grade stuff.
 
@@ -68,9 +68,9 @@ This means that if you build your program with `avx` support enabled and run it 
 
 Even without an `unsafe` block in sight.
 
-This is no bug in Rust, or soundness hole in the type system. You just plain can't make a CPU do what it doesn't know how to do.
+This is no bug in CrabLang, or soundness hole in the type system. You just plain can't make a CPU do what it doesn't know how to do.
 
-This is why the various Rust targets *don't* enable many CPU feature flags by default: requiring a more advanced CPU makes the final binary *less* portable.
+This is why the various CrabLang targets *don't* enable many CPU feature flags by default: requiring a more advanced CPU makes the final binary *less* portable.
 
 So please select an appropriate CPU feature level when building your programs.
 
@@ -84,8 +84,8 @@ However, this is not the same as alignment. Computer architectures generally pre
 
 When working with slices, data correctly aligned for SIMD can be acquired using the [`as_simd`] and [`as_simd_mut`] methods of the slice primitive.
 
-[`mem::transmute`]: https://doc.rust-lang.org/core/mem/fn.transmute.html
-[`mem::align_of`]: https://doc.rust-lang.org/core/mem/fn.align_of.html
-[`as_simd`]: https://doc.rust-lang.org/nightly/std/primitive.slice.html#method.as_simd
-[`as_simd_mut`]: https://doc.rust-lang.org/nightly/std/primitive.slice.html#method.as_simd_mut
+[`mem::transmute`]: https://doc.crablang.org/core/mem/fn.transmute.html
+[`mem::align_of`]: https://doc.crablang.org/core/mem/fn.align_of.html
+[`as_simd`]: https://doc.crablang.org/nightly/std/primitive.slice.html#method.as_simd
+[`as_simd_mut`]: https://doc.crablang.org/nightly/std/primitive.slice.html#method.as_simd_mut
 

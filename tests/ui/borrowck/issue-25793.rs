@@ -1,4 +1,4 @@
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 macro_rules! width(
     ($this:expr) => {
         $this.width.unwrap()

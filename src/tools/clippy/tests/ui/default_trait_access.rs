@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 // aux-build: proc_macros.rs
 #![deny(clippy::default_trait_access)]
 #![allow(dead_code, unused_imports)]

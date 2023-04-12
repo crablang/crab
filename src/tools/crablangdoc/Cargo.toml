@@ -1,0 +1,17 @@
+[package]
+name = "crablangdoc-tool"
+version = "0.0.0"
+edition = "2021"
+
+# Cargo adds a number of paths to the dylib search path on windows, which results in
+# the wrong crablangdoc being executed. To avoid the conflicting crablangdocs, we name the "tool"
+# crablangdoc a different name.
+[[bin]]
+name = "crablangdoc_tool_binary"
+path = "main.rs"
+
+[dependencies]
+crablangdoc = { path = "../../libcrablangdoc" }
+
+[features]
+jemalloc = ['crablangdoc/jemalloc']

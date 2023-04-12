@@ -3,9 +3,9 @@ use clippy_utils::source::snippet;
 use clippy_utils::{higher, SpanlessEq};
 use clippy_utils::{is_integer_const, is_trait_method};
 use if_chain::if_chain;
-use rustc_hir::{Expr, ExprKind, QPath};
-use rustc_lint::LateContext;
-use rustc_span::sym;
+use crablangc_hir::{Expr, ExprKind, QPath};
+use crablangc_lint::LateContext;
+use crablangc_span::sym;
 
 use super::RANGE_ZIP_WITH_LEN;
 

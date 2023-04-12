@@ -1,6 +1,6 @@
 //! Implementation of panics via stack unwinding
 //!
-//! This crate is an implementation of panics in Rust using "most native" stack
+//! This crate is an implementation of panics in CrabLang using "most native" stack
 //! unwinding mechanism of the platform this is being compiled for. This
 //! essentially gets categorized into three buckets currently:
 //!
@@ -13,14 +13,14 @@
 
 #![no_std]
 #![unstable(feature = "panic_unwind", issue = "32837")]
-#![doc(issue_tracker_base_url = "https://github.com/rust-lang/rust/issues/")]
+#![doc(issue_tracker_base_url = "https://github.com/crablang/crablang/issues/")]
 #![feature(core_intrinsics)]
 #![feature(lang_items)]
 #![feature(panic_unwind)]
 #![feature(staged_api)]
 #![feature(std_internals)]
 #![feature(abi_thiscall)]
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 #![panic_runtime]
 #![feature(panic_runtime)]
 #![feature(c_unwind)]
@@ -71,7 +71,7 @@ cfg_if::cfg_if! {
 cfg_if::cfg_if! {
     if #[cfg(miri)] {
         // Use the Miri runtime.
-        // We still need to also load the normal runtime above, as rustc expects certain lang
+        // We still need to also load the normal runtime above, as crablangc expects certain lang
         // items from there to be defined.
         #[path = "miri.rs"]
         mod imp;
@@ -84,22 +84,22 @@ cfg_if::cfg_if! {
 extern "C" {
     /// Handler in std called when a panic object is dropped outside of
     /// `catch_unwind`.
-    fn __rust_drop_panic() -> !;
+    fn __crablang_drop_panic() -> !;
 
     /// Handler in std called when a foreign exception is caught.
-    fn __rust_foreign_exception() -> !;
+    fn __crablang_foreign_exception() -> !;
 }
 
-#[rustc_std_internal_symbol]
+#[crablangc_std_internal_symbol]
 #[allow(improper_ctypes_definitions)]
-pub unsafe extern "C" fn __rust_panic_cleanup(payload: *mut u8) -> *mut (dyn Any + Send + 'static) {
+pub unsafe extern "C" fn __crablang_panic_cleanup(payload: *mut u8) -> *mut (dyn Any + Send + 'static) {
     Box::into_raw(imp::cleanup(payload))
 }
 
 // Entry point for raising an exception, just delegates to the platform-specific
 // implementation.
-#[rustc_std_internal_symbol]
-pub unsafe fn __rust_start_panic(payload: &mut dyn BoxMeUp) -> u32 {
+#[crablangc_std_internal_symbol]
+pub unsafe fn __crablang_start_panic(payload: &mut dyn BoxMeUp) -> u32 {
     let payload = Box::from_raw(payload.take_box());
 
     imp::panic(payload)

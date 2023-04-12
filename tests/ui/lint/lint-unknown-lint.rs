@@ -6,8 +6,8 @@
                    //~| HELP did you mean
                    //~| SUGGESTION dead_code
 
-#![deny(rust_2018_idiots)] //~ ERROR unknown lint
+#![deny(crablang_2018_idiots)] //~ ERROR unknown lint
                            //~| HELP did you mean
-                           //~| SUGGESTION rust_2018_idioms
+                           //~| SUGGESTION crablang_2018_idioms
 
 fn main() {}

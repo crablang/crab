@@ -34,4 +34,4 @@ LL |     pub(crate) struct Foo(pub u8);
 
 error: aborting due to 2 previous errors
 
-For more information about this error, try `rustc --explain E0532`.
+For more information about this error, try `crablangc --explain E0532`.

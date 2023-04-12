@@ -1,8 +1,8 @@
-rustdoc [options] <input>
+crablangdoc [options] <input>
 
 Options:
     -h, --help          show this help message
-    -V, --version       print rustdoc's version
+    -V, --version       print crablangdoc's version
     -v, --verbose       use verbose output
     -w, --output-format [html]
                         the output type to write
@@ -16,10 +16,10 @@ Options:
                         for the compiler to emit
     -L, --library-path DIR
                         directory to add to crate search path
-        --cfg           pass a --cfg to rustc
-        --check-cfg     pass a --check-cfg to rustc
+        --cfg           pass a --cfg to crablangc
+        --check-cfg     pass a --check-cfg to crablangc
         --extern NAME[=PATH]
-                        pass an --extern to rustc
+                        pass an --extern to crablangc
         --extern-html-root-url NAME=URL
                         base URL to use for dependencies; for example,
                         "std=/doc" links std::vec::Vec to
@@ -28,7 +28,7 @@ Options:
                         give precedence to `--extern-html-root-url`, not
                         `html_root_url`
     -C, --codegen OPT[=VALUE]
-                        pass a codegen option to rustc
+                        pass a codegen option to crablangc
         --document-private-items 
                         document private items
         --document-hidden-items 
@@ -66,7 +66,7 @@ Options:
     -e, --extend-css PATH
                         To add some CSS rules with a given file to generate
                         doc with your own theme. However, your theme might
-                        break if the rustdoc's generated HTML changes, so be
+                        break if the crablangdoc's generated HTML changes, so be
                         careful!
     -Z FLAG             unstable / perma-unstable options (only on nightly
                         build)
@@ -86,11 +86,11 @@ Options:
                         Set the default theme. THEME should be the theme name,
                         generally lowercase. If an unknown default theme is
                         specified, the builtin default is used. The set of
-                        themes, and the rustdoc built-in default, are not
+                        themes, and the crablangdoc built-in default, are not
                         stable.
         --default-setting SETTING[=VALUE]
-                        Default value for a rustdoc setting (used when
-                        "rustdoc-SETTING" is absent from web browser Local
+                        Default value for a crablangdoc setting (used when
+                        "crablangdoc-SETTING" is absent from web browser Local
                         Storage). If VALUE is not supplied, "true" is used.
                         Supported SETTINGs and VALUEs are not documented and
                         not stable.
@@ -102,7 +102,7 @@ Options:
                         suffix to add to CSS and JavaScript files, e.g.,
                         "light.css" will become "light-suffix.css"
         --edition EDITION
-                        edition to use when compiling rust code (default:
+                        edition to use when compiling crablang code (default:
                         2015)
         --color auto|always|never
                         Configure coloring of output:
@@ -149,13 +149,13 @@ Options:
         --runtool-arg One (of possibly many) arguments to pass to the runtool
                         
         --test-builder PATH
-                        The rustc-like binary to use as the test builder
-        --check         Run rustdoc checks
+                        The crablangc-like binary to use as the test builder
+        --check         Run crablangdoc checks
         --generate-redirect-map 
                         Generate JSON file at the top level instead of
                         generating HTML redirection files
         --emit [unversioned-shared-resources,toolchain-shared-resources,invocation-specific]
-                        Comma separated list of types of output for rustdoc to
+                        Comma separated list of types of output for crablangdoc to
                         emit
         --no-run        Compile doctests without running them
         --show-type-layout 
@@ -175,23 +175,23 @@ Options:
                         removed
         --plugin-path DIR
                         removed, see issue #44136
-                        <https://github.com/rust-lang/rust/issues/44136> for
+                        <https://github.com/crablang/crablang/issues/44136> for
                         more information
         --passes PASSES removed, see issue #44136
-                        <https://github.com/rust-lang/rust/issues/44136> for
+                        <https://github.com/crablang/crablang/issues/44136> for
                         more information
         --plugins PLUGINS
                         removed, see issue #44136
-                        <https://github.com/rust-lang/rust/issues/44136> for
+                        <https://github.com/crablang/crablang/issues/44136> for
                         more information
         --no-defaults   removed, see issue #44136
-                        <https://github.com/rust-lang/rust/issues/44136> for
+                        <https://github.com/crablang/crablang/issues/44136> for
                         more information
-    -r, --input-format [rust]
+    -r, --input-format [crablang]
                         removed, see issue #44136
-                        <https://github.com/rust-lang/rust/issues/44136> for
+                        <https://github.com/crablang/crablang/issues/44136> for
                         more information
 
     @path               Read newline separated options from `path`
 
-More information available at https://doc.rust-lang.org/$CHANNEL/rustdoc/what-is-rustdoc.html
+More information available at https://doc.crablang.org/$CHANNEL/crablangdoc/what-is-crablangdoc.html

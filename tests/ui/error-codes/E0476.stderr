@@ -28,4 +28,4 @@ LL | impl<'a, 'b, T, S> CoerceUnsized<&'a Wrapper<T>> for &'b Wrapper<S> where S
 error: aborting due to 2 previous errors
 
 Some errors have detailed explanations: E0119, E0476.
-For more information about an error, try `rustc --explain E0119`.
+For more information about an error, try `crablangc --explain E0119`.

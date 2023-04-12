@@ -27,9 +27,9 @@ where
 
 // This is also a trait alias.
 // The weird = <Self as ...> bound is there so that users of the trait do not
-// need to repeat the bounds. See https://github.com/rust-lang/rust/issues/20671
+// need to repeat the bounds. See https://github.com/crablang/crablang/issues/20671
 // for context, and in particular the workaround in:
-// https://github.com/rust-lang/rust/issues/20671#issuecomment-529752828
+// https://github.com/crablang/crablang/issues/20671#issuecomment-529752828
 
 pub trait ParticularServiceLayer<C>:
     Layer<C, Service = <Self as ParticularServiceLayer<C>>::Service>

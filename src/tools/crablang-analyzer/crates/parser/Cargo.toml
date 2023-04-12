@@ -1,0 +1,24 @@
+[package]
+name = "parser"
+version = "0.0.0"
+description = "TBD"
+
+authors.workspace = true
+edition.workspace = true
+license.workspace = true
+crablang-version.workspace = true
+
+[lib]
+doctest = false
+
+[dependencies]
+drop_bomb = "0.1.5"
+crablangc_lexer = { version = "727.0.0", package = "crablangc-ap-crablangc_lexer" }
+
+limit.workspace = true
+
+[dev-dependencies]
+expect-test = "1.4.0"
+
+stdx.workspace = true
+sourcegen.workspace = true

@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 
 #![warn(clippy::cloned_instead_of_copied)]
 #![allow(unused)]

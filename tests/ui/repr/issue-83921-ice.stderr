@@ -43,4 +43,4 @@ LL | #[repr(i64 = 2)]
 error: aborting due to 7 previous errors
 
 Some errors have detailed explanations: E0552, E0589, E0693.
-For more information about an error, try `rustc --explain E0552`.
+For more information about an error, try `crablangc --explain E0552`.

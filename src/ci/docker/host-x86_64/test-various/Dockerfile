@@ -41,10 +41,10 @@ WORKDIR /
 COPY scripts/sccache.sh /scripts/
 RUN sh /scripts/sccache.sh
 
-ENV RUST_CONFIGURE_ARGS \
+ENV CRABLANG_CONFIGURE_ARGS \
   --musl-root-x86_64=/usr/local/x86_64-linux-musl \
   --set build.nodejs=/node-v15.14.0-linux-x64/bin/node \
-  --set rust.lld
+  --set crablang.lld
 
 # Some run-make tests have assertions about code size, and enabling debug
 # assertions in libstd causes the binary to be much bigger than it would

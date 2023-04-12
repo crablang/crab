@@ -78,10 +78,10 @@ pub fn current_exe() -> io::Result<PathBuf> {
 }
 
 #[cfg_attr(test, linkage = "available_externally")]
-#[export_name = "_ZN16__rust_internals3std3sys3sgx2os3ENVE"]
+#[export_name = "_ZN16__crablang_internals3std3sys3sgx2os3ENVE"]
 static ENV: AtomicUsize = AtomicUsize::new(0);
 #[cfg_attr(test, linkage = "available_externally")]
-#[export_name = "_ZN16__rust_internals3std3sys3sgx2os8ENV_INITE"]
+#[export_name = "_ZN16__crablang_internals3std3sys3sgx2os8ENV_INITE"]
 static ENV_INIT: Once = Once::new();
 type EnvStore = Mutex<HashMap<OsString, OsString>>;
 

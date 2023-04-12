@@ -1,7 +1,7 @@
-// Caveats - gdb prints any 8-bit value (meaning rust I8 and u8 values)
+// Caveats - gdb prints any 8-bit value (meaning crablang I8 and u8 values)
 // as its numerical value along with its associated ASCII char, there
 // doesn't seem to be any way around this. Also, gdb doesn't know
-// about UTF-32 character encoding and will print a rust char as only
+// about UTF-32 character encoding and will print a crablang char as only
 // its numerical value.
 
 // min-lldb-version: 310

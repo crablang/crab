@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 
 // These are forbidden occurrences of label-break-value
 

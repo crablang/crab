@@ -1,4 +1,4 @@
-//! <https://github.com/rust-lang/rust-clippy/issues/9746#issuecomment-1297132880>
+//! <https://github.com/crablang/crablang-clippy/issues/9746#issuecomment-1297132880>
 
 trait Trait {}
 

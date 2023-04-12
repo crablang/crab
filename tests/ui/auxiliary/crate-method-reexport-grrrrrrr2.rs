@@ -15,7 +15,7 @@ pub mod name_pool {
     }
 }
 
-pub mod rust {
+pub mod crablang {
     pub use name_pool::add;
 
     pub type rt = Box<()>;

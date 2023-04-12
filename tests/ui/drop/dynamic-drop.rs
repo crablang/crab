@@ -52,7 +52,7 @@ impl Allocator {
         data.push(true);
         Ptr(addr, self)
     }
-    // FIXME(#47949) Any use of this indicates a bug in rustc: we should never
+    // FIXME(#47949) Any use of this indicates a bug in crablangc: we should never
     // be leaking values in the cases here.
     //
     // Creates a `Ptr<'_>` and checks that the allocated value is leaked if the
@@ -341,7 +341,7 @@ fn panic_after_return(a: &Allocator) -> Ptr<'_> {
         a.alloc();
         let p = a.alloc();
         // FIXME (#47949) We leak values when we panic in a destructor after
-        // evaluating an expression with `rustc_mir::build::Builder::into`.
+        // evaluating an expression with `crablangc_mir::build::Builder::into`.
         a.alloc_leaked(exceptions)
     }
 }

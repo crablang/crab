@@ -3,7 +3,7 @@
 // non-structural-match in hidden manner that lets matches
 // through that we had intended to reject.
 //
-// See discussion on rust-lang/rust#62307 and rust-lang/rust#62339
+// See discussion on crablang/crablang#62307 and crablang/crablang#62339
 
 struct NoDerive(#[allow(unused_tuple_struct_fields)] i32);
 

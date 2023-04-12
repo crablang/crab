@@ -42,4 +42,4 @@ LL |     static a: [u8; N] = [0; N];
 
 error: aborting due to 5 previous errors
 
-For more information about this error, try `rustc --explain E0401`.
+For more information about this error, try `crablangc --explain E0401`.

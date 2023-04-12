@@ -4,7 +4,7 @@ error[E0658]: `impl Trait` in type aliases is unstable
 LL |     type Item = impl Bug;
    |                 ^^^^^^^^
    |
-   = note: see issue #63063 <https://github.com/rust-lang/rust/issues/63063> for more information
+   = note: see issue #63063 <https://github.com/crablang/crablang/issues/63063> for more information
    = help: add `#![feature(type_alias_impl_trait)]` to the crate attributes to enable
 
 error[E0277]: the trait bound `(): Bug` is not satisfied
@@ -18,4 +18,4 @@ LL |     const FUN: fn() -> Self::Item = || ();
 error: aborting due to 2 previous errors
 
 Some errors have detailed explanations: E0277, E0658.
-For more information about an error, try `rustc --explain E0277`.
+For more information about an error, try `crablangc --explain E0277`.

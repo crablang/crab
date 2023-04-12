@@ -101,4 +101,4 @@ LL | impl<T: Clone + Copy + PartialEq + Eq + PartialOrd + Ord> Struct<T> {
 
 error: aborting due to 9 previous errors
 
-For more information about this error, try `rustc --explain E0599`.
+For more information about this error, try `crablangc --explain E0599`.

@@ -54,7 +54,7 @@ error: lint `clippy::unsafe_vector_initialization` has been removed: the replace
 LL | #![warn(clippy::unsafe_vector_initialization)]
    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-error: lint `clippy::unused_collect` has been removed: `collect` has been marked as #[must_use] in rustc and that covers all cases of this lint
+error: lint `clippy::unused_collect` has been removed: `collect` has been marked as #[must_use] in crablangc and that covers all cases of this lint
   --> $DIR/deprecated.rs:14:9
    |
 LL | #![warn(clippy::unused_collect)]

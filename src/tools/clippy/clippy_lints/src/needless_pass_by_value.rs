@@ -6,26 +6,26 @@ use clippy_utils::ty::{
 };
 use clippy_utils::{get_trait_def_id, is_self, paths};
 use if_chain::if_chain;
-use rustc_ast::ast::Attribute;
-use rustc_data_structures::fx::FxHashSet;
-use rustc_errors::{Applicability, Diagnostic};
-use rustc_hir::intravisit::FnKind;
-use rustc_hir::{
+use crablangc_ast::ast::Attribute;
+use crablangc_data_structures::fx::FxHashSet;
+use crablangc_errors::{Applicability, Diagnostic};
+use crablangc_hir::intravisit::FnKind;
+use crablangc_hir::{
     BindingAnnotation, Body, FnDecl, GenericArg, HirId, Impl, ItemKind, Mutability, Node, PatKind, QPath, TyKind,
 };
-use rustc_hir::{HirIdMap, HirIdSet, LangItem};
-use rustc_hir_typeck::expr_use_visitor as euv;
-use rustc_infer::infer::TyCtxtInferExt;
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_middle::mir::FakeReadCause;
-use rustc_middle::ty::{self, TypeVisitableExt};
-use rustc_session::{declare_lint_pass, declare_tool_lint};
-use rustc_span::def_id::LocalDefId;
-use rustc_span::symbol::kw;
-use rustc_span::{sym, Span};
-use rustc_target::spec::abi::Abi;
-use rustc_trait_selection::traits;
-use rustc_trait_selection::traits::misc::type_allowed_to_implement_copy;
+use crablangc_hir::{HirIdMap, HirIdSet, LangItem};
+use crablangc_hir_typeck::expr_use_visitor as euv;
+use crablangc_infer::infer::TyCtxtInferExt;
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_middle::mir::FakeReadCause;
+use crablangc_middle::ty::{self, TypeVisitableExt};
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_span::def_id::LocalDefId;
+use crablangc_span::symbol::kw;
+use crablangc_span::{sym, Span};
+use crablangc_target::spec::abi::Abi;
+use crablangc_trait_selection::traits;
+use crablangc_trait_selection::traits::misc::type_allowed_to_implement_copy;
 use std::borrow::Cow;
 
 declare_clippy_lint! {
@@ -45,13 +45,13 @@ declare_clippy_lint! {
     /// (by using `Borrow` trait, for example), depending on how the function is used.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// fn foo(v: Vec<i32>) {
     ///     assert_eq!(v.len(), 42);
     /// }
     /// ```
     /// should be
-    /// ```rust
+    /// ```crablang
     /// fn foo(v: &[i32]) {
     ///     assert_eq!(v.len(), 42);
     /// }
@@ -94,7 +94,7 @@ impl<'tcx> LateLintPass<'tcx> for NeedlessPassByValue {
         match kind {
             FnKind::ItemFn(.., header) => {
                 let attrs = cx.tcx.hir().attrs(hir_id);
-                if header.abi != Abi::Rust || requires_exact_signature(attrs) {
+                if header.abi != Abi::CrabLang || requires_exact_signature(attrs) {
                     return;
                 }
             },
@@ -345,5 +345,5 @@ impl<'tcx> euv::Delegate<'tcx> for MovedVariablesCtxt {
 
     fn mutate(&mut self, _: &euv::PlaceWithHirId<'tcx>, _: HirId) {}
 
-    fn fake_read(&mut self, _: &rustc_hir_typeck::expr_use_visitor::PlaceWithHirId<'tcx>, _: FakeReadCause, _: HirId) {}
+    fn fake_read(&mut self, _: &crablangc_hir_typeck::expr_use_visitor::PlaceWithHirId<'tcx>, _: FakeReadCause, _: HirId) {}
 }

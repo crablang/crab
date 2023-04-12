@@ -4,7 +4,7 @@ error: equality constraints are not yet supported in `where` clauses
 LL | impl<B: Add> Add for E<B> where <B as Add>::Output = B {
    |                                 ^^^^^^^^^^^^^^^^^^^^^^ not supported
    |
-   = note: see issue #20041 <https://github.com/rust-lang/rust/issues/20041> for more information
+   = note: see issue #20041 <https://github.com/crablang/crablang/issues/20041> for more information
 help: if `Output` is an associated type you're trying to set, use the associated type binding syntax
    |
 LL | impl<B: Add> Add for E<B> where B: Add<Output = B> {
@@ -102,4 +102,4 @@ LL | impl<B: Add<Output = B>> Add for E<B> where <B as Add>::Output = B {
 error: aborting due to 5 previous errors
 
 Some errors have detailed explanations: E0308, E0369.
-For more information about an error, try `rustc --explain E0308`.
+For more information about an error, try `crablangc --explain E0308`.

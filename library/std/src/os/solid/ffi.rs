@@ -32,10 +32,10 @@
 //! assert_eq!(bytes, b"foo");
 //! ```
 
-#![stable(feature = "rust1", since = "1.0.0")]
+#![stable(feature = "crablang1", since = "1.0.0")]
 
 #[path = "../unix/ffi/os_str.rs"]
 mod os_str;
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub use self::os_str::{OsStrExt, OsStringExt};

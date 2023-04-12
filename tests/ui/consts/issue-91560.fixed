@@ -1,6 +1,6 @@
 // Regression test for issue #91560.
 
-// run-rustfix
+// run-crablangfix
 
 #![allow(unused,non_upper_case_globals)]
 

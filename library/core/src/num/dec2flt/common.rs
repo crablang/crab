@@ -40,7 +40,7 @@ impl ByteSlice for [u8] {
         let mut s = self;
 
         // FIXME: Can't use s.split_first() here yet,
-        // see https://github.com/rust-lang/rust/issues/109328
+        // see https://github.com/crablang/crablang/issues/109328
         while let [c, s_next @ ..] = s {
             let c = c.wrapping_sub(b'0');
             if c < 10 {

@@ -60,4 +60,4 @@ LL |     fn accept_fn(_: &impl Fn()) {}
 
 error: aborting due to 3 previous errors
 
-For more information about this error, try `rustc --explain E0525`.
+For more information about this error, try `crablangc --explain E0525`.

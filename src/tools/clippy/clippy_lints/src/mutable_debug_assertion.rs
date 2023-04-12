@@ -1,12 +1,12 @@
 use clippy_utils::diagnostics::span_lint;
 use clippy_utils::macros::{find_assert_eq_args, root_macro_call_first_node};
-use rustc_hir::intravisit::{walk_expr, Visitor};
-use rustc_hir::{BorrowKind, Expr, ExprKind, MatchSource, Mutability};
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_middle::hir::nested_filter;
-use rustc_middle::ty;
-use rustc_session::{declare_lint_pass, declare_tool_lint};
-use rustc_span::Span;
+use crablangc_hir::intravisit::{walk_expr, Visitor};
+use crablangc_hir::{BorrowKind, Expr, ExprKind, MatchSource, Mutability};
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_middle::hir::nested_filter;
+use crablangc_middle::ty;
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_span::Span;
 
 declare_clippy_lint! {
     /// ### What it does
@@ -20,7 +20,7 @@ declare_clippy_lint! {
     /// between a release and debug build.
     ///
     /// ### Example
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// debug_assert_eq!(vec![3].pop(), Some(3));
     ///
     /// // or

@@ -1,8 +1,8 @@
 use clippy_utils::{diagnostics::span_lint, get_parent_node, ty::implements_trait};
-use rustc_hir::{def_id::LocalDefId, FnSig, ImplItem, ImplItemKind, Item, ItemKind, Node, TraitItem, TraitItemKind};
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_session::{declare_lint_pass, declare_tool_lint};
-use rustc_span::symbol::sym;
+use crablangc_hir::{def_id::LocalDefId, FnSig, ImplItem, ImplItemKind, Item, ItemKind, Node, TraitItem, TraitItemKind};
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_span::symbol::sym;
 
 declare_clippy_lint! {
     /// ### What it does
@@ -12,7 +12,7 @@ declare_clippy_lint! {
     /// Methods named `iter` or `iter_mut` conventionally return an `Iterator`.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// // `String` does not implement `Iterator`
     /// struct Data {}
     /// impl Data {
@@ -22,7 +22,7 @@ declare_clippy_lint! {
     /// }
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// use std::str::Chars;
     /// struct Data {}
     /// impl Data {

@@ -6,13 +6,13 @@ use clippy_utils::source::{snippet, snippet_opt, snippet_with_applicability};
 use clippy_utils::sugg::Sugg;
 use clippy_utils::{get_parent_expr, in_constant, is_integer_const, path_to_local};
 use if_chain::if_chain;
-use rustc_ast::ast::RangeLimits;
-use rustc_errors::Applicability;
-use rustc_hir::{BinOpKind, Expr, ExprKind, HirId};
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_middle::ty;
-use rustc_session::{declare_tool_lint, impl_lint_pass};
-use rustc_span::source_map::{Span, Spanned};
+use crablangc_ast::ast::RangeLimits;
+use crablangc_errors::Applicability;
+use crablangc_hir::{BinOpKind, Expr, ExprKind, HirId};
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_middle::ty;
+use crablangc_session::{declare_tool_lint, impl_lint_pass};
+use crablangc_span::source_map::{Span, Spanned};
 use std::cmp::Ordering;
 
 declare_clippy_lint! {
@@ -37,10 +37,10 @@ declare_clippy_lint! {
     /// This will cause a warning that cannot be fixed if the consumer of the
     /// range only accepts a specific range type, instead of the generic
     /// `RangeBounds` trait
-    /// ([#3307](https://github.com/rust-lang/rust-clippy/issues/3307)).
+    /// ([#3307](https://github.com/crablang/crablang-clippy/issues/3307)).
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// # let x = 0;
     /// # let y = 1;
     /// for i in x..(y+1) {
@@ -49,7 +49,7 @@ declare_clippy_lint! {
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// # let x = 0;
     /// # let y = 1;
     /// for i in x..=y {
@@ -75,10 +75,10 @@ declare_clippy_lint! {
     /// This will cause a warning that cannot be fixed if
     /// the consumer of the range only accepts a specific range type, instead of
     /// the generic `RangeBounds` trait
-    /// ([#3307](https://github.com/rust-lang/rust-clippy/issues/3307)).
+    /// ([#3307](https://github.com/crablang/crablang-clippy/issues/3307)).
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// # let x = 0;
     /// # let y = 1;
     /// for i in x..=(y-1) {
@@ -87,7 +87,7 @@ declare_clippy_lint! {
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// # let x = 0;
     /// # let y = 1;
     /// for i in x..y {
@@ -110,7 +110,7 @@ declare_clippy_lint! {
     /// Moreover, trying to use a reversed range to index a slice will panic at run-time.
     ///
     /// ### Example
-    /// ```rust,no_run
+    /// ```crablang,no_run
     /// fn main() {
     ///     (10..=0).for_each(|x| println!("{}", x));
     ///
@@ -119,7 +119,7 @@ declare_clippy_lint! {
     /// }
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// fn main() {
     ///     (0..=10).rev().for_each(|x| println!("{}", x));
     ///
@@ -143,14 +143,14 @@ declare_clippy_lint! {
     /// failure modes (such as fencepost errors or using `||` instead of `&&`).
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// // given
     /// let x = 6;
     ///
     /// assert!(x >= 3 && x < 8);
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     ///# let x = 6;
     /// assert!((3..8).contains(&x));
     /// ```

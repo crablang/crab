@@ -2,7 +2,7 @@
 #![warn(clippy::cognitive_complexity)]
 #![allow(unused, unused_crate_dependencies)]
 
-#[rustfmt::skip]
+#[crablangfmt::skip]
 fn main() {
     if true {
         println!("a");
@@ -351,7 +351,7 @@ fn early() -> Result<i32, &'static str> {
     return Ok(5);
 }
 
-#[rustfmt::skip]
+#[crablangfmt::skip]
 #[clippy::cognitive_complexity = "1"]
 fn early_ret() -> i32 {
     let a = if true { 42 } else { return 0; };

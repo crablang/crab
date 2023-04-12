@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 
 #![warn(clippy::tabs_in_doc_comments)]
 #[allow(dead_code)]

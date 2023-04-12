@@ -4,14 +4,14 @@ use clippy_utils::ast_utils::{eq_field_pat, eq_id, eq_maybe_qself, eq_pat, eq_pa
 use clippy_utils::diagnostics::span_lint_and_then;
 use clippy_utils::msrvs::{self, Msrv};
 use clippy_utils::over;
-use rustc_ast::mut_visit::*;
-use rustc_ast::ptr::P;
-use rustc_ast::{self as ast, Mutability, Pat, PatKind, PatKind::*, DUMMY_NODE_ID};
-use rustc_ast_pretty::pprust;
-use rustc_errors::Applicability;
-use rustc_lint::{EarlyContext, EarlyLintPass};
-use rustc_session::{declare_tool_lint, impl_lint_pass};
-use rustc_span::DUMMY_SP;
+use crablangc_ast::mut_visit::*;
+use crablangc_ast::ptr::P;
+use crablangc_ast::{self as ast, Mutability, Pat, PatKind, PatKind::*, DUMMY_NODE_ID};
+use crablangc_ast_pretty::ppcrablang;
+use crablangc_errors::Applicability;
+use crablangc_lint::{EarlyContext, EarlyLintPass};
+use crablangc_session::{declare_tool_lint, impl_lint_pass};
+use crablangc_span::DUMMY_SP;
 use std::cell::Cell;
 use std::mem;
 use thin_vec::{thin_vec, ThinVec};
@@ -28,13 +28,13 @@ declare_clippy_lint! {
     /// In the example above, `Some` is repeated, which unnecessarily complicates the pattern.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// fn main() {
     ///     if let Some(0) | Some(2) = Some(0) {}
     /// }
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// fn main() {
     ///     if let Some(0 | 2) = Some(0) {}
     /// }
@@ -109,7 +109,7 @@ fn lint_unnested_or_patterns(cx: &EarlyContext<'_>, pat: &Pat) {
         db.span_suggestion_verbose(
             pat.span,
             "nest the patterns",
-            pprust::pat_to_string(&pat),
+            ppcrablang::pat_to_string(&pat),
             Applicability::MachineApplicable,
         );
     });
@@ -131,7 +131,7 @@ fn remove_all_parens(pat: &mut P<Pat>) {
     Visitor.visit_pat(pat);
 }
 
-/// Insert parens where necessary according to Rust's precedence rules for patterns.
+/// Insert parens where necessary according to CrabLang's precedence rules for patterns.
 fn insert_necessary_parens(pat: &mut P<Pat>) {
     struct Visitor;
     impl MutVisitor for Visitor {

@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 #![feature(type_ascription)]
 
 fn main() {

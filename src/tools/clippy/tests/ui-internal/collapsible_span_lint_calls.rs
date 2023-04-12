@@ -1,20 +1,20 @@
-// run-rustfix
+// run-crablangfix
 #![deny(clippy::internal)]
 #![allow(clippy::missing_clippy_version_attribute)]
-#![feature(rustc_private)]
+#![feature(crablangc_private)]
 
 extern crate clippy_utils;
-extern crate rustc_ast;
-extern crate rustc_errors;
-extern crate rustc_lint;
-extern crate rustc_session;
-extern crate rustc_span;
+extern crate crablangc_ast;
+extern crate crablangc_errors;
+extern crate crablangc_lint;
+extern crate crablangc_session;
+extern crate crablangc_span;
 
 use clippy_utils::diagnostics::{span_lint_and_help, span_lint_and_note, span_lint_and_sugg, span_lint_and_then};
-use rustc_ast::ast::Expr;
-use rustc_errors::Applicability;
-use rustc_lint::{EarlyContext, EarlyLintPass};
-use rustc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_ast::ast::Expr;
+use crablangc_errors::Applicability;
+use crablangc_lint::{EarlyContext, EarlyLintPass};
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
 
 declare_tool_lint! {
     pub clippy::TEST_LINT,

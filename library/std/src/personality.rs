@@ -1,6 +1,6 @@
 //! This module contains the implementation of the `eh_personality` lang item.
 //!
-//! The actual implementation is heavily dependent on the target since Rust
+//! The actual implementation is heavily dependent on the target since CrabLang
 //! tries to use the native stack unwinding mechanism whenever possible.
 //!
 //! This personality function is still required with `-C panic=abort` because
@@ -22,7 +22,7 @@ cfg_if::cfg_if! {
         // _CxxFrameHandler3 is the personality function that is always used.
         // Hence this is just an aborting stub.
         #[lang = "eh_personality"]
-        fn rust_eh_personality() {
+        fn crablang_eh_personality() {
             core::intrinsics::abort()
         }
     } else if #[cfg(any(

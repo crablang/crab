@@ -7,21 +7,21 @@ use clippy_utils::ty::{for_each_top_level_late_bound_region, is_copy};
 use clippy_utils::{is_self, is_self_ty};
 use core::ops::ControlFlow;
 use if_chain::if_chain;
-use rustc_ast::attr;
-use rustc_data_structures::fx::FxHashSet;
-use rustc_errors::Applicability;
-use rustc_hir as hir;
-use rustc_hir::intravisit::FnKind;
-use rustc_hir::{BindingAnnotation, Body, FnDecl, Impl, ItemKind, MutTy, Mutability, Node, PatKind};
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_middle::ty::adjustment::{Adjust, PointerCast};
-use rustc_middle::ty::layout::LayoutOf;
-use rustc_middle::ty::{self, RegionKind};
-use rustc_session::{declare_tool_lint, impl_lint_pass};
-use rustc_span::def_id::LocalDefId;
-use rustc_span::{sym, Span};
-use rustc_target::spec::abi::Abi;
-use rustc_target::spec::Target;
+use crablangc_ast::attr;
+use crablangc_data_structures::fx::FxHashSet;
+use crablangc_errors::Applicability;
+use crablangc_hir as hir;
+use crablangc_hir::intravisit::FnKind;
+use crablangc_hir::{BindingAnnotation, Body, FnDecl, Impl, ItemKind, MutTy, Mutability, Node, PatKind};
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_middle::ty::adjustment::{Adjust, PointerCast};
+use crablangc_middle::ty::layout::LayoutOf;
+use crablangc_middle::ty::{self, RegionKind};
+use crablangc_session::{declare_tool_lint, impl_lint_pass};
+use crablangc_span::def_id::LocalDefId;
+use crablangc_span::{sym, Span};
+use crablangc_target::spec::abi::Abi;
+use crablangc_target::spec::Target;
 
 declare_clippy_lint! {
     /// ### What it does
@@ -53,18 +53,18 @@ declare_clippy_lint! {
     /// matters; namely, returning the pointer to the argument in question,
     /// and passing the argument, as both references and pointers,
     /// to a function that needs the memory address. For further details, refer to
-    /// [this issue](https://github.com/rust-lang/rust-clippy/issues/5953)
+    /// [this issue](https://github.com/crablang/crablang-clippy/issues/5953)
     /// that explains a real case in which this false positive
     /// led to an **undefined behavior** introduced with unsafe code.
     ///
     /// ### Example
     ///
-    /// ```rust
+    /// ```crablang
     /// fn foo(v: &u32) {}
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// fn foo(v: u32) {}
     /// ```
     #[clippy::version = "pre 1.29.0"]
@@ -87,7 +87,7 @@ declare_clippy_lint! {
     /// `memcpy`, which can be expensive.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// #[derive(Clone, Copy)]
     /// struct TooLarge([u8; 2048]);
     ///
@@ -95,7 +95,7 @@ declare_clippy_lint! {
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// # #[derive(Clone, Copy)]
     /// # struct TooLarge([u8; 2048]);
     /// fn foo(v: &TooLarge) {}
@@ -281,7 +281,7 @@ impl<'tcx> LateLintPass<'tcx> for PassByRefOrValue {
         let hir_id = cx.tcx.hir().local_def_id_to_hir_id(def_id);
         match kind {
             FnKind::ItemFn(.., header) => {
-                if header.abi != Abi::Rust {
+                if header.abi != Abi::CrabLang {
                     return;
                 }
                 let attrs = cx.tcx.hir().attrs(hir_id);

@@ -11,7 +11,7 @@ python3 "$X_PY" test --stage 2 --no-fail-fast \
     src/doc/book \
     src/doc/nomicon \
     src/doc/reference \
-    src/doc/rust-by-example \
+    src/doc/crablang-by-example \
     src/doc/embedded-book \
     src/doc/edition-guide \
 
@@ -23,7 +23,7 @@ cat /tmp/toolstate/toolstates.json
 # Test remaining tools that must pass.
 python3 "$X_PY" test --stage 2 check-tools
 python3 "$X_PY" test --stage 2 src/tools/clippy
-python3 "$X_PY" test --stage 2 src/tools/rustfmt
+python3 "$X_PY" test --stage 2 src/tools/crablangfmt
 python3 "$X_PY" test --stage 2 src/tools/miri
 # We natively run this script on x86_64-unknown-linux-gnu and x86_64-pc-windows-msvc.
 # Also cover some other targets (on both of these hosts) via cross-testing.

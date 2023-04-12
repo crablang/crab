@@ -1,6 +1,6 @@
 // edition:2021
 
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 
 struct Point {
     x: i32,
@@ -16,9 +16,9 @@ struct Point {
 fn main() {
     let mut p = Point { x: 5, y: 20 };
 
-    let mut c1 = #[rustc_capture_analysis]
+    let mut c1 = #[crablangc_capture_analysis]
         //~^ ERROR: attributes on expressions are experimental
-        //~| NOTE: see issue #15701 <https://github.com/rust-lang/rust/issues/15701>
+        //~| NOTE: see issue #15701 <https://github.com/crablang/crablang/issues/15701>
     || {
     //~^ ERROR: First Pass analysis includes:
     //~| ERROR: Min Capture analysis includes:
@@ -26,9 +26,9 @@ fn main() {
         //~^ NOTE: Capturing p[(0, 0)] -> ImmBorrow
         //~| NOTE: Min Capture p[(0, 0)] -> ImmBorrow
         let incr = 10;
-        let mut c2 = #[rustc_capture_analysis]
+        let mut c2 = #[crablangc_capture_analysis]
         //~^ ERROR: attributes on expressions are experimental
-        //~| NOTE: see issue #15701 <https://github.com/rust-lang/rust/issues/15701>
+        //~| NOTE: see issue #15701 <https://github.com/crablang/crablang/issues/15701>
         || p.y += incr;
         //~^ ERROR: First Pass analysis includes:
         //~| ERROR: Min Capture analysis includes:

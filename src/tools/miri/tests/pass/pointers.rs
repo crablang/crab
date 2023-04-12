@@ -68,7 +68,7 @@ fn wide_ptr_ops() {
 
     let a: *const [u8] = unsafe { transmute((1usize, 1usize)) };
     let b: *const [u8] = unsafe { transmute((1usize, 2usize)) };
-    // confirmed with rustc.
+    // confirmed with crablangc.
     assert!(!(a == b));
     assert!(a != b);
     assert!(a <= b);

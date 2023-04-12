@@ -25,4 +25,4 @@ LL | const X: i32 = <i32 as Bar>::ID;
 
 error: aborting due to previous error
 
-For more information about this error, try `rustc --explain E0034`.
+For more information about this error, try `crablangc --explain E0034`.

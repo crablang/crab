@@ -1,6 +1,6 @@
 // compile-flags:-Zprint-mono-items=lazy
 
-// rust-lang/rust#90405
+// crablang/crablang#90405
 // Ensure implicit panic calls are collected
 
 #![feature(lang_items)]

@@ -1,5 +1,5 @@
 /* Checks all four scenarios possible in report_elision_failure() of
- * rustc_resolve::late::lifetimes::LifetimeContext related to returning
+ * crablangc_resolve::late::lifetimes::LifetimeContext related to returning
  * borrowed values, in various configurations.
  */
 

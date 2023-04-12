@@ -40,4 +40,4 @@ LL |   fn f1<'a>(arg : Box<dyn X< : 32 >>) {}
 
 error: aborting due to 5 previous errors
 
-For more information about this error, try `rustc --explain E0747`.
+For more information about this error, try `crablangc --explain E0747`.

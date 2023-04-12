@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 
 #![warn(clippy::large_const_arrays)]
 #![allow(dead_code)]

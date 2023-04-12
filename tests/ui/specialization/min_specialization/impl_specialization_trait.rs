@@ -9,7 +9,7 @@ extern crate specialization_trait;
 struct A {}
 
 impl specialization_trait::SpecTrait for A {
-    //~^ ERROR implementing `rustc_specialization_trait` traits is unstable
+    //~^ ERROR implementing `crablangc_specialization_trait` traits is unstable
     fn method(&self) {}
 }
 

@@ -5,7 +5,7 @@ use std::str::FromStr;
 #[cfg(test)]
 mod tests;
 
-pub const VERSION_PLACEHOLDER: &str = "CURRENT_RUSTC_VERSION";
+pub const VERSION_PLACEHOLDER: &str = "CURRENT_CRABLANGC_VERSION";
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
 pub enum Version {

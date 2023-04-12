@@ -52,4 +52,4 @@ LL |     S2::shl(s, &mut 3)
 
 error: aborting due to 6 previous errors
 
-For more information about this error, try `rustc --explain E0515`.
+For more information about this error, try `crablangc --explain E0515`.

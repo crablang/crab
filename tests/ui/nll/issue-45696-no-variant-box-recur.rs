@@ -1,4 +1,4 @@
-// rust-lang/rust#45696: This test checks the compiler won't infinite loop when
+// crablang/crablang#45696: This test checks the compiler won't infinite loop when
 // you declare a variable of type `struct A(Box<A>, ...);` (which is impossible
 // to construct but *is* possible to declare; see also issues #4287, #44933,
 // and #52852).

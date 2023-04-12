@@ -1,4 +1,4 @@
-// Check that rust_eh_personality can have a different type signature than the
+// Check that crablang_eh_personality can have a different type signature than the
 // one hardcoded in the compiler.  Regression test for #70117. Used to fail with:
 //
 // Assertion `isa<X>(Val) && "cast<Ty>() argument of incompatible type!"' failed.
@@ -8,7 +8,7 @@
 #![no_std]
 #![panic_runtime]
 #![feature(panic_runtime)]
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 
 pub struct DropMe;
 
@@ -20,5 +20,5 @@ pub fn test(_: DropMe) {
     unreachable!();
 }
 
-#[rustc_std_internal_symbol]
-pub unsafe extern "C" fn rust_eh_personality() {}
+#[crablangc_std_internal_symbol]
+pub unsafe extern "C" fn crablang_eh_personality() {}

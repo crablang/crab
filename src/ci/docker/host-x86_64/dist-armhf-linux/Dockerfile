@@ -6,9 +6,9 @@ RUN sh /scripts/cross-apt-packages.sh
 COPY scripts/crosstool-ng-1.24.sh /scripts/
 RUN sh /scripts/crosstool-ng-1.24.sh
 
-COPY scripts/rustbuild-setup.sh /scripts/
-RUN sh /scripts/rustbuild-setup.sh
-USER rustbuild
+COPY scripts/crablangbuild-setup.sh /scripts/
+RUN sh /scripts/crablangbuild-setup.sh
+USER crablangbuild
 WORKDIR /tmp
 
 COPY host-x86_64/dist-armhf-linux/arm-linux-gnueabihf.config host-x86_64/dist-armhf-linux/build-toolchains.sh /tmp/
@@ -27,5 +27,5 @@ ENV CC_arm_unknown_linux_gnueabihf=arm-unknown-linux-gnueabihf-gcc \
 
 ENV HOSTS=arm-unknown-linux-gnueabihf
 
-ENV RUST_CONFIGURE_ARGS --enable-full-tools --disable-docs
+ENV CRABLANG_CONFIGURE_ARGS --enable-full-tools --disable-docs
 ENV SCRIPT python3 ../x.py dist --host $HOSTS --target $HOSTS

@@ -3,7 +3,7 @@
 
 // Testing both single-byte and multi-byte characters, as we should handle both.
 
-// run-rustfix
+// run-crablangfix
 
 fn main() {
     let _: char = 'a'; //~ ERROR mismatched types
@@ -11,7 +11,7 @@ fn main() {
     let _: char = '\''; //~ ERROR mismatched types
 }
 
-// regression test for https://github.com/rust-lang/rust/issues/109586
+// regression test for https://github.com/crablang/crablang/issues/109586
 #[allow(dead_code)]
 fn convert_c_to_str(c: char) {
     match c {

@@ -10,8 +10,8 @@ use std::time::SystemTime;
 
 use log::trace;
 
-use rustc_data_structures::fx::FxHashMap;
-use rustc_target::abi::{Align, Size};
+use crablangc_data_structures::fx::FxHashMap;
+use crablangc_target::abi::{Align, Size};
 
 use crate::shims::os_str::bytes_to_os_str;
 use crate::*;
@@ -121,7 +121,7 @@ impl FileDescriptor for FileHandle {
             // produced when closing it. This is done because
             // `File::sync_all` cannot be done over files like
             // `/dev/urandom` which are read-only. Check
-            // https://github.com/rust-lang/miri/issues/999#issuecomment-568920439
+            // https://github.com/crablang/miri/issues/999#issuecomment-568920439
             // for a deeper discussion.
             drop(self);
             Ok(Ok(0))
@@ -554,7 +554,7 @@ pub trait EvalContextExt<'mir, 'tcx: 'mir>: crate::MiriInterpCxExt<'mir, 'tcx> {
         if flag & o_creat == o_creat {
             // Get the mode.  On macOS, the argument type `mode_t` is actually `u16`, but
             // C integer promotion rules mean that on the ABI level, it gets passed as `u32`
-            // (see https://github.com/rust-lang/rust/issues/71915).
+            // (see https://github.com/crablang/crablang/issues/71915).
             let mode = if let Some(arg) = args.get(2) {
                 this.read_scalar(arg)?.to_u32()?
             } else {
@@ -1014,7 +1014,7 @@ pub trait EvalContextExt<'mir, 'tcx: 'mir>: crate::MiriInterpCxExt<'mir, 'tcx> {
         };
 
         let path = this.read_path_from_c_str(pathname_ptr)?.into_owned();
-        // See <https://github.com/rust-lang/rust/pull/79196> for a discussion of argument sizes.
+        // See <https://github.com/crablang/crablang/pull/79196> for a discussion of argument sizes.
         let at_ampty_path = this.eval_libc_i32("AT_EMPTY_PATH");
         let empty_path_flag = flags & at_ampty_path == at_ampty_path;
         // We only support:
@@ -1132,7 +1132,7 @@ pub trait EvalContextExt<'mir, 'tcx: 'mir>: crate::MiriInterpCxExt<'mir, 'tcx> {
             ],
             &statxbuf,
         )?;
-        #[rustfmt::skip]
+        #[crablangfmt::skip]
         this.write_int_fields_named(
             &[
                 ("tv_sec", access_sec.into()),
@@ -1140,7 +1140,7 @@ pub trait EvalContextExt<'mir, 'tcx: 'mir>: crate::MiriInterpCxExt<'mir, 'tcx> {
             ],
             &this.mplace_field_named(&statxbuf, "stx_atime")?,
         )?;
-        #[rustfmt::skip]
+        #[crablangfmt::skip]
         this.write_int_fields_named(
             &[
                 ("tv_sec", created_sec.into()),
@@ -1148,7 +1148,7 @@ pub trait EvalContextExt<'mir, 'tcx: 'mir>: crate::MiriInterpCxExt<'mir, 'tcx> {
             ],
             &this.mplace_field_named(&statxbuf, "stx_btime")?,
         )?;
-        #[rustfmt::skip]
+        #[crablangfmt::skip]
         this.write_int_fields_named(
             &[
                 ("tv_sec", 0.into()),
@@ -1156,7 +1156,7 @@ pub trait EvalContextExt<'mir, 'tcx: 'mir>: crate::MiriInterpCxExt<'mir, 'tcx> {
             ],
             &this.mplace_field_named(&statxbuf, "stx_ctime")?,
         )?;
-        #[rustfmt::skip]
+        #[crablangfmt::skip]
         this.write_int_fields_named(
             &[
                 ("tv_sec", modified_sec.into()),
@@ -1841,7 +1841,7 @@ pub trait EvalContextExt<'mir, 'tcx: 'mir>: crate::MiriInterpCxExt<'mir, 'tcx> {
             'Z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
         ];
 
-        // The file is opened with specific options, which Rust does not expose in a portable way.
+        // The file is opened with specific options, which CrabLang does not expose in a portable way.
         // So we use specific APIs depending on the host OS.
         let mut fopts = OpenOptions::new();
         fopts.read(true).write(true).create_new(true);

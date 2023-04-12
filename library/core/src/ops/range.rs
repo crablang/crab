@@ -39,10 +39,10 @@ use crate::hash::Hash;
 #[lang = "RangeFull"]
 #[doc(alias = "..")]
 #[derive(Copy, Clone, Default, PartialEq, Eq, Hash)]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub struct RangeFull;
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl fmt::Debug for RangeFull {
     fn fmt(&self, fmt: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(fmt, "..")
@@ -76,17 +76,17 @@ impl fmt::Debug for RangeFull {
 #[lang = "Range"]
 #[doc(alias = "..")]
 #[derive(Clone, Default, PartialEq, Eq, Hash)] // not Copy -- see #27186
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub struct Range<Idx> {
     /// The lower bound of the range (inclusive).
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub start: Idx,
     /// The upper bound of the range (exclusive).
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub end: Idx,
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<Idx: fmt::Debug> fmt::Debug for Range<Idx> {
     fn fmt(&self, fmt: &mut fmt::Formatter<'_>) -> fmt::Result {
         self.start.fmt(fmt)?;
@@ -116,7 +116,7 @@ impl<Idx: ~const PartialOrd<Idx>> Range<Idx> {
     /// assert!(!(f32::NAN..1.0).contains(&0.5));
     /// ```
     #[stable(feature = "range_contains", since = "1.35.0")]
-    #[rustc_const_unstable(feature = "const_range_bounds", issue = "108082")]
+    #[crablangc_const_unstable(feature = "const_range_bounds", issue = "108082")]
     pub const fn contains<U>(&self, item: &U) -> bool
     where
         Idx: ~const PartialOrd<U>,
@@ -143,7 +143,7 @@ impl<Idx: ~const PartialOrd<Idx>> Range<Idx> {
     /// assert!( (f32::NAN..5.0).is_empty());
     /// ```
     #[stable(feature = "range_is_empty", since = "1.47.0")]
-    #[rustc_const_unstable(feature = "const_range_bounds", issue = "108082")]
+    #[crablangc_const_unstable(feature = "const_range_bounds", issue = "108082")]
     pub const fn is_empty(&self) -> bool {
         !(self.start < self.end)
     }
@@ -185,14 +185,14 @@ impl<Idx: ~const PartialOrd<Idx>> Range<Idx> {
 #[lang = "RangeFrom"]
 #[doc(alias = "..")]
 #[derive(Clone, PartialEq, Eq, Hash)] // not Copy -- see #27186
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub struct RangeFrom<Idx> {
     /// The lower bound of the range (inclusive).
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub start: Idx,
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<Idx: fmt::Debug> fmt::Debug for RangeFrom<Idx> {
     fn fmt(&self, fmt: &mut fmt::Formatter<'_>) -> fmt::Result {
         self.start.fmt(fmt)?;
@@ -216,7 +216,7 @@ impl<Idx: ~const PartialOrd<Idx>> RangeFrom<Idx> {
     /// assert!(!(f32::NAN..).contains(&0.5));
     /// ```
     #[stable(feature = "range_contains", since = "1.35.0")]
-    #[rustc_const_unstable(feature = "const_range_bounds", issue = "108082")]
+    #[crablangc_const_unstable(feature = "const_range_bounds", issue = "108082")]
     pub const fn contains<U>(&self, item: &U) -> bool
     where
         Idx: ~const PartialOrd<U>,
@@ -267,14 +267,14 @@ impl<Idx: ~const PartialOrd<Idx>> RangeFrom<Idx> {
 #[lang = "RangeTo"]
 #[doc(alias = "..")]
 #[derive(Copy, Clone, PartialEq, Eq, Hash)]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub struct RangeTo<Idx> {
     /// The upper bound of the range (exclusive).
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub end: Idx,
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<Idx: fmt::Debug> fmt::Debug for RangeTo<Idx> {
     fn fmt(&self, fmt: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(fmt, "..")?;
@@ -298,7 +298,7 @@ impl<Idx: ~const PartialOrd<Idx>> RangeTo<Idx> {
     /// assert!(!(..f32::NAN).contains(&0.5));
     /// ```
     #[stable(feature = "range_contains", since = "1.35.0")]
-    #[rustc_const_unstable(feature = "const_range_bounds", issue = "108082")]
+    #[crablangc_const_unstable(feature = "const_range_bounds", issue = "108082")]
     pub const fn contains<U>(&self, item: &U) -> bool
     where
         Idx: ~const PartialOrd<U>,
@@ -373,8 +373,8 @@ impl<Idx> RangeInclusive<Idx> {
     #[lang = "range_inclusive_new"]
     #[stable(feature = "inclusive_range_methods", since = "1.27.0")]
     #[inline]
-    #[rustc_promotable]
-    #[rustc_const_stable(feature = "const_range_new", since = "1.32.0")]
+    #[crablangc_promotable]
+    #[crablangc_const_stable(feature = "const_range_new", since = "1.32.0")]
     pub const fn new(start: Idx, end: Idx) -> Self {
         Self { start, end, exhausted: false }
     }
@@ -398,7 +398,7 @@ impl<Idx> RangeInclusive<Idx> {
     /// assert_eq!((3..=5).start(), &3);
     /// ```
     #[stable(feature = "inclusive_range_methods", since = "1.27.0")]
-    #[rustc_const_stable(feature = "const_inclusive_range_methods", since = "1.32.0")]
+    #[crablangc_const_stable(feature = "const_inclusive_range_methods", since = "1.32.0")]
     #[inline]
     pub const fn start(&self) -> &Idx {
         &self.start
@@ -423,7 +423,7 @@ impl<Idx> RangeInclusive<Idx> {
     /// assert_eq!((3..=5).end(), &5);
     /// ```
     #[stable(feature = "inclusive_range_methods", since = "1.27.0")]
-    #[rustc_const_stable(feature = "const_inclusive_range_methods", since = "1.32.0")]
+    #[crablangc_const_stable(feature = "const_inclusive_range_methods", since = "1.32.0")]
     #[inline]
     pub const fn end(&self) -> &Idx {
         &self.end
@@ -441,7 +441,7 @@ impl<Idx> RangeInclusive<Idx> {
     /// ```
     #[stable(feature = "inclusive_range_methods", since = "1.27.0")]
     #[inline]
-    #[rustc_const_unstable(feature = "const_range_bounds", issue = "108082")]
+    #[crablangc_const_unstable(feature = "const_range_bounds", issue = "108082")]
     pub const fn into_inner(self) -> (Idx, Idx) {
         (self.start, self.end)
     }
@@ -505,7 +505,7 @@ impl<Idx: ~const PartialOrd<Idx>> RangeInclusive<Idx> {
     /// assert!(!r.contains(&3) && !r.contains(&5));
     /// ```
     #[stable(feature = "range_contains", since = "1.35.0")]
-    #[rustc_const_unstable(feature = "const_range_bounds", issue = "108082")]
+    #[crablangc_const_unstable(feature = "const_range_bounds", issue = "108082")]
     pub const fn contains<U>(&self, item: &U) -> bool
     where
         Idx: ~const PartialOrd<U>,
@@ -541,7 +541,7 @@ impl<Idx: ~const PartialOrd<Idx>> RangeInclusive<Idx> {
     /// assert!(r.is_empty());
     /// ```
     #[stable(feature = "range_is_empty", since = "1.47.0")]
-    #[rustc_const_unstable(feature = "const_range_bounds", issue = "108082")]
+    #[crablangc_const_unstable(feature = "const_range_bounds", issue = "108082")]
     #[inline]
     pub const fn is_empty(&self) -> bool {
         self.exhausted || !(self.start <= self.end)
@@ -620,7 +620,7 @@ impl<Idx: ~const PartialOrd<Idx>> RangeToInclusive<Idx> {
     /// assert!(!(..=f32::NAN).contains(&0.5));
     /// ```
     #[stable(feature = "range_contains", since = "1.35.0")]
-    #[rustc_const_unstable(feature = "const_range_bounds", issue = "108082")]
+    #[crablangc_const_unstable(feature = "const_range_bounds", issue = "108082")]
     pub const fn contains<U>(&self, item: &U) -> bool
     where
         Idx: ~const PartialOrd<U>,
@@ -762,7 +762,7 @@ impl<T: Clone> Bound<&T> {
     }
 }
 
-/// `RangeBounds` is implemented by Rust's built-in range types, produced
+/// `RangeBounds` is implemented by CrabLang's built-in range types, produced
 /// by range syntax like `..`, `a..`, `..b`, `..=c`, `d..e`, or `f..=g`.
 #[stable(feature = "collections_range", since = "1.28.0")]
 #[const_trait]
@@ -836,7 +836,7 @@ pub trait RangeBounds<T: ?Sized> {
 use self::Bound::{Excluded, Included, Unbounded};
 
 #[stable(feature = "collections_range", since = "1.28.0")]
-#[rustc_const_unstable(feature = "const_range_bounds", issue = "108082")]
+#[crablangc_const_unstable(feature = "const_range_bounds", issue = "108082")]
 impl<T: ?Sized> const RangeBounds<T> for RangeFull {
     fn start_bound(&self) -> Bound<&T> {
         Unbounded
@@ -847,7 +847,7 @@ impl<T: ?Sized> const RangeBounds<T> for RangeFull {
 }
 
 #[stable(feature = "collections_range", since = "1.28.0")]
-#[rustc_const_unstable(feature = "const_range_bounds", issue = "108082")]
+#[crablangc_const_unstable(feature = "const_range_bounds", issue = "108082")]
 impl<T> const RangeBounds<T> for RangeFrom<T> {
     fn start_bound(&self) -> Bound<&T> {
         Included(&self.start)
@@ -858,7 +858,7 @@ impl<T> const RangeBounds<T> for RangeFrom<T> {
 }
 
 #[stable(feature = "collections_range", since = "1.28.0")]
-#[rustc_const_unstable(feature = "const_range_bounds", issue = "108082")]
+#[crablangc_const_unstable(feature = "const_range_bounds", issue = "108082")]
 impl<T> const RangeBounds<T> for RangeTo<T> {
     fn start_bound(&self) -> Bound<&T> {
         Unbounded
@@ -869,7 +869,7 @@ impl<T> const RangeBounds<T> for RangeTo<T> {
 }
 
 #[stable(feature = "collections_range", since = "1.28.0")]
-#[rustc_const_unstable(feature = "const_range_bounds", issue = "108082")]
+#[crablangc_const_unstable(feature = "const_range_bounds", issue = "108082")]
 impl<T> const RangeBounds<T> for Range<T> {
     fn start_bound(&self) -> Bound<&T> {
         Included(&self.start)
@@ -880,7 +880,7 @@ impl<T> const RangeBounds<T> for Range<T> {
 }
 
 #[stable(feature = "collections_range", since = "1.28.0")]
-#[rustc_const_unstable(feature = "const_range_bounds", issue = "108082")]
+#[crablangc_const_unstable(feature = "const_range_bounds", issue = "108082")]
 impl<T> const RangeBounds<T> for RangeInclusive<T> {
     fn start_bound(&self) -> Bound<&T> {
         Included(&self.start)
@@ -897,7 +897,7 @@ impl<T> const RangeBounds<T> for RangeInclusive<T> {
 }
 
 #[stable(feature = "collections_range", since = "1.28.0")]
-#[rustc_const_unstable(feature = "const_range_bounds", issue = "108082")]
+#[crablangc_const_unstable(feature = "const_range_bounds", issue = "108082")]
 impl<T> const RangeBounds<T> for RangeToInclusive<T> {
     fn start_bound(&self) -> Bound<&T> {
         Unbounded
@@ -908,7 +908,7 @@ impl<T> const RangeBounds<T> for RangeToInclusive<T> {
 }
 
 #[stable(feature = "collections_range", since = "1.28.0")]
-#[rustc_const_unstable(feature = "const_range_bounds", issue = "108082")]
+#[crablangc_const_unstable(feature = "const_range_bounds", issue = "108082")]
 impl<T> const RangeBounds<T> for (Bound<T>, Bound<T>) {
     fn start_bound(&self) -> Bound<&T> {
         match *self {
@@ -928,7 +928,7 @@ impl<T> const RangeBounds<T> for (Bound<T>, Bound<T>) {
 }
 
 #[stable(feature = "collections_range", since = "1.28.0")]
-#[rustc_const_unstable(feature = "const_range_bounds", issue = "108082")]
+#[crablangc_const_unstable(feature = "const_range_bounds", issue = "108082")]
 impl<'a, T: ?Sized + 'a> const RangeBounds<T> for (Bound<&'a T>, Bound<&'a T>) {
     fn start_bound(&self) -> Bound<&T> {
         self.0
@@ -940,7 +940,7 @@ impl<'a, T: ?Sized + 'a> const RangeBounds<T> for (Bound<&'a T>, Bound<&'a T>) {
 }
 
 #[stable(feature = "collections_range", since = "1.28.0")]
-#[rustc_const_unstable(feature = "const_range_bounds", issue = "108082")]
+#[crablangc_const_unstable(feature = "const_range_bounds", issue = "108082")]
 impl<T> const RangeBounds<T> for RangeFrom<&T> {
     fn start_bound(&self) -> Bound<&T> {
         Included(self.start)
@@ -951,7 +951,7 @@ impl<T> const RangeBounds<T> for RangeFrom<&T> {
 }
 
 #[stable(feature = "collections_range", since = "1.28.0")]
-#[rustc_const_unstable(feature = "const_range_bounds", issue = "108082")]
+#[crablangc_const_unstable(feature = "const_range_bounds", issue = "108082")]
 impl<T> const RangeBounds<T> for RangeTo<&T> {
     fn start_bound(&self) -> Bound<&T> {
         Unbounded
@@ -962,7 +962,7 @@ impl<T> const RangeBounds<T> for RangeTo<&T> {
 }
 
 #[stable(feature = "collections_range", since = "1.28.0")]
-#[rustc_const_unstable(feature = "const_range_bounds", issue = "108082")]
+#[crablangc_const_unstable(feature = "const_range_bounds", issue = "108082")]
 impl<T> const RangeBounds<T> for Range<&T> {
     fn start_bound(&self) -> Bound<&T> {
         Included(self.start)
@@ -973,7 +973,7 @@ impl<T> const RangeBounds<T> for Range<&T> {
 }
 
 #[stable(feature = "collections_range", since = "1.28.0")]
-#[rustc_const_unstable(feature = "const_range_bounds", issue = "108082")]
+#[crablangc_const_unstable(feature = "const_range_bounds", issue = "108082")]
 impl<T> const RangeBounds<T> for RangeInclusive<&T> {
     fn start_bound(&self) -> Bound<&T> {
         Included(self.start)
@@ -984,7 +984,7 @@ impl<T> const RangeBounds<T> for RangeInclusive<&T> {
 }
 
 #[stable(feature = "collections_range", since = "1.28.0")]
-#[rustc_const_unstable(feature = "const_range_bounds", issue = "108082")]
+#[crablangc_const_unstable(feature = "const_range_bounds", issue = "108082")]
 impl<T> const RangeBounds<T> for RangeToInclusive<&T> {
     fn start_bound(&self) -> Bound<&T> {
         Unbounded

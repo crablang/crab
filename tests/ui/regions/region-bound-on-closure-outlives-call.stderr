@@ -21,4 +21,4 @@ LL |     (|x| f(x))(call_rec(f))
 
 error: aborting due to previous error; 1 warning emitted
 
-For more information about this error, try `rustc --explain E0505`.
+For more information about this error, try `crablangc --explain E0505`.

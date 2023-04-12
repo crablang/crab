@@ -73,4 +73,4 @@ LL |     let x: char = true;
 error: aborting due to 7 previous errors
 
 Some errors have detailed explanations: E0308, E0618.
-For more information about an error, try `rustc --explain E0308`.
+For more information about an error, try `crablangc --explain E0308`.

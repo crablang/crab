@@ -32,7 +32,7 @@ fn main() {
     fs::copy(&me, foo.join(exe)).unwrap();
 
     // Unfortunately this is inconsistent based on the platform, see
-    // https://github.com/rust-lang/rust/issues/37868. On Windows,
+    // https://github.com/crablang/crablang/issues/37868. On Windows,
     // it is relative *before* changing the directory, and on Unix
     // it is *after* changing the directory.
     let relative_exe = if cfg!(windows) {

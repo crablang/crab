@@ -7,7 +7,7 @@
 extern crate remap_path_prefix_aux;
 
 // Here we check that submodules and include files are found using the path without
-// remapping. This test requires that rustc is called with an absolute path.
+// remapping. This test requires that crablangc is called with an absolute path.
 mod aux_mod;
 include!("aux_mod.rs");
 

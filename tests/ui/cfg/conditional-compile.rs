@@ -14,7 +14,7 @@ static b: bool = false;
 
 static b: bool = true;
 
-mod rustrt {
+mod crablangrt {
     #[cfg(bogus)]
     extern "C" {
         // This symbol doesn't exist and would be a link error if this
@@ -107,7 +107,7 @@ fn test_in_fn_ctxt() {
 }
 
 mod test_foreign_items {
-    pub mod rustrt {
+    pub mod crablangrt {
         extern "C" {
             #[cfg(bogus)]
             pub fn write() -> String;

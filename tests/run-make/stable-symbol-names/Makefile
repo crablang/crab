@@ -22,17 +22,17 @@ dump-symbols = nm "$(TMPDIR)/lib$(1).rlib" \
 #   functions
 
 all:
-	$(RUSTC) stable-symbol-names1.rs
+	$(CRABLANGC) stable-symbol-names1.rs
 	$(call dump-symbols,stable_symbol_names1,generic_|mono_,_v1)
 	rm $(TMPDIR)/libstable_symbol_names1.rlib
-	$(RUSTC) stable-symbol-names1.rs
+	$(CRABLANGC) stable-symbol-names1.rs
 	$(call dump-symbols,stable_symbol_names1,generic_|mono_,_v2)
 	cmp "$(TMPDIR)/stable_symbol_names1_v1.nm" "$(TMPDIR)/stable_symbol_names1_v2.nm"
 
-	$(RUSTC) stable-symbol-names2.rs
+	$(CRABLANGC) stable-symbol-names2.rs
 	$(call dump-symbols,stable_symbol_names2,generic_|mono_,_v1)
 	rm $(TMPDIR)/libstable_symbol_names2.rlib
-	$(RUSTC) stable-symbol-names2.rs
+	$(CRABLANGC) stable-symbol-names2.rs
 	$(call dump-symbols,stable_symbol_names2,generic_|mono_,_v2)
 	cmp "$(TMPDIR)/stable_symbol_names2_v1.nm" "$(TMPDIR)/stable_symbol_names2_v2.nm"
 

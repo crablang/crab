@@ -3,7 +3,7 @@
 // compile-flags: --force-warn bare_trait_objects
 // check-pass
 
-#![allow(rust_2018_idioms)]
+#![allow(crablang_2018_idioms)]
 
 pub trait SomeTrait {}
 

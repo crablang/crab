@@ -86,7 +86,7 @@ impl<T: Clone, U> Clone for GenericRef<'_, T, U> {
     }
 }
 
-// https://github.com/rust-lang/rust-clippy/issues/10188
+// https://github.com/crablang/crablang-clippy/issues/10188
 #[repr(packed)]
 #[derive(Copy)]
 struct Packed<T>(T);

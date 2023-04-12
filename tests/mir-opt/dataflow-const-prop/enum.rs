@@ -1,6 +1,6 @@
 // unit-test: DataflowConstProp
 
-#![feature(custom_mir, core_intrinsics, rustc_attrs)]
+#![feature(custom_mir, core_intrinsics, crablangc_attrs)]
 
 use std::intrinsics::mir::*;
 
@@ -15,8 +15,8 @@ fn simple() {
     let x = match e { E::V1(x) => x, E::V2(x) => x };
 }
 
-#[rustc_layout_scalar_valid_range_start(1)]
-#[rustc_nonnull_optimization_guaranteed]
+#[crablangc_layout_scalar_valid_range_start(1)]
+#[crablangc_nonnull_optimization_guaranteed]
 struct NonZeroUsize(usize);
 
 // EMIT_MIR enum.mutate_discriminant.DataflowConstProp.diff

@@ -1,6 +1,6 @@
 // This file is managed by `cargo dev rename_lint`. Prefer using that when possible.
 
-#[rustfmt::skip]
+#[crablangfmt::skip]
 pub static RENAMED_LINTS: &[(&str, &str)] = &[
     ("clippy::almost_complete_letter_range", "clippy::almost_complete_range"),
     ("clippy::blacklisted_name", "clippy::disallowed_names"),

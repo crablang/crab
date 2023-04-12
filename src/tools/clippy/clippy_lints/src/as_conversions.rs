@@ -1,8 +1,8 @@
 use clippy_utils::diagnostics::span_lint_and_help;
-use rustc_ast::ast::{Expr, ExprKind};
-use rustc_lint::{EarlyContext, EarlyLintPass, LintContext};
-use rustc_middle::lint::in_external_macro;
-use rustc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_ast::ast::{Expr, ExprKind};
+use crablangc_lint::{EarlyContext, EarlyLintPass, LintContext};
+use crablangc_middle::lint::in_external_macro;
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
 
 declare_clippy_lint! {
     /// ### What it does
@@ -14,7 +14,7 @@ declare_clippy_lint! {
     /// `unnecessary_cast`, `cast_lossless/cast_possible_truncation/cast_possible_wrap/cast_precision_loss/cast_sign_loss`,
     /// `fn_to_numeric_cast(_with_truncation)`, `char_lit_as_u8`, `ref_to_mut` and `ptr_as_ptr`.
     /// There is a good explanation the reason why this lint should work in this way and how it is useful
-    /// [in this issue](https://github.com/rust-lang/rust-clippy/issues/5122).
+    /// [in this issue](https://github.com/crablang/crablang-clippy/issues/5122).
     ///
     /// ### Why is this bad?
     /// `as` conversions will perform many kinds of
@@ -23,14 +23,14 @@ declare_clippy_lint! {
     /// Allow by default.
     ///
     /// ### Example
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// let a: u32;
     /// ...
     /// f(a as u16);
     /// ```
     ///
     /// Use instead:
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// f(a.try_into()?);
     ///
     /// // or

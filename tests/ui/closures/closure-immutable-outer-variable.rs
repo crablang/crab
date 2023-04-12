@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 
 // Point at the captured immutable outer variable
 

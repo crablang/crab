@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 
 #![warn(clippy::pedantic)]
 // Should suggest lowercase
@@ -9,7 +9,7 @@
 #[warn(clippy::if_not_els)]
 #[warn(clippy::UNNecsaRy_cAst)]
 #[warn(clippy::useles_transute)]
-// Shouldn't suggest rustc lint name(`dead_code`)
+// Shouldn't suggest crablangc lint name(`dead_code`)
 #[warn(clippy::dead_cod)]
 // Shouldn't suggest removed/deprecated clippy lint name(`unused_collect`)
 #[warn(clippy::unused_colle)]

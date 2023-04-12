@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 // edition:2021
 #![allow(dead_code, unused_mut, unused_variables)]
 struct A {}

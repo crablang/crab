@@ -5,16 +5,16 @@ use clippy_utils::source::snippet;
 use clippy_utils::usage::mutated_variables;
 use clippy_utils::{eq_expr_value, higher, match_def_path, paths};
 use if_chain::if_chain;
-use rustc_ast::ast::LitKind;
-use rustc_hir::def::Res;
-use rustc_hir::intravisit::{walk_expr, Visitor};
-use rustc_hir::BinOpKind;
-use rustc_hir::{BorrowKind, Expr, ExprKind};
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_middle::ty;
-use rustc_session::{declare_tool_lint, impl_lint_pass};
-use rustc_span::source_map::Spanned;
-use rustc_span::Span;
+use crablangc_ast::ast::LitKind;
+use crablangc_hir::def::Res;
+use crablangc_hir::intravisit::{walk_expr, Visitor};
+use crablangc_hir::BinOpKind;
+use crablangc_hir::{BorrowKind, Expr, ExprKind};
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_middle::ty;
+use crablangc_session::{declare_tool_lint, impl_lint_pass};
+use crablangc_span::source_map::Spanned;
+use crablangc_span::Span;
 
 declare_clippy_lint! {
     /// ### What it does
@@ -28,14 +28,14 @@ declare_clippy_lint! {
     /// used by `str::{starts,ends}_with` and in the slicing.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// let s = "hello, world!";
     /// if s.starts_with("hello, ") {
     ///     assert_eq!(s["hello, ".len()..].to_uppercase(), "WORLD!");
     /// }
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// let s = "hello, world!";
     /// if let Some(end) = s.strip_prefix("hello, ") {
     ///     assert_eq!(end.to_uppercase(), "WORLD!");

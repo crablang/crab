@@ -12,7 +12,7 @@
 // pretty-expanded FIXME #23616
 
 struct Covariant<'a> {
-    f: extern "Rust" fn(&'a isize)
+    f: extern "CrabLang" fn(&'a isize)
 }
 
 fn use_<'a>(c: Covariant<'a>) {

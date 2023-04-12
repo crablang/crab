@@ -1,36 +1,36 @@
-//! The first version of the prelude of The Rust Standard Library.
+//! The first version of the prelude of The CrabLang Standard Library.
 //!
 //! See the [module-level documentation](super) for more.
 
-#![stable(feature = "rust1", since = "1.0.0")]
+#![stable(feature = "crablang1", since = "1.0.0")]
 
 // Re-exported core operators
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[doc(no_inline)]
 pub use crate::marker::{Send, Sized, Sync, Unpin};
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[doc(no_inline)]
 pub use crate::ops::{Drop, Fn, FnMut, FnOnce};
 
 // Re-exported functions
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[doc(no_inline)]
 pub use crate::mem::drop;
 
 // Re-exported types and traits
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[doc(no_inline)]
 pub use crate::convert::{AsMut, AsRef, From, Into};
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[doc(no_inline)]
 pub use crate::iter::{DoubleEndedIterator, ExactSizeIterator};
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[doc(no_inline)]
 pub use crate::iter::{Extend, IntoIterator, Iterator};
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[doc(no_inline)]
 pub use crate::option::Option::{self, None, Some};
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[doc(no_inline)]
 pub use crate::result::Result::{self, Err, Ok};
 
@@ -55,7 +55,7 @@ pub use core::prelude::v1::concat_bytes;
 // Do not `doc(inline)` these `doc(hidden)` items.
 #[stable(feature = "builtin_macro_prelude", since = "1.38.0")]
 #[allow(deprecated)]
-pub use core::prelude::v1::{RustcDecodable, RustcEncodable};
+pub use core::prelude::v1::{CrabLangcDecodable, CrabLangcEncodable};
 
 // Do not `doc(no_inline)` so that they become doc items on their own
 // (no public module for them to be re-exported from).
@@ -96,15 +96,15 @@ pub use core::prelude::v1::type_ascribe;
 // Those files are duplicated rather than using glob imports
 // because we want docs to show these re-exports as pointing to within `std`.
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[doc(no_inline)]
 pub use crate::borrow::ToOwned;
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[doc(no_inline)]
 pub use crate::boxed::Box;
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[doc(no_inline)]
 pub use crate::string::{String, ToString};
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[doc(no_inline)]
 pub use crate::vec::Vec;

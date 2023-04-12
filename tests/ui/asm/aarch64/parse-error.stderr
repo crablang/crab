@@ -384,4 +384,4 @@ LL |         asm!("{1}", in("x0") foo, const bar);
 
 error: aborting due to 57 previous errors
 
-For more information about this error, try `rustc --explain E0435`.
+For more information about this error, try `crablangc --explain E0435`.

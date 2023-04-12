@@ -1,8 +1,8 @@
 #[derive(
-    core::RustcDecodable, //~ ERROR could not find `RustcDecodable` in `core`
-                          //~| ERROR could not find `RustcDecodable` in `core`
-    core::RustcDecodable, //~ ERROR could not find `RustcDecodable` in `core`
-                          //~| ERROR could not find `RustcDecodable` in `core`
+    core::CrabLangcDecodable, //~ ERROR could not find `CrabLangcDecodable` in `core`
+                          //~| ERROR could not find `CrabLangcDecodable` in `core`
+    core::CrabLangcDecodable, //~ ERROR could not find `CrabLangcDecodable` in `core`
+                          //~| ERROR could not find `CrabLangcDecodable` in `core`
 )]
 #[core::bench] //~ ERROR could not find `bench` in `core`
 #[core::global_allocator] //~ ERROR could not find `global_allocator` in `core`
@@ -11,10 +11,10 @@
 struct Core;
 
 #[derive(
-    std::RustcDecodable, //~ ERROR could not find `RustcDecodable` in `std`
-                         //~| ERROR could not find `RustcDecodable` in `std`
-    std::RustcDecodable, //~ ERROR could not find `RustcDecodable` in `std`
-                         //~| ERROR could not find `RustcDecodable` in `std`
+    std::CrabLangcDecodable, //~ ERROR could not find `CrabLangcDecodable` in `std`
+                         //~| ERROR could not find `CrabLangcDecodable` in `std`
+    std::CrabLangcDecodable, //~ ERROR could not find `CrabLangcDecodable` in `std`
+                         //~| ERROR could not find `CrabLangcDecodable` in `std`
 )]
 #[std::bench] //~ ERROR could not find `bench` in `std`
 #[std::global_allocator] //~ ERROR could not find `global_allocator` in `std`

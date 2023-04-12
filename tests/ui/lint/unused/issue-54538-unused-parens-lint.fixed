@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 
 #![feature(box_patterns, stmt_expr_attributes, yeet_expr)]
 

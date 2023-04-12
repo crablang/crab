@@ -29,7 +29,7 @@ fn main() {
 
 This test verifies a bug was fixed that otherwise generated this error:
 
-thread 'rustc' panicked at 'No counters provided the source_hash for function:
+thread 'crablangc' panicked at 'No counters provided the source_hash for function:
     Instance {
         def: Item(WithOptConstParam {
             did: DefId(0:101 ~ autocfg[c44a]::version::{impl#2}::partial_cmp),

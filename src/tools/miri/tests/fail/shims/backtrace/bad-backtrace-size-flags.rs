@@ -1,4 +1,4 @@
-extern "Rust" {
+extern "CrabLang" {
     fn miri_backtrace_size(flags: u64) -> usize;
 }
 

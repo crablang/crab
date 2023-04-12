@@ -1,7 +1,7 @@
 // revisions: rpass1 rpass2
 // edition:2021
 
-// See https://github.com/rust-lang/rust/issues/98890
+// See https://github.com/crablang/crablang/issues/98890
 
 #![allow(unused)]
 

@@ -1,4 +1,4 @@
-// https://github.com/rust-lang/rust/issues/49153
+// https://github.com/crablang/crablang/issues/49153
 
 // revisions:rpass1 rpass2
 

@@ -104,4 +104,4 @@ LL |     let _ = for<'a> |x: &'a _, y, z: _| -> &'a _ {
 
 error: aborting due to 15 previous errors
 
-For more information about this error, try `rustc --explain E0637`.
+For more information about this error, try `crablangc --explain E0637`.

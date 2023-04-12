@@ -1,4 +1,4 @@
-// Separate test file because `Fn() => bool` isn't getting fixed and rustfix complained that
+// Separate test file because `Fn() => bool` isn't getting fixed and crablangfix complained that
 // even though a fix was applied the code was still incorrect
 
 fn foo() => impl Fn() => bool {

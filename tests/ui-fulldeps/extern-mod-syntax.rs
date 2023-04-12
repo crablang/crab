@@ -1,7 +1,7 @@
 // run-pass
 
 #![allow(unused_imports)]
-#![feature(rustc_private)]
+#![feature(crablangc_private)]
 
 extern crate libc;
 use libc::c_void;

@@ -1,7 +1,7 @@
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 
-#[rustc_outlives]
-struct Foo<'b, U> { //~ ERROR rustc_outlives
+#[crablangc_outlives]
+struct Foo<'b, U> { //~ ERROR crablangc_outlives
     bar: Bar<'b, U>
 }
 

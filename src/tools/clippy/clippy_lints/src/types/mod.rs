@@ -9,21 +9,21 @@ mod type_complexity;
 mod utils;
 mod vec_box;
 
-use rustc_hir as hir;
-use rustc_hir::intravisit::FnKind;
-use rustc_hir::{
+use crablangc_hir as hir;
+use crablangc_hir::intravisit::FnKind;
+use crablangc_hir::{
     Body, FnDecl, FnRetTy, GenericArg, ImplItem, ImplItemKind, Item, ItemKind, Local, MutTy, QPath, TraitItem,
     TraitItemKind, TyKind,
 };
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_session::{declare_tool_lint, impl_lint_pass};
-use rustc_span::def_id::LocalDefId;
-use rustc_span::source_map::Span;
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_session::{declare_tool_lint, impl_lint_pass};
+use crablangc_span::def_id::LocalDefId;
+use crablangc_span::source_map::Span;
 
 declare_clippy_lint! {
     /// ### What it does
     /// Checks for use of `Box<T>` where T is a collection such as Vec anywhere in the code.
-    /// Check the [Box documentation](https://doc.rust-lang.org/std/boxed/index.html) for more information.
+    /// Check the [Box documentation](https://doc.crablang.org/std/boxed/index.html) for more information.
     ///
     /// ### Why is this bad?
     /// Collections already keeps their contents in a separate area on
@@ -31,7 +31,7 @@ declare_clippy_lint! {
     /// without any benefit whatsoever.
     ///
     /// ### Example
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// struct X {
     ///     values: Box<Vec<Foo>>,
     /// }
@@ -39,7 +39,7 @@ declare_clippy_lint! {
     ///
     /// Better:
     ///
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// struct X {
     ///     values: Vec<Foo>,
     /// }
@@ -53,18 +53,18 @@ declare_clippy_lint! {
 declare_clippy_lint! {
     /// ### What it does
     /// Checks for use of `Vec<Box<T>>` where T: Sized anywhere in the code.
-    /// Check the [Box documentation](https://doc.rust-lang.org/std/boxed/index.html) for more information.
+    /// Check the [Box documentation](https://doc.crablang.org/std/boxed/index.html) for more information.
     ///
     /// ### Why is this bad?
     /// `Vec` already keeps its contents in a separate area on
     /// the heap. So if you `Box` its contents, you just add another level of indirection.
     ///
     /// ### Known problems
-    /// Vec<Box<T: Sized>> makes sense if T is a large type (see [#3530](https://github.com/rust-lang/rust-clippy/issues/3530),
+    /// Vec<Box<T: Sized>> makes sense if T is a large type (see [#3530](https://github.com/crablang/crablang-clippy/issues/3530),
     /// 1st comment).
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// struct X {
     ///     values: Vec<Box<i32>>,
     /// }
@@ -72,7 +72,7 @@ declare_clippy_lint! {
     ///
     /// Better:
     ///
-    /// ```rust
+    /// ```crablang
     /// struct X {
     ///     values: Vec<i32>,
     /// }
@@ -97,7 +97,7 @@ declare_clippy_lint! {
     /// consider a custom `enum` instead, with clear names for each case.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// fn get_data() -> Option<Option<u32>> {
     ///     None
     /// }
@@ -105,7 +105,7 @@ declare_clippy_lint! {
     ///
     /// Better:
     ///
-    /// ```rust
+    /// ```crablang
     /// pub enum Contents {
     ///     Data(Vec<u8>), // Was Some(Some(Vec<u8>))
     ///     NotYetFetched, // Was Some(None)
@@ -152,7 +152,7 @@ declare_clippy_lint! {
     /// `LinkedList` makes sense are few and far between, but they can still happen.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// # use std::collections::LinkedList;
     /// let x: LinkedList<usize> = LinkedList::new();
     /// ```
@@ -165,7 +165,7 @@ declare_clippy_lint! {
 declare_clippy_lint! {
     /// ### What it does
     /// Checks for use of `&Box<T>` anywhere in the code.
-    /// Check the [Box documentation](https://doc.rust-lang.org/std/boxed/index.html) for more information.
+    /// Check the [Box documentation](https://doc.crablang.org/std/boxed/index.html) for more information.
     ///
     /// ### Why is this bad?
     /// A `&Box<T>` parameter requires the function caller to box `T` first before passing it to a function.
@@ -173,13 +173,13 @@ declare_clippy_lint! {
     /// auto-deref to `&T` at the function call site if passed a `&Box<T>`.
     ///
     /// ### Example
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// fn foo(bar: &Box<T>) { ... }
     /// ```
     ///
     /// Better:
     ///
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// fn foo(bar: &T) { ... }
     /// ```
     #[clippy::version = "pre 1.29.0"]
@@ -197,14 +197,14 @@ declare_clippy_lint! {
     /// `Arc<Arc<T>>`, `Arc<Box<T>>`, `Box<&T>`, `Box<Rc<T>>`, `Box<Arc<T>>`, `Box<Box<T>>`, add an unnecessary level of indirection.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// # use std::rc::Rc;
     /// fn foo(bar: Rc<&usize>) {}
     /// ```
     ///
     /// Better:
     ///
-    /// ```rust
+    /// ```crablang
     /// fn foo(bar: &usize) {}
     /// ```
     #[clippy::version = "1.44.0"]
@@ -232,14 +232,14 @@ declare_clippy_lint! {
     /// cases where mutation only happens before there are any additional references.
     ///
     /// ### Example
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// # use std::rc::Rc;
     /// fn foo(interned: Rc<String>) { ... }
     /// ```
     ///
     /// Better:
     ///
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// fn foo(interned: Rc<str>) { ... }
     /// ```
     #[clippy::version = "1.48.0"]
@@ -258,7 +258,7 @@ declare_clippy_lint! {
     /// using a `type` definition to simplify them.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// # use std::rc::Rc;
     /// struct Foo {
     ///     inner: Rc<Vec<Vec<Box<(u32, u32, u32, u32)>>>>,
@@ -284,7 +284,7 @@ declare_clippy_lint! {
     /// alas they are quite hard to rule out. Luckily they are also rare.
     ///
     /// ### Example
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// use std::rc::Rc;
     /// use std::sync::Mutex;
     /// fn foo(interned: Rc<Mutex<i32>>) { ... }
@@ -292,7 +292,7 @@ declare_clippy_lint! {
     ///
     /// Better:
     ///
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// use std::rc::Rc;
     /// use std::cell::RefCell
     /// fn foo(interned: Rc<RefCell<i32>>) { ... }

@@ -1,6 +1,6 @@
 // edition:2021
 
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 
 // Test that we can't move out of struct that impls `Drop`.
 
@@ -17,9 +17,9 @@ pub fn test1() {
     }
 
     let f = Foo(Rc::new(1));
-    let x = #[rustc_capture_analysis] move || {
+    let x = #[crablangc_capture_analysis] move || {
     //~^ ERROR: attributes on expressions are experimental
-    //~| NOTE: see issue #15701 <https://github.com/rust-lang/rust/issues/15701>
+    //~| NOTE: see issue #15701 <https://github.com/crablang/crablang/issues/15701>
     //~| ERROR: First Pass analysis includes:
     //~| ERROR: Min Capture analysis includes:
         println!("{:?}", f.0);
@@ -44,9 +44,9 @@ fn test2() {
 
     let character = Character { hp: 100, name: format!("A") };
 
-    let c = #[rustc_capture_analysis] move || {
+    let c = #[crablangc_capture_analysis] move || {
     //~^ ERROR: attributes on expressions are experimental
-    //~| NOTE: see issue #15701 <https://github.com/rust-lang/rust/issues/15701>
+    //~| NOTE: see issue #15701 <https://github.com/crablang/crablang/issues/15701>
     //~| ERROR: First Pass analysis includes:
     //~| ERROR: Min Capture analysis includes:
         println!("{}", character.hp)

@@ -1,11 +1,11 @@
 use clippy_utils::diagnostics::{span_lint, span_lint_and_note};
 use clippy_utils::{get_parent_expr, path_to_local, path_to_local_id};
 use if_chain::if_chain;
-use rustc_hir::intravisit::{walk_expr, Visitor};
-use rustc_hir::{BinOpKind, Block, Expr, ExprKind, Guard, HirId, Local, Node, Stmt, StmtKind};
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_middle::ty;
-use rustc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_hir::intravisit::{walk_expr, Visitor};
+use crablangc_hir::{BinOpKind, Block, Expr, ExprKind, Guard, HirId, Local, Node, Stmt, StmtKind};
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_middle::ty;
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
 
 declare_clippy_lint! {
     /// ### What it does
@@ -14,7 +14,7 @@ declare_clippy_lint! {
     /// order of sub-expressions.
     ///
     /// ### Why is this bad?
-    /// It is often confusing to read. As described [here](https://doc.rust-lang.org/reference/expressions.html?highlight=subexpression#evaluation-order-of-operands),
+    /// It is often confusing to read. As described [here](https://doc.crablang.org/reference/expressions.html?highlight=subexpression#evaluation-order-of-operands),
     /// the operands of these expressions are evaluated before applying the effects of the expression.
     ///
     /// ### Known problems
@@ -22,7 +22,7 @@ declare_clippy_lint! {
     /// order, or which is correct for any evaluation order.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// let mut x = 0;
     ///
     /// let a = {
@@ -33,7 +33,7 @@ declare_clippy_lint! {
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// # let mut x = 0;
     /// let tmp = {
     ///     x = 1;
@@ -54,14 +54,14 @@ declare_clippy_lint! {
     ///
     /// ### Why is this bad?
     /// It is often confusing to read. In addition, the
-    /// sub-expression evaluation order for Rust is not well documented.
+    /// sub-expression evaluation order for CrabLang is not well documented.
     ///
     /// ### Known problems
     /// Someone might want to use `some_bool || panic!()` as a
     /// shorthand.
     ///
     /// ### Example
-    /// ```rust,no_run
+    /// ```crablang,no_run
     /// # fn b() -> bool { true }
     /// # fn c() -> bool { true }
     /// let a = b() || panic!() || c();
@@ -320,7 +320,7 @@ impl<'a, 'tcx> Visitor<'tcx> for ReadVisitor<'a, 'tcx> {
             // only to have its address taken, so we stop here. Technically,
             // this misses some weird cases, eg.
             //
-            // ```rust
+            // ```crablang
             // let mut x = 0;
             // let a = foo(&{x = 1; x}, x);
             // ```

@@ -1,6 +1,6 @@
 // Test range syntax - borrow errors.
-#![feature(rustc_attrs)]
-pub fn main() { #![rustc_error] // rust-lang/rust#49855
+#![feature(crablangc_attrs)]
+pub fn main() { #![crablangc_error] // crablang/crablang#49855
     let r = {
         let a = 42;
         let b = 42;

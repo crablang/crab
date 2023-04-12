@@ -1,6 +1,6 @@
 // check-pass
 
-// regression test for https://github.com/rust-lang/rust/issues/100800
+// regression test for https://github.com/crablang/crablang/issues/100800
 
 #![feature(type_alias_impl_trait)]
 

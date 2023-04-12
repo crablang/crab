@@ -1,17 +1,17 @@
-#![feature(rustc_private, stmt_expr_attributes)]
+#![feature(crablangc_private, stmt_expr_attributes)]
 #![allow(
     clippy::manual_range_contains,
     clippy::useless_format,
     clippy::field_reassign_with_default
 )]
 
-extern crate rustc_data_structures;
-extern crate rustc_driver;
-extern crate rustc_hir;
-extern crate rustc_interface;
-extern crate rustc_metadata;
-extern crate rustc_middle;
-extern crate rustc_session;
+extern crate crablangc_data_structures;
+extern crate crablangc_driver;
+extern crate crablangc_hir;
+extern crate crablangc_interface;
+extern crate crablangc_metadata;
+extern crate crablangc_middle;
+extern crate crablangc_session;
 
 use std::env;
 use std::num::NonZeroU64;
@@ -20,20 +20,20 @@ use std::str::FromStr;
 
 use log::debug;
 
-use rustc_data_structures::sync::Lrc;
-use rustc_driver::Compilation;
-use rustc_hir::{self as hir, Node};
-use rustc_interface::interface::Config;
-use rustc_middle::{
+use crablangc_data_structures::sync::Lrc;
+use crablangc_driver::Compilation;
+use crablangc_hir::{self as hir, Node};
+use crablangc_interface::interface::Config;
+use crablangc_middle::{
     middle::exported_symbols::{
         ExportedSymbol, SymbolExportInfo, SymbolExportKind, SymbolExportLevel,
     },
     query::LocalCrate,
     ty::{query::ExternProviders, TyCtxt},
 };
-use rustc_session::config::OptLevel;
+use crablangc_session::config::OptLevel;
 
-use rustc_session::{config::CrateType, search_paths::PathKind, CtfeBacktrace};
+use crablangc_session::{config::CrateType, search_paths::PathKind, CtfeBacktrace};
 
 use miri::{BacktraceStyle, BorrowTrackerMethod, ProvenanceMode, RetagFields};
 
@@ -41,14 +41,14 @@ struct MiriCompilerCalls {
     miri_config: miri::MiriConfig,
 }
 
-impl rustc_driver::Callbacks for MiriCompilerCalls {
+impl crablangc_driver::Callbacks for MiriCompilerCalls {
     fn config(&mut self, config: &mut Config) {
         config.override_queries = Some(|_, _, external_providers| {
             external_providers.used_crate_source = |tcx, cnum| {
                 let mut providers = ExternProviders::default();
-                rustc_metadata::provide_extern(&mut providers);
+                crablangc_metadata::provide_extern(&mut providers);
                 let mut crate_source = (providers.used_crate_source)(tcx, cnum);
-                // HACK: rustc will emit "crate ... required to be available in rlib format, but
+                // HACK: crablangc will emit "crate ... required to be available in rlib format, but
                 // was not found in this form" errors once we use `tcx.dependency_formats()` if
                 // there's no rlib provided, so setting a dummy path here to workaround those errors.
                 Lrc::make_mut(&mut crate_source).rlib = Some((PathBuf::new(), PathKind::All));
@@ -59,8 +59,8 @@ impl rustc_driver::Callbacks for MiriCompilerCalls {
 
     fn after_analysis<'tcx>(
         &mut self,
-        _: &rustc_interface::interface::Compiler,
-        queries: &'tcx rustc_interface::Queries<'tcx>,
+        _: &crablangc_interface::interface::Compiler,
+        queries: &'tcx crablangc_interface::Queries<'tcx>,
     ) -> Compilation {
         queries.global_ctxt().unwrap().enter(|tcx| {
             tcx.sess.abort_if_errors();
@@ -112,18 +112,18 @@ impl rustc_driver::Callbacks for MiriCompilerCalls {
     }
 }
 
-struct MiriBeRustCompilerCalls {
+struct MiriBeCrabLangCompilerCalls {
     target_crate: bool,
 }
 
-impl rustc_driver::Callbacks for MiriBeRustCompilerCalls {
-    #[allow(rustc::potential_query_instability)] // rustc_codegen_ssa (where this code is copied from) also allows this lint
+impl crablangc_driver::Callbacks for MiriBeCrabLangCompilerCalls {
+    #[allow(crablangc::potential_query_instability)] // crablangc_codegen_ssa (where this code is copied from) also allows this lint
     fn config(&mut self, config: &mut Config) {
         if config.opts.prints.is_empty() && self.target_crate {
             // Queries overriden here affect the data stored in `rmeta` files of dependencies,
-            // which will be used later in non-`MIRI_BE_RUSTC` mode.
+            // which will be used later in non-`MIRI_BE_CRABLANGC` mode.
             config.override_queries = Some(|_, local_providers, _| {
-                // `exported_symbols` and `reachable_non_generics` provided by rustc always returns
+                // `exported_symbols` and `reachable_non_generics` provided by crablangc always returns
                 // an empty result if `tcx.sess.opts.output_types.should_codegen()` is false.
                 local_providers.exported_symbols = |tcx, LocalCrate| {
                     let reachable_set = tcx.with_stable_hashing_context(|hcx| {
@@ -131,13 +131,13 @@ impl rustc_driver::Callbacks for MiriBeRustCompilerCalls {
                     });
                     tcx.arena.alloc_from_iter(
                         // This is based on:
-                        // https://github.com/rust-lang/rust/blob/2962e7c0089d5c136f4e9600b7abccfbbde4973d/compiler/rustc_codegen_ssa/src/back/symbol_export.rs#L62-L63
-                        // https://github.com/rust-lang/rust/blob/2962e7c0089d5c136f4e9600b7abccfbbde4973d/compiler/rustc_codegen_ssa/src/back/symbol_export.rs#L174
+                        // https://github.com/crablang/crablang/blob/2962e7c0089d5c136f4e9600b7abccfbbde4973d/compiler/crablangc_codegen_ssa/src/back/symbol_export.rs#L62-L63
+                        // https://github.com/crablang/crablang/blob/2962e7c0089d5c136f4e9600b7abccfbbde4973d/compiler/crablangc_codegen_ssa/src/back/symbol_export.rs#L174
                         reachable_set.into_iter().filter_map(|&local_def_id| {
-                            // Do the same filtering that rustc does:
-                            // https://github.com/rust-lang/rust/blob/2962e7c0089d5c136f4e9600b7abccfbbde4973d/compiler/rustc_codegen_ssa/src/back/symbol_export.rs#L84-L102
+                            // Do the same filtering that crablangc does:
+                            // https://github.com/crablang/crablang/blob/2962e7c0089d5c136f4e9600b7abccfbbde4973d/compiler/crablangc_codegen_ssa/src/back/symbol_export.rs#L84-L102
                             // Otherwise it may cause unexpected behaviours and ICEs
-                            // (https://github.com/rust-lang/rust/issues/86261).
+                            // (https://github.com/crablang/crablang/issues/86261).
                             let is_reachable_non_generic = matches!(
                                 tcx.hir().get(tcx.hir().local_def_id_to_hir_id(local_def_id)),
                                 Node::Item(&hir::Item {
@@ -180,47 +180,47 @@ macro_rules! show_error {
 }
 
 fn init_early_loggers() {
-    // Note that our `extern crate log` is *not* the same as rustc's; as a result, we have to
+    // Note that our `extern crate log` is *not* the same as crablangc's; as a result, we have to
     // initialize them both, and we always initialize `miri`'s first.
     let env = env_logger::Env::new().filter("MIRI_LOG").write_style("MIRI_LOG_STYLE");
     env_logger::init_from_env(env);
     // Enable verbose entry/exit logging by default if MIRI_LOG is set.
-    if env::var_os("MIRI_LOG").is_some() && env::var_os("RUSTC_LOG_ENTRY_EXIT").is_none() {
-        env::set_var("RUSTC_LOG_ENTRY_EXIT", "1");
+    if env::var_os("MIRI_LOG").is_some() && env::var_os("CRABLANGC_LOG_ENTRY_EXIT").is_none() {
+        env::set_var("CRABLANGC_LOG_ENTRY_EXIT", "1");
     }
-    // We only initialize `rustc` if the env var is set (so the user asked for it).
+    // We only initialize `crablangc` if the env var is set (so the user asked for it).
     // If it is not set, we avoid initializing now so that we can initialize
     // later with our custom settings, and *not* log anything for what happens before
     // `miri` gets started.
-    if env::var_os("RUSTC_LOG").is_some() {
-        rustc_driver::init_rustc_env_logger();
+    if env::var_os("CRABLANGC_LOG").is_some() {
+        crablangc_driver::init_crablangc_env_logger();
     }
 }
 
 fn init_late_loggers(tcx: TyCtxt<'_>) {
-    // We initialize loggers right before we start evaluation. We overwrite the `RUSTC_LOG`
+    // We initialize loggers right before we start evaluation. We overwrite the `CRABLANGC_LOG`
     // env var if it is not set, control it based on `MIRI_LOG`.
     // (FIXME: use `var_os`, but then we need to manually concatenate instead of `format!`.)
     if let Ok(var) = env::var("MIRI_LOG") {
-        if env::var_os("RUSTC_LOG").is_none() {
+        if env::var_os("CRABLANGC_LOG").is_none() {
             // We try to be a bit clever here: if `MIRI_LOG` is just a single level
-            // used for everything, we only apply it to the parts of rustc that are
-            // CTFE-related. Otherwise, we use it verbatim for `RUSTC_LOG`.
+            // used for everything, we only apply it to the parts of crablangc that are
+            // CTFE-related. Otherwise, we use it verbatim for `CRABLANGC_LOG`.
             // This way, if you set `MIRI_LOG=trace`, you get only the right parts of
-            // rustc traced, but you can also do `MIRI_LOG=miri=trace,rustc_const_eval::interpret=debug`.
+            // crablangc traced, but you can also do `MIRI_LOG=miri=trace,crablangc_const_eval::interpret=debug`.
             if log::Level::from_str(&var).is_ok() {
                 env::set_var(
-                    "RUSTC_LOG",
-                    format!("rustc_middle::mir::interpret={var},rustc_const_eval::interpret={var}"),
+                    "CRABLANGC_LOG",
+                    format!("crablangc_middle::mir::interpret={var},crablangc_const_eval::interpret={var}"),
                 );
             } else {
-                env::set_var("RUSTC_LOG", &var);
+                env::set_var("CRABLANGC_LOG", &var);
             }
-            rustc_driver::init_rustc_env_logger();
+            crablangc_driver::init_crablangc_env_logger();
         }
     }
 
-    // If `MIRI_BACKTRACE` is set and `RUSTC_CTFE_BACKTRACE` is not, set `RUSTC_CTFE_BACKTRACE`.
+    // If `MIRI_BACKTRACE` is set and `CRABLANGC_CTFE_BACKTRACE` is not, set `CRABLANGC_CTFE_BACKTRACE`.
     // Do this late, so we ideally only apply this to Miri's errors.
     if let Some(val) = env::var_os("MIRI_BACKTRACE") {
         let ctfe_backtrace = match &*val.to_string_lossy() {
@@ -236,12 +236,12 @@ fn init_late_loggers(tcx: TyCtxt<'_>) {
 fn run_compiler(
     mut args: Vec<String>,
     target_crate: bool,
-    callbacks: &mut (dyn rustc_driver::Callbacks + Send),
+    callbacks: &mut (dyn crablangc_driver::Callbacks + Send),
 ) -> ! {
     if target_crate {
         // Miri needs a custom sysroot for target crates.
         // If no `--sysroot` is given, the `MIRI_SYSROOT` env var is consulted to find where
-        // that sysroot lives, and that is passed to rustc.
+        // that sysroot lives, and that is passed to crablangc.
         let sysroot_flag = "--sysroot";
         if !args.iter().any(|e| e == sysroot_flag) {
             // Using the built-in default here would be plain wrong, so we *require*
@@ -260,16 +260,16 @@ fn run_compiler(
     // Don't insert `MIRI_DEFAULT_ARGS`, in particular, `--cfg=miri`, if we are building
     // a "host" crate. That may cause procedural macros (and probably build scripts) to
     // depend on Miri-only symbols, such as `miri_resolve_frame`:
-    // https://github.com/rust-lang/miri/issues/1760
+    // https://github.com/crablang/miri/issues/1760
     if target_crate {
-        // Some options have different defaults in Miri than in plain rustc; apply those by making
+        // Some options have different defaults in Miri than in plain crablangc; apply those by making
         // them the first arguments after the binary name (but later arguments can overwrite them).
         args.splice(1..1, miri::MIRI_DEFAULT_ARGS.iter().map(ToString::to_string));
     }
 
     // Invoke compiler, and handle return code.
-    let exit_code = rustc_driver::catch_with_exit_code(move || {
-        rustc_driver::RunCompiler::new(&args, callbacks).run()
+    let exit_code = crablangc_driver::catch_with_exit_code(move || {
+        crablangc_driver::RunCompiler::new(&args, callbacks).run()
     });
     std::process::exit(exit_code)
 }
@@ -282,49 +282,49 @@ fn parse_comma_list<T: FromStr>(input: &str) -> Result<Vec<T>, T::Err> {
 }
 
 fn main() {
-    // Snapshot a copy of the environment before `rustc` starts messing with it.
-    // (`install_ice_hook` might change `RUST_BACKTRACE`.)
+    // Snapshot a copy of the environment before `crablangc` starts messing with it.
+    // (`install_ice_hook` might change `CRABLANG_BACKTRACE`.)
     let env_snapshot = env::vars_os().collect::<Vec<_>>();
 
-    // Earliest rustc setup.
-    rustc_driver::install_ice_hook();
+    // Earliest crablangc setup.
+    crablangc_driver::install_ice_hook();
 
-    // If the environment asks us to actually be rustc, then do that.
-    if let Some(crate_kind) = env::var_os("MIRI_BE_RUSTC") {
-        rustc_driver::init_rustc_env_logger();
+    // If the environment asks us to actually be crablangc, then do that.
+    if let Some(crate_kind) = env::var_os("MIRI_BE_CRABLANGC") {
+        crablangc_driver::init_crablangc_env_logger();
 
         let target_crate = if crate_kind == "target" {
             true
         } else if crate_kind == "host" {
             false
         } else {
-            panic!("invalid `MIRI_BE_RUSTC` value: {crate_kind:?}")
+            panic!("invalid `MIRI_BE_CRABLANGC` value: {crate_kind:?}")
         };
 
-        // We cannot use `rustc_driver::main` as we need to adjust the CLI arguments.
+        // We cannot use `crablangc_driver::main` as we need to adjust the CLI arguments.
         run_compiler(
             env::args().collect(),
             target_crate,
-            &mut MiriBeRustCompilerCalls { target_crate },
+            &mut MiriBeCrabLangCompilerCalls { target_crate },
         )
     }
 
     // Init loggers the Miri way.
     init_early_loggers();
 
-    // Parse our arguments and split them across `rustc` and `miri`.
+    // Parse our arguments and split them across `crablangc` and `miri`.
     let mut miri_config = miri::MiriConfig::default();
     miri_config.env = env_snapshot;
 
-    let mut rustc_args = vec![];
+    let mut crablangc_args = vec![];
     let mut after_dashdash = false;
 
     // If user has explicitly enabled/disabled isolation
     let mut isolation_enabled: Option<bool> = None;
     for arg in env::args() {
-        if rustc_args.is_empty() {
+        if crablangc_args.is_empty() {
             // Very first arg: binary name.
-            rustc_args.push(arg);
+            crablangc_args.push(arg);
         } else if after_dashdash {
             // Everything that comes after `--` is forwarded to the interpreted crate.
             miri_config.args.push(arg);
@@ -546,12 +546,12 @@ fn main() {
 
             miri_config.page_size = Some(page_size);
         } else {
-            // Forward to rustc.
-            rustc_args.push(arg);
+            // Forward to crablangc.
+            crablangc_args.push(arg);
         }
     }
 
-    debug!("rustc arguments: {:?}", rustc_args);
+    debug!("crablangc arguments: {:?}", crablangc_args);
     debug!("crate arguments: {:?}", miri_config.args);
-    run_compiler(rustc_args, /* target_crate: */ true, &mut MiriCompilerCalls { miri_config })
+    run_compiler(crablangc_args, /* target_crate: */ true, &mut MiriCompilerCalls { miri_config })
 }

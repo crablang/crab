@@ -168,4 +168,4 @@ LL | const ARRR5: [i32; Y5] = [99; 0];
 
 error: aborting due to 18 previous errors
 
-For more information about this error, try `rustc --explain E0308`.
+For more information about this error, try `crablangc --explain E0308`.

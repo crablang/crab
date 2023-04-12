@@ -1,4 +1,4 @@
-fn f(_: extern "Rust" fn()) {}
+fn f(_: extern "CrabLang" fn()) {}
 extern "C" fn bar() {}
 
 fn main() { f(bar) }

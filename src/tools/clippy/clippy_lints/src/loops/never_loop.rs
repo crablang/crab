@@ -3,10 +3,10 @@ use super::NEVER_LOOP;
 use clippy_utils::diagnostics::span_lint_and_then;
 use clippy_utils::higher::ForLoop;
 use clippy_utils::source::snippet;
-use rustc_errors::Applicability;
-use rustc_hir::{Block, Destination, Expr, ExprKind, HirId, InlineAsmOperand, Pat, Stmt, StmtKind};
-use rustc_lint::LateContext;
-use rustc_span::Span;
+use crablangc_errors::Applicability;
+use crablangc_hir::{Block, Destination, Expr, ExprKind, HirId, InlineAsmOperand, Pat, Stmt, StmtKind};
+use crablangc_lint::LateContext;
+use crablangc_span::Span;
 use std::iter::{once, Iterator};
 
 pub(super) fn check(

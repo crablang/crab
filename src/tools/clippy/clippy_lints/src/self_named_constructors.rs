@@ -1,9 +1,9 @@
 use clippy_utils::diagnostics::span_lint;
 use clippy_utils::return_ty;
 use clippy_utils::ty::contains_adt_constructor;
-use rustc_hir::{Impl, ImplItem, ImplItemKind, ItemKind, Node};
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_hir::{Impl, ImplItem, ImplItemKind, ItemKind, Node};
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
 
 declare_clippy_lint! {
     /// ### What it does
@@ -13,7 +13,7 @@ declare_clippy_lint! {
     /// Repeating the name of the type is redundant.
     ///
     /// ### Example
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// struct Foo {}
     ///
     /// impl Foo {
@@ -23,7 +23,7 @@ declare_clippy_lint! {
     /// }
     /// ```
     /// Use instead:
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// struct Foo {}
     ///
     /// impl Foo {

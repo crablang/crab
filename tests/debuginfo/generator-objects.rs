@@ -1,7 +1,7 @@
 // Require a gdb that can read DW_TAG_variant_part.
 // min-gdb-version: 8.2
 
-// LLDB without native Rust support cannot read DW_TAG_variant_part,
+// LLDB without native CrabLang support cannot read DW_TAG_variant_part,
 // so it prints nothing for generators. But those tests are kept to
 // ensure that LLDB won't crash at least (like #57822).
 

@@ -37,4 +37,4 @@ LL |     *a += 1;
 error: aborting due to 3 previous errors
 
 Some errors have detailed explanations: E0499, E0503.
-For more information about an error, try `rustc --explain E0499`.
+For more information about an error, try `crablangc --explain E0499`.

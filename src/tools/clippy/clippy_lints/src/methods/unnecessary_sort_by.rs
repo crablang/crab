@@ -3,12 +3,12 @@ use clippy_utils::is_trait_method;
 use clippy_utils::sugg::Sugg;
 use clippy_utils::ty::implements_trait;
 use if_chain::if_chain;
-use rustc_errors::Applicability;
-use rustc_hir::{Closure, Expr, ExprKind, Mutability, Param, Pat, PatKind, Path, PathSegment, QPath};
-use rustc_lint::LateContext;
-use rustc_middle::ty::{self, subst::GenericArgKind};
-use rustc_span::sym;
-use rustc_span::symbol::Ident;
+use crablangc_errors::Applicability;
+use crablangc_hir::{Closure, Expr, ExprKind, Mutability, Param, Pat, PatKind, Path, PathSegment, QPath};
+use crablangc_lint::LateContext;
+use crablangc_middle::ty::{self, subst::GenericArgKind};
+use crablangc_span::sym;
+use crablangc_span::symbol::Ident;
 use std::iter;
 
 use super::UNNECESSARY_SORT_BY;

@@ -6,12 +6,12 @@ mod result;
 mod too_many_arguments;
 mod too_many_lines;
 
-use rustc_hir as hir;
-use rustc_hir::intravisit;
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_session::{declare_tool_lint, impl_lint_pass};
-use rustc_span::def_id::LocalDefId;
-use rustc_span::Span;
+use crablangc_hir as hir;
+use crablangc_hir::intravisit;
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_session::{declare_tool_lint, impl_lint_pass};
+use crablangc_span::def_id::LocalDefId;
+use crablangc_span::Span;
 
 declare_clippy_lint! {
     /// ### What it does
@@ -23,7 +23,7 @@ declare_clippy_lint! {
     /// grouping some parameters into a new type.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// # struct Color;
     /// fn foo(x: u32, y: u32, name: &str, c: Color, w: f32, h: f32, a: f32, b: f32) {
     ///     // ..
@@ -46,7 +46,7 @@ declare_clippy_lint! {
     /// multiple functions.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// fn im_too_long() {
     ///     println!("");
     ///     // ... 100 more LoC
@@ -69,13 +69,13 @@ declare_clippy_lint! {
     /// arbitrary raw pointer, there is no way of telling for sure if it is valid.
     ///
     /// In general, this lint should **never be disabled** unless it is definitely a
-    /// false positive (please submit an issue if so) since it breaks Rust's
+    /// false positive (please submit an issue if so) since it breaks CrabLang's
     /// soundness guarantees, directly exposing API users to potentially dangerous
     /// program behavior. This is also true for internal APIs, as it is easy to leak
     /// unsoundness.
     ///
     /// ### Context
-    /// In Rust, an `unsafe {...}` block is used to indicate that the code in that
+    /// In CrabLang, an `unsafe {...}` block is used to indicate that the code in that
     /// section has been verified in some way that the compiler can not. For a
     /// function that accepts a raw pointer then accesses the pointer's data, this is
     /// generally impossible as the incoming pointer could point anywhere, valid or
@@ -92,7 +92,7 @@ declare_clippy_lint! {
     /// `some_argument.get_raw_ptr()`) (false negative).
     ///
     /// ### Example
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// pub fn foo(x: *const u8) {
     ///     println!("{}", unsafe { *x });
     /// }
@@ -102,7 +102,7 @@ declare_clippy_lint! {
     /// ```
     ///
     /// Use instead:
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// pub unsafe fn foo(x: *const u8) {
     ///     println!("{}", unsafe { *x });
     /// }
@@ -129,7 +129,7 @@ declare_clippy_lint! {
     /// a remnant of a refactoring that removed the return type.
     ///
     /// ### Examples
-    /// ```rust
+    /// ```crablang
     /// #[must_use]
     /// fn useless() { }
     /// ```
@@ -151,7 +151,7 @@ declare_clippy_lint! {
     /// attribute to improve the lint message.
     ///
     /// ### Examples
-    /// ```rust
+    /// ```crablang
     /// #[must_use]
     /// fn double_must_use() -> Result<(), ()> {
     ///     unimplemented!();
@@ -183,7 +183,7 @@ declare_clippy_lint! {
     /// `#[must_use]`.
     ///
     /// ### Examples
-    /// ```rust
+    /// ```crablang
     /// // this could be annotated with `#[must_use]`.
     /// pub fn id<T>(t: T) -> T { t }
     /// ```
@@ -211,11 +211,11 @@ declare_clippy_lint! {
     /// instead.
     ///
     /// ### Examples
-    /// ```rust
+    /// ```crablang
     /// pub fn read_u8() -> Result<u8, ()> { Err(()) }
     /// ```
     /// should become
-    /// ```rust,should_panic
+    /// ```crablang,should_panic
     /// use std::fmt;
     ///
     /// #[derive(Debug)]
@@ -257,7 +257,7 @@ declare_clippy_lint! {
     /// The size determined by Clippy is platform-dependent.
     ///
     /// ### Examples
-    /// ```rust
+    /// ```crablang
     /// pub enum ParseError {
     ///     UnparsedBytes([u8; 512]),
     ///     UnexpectedEof,
@@ -296,7 +296,7 @@ declare_clippy_lint! {
     ///
     /// ### Example
 
-    /// ```rust
+    /// ```crablang
     /// struct A {
     ///     a: String,
     ///     b: String,
@@ -310,7 +310,7 @@ declare_clippy_lint! {
 
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// struct A {
     ///     a: String,
     ///     b: String,
@@ -335,14 +335,14 @@ declare_clippy_lint! {
     /// Turbofish syntax (`::<>`) cannot be used when `impl Trait` is being used, making `impl Trait` less powerful. Readability may also be a factor.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// trait MyTrait {}
     /// fn foo(a: impl MyTrait) {
     /// 	// [...]
     /// }
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// trait MyTrait {}
     /// fn foo<T: MyTrait>(a: T) {
     /// 	// [...]

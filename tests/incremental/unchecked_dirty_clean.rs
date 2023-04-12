@@ -2,33 +2,33 @@
 // compile-flags: -Z query-dep-graph
 
 #![allow(warnings)]
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 
-// Sanity check for the dirty-clean system. We add #[rustc_clean]
+// Sanity check for the dirty-clean system. We add #[crablangc_clean]
 // attributes in places that are not checked and make sure that this causes an
 // error.
 
 fn main() {
 
-    #[rustc_clean(except="hir_owner", cfg="cfail2")]
-    //[cfail2]~^ ERROR found unchecked `#[rustc_clean]` attribute
+    #[crablangc_clean(except="hir_owner", cfg="cfail2")]
+    //[cfail2]~^ ERROR found unchecked `#[crablangc_clean]` attribute
     {
         // empty block
     }
 
-    #[rustc_clean(cfg="cfail2")]
-    //[cfail2]~^ ERROR found unchecked `#[rustc_clean]` attribute
+    #[crablangc_clean(cfg="cfail2")]
+    //[cfail2]~^ ERROR found unchecked `#[crablangc_clean]` attribute
     {
         // empty block
     }
 }
 
 struct _Struct {
-    #[rustc_clean(except="hir_owner", cfg="cfail2")]
-    //[cfail2]~^ ERROR found unchecked `#[rustc_clean]` attribute
+    #[crablangc_clean(except="hir_owner", cfg="cfail2")]
+    //[cfail2]~^ ERROR found unchecked `#[crablangc_clean]` attribute
     _field1: i32,
 
-    #[rustc_clean(cfg="cfail2")]
-    //[cfail2]~^ ERROR found unchecked `#[rustc_clean]` attribute
+    #[crablangc_clean(cfg="cfail2")]
+    //[cfail2]~^ ERROR found unchecked `#[crablangc_clean]` attribute
     _field2: i32,
 }

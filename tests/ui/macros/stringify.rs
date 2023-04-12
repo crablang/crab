@@ -214,12 +214,12 @@ fn test_expr() {
     assert_eq!(stringify_expr!(async move || self), "async move || self");
     assert_eq!(stringify_expr!(static || self), "static || self");
     assert_eq!(stringify_expr!(static move || self), "static move || self");
-    #[rustfmt::skip] // https://github.com/rust-lang/rustfmt/issues/5149
+    #[crablangfmt::skip] // https://github.com/crablang/crablangfmt/issues/5149
     assert_eq!(
         stringify_expr!(static async || self),
         "static async || self",
     );
-    #[rustfmt::skip] // https://github.com/rust-lang/rustfmt/issues/5149
+    #[crablangfmt::skip] // https://github.com/crablang/crablangfmt/issues/5149
     assert_eq!(
         stringify_expr!(static async move || self),
         "static async move || self",
@@ -317,7 +317,7 @@ fn test_expr() {
 
     // ExprKind::Struct
     assert_eq!(stringify_expr!(Struct {}), "Struct {}");
-    #[rustfmt::skip] // https://github.com/rust-lang/rustfmt/issues/5151
+    #[crablangfmt::skip] // https://github.com/crablang/crablangfmt/issues/5151
     assert_eq!(stringify_expr!(<Struct as Trait>::Type {}), "<Struct as Trait>::Type {}");
     assert_eq!(stringify_expr!(Struct { .. }), "Struct { .. }");
     assert_eq!(stringify_expr!(Struct { ..base }), "Struct { ..base }");
@@ -447,7 +447,7 @@ fn test_item() {
         ),
         "extern \"C\" {}",
     );
-    #[rustfmt::skip]
+    #[crablangfmt::skip]
     assert_eq!(
         stringify_item!(
             pub extern "C" {}
@@ -462,7 +462,7 @@ fn test_item() {
     );
 
     // ItemKind::TyAlias
-    #[rustfmt::skip]
+    #[crablangfmt::skip]
     assert_eq!(
         stringify_item!(
             pub default type Type<'a>: Bound
@@ -676,7 +676,7 @@ fn test_pat() {
     assert_eq!(stringify_pat!(Struct { .. }), "Struct { .. }");
     assert_eq!(stringify_pat!(Struct { x, .. }), "Struct { x, .. }");
     assert_eq!(stringify_pat!(Struct { x: _x, .. }), "Struct { x: _x, .. }");
-    #[rustfmt::skip] // https://github.com/rust-lang/rustfmt/issues/5151
+    #[crablangfmt::skip] // https://github.com/crablang/crablangfmt/issues/5151
     assert_eq!(
         stringify_pat!(<Struct as Trait>::Type {}),
         "<Struct as Trait>::Type {}",
@@ -808,7 +808,7 @@ fn test_ty() {
     assert_eq!(stringify_ty!(fn() -> ()), "fn() -> ()");
     assert_eq!(stringify_ty!(fn(u8)), "fn(u8)");
     assert_eq!(stringify_ty!(fn(x: u8)), "fn(x: u8)");
-    #[rustfmt::skip]
+    #[crablangfmt::skip]
     assert_eq!(stringify_ty!(for<> fn()), "fn()");
     assert_eq!(stringify_ty!(for<'a> fn()), "for<'a> fn()");
 

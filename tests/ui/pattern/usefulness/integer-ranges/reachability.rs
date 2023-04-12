@@ -105,7 +105,7 @@ fn main() {
         BAR => {} //~ ERROR unreachable pattern
         _ => {}
     }
-    // Regression test, see https://github.com/rust-lang/rust/pull/66326#issuecomment-552889933
+    // Regression test, see https://github.com/crablang/crablang/pull/66326#issuecomment-552889933
     match &0 {
         BAR => {} // ok
         _ => {}

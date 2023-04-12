@@ -28,14 +28,14 @@ use crate::sys::cvt;
 /// socket, which is then borrowed under the same lifetime.
 #[derive(Copy, Clone)]
 #[repr(transparent)]
-#[rustc_layout_scalar_valid_range_start(0)]
+#[crablangc_layout_scalar_valid_range_start(0)]
 // This is -2, in two's complement. -1 is `INVALID_SOCKET`.
-#[cfg_attr(target_pointer_width = "32", rustc_layout_scalar_valid_range_end(0xFF_FF_FF_FE))]
+#[cfg_attr(target_pointer_width = "32", crablangc_layout_scalar_valid_range_end(0xFF_FF_FF_FE))]
 #[cfg_attr(
     target_pointer_width = "64",
-    rustc_layout_scalar_valid_range_end(0xFF_FF_FF_FF_FF_FF_FF_FE)
+    crablangc_layout_scalar_valid_range_end(0xFF_FF_FF_FF_FF_FF_FF_FE)
 )]
-#[rustc_nonnull_optimization_guaranteed]
+#[crablangc_nonnull_optimization_guaranteed]
 #[stable(feature = "io_safety", since = "1.63.0")]
 pub struct BorrowedSocket<'socket> {
     socket: RawSocket,
@@ -51,14 +51,14 @@ pub struct BorrowedSocket<'socket> {
 /// argument or returned as an owned value, and it never has the value
 /// `INVALID_SOCKET`.
 #[repr(transparent)]
-#[rustc_layout_scalar_valid_range_start(0)]
+#[crablangc_layout_scalar_valid_range_start(0)]
 // This is -2, in two's complement. -1 is `INVALID_SOCKET`.
-#[cfg_attr(target_pointer_width = "32", rustc_layout_scalar_valid_range_end(0xFF_FF_FF_FE))]
+#[cfg_attr(target_pointer_width = "32", crablangc_layout_scalar_valid_range_end(0xFF_FF_FF_FE))]
 #[cfg_attr(
     target_pointer_width = "64",
-    rustc_layout_scalar_valid_range_end(0xFF_FF_FF_FF_FF_FF_FF_FE)
+    crablangc_layout_scalar_valid_range_end(0xFF_FF_FF_FF_FF_FF_FF_FE)
 )]
-#[rustc_nonnull_optimization_guaranteed]
+#[crablangc_nonnull_optimization_guaranteed]
 #[stable(feature = "io_safety", since = "1.63.0")]
 pub struct OwnedSocket {
     socket: RawSocket,
@@ -73,7 +73,7 @@ impl BorrowedSocket<'_> {
     /// the returned `BorrowedSocket`, and it must not have the value
     /// `INVALID_SOCKET`.
     #[inline]
-    #[rustc_const_stable(feature = "io_safety", since = "1.63.0")]
+    #[crablangc_const_stable(feature = "io_safety", since = "1.63.0")]
     #[stable(feature = "io_safety", since = "1.63.0")]
     pub const unsafe fn borrow_raw(socket: RawSocket) -> Self {
         assert!(socket != c::INVALID_SOCKET as RawSocket);

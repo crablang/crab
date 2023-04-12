@@ -29,7 +29,7 @@ use crate::slice::{self, SliceIndex};
 ///
 /// Covariance is correct for most safe abstractions, such as `Box`, `Rc`, `Arc`, `Vec`,
 /// and `LinkedList`. This is the case because they provide a public API that follows the
-/// normal shared XOR mutable rules of Rust.
+/// normal shared XOR mutable rules of CrabLang.
 ///
 /// If your type cannot safely be covariant, you must ensure it contains some
 /// additional field to provide invariance. Often this field will be a [`PhantomData`]
@@ -43,13 +43,13 @@ use crate::slice::{self, SliceIndex};
 /// it is your responsibility to ensure that `as_mut` is never called, and `as_ptr`
 /// is never used for mutation.
 ///
-/// [covariant]: https://doc.rust-lang.org/reference/subtyping.html
+/// [covariant]: https://doc.crablang.org/reference/subtyping.html
 /// [`PhantomData`]: crate::marker::PhantomData
 /// [`UnsafeCell<T>`]: crate::cell::UnsafeCell
 #[stable(feature = "nonnull", since = "1.25.0")]
 #[repr(transparent)]
-#[rustc_layout_scalar_valid_range_start(1)]
-#[rustc_nonnull_optimization_guaranteed]
+#[crablangc_layout_scalar_valid_range_start(1)]
+#[crablangc_nonnull_optimization_guaranteed]
 pub struct NonNull<T: ?Sized> {
     pointer: *const T,
 }
@@ -85,7 +85,7 @@ impl<T: Sized> NonNull<T> {
     /// // initializing it first! The pointer is not null but isn't valid either!
     /// ```
     #[stable(feature = "nonnull", since = "1.25.0")]
-    #[rustc_const_stable(feature = "const_nonnull_dangling", since = "1.36.0")]
+    #[crablangc_const_stable(feature = "const_nonnull_dangling", since = "1.36.0")]
     #[must_use]
     #[inline]
     pub const fn dangling() -> Self {
@@ -114,7 +114,7 @@ impl<T: Sized> NonNull<T> {
     ///
     /// * It must be "dereferenceable" in the sense defined in [the module documentation].
     ///
-    /// * You must enforce Rust's aliasing rules, since the returned lifetime `'a` is
+    /// * You must enforce CrabLang's aliasing rules, since the returned lifetime `'a` is
     ///   arbitrarily chosen and does not necessarily reflect the actual lifetime of the data.
     ///   In particular, while this reference exists, the memory the pointer points to must
     ///   not get mutated (except inside `UnsafeCell`).
@@ -125,7 +125,7 @@ impl<T: Sized> NonNull<T> {
     #[inline]
     #[must_use]
     #[unstable(feature = "ptr_as_uninit", issue = "75402")]
-    #[rustc_const_unstable(feature = "const_ptr_as_ref", issue = "91822")]
+    #[crablangc_const_unstable(feature = "const_ptr_as_ref", issue = "91822")]
     pub const unsafe fn as_uninit_ref<'a>(self) -> &'a MaybeUninit<T> {
         // SAFETY: the caller must guarantee that `self` meets all the
         // requirements for a reference.
@@ -148,7 +148,7 @@ impl<T: Sized> NonNull<T> {
     ///
     /// * It must be "dereferenceable" in the sense defined in [the module documentation].
     ///
-    /// * You must enforce Rust's aliasing rules, since the returned lifetime `'a` is
+    /// * You must enforce CrabLang's aliasing rules, since the returned lifetime `'a` is
     ///   arbitrarily chosen and does not necessarily reflect the actual lifetime of the data.
     ///   In particular, while this reference exists, the memory the pointer points to must
     ///   not get accessed (read or written) through any other pointer.
@@ -159,7 +159,7 @@ impl<T: Sized> NonNull<T> {
     #[inline]
     #[must_use]
     #[unstable(feature = "ptr_as_uninit", issue = "75402")]
-    #[rustc_const_unstable(feature = "const_ptr_as_ref", issue = "91822")]
+    #[crablangc_const_unstable(feature = "const_ptr_as_ref", issue = "91822")]
     pub const unsafe fn as_uninit_mut<'a>(self) -> &'a mut MaybeUninit<T> {
         // SAFETY: the caller must guarantee that `self` meets all the
         // requirements for a reference.
@@ -185,14 +185,14 @@ impl<T: ?Sized> NonNull<T> {
     ///
     /// *Incorrect* usage of this function:
     ///
-    /// ```rust,no_run
+    /// ```crablang,no_run
     /// use std::ptr::NonNull;
     ///
     /// // NEVER DO THAT!!! This is undefined behavior. ⚠️
     /// let ptr = unsafe { NonNull::<u32>::new_unchecked(std::ptr::null_mut()) };
     /// ```
     #[stable(feature = "nonnull", since = "1.25.0")]
-    #[rustc_const_stable(feature = "const_nonnull_new_unchecked", since = "1.25.0")]
+    #[crablangc_const_stable(feature = "const_nonnull_new_unchecked", since = "1.25.0")]
     #[inline]
     pub const unsafe fn new_unchecked(ptr: *mut T) -> Self {
         // SAFETY: the caller must guarantee that `ptr` is non-null.
@@ -217,7 +217,7 @@ impl<T: ?Sized> NonNull<T> {
     /// }
     /// ```
     #[stable(feature = "nonnull", since = "1.25.0")]
-    #[rustc_const_unstable(feature = "const_nonnull_new", issue = "93235")]
+    #[crablangc_const_unstable(feature = "const_nonnull_new", issue = "93235")]
     #[inline]
     pub const fn new(ptr: *mut T) -> Option<Self> {
         if !ptr.is_null() {
@@ -235,7 +235,7 @@ impl<T: ?Sized> NonNull<T> {
     ///
     /// [`std::ptr::from_raw_parts`]: crate::ptr::from_raw_parts
     #[unstable(feature = "ptr_metadata", issue = "81513")]
-    #[rustc_const_unstable(feature = "ptr_metadata", issue = "81513")]
+    #[crablangc_const_unstable(feature = "ptr_metadata", issue = "81513")]
     #[inline]
     pub const fn from_raw_parts(
         data_address: NonNull<()>,
@@ -251,7 +251,7 @@ impl<T: ?Sized> NonNull<T> {
     ///
     /// The pointer can be later reconstructed with [`NonNull::from_raw_parts`].
     #[unstable(feature = "ptr_metadata", issue = "81513")]
-    #[rustc_const_unstable(feature = "ptr_metadata", issue = "81513")]
+    #[crablangc_const_unstable(feature = "ptr_metadata", issue = "81513")]
     #[must_use = "this returns the result of the operation, \
                   without modifying the original"]
     #[inline]
@@ -319,7 +319,7 @@ impl<T: ?Sized> NonNull<T> {
     /// assert_eq!(x_value, 2);
     /// ```
     #[stable(feature = "nonnull", since = "1.25.0")]
-    #[rustc_const_stable(feature = "const_nonnull_as_ptr", since = "1.32.0")]
+    #[crablangc_const_stable(feature = "const_nonnull_as_ptr", since = "1.32.0")]
     #[must_use]
     #[inline(always)]
     pub const fn as_ptr(self) -> *mut T {
@@ -344,7 +344,7 @@ impl<T: ?Sized> NonNull<T> {
     ///
     /// * The pointer must point to an initialized instance of `T`.
     ///
-    /// * You must enforce Rust's aliasing rules, since the returned lifetime `'a` is
+    /// * You must enforce CrabLang's aliasing rules, since the returned lifetime `'a` is
     ///   arbitrarily chosen and does not necessarily reflect the actual lifetime of the data.
     ///   In particular, while this reference exists, the memory the pointer points to must
     ///   not get mutated (except inside `UnsafeCell`).
@@ -367,7 +367,7 @@ impl<T: ?Sized> NonNull<T> {
     ///
     /// [the module documentation]: crate::ptr#safety
     #[stable(feature = "nonnull", since = "1.25.0")]
-    #[rustc_const_unstable(feature = "const_ptr_as_ref", issue = "91822")]
+    #[crablangc_const_unstable(feature = "const_ptr_as_ref", issue = "91822")]
     #[must_use]
     #[inline(always)]
     pub const unsafe fn as_ref<'a>(&self) -> &'a T {
@@ -394,7 +394,7 @@ impl<T: ?Sized> NonNull<T> {
     ///
     /// * The pointer must point to an initialized instance of `T`.
     ///
-    /// * You must enforce Rust's aliasing rules, since the returned lifetime `'a` is
+    /// * You must enforce CrabLang's aliasing rules, since the returned lifetime `'a` is
     ///   arbitrarily chosen and does not necessarily reflect the actual lifetime of the data.
     ///   In particular, while this reference exists, the memory the pointer points to must
     ///   not get accessed (read or written) through any other pointer.
@@ -418,7 +418,7 @@ impl<T: ?Sized> NonNull<T> {
     ///
     /// [the module documentation]: crate::ptr#safety
     #[stable(feature = "nonnull", since = "1.25.0")]
-    #[rustc_const_unstable(feature = "const_ptr_as_ref", issue = "91822")]
+    #[crablangc_const_unstable(feature = "const_ptr_as_ref", issue = "91822")]
     #[must_use]
     #[inline(always)]
     pub const unsafe fn as_mut<'a>(&mut self) -> &'a mut T {
@@ -441,7 +441,7 @@ impl<T: ?Sized> NonNull<T> {
     /// let raw_ptr: *mut i8 = casted_ptr.as_ptr();
     /// ```
     #[stable(feature = "nonnull_cast", since = "1.27.0")]
-    #[rustc_const_stable(feature = "const_nonnull_cast", since = "1.36.0")]
+    #[crablangc_const_stable(feature = "const_nonnull_cast", since = "1.36.0")]
     #[must_use = "this returns the result of the operation, \
                   without modifying the original"]
     #[inline]
@@ -461,7 +461,7 @@ impl<T> NonNull<[T]> {
     ///
     /// # Examples
     ///
-    /// ```rust
+    /// ```crablang
     /// use std::ptr::NonNull;
     ///
     /// // create a slice pointer when starting out with a pointer to the first element
@@ -473,8 +473,8 @@ impl<T> NonNull<[T]> {
     ///
     /// (Note that this example artificially demonstrates a use of this method,
     /// but `let slice = NonNull::from(&x[..]);` would be a better way to write code like this.)
-    #[stable(feature = "nonnull_slice_from_raw_parts", since = "CURRENT_RUSTC_VERSION")]
-    #[rustc_const_unstable(feature = "const_slice_from_raw_parts_mut", issue = "67456")]
+    #[stable(feature = "nonnull_slice_from_raw_parts", since = "CURRENT_CRABLANGC_VERSION")]
+    #[crablangc_const_unstable(feature = "const_slice_from_raw_parts_mut", issue = "67456")]
     #[must_use]
     #[inline]
     pub const fn slice_from_raw_parts(data: NonNull<T>, len: usize) -> Self {
@@ -491,15 +491,15 @@ impl<T> NonNull<[T]> {
     ///
     /// # Examples
     ///
-    /// ```rust
+    /// ```crablang
     /// use std::ptr::NonNull;
     ///
     /// let slice: NonNull<[i8]> = NonNull::slice_from_raw_parts(NonNull::dangling(), 3);
     /// assert_eq!(slice.len(), 3);
     /// ```
     #[stable(feature = "slice_ptr_len_nonnull", since = "1.63.0")]
-    #[rustc_const_stable(feature = "const_slice_ptr_len_nonnull", since = "1.63.0")]
-    #[rustc_allow_const_fn_unstable(const_slice_ptr_len)]
+    #[crablangc_const_stable(feature = "const_slice_ptr_len_nonnull", since = "1.63.0")]
+    #[crablangc_allow_const_fn_unstable(const_slice_ptr_len)]
     #[must_use]
     #[inline]
     pub const fn len(self) -> usize {
@@ -510,7 +510,7 @@ impl<T> NonNull<[T]> {
     ///
     /// # Examples
     ///
-    /// ```rust
+    /// ```crablang
     /// #![feature(slice_ptr_get)]
     /// use std::ptr::NonNull;
     ///
@@ -520,7 +520,7 @@ impl<T> NonNull<[T]> {
     #[inline]
     #[must_use]
     #[unstable(feature = "slice_ptr_get", issue = "74265")]
-    #[rustc_const_unstable(feature = "slice_ptr_get", issue = "74265")]
+    #[crablangc_const_unstable(feature = "slice_ptr_get", issue = "74265")]
     pub const fn as_non_null_ptr(self) -> NonNull<T> {
         // SAFETY: We know `self` is non-null.
         unsafe { NonNull::new_unchecked(self.as_ptr().as_mut_ptr()) }
@@ -530,7 +530,7 @@ impl<T> NonNull<[T]> {
     ///
     /// # Examples
     ///
-    /// ```rust
+    /// ```crablang
     /// #![feature(slice_ptr_get)]
     /// use std::ptr::NonNull;
     ///
@@ -540,7 +540,7 @@ impl<T> NonNull<[T]> {
     #[inline]
     #[must_use]
     #[unstable(feature = "slice_ptr_get", issue = "74265")]
-    #[rustc_const_unstable(feature = "slice_ptr_get", issue = "74265")]
+    #[crablangc_const_unstable(feature = "slice_ptr_get", issue = "74265")]
     pub const fn as_mut_ptr(self) -> *mut T {
         self.as_non_null_ptr().as_ptr()
     }
@@ -572,7 +572,7 @@ impl<T> NonNull<[T]> {
     /// * The total size `ptr.len() * mem::size_of::<T>()` of the slice must be no larger than `isize::MAX`.
     ///   See the safety documentation of [`pointer::offset`].
     ///
-    /// * You must enforce Rust's aliasing rules, since the returned lifetime `'a` is
+    /// * You must enforce CrabLang's aliasing rules, since the returned lifetime `'a` is
     ///   arbitrarily chosen and does not necessarily reflect the actual lifetime of the data.
     ///   In particular, while this reference exists, the memory the pointer points to must
     ///   not get mutated (except inside `UnsafeCell`).
@@ -585,7 +585,7 @@ impl<T> NonNull<[T]> {
     #[inline]
     #[must_use]
     #[unstable(feature = "ptr_as_uninit", issue = "75402")]
-    #[rustc_const_unstable(feature = "const_ptr_as_ref", issue = "91822")]
+    #[crablangc_const_unstable(feature = "const_ptr_as_ref", issue = "91822")]
     pub const unsafe fn as_uninit_slice<'a>(self) -> &'a [MaybeUninit<T>] {
         // SAFETY: the caller must uphold the safety contract for `as_uninit_slice`.
         unsafe { slice::from_raw_parts(self.cast().as_ptr(), self.len()) }
@@ -618,7 +618,7 @@ impl<T> NonNull<[T]> {
     /// * The total size `ptr.len() * mem::size_of::<T>()` of the slice must be no larger than `isize::MAX`.
     ///   See the safety documentation of [`pointer::offset`].
     ///
-    /// * You must enforce Rust's aliasing rules, since the returned lifetime `'a` is
+    /// * You must enforce CrabLang's aliasing rules, since the returned lifetime `'a` is
     ///   arbitrarily chosen and does not necessarily reflect the actual lifetime of the data.
     ///   In particular, while this reference exists, the memory the pointer points to must
     ///   not get accessed (read or written) through any other pointer.
@@ -631,7 +631,7 @@ impl<T> NonNull<[T]> {
     ///
     /// # Examples
     ///
-    /// ```rust
+    /// ```crablang
     /// #![feature(allocator_api, ptr_as_uninit)]
     ///
     /// use std::alloc::{Allocator, Layout, Global};
@@ -648,7 +648,7 @@ impl<T> NonNull<[T]> {
     #[inline]
     #[must_use]
     #[unstable(feature = "ptr_as_uninit", issue = "75402")]
-    #[rustc_const_unstable(feature = "const_ptr_as_ref", issue = "91822")]
+    #[crablangc_const_unstable(feature = "const_ptr_as_ref", issue = "91822")]
     pub const unsafe fn as_uninit_slice_mut<'a>(self) -> &'a mut [MaybeUninit<T>] {
         // SAFETY: the caller must uphold the safety contract for `as_uninit_slice_mut`.
         unsafe { slice::from_raw_parts_mut(self.cast().as_ptr(), self.len()) }
@@ -660,7 +660,7 @@ impl<T> NonNull<[T]> {
     /// Calling this method with an out-of-bounds index or when `self` is not dereferenceable
     /// is *[undefined behavior]* even if the resulting pointer is not used.
     ///
-    /// [undefined behavior]: https://doc.rust-lang.org/reference/behavior-considered-undefined.html
+    /// [undefined behavior]: https://doc.crablang.org/reference/behavior-considered-undefined.html
     ///
     /// # Examples
     ///
@@ -676,7 +676,7 @@ impl<T> NonNull<[T]> {
     /// }
     /// ```
     #[unstable(feature = "slice_ptr_get", issue = "74265")]
-    #[rustc_const_unstable(feature = "const_slice_index", issue = "none")]
+    #[crablangc_const_unstable(feature = "const_slice_index", issue = "none")]
     #[inline]
     pub const unsafe fn get_unchecked_mut<I>(self, index: I) -> NonNull<I::Output>
     where
@@ -689,7 +689,7 @@ impl<T> NonNull<[T]> {
 }
 
 #[stable(feature = "nonnull", since = "1.25.0")]
-#[rustc_const_unstable(feature = "const_clone", issue = "91805")]
+#[crablangc_const_unstable(feature = "const_clone", issue = "91805")]
 impl<T: ?Sized> const Clone for NonNull<T> {
     #[inline(always)]
     fn clone(&self) -> Self {
@@ -756,7 +756,7 @@ impl<T: ?Sized> hash::Hash for NonNull<T> {
 }
 
 #[unstable(feature = "ptr_internals", issue = "none")]
-#[rustc_const_unstable(feature = "const_convert", issue = "88674")]
+#[crablangc_const_unstable(feature = "const_convert", issue = "88674")]
 impl<T: ?Sized> const From<Unique<T>> for NonNull<T> {
     #[inline]
     fn from(unique: Unique<T>) -> Self {
@@ -767,7 +767,7 @@ impl<T: ?Sized> const From<Unique<T>> for NonNull<T> {
 }
 
 #[stable(feature = "nonnull", since = "1.25.0")]
-#[rustc_const_unstable(feature = "const_convert", issue = "88674")]
+#[crablangc_const_unstable(feature = "const_convert", issue = "88674")]
 impl<T: ?Sized> const From<&mut T> for NonNull<T> {
     /// Converts a `&mut T` to a `NonNull<T>`.
     ///
@@ -780,7 +780,7 @@ impl<T: ?Sized> const From<&mut T> for NonNull<T> {
 }
 
 #[stable(feature = "nonnull", since = "1.25.0")]
-#[rustc_const_unstable(feature = "const_convert", issue = "88674")]
+#[crablangc_const_unstable(feature = "const_convert", issue = "88674")]
 impl<T: ?Sized> const From<&T> for NonNull<T> {
     /// Converts a `&T` to a `NonNull<T>`.
     ///

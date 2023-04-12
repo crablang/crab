@@ -30,7 +30,7 @@ macro_rules! nonzero_integers {
             /// This enables some memory layout optimization.
             #[doc = concat!("For example, `Option<", stringify!($Ty), ">` is the same size as `", stringify!($Int), "`:")]
             ///
-            /// ```rust
+            /// ```crablang
             /// use std::mem::size_of;
             #[doc = concat!("assert_eq!(size_of::<Option<core::num::", stringify!($Ty), ">>(), size_of::<", stringify!($Int), ">());")]
             /// ```
@@ -44,9 +44,9 @@ macro_rules! nonzero_integers {
             #[$stability]
             #[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Hash)]
             #[repr(transparent)]
-            #[rustc_layout_scalar_valid_range_start(1)]
-            #[rustc_nonnull_optimization_guaranteed]
-            #[rustc_diagnostic_item = stringify!($Ty)]
+            #[crablangc_layout_scalar_valid_range_start(1)]
+            #[crablangc_nonnull_optimization_guaranteed]
+            #[crablangc_diagnostic_item = stringify!($Ty)]
             pub struct $Ty($Int);
 
             impl $Ty {
@@ -73,7 +73,7 @@ macro_rules! nonzero_integers {
 
                 /// Creates a non-zero if the given value is not zero.
                 #[$stability]
-                #[rustc_const_stable(feature = "const_nonzero_int_methods", since = "1.47.0")]
+                #[crablangc_const_stable(feature = "const_nonzero_int_methods", since = "1.47.0")]
                 #[must_use]
                 #[inline]
                 pub const fn new(n: $Int) -> Option<Self> {
@@ -88,7 +88,7 @@ macro_rules! nonzero_integers {
                 /// Returns the value as a primitive type.
                 #[$stability]
                 #[inline]
-                #[rustc_const_stable(feature = "const_nonzero_get", since = "1.34.0")]
+                #[crablangc_const_stable(feature = "const_nonzero_get", since = "1.34.0")]
                 pub const fn get(self) -> $Int {
                     self.0
                 }
@@ -96,7 +96,7 @@ macro_rules! nonzero_integers {
             }
 
             #[stable(feature = "from_nonzero", since = "1.31.0")]
-            #[rustc_const_unstable(feature = "const_num_from_num", issue = "87852")]
+            #[crablangc_const_unstable(feature = "const_num_from_num", issue = "87852")]
             impl const From<$Ty> for $Int {
                 #[doc = concat!("Converts a `", stringify!($Ty), "` into an `", stringify!($Int), "`")]
                 #[inline]
@@ -106,7 +106,7 @@ macro_rules! nonzero_integers {
             }
 
             #[stable(feature = "nonzero_bitor", since = "1.45.0")]
-            #[rustc_const_unstable(feature = "const_ops", issue = "90080")]
+            #[crablangc_const_unstable(feature = "const_ops", issue = "90080")]
             impl const BitOr for $Ty {
                 type Output = Self;
                 #[inline]
@@ -118,7 +118,7 @@ macro_rules! nonzero_integers {
             }
 
             #[stable(feature = "nonzero_bitor", since = "1.45.0")]
-            #[rustc_const_unstable(feature = "const_ops", issue = "90080")]
+            #[crablangc_const_unstable(feature = "const_ops", issue = "90080")]
             impl const BitOr<$Int> for $Ty {
                 type Output = Self;
                 #[inline]
@@ -131,7 +131,7 @@ macro_rules! nonzero_integers {
             }
 
             #[stable(feature = "nonzero_bitor", since = "1.45.0")]
-            #[rustc_const_unstable(feature = "const_ops", issue = "90080")]
+            #[crablangc_const_unstable(feature = "const_ops", issue = "90080")]
             impl const BitOr<$Ty> for $Int {
                 type Output = $Ty;
                 #[inline]
@@ -144,7 +144,7 @@ macro_rules! nonzero_integers {
             }
 
             #[stable(feature = "nonzero_bitor", since = "1.45.0")]
-            #[rustc_const_unstable(feature = "const_ops", issue = "90080")]
+            #[crablangc_const_unstable(feature = "const_ops", issue = "90080")]
             impl const BitOrAssign for $Ty {
                 #[inline]
                 fn bitor_assign(&mut self, rhs: Self) {
@@ -153,7 +153,7 @@ macro_rules! nonzero_integers {
             }
 
             #[stable(feature = "nonzero_bitor", since = "1.45.0")]
-            #[rustc_const_unstable(feature = "const_ops", issue = "90080")]
+            #[crablangc_const_unstable(feature = "const_ops", issue = "90080")]
             impl const BitOrAssign<$Int> for $Ty {
                 #[inline]
                 fn bitor_assign(&mut self, rhs: $Int) {
@@ -169,18 +169,18 @@ macro_rules! nonzero_integers {
 }
 
 nonzero_integers! {
-    #[stable(feature = "nonzero", since = "1.28.0")] #[rustc_const_stable(feature = "nonzero", since = "1.28.0")] NonZeroU8(u8);
-    #[stable(feature = "nonzero", since = "1.28.0")] #[rustc_const_stable(feature = "nonzero", since = "1.28.0")] NonZeroU16(u16);
-    #[stable(feature = "nonzero", since = "1.28.0")] #[rustc_const_stable(feature = "nonzero", since = "1.28.0")] NonZeroU32(u32);
-    #[stable(feature = "nonzero", since = "1.28.0")] #[rustc_const_stable(feature = "nonzero", since = "1.28.0")] NonZeroU64(u64);
-    #[stable(feature = "nonzero", since = "1.28.0")] #[rustc_const_stable(feature = "nonzero", since = "1.28.0")] NonZeroU128(u128);
-    #[stable(feature = "nonzero", since = "1.28.0")] #[rustc_const_stable(feature = "nonzero", since = "1.28.0")] NonZeroUsize(usize);
-    #[stable(feature = "signed_nonzero", since = "1.34.0")] #[rustc_const_stable(feature = "signed_nonzero", since = "1.34.0")] NonZeroI8(i8);
-    #[stable(feature = "signed_nonzero", since = "1.34.0")] #[rustc_const_stable(feature = "signed_nonzero", since = "1.34.0")] NonZeroI16(i16);
-    #[stable(feature = "signed_nonzero", since = "1.34.0")] #[rustc_const_stable(feature = "signed_nonzero", since = "1.34.0")] NonZeroI32(i32);
-    #[stable(feature = "signed_nonzero", since = "1.34.0")] #[rustc_const_stable(feature = "signed_nonzero", since = "1.34.0")] NonZeroI64(i64);
-    #[stable(feature = "signed_nonzero", since = "1.34.0")] #[rustc_const_stable(feature = "signed_nonzero", since = "1.34.0")] NonZeroI128(i128);
-    #[stable(feature = "signed_nonzero", since = "1.34.0")] #[rustc_const_stable(feature = "signed_nonzero", since = "1.34.0")] NonZeroIsize(isize);
+    #[stable(feature = "nonzero", since = "1.28.0")] #[crablangc_const_stable(feature = "nonzero", since = "1.28.0")] NonZeroU8(u8);
+    #[stable(feature = "nonzero", since = "1.28.0")] #[crablangc_const_stable(feature = "nonzero", since = "1.28.0")] NonZeroU16(u16);
+    #[stable(feature = "nonzero", since = "1.28.0")] #[crablangc_const_stable(feature = "nonzero", since = "1.28.0")] NonZeroU32(u32);
+    #[stable(feature = "nonzero", since = "1.28.0")] #[crablangc_const_stable(feature = "nonzero", since = "1.28.0")] NonZeroU64(u64);
+    #[stable(feature = "nonzero", since = "1.28.0")] #[crablangc_const_stable(feature = "nonzero", since = "1.28.0")] NonZeroU128(u128);
+    #[stable(feature = "nonzero", since = "1.28.0")] #[crablangc_const_stable(feature = "nonzero", since = "1.28.0")] NonZeroUsize(usize);
+    #[stable(feature = "signed_nonzero", since = "1.34.0")] #[crablangc_const_stable(feature = "signed_nonzero", since = "1.34.0")] NonZeroI8(i8);
+    #[stable(feature = "signed_nonzero", since = "1.34.0")] #[crablangc_const_stable(feature = "signed_nonzero", since = "1.34.0")] NonZeroI16(i16);
+    #[stable(feature = "signed_nonzero", since = "1.34.0")] #[crablangc_const_stable(feature = "signed_nonzero", since = "1.34.0")] NonZeroI32(i32);
+    #[stable(feature = "signed_nonzero", since = "1.34.0")] #[crablangc_const_stable(feature = "signed_nonzero", since = "1.34.0")] NonZeroI64(i64);
+    #[stable(feature = "signed_nonzero", since = "1.34.0")] #[crablangc_const_stable(feature = "signed_nonzero", since = "1.34.0")] NonZeroI128(i128);
+    #[stable(feature = "signed_nonzero", since = "1.34.0")] #[crablangc_const_stable(feature = "signed_nonzero", since = "1.34.0")] NonZeroIsize(isize);
 }
 
 macro_rules! from_str_radix_nzint_impl {
@@ -219,7 +219,7 @@ macro_rules! nonzero_leading_trailing_zeros {
                 /// assert_eq!(n.leading_zeros(), 0);
                 /// ```
                 #[stable(feature = "nonzero_leading_trailing_zeros", since = "1.53.0")]
-                #[rustc_const_stable(feature = "nonzero_leading_trailing_zeros", since = "1.53.0")]
+                #[crablangc_const_stable(feature = "nonzero_leading_trailing_zeros", since = "1.53.0")]
                 #[must_use = "this returns the result of the operation, \
                               without modifying the original"]
                 #[inline]
@@ -243,7 +243,7 @@ macro_rules! nonzero_leading_trailing_zeros {
                 /// assert_eq!(n.trailing_zeros(), 3);
                 /// ```
                 #[stable(feature = "nonzero_leading_trailing_zeros", since = "1.53.0")]
-                #[rustc_const_stable(feature = "nonzero_leading_trailing_zeros", since = "1.53.0")]
+                #[crablangc_const_stable(feature = "nonzero_leading_trailing_zeros", since = "1.53.0")]
                 #[must_use = "this returns the result of the operation, \
                               without modifying the original"]
                 #[inline]
@@ -276,7 +276,7 @@ macro_rules! nonzero_integers_div {
     ( $( $Ty: ident($Int: ty); )+ ) => {
         $(
             #[stable(feature = "nonzero_div", since = "1.51.0")]
-            #[rustc_const_unstable(feature = "const_ops", issue = "90080")]
+            #[crablangc_const_unstable(feature = "const_ops", issue = "90080")]
             impl const Div<$Ty> for $Int {
                 type Output = $Int;
                 /// This operation rounds towards zero,
@@ -290,7 +290,7 @@ macro_rules! nonzero_integers_div {
             }
 
             #[stable(feature = "nonzero_div", since = "1.51.0")]
-            #[rustc_const_unstable(feature = "const_ops", issue = "90080")]
+            #[crablangc_const_unstable(feature = "const_ops", issue = "90080")]
             impl const Rem<$Ty> for $Int {
                 type Output = $Int;
                 /// This operation satisfies `n % d == n - (n / d) * d`, and cannot panic.
@@ -341,7 +341,7 @@ macro_rules! nonzero_unsigned_operations {
                 /// # }
                 /// ```
                 #[stable(feature = "nonzero_checked_ops", since = "1.64.0")]
-                #[rustc_const_stable(feature = "const_nonzero_checked_ops", since = "1.64.0")]
+                #[crablangc_const_stable(feature = "const_nonzero_checked_ops", since = "1.64.0")]
                 #[must_use = "this returns the result of the operation, \
                               without modifying the original"]
                 #[inline]
@@ -375,7 +375,7 @@ macro_rules! nonzero_unsigned_operations {
                 /// # }
                 /// ```
                 #[stable(feature = "nonzero_checked_ops", since = "1.64.0")]
-                #[rustc_const_stable(feature = "const_nonzero_checked_ops", since = "1.64.0")]
+                #[crablangc_const_stable(feature = "const_nonzero_checked_ops", since = "1.64.0")]
                 #[must_use = "this returns the result of the operation, \
                               without modifying the original"]
                 #[inline]
@@ -440,7 +440,7 @@ macro_rules! nonzero_unsigned_operations {
                 /// # }
                 /// ```
                 #[stable(feature = "nonzero_checked_ops", since = "1.64.0")]
-                #[rustc_const_stable(feature = "const_nonzero_checked_ops", since = "1.64.0")]
+                #[crablangc_const_stable(feature = "const_nonzero_checked_ops", since = "1.64.0")]
                 #[must_use = "this returns the result of the operation, \
                               without modifying the original"]
                 #[inline]
@@ -470,7 +470,7 @@ macro_rules! nonzero_unsigned_operations {
                 #[doc = concat!("assert_eq!(", stringify!($Ty), "::new(9).unwrap().ilog2(), 3);")]
                 /// ```
                 #[stable(feature = "int_log", since = "1.67.0")]
-                #[rustc_const_stable(feature = "int_log", since = "1.67.0")]
+                #[crablangc_const_stable(feature = "int_log", since = "1.67.0")]
                 #[must_use = "this returns the result of the operation, \
                               without modifying the original"]
                 #[inline]
@@ -494,7 +494,7 @@ macro_rules! nonzero_unsigned_operations {
                 #[doc = concat!("assert_eq!(", stringify!($Ty), "::new(101).unwrap().ilog10(), 2);")]
                 /// ```
                 #[stable(feature = "int_log", since = "1.67.0")]
-                #[rustc_const_stable(feature = "int_log", since = "1.67.0")]
+                #[crablangc_const_stable(feature = "int_log", since = "1.67.0")]
                 #[must_use = "this returns the result of the operation, \
                               without modifying the original"]
                 #[inline]
@@ -539,7 +539,7 @@ macro_rules! nonzero_signed_operations {
                 /// # }
                 /// ```
                 #[stable(feature = "nonzero_checked_ops", since = "1.64.0")]
-                #[rustc_const_stable(feature = "const_nonzero_checked_ops", since = "1.64.0")]
+                #[crablangc_const_stable(feature = "const_nonzero_checked_ops", since = "1.64.0")]
                 #[must_use = "this returns the result of the operation, \
                               without modifying the original"]
                 #[inline]
@@ -570,7 +570,7 @@ macro_rules! nonzero_signed_operations {
                 /// # }
                 /// ```
                 #[stable(feature = "nonzero_checked_ops", since = "1.64.0")]
-                #[rustc_const_stable(feature = "const_nonzero_checked_ops", since = "1.64.0")]
+                #[crablangc_const_stable(feature = "const_nonzero_checked_ops", since = "1.64.0")]
                 #[must_use = "this returns the result of the operation, \
                               without modifying the original"]
                 #[inline]
@@ -605,7 +605,7 @@ macro_rules! nonzero_signed_operations {
                 /// # }
                 /// ```
                 #[stable(feature = "nonzero_checked_ops", since = "1.64.0")]
-                #[rustc_const_stable(feature = "const_nonzero_checked_ops", since = "1.64.0")]
+                #[crablangc_const_stable(feature = "const_nonzero_checked_ops", since = "1.64.0")]
                 #[must_use = "this returns the result of the operation, \
                               without modifying the original"]
                 #[inline]
@@ -644,7 +644,7 @@ macro_rules! nonzero_signed_operations {
                 /// # }
                 /// ```
                 #[stable(feature = "nonzero_checked_ops", since = "1.64.0")]
-                #[rustc_const_stable(feature = "const_nonzero_checked_ops", since = "1.64.0")]
+                #[crablangc_const_stable(feature = "const_nonzero_checked_ops", since = "1.64.0")]
                 #[must_use = "this returns the result of the operation, \
                               without modifying the original"]
                 #[inline]
@@ -678,7 +678,7 @@ macro_rules! nonzero_signed_operations {
                 /// # }
                 /// ```
                 #[stable(feature = "nonzero_checked_ops", since = "1.64.0")]
-                #[rustc_const_stable(feature = "const_nonzero_checked_ops", since = "1.64.0")]
+                #[crablangc_const_stable(feature = "const_nonzero_checked_ops", since = "1.64.0")]
                 #[must_use = "this returns the result of the operation, \
                               without modifying the original"]
                 #[inline]
@@ -713,7 +713,7 @@ macro_rules! nonzero_signed_operations {
                 /// # }
                 /// ```
                 #[stable(feature = "nonzero_checked_ops", since = "1.64.0")]
-                #[rustc_const_stable(feature = "const_nonzero_checked_ops", since = "1.64.0")]
+                #[crablangc_const_stable(feature = "const_nonzero_checked_ops", since = "1.64.0")]
                 #[must_use = "this returns the result of the operation, \
                               without modifying the original"]
                 #[inline]
@@ -915,7 +915,7 @@ macro_rules! nonzero_unsigned_signed_operations {
                 /// # }
                 /// ```
                 #[stable(feature = "nonzero_checked_ops", since = "1.64.0")]
-                #[rustc_const_stable(feature = "const_nonzero_checked_ops", since = "1.64.0")]
+                #[crablangc_const_stable(feature = "const_nonzero_checked_ops", since = "1.64.0")]
                 #[must_use = "this returns the result of the operation, \
                               without modifying the original"]
                 #[inline]
@@ -950,7 +950,7 @@ macro_rules! nonzero_unsigned_signed_operations {
                 /// # }
                 /// ```
                 #[stable(feature = "nonzero_checked_ops", since = "1.64.0")]
-                #[rustc_const_stable(feature = "const_nonzero_checked_ops", since = "1.64.0")]
+                #[crablangc_const_stable(feature = "const_nonzero_checked_ops", since = "1.64.0")]
                 #[must_use = "this returns the result of the operation, \
                               without modifying the original"]
                 #[inline]
@@ -1022,7 +1022,7 @@ macro_rules! nonzero_unsigned_signed_operations {
                 /// # }
                 /// ```
                 #[stable(feature = "nonzero_checked_ops", since = "1.64.0")]
-                #[rustc_const_stable(feature = "const_nonzero_checked_ops", since = "1.64.0")]
+                #[crablangc_const_stable(feature = "const_nonzero_checked_ops", since = "1.64.0")]
                 #[must_use = "this returns the result of the operation, \
                               without modifying the original"]
                 #[inline]
@@ -1065,7 +1065,7 @@ macro_rules! nonzero_unsigned_signed_operations {
                 /// # }
                 /// ```
                 #[stable(feature = "nonzero_checked_ops", since = "1.64.0")]
-                #[rustc_const_stable(feature = "const_nonzero_checked_ops", since = "1.64.0")]
+                #[crablangc_const_stable(feature = "const_nonzero_checked_ops", since = "1.64.0")]
                 #[must_use = "this returns the result of the operation, \
                               without modifying the original"]
                 #[inline]
@@ -1126,7 +1126,7 @@ macro_rules! nonzero_unsigned_is_power_of_two {
                 /// ```
                 #[must_use]
                 #[stable(feature = "nonzero_is_power_of_two", since = "1.59.0")]
-                #[rustc_const_stable(feature = "nonzero_is_power_of_two", since = "1.59.0")]
+                #[crablangc_const_stable(feature = "nonzero_is_power_of_two", since = "1.59.0")]
                 #[inline]
                 pub const fn is_power_of_two(self) -> bool {
                     // LLVM 11 normalizes `unchecked_sub(x, 1) & x == 0` to the implementation seen here.
@@ -1157,7 +1157,7 @@ macro_rules! nonzero_min_max_unsigned {
                 #[doc = concat!("# use std::num::", stringify!($Ty), ";")]
                 #[doc = concat!("assert_eq!(", stringify!($Ty), "::MIN.get(), 1", stringify!($Int), ");")]
                 /// ```
-                #[stable(feature = "nonzero_min_max", since = "CURRENT_RUSTC_VERSION")]
+                #[stable(feature = "nonzero_min_max", since = "CURRENT_CRABLANGC_VERSION")]
                 pub const MIN: Self = Self::new(1).unwrap();
 
                 /// The largest value that can be represented by this non-zero
@@ -1170,7 +1170,7 @@ macro_rules! nonzero_min_max_unsigned {
                 #[doc = concat!("# use std::num::", stringify!($Ty), ";")]
                 #[doc = concat!("assert_eq!(", stringify!($Ty), "::MAX.get(), ", stringify!($Int), "::MAX);")]
                 /// ```
-                #[stable(feature = "nonzero_min_max", since = "CURRENT_RUSTC_VERSION")]
+                #[stable(feature = "nonzero_min_max", since = "CURRENT_CRABLANGC_VERSION")]
                 pub const MAX: Self = Self::new(<$Int>::MAX).unwrap();
             }
         )+
@@ -1195,7 +1195,7 @@ macro_rules! nonzero_min_max_signed {
                 #[doc = concat!("# use std::num::", stringify!($Ty), ";")]
                 #[doc = concat!("assert_eq!(", stringify!($Ty), "::MIN.get(), ", stringify!($Int), "::MIN);")]
                 /// ```
-                #[stable(feature = "nonzero_min_max", since = "CURRENT_RUSTC_VERSION")]
+                #[stable(feature = "nonzero_min_max", since = "CURRENT_CRABLANGC_VERSION")]
                 pub const MIN: Self = Self::new(<$Int>::MIN).unwrap();
 
                 /// The largest value that can be represented by this non-zero
@@ -1212,7 +1212,7 @@ macro_rules! nonzero_min_max_signed {
                 #[doc = concat!("# use std::num::", stringify!($Ty), ";")]
                 #[doc = concat!("assert_eq!(", stringify!($Ty), "::MAX.get(), ", stringify!($Int), "::MAX);")]
                 /// ```
-                #[stable(feature = "nonzero_min_max", since = "CURRENT_RUSTC_VERSION")]
+                #[stable(feature = "nonzero_min_max", since = "CURRENT_CRABLANGC_VERSION")]
                 pub const MAX: Self = Self::new(<$Int>::MAX).unwrap();
             }
         )+

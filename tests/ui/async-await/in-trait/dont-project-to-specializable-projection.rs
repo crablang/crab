@@ -31,7 +31,7 @@ async fn async_main() {
 
 async fn indirection<T>(x: T) -> &'static str {
     //explicit type coercion is currently necessary
-    // because of https://github.com/rust-lang/rust/issues/67918
+    // because of https://github.com/crablang/crablang/issues/67918
     <MyStruct as MyTrait<T>>::foo(x).await
 }
 

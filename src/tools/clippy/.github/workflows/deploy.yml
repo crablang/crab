@@ -6,7 +6,7 @@ on:
       - master
       - beta
     tags:
-      - rust-1.**
+      - crablang-1.**
 
 env:
   TARGET_BRANCH: 'gh-pages'
@@ -16,7 +16,7 @@ env:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    if: github.repository == 'rust-lang/rust-clippy'
+    if: github.repository == 'crablang/crablang-clippy'
 
     steps:
     # Setup
@@ -52,7 +52,7 @@ jobs:
       run: cargo generate-lockfile
 
     - name: Cache
-      uses: Swatinem/rust-cache@v1.3.0
+      uses: Swatinem/crablang-cache@v1.3.0
 
     - name: cargo collect-metadata
       run: cargo collect-metadata

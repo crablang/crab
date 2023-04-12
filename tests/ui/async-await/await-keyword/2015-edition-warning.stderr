@@ -4,8 +4,8 @@ error: `await` is a keyword in the 2018 edition
 LL |     pub mod await {
    |             ^^^^^ help: you can use a raw identifier to stay compatible: `r#await`
    |
-   = warning: this is accepted in the current edition (Rust 2015) but is a hard error in Rust 2018!
-   = note: for more information, see issue #49716 <https://github.com/rust-lang/rust/issues/49716>
+   = warning: this is accepted in the current edition (CrabLang 2015) but is a hard error in CrabLang 2018!
+   = note: for more information, see issue #49716 <https://github.com/crablang/crablang/issues/49716>
 note: the lint level is defined here
   --> $DIR/2015-edition-warning.rs:4:9
    |
@@ -18,8 +18,8 @@ error: `await` is a keyword in the 2018 edition
 LL |         pub struct await;
    |                    ^^^^^ help: you can use a raw identifier to stay compatible: `r#await`
    |
-   = warning: this is accepted in the current edition (Rust 2015) but is a hard error in Rust 2018!
-   = note: for more information, see issue #49716 <https://github.com/rust-lang/rust/issues/49716>
+   = warning: this is accepted in the current edition (CrabLang 2015) but is a hard error in CrabLang 2018!
+   = note: for more information, see issue #49716 <https://github.com/crablang/crablang/issues/49716>
 
 error: `await` is a keyword in the 2018 edition
   --> $DIR/2015-edition-warning.rs:15:16
@@ -27,8 +27,8 @@ error: `await` is a keyword in the 2018 edition
 LL | use outer_mod::await::await;
    |                ^^^^^ help: you can use a raw identifier to stay compatible: `r#await`
    |
-   = warning: this is accepted in the current edition (Rust 2015) but is a hard error in Rust 2018!
-   = note: for more information, see issue #49716 <https://github.com/rust-lang/rust/issues/49716>
+   = warning: this is accepted in the current edition (CrabLang 2015) but is a hard error in CrabLang 2018!
+   = note: for more information, see issue #49716 <https://github.com/crablang/crablang/issues/49716>
 
 error: `await` is a keyword in the 2018 edition
   --> $DIR/2015-edition-warning.rs:15:23
@@ -36,8 +36,8 @@ error: `await` is a keyword in the 2018 edition
 LL | use outer_mod::await::await;
    |                       ^^^^^ help: you can use a raw identifier to stay compatible: `r#await`
    |
-   = warning: this is accepted in the current edition (Rust 2015) but is a hard error in Rust 2018!
-   = note: for more information, see issue #49716 <https://github.com/rust-lang/rust/issues/49716>
+   = warning: this is accepted in the current edition (CrabLang 2015) but is a hard error in CrabLang 2018!
+   = note: for more information, see issue #49716 <https://github.com/crablang/crablang/issues/49716>
 
 error: `await` is a keyword in the 2018 edition
   --> $DIR/2015-edition-warning.rs:22:11
@@ -45,8 +45,8 @@ error: `await` is a keyword in the 2018 edition
 LL |     match await { await => {} }
    |           ^^^^^ help: you can use a raw identifier to stay compatible: `r#await`
    |
-   = warning: this is accepted in the current edition (Rust 2015) but is a hard error in Rust 2018!
-   = note: for more information, see issue #49716 <https://github.com/rust-lang/rust/issues/49716>
+   = warning: this is accepted in the current edition (CrabLang 2015) but is a hard error in CrabLang 2018!
+   = note: for more information, see issue #49716 <https://github.com/crablang/crablang/issues/49716>
 
 error: `await` is a keyword in the 2018 edition
   --> $DIR/2015-edition-warning.rs:22:19
@@ -54,8 +54,8 @@ error: `await` is a keyword in the 2018 edition
 LL |     match await { await => {} }
    |                   ^^^^^ help: you can use a raw identifier to stay compatible: `r#await`
    |
-   = warning: this is accepted in the current edition (Rust 2015) but is a hard error in Rust 2018!
-   = note: for more information, see issue #49716 <https://github.com/rust-lang/rust/issues/49716>
+   = warning: this is accepted in the current edition (CrabLang 2015) but is a hard error in CrabLang 2018!
+   = note: for more information, see issue #49716 <https://github.com/crablang/crablang/issues/49716>
 
 error: aborting due to 6 previous errors
 

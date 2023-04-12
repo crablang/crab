@@ -1,13 +1,13 @@
 use ast::AttrStyle;
 use clippy_utils::diagnostics::span_lint_and_sugg;
-use rustc_ast as ast;
-use rustc_errors::Applicability;
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_ast as ast;
+use crablangc_errors::Applicability;
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
 
 declare_clippy_lint! {
     /// Detects uses of the `#[allow]` attribute and suggests replacing it with
-    /// the `#[expect]` (See [RFC 2383](https://rust-lang.github.io/rfcs/2383-lint-reasons.html))
+    /// the `#[expect]` (See [RFC 2383](https://crablang.github.io/rfcs/2383-lint-reasons.html))
     ///
     /// The expect attribute is still unstable and requires the `lint_reasons`
     /// on nightly. It can be enabled by adding `#![feature(lint_reasons)]` to
@@ -23,7 +23,7 @@ declare_clippy_lint! {
     /// lint is no longer triggered.
     ///
     /// ### Example
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// #[allow(unused_mut)]
     /// fn foo() -> usize {
     ///    let mut a = Vec::new();
@@ -31,7 +31,7 @@ declare_clippy_lint! {
     /// }
     /// ```
     /// Use instead:
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// #![feature(lint_reasons)]
     /// #[expect(unused_mut)]
     /// fn foo() -> usize {
@@ -54,7 +54,7 @@ impl LateLintPass<'_> for AllowAttribute {
             if cx.tcx.features().lint_reasons;
             if let AttrStyle::Outer = attr.style;
             if let Some(ident) = attr.ident();
-            if ident.name == rustc_span::symbol::sym::allow;
+            if ident.name == crablangc_span::symbol::sym::allow;
             then {
                 span_lint_and_sugg(
                     cx,

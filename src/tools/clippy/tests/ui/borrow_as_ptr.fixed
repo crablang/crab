@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 #![warn(clippy::borrow_as_ptr)]
 
 fn main() {

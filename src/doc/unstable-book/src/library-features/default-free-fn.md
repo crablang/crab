@@ -2,7 +2,7 @@
 
 The tracking issue for this feature is: [#73014]
 
-[#73014]: https://github.com/rust-lang/rust/issues/73014
+[#73014]: https://github.com/crablang/crablang/issues/73014
 
 ------------------------
 
@@ -14,7 +14,7 @@ just forwards to [`Default::default()`], but may remove repetition of the word
 
 Here is an example:
 
-```rust
+```crablang
 #![feature(default_free_fn)]
 use std::default::default;
 

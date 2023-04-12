@@ -3,13 +3,13 @@ use clippy_utils::numeric_literal::NumericLiteral;
 use clippy_utils::source::snippet_opt;
 use clippy_utils::{get_parent_expr, path_to_local};
 use if_chain::if_chain;
-use rustc_ast::{LitFloatType, LitIntType, LitKind};
-use rustc_errors::Applicability;
-use rustc_hir::def::Res;
-use rustc_hir::{Expr, ExprKind, Lit, QPath, TyKind, UnOp};
-use rustc_lint::{LateContext, LintContext};
-use rustc_middle::lint::in_external_macro;
-use rustc_middle::ty::{self, FloatTy, InferTy, Ty};
+use crablangc_ast::{LitFloatType, LitIntType, LitKind};
+use crablangc_errors::Applicability;
+use crablangc_hir::def::Res;
+use crablangc_hir::{Expr, ExprKind, Lit, QPath, TyKind, UnOp};
+use crablangc_lint::{LateContext, LintContext};
+use crablangc_middle::lint::in_external_macro;
+use crablangc_middle::ty::{self, FloatTy, InferTy, Ty};
 
 use super::UNNECESSARY_CAST;
 

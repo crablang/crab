@@ -65,7 +65,7 @@ struct GreetStruct1;
 impl FnOnce<(&str,)> for GreetStruct1 {
     type Output = ();
 
-    extern "rust-call" fn call_once(self, (who,): (&str,)) -> Self::Output {
+    extern "crablang-call" fn call_once(self, (who,): (&str,)) -> Self::Output {
         println!("hello {}", who);
     }
 }
@@ -75,7 +75,7 @@ struct GreetStruct2();
 impl FnOnce<(&str,)> for GreetStruct2 {
     type Output = ();
 
-    extern "rust-call" fn call_once(self, (who,): (&str,)) -> Self::Output {
+    extern "crablang-call" fn call_once(self, (who,): (&str,)) -> Self::Output {
         println!("hello {}", who);
     }
 }
@@ -85,7 +85,7 @@ struct GreetStruct3;
 impl FnOnce<(&str,)> for GreetStruct3 {
     type Output = ();
 
-    extern "rust-call" fn call_once(self, (who,): (&str,)) -> Self::Output {
+    extern "crablang-call" fn call_once(self, (who,): (&str,)) -> Self::Output {
         println!("hello {}", who);
     }
 }

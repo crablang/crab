@@ -5,9 +5,9 @@ LL |         E_SL => {}
    |         ^^^^
    |
    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
-   = note: for more information, see issue #62411 <https://github.com/rust-lang/rust/issues/62411>
+   = note: for more information, see issue #62411 <https://github.com/crablang/crablang/issues/62411>
    = note: the traits must be derived, manual `impl`s are not sufficient
-   = note: see https://doc.rust-lang.org/stable/std/marker/trait.StructuralEq.html for details
+   = note: see https://doc.crablang.org/stable/std/marker/trait.StructuralEq.html for details
    = note: `#[warn(indirect_structural_match)]` on by default
 
 error[E0004]: non-exhaustive patterns: `&_` not covered
@@ -25,4 +25,4 @@ LL +         &_ => todo!()
 
 error: aborting due to previous error; 1 warning emitted
 
-For more information about this error, try `rustc --explain E0004`.
+For more information about this error, try `crablangc --explain E0004`.

@@ -1,124 +1,124 @@
 error[E0658]: attributes on expressions are experimental
   --> $DIR/move_closure.rs:12:17
    |
-LL |     let mut c = #[rustc_capture_analysis]
+LL |     let mut c = #[crablangc_capture_analysis]
    |                 ^^^^^^^^^^^^^^^^^^^^^^^^^
    |
-   = note: see issue #15701 <https://github.com/rust-lang/rust/issues/15701> for more information
+   = note: see issue #15701 <https://github.com/crablang/crablang/issues/15701> for more information
    = help: add `#![feature(stmt_expr_attributes)]` to the crate attributes to enable
 
 error[E0658]: attributes on expressions are experimental
   --> $DIR/move_closure.rs:30:17
    |
-LL |     let mut c = #[rustc_capture_analysis]
+LL |     let mut c = #[crablangc_capture_analysis]
    |                 ^^^^^^^^^^^^^^^^^^^^^^^^^
    |
-   = note: see issue #15701 <https://github.com/rust-lang/rust/issues/15701> for more information
+   = note: see issue #15701 <https://github.com/crablang/crablang/issues/15701> for more information
    = help: add `#![feature(stmt_expr_attributes)]` to the crate attributes to enable
 
 error[E0658]: attributes on expressions are experimental
   --> $DIR/move_closure.rs:51:17
    |
-LL |     let mut c = #[rustc_capture_analysis]
+LL |     let mut c = #[crablangc_capture_analysis]
    |                 ^^^^^^^^^^^^^^^^^^^^^^^^^
    |
-   = note: see issue #15701 <https://github.com/rust-lang/rust/issues/15701> for more information
+   = note: see issue #15701 <https://github.com/crablang/crablang/issues/15701> for more information
    = help: add `#![feature(stmt_expr_attributes)]` to the crate attributes to enable
 
 error[E0658]: attributes on expressions are experimental
   --> $DIR/move_closure.rs:74:17
    |
-LL |     let mut c = #[rustc_capture_analysis]
+LL |     let mut c = #[crablangc_capture_analysis]
    |                 ^^^^^^^^^^^^^^^^^^^^^^^^^
    |
-   = note: see issue #15701 <https://github.com/rust-lang/rust/issues/15701> for more information
+   = note: see issue #15701 <https://github.com/crablang/crablang/issues/15701> for more information
    = help: add `#![feature(stmt_expr_attributes)]` to the crate attributes to enable
 
 error[E0658]: attributes on expressions are experimental
   --> $DIR/move_closure.rs:96:17
    |
-LL |     let mut c = #[rustc_capture_analysis]
+LL |     let mut c = #[crablangc_capture_analysis]
    |                 ^^^^^^^^^^^^^^^^^^^^^^^^^
    |
-   = note: see issue #15701 <https://github.com/rust-lang/rust/issues/15701> for more information
+   = note: see issue #15701 <https://github.com/crablang/crablang/issues/15701> for more information
    = help: add `#![feature(stmt_expr_attributes)]` to the crate attributes to enable
 
 error[E0658]: attributes on expressions are experimental
   --> $DIR/move_closure.rs:117:13
    |
-LL |     let c = #[rustc_capture_analysis]
+LL |     let c = #[crablangc_capture_analysis]
    |             ^^^^^^^^^^^^^^^^^^^^^^^^^
    |
-   = note: see issue #15701 <https://github.com/rust-lang/rust/issues/15701> for more information
+   = note: see issue #15701 <https://github.com/crablang/crablang/issues/15701> for more information
    = help: add `#![feature(stmt_expr_attributes)]` to the crate attributes to enable
 
 error[E0658]: attributes on expressions are experimental
   --> $DIR/move_closure.rs:133:13
    |
-LL |     let c = #[rustc_capture_analysis]
+LL |     let c = #[crablangc_capture_analysis]
    |             ^^^^^^^^^^^^^^^^^^^^^^^^^
    |
-   = note: see issue #15701 <https://github.com/rust-lang/rust/issues/15701> for more information
+   = note: see issue #15701 <https://github.com/crablang/crablang/issues/15701> for more information
    = help: add `#![feature(stmt_expr_attributes)]` to the crate attributes to enable
 
 error[E0658]: attributes on expressions are experimental
   --> $DIR/move_closure.rs:150:13
    |
-LL |     let c = #[rustc_capture_analysis]
+LL |     let c = #[crablangc_capture_analysis]
    |             ^^^^^^^^^^^^^^^^^^^^^^^^^
    |
-   = note: see issue #15701 <https://github.com/rust-lang/rust/issues/15701> for more information
+   = note: see issue #15701 <https://github.com/crablang/crablang/issues/15701> for more information
    = help: add `#![feature(stmt_expr_attributes)]` to the crate attributes to enable
 
 error[E0658]: attributes on expressions are experimental
   --> $DIR/move_closure.rs:172:13
    |
-LL |     let c = #[rustc_capture_analysis] move || box_p_foo.x += 10;
+LL |     let c = #[crablangc_capture_analysis] move || box_p_foo.x += 10;
    |             ^^^^^^^^^^^^^^^^^^^^^^^^^
    |
-   = note: see issue #15701 <https://github.com/rust-lang/rust/issues/15701> for more information
+   = note: see issue #15701 <https://github.com/crablang/crablang/issues/15701> for more information
    = help: add `#![feature(stmt_expr_attributes)]` to the crate attributes to enable
 
 error[E0658]: attributes on expressions are experimental
   --> $DIR/move_closure.rs:189:13
    |
-LL |     let c = #[rustc_capture_analysis] move || p_foo.x += 10;
+LL |     let c = #[crablangc_capture_analysis] move || p_foo.x += 10;
    |             ^^^^^^^^^^^^^^^^^^^^^^^^^
    |
-   = note: see issue #15701 <https://github.com/rust-lang/rust/issues/15701> for more information
+   = note: see issue #15701 <https://github.com/crablang/crablang/issues/15701> for more information
    = help: add `#![feature(stmt_expr_attributes)]` to the crate attributes to enable
 
 error[E0658]: attributes on expressions are experimental
   --> $DIR/move_closure.rs:202:13
    |
-LL |     let c = #[rustc_capture_analysis] move || x;
+LL |     let c = #[crablangc_capture_analysis] move || x;
    |             ^^^^^^^^^^^^^^^^^^^^^^^^^
    |
-   = note: see issue #15701 <https://github.com/rust-lang/rust/issues/15701> for more information
+   = note: see issue #15701 <https://github.com/crablang/crablang/issues/15701> for more information
    = help: add `#![feature(stmt_expr_attributes)]` to the crate attributes to enable
 
 error: First Pass analysis includes:
   --> $DIR/move_closure.rs:202:39
    |
-LL |     let c = #[rustc_capture_analysis] move || x;
+LL |     let c = #[crablangc_capture_analysis] move || x;
    |                                       ^^^^^^^^^
    |
 note: Capturing x[] -> ImmBorrow
   --> $DIR/move_closure.rs:202:47
    |
-LL |     let c = #[rustc_capture_analysis] move || x;
+LL |     let c = #[crablangc_capture_analysis] move || x;
    |                                               ^
 
 error: Min Capture analysis includes:
   --> $DIR/move_closure.rs:202:39
    |
-LL |     let c = #[rustc_capture_analysis] move || x;
+LL |     let c = #[crablangc_capture_analysis] move || x;
    |                                       ^^^^^^^^^
    |
 note: Min Capture x[] -> ByValue
   --> $DIR/move_closure.rs:202:47
    |
-LL |     let c = #[rustc_capture_analysis] move || x;
+LL |     let c = #[crablangc_capture_analysis] move || x;
    |                                               ^
 
 error: First Pass analysis includes:
@@ -412,51 +412,51 @@ LL |         println!("{}", t.1.0);
 error: First Pass analysis includes:
   --> $DIR/move_closure.rs:172:39
    |
-LL |     let c = #[rustc_capture_analysis] move || box_p_foo.x += 10;
+LL |     let c = #[crablangc_capture_analysis] move || box_p_foo.x += 10;
    |                                       ^^^^^^^^^^^^^^^^^^^^^^^^^
    |
 note: Capturing box_p_foo[Deref,Deref,(0, 0)] -> MutBorrow
   --> $DIR/move_closure.rs:172:47
    |
-LL |     let c = #[rustc_capture_analysis] move || box_p_foo.x += 10;
+LL |     let c = #[crablangc_capture_analysis] move || box_p_foo.x += 10;
    |                                               ^^^^^^^^^^^
 
 error: Min Capture analysis includes:
   --> $DIR/move_closure.rs:172:39
    |
-LL |     let c = #[rustc_capture_analysis] move || box_p_foo.x += 10;
+LL |     let c = #[crablangc_capture_analysis] move || box_p_foo.x += 10;
    |                                       ^^^^^^^^^^^^^^^^^^^^^^^^^
    |
 note: Min Capture box_p_foo[] -> ByValue
   --> $DIR/move_closure.rs:172:47
    |
-LL |     let c = #[rustc_capture_analysis] move || box_p_foo.x += 10;
+LL |     let c = #[crablangc_capture_analysis] move || box_p_foo.x += 10;
    |                                               ^^^^^^^^^^^
 
 error: First Pass analysis includes:
   --> $DIR/move_closure.rs:189:39
    |
-LL |     let c = #[rustc_capture_analysis] move || p_foo.x += 10;
+LL |     let c = #[crablangc_capture_analysis] move || p_foo.x += 10;
    |                                       ^^^^^^^^^^^^^^^^^^^^^
    |
 note: Capturing p_foo[Deref,Deref,(0, 0)] -> MutBorrow
   --> $DIR/move_closure.rs:189:47
    |
-LL |     let c = #[rustc_capture_analysis] move || p_foo.x += 10;
+LL |     let c = #[crablangc_capture_analysis] move || p_foo.x += 10;
    |                                               ^^^^^^^
 
 error: Min Capture analysis includes:
   --> $DIR/move_closure.rs:189:39
    |
-LL |     let c = #[rustc_capture_analysis] move || p_foo.x += 10;
+LL |     let c = #[crablangc_capture_analysis] move || p_foo.x += 10;
    |                                       ^^^^^^^^^^^^^^^^^^^^^
    |
 note: Min Capture p_foo[] -> ByValue
   --> $DIR/move_closure.rs:189:47
    |
-LL |     let c = #[rustc_capture_analysis] move || p_foo.x += 10;
+LL |     let c = #[crablangc_capture_analysis] move || p_foo.x += 10;
    |                                               ^^^^^^^
 
 error: aborting due to 33 previous errors
 
-For more information about this error, try `rustc --explain E0658`.
+For more information about this error, try `crablangc --explain E0658`.

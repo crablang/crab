@@ -1,0 +1,14 @@
+[package]
+name = "crablangc_type_ir"
+version = "0.0.0"
+edition = "2021"
+
+[lib]
+
+[dependencies]
+bitflags = "1.2.1"
+crablangc_index = { path = "../crablangc_index" }
+crablangc_serialize = { path = "../crablangc_serialize" }
+crablangc_data_structures = { path = "../crablangc_data_structures" }
+crablangc_macros = { path = "../crablangc_macros" }
+smallvec = { version = "1.8.1", features = ["union", "may_dangle"] }

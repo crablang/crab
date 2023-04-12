@@ -90,4 +90,4 @@ LL | fn partially_correct_impl_bad(_: impl &*const &BadTrait + Copy) {}
 
 error: aborting due to 9 previous errors
 
-For more information about this error, try `rustc --explain E0405`.
+For more information about this error, try `crablangc --explain E0405`.

@@ -36,8 +36,8 @@ fn this_is_ok(_m: &mut HashMap<usize, Key>) {}
 
 // Raw pointers are hashed by the address they point to, so it doesn't matter if they point to a
 // type with interior mutability.  See:
-// - clippy issue: https://github.com/rust-lang/rust-clippy/issues/6745
-// - std lib: https://github.com/rust-lang/rust/blob/1.54.0/library/core/src/hash/mod.rs#L717-L736
+// - clippy issue: https://github.com/crablang/crablang-clippy/issues/6745
+// - std lib: https://github.com/crablang/crablang/blob/1.54.0/library/core/src/hash/mod.rs#L717-L736
 // So these are OK:
 fn raw_ptr_is_ok(_m: &mut HashMap<*const Key, ()>) {}
 fn raw_mut_ptr_is_ok(_m: &mut HashMap<*mut Key, ()>) {}

@@ -1,0 +1,24 @@
+[package]
+name = "crablangc_error_messages"
+version = "0.0.0"
+edition = "2021"
+
+[lib]
+
+[dependencies]
+fluent-bundle = "0.15.2"
+fluent-syntax = "0.11"
+intl-memoizer = "0.5.1"
+crablangc_baked_icu_data = { path = "../crablangc_baked_icu_data" }
+crablangc_data_structures = { path = "../crablangc_data_structures" }
+crablangc_serialize = { path = "../crablangc_serialize" }
+crablangc_span = { path = "../crablangc_span" }
+crablangc_macros = { path = "../crablangc_macros" }
+tracing = "0.1"
+unic-langid = { version = "0.9.0", features = ["macros"] }
+icu_list = "1.1.0"
+icu_locid = "1.1.0"
+icu_provider_adapters = "1.1.0"
+
+[features]
+crablangc_use_parallel_compiler = ['crablangc_baked_icu_data/crablangc_use_parallel_compiler']

@@ -1,12 +1,12 @@
 use clippy_utils::diagnostics::span_lint_and_sugg;
 use clippy_utils::source::{position_before_rarrow, snippet_opt};
 use if_chain::if_chain;
-use rustc_ast::{ast, visit::FnKind, ClosureBinder};
-use rustc_errors::Applicability;
-use rustc_lint::{EarlyContext, EarlyLintPass};
-use rustc_session::{declare_lint_pass, declare_tool_lint};
-use rustc_span::source_map::Span;
-use rustc_span::BytePos;
+use crablangc_ast::{ast, visit::FnKind, ClosureBinder};
+use crablangc_errors::Applicability;
+use crablangc_lint::{EarlyContext, EarlyLintPass};
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_span::source_map::Span;
+use crablangc_span::BytePos;
 
 declare_clippy_lint! {
     /// ### What it does
@@ -18,13 +18,13 @@ declare_clippy_lint! {
     /// statement look like a function call.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// fn return_unit() -> () {
     ///     ()
     /// }
     /// ```
     /// is equivalent to
-    /// ```rust
+    /// ```crablang
     /// fn return_unit() {}
     /// ```
     #[clippy::version = "1.31.0"]

@@ -59,7 +59,7 @@ use crate::sys;
 /// result in undefined behavior. This could include panics, incorrect results,
 /// aborts, memory leaks, and non-termination.
 ///
-/// The hash table implementation is a Rust port of Google's [SwissTable].
+/// The hash table implementation is a CrabLang port of Google's [SwissTable].
 /// The original C++ version of SwissTable can be found [here], and this
 /// [CppCon talk] gives an overview of how the algorithm works.
 ///
@@ -208,9 +208,9 @@ use crate::sys;
 /// }
 /// ```
 
-#[cfg_attr(not(test), rustc_diagnostic_item = "HashMap")]
-#[stable(feature = "rust1", since = "1.0.0")]
-#[rustc_insignificant_dtor]
+#[cfg_attr(not(test), crablangc_diagnostic_item = "HashMap")]
+#[stable(feature = "crablang1", since = "1.0.0")]
+#[crablangc_insignificant_dtor]
 pub struct HashMap<K, V, S = RandomState> {
     base: base::HashMap<K, V, S>,
 }
@@ -229,7 +229,7 @@ impl<K, V> HashMap<K, V, RandomState> {
     /// ```
     #[inline]
     #[must_use]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn new() -> HashMap<K, V, RandomState> {
         Default::default()
     }
@@ -248,7 +248,7 @@ impl<K, V> HashMap<K, V, RandomState> {
     /// ```
     #[inline]
     #[must_use]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn with_capacity(capacity: usize) -> HashMap<K, V, RandomState> {
         HashMap::with_capacity_and_hasher(capacity, Default::default())
     }
@@ -280,7 +280,7 @@ impl<K, V, S> HashMap<K, V, S> {
     /// ```
     #[inline]
     #[stable(feature = "hashmap_build_hasher", since = "1.7.0")]
-    #[rustc_const_unstable(feature = "const_collections_with_hasher", issue = "102575")]
+    #[crablangc_const_unstable(feature = "const_collections_with_hasher", issue = "102575")]
     pub const fn with_hasher(hash_builder: S) -> HashMap<K, V, S> {
         HashMap { base: base::HashMap::with_hasher(hash_builder) }
     }
@@ -329,7 +329,7 @@ impl<K, V, S> HashMap<K, V, S> {
     /// assert!(map.capacity() >= 100);
     /// ```
     #[inline]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn capacity(&self) -> usize {
         self.base.capacity()
     }
@@ -357,7 +357,7 @@ impl<K, V, S> HashMap<K, V, S> {
     ///
     /// In the current implementation, iterating over keys takes O(capacity) time
     /// instead of O(len) because it internally visits empty buckets too.
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn keys(&self) -> Keys<'_, K, V> {
         Keys { inner: self.iter() }
     }
@@ -389,7 +389,7 @@ impl<K, V, S> HashMap<K, V, S> {
     /// In the current implementation, iterating over keys takes O(capacity) time
     /// instead of O(len) because it internally visits empty buckets too.
     #[inline]
-    #[rustc_lint_query_instability]
+    #[crablangc_lint_query_instability]
     #[stable(feature = "map_into_keys_values", since = "1.54.0")]
     pub fn into_keys(self) -> IntoKeys<K, V> {
         IntoKeys { inner: self.into_iter() }
@@ -418,7 +418,7 @@ impl<K, V, S> HashMap<K, V, S> {
     ///
     /// In the current implementation, iterating over values takes O(capacity) time
     /// instead of O(len) because it internally visits empty buckets too.
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn values(&self) -> Values<'_, K, V> {
         Values { inner: self.iter() }
     }
@@ -482,7 +482,7 @@ impl<K, V, S> HashMap<K, V, S> {
     /// In the current implementation, iterating over values takes O(capacity) time
     /// instead of O(len) because it internally visits empty buckets too.
     #[inline]
-    #[rustc_lint_query_instability]
+    #[crablangc_lint_query_instability]
     #[stable(feature = "map_into_keys_values", since = "1.54.0")]
     pub fn into_values(self) -> IntoValues<K, V> {
         IntoValues { inner: self.into_iter() }
@@ -511,8 +511,8 @@ impl<K, V, S> HashMap<K, V, S> {
     ///
     /// In the current implementation, iterating over map takes O(capacity) time
     /// instead of O(len) because it internally visits empty buckets too.
-    #[rustc_lint_query_instability]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[crablangc_lint_query_instability]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn iter(&self) -> Iter<'_, K, V> {
         Iter { base: self.base.iter() }
     }
@@ -546,8 +546,8 @@ impl<K, V, S> HashMap<K, V, S> {
     ///
     /// In the current implementation, iterating over map takes O(capacity) time
     /// instead of O(len) because it internally visits empty buckets too.
-    #[rustc_lint_query_instability]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[crablangc_lint_query_instability]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn iter_mut(&mut self) -> IterMut<'_, K, V> {
         IterMut { base: self.base.iter_mut() }
     }
@@ -564,7 +564,7 @@ impl<K, V, S> HashMap<K, V, S> {
     /// a.insert(1, "a");
     /// assert_eq!(a.len(), 1);
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn len(&self) -> usize {
         self.base.len()
     }
@@ -582,7 +582,7 @@ impl<K, V, S> HashMap<K, V, S> {
     /// assert!(!a.is_empty());
     /// ```
     #[inline]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn is_empty(&self) -> bool {
         self.base.is_empty()
     }
@@ -611,7 +611,7 @@ impl<K, V, S> HashMap<K, V, S> {
     /// assert!(a.is_empty());
     /// ```
     #[inline]
-    #[rustc_lint_query_instability]
+    #[crablangc_lint_query_instability]
     #[stable(feature = "drain", since = "1.6.0")]
     pub fn drain(&mut self) -> Drain<'_, K, V> {
         Drain { base: self.base.drain() }
@@ -653,7 +653,7 @@ impl<K, V, S> HashMap<K, V, S> {
     /// assert_eq!(odds, vec![1, 3, 5, 7]);
     /// ```
     #[inline]
-    #[rustc_lint_query_instability]
+    #[crablangc_lint_query_instability]
     #[unstable(feature = "hash_drain_filter", issue = "59618")]
     pub fn drain_filter<F>(&mut self, pred: F) -> DrainFilter<'_, K, V, F>
     where
@@ -682,7 +682,7 @@ impl<K, V, S> HashMap<K, V, S> {
     /// In the current implementation, this operation takes O(capacity) time
     /// instead of O(len) because it internally visits empty buckets too.
     #[inline]
-    #[rustc_lint_query_instability]
+    #[crablangc_lint_query_instability]
     #[stable(feature = "retain_hash_collection", since = "1.18.0")]
     pub fn retain<F>(&mut self, f: F)
     where
@@ -705,7 +705,7 @@ impl<K, V, S> HashMap<K, V, S> {
     /// assert!(a.is_empty());
     /// ```
     #[inline]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn clear(&mut self) {
         self.base.clear();
     }
@@ -752,7 +752,7 @@ where
     /// map.reserve(10);
     /// ```
     #[inline]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn reserve(&mut self, additional: usize) {
         self.base.reserve(additional)
     }
@@ -800,7 +800,7 @@ where
     /// assert!(map.capacity() >= 2);
     /// ```
     #[inline]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn shrink_to_fit(&mut self) {
         self.base.shrink_to_fit();
     }
@@ -850,9 +850,9 @@ where
     /// assert_eq!(letters.get(&'y'), None);
     /// ```
     #[inline]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn entry(&mut self, key: K) -> Entry<'_, K, V> {
-        map_entry(self.base.rustc_entry(key))
+        map_entry(self.base.crablangc_entry(key))
     }
 
     /// Returns a reference to the value corresponding to the key.
@@ -871,7 +871,7 @@ where
     /// assert_eq!(map.get(&1), Some(&"a"));
     /// assert_eq!(map.get(&2), None);
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     pub fn get<Q: ?Sized>(&self, k: &Q) -> Option<&V>
     where
@@ -974,7 +974,7 @@ where
     /// Calling this method with overlapping keys is *[undefined behavior]* even if the resulting
     /// references are not used.
     ///
-    /// [undefined behavior]: https://doc.rust-lang.org/reference/behavior-considered-undefined.html
+    /// [undefined behavior]: https://doc.crablang.org/reference/behavior-considered-undefined.html
     ///
     /// # Examples
     ///
@@ -1037,7 +1037,7 @@ where
     /// assert_eq!(map.contains_key(&2), false);
     /// ```
     #[inline]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn contains_key<Q: ?Sized>(&self, k: &Q) -> bool
     where
         K: Borrow<Q>,
@@ -1065,7 +1065,7 @@ where
     /// assert_eq!(map[&1], "b");
     /// ```
     #[inline]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn get_mut<Q: ?Sized>(&mut self, k: &Q) -> Option<&mut V>
     where
         K: Borrow<Q>,
@@ -1099,7 +1099,7 @@ where
     /// assert_eq!(map[&37], "c");
     /// ```
     #[inline]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn insert(&mut self, k: K, v: V) -> Option<V> {
         self.base.insert(k, v)
     }
@@ -1153,7 +1153,7 @@ where
     /// assert_eq!(map.remove(&1), None);
     /// ```
     #[inline]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn remove<Q: ?Sized>(&mut self, k: &Q) -> Option<V>
     where
         K: Borrow<Q>,
@@ -1255,7 +1255,7 @@ where
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<K, V, S> Clone for HashMap<K, V, S>
 where
     K: Clone,
@@ -1273,7 +1273,7 @@ where
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<K, V, S> PartialEq for HashMap<K, V, S>
 where
     K: Eq + Hash,
@@ -1289,7 +1289,7 @@ where
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<K, V, S> Eq for HashMap<K, V, S>
 where
     K: Eq + Hash,
@@ -1298,7 +1298,7 @@ where
 {
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<K, V, S> Debug for HashMap<K, V, S>
 where
     K: Debug,
@@ -1309,7 +1309,7 @@ where
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<K, V, S> Default for HashMap<K, V, S>
 where
     S: Default,
@@ -1321,7 +1321,7 @@ where
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<K, Q: ?Sized, V, S> Index<&Q> for HashMap<K, V, S>
 where
     K: Eq + Hash + Borrow<Q>,
@@ -1389,13 +1389,13 @@ where
 /// ]);
 /// let iter = map.iter();
 /// ```
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub struct Iter<'a, K: 'a, V: 'a> {
     base: base::Iter<'a, K, V>,
 }
 
 // FIXME(#26925) Remove in favor of `#[derive(Clone)]`
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<K, V> Clone for Iter<'_, K, V> {
     #[inline]
     fn clone(&self) -> Self {
@@ -1427,7 +1427,7 @@ impl<K: Debug, V: Debug> fmt::Debug for Iter<'_, K, V> {
 /// ]);
 /// let iter = map.iter_mut();
 /// ```
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub struct IterMut<'a, K: 'a, V: 'a> {
     base: base::IterMut<'a, K, V>,
 }
@@ -1436,7 +1436,7 @@ impl<'a, K, V> IterMut<'a, K, V> {
     /// Returns an iterator of references over the remaining items.
     #[inline]
     pub(super) fn iter(&self) -> Iter<'_, K, V> {
-        Iter { base: self.base.rustc_iter() }
+        Iter { base: self.base.crablangc_iter() }
     }
 }
 
@@ -1458,7 +1458,7 @@ impl<'a, K, V> IterMut<'a, K, V> {
 /// ]);
 /// let iter = map.into_iter();
 /// ```
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub struct IntoIter<K, V> {
     base: base::IntoIter<K, V>,
 }
@@ -1467,7 +1467,7 @@ impl<K, V> IntoIter<K, V> {
     /// Returns an iterator of references over the remaining items.
     #[inline]
     pub(super) fn iter(&self) -> Iter<'_, K, V> {
-        Iter { base: self.base.rustc_iter() }
+        Iter { base: self.base.crablangc_iter() }
     }
 }
 
@@ -1488,13 +1488,13 @@ impl<K, V> IntoIter<K, V> {
 /// ]);
 /// let iter_keys = map.keys();
 /// ```
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub struct Keys<'a, K: 'a, V: 'a> {
     inner: Iter<'a, K, V>,
 }
 
 // FIXME(#26925) Remove in favor of `#[derive(Clone)]`
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<K, V> Clone for Keys<'_, K, V> {
     #[inline]
     fn clone(&self) -> Self {
@@ -1526,13 +1526,13 @@ impl<K: Debug, V> fmt::Debug for Keys<'_, K, V> {
 /// ]);
 /// let iter_values = map.values();
 /// ```
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub struct Values<'a, K: 'a, V: 'a> {
     inner: Iter<'a, K, V>,
 }
 
 // FIXME(#26925) Remove in favor of `#[derive(Clone)]`
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<K, V> Clone for Values<'_, K, V> {
     #[inline]
     fn clone(&self) -> Self {
@@ -1573,7 +1573,7 @@ impl<'a, K, V> Drain<'a, K, V> {
     /// Returns an iterator of references over the remaining items.
     #[inline]
     pub(super) fn iter(&self) -> Iter<'_, K, V> {
-        Iter { base: self.base.rustc_iter() }
+        Iter { base: self.base.crablangc_iter() }
     }
 }
 
@@ -2072,16 +2072,16 @@ impl<K, V, S> Debug for RawEntryBuilder<'_, K, V, S> {
 /// This `enum` is constructed from the [`entry`] method on [`HashMap`].
 ///
 /// [`entry`]: HashMap::entry
-#[stable(feature = "rust1", since = "1.0.0")]
-#[cfg_attr(not(test), rustc_diagnostic_item = "HashMapEntry")]
+#[stable(feature = "crablang1", since = "1.0.0")]
+#[cfg_attr(not(test), crablangc_diagnostic_item = "HashMapEntry")]
 pub enum Entry<'a, K: 'a, V: 'a> {
     /// An occupied entry.
-    #[stable(feature = "rust1", since = "1.0.0")]
-    Occupied(#[stable(feature = "rust1", since = "1.0.0")] OccupiedEntry<'a, K, V>),
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    Occupied(#[stable(feature = "crablang1", since = "1.0.0")] OccupiedEntry<'a, K, V>),
 
     /// A vacant entry.
-    #[stable(feature = "rust1", since = "1.0.0")]
-    Vacant(#[stable(feature = "rust1", since = "1.0.0")] VacantEntry<'a, K, V>),
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    Vacant(#[stable(feature = "crablang1", since = "1.0.0")] VacantEntry<'a, K, V>),
 }
 
 #[stable(feature = "debug_hash_map", since = "1.12.0")]
@@ -2096,9 +2096,9 @@ impl<K: Debug, V: Debug> Debug for Entry<'_, K, V> {
 
 /// A view into an occupied entry in a `HashMap`.
 /// It is part of the [`Entry`] enum.
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub struct OccupiedEntry<'a, K: 'a, V: 'a> {
-    base: base::RustcOccupiedEntry<'a, K, V>,
+    base: base::CrabLangcOccupiedEntry<'a, K, V>,
 }
 
 #[stable(feature = "debug_hash_map", since = "1.12.0")]
@@ -2113,9 +2113,9 @@ impl<K: Debug, V: Debug> Debug for OccupiedEntry<'_, K, V> {
 
 /// A view into a vacant entry in a `HashMap`.
 /// It is part of the [`Entry`] enum.
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub struct VacantEntry<'a, K: 'a, V: 'a> {
-    base: base::RustcVacantEntry<'a, K, V>,
+    base: base::CrabLangcVacantEntry<'a, K, V>,
 }
 
 #[stable(feature = "debug_hash_map", since = "1.12.0")]
@@ -2168,31 +2168,31 @@ impl<'a, K: fmt::Debug, V: fmt::Debug> Error for OccupiedError<'a, K, V> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<'a, K, V, S> IntoIterator for &'a HashMap<K, V, S> {
     type Item = (&'a K, &'a V);
     type IntoIter = Iter<'a, K, V>;
 
     #[inline]
-    #[rustc_lint_query_instability]
+    #[crablangc_lint_query_instability]
     fn into_iter(self) -> Iter<'a, K, V> {
         self.iter()
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<'a, K, V, S> IntoIterator for &'a mut HashMap<K, V, S> {
     type Item = (&'a K, &'a mut V);
     type IntoIter = IterMut<'a, K, V>;
 
     #[inline]
-    #[rustc_lint_query_instability]
+    #[crablangc_lint_query_instability]
     fn into_iter(self) -> IterMut<'a, K, V> {
         self.iter_mut()
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<K, V, S> IntoIterator for HashMap<K, V, S> {
     type Item = (K, V);
     type IntoIter = IntoIter<K, V>;
@@ -2216,13 +2216,13 @@ impl<K, V, S> IntoIterator for HashMap<K, V, S> {
     /// let vec: Vec<(&str, i32)> = map.into_iter().collect();
     /// ```
     #[inline]
-    #[rustc_lint_query_instability]
+    #[crablangc_lint_query_instability]
     fn into_iter(self) -> IntoIter<K, V> {
         IntoIter { base: self.base.into_iter() }
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<'a, K, V> Iterator for Iter<'a, K, V> {
     type Item = (&'a K, &'a V);
 
@@ -2235,7 +2235,7 @@ impl<'a, K, V> Iterator for Iter<'a, K, V> {
         self.base.size_hint()
     }
 }
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<K, V> ExactSizeIterator for Iter<'_, K, V> {
     #[inline]
     fn len(&self) -> usize {
@@ -2246,7 +2246,7 @@ impl<K, V> ExactSizeIterator for Iter<'_, K, V> {
 #[stable(feature = "fused", since = "1.26.0")]
 impl<K, V> FusedIterator for Iter<'_, K, V> {}
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<'a, K, V> Iterator for IterMut<'a, K, V> {
     type Item = (&'a K, &'a mut V);
 
@@ -2259,7 +2259,7 @@ impl<'a, K, V> Iterator for IterMut<'a, K, V> {
         self.base.size_hint()
     }
 }
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<K, V> ExactSizeIterator for IterMut<'_, K, V> {
     #[inline]
     fn len(&self) -> usize {
@@ -2280,7 +2280,7 @@ where
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<K, V> Iterator for IntoIter<K, V> {
     type Item = (K, V);
 
@@ -2293,7 +2293,7 @@ impl<K, V> Iterator for IntoIter<K, V> {
         self.base.size_hint()
     }
 }
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<K, V> ExactSizeIterator for IntoIter<K, V> {
     #[inline]
     fn len(&self) -> usize {
@@ -2310,7 +2310,7 @@ impl<K: Debug, V: Debug> fmt::Debug for IntoIter<K, V> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<'a, K, V> Iterator for Keys<'a, K, V> {
     type Item = &'a K;
 
@@ -2323,7 +2323,7 @@ impl<'a, K, V> Iterator for Keys<'a, K, V> {
         self.inner.size_hint()
     }
 }
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<K, V> ExactSizeIterator for Keys<'_, K, V> {
     #[inline]
     fn len(&self) -> usize {
@@ -2333,7 +2333,7 @@ impl<K, V> ExactSizeIterator for Keys<'_, K, V> {
 #[stable(feature = "fused", since = "1.26.0")]
 impl<K, V> FusedIterator for Keys<'_, K, V> {}
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<'a, K, V> Iterator for Values<'a, K, V> {
     type Item = &'a V;
 
@@ -2346,7 +2346,7 @@ impl<'a, K, V> Iterator for Values<'a, K, V> {
         self.inner.size_hint()
     }
 }
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<K, V> ExactSizeIterator for Values<'_, K, V> {
     #[inline]
     fn len(&self) -> usize {
@@ -2528,7 +2528,7 @@ impl<'a, K, V> Entry<'a, K, V> {
     /// assert_eq!(map["poneyland"], 6);
     /// ```
     #[inline]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn or_insert(self, default: V) -> &'a mut V {
         match self {
             Occupied(entry) => entry.into_mut(),
@@ -2552,7 +2552,7 @@ impl<'a, K, V> Entry<'a, K, V> {
     /// assert_eq!(map["poneyland"], "hoho".to_string());
     /// ```
     #[inline]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn or_insert_with<F: FnOnce() -> V>(self, default: F) -> &'a mut V {
         match self {
             Occupied(entry) => entry.into_mut(),
@@ -2754,7 +2754,7 @@ impl<'a, K, V> OccupiedEntry<'a, K, V> {
     /// }
     /// ```
     #[inline]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn get(&self) -> &V {
         self.base.get()
     }
@@ -2787,7 +2787,7 @@ impl<'a, K, V> OccupiedEntry<'a, K, V> {
     /// assert_eq!(map["poneyland"], 24);
     /// ```
     #[inline]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn get_mut(&mut self) -> &mut V {
         self.base.get_mut()
     }
@@ -2816,7 +2816,7 @@ impl<'a, K, V> OccupiedEntry<'a, K, V> {
     /// assert_eq!(map["poneyland"], 22);
     /// ```
     #[inline]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn into_mut(self) -> &'a mut V {
         self.base.into_mut()
     }
@@ -2839,7 +2839,7 @@ impl<'a, K, V> OccupiedEntry<'a, K, V> {
     /// assert_eq!(map["poneyland"], 15);
     /// ```
     #[inline]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn insert(&mut self, value: V) -> V {
         self.base.insert(value)
     }
@@ -2862,7 +2862,7 @@ impl<'a, K, V> OccupiedEntry<'a, K, V> {
     /// assert_eq!(map.contains_key("poneyland"), false);
     /// ```
     #[inline]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn remove(self) -> V {
         self.base.remove()
     }
@@ -2981,7 +2981,7 @@ impl<'a, K: 'a, V: 'a> VacantEntry<'a, K, V> {
     /// assert_eq!(map["poneyland"], 37);
     /// ```
     #[inline]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn insert(self, value: V) -> &'a mut V {
         self.base.insert(value)
     }
@@ -3011,7 +3011,7 @@ impl<'a, K: 'a, V: 'a> VacantEntry<'a, K, V> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<K, V, S> FromIterator<(K, V)> for HashMap<K, V, S>
 where
     K: Eq + Hash,
@@ -3026,7 +3026,7 @@ where
 
 /// Inserts all new key-values from the iterator and replaces values with existing
 /// keys with new values returned from the iterator.
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<K, V, S> Extend<(K, V)> for HashMap<K, V, S>
 where
     K: Eq + Hash,
@@ -3161,7 +3161,7 @@ impl DefaultHasher {
     #[stable(feature = "hashmap_default_hasher", since = "1.13.0")]
     #[inline]
     #[allow(deprecated)]
-    #[rustc_const_unstable(feature = "const_hash", issue = "104061")]
+    #[crablangc_const_unstable(feature = "const_hash", issue = "104061")]
     #[must_use]
     pub const fn new() -> DefaultHasher {
         DefaultHasher(SipHasher13::new_with_keys(0, 0))
@@ -3169,7 +3169,7 @@ impl DefaultHasher {
 }
 
 #[stable(feature = "hashmap_default_hasher", since = "1.13.0")]
-#[rustc_const_unstable(feature = "const_hash", issue = "104061")]
+#[crablangc_const_unstable(feature = "const_hash", issue = "104061")]
 impl const Default for DefaultHasher {
     /// Creates a new `DefaultHasher` using [`new`].
     /// See its documentation for more.
@@ -3182,7 +3182,7 @@ impl const Default for DefaultHasher {
 }
 
 #[stable(feature = "hashmap_default_hasher", since = "1.13.0")]
-#[rustc_const_unstable(feature = "const_hash", issue = "104061")]
+#[crablangc_const_unstable(feature = "const_hash", issue = "104061")]
 impl const Hasher for DefaultHasher {
     // The underlying `SipHasher13` doesn't override the other
     // `write_*` methods, so it's ok not to forward them here.
@@ -3220,10 +3220,10 @@ impl fmt::Debug for RandomState {
 }
 
 #[inline]
-fn map_entry<'a, K: 'a, V: 'a>(raw: base::RustcEntry<'a, K, V>) -> Entry<'a, K, V> {
+fn map_entry<'a, K: 'a, V: 'a>(raw: base::CrabLangcEntry<'a, K, V>) -> Entry<'a, K, V> {
     match raw {
-        base::RustcEntry::Occupied(base) => Entry::Occupied(OccupiedEntry { base }),
-        base::RustcEntry::Vacant(base) => Entry::Vacant(VacantEntry { base }),
+        base::CrabLangcEntry::Occupied(base) => Entry::Occupied(OccupiedEntry { base }),
+        base::CrabLangcEntry::Vacant(base) => Entry::Vacant(VacantEntry { base }),
     }
 }
 

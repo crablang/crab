@@ -24,7 +24,7 @@ fn main() -> () {
                                          // + def_id: DefId(0:4 ~ issue_76997_inline_scopes_parenting[5cd2]::main::{closure#0})
                                          // + substs: [
                                          //     i8,
-                                         //     extern "rust-call" fn(((),)),
+                                         //     extern "crablang-call" fn(((),)),
                                          //     (),
                                          // ]
         StorageLive(_2);                 // scope 1 at $DIR/issue_76997_inline_scopes_parenting.rs:+2:5: +2:6

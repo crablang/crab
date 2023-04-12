@@ -15,4 +15,4 @@ LL |     println!("🦀🦀🦀🦀🦀"); let _a = b.to_owned() + ", World!";
 
 error: aborting due to previous error
 
-For more information about this error, try `rustc --explain E0369`.
+For more information about this error, try `crablangc --explain E0369`.

@@ -5,7 +5,7 @@
 // Iterator>::Item`, to be exact).
 
 #![allow(warnings)]
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 
 trait Anything { }
 
@@ -17,7 +17,7 @@ fn with_signature<'a, T, F>(x: Box<T>, op: F) -> Box<dyn Anything + 'a>
     op(x)
 }
 
-#[rustc_regions]
+#[crablangc_regions]
 fn no_region<'a, T>(x: Box<T>) -> Box<dyn Anything + 'a>
 where
     T: Iterator,
@@ -26,7 +26,7 @@ where
     //~^ ERROR the associated type `<T as Iterator>::Item` may not live long enough
 }
 
-#[rustc_regions]
+#[crablangc_regions]
 fn correct_region<'a, T>(x: Box<T>) -> Box<dyn Anything + 'a>
 where
     T: 'a + Iterator,
@@ -34,7 +34,7 @@ where
     with_signature(x, |mut y| Box::new(y.next()))
 }
 
-#[rustc_regions]
+#[crablangc_regions]
 fn wrong_region<'a, 'b, T>(x: Box<T>) -> Box<dyn Anything + 'a>
 where
     T: 'b + Iterator,
@@ -43,7 +43,7 @@ where
     //~^ ERROR the associated type `<T as Iterator>::Item` may not live long enough
 }
 
-#[rustc_regions]
+#[crablangc_regions]
 fn outlives_region<'a, 'b, T>(x: Box<T>) -> Box<dyn Anything + 'a>
 where
     T: 'b + Iterator,

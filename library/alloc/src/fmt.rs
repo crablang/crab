@@ -17,8 +17,8 @@
 //! format!("The number is {}", 1);   // => "The number is 1"
 //! format!("{:?}", (3, 4));          // => "(3, 4)"
 //! format!("{value}", value=4);      // => "4"
-//! let people = "Rustaceans";
-//! format!("Hello {people}!");       // => "Hello Rustaceans!"
+//! let people = "CrabLangaceans";
+//! format!("Hello {people}!");       // => "Hello CrabLangaceans!"
 //! format!("{} {}", 1, 2);           // => "1 2"
 //! format!("{:04}", 42);             // => "0042" with leading zeros
 //! format!("{:#?}", (100, 200));     // => "(
@@ -65,7 +65,7 @@
 //!
 //! ## Named parameters
 //!
-//! Rust itself does not have a Python-like equivalent of named parameters to a
+//! CrabLang itself does not have a Python-like equivalent of named parameters to a
 //! function, but the [`format!`] macro is a syntax extension that allows it to
 //! leverage named parameters. Named parameters are listed at the end of the
 //! argument list and have the syntax:
@@ -277,7 +277,7 @@
 //!
 //! In some programming languages, the behavior of string formatting functions
 //! depends on the operating system's locale setting. The format functions
-//! provided by Rust's standard library do not have any concept of locale and
+//! provided by CrabLang's standard library do not have any concept of locale and
 //! will produce the same results on all systems regardless of user
 //! configuration.
 //!
@@ -328,7 +328,7 @@
 //! - `ws` is any character for which [`char::is_whitespace`] returns `true`, has no semantic
 //!   meaning and is completely optional,
 //! - `integer` is a decimal integer that may contain leading zeroes and must fit into an `usize` and
-//! - `identifier` is an `IDENTIFIER_OR_KEYWORD` (not an `IDENTIFIER`) as defined by the [Rust language reference](https://doc.rust-lang.org/reference/identifiers.html).
+//! - `identifier` is an `IDENTIFIER_OR_KEYWORD` (not an `IDENTIFIER`) as defined by the [CrabLang language reference](https://doc.crablang.org/reference/identifiers.html).
 //!
 //! # Formatting traits
 //!
@@ -442,7 +442,7 @@
 //!   all types implement the [`Display`] trait.
 //! - [`fmt::Debug`][`Debug`] implementations should be implemented for **all** public types.
 //!   Output will typically represent the internal state as faithfully as possible.
-//!   The purpose of the [`Debug`] trait is to facilitate debugging Rust code. In
+//!   The purpose of the [`Debug`] trait is to facilitate debugging CrabLang code. In
 //!   most cases, using `#[derive(Debug)]` is sufficient and recommended.
 //!
 //! Some examples of the output from both traits:
@@ -549,27 +549,27 @@
 //! [`fmt::Arguments`]: Arguments "fmt::Arguments"
 //! [`format`]: format() "fmt::format"
 
-#![stable(feature = "rust1", since = "1.0.0")]
+#![stable(feature = "crablang1", since = "1.0.0")]
 
 #[unstable(feature = "fmt_internals", issue = "none")]
 pub use core::fmt::rt;
 #[stable(feature = "fmt_flags_align", since = "1.28.0")]
 pub use core::fmt::Alignment;
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub use core::fmt::Error;
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub use core::fmt::{write, Arguments};
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub use core::fmt::{Binary, Octal};
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub use core::fmt::{Debug, Display};
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub use core::fmt::{DebugList, DebugMap, DebugSet, DebugStruct, DebugTuple};
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub use core::fmt::{Formatter, Result, Write};
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub use core::fmt::{LowerExp, UpperExp};
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub use core::fmt::{LowerHex, Pointer, UpperHex};
 
 #[cfg(not(no_global_oom_handling))]
@@ -603,7 +603,7 @@ use crate::string;
 /// [`format!`]: crate::format
 #[cfg(not(no_global_oom_handling))]
 #[must_use]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[inline]
 pub fn format(args: Arguments<'_>) -> string::String {
     fn format_inner(args: Arguments<'_>) -> string::String {

@@ -1,12 +1,12 @@
 #![cfg_attr(feature = "deny-warnings", deny(warnings))]
-// warn on lints, that are included in `rust-lang/rust`s bootstrap
-#![warn(rust_2018_idioms, unused_lifetimes)]
+// warn on lints, that are included in `crablang/crablang`s bootstrap
+#![warn(crablang_2018_idioms, unused_lifetimes)]
 
 use std::env;
 use std::path::PathBuf;
 use std::process::{self, Command};
 
-const CARGO_CLIPPY_HELP: &str = r#"Checks a package to catch common mistakes and improve your Rust code.
+const CARGO_CLIPPY_HELP: &str = r#"Checks a package to catch common mistakes and improve your CrabLang code.
 
 Usage:
     cargo clippy [options] [--] [<opts>...]
@@ -38,7 +38,7 @@ fn show_help() {
 }
 
 fn show_version() {
-    let version_info = rustc_tools_util::get_version_info!();
+    let version_info = crablangc_tools_util::get_version_info!();
     println!("{version_info}");
 }
 
@@ -136,7 +136,7 @@ impl ClippyCmd {
         // Currently, `CLIPPY_TERMINAL_WIDTH` is used only to format "unknown field" error messages.
         let terminal_width = termize::dimensions().map_or(0, |(w, _)| w);
 
-        cmd.env("RUSTC_WORKSPACE_WRAPPER", Self::path())
+        cmd.env("CRABLANGC_WORKSPACE_WRAPPER", Self::path())
             .env("CLIPPY_ARGS", clippy_args)
             .env("CLIPPY_TERMINAL_WIDTH", terminal_width.to_string())
             .arg(self.cargo_subcommand)

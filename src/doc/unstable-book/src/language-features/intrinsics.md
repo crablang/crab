@@ -10,16 +10,16 @@ the intrinsic directly when you can.
 
 
 These are imported as if they were FFI functions, with the special
-`rust-intrinsic` ABI. For example, if one was in a freestanding
+`crablang-intrinsic` ABI. For example, if one was in a freestanding
 context, but wished to be able to `transmute` between types, and
 perform efficient pointer arithmetic, one would import those functions
 via a declaration like
 
-```rust
+```crablang
 #![feature(intrinsics)]
 # fn main() {}
 
-extern "rust-intrinsic" {
+extern "crablang-intrinsic" {
     fn transmute<T, U>(x: T) -> U;
 
     fn offset<T>(dst: *const T, offset: isize) -> *const T;

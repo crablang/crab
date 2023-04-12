@@ -1,6 +1,6 @@
 #![crate_type="lib"]
 
-// rust-lang/rust#61631: Uses of `Self` in the defaults of generic
+// crablang/crablang#61631: Uses of `Self` in the defaults of generic
 // types for ADT's are not allowed. We justify this because the `Self`
 // type could be considered the "final" type parameter, that is only
 // well-defined after all of the other type parameters on the ADT have
@@ -34,7 +34,7 @@ union Usized<'a, P: Sized = [Self]> { x: i32, y: Option<&'a P> }
 fn demo_usages() {
     // An ICE means you only get the error from the first line of the
     // demo; comment each out to observe the other ICEs when trying
-    // this out on older versions of Rust.
+    // this out on older versions of CrabLang.
 
     let _ice: Snobound;
     let _ice: Enobound;

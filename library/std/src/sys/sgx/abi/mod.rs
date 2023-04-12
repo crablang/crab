@@ -83,7 +83,7 @@ extern "C" fn entry(p1: u64, p2: u64, p3: u64, secondary: bool, p4: u64, p5: u64
 
         unsafe {
             // The actual types of these arguments are `p1: *const Arg, p2:
-            // usize`. We can't currently customize the argument list of Rust's
+            // usize`. We can't currently customize the argument list of CrabLang's
             // main function, so we pass these in as the standard pointer-sized
             // values in `argc` and `argv`.
             let ret = main(p2 as _, p1 as _);

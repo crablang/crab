@@ -87,7 +87,7 @@ const MAX_THREE_B: u32 = 0x10000;
 */
 
 /// The highest valid code point a `char` can have, `'\u{10FFFF}'`. Use [`char::MAX`] instead.
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub const MAX: char = char::MAX;
 
 /// `U+FFFD REPLACEMENT CHARACTER` (�) is used in Unicode to represent a
@@ -109,8 +109,8 @@ pub fn decode_utf16<I: IntoIterator<Item = u16>>(iter: I) -> DecodeUtf16<I::Into
 }
 
 /// Converts a `u32` to a `char`. Use [`char::from_u32`] instead.
-#[stable(feature = "rust1", since = "1.0.0")]
-#[rustc_const_stable(feature = "const_char_convert", since = "1.67.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
+#[crablangc_const_stable(feature = "const_char_convert", since = "1.67.0")]
 #[must_use]
 #[inline]
 pub const fn from_u32(i: u32) -> Option<char> {
@@ -120,7 +120,7 @@ pub const fn from_u32(i: u32) -> Option<char> {
 /// Converts a `u32` to a `char`, ignoring validity. Use [`char::from_u32_unchecked`].
 /// instead.
 #[stable(feature = "char_from_unchecked", since = "1.5.0")]
-#[rustc_const_unstable(feature = "const_char_from_u32_unchecked", issue = "89259")]
+#[crablangc_const_unstable(feature = "const_char_from_u32_unchecked", issue = "89259")]
 #[must_use]
 #[inline]
 pub const unsafe fn from_u32_unchecked(i: u32) -> char {
@@ -129,8 +129,8 @@ pub const unsafe fn from_u32_unchecked(i: u32) -> char {
 }
 
 /// Converts a digit in the given radix to a `char`. Use [`char::from_digit`] instead.
-#[stable(feature = "rust1", since = "1.0.0")]
-#[rustc_const_stable(feature = "const_char_convert", since = "1.67.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
+#[crablangc_const_stable(feature = "const_char_convert", since = "1.67.0")]
 #[must_use]
 #[inline]
 pub const fn from_digit(num: u32, radix: u32) -> Option<char> {
@@ -145,7 +145,7 @@ pub const fn from_digit(num: u32, radix: u32) -> Option<char> {
 ///
 /// [`escape_unicode`]: char::escape_unicode
 #[derive(Clone, Debug)]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub struct EscapeUnicode {
     c: char,
     state: EscapeUnicodeState,
@@ -169,7 +169,7 @@ enum EscapeUnicodeState {
     Backslash,
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl Iterator for EscapeUnicode {
     type Item = char;
 
@@ -266,7 +266,7 @@ impl fmt::Display for EscapeUnicode {
 ///
 /// [`escape_default`]: char::escape_default
 #[derive(Clone, Debug)]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub struct EscapeDefault {
     state: EscapeDefaultState,
 }
@@ -279,7 +279,7 @@ enum EscapeDefaultState {
     Unicode(EscapeUnicode),
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl Iterator for EscapeDefault {
     type Item = char;
 
@@ -407,11 +407,11 @@ impl fmt::Display for EscapeDebug {
 /// its documentation for more.
 ///
 /// [`to_lowercase`]: char::to_lowercase
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[derive(Debug, Clone)]
 pub struct ToLowercase(CaseMappingIter);
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl Iterator for ToLowercase {
     type Item = char;
     fn next(&mut self) -> Option<char> {
@@ -441,11 +441,11 @@ impl ExactSizeIterator for ToLowercase {}
 /// its documentation for more.
 ///
 /// [`to_uppercase`]: char::to_uppercase
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[derive(Debug, Clone)]
 pub struct ToUppercase(CaseMappingIter);
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl Iterator for ToUppercase {
     type Item = char;
     fn next(&mut self) -> Option<char> {

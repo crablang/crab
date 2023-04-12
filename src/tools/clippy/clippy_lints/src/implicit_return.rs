@@ -5,34 +5,34 @@ use clippy_utils::{
     visitors::for_each_expr,
 };
 use core::ops::ControlFlow;
-use rustc_errors::Applicability;
-use rustc_hir::intravisit::FnKind;
-use rustc_hir::{Block, Body, Expr, ExprKind, FnDecl, FnRetTy, HirId};
-use rustc_lint::{LateContext, LateLintPass, LintContext};
-use rustc_middle::lint::in_external_macro;
-use rustc_session::{declare_lint_pass, declare_tool_lint};
-use rustc_span::def_id::LocalDefId;
-use rustc_span::{Span, SyntaxContext};
+use crablangc_errors::Applicability;
+use crablangc_hir::intravisit::FnKind;
+use crablangc_hir::{Block, Body, Expr, ExprKind, FnDecl, FnRetTy, HirId};
+use crablangc_lint::{LateContext, LateLintPass, LintContext};
+use crablangc_middle::lint::in_external_macro;
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_span::def_id::LocalDefId;
+use crablangc_span::{Span, SyntaxContext};
 
 declare_clippy_lint! {
     /// ### What it does
     /// Checks for missing return statements at the end of a block.
     ///
     /// ### Why is this bad?
-    /// Actually omitting the return keyword is idiomatic Rust code. Programmers
+    /// Actually omitting the return keyword is idiomatic CrabLang code. Programmers
     /// coming from other languages might prefer the expressiveness of `return`. It's possible to miss
     /// the last returning statement because the only difference is a missing `;`. Especially in bigger
     /// code with multiple return paths having a `return` keyword makes it easier to find the
     /// corresponding statements.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// fn foo(x: usize) -> usize {
     ///     x
     /// }
     /// ```
     /// add return
-    /// ```rust
+    /// ```crablang
     /// fn foo(x: usize) -> usize {
     ///     return x;
     /// }

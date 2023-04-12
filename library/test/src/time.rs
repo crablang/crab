@@ -17,32 +17,32 @@ pub const TEST_WARN_TIMEOUT_S: u64 = 60;
 /// This small module contains constants used by `report-time` option.
 /// Those constants values will be used if corresponding environment variables are not set.
 ///
-/// To override values for unit-tests, use a constant `RUST_TEST_TIME_UNIT`,
-/// To override values for integration tests, use a constant `RUST_TEST_TIME_INTEGRATION`,
-/// To override values for doctests, use a constant `RUST_TEST_TIME_DOCTEST`.
+/// To override values for unit-tests, use a constant `CRABLANG_TEST_TIME_UNIT`,
+/// To override values for integration tests, use a constant `CRABLANG_TEST_TIME_INTEGRATION`,
+/// To override values for doctests, use a constant `CRABLANG_TEST_TIME_DOCTEST`.
 ///
-/// Example of the expected format is `RUST_TEST_TIME_xxx=100,200`, where 100 means
+/// Example of the expected format is `CRABLANG_TEST_TIME_xxx=100,200`, where 100 means
 /// warn time, and 200 means critical time.
 pub mod time_constants {
     use super::TEST_WARN_TIMEOUT_S;
     use std::time::Duration;
 
     /// Environment variable for overriding default threshold for unit-tests.
-    pub const UNIT_ENV_NAME: &str = "RUST_TEST_TIME_UNIT";
+    pub const UNIT_ENV_NAME: &str = "CRABLANG_TEST_TIME_UNIT";
 
     // Unit tests are supposed to be really quick.
     pub const UNIT_WARN: Duration = Duration::from_millis(50);
     pub const UNIT_CRITICAL: Duration = Duration::from_millis(100);
 
     /// Environment variable for overriding default threshold for unit-tests.
-    pub const INTEGRATION_ENV_NAME: &str = "RUST_TEST_TIME_INTEGRATION";
+    pub const INTEGRATION_ENV_NAME: &str = "CRABLANG_TEST_TIME_INTEGRATION";
 
     // Integration tests may have a lot of work, so they can take longer to execute.
     pub const INTEGRATION_WARN: Duration = Duration::from_millis(500);
     pub const INTEGRATION_CRITICAL: Duration = Duration::from_millis(1000);
 
     /// Environment variable for overriding default threshold for unit-tests.
-    pub const DOCTEST_ENV_NAME: &str = "RUST_TEST_TIME_DOCTEST";
+    pub const DOCTEST_ENV_NAME: &str = "CRABLANG_TEST_TIME_DOCTEST";
 
     // Doctests are similar to integration tests, because they can include a lot of
     // initialization code.

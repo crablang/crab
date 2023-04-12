@@ -2,5 +2,5 @@
 include ../tools.mk
 
 all: $(call NATIVE_STATICLIB,test)
-	$(RUSTC) nonclike.rs -L$(TMPDIR) -ltest
+	$(CRABLANGC) nonclike.rs -L$(TMPDIR) -ltest
 	$(call RUN,nonclike)

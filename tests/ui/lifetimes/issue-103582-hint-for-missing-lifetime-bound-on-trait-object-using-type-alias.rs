@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 
 trait Greeter0 {
     fn greet(&self);

@@ -7,7 +7,7 @@ fn bar() {}
 //~^ HELP: then it's defined here again, in crate `exported_symbol_clashing`
 
 fn main() {
-    extern "Rust" {
+    extern "CrabLang" {
         fn foo();
     }
     unsafe { foo() }

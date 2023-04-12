@@ -1,0 +1,9 @@
+error[E0636]: the feature `crablangdoc_internals` has already been declared
+  --> $DIR/crablangc-check-passes.rs:2:12
+   |
+LL | #![feature(crablangdoc_internals)]
+   |            ^^^^^^^^^^^^^^^^^
+
+error: aborting due to previous error
+
+For more information about this error, try `crablangc --explain E0636`.

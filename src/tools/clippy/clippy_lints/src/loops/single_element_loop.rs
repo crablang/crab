@@ -3,12 +3,12 @@ use clippy_utils::diagnostics::span_lint_and_sugg;
 use clippy_utils::source::{indent_of, snippet_with_applicability};
 use clippy_utils::visitors::contains_break_or_continue;
 use if_chain::if_chain;
-use rustc_ast::util::parser::PREC_PREFIX;
-use rustc_ast::Mutability;
-use rustc_errors::Applicability;
-use rustc_hir::{is_range_literal, BorrowKind, Expr, ExprKind, Pat};
-use rustc_lint::LateContext;
-use rustc_span::edition::Edition;
+use crablangc_ast::util::parser::PREC_PREFIX;
+use crablangc_ast::Mutability;
+use crablangc_errors::Applicability;
+use crablangc_hir::{is_range_literal, BorrowKind, Expr, ExprKind, Pat};
+use crablangc_lint::LateContext;
+use crablangc_span::edition::Edition;
 
 pub(super) fn check<'tcx>(
     cx: &LateContext<'tcx>,
@@ -42,7 +42,7 @@ pub(super) fn check<'tcx>(
             },
             [],
             _,
-        ) if method.ident.name == rustc_span::sym::iter => (arg, "&"),
+        ) if method.ident.name == crablangc_span::sym::iter => (arg, "&"),
         ExprKind::MethodCall(
             method,
             Expr {
@@ -60,7 +60,7 @@ pub(super) fn check<'tcx>(
             },
             [],
             _,
-        ) if method.ident.name == rustc_span::sym::into_iter => (arg, ""),
+        ) if method.ident.name == crablangc_span::sym::into_iter => (arg, ""),
         // Only check for arrays edition 2021 or later, as this case will trigger a compiler error otherwise.
         ExprKind::Array([arg]) if cx.tcx.sess.edition() >= Edition::Edition2021 => (arg, ""),
         _ => return,

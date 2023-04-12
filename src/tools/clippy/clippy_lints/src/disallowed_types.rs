@@ -1,12 +1,12 @@
 use clippy_utils::diagnostics::span_lint_and_then;
 
-use rustc_data_structures::fx::FxHashMap;
-use rustc_hir::def::Res;
-use rustc_hir::def_id::DefId;
-use rustc_hir::{Item, ItemKind, PolyTraitRef, PrimTy, Ty, TyKind, UseKind};
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_session::{declare_tool_lint, impl_lint_pass};
-use rustc_span::Span;
+use crablangc_data_structures::fx::FxHashMap;
+use crablangc_hir::def::Res;
+use crablangc_hir::def_id::DefId;
+use crablangc_hir::{Item, ItemKind, PolyTraitRef, PrimTy, Ty, TyKind, UseKind};
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_session::{declare_tool_lint, impl_lint_pass};
+use crablangc_span::Span;
 
 use crate::utils::conf;
 
@@ -35,13 +35,13 @@ declare_clippy_lint! {
     /// ]
     /// ```
     ///
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// use std::collections::BTreeMap;
     /// // or its use
     /// let x = std::collections::BTreeMap::new();
     /// ```
     /// Use instead:
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// // A similar type that is allowed by the config
     /// use std::collections::HashMap;
     /// ```

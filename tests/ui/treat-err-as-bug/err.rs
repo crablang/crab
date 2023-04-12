@@ -3,8 +3,8 @@
 // error-pattern: aborting due to `-Z treat-err-as-bug=1`
 // error-pattern: [eval_to_allocation_raw] const-evaluating + checking `C`
 // normalize-stderr-test "note: .*\n\n" -> ""
-// normalize-stderr-test "thread 'rustc' panicked.*\n" -> ""
-// rustc-env:RUST_BACKTRACE=0
+// normalize-stderr-test "thread 'crablangc' panicked.*\n" -> ""
+// crablangc-env:CRABLANG_BACKTRACE=0
 
 #![crate_type = "rlib"]
 

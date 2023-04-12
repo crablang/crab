@@ -1,8 +1,8 @@
 use std::iter;
 
-use rustc_span::Symbol;
-use rustc_target::abi::Size;
-use rustc_target::spec::abi::Abi;
+use crablangc_span::Symbol;
+use crablangc_target::abi::Size;
+use crablangc_target::spec::abi::Abi;
 
 use crate::*;
 use shims::foreign_items::EmulateByNameResult;
@@ -198,7 +198,7 @@ pub trait EvalContextExt<'mir, 'tcx: 'mir>: crate::MiriInterpCxExt<'mir, 'tcx> {
                 let dword_layout = this.machine.layouts.u32;
                 let usize_layout = this.machine.layouts.usize;
 
-                // Using `mplace_field` is error-prone, see: https://github.com/rust-lang/miri/issues/2136.
+                // Using `mplace_field` is error-prone, see: https://github.com/crablang/miri/issues/2136.
                 // Pointer fields have different sizes on different targets.
                 // To avoid all these issue we calculate the offsets ourselves.
                 let field_sizes = [

@@ -134,4 +134,4 @@ LL | struct Dl<'a, 'b, 'c, T, U, V, M: ThreeWithLifetime<T, 'a, A=(), B=(), U, '
 
 error: aborting due to 12 previous errors
 
-For more information about this error, try `rustc --explain E0747`.
+For more information about this error, try `crablangc --explain E0747`.

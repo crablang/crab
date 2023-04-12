@@ -10,8 +10,8 @@ extern crate foreign_lib;
 
 pub fn main() {
     unsafe {
-        let x = foreign_lib::rustrt::rust_get_test_int();
-        assert_eq!(x, foreign_lib::rustrt2::rust_get_test_int());
-        assert_eq!(x as *const _, foreign_lib::rustrt3::rust_get_test_int());
+        let x = foreign_lib::crablangrt::crablang_get_test_int();
+        assert_eq!(x, foreign_lib::crablangrt2::crablang_get_test_int());
+        assert_eq!(x as *const _, foreign_lib::crablangrt3::crablang_get_test_int());
     }
 }

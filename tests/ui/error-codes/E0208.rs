@@ -1,6 +1,6 @@
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 
-#[rustc_variance]
+#[crablangc_variance]
 struct Foo<'a, T> { //~ ERROR [+, o]
     t: &'a mut T,
 }

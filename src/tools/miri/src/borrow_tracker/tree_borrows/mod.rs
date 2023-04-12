@@ -1,9 +1,9 @@
 use log::trace;
 
-use rustc_target::abi::{Abi, Size};
+use crablangc_target::abi::{Abi, Size};
 
 use crate::borrow_tracker::{AccessKind, GlobalStateInner, ProtectorKind, RetagFields};
-use rustc_middle::{
+use crablangc_middle::{
     mir::{Mutability, RetagKind},
     ty::{
         self,
@@ -451,7 +451,7 @@ pub trait EvalContextExt<'mir, 'tcx: 'mir>: crate::MiriInterpCxExt<'mir, 'tcx> {
     /// it does not alias with anything.
     ///
     /// This is a HACK because there is nothing in MIR that would make the retag
-    /// explicit. Also see <https://github.com/rust-lang/rust/issues/71117>.
+    /// explicit. Also see <https://github.com/crablang/crablang/issues/71117>.
     fn tb_retag_return_place(&mut self) -> InterpResult<'tcx> {
         let this = self.eval_context_mut();
         //this.debug_hint_location();

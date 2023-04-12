@@ -1,6 +1,6 @@
 //! A module for working with borrowed data.
 
-#![stable(feature = "rust1", since = "1.0.0")]
+#![stable(feature = "crablang1", since = "1.0.0")]
 
 use core::cmp::Ordering;
 use core::hash::{Hash, Hasher};
@@ -8,7 +8,7 @@ use core::ops::Deref;
 #[cfg(not(no_global_oom_handling))]
 use core::ops::{Add, AddAssign};
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub use core::borrow::{Borrow, BorrowMut};
 
 use crate::fmt;
@@ -17,7 +17,7 @@ use crate::string::String;
 
 use Cow::*;
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<'a, B: ?Sized> Borrow<B> for Cow<'a, B>
 where
     B: ToOwned,
@@ -33,11 +33,11 @@ where
 /// implementing the `Clone` trait. But `Clone` works only for going from `&T`
 /// to `T`. The `ToOwned` trait generalizes `Clone` to construct owned data
 /// from any borrow of a given type.
-#[cfg_attr(not(test), rustc_diagnostic_item = "ToOwned")]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[cfg_attr(not(test), crablangc_diagnostic_item = "ToOwned")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub trait ToOwned {
     /// The resulting type after obtaining ownership.
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     type Owned: Borrow<Self>;
 
     /// Creates owned data from borrowed data, usually by cloning.
@@ -53,7 +53,7 @@ pub trait ToOwned {
     /// let v: &[i32] = &[1, 2];
     /// let vv: Vec<i32> = v.to_owned();
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[must_use = "cloning is often expensive and is not expected to have side effects"]
     fn to_owned(&self) -> Self::Owned;
 
@@ -78,7 +78,7 @@ pub trait ToOwned {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T> ToOwned for T
 where
     T: Clone,
@@ -174,22 +174,22 @@ where
 ///     _ => panic!("expect owned data"),
 /// }
 /// ```
-#[stable(feature = "rust1", since = "1.0.0")]
-#[cfg_attr(not(test), rustc_diagnostic_item = "Cow")]
+#[stable(feature = "crablang1", since = "1.0.0")]
+#[cfg_attr(not(test), crablangc_diagnostic_item = "Cow")]
 pub enum Cow<'a, B: ?Sized + 'a>
 where
     B: ToOwned,
 {
     /// Borrowed data.
-    #[stable(feature = "rust1", since = "1.0.0")]
-    Borrowed(#[stable(feature = "rust1", since = "1.0.0")] &'a B),
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    Borrowed(#[stable(feature = "crablang1", since = "1.0.0")] &'a B),
 
     /// Owned data.
-    #[stable(feature = "rust1", since = "1.0.0")]
-    Owned(#[stable(feature = "rust1", since = "1.0.0")] <B as ToOwned>::Owned),
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    Owned(#[stable(feature = "crablang1", since = "1.0.0")] <B as ToOwned>::Owned),
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<B: ?Sized + ToOwned> Clone for Cow<'_, B> {
     fn clone(&self) -> Self {
         match *self {
@@ -225,7 +225,7 @@ impl<B: ?Sized + ToOwned> Cow<'_, B> {
     /// assert!(!bull.is_borrowed());
     /// ```
     #[unstable(feature = "cow_is_borrowed", issue = "65143")]
-    #[rustc_const_unstable(feature = "const_cow_is_borrowed", issue = "65143")]
+    #[crablangc_const_unstable(feature = "const_cow_is_borrowed", issue = "65143")]
     pub const fn is_borrowed(&self) -> bool {
         match *self {
             Borrowed(_) => true,
@@ -248,7 +248,7 @@ impl<B: ?Sized + ToOwned> Cow<'_, B> {
     /// assert!(!bull.is_owned());
     /// ```
     #[unstable(feature = "cow_is_borrowed", issue = "65143")]
-    #[rustc_const_unstable(feature = "const_cow_is_borrowed", issue = "65143")]
+    #[crablangc_const_unstable(feature = "const_cow_is_borrowed", issue = "65143")]
     pub const fn is_owned(&self) -> bool {
         !self.is_borrowed()
     }
@@ -270,7 +270,7 @@ impl<B: ?Sized + ToOwned> Cow<'_, B> {
     ///   Cow::Owned(String::from("FOO")) as Cow<str>
     /// );
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn to_mut(&mut self) -> &mut <B as ToOwned>::Owned {
         match *self {
             Borrowed(borrowed) => {
@@ -318,7 +318,7 @@ impl<B: ?Sized + ToOwned> Cow<'_, B> {
     ///   String::from(s)
     /// );
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn into_owned(self) -> <B as ToOwned>::Owned {
         match self {
             Borrowed(borrowed) => borrowed.to_owned(),
@@ -327,7 +327,7 @@ impl<B: ?Sized + ToOwned> Cow<'_, B> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<B: ?Sized + ToOwned> Deref for Cow<'_, B>
 where
     B::Owned: Borrow<B>,
@@ -342,10 +342,10 @@ where
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<B: ?Sized> Eq for Cow<'_, B> where B: Eq + ToOwned {}
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<B: ?Sized> Ord for Cow<'_, B>
 where
     B: Ord + ToOwned,
@@ -356,7 +356,7 @@ where
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<'a, 'b, B: ?Sized, C: ?Sized> PartialEq<Cow<'b, C>> for Cow<'a, B>
 where
     B: PartialEq<C> + ToOwned,
@@ -368,7 +368,7 @@ where
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<'a, B: ?Sized> PartialOrd for Cow<'a, B>
 where
     B: PartialOrd + ToOwned,
@@ -379,7 +379,7 @@ where
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<B: ?Sized> fmt::Debug for Cow<'_, B>
 where
     B: fmt::Debug + ToOwned<Owned: fmt::Debug>,
@@ -392,7 +392,7 @@ where
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<B: ?Sized> fmt::Display for Cow<'_, B>
 where
     B: fmt::Display + ToOwned<Owned: fmt::Display>,
@@ -416,7 +416,7 @@ where
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<B: ?Sized> Hash for Cow<'_, B>
 where
     B: Hash + ToOwned,
@@ -427,7 +427,7 @@ where
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: ?Sized + ToOwned> AsRef<T> for Cow<'_, T> {
     fn as_ref(&self) -> &T {
         self

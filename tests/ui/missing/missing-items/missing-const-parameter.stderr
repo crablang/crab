@@ -61,4 +61,4 @@ LL | struct Image<const R: usize, const C: /* Type */>([[u32; C]; R]);
 
 error: aborting due to 5 previous errors
 
-For more information about this error, try `rustc --explain E0425`.
+For more information about this error, try `crablangc --explain E0425`.

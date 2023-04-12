@@ -3,7 +3,7 @@
 // ignore-tidy-linelength
 // normalize-stderr-test "╾─*a(lloc)?[0-9]+(\+[a-z0-9]+)?─*╼" -> "╾ALLOC_ID$2╼"
 // normalize-stderr-test "alloc\d+" -> "allocN"
-#![feature(never_type, rustc_attrs, ptr_metadata, slice_from_ptr_range, const_slice_from_ptr_range)]
+#![feature(never_type, crablangc_attrs, ptr_metadata, slice_from_ptr_range, const_slice_from_ptr_range)]
 #![allow(invalid_value)]
 
 use std::mem;
@@ -59,14 +59,14 @@ const NULL_U8: NonZeroU8 = unsafe { mem::transmute(0u8) };
 const NULL_USIZE: NonZeroUsize = unsafe { mem::transmute(0usize) };
 //~^ ERROR it is undefined behavior to use this value
 
-#[rustc_layout_scalar_valid_range_start(10)]
-#[rustc_layout_scalar_valid_range_end(30)]
+#[crablangc_layout_scalar_valid_range_start(10)]
+#[crablangc_layout_scalar_valid_range_end(30)]
 struct RestrictedRange1(u32);
 const BAD_RANGE1: RestrictedRange1 = unsafe { RestrictedRange1(42) };
 //~^ ERROR it is undefined behavior to use this value
 
-#[rustc_layout_scalar_valid_range_start(30)]
-#[rustc_layout_scalar_valid_range_end(10)]
+#[crablangc_layout_scalar_valid_range_start(30)]
+#[crablangc_layout_scalar_valid_range_end(10)]
 struct RestrictedRange2(u32);
 const BAD_RANGE2: RestrictedRange2 = unsafe { RestrictedRange2(20) };
 //~^ ERROR it is undefined behavior to use this value

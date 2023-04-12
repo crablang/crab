@@ -32,4 +32,4 @@ LL | impl<N, M> TypeVal<usize> for Multiply<N, M> where N: TypeVal<VAL> {}
 error: aborting due to 3 previous errors
 
 Some errors have detailed explanations: E0046, E0412.
-For more information about an error, try `rustc --explain E0046`.
+For more information about an error, try `crablangc --explain E0046`.

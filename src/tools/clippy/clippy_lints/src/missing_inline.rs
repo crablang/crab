@@ -1,10 +1,10 @@
 use clippy_utils::diagnostics::span_lint;
-use rustc_ast::ast;
-use rustc_hir as hir;
-use rustc_lint::{self, LateContext, LateLintPass, LintContext};
-use rustc_session::{declare_lint_pass, declare_tool_lint};
-use rustc_span::source_map::Span;
-use rustc_span::sym;
+use crablangc_ast::ast;
+use crablangc_hir as hir;
+use crablangc_lint::{self, LateContext, LateLintPass, LintContext};
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_span::source_map::Span;
+use crablangc_span::sym;
 
 declare_clippy_lint! {
     /// ### What it does
@@ -21,7 +21,7 @@ declare_clippy_lint! {
     /// then opt out for specific methods where this might not make sense.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// pub fn foo() {} // missing #[inline]
     /// fn ok() {} // ok
     /// #[inline] pub fn bar() {} // ok
@@ -71,7 +71,7 @@ fn check_missing_inline_attrs(cx: &LateContext<'_>, attrs: &[ast::Attribute], sp
 }
 
 fn is_executable_or_proc_macro(cx: &LateContext<'_>) -> bool {
-    use rustc_session::config::CrateType;
+    use crablangc_session::config::CrateType;
 
     cx.tcx
         .sess
@@ -84,7 +84,7 @@ declare_lint_pass!(MissingInline => [MISSING_INLINE_IN_PUBLIC_ITEMS]);
 
 impl<'tcx> LateLintPass<'tcx> for MissingInline {
     fn check_item(&mut self, cx: &LateContext<'tcx>, it: &'tcx hir::Item<'_>) {
-        if rustc_middle::lint::in_external_macro(cx.sess(), it.span) || is_executable_or_proc_macro(cx) {
+        if crablangc_middle::lint::in_external_macro(cx.sess(), it.span) || is_executable_or_proc_macro(cx) {
             return;
         }
 
@@ -136,8 +136,8 @@ impl<'tcx> LateLintPass<'tcx> for MissingInline {
     }
 
     fn check_impl_item(&mut self, cx: &LateContext<'tcx>, impl_item: &'tcx hir::ImplItem<'_>) {
-        use rustc_middle::ty::{ImplContainer, TraitContainer};
-        if rustc_middle::lint::in_external_macro(cx.sess(), impl_item.span) || is_executable_or_proc_macro(cx) {
+        use crablangc_middle::ty::{ImplContainer, TraitContainer};
+        if crablangc_middle::lint::in_external_macro(cx.sess(), impl_item.span) || is_executable_or_proc_macro(cx) {
             return;
         }
 

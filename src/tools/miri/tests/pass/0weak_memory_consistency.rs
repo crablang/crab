@@ -33,12 +33,12 @@ unsafe impl<T> Sync for EvilSend<T> {}
 // multiple times
 fn static_atomic(val: i32) -> &'static AtomicI32 {
     let ret = Box::leak(Box::new(AtomicI32::new(val)));
-    ret.store(val, Relaxed); // work around https://github.com/rust-lang/miri/issues/2164
+    ret.store(val, Relaxed); // work around https://github.com/crablang/miri/issues/2164
     ret
 }
 fn static_atomic_bool(val: bool) -> &'static AtomicBool {
     let ret = Box::leak(Box::new(AtomicBool::new(val)));
-    ret.store(val, Relaxed); // work around https://github.com/rust-lang/miri/issues/2164
+    ret.store(val, Relaxed); // work around https://github.com/crablang/miri/issues/2164
     ret
 }
 
@@ -59,13 +59,13 @@ fn test_corr() {
         x.store(2, Relaxed);
     });
 
-    #[rustfmt::skip]
+    #[crablangfmt::skip]
     let j2 = spawn(move || {
         let r2 = x.load(Relaxed); // -------------------------------------+
         y.store(1, Release); // ---------------------+                    |
         r2 //                                        |                    |
     }); //                                           |                    |
-    #[rustfmt::skip] //                              |synchronizes-with   |happens-before
+    #[crablangfmt::skip] //                              |synchronizes-with   |happens-before
     let j3 = spawn(move || { //                      |                    |
         acquires_value(&y, 1); // <------------------+                    |
         x.load(Relaxed) // <----------------------------------------------+
@@ -86,16 +86,16 @@ fn test_wrc() {
     let x = static_atomic(0);
     let y = static_atomic(0);
 
-    #[rustfmt::skip]
+    #[crablangfmt::skip]
     let j1 = spawn(move || {
         x.store(1, Release); // ---------------------+---------------------+
     }); //                                           |                     |
-    #[rustfmt::skip] //                              |synchronizes-with    |
+    #[crablangfmt::skip] //                              |synchronizes-with    |
     let j2 = spawn(move || { //                      |                     |
         acquires_value(&x, 1); // <------------------+                     |
         y.store(1, Release); // ---------------------+                     |happens-before
     }); //                                           |                     |
-    #[rustfmt::skip] //                              |synchronizes-with    |
+    #[crablangfmt::skip] //                              |synchronizes-with    |
     let j3 = spawn(move || { //                      |                     |
         acquires_value(&y, 1); // <------------------+                     |
         x.load(Relaxed) // <-----------------------------------------------+
@@ -114,12 +114,12 @@ fn test_message_passing() {
     let x = EvilSend(ptr);
     let y = static_atomic(0);
 
-    #[rustfmt::skip]
+    #[crablangfmt::skip]
     let j1 = spawn(move || {
         unsafe { *x.0 = 1 }; // -----------------------------------------+
         y.store(1, Release); // ---------------------+                   |
     }); //                                           |                   |
-    #[rustfmt::skip] //                              |synchronizes-with  | happens-before
+    #[crablangfmt::skip] //                              |synchronizes-with  | happens-before
     let j2 = spawn(move || { //                      |                   |
         acquires_value(&y, 1); // <------------------+                   |
         unsafe { *x.0 } // <---------------------------------------------+
@@ -258,7 +258,7 @@ fn test_sync_through_rmw_and_fences() {
 }
 
 // Test case by @SabrinaJewson
-// https://github.com/rust-lang/miri/issues/2301#issuecomment-1221502757
+// https://github.com/crablang/miri/issues/2301#issuecomment-1221502757
 // Demonstrating C++20 SC access changes
 fn test_iriw_sc_rlx() {
     let x = static_atomic_bool(false);

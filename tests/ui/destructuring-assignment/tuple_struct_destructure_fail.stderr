@@ -95,4 +95,4 @@ LL |     <Alias::<isize> as Test>::test() = TupleStruct(0, 0);
 error: aborting due to 9 previous errors
 
 Some errors have detailed explanations: E0023, E0070.
-For more information about an error, try `rustc --explain E0023`.
+For more information about an error, try `crablangc --explain E0023`.

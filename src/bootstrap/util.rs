@@ -1,4 +1,4 @@
-//! Various utility functions used throughout rustbuild.
+//! Various utility functions used throughout crablangbuild.
 //!
 //! Simple things like testing the various filesystem operations here and there,
 //! not a lot of interesting happenings here unfortunately.
@@ -152,7 +152,7 @@ pub fn symlink_dir(config: &Config, src: &Path, dest: &Path) -> io::Result<()> {
     }
 }
 
-/// The CI environment rustbuild is running in. This mainly affects how the logs
+/// The CI environment crablangbuild is running in. This mainly affects how the logs
 /// are printed.
 #[derive(Copy, Clone, PartialEq, Eq, Debug)]
 pub enum CiEnv {
@@ -165,7 +165,7 @@ pub enum CiEnv {
 }
 
 pub fn forcing_clang_based_tests() -> bool {
-    if let Some(var) = env::var_os("RUSTBUILD_FORCE_CLANG_BASED_TESTS") {
+    if let Some(var) = env::var_os("CRABLANGBUILD_FORCE_CLANG_BASED_TESTS") {
         match &var.to_string_lossy().to_lowercase()[..] {
             "1" | "yes" | "on" => true,
             "0" | "no" | "off" => false,
@@ -173,7 +173,7 @@ pub fn forcing_clang_based_tests() -> bool {
                 // Let's make sure typos don't go unnoticed
                 panic!(
                     "Unrecognized option '{}' set in \
-                        RUSTBUILD_FORCE_CLANG_BASED_TESTS",
+                        CRABLANGBUILD_FORCE_CLANG_BASED_TESTS",
                     other
                 )
             }
@@ -185,7 +185,7 @@ pub fn forcing_clang_based_tests() -> bool {
 
 pub fn use_host_linker(target: TargetSelection) -> bool {
     // FIXME: this information should be gotten by checking the linker flavor
-    // of the rustc target
+    // of the crablangc target
     !(target.contains("emscripten")
         || target.contains("wasm32")
         || target.contains("nvptx")

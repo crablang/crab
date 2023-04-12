@@ -2,7 +2,7 @@
 //!
 //! Code that interacts via FFI will almost certainly be using the
 //! base types provided by C, which aren't nearly as nicely defined
-//! as Rust's primitive types. This module provides types which will
+//! as CrabLang's primitive types. This module provides types which will
 //! match those defined by C, so that code that interacts with C will
 //! refer to the correct types.
 
@@ -54,7 +54,7 @@ macro_rules! type_alias {
 type_alias! { "c_char.md", c_char = c_char_definition::c_char, NonZero_c_char = c_char_definition::NonZero_c_char;
 // Make this type alias appear cfg-dependent so that Clippy does not suggest
 // replacing `0 as c_char` with `0_i8`/`0_u8`. This #[cfg(all())] can be removed
-// after the false positive in https://github.com/rust-lang/rust-clippy/issues/8093
+// after the false positive in https://github.com/crablang/crablang-clippy/issues/8093
 // is fixed.
 #[cfg(all())]
 #[doc(cfg(all()))] }
@@ -605,14 +605,14 @@ impl<'f> Drop for VaListImpl<'f> {
         // the corresponding `va_copy`. `man va_end` states that C requires this,
         // and LLVM basically follows the C semantics, so we need to make sure
         // that `va_end` is always called from the same function as `va_copy`.
-        // For more details, see https://github.com/rust-lang/rust/pull/59625
+        // For more details, see https://github.com/crablang/crablang/pull/59625
         // and https://llvm.org/docs/LangRef.html#llvm-va-end-intrinsic.
         //
         // This works for now, since `va_end` is a no-op on all current LLVM targets.
     }
 }
 
-extern "rust-intrinsic" {
+extern "crablang-intrinsic" {
     /// Destroy the arglist `ap` after initialization with `va_start` or
     /// `va_copy`.
     fn va_end(ap: &mut VaListImpl<'_>);

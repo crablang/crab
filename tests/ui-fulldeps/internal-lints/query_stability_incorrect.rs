@@ -1,14 +1,14 @@
 // compile-flags: -Z unstable-options
 
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 
-#[rustc_lint_query_instability]
+#[crablangc_lint_query_instability]
 //~^ ERROR attribute should be applied to a function
 struct Foo;
 
 impl Foo {
-    #[rustc_lint_query_instability(a)]
-    //~^ ERROR malformed `rustc_lint_query_instability`
+    #[crablangc_lint_query_instability(a)]
+    //~^ ERROR malformed `crablangc_lint_query_instability`
     fn bar() {}
 }
 

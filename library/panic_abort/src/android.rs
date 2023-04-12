@@ -11,7 +11,7 @@ type SetAbortMessageType = unsafe extern "C" fn(*const libc::c_char) -> ();
 // possible to do so.
 //
 // Some methods of core are on purpose avoided (such as try_reserve) as these rely on the correct
-// resolution of rust_eh_personality which is loosely defined in panic_abort.
+// resolution of crablang_eh_personality which is loosely defined in panic_abort.
 //
 // Weakly resolve the symbol for android_set_abort_message. This function is only available
 // for API >= 21.

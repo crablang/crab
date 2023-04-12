@@ -1,7 +1,7 @@
 error: macros cannot have const stability attributes
   --> $DIR/const-stability-on-macro.rs:4:1
    |
-LL | #[rustc_const_stable(feature = "foo", since = "0")]
+LL | #[crablangc_const_stable(feature = "foo", since = "0")]
    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ invalid const stability attribute
 LL |
 LL | macro_rules! foo {
@@ -10,7 +10,7 @@ LL | macro_rules! foo {
 error: macros cannot have const stability attributes
   --> $DIR/const-stability-on-macro.rs:10:1
    |
-LL | #[rustc_const_unstable(feature = "bar", issue="none")]
+LL | #[crablangc_const_unstable(feature = "bar", issue="none")]
    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ invalid const stability attribute
 LL |
 LL | macro_rules! bar {

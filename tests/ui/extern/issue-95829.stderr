@@ -13,7 +13,7 @@ LL | |     }
    | |_____- help: remove the invalid body: `;`
    |
    = help: you might have meant to write a function accessible through FFI, which can be done by writing `extern fn` outside of the `extern` block
-   = note: for more information, visit https://doc.rust-lang.org/std/keyword.extern.html
+   = note: for more information, visit https://doc.crablang.org/std/keyword.extern.html
 
 error: functions in `extern` blocks cannot have qualifiers
   --> $DIR/issue-95829.rs:4:14

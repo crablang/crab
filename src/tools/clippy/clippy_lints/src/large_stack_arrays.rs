@@ -1,10 +1,10 @@
 use clippy_utils::diagnostics::span_lint_and_help;
 use clippy_utils::source::snippet;
-use rustc_hir::{Expr, ExprKind, Item, ItemKind, Node};
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_middle::ty::layout::LayoutOf;
-use rustc_middle::ty::{self, ConstKind};
-use rustc_session::{declare_tool_lint, impl_lint_pass};
+use crablangc_hir::{Expr, ExprKind, Item, ItemKind, Node};
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_middle::ty::layout::LayoutOf;
+use crablangc_middle::ty::{self, ConstKind};
+use crablangc_session::{declare_tool_lint, impl_lint_pass};
 
 declare_clippy_lint! {
     /// ### What it does
@@ -14,7 +14,7 @@ declare_clippy_lint! {
     /// Large local arrays may cause stack overflow.
     ///
     /// ### Example
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// let a = [0u32; 1_000_000];
     /// ```
     #[clippy::version = "1.41.0"]

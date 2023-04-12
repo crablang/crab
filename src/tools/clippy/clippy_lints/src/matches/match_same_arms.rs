@@ -4,14 +4,14 @@ use clippy_utils::{path_to_local, search_same, SpanlessEq, SpanlessHash};
 use core::cmp::Ordering;
 use core::iter;
 use core::slice;
-use rustc_arena::DroplessArena;
-use rustc_ast::ast::LitKind;
-use rustc_errors::Applicability;
-use rustc_hir::def_id::DefId;
-use rustc_hir::{Arm, Expr, ExprKind, HirId, HirIdMap, HirIdMapEntry, HirIdSet, Pat, PatKind, RangeEnd};
-use rustc_lint::LateContext;
-use rustc_middle::ty;
-use rustc_span::Symbol;
+use crablangc_arena::DroplessArena;
+use crablangc_ast::ast::LitKind;
+use crablangc_errors::Applicability;
+use crablangc_hir::def_id::DefId;
+use crablangc_hir::{Arm, Expr, ExprKind, HirId, HirIdMap, HirIdMapEntry, HirIdSet, Pat, PatKind, RangeEnd};
+use crablangc_lint::LateContext;
+use crablangc_middle::ty;
+use crablangc_span::Symbol;
 
 use super::MATCH_SAME_ARMS;
 

@@ -1,4 +1,4 @@
-// Regression test for https://github.com/rust-lang/rust/issues/56445#issuecomment-524494170
+// Regression test for https://github.com/crablang/crablang/issues/56445#issuecomment-524494170
 pub struct Memory<'rom> {
     rom: &'rom [u8],
     ram: [u8; Self::SIZE],

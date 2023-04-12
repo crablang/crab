@@ -2,11 +2,11 @@ use clippy_utils::diagnostics::span_lint_and_sugg;
 use clippy_utils::last_path_segment;
 use clippy_utils::source::snippet;
 use if_chain::if_chain;
-use rustc_errors::Applicability;
-use rustc_hir::{GenericArg, GenericArgsParentheses, Mutability, Ty, TyKind};
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_session::{declare_lint_pass, declare_tool_lint};
-use rustc_span::symbol::sym;
+use crablangc_errors::Applicability;
+use crablangc_hir::{GenericArg, GenericArgsParentheses, Mutability, Ty, TyKind};
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_span::symbol::sym;
 
 declare_clippy_lint! {
     /// ### What it does
@@ -21,11 +21,11 @@ declare_clippy_lint! {
     /// public API code as it will make a breaking change to apply it.
     ///
     /// ### Example
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// let x: &Option<&u32> = &Some(&0u32);
     /// ```
     /// Use instead:
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// let x: Option<&u32> = Some(&0u32);
     /// ```
     #[clippy::version = "1.49.0"]

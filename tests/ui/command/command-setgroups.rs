@@ -5,7 +5,7 @@
 // ignore-musl - returns dummy result for _SC_NGROUPS_MAX
 // ignore-nto - does not have `/bin/id`, expects groups to be i32 (not u32)
 
-#![feature(rustc_private)]
+#![feature(crablangc_private)]
 #![feature(setgroups)]
 
 extern crate libc;

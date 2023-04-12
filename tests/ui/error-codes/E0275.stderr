@@ -16,4 +16,4 @@ LL | impl<T> Foo for T where Bar<T>: Foo {}
 
 error: aborting due to previous error
 
-For more information about this error, try `rustc --explain E0275`.
+For more information about this error, try `crablangc --explain E0275`.

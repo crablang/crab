@@ -2,19 +2,19 @@ use clippy_utils::diagnostics::{span_lint_and_help, span_lint_and_then};
 use clippy_utils::source::snippet_with_applicability;
 use clippy_utils::{def_path_def_ids, is_lint_allowed, match_any_def_paths, peel_hir_expr_refs};
 use if_chain::if_chain;
-use rustc_ast::ast::LitKind;
-use rustc_data_structures::fx::{FxHashSet, FxIndexSet};
-use rustc_errors::Applicability;
-use rustc_hir as hir;
-use rustc_hir::def::{DefKind, Res};
-use rustc_hir::def_id::DefId;
-use rustc_hir::{Expr, ExprKind, Local, Mutability, Node};
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_middle::mir::interpret::{Allocation, ConstValue, GlobalAlloc};
-use rustc_middle::ty::{self, Ty};
-use rustc_session::{declare_tool_lint, impl_lint_pass};
-use rustc_span::symbol::Symbol;
-use rustc_span::Span;
+use crablangc_ast::ast::LitKind;
+use crablangc_data_structures::fx::{FxHashSet, FxIndexSet};
+use crablangc_errors::Applicability;
+use crablangc_hir as hir;
+use crablangc_hir::def::{DefKind, Res};
+use crablangc_hir::def_id::DefId;
+use crablangc_hir::{Expr, ExprKind, Local, Mutability, Node};
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_middle::mir::interpret::{Allocation, ConstValue, GlobalAlloc};
+use crablangc_middle::ty::{self, Ty};
+use crablangc_session::{declare_tool_lint, impl_lint_pass};
+use crablangc_span::symbol::Symbol;
+use crablangc_span::Span;
 
 use std::str;
 
@@ -27,12 +27,12 @@ declare_clippy_lint! {
     /// diagnostic item or a `LangItem`.
     ///
     /// ### Example
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// utils::match_type(cx, ty, &paths::VEC)
     /// ```
     ///
     /// Use instead:
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// utils::is_type_diagnostic_item(cx, ty, sym::Vec)
     /// ```
     pub UNNECESSARY_DEF_PATH,
@@ -113,7 +113,7 @@ impl UnnecessaryDefPath {
             if let Some(def_id) = def_path_def_ids(cx, &segments[..]).next();
             then {
                 // Check if the target item is a diagnostic item or LangItem.
-                #[rustfmt::skip]
+                #[crablangfmt::skip]
                 let (msg, item) = if let Some(item_name)
                     = cx.tcx.diagnostic_items(def_id.krate).id_to_name.get(&def_id)
                 {

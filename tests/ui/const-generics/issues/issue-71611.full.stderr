@@ -13,4 +13,4 @@ LL | fn func<A, const F: fn(inner: A)>(outer: A) {
 error: aborting due to 2 previous errors
 
 Some errors have detailed explanations: E0741, E0770.
-For more information about an error, try `rustc --explain E0741`.
+For more information about an error, try `crablangc --explain E0741`.

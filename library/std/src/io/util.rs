@@ -12,7 +12,7 @@ use crate::io::{
 ///
 /// This struct is generally created by calling [`empty()`]. Please see
 /// the documentation of [`empty()`] for more details.
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[non_exhaustive]
 #[derive(Copy, Clone, Default)]
 pub struct Empty;
@@ -33,13 +33,13 @@ pub struct Empty;
 /// assert!(buffer.is_empty());
 /// ```
 #[must_use]
-#[stable(feature = "rust1", since = "1.0.0")]
-#[rustc_const_unstable(feature = "const_io_structs", issue = "78812")]
+#[stable(feature = "crablang1", since = "1.0.0")]
+#[crablangc_const_unstable(feature = "const_io_structs", issue = "78812")]
 pub const fn empty() -> Empty {
     Empty
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl Read for Empty {
     #[inline]
     fn read(&mut self, _buf: &mut [u8]) -> io::Result<usize> {
@@ -51,7 +51,7 @@ impl Read for Empty {
         Ok(())
     }
 }
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl BufRead for Empty {
     #[inline]
     fn fill_buf(&mut self) -> io::Result<&[u8]> {
@@ -94,7 +94,7 @@ impl SizeHint for Empty {
 ///
 /// This struct is generally created by calling [`repeat()`]. Please
 /// see the documentation of [`repeat()`] for more details.
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub struct Repeat {
     byte: u8,
 }
@@ -114,13 +114,13 @@ pub struct Repeat {
 /// assert_eq!(buffer, [0b101, 0b101, 0b101]);
 /// ```
 #[must_use]
-#[stable(feature = "rust1", since = "1.0.0")]
-#[rustc_const_unstable(feature = "const_io_structs", issue = "78812")]
+#[stable(feature = "crablang1", since = "1.0.0")]
+#[crablangc_const_unstable(feature = "const_io_structs", issue = "78812")]
 pub const fn repeat(byte: u8) -> Repeat {
     Repeat { byte }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl Read for Repeat {
     #[inline]
     fn read(&mut self, buf: &mut [u8]) -> io::Result<usize> {
@@ -184,7 +184,7 @@ impl fmt::Debug for Repeat {
 ///
 /// This struct is generally created by calling [`sink`]. Please
 /// see the documentation of [`sink()`] for more details.
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[non_exhaustive]
 #[derive(Copy, Clone, Default)]
 pub struct Sink;
@@ -198,7 +198,7 @@ pub struct Sink;
 ///
 /// # Examples
 ///
-/// ```rust
+/// ```crablang
 /// use std::io::{self, Write};
 ///
 /// let buffer = vec![1, 2, 3, 5, 8];
@@ -206,13 +206,13 @@ pub struct Sink;
 /// assert_eq!(num_bytes, 5);
 /// ```
 #[must_use]
-#[stable(feature = "rust1", since = "1.0.0")]
-#[rustc_const_unstable(feature = "const_io_structs", issue = "78812")]
+#[stable(feature = "crablang1", since = "1.0.0")]
+#[crablangc_const_unstable(feature = "const_io_structs", issue = "78812")]
 pub const fn sink() -> Sink {
     Sink
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl Write for Sink {
     #[inline]
     fn write(&mut self, buf: &[u8]) -> io::Result<usize> {

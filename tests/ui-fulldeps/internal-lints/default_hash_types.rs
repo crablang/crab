@@ -1,11 +1,11 @@
 // compile-flags: -Z unstable-options
 
-#![feature(rustc_private)]
-#![deny(rustc::default_hash_types)]
+#![feature(crablangc_private)]
+#![deny(crablangc::default_hash_types)]
 
-extern crate rustc_data_structures;
+extern crate crablangc_data_structures;
 
-use rustc_data_structures::fx::{FxHashMap, FxHashSet};
+use crablangc_data_structures::fx::{FxHashMap, FxHashSet};
 use std::collections::{HashMap, HashSet};
 
 mod foo {

@@ -5,24 +5,24 @@
 
 // compile-flags: -Z query-dep-graph
 
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 
-#[rustc_clean(cfg="rpass2")]
+#[crablangc_clean(cfg="rpass2")]
 fn line_same() {
     let _ = line!();
 }
 
-#[rustc_clean(cfg="rpass2")]
+#[crablangc_clean(cfg="rpass2")]
 fn col_same() {
     let _ = column!();
 }
 
-#[rustc_clean(cfg="rpass2")]
+#[crablangc_clean(cfg="rpass2")]
 fn file_same() {
     let _ = file!();
 }
 
-#[rustc_clean(except="hir_owner_nodes,optimized_mir", cfg="rpass2")]
+#[crablangc_clean(except="hir_owner_nodes,optimized_mir", cfg="rpass2")]
 fn line_different() {
     #[cfg(rpass1)]
     {
@@ -34,7 +34,7 @@ fn line_different() {
     }
 }
 
-#[rustc_clean(except="hir_owner_nodes,optimized_mir", cfg="rpass2")]
+#[crablangc_clean(except="hir_owner_nodes,optimized_mir", cfg="rpass2")]
 fn col_different() {
     #[cfg(rpass1)]
     {

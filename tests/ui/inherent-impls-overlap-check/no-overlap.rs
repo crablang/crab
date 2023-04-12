@@ -4,7 +4,7 @@
 // This tests the allocating algo branch of the
 // inherent impls overlap checker.
 // This branch was added by PR:
-// https://github.com/rust-lang/rust/pull/78317
+// https://github.com/crablang/crablang/pull/78317
 // In this test, we repeat many impl blocks
 // to trigger the allocating branch.
 

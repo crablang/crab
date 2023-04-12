@@ -9,21 +9,21 @@
 //! Note that this implementation does not fully take into account of C++20's memory model revision to SC accesses
 //! and fences introduced by P0668 (<https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2018/p0668r5.html>).
 //! This implementation is not fully correct under the revised C++20 model and may generate behaviours C++20
-//! disallows (<https://github.com/rust-lang/miri/issues/2301>).
+//! disallows (<https://github.com/crablang/miri/issues/2301>).
 //!
 //! A modification is made to the paper's model to partially address C++20 changes.
 //! Specifically, if an SC load reads from an atomic store of any ordering, then a later SC load cannot read from
 //! an earlier store in the location's modification order. This is to prevent creating a backwards S edge from the second
 //! load to the first, as a result of C++20's coherence-ordered before rules.
 //!
-//! Rust follows the C++20 memory model (except for the Consume ordering and some operations not performable through C++'s
+//! CrabLang follows the C++20 memory model (except for the Consume ordering and some operations not performable through C++'s
 //! `std::atomic<T>` API). It is therefore possible for this implementation to generate behaviours never observable when the
 //! same program is compiled and run natively. Unfortunately, no literature exists at the time of writing which proposes
-//! an implementable and C++20-compatible relaxed memory model that supports all atomic operation existing in Rust. The closest one is
+//! an implementable and C++20-compatible relaxed memory model that supports all atomic operation existing in CrabLang. The closest one is
 //! A Promising Semantics for Relaxed-Memory Concurrency by Jeehoon Kang et al. (<https://www.cs.tau.ac.il/~orilahav/papers/popl17.pdf>)
 //! However, this model lacks SC accesses and is therefore unusable by Miri (SC accesses are everywhere in library code).
 //!
-//! If you find anything that proposes a relaxed memory model that is C++20-consistent, supports all orderings Rust's atomic accesses
+//! If you find anything that proposes a relaxed memory model that is C++20-consistent, supports all orderings CrabLang's atomic accesses
 //! and fences accept, and is implementable (with operational semanitcs), please open a GitHub issue!
 //!
 //! One characteristic of this implementation, in contrast to some other notable operational models such as ones proposed in
@@ -36,20 +36,20 @@
 //! In our implementation, this is detected using read information attached to store elements, as there is no data strucutre representing reads.
 //!
 //! The C++ memory model is built around the notion of an 'atomic object', so it would be natural
-//! to attach store buffers to atomic objects. However, Rust follows LLVM in that it only has
+//! to attach store buffers to atomic objects. However, CrabLang follows LLVM in that it only has
 //! 'atomic accesses'. Therefore Miri cannot know when and where atomic 'objects' are being
 //! created or destroyed, to manage its store buffers. Instead, we hence lazily create an
 //! atomic object on the first atomic access to a given region, and we destroy that object
 //! on the next non-atomic or imperfectly overlapping atomic access to that region.
 //! These lazy (de)allocations happen in memory_accessed() on non-atomic accesses, and
 //! get_or_create_store_buffer() on atomic accesses. This mostly works well, but it does
-//! lead to some issues (<https://github.com/rust-lang/miri/issues/2164>).
+//! lead to some issues (<https://github.com/crablang/miri/issues/2164>).
 //!
-//! One consequence of this difference is that safe/sound Rust allows for more operations on atomic locations
+//! One consequence of this difference is that safe/sound CrabLang allows for more operations on atomic locations
 //! than the C++20 atomic API was intended to allow, such as non-atomically accessing
 //! a previously atomically accessed location, or accessing previously atomically accessed locations with a differently sized operation
 //! (such as accessing the top 16 bits of an AtomicU32). These senarios are generally undiscussed in formalisations of C++ memory model.
-//! In Rust, these operations can only be done through a `&mut AtomicFoo` reference or one derived from it, therefore these operations
+//! In CrabLang, these operations can only be done through a `&mut AtomicFoo` reference or one derived from it, therefore these operations
 //! can only happen after all previous accesses on the same locations. This implementation is adapted to allow these operations.
 //! A mixed atomicity read that races with writes, or a write that races with reads or writes will still cause UBs to be thrown.
 //! Mixed size atomic accesses must not race with any other atomic access, whether read or write, or a UB will be thrown.
@@ -82,8 +82,8 @@ use std::{
     collections::VecDeque,
 };
 
-use rustc_const_eval::interpret::{alloc_range, AllocRange, InterpResult, MPlaceTy, Scalar};
-use rustc_data_structures::fx::FxHashMap;
+use crablangc_const_eval::interpret::{alloc_range, AllocRange, InterpResult, MPlaceTy, Scalar};
+use crablangc_data_structures::fx::FxHashMap;
 
 use crate::*;
 
@@ -336,7 +336,7 @@ impl<'mir, 'tcx: 'mir> StoreBuffer {
         let mut found_sc = false;
         // FIXME: we want an inclusive take_while (stops after a false predicate, but
         // includes the element that gave the false), but such function doesn't yet
-        // exist in the standard libary https://github.com/rust-lang/rust/issues/62208
+        // exist in the standard libary https://github.com/crablang/crablang/issues/62208
         // so we have to hack around it with keep_searching
         let mut keep_searching = true;
         let candidates = self
@@ -381,7 +381,7 @@ impl<'mir, 'tcx: 'mir> StoreBuffer {
                     false
                 } else if is_seqcst && store_elem.load_info.borrow().sc_loaded {
                     // The current SC load cannot read-before a store that an earlier SC load has observed.
-                    // See https://github.com/rust-lang/miri/issues/2301#issuecomment-1222720427
+                    // See https://github.com/crablang/miri/issues/2301#issuecomment-1222720427
                     // Consequences of C++20 §31.4 [atomics.order] paragraph 3.1, 3.3 (coherence-ordered before)
                     // and 4.1 (coherence-ordered before between SC makes global total order S)
                     false
@@ -590,7 +590,7 @@ pub(super) trait EvalContextExt<'mir, 'tcx: 'mir>:
             // UGLY HACK: in write_scalar_atomic() we don't know the value before our write,
             // so init == val always. If the buffer is fresh then we would've duplicated an entry,
             // so we need to remove it.
-            // See https://github.com/rust-lang/miri/issues/2164
+            // See https://github.com/crablang/miri/issues/2164
             let was_empty = matches!(
                 alloc_buffers
                     .store_buffers

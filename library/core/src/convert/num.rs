@@ -44,10 +44,10 @@ impl_float_to_int!(f64 => u8 u16 u32 u64 u128 usize i8 i16 i32 i64 i128 isize);
 macro_rules! impl_from {
     ($Small: ty, $Large: ty, #[$attr:meta], $doc: expr) => {
         #[$attr]
-        #[rustc_const_unstable(feature = "const_num_from_num", issue = "87852")]
+        #[crablangc_const_unstable(feature = "const_num_from_num", issue = "87852")]
         impl const From<$Small> for $Large {
-            // Rustdocs on the impl block show a "[+] show undocumented items" toggle.
-            // Rustdocs on functions do not.
+            // CrabLangdocs on the impl block show a "[+] show undocumented items" toggle.
+            // CrabLangdocs on functions do not.
             #[doc = $doc]
             #[inline(always)]
             fn from(small: $Small) -> Self {
@@ -170,7 +170,7 @@ impl_from! { f32, f64, #[stable(feature = "lossless_float_conv", since = "1.6.0"
 
 // bool -> Float
 #[stable(feature = "float_from_bool", since = "1.68.0")]
-#[rustc_const_unstable(feature = "const_num_from_num", issue = "87852")]
+#[crablangc_const_unstable(feature = "const_num_from_num", issue = "87852")]
 impl const From<bool> for f32 {
     /// Converts `bool` to `f32` losslessly. The resulting value is positive
     /// `0.0` for `false` and `1.0` for `true` values.
@@ -190,7 +190,7 @@ impl const From<bool> for f32 {
     }
 }
 #[stable(feature = "float_from_bool", since = "1.68.0")]
-#[rustc_const_unstable(feature = "const_num_from_num", issue = "87852")]
+#[crablangc_const_unstable(feature = "const_num_from_num", issue = "87852")]
 impl const From<bool> for f64 {
     /// Converts `bool` to `f64` losslessly. The resulting value is positive
     /// `0.0` for `false` and `1.0` for `true` values.
@@ -214,7 +214,7 @@ impl const From<bool> for f64 {
 macro_rules! try_from_unbounded {
     ($source:ty, $($target:ty),*) => {$(
         #[stable(feature = "try_from", since = "1.34.0")]
-        #[rustc_const_unstable(feature = "const_num_from_num", issue = "87852")]
+        #[crablangc_const_unstable(feature = "const_num_from_num", issue = "87852")]
         impl const TryFrom<$source> for $target {
             type Error = TryFromIntError;
 
@@ -233,7 +233,7 @@ macro_rules! try_from_unbounded {
 macro_rules! try_from_lower_bounded {
     ($source:ty, $($target:ty),*) => {$(
         #[stable(feature = "try_from", since = "1.34.0")]
-        #[rustc_const_unstable(feature = "const_num_from_num", issue = "87852")]
+        #[crablangc_const_unstable(feature = "const_num_from_num", issue = "87852")]
         impl const TryFrom<$source> for $target {
             type Error = TryFromIntError;
 
@@ -256,7 +256,7 @@ macro_rules! try_from_lower_bounded {
 macro_rules! try_from_upper_bounded {
     ($source:ty, $($target:ty),*) => {$(
         #[stable(feature = "try_from", since = "1.34.0")]
-        #[rustc_const_unstable(feature = "const_num_from_num", issue = "87852")]
+        #[crablangc_const_unstable(feature = "const_num_from_num", issue = "87852")]
         impl const TryFrom<$source> for $target {
             type Error = TryFromIntError;
 
@@ -279,7 +279,7 @@ macro_rules! try_from_upper_bounded {
 macro_rules! try_from_both_bounded {
     ($source:ty, $($target:ty),*) => {$(
         #[stable(feature = "try_from", since = "1.34.0")]
-        #[rustc_const_unstable(feature = "const_num_from_num", issue = "87852")]
+        #[crablangc_const_unstable(feature = "const_num_from_num", issue = "87852")]
         impl const TryFrom<$source> for $target {
             type Error = TryFromIntError;
 
@@ -431,10 +431,10 @@ use crate::num::NonZeroUsize;
 macro_rules! nzint_impl_from {
     ($Small: ty, $Large: ty, #[$attr:meta], $doc: expr) => {
         #[$attr]
-        #[rustc_const_unstable(feature = "const_num_from_num", issue = "87852")]
+        #[crablangc_const_unstable(feature = "const_num_from_num", issue = "87852")]
         impl const From<$Small> for $Large {
-            // Rustdocs on the impl block show a "[+] show undocumented items" toggle.
-            // Rustdocs on functions do not.
+            // CrabLangdocs on the impl block show a "[+] show undocumented items" toggle.
+            // CrabLangdocs on functions do not.
             #[doc = $doc]
             #[inline]
             fn from(small: $Small) -> Self {
@@ -504,8 +504,8 @@ macro_rules! nzint_impl_try_from_int {
         impl TryFrom<$Int> for $NonZeroInt {
             type Error = TryFromIntError;
 
-            // Rustdocs on the impl block show a "[+] show undocumented items" toggle.
-            // Rustdocs on functions do not.
+            // CrabLangdocs on the impl block show a "[+] show undocumented items" toggle.
+            // CrabLangdocs on functions do not.
             #[doc = $doc]
             #[inline]
             fn try_from(value: $Int) -> Result<Self, Self::Error> {
@@ -545,8 +545,8 @@ macro_rules! nzint_impl_try_from_nzint {
         impl TryFrom<$From> for $To {
             type Error = TryFromIntError;
 
-            // Rustdocs on the impl block show a "[+] show undocumented items" toggle.
-            // Rustdocs on functions do not.
+            // CrabLangdocs on the impl block show a "[+] show undocumented items" toggle.
+            // CrabLangdocs on functions do not.
             #[doc = $doc]
             #[inline]
             fn try_from(value: $From) -> Result<Self, Self::Error> {

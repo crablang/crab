@@ -2,13 +2,13 @@ use crate::FxHashSet;
 use clippy_utils::diagnostics::span_lint_and_then;
 use clippy_utils::source::{indent_of, snippet};
 use clippy_utils::{get_attr, is_lint_allowed};
-use rustc_errors::{Applicability, Diagnostic};
-use rustc_hir::intravisit::{walk_expr, Visitor};
-use rustc_hir::{Arm, Expr, ExprKind, MatchSource};
-use rustc_lint::{LateContext, LintContext};
-use rustc_middle::ty::subst::GenericArgKind;
-use rustc_middle::ty::{Ty, TypeAndMut};
-use rustc_span::Span;
+use crablangc_errors::{Applicability, Diagnostic};
+use crablangc_hir::intravisit::{walk_expr, Visitor};
+use crablangc_hir::{Arm, Expr, ExprKind, MatchSource};
+use crablangc_lint::{LateContext, LintContext};
+use crablangc_middle::ty::subst::GenericArgKind;
+use crablangc_middle::ty::{Ty, TypeAndMut};
+use crablangc_span::Span;
 
 use super::SIGNIFICANT_DROP_IN_SCRUTINEE;
 
@@ -132,7 +132,7 @@ impl<'a, 'tcx> SigDropChecker<'a, 'tcx> {
         }
 
         match ty.kind() {
-            rustc_middle::ty::Adt(a, b) => {
+            crablangc_middle::ty::Adt(a, b) => {
                 for f in a.all_fields() {
                     let ty = f.ty(cx.tcx, b);
                     if !self.has_seen_type(ty) && self.has_sig_drop_attr(cx, ty) {
@@ -149,10 +149,10 @@ impl<'a, 'tcx> SigDropChecker<'a, 'tcx> {
                 }
                 false
             },
-            rustc_middle::ty::Array(ty, _)
-            | rustc_middle::ty::RawPtr(TypeAndMut { ty, .. })
-            | rustc_middle::ty::Ref(_, ty, _)
-            | rustc_middle::ty::Slice(ty) => self.has_sig_drop_attr(cx, *ty),
+            crablangc_middle::ty::Array(ty, _)
+            | crablangc_middle::ty::RawPtr(TypeAndMut { ty, .. })
+            | crablangc_middle::ty::Ref(_, ty, _)
+            | crablangc_middle::ty::Slice(ty) => self.has_sig_drop_attr(cx, *ty),
             _ => false,
         }
     }

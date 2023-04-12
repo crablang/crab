@@ -38,4 +38,4 @@ LL | async fn run2<F: Foo>(_: &(), foo: F) -> std::io::Result<()> where <F as Fo
 
 error: aborting due to 2 previous errors
 
-For more information about this error, try `rustc --explain E0277`.
+For more information about this error, try `crablangc --explain E0277`.

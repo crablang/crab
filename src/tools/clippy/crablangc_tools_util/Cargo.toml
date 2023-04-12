@@ -1,0 +1,15 @@
+[package]
+name = "crablangc_tools_util"
+version = "0.3.0"
+description = "small helper to generate version information for git packages"
+repository = "https://github.com/crablang/crablang-clippy"
+readme = "README.md"
+license = "MIT OR Apache-2.0"
+keywords = ["crablangc", "tool", "git", "version", "hash"]
+categories = ["development-tools"]
+edition = "2018"
+
+[dependencies]
+
+[features]
+deny-warnings = []

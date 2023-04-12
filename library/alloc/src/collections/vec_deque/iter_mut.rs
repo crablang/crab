@@ -1,4 +1,4 @@
-use core::iter::{FusedIterator, TrustedLen, TrustedRandomAccess, TrustedRandomAccessNoCoerce};
+use core::iter::{FusedIterator, TcrablangedLen, TcrablangedRandomAccess, TcrablangedRandomAccessNoCoerce};
 use core::num::NonZeroUsize;
 use core::ops::Try;
 use core::{fmt, mem, slice};
@@ -9,7 +9,7 @@ use core::{fmt, mem, slice};
 /// documentation for more.
 ///
 /// [`iter_mut`]: super::VecDeque::iter_mut
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub struct IterMut<'a, T: 'a> {
     i1: slice::IterMut<'a, T>,
     i2: slice::IterMut<'a, T>,
@@ -28,7 +28,7 @@ impl<T: fmt::Debug> fmt::Debug for IterMut<'_, T> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<'a, T> Iterator for IterMut<'a, T> {
     type Item = &'a mut T;
 
@@ -88,7 +88,7 @@ impl<'a, T> Iterator for IterMut<'a, T> {
 
     #[inline]
     unsafe fn __iterator_get_unchecked(&mut self, idx: usize) -> Self::Item {
-        // Safety: The TrustedRandomAccess contract requires that callers only pass an index
+        // Safety: The TcrablangedRandomAccess contract requires that callers only pass an index
         // that is in bounds.
         unsafe {
             let i1_len = self.i1.len();
@@ -101,7 +101,7 @@ impl<'a, T> Iterator for IterMut<'a, T> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<'a, T> DoubleEndedIterator for IterMut<'a, T> {
     #[inline]
     fn next_back(&mut self) -> Option<&'a mut T> {
@@ -147,7 +147,7 @@ impl<'a, T> DoubleEndedIterator for IterMut<'a, T> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T> ExactSizeIterator for IterMut<'_, T> {
     fn len(&self) -> usize {
         self.i1.len() + self.i2.len()
@@ -161,15 +161,15 @@ impl<T> ExactSizeIterator for IterMut<'_, T> {
 #[stable(feature = "fused", since = "1.26.0")]
 impl<T> FusedIterator for IterMut<'_, T> {}
 
-#[unstable(feature = "trusted_len", issue = "37572")]
-unsafe impl<T> TrustedLen for IterMut<'_, T> {}
+#[unstable(feature = "tcrablanged_len", issue = "37572")]
+unsafe impl<T> TcrablangedLen for IterMut<'_, T> {}
 
 #[doc(hidden)]
-#[unstable(feature = "trusted_random_access", issue = "none")]
-unsafe impl<T> TrustedRandomAccess for IterMut<'_, T> {}
+#[unstable(feature = "tcrablanged_random_access", issue = "none")]
+unsafe impl<T> TcrablangedRandomAccess for IterMut<'_, T> {}
 
 #[doc(hidden)]
-#[unstable(feature = "trusted_random_access", issue = "none")]
-unsafe impl<T> TrustedRandomAccessNoCoerce for IterMut<'_, T> {
+#[unstable(feature = "tcrablanged_random_access", issue = "none")]
+unsafe impl<T> TcrablangedRandomAccessNoCoerce for IterMut<'_, T> {
     const MAY_HAVE_SIDE_EFFECT: bool = false;
 }

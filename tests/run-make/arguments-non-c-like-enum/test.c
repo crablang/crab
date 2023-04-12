@@ -42,7 +42,7 @@ typedef struct {
   };
 } T;
 
-/* These symbols are defined by the Rust staticlib built from
+/* These symbols are defined by the CrabLang staticlib built from
  * nonclike.rs. */
 extern uint64_t t_add(T a, T b);
 extern uint64_t tt_add(TT a, TT b);

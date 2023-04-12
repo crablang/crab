@@ -1,10 +1,10 @@
 // normalize-stderr-test "could not open Fluent resource:.*" -> "could not open Fluent resource: os-specific message"
 
-#![feature(rustc_private)]
+#![feature(crablangc_private)]
 #![crate_type = "lib"]
 
-extern crate rustc_macros;
-use rustc_macros::fluent_messages;
+extern crate crablangc_macros;
+use crablangc_macros::fluent_messages;
 
 /// Copy of the relevant `DiagnosticMessage` variant constructed by `fluent_messages` as it
 /// expects `crate::DiagnosticMessage` to exist.

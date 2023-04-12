@@ -14,7 +14,7 @@ LL | fn lintme() {}
    |
    = note: `#[warn(clippy::test_lint)]` on by default
 
-warning: use of deprecated attribute `plugin`: compiler plugins are deprecated. See https://github.com/rust-lang/rust/pull/64675
+warning: use of deprecated attribute `plugin`: compiler plugins are deprecated. See https://github.com/crablang/crablang/pull/64675
   --> $DIR/lint-tool-cmdline-allow.rs:7:1
    |
 LL | #![plugin(lint_tool_test)]

@@ -1,5 +1,5 @@
 // edition:2018
-// run-rustfix
+// run-crablangfix
 
 #![feature(async_closure)]
 

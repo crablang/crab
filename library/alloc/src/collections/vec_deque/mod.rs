@@ -5,7 +5,7 @@
 //! are not required to be copyable, and the queue will be sendable if the
 //! contained type is sendable.
 
-#![stable(feature = "rust1", since = "1.0.0")]
+#![stable(feature = "crablang1", since = "1.0.0")]
 
 use core::cmp::{self, Ordering};
 use core::fmt;
@@ -18,7 +18,7 @@ use core::slice;
 
 // This is used in a bunch of intra-doc links.
 // FIXME: For some reason, `#[cfg(doc)]` wasn't sufficient, resulting in
-// failures in linkchecker even though rustdoc built the docs just fine.
+// failures in linkchecker even though crablangdoc built the docs just fine.
 #[allow(unused_imports)]
 use core::mem;
 
@@ -36,17 +36,17 @@ pub use self::drain::Drain;
 
 mod drain;
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub use self::iter_mut::IterMut;
 
 mod iter_mut;
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub use self::into_iter::IntoIter;
 
 mod into_iter;
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub use self::iter::Iter;
 
 mod iter;
@@ -88,9 +88,9 @@ mod tests;
 /// [`extend`]: VecDeque::extend
 /// [`append`]: VecDeque::append
 /// [`make_contiguous`]: VecDeque::make_contiguous
-#[cfg_attr(not(test), rustc_diagnostic_item = "VecDeque")]
-#[stable(feature = "rust1", since = "1.0.0")]
-#[rustc_insignificant_dtor]
+#[cfg_attr(not(test), crablangc_diagnostic_item = "VecDeque")]
+#[stable(feature = "crablang1", since = "1.0.0")]
+#[crablangc_insignificant_dtor]
 pub struct VecDeque<
     T,
     #[unstable(feature = "allocator_api", issue = "32838")] A: Allocator = Global,
@@ -105,7 +105,7 @@ pub struct VecDeque<
     buf: RawVec<T, A>,
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: Clone, A: Allocator + Clone> Clone for VecDeque<T, A> {
     fn clone(&self) -> Self {
         let mut deq = Self::with_capacity_in(self.len(), self.allocator().clone());
@@ -119,7 +119,7 @@ impl<T: Clone, A: Allocator + Clone> Clone for VecDeque<T, A> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 unsafe impl<#[may_dangle] T, A: Allocator> Drop for VecDeque<T, A> {
     fn drop(&mut self) {
         /// Runs the destructor for all items in the slice when it gets dropped (normally or
@@ -144,7 +144,7 @@ unsafe impl<#[may_dangle] T, A: Allocator> Drop for VecDeque<T, A> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T> Default for VecDeque<T> {
     /// Creates an empty deque.
     #[inline]
@@ -474,7 +474,7 @@ impl<T, A: Allocator> VecDeque<T, A> {
     }
 
     /// Frobs the head and tail sections around to handle the fact that we
-    /// just reallocated. Unsafe because it trusts old_capacity.
+    /// just reallocated. Unsafe because it tcrablangs old_capacity.
     #[inline]
     unsafe fn handle_capacity_increase(&mut self, old_capacity: usize) {
         let new_capacity = self.capacity();
@@ -536,8 +536,8 @@ impl<T> VecDeque<T> {
     /// let deque: VecDeque<u32> = VecDeque::new();
     /// ```
     #[inline]
-    #[stable(feature = "rust1", since = "1.0.0")]
-    #[rustc_const_stable(feature = "const_vec_deque_new", since = "1.68.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    #[crablangc_const_stable(feature = "const_vec_deque_new", since = "1.68.0")]
     #[must_use]
     pub const fn new() -> VecDeque<T> {
         // FIXME: This should just be `VecDeque::new_in(Global)` once that hits stable.
@@ -554,7 +554,7 @@ impl<T> VecDeque<T> {
     /// let deque: VecDeque<u32> = VecDeque::with_capacity(10);
     /// ```
     #[inline]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[must_use]
     pub fn with_capacity(capacity: usize) -> VecDeque<T> {
         Self::with_capacity_in(capacity, Global)
@@ -639,7 +639,7 @@ impl<T, A: Allocator> VecDeque<T, A> {
     /// buf.push_back(6);
     /// assert_eq!(buf.get(1), Some(&4));
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn get(&self, index: usize) -> Option<&T> {
         if index < self.len {
             let idx = self.to_physical_idx(index);
@@ -669,7 +669,7 @@ impl<T, A: Allocator> VecDeque<T, A> {
     /// }
     /// assert_eq!(buf[1], 7);
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn get_mut(&mut self, index: usize) -> Option<&mut T> {
         if index < self.len {
             let idx = self.to_physical_idx(index);
@@ -702,7 +702,7 @@ impl<T, A: Allocator> VecDeque<T, A> {
     /// buf.swap(0, 2);
     /// assert_eq!(buf, [5, 4, 3]);
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn swap(&mut self, i: usize, j: usize) {
         assert!(i < self.len());
         assert!(j < self.len());
@@ -723,7 +723,7 @@ impl<T, A: Allocator> VecDeque<T, A> {
     /// assert!(buf.capacity() >= 10);
     /// ```
     #[inline]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn capacity(&self) -> usize {
         if T::IS_ZST { usize::MAX } else { self.buf.capacity() }
     }
@@ -750,7 +750,7 @@ impl<T, A: Allocator> VecDeque<T, A> {
     /// ```
     ///
     /// [`reserve`]: VecDeque::reserve
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn reserve_exact(&mut self, additional: usize) {
         let new_cap = self.len.checked_add(additional).expect("capacity overflow");
         let old_cap = self.capacity();
@@ -779,7 +779,7 @@ impl<T, A: Allocator> VecDeque<T, A> {
     /// buf.reserve(10);
     /// assert!(buf.capacity() >= 11);
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn reserve(&mut self, additional: usize) {
         let new_cap = self.len.checked_add(additional).expect("capacity overflow");
         let old_cap = self.capacity();
@@ -1098,7 +1098,7 @@ impl<T, A: Allocator> VecDeque<T, A> {
     /// let c: Vec<&i32> = buf.iter().collect();
     /// assert_eq!(&c[..], b);
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn iter(&self) -> Iter<'_, T> {
         let (a, b) = self.as_slices();
         Iter::new(a.iter(), b.iter())
@@ -1121,7 +1121,7 @@ impl<T, A: Allocator> VecDeque<T, A> {
     /// let b: &[_] = &[&mut 3, &mut 1, &mut 2];
     /// assert_eq!(&buf.iter_mut().collect::<Vec<&mut i32>>()[..], b);
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn iter_mut(&mut self) -> IterMut<'_, T> {
         let (a, b) = self.as_mut_slices();
         IterMut::new(a.iter_mut(), b.iter_mut())
@@ -1208,7 +1208,7 @@ impl<T, A: Allocator> VecDeque<T, A> {
     /// deque.push_back(1);
     /// assert_eq!(deque.len(), 1);
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn len(&self) -> usize {
         self.len
     }
@@ -1225,7 +1225,7 @@ impl<T, A: Allocator> VecDeque<T, A> {
     /// deque.push_front(1);
     /// assert!(!deque.is_empty());
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn is_empty(&self) -> bool {
         self.len == 0
     }
@@ -1436,7 +1436,7 @@ impl<T, A: Allocator> VecDeque<T, A> {
     /// deque.clear();
     /// assert!(deque.is_empty());
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     pub fn clear(&mut self) {
         self.truncate(0);
@@ -1490,7 +1490,7 @@ impl<T, A: Allocator> VecDeque<T, A> {
     /// d.push_back(2);
     /// assert_eq!(d.front(), Some(&1));
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn front(&self) -> Option<&T> {
         self.get(0)
     }
@@ -1514,7 +1514,7 @@ impl<T, A: Allocator> VecDeque<T, A> {
     /// }
     /// assert_eq!(d.front(), Some(&9));
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn front_mut(&mut self) -> Option<&mut T> {
         self.get_mut(0)
     }
@@ -1534,7 +1534,7 @@ impl<T, A: Allocator> VecDeque<T, A> {
     /// d.push_back(2);
     /// assert_eq!(d.back(), Some(&2));
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn back(&self) -> Option<&T> {
         self.get(self.len.wrapping_sub(1))
     }
@@ -1558,7 +1558,7 @@ impl<T, A: Allocator> VecDeque<T, A> {
     /// }
     /// assert_eq!(d.back(), Some(&9));
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn back_mut(&mut self) -> Option<&mut T> {
         self.get_mut(self.len.wrapping_sub(1))
     }
@@ -1579,7 +1579,7 @@ impl<T, A: Allocator> VecDeque<T, A> {
     /// assert_eq!(d.pop_front(), Some(2));
     /// assert_eq!(d.pop_front(), None);
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn pop_front(&mut self) -> Option<T> {
         if self.is_empty() {
             None
@@ -1605,7 +1605,7 @@ impl<T, A: Allocator> VecDeque<T, A> {
     /// buf.push_back(3);
     /// assert_eq!(buf.pop_back(), Some(3));
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn pop_back(&mut self) -> Option<T> {
         if self.is_empty() {
             None
@@ -1627,7 +1627,7 @@ impl<T, A: Allocator> VecDeque<T, A> {
     /// d.push_front(2);
     /// assert_eq!(d.front(), Some(&2));
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn push_front(&mut self, value: T) {
         if self.is_full() {
             self.grow();
@@ -1653,7 +1653,7 @@ impl<T, A: Allocator> VecDeque<T, A> {
     /// buf.push_back(3);
     /// assert_eq!(3, *buf.back().unwrap());
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn push_back(&mut self, value: T) {
         if self.is_full() {
             self.grow();
@@ -1812,7 +1812,7 @@ impl<T, A: Allocator> VecDeque<T, A> {
     /// assert_eq!(buf.remove(1), Some(2));
     /// assert_eq!(buf, [1, 3]);
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn remove(&mut self, index: usize) -> Option<T> {
         if self.len <= index {
             return None;
@@ -2139,7 +2139,7 @@ impl<T, A: Allocator> VecDeque<T, A> {
     ///
     /// Getting immutable access to the contiguous slice.
     ///
-    /// ```rust
+    /// ```crablang
     /// use std::collections::VecDeque;
     ///
     /// let mut buf = VecDeque::new();
@@ -2656,7 +2656,7 @@ fn wrap_index(logical_index: usize, capacity: usize) -> usize {
     if logical_index >= capacity { logical_index - capacity } else { logical_index }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: PartialEq, A: Allocator> PartialEq for VecDeque<T, A> {
     fn eq(&self, other: &Self) -> bool {
         if self.len != other.len() {
@@ -2695,7 +2695,7 @@ impl<T: PartialEq, A: Allocator> PartialEq for VecDeque<T, A> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: Eq, A: Allocator> Eq for VecDeque<T, A> {}
 
 __impl_slice_eq1! { [] VecDeque<T, A>, Vec<U, A>, }
@@ -2705,14 +2705,14 @@ __impl_slice_eq1! { [const N: usize] VecDeque<T, A>, [U; N], }
 __impl_slice_eq1! { [const N: usize] VecDeque<T, A>, &[U; N], }
 __impl_slice_eq1! { [const N: usize] VecDeque<T, A>, &mut [U; N], }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: PartialOrd, A: Allocator> PartialOrd for VecDeque<T, A> {
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
         self.iter().partial_cmp(other.iter())
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: Ord, A: Allocator> Ord for VecDeque<T, A> {
     #[inline]
     fn cmp(&self, other: &Self) -> Ordering {
@@ -2720,7 +2720,7 @@ impl<T: Ord, A: Allocator> Ord for VecDeque<T, A> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: Hash, A: Allocator> Hash for VecDeque<T, A> {
     fn hash<H: Hasher>(&self, state: &mut H) {
         state.write_length_prefix(self.len);
@@ -2734,7 +2734,7 @@ impl<T: Hash, A: Allocator> Hash for VecDeque<T, A> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T, A: Allocator> Index<usize> for VecDeque<T, A> {
     type Output = T;
 
@@ -2744,7 +2744,7 @@ impl<T, A: Allocator> Index<usize> for VecDeque<T, A> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T, A: Allocator> IndexMut<usize> for VecDeque<T, A> {
     #[inline]
     fn index_mut(&mut self, index: usize) -> &mut T {
@@ -2752,14 +2752,14 @@ impl<T, A: Allocator> IndexMut<usize> for VecDeque<T, A> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T> FromIterator<T> for VecDeque<T> {
     fn from_iter<I: IntoIterator<Item = T>>(iter: I) -> VecDeque<T> {
         SpecFromIter::spec_from_iter(iter.into_iter())
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T, A: Allocator> IntoIterator for VecDeque<T, A> {
     type Item = T;
     type IntoIter = IntoIter<T, A>;
@@ -2771,7 +2771,7 @@ impl<T, A: Allocator> IntoIterator for VecDeque<T, A> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<'a, T, A: Allocator> IntoIterator for &'a VecDeque<T, A> {
     type Item = &'a T;
     type IntoIter = Iter<'a, T>;
@@ -2781,7 +2781,7 @@ impl<'a, T, A: Allocator> IntoIterator for &'a VecDeque<T, A> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<'a, T, A: Allocator> IntoIterator for &'a mut VecDeque<T, A> {
     type Item = &'a mut T;
     type IntoIter = IterMut<'a, T>;
@@ -2791,7 +2791,7 @@ impl<'a, T, A: Allocator> IntoIterator for &'a mut VecDeque<T, A> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T, A: Allocator> Extend<T> for VecDeque<T, A> {
     fn extend<I: IntoIterator<Item = T>>(&mut self, iter: I) {
         <Self as SpecExtend<T, I::IntoIter>>::spec_extend(self, iter.into_iter());
@@ -2825,7 +2825,7 @@ impl<'a, T: 'a + Copy, A: Allocator> Extend<&'a T> for VecDeque<T, A> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: fmt::Debug, A: Allocator> fmt::Debug for VecDeque<T, A> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_list().entries(self.iter()).finish()

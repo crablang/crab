@@ -63,17 +63,17 @@
 //! # O(1) collect
 //!
 //! The main iteration itself is further specialized when the iterator implements
-//! [`TrustedRandomAccessNoCoerce`] to let the optimizer see that it is a counted loop with a single
+//! [`TcrablangedRandomAccessNoCoerce`] to let the optimizer see that it is a counted loop with a single
 //! [induction variable]. This can turn some iterators into a noop, i.e. it reduces them from O(n) to
 //! O(1). This particular optimization is quite fickle and doesn't always work, see [#79308]
 //!
-//! [#79308]: https://github.com/rust-lang/rust/issues/79308
+//! [#79308]: https://github.com/crablang/crablang/issues/79308
 //! [induction variable]: https://en.wikipedia.org/wiki/Induction_variable
 //!
 //! Since unchecked accesses through that trait do not advance the read pointer of `IntoIter`
 //! this would interact unsoundly with the requirements about dropping the tail described above.
 //! But since the normal `Drop` implementation of `IntoIter` would suffer from the same problem it
-//! is only correct for `TrustedRandomAccessNoCoerce` to be implemented when the items don't
+//! is only correct for `TcrablangedRandomAccessNoCoerce` to be implemented when the items don't
 //! have a destructor. Thus that implicit requirement also makes the specialization safe to use for
 //! in-place collection.
 //! Note that this safety concern is about the correctness of `impl Drop for IntoIter`,
@@ -88,7 +88,7 @@
 //! allocation which means if the iterator has been peeked and then gets cloned there no longer is
 //! enough room, thus breaking an invariant ([#85322]).
 //!
-//! [#85322]: https://github.com/rust-lang/rust/issues/85322
+//! [#85322]: https://github.com/crablang/crablang/issues/85322
 //! [`Peekable`]: core::iter::Peekable
 //!
 //!
@@ -97,7 +97,7 @@
 //! Some cases that are optimized by this specialization, more can be found in the `Vec`
 //! benchmarks:
 //!
-//! ```rust
+//! ```crablang
 //! # #[allow(dead_code)]
 //! /// Converts a usize vec into an isize one.
 //! pub fn cast(vec: Vec<usize>) -> Vec<isize> {
@@ -108,7 +108,7 @@
 //! }
 //! ```
 //!
-//! ```rust
+//! ```crablang
 //! # #[allow(dead_code)]
 //! /// Drops remaining items in `src` and if the layouts of `T` and `U` match it
 //! /// returns an empty Vec backed by the original allocation. Otherwise it returns a new
@@ -118,7 +118,7 @@
 //! }
 //! ```
 //!
-//! ```rust
+//! ```crablang
 //! let vec = vec![13usize; 1024];
 //! let _ = vec.into_iter()
 //!   .enumerate()
@@ -137,7 +137,7 @@
 //! }
 //! vec.truncate(write_idx);
 //! ```
-use core::iter::{InPlaceIterable, SourceIter, TrustedRandomAccessNoCoerce};
+use core::iter::{InPlaceIterable, SourceIter, TcrablangedRandomAccessNoCoerce};
 use core::mem::{self, ManuallyDrop, SizedTypeProperties};
 use core::ptr::{self};
 
@@ -145,7 +145,7 @@ use super::{InPlaceDrop, InPlaceDstBufDrop, SpecFromIter, SpecFromIterNested, Ve
 
 /// Specialization marker for collecting an iterator pipeline into a Vec while reusing the
 /// source allocation, i.e. executing the pipeline in place.
-#[rustc_unsafe_specialization_marker]
+#[crablangc_unsafe_specialization_marker]
 pub(super) trait InPlaceIterableMarker {}
 
 impl<T> InPlaceIterableMarker for T where T: InPlaceIterable {}
@@ -185,7 +185,7 @@ where
         // caveat: if they weren't we might not even make it to this point
         debug_assert_eq!(src_buf, src.buf.as_ptr());
         // check InPlaceIterable contract. This is only possible if the iterator advanced the
-        // source pointer at all. If it uses unchecked access via TrustedRandomAccess
+        // source pointer at all. If it uses unchecked access via TcrablangedRandomAccess
         // then the source pointer will stay in its initial position and we can't use it as reference
         if src.ptr != src_ptr {
             debug_assert!(
@@ -199,7 +199,7 @@ where
         // before any panic can occur in order to avoid any double free, and then proceeds to drop
         // any remaining values at the tail of the source.
         //
-        // Note: This access to the source wouldn't be allowed by the TrustedRandomIteratorNoCoerce
+        // Note: This access to the source wouldn't be allowed by the TcrablangedRandomIteratorNoCoerce
         // contract (used by SpecInPlaceCollect below). But see the "O(1) collect" section in the
         // module documenttation why this is ok anyway.
         let dst_guard = InPlaceDstBufDrop { ptr: dst_buf, len, cap };
@@ -236,7 +236,7 @@ trait SpecInPlaceCollect<T, I>: Iterator<Item = T> {
     /// collected. `end` is the last writable element of the allocation and used for bounds checks.
     ///
     /// This method is specialized and one of its implementations makes use of
-    /// `Iterator::__iterator_get_unchecked` calls with a `TrustedRandomAccessNoCoerce` bound
+    /// `Iterator::__iterator_get_unchecked` calls with a `TcrablangedRandomAccessNoCoerce` bound
     /// on `I` which means the caller of this method must take the safety conditions
     /// of that trait into consideration.
     fn collect_in_place(&mut self, dst: *mut T, end: *const T) -> usize;
@@ -262,7 +262,7 @@ where
 
 impl<T, I> SpecInPlaceCollect<T, I> for I
 where
-    I: Iterator<Item = T> + TrustedRandomAccessNoCoerce,
+    I: Iterator<Item = T> + TcrablangedRandomAccessNoCoerce,
 {
     #[inline]
     fn collect_in_place(&mut self, dst_buf: *mut T, end: *const T) -> usize {
@@ -301,7 +301,7 @@ where
 ///
 /// In-place iteration relies on implementation details of `vec::IntoIter`, most importantly that
 /// it does not create references to the whole allocation during iteration, only raw pointers
-#[rustc_specialization_trait]
+#[crablangc_specialization_trait]
 pub(crate) unsafe trait AsVecIntoIter {
     type Item;
     fn as_into_iter(&mut self) -> &mut super::IntoIter<Self::Item>;

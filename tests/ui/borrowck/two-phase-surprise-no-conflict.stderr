@@ -158,4 +158,4 @@ LL |     reg.register_ref(&CapturePass::new_mut(&mut reg.sess_mut));
 error: aborting due to 15 previous errors
 
 Some errors have detailed explanations: E0499, E0502, E0503.
-For more information about an error, try `rustc --explain E0499`.
+For more information about an error, try `crablangc --explain E0499`.

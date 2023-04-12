@@ -9,4 +9,4 @@ LL |     let _ = S1(C[0]).clone();
 
 error: aborting due to previous error
 
-For more information about this error, try `rustc --explain E0508`.
+For more information about this error, try `crablangc --explain E0508`.

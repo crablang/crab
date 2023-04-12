@@ -4,7 +4,7 @@ Simple version:
 1. Fork it and `git clone` it
 2. Create your feature branch: `git checkout -b my-branch`
 3. Write your changes.
-4. Test it: `cargo test`. Remember to enable whatever SIMD features you intend to test by setting `RUSTFLAGS`.
+4. Test it: `cargo test`. Remember to enable whatever SIMD features you intend to test by setting `CRABLANGFLAGS`.
 5. Commit your changes: `git commit add ./path/to/changes && git commit -m 'Fix some bug'`
 6. Push the branch: `git push --set-upstream origin my-branch`
 7. Submit a pull request!
@@ -19,14 +19,14 @@ We currently use GitHub Actions which will automatically build and test your cha
 
 ## Beyond stdsimd
 
-A large amount of the core SIMD implementation is found in the rustc_codegen_* crates in the [main rustc repo](https://github.com/rust-lang/rust). In addition, actual platform-specific functions are implemented in [stdarch]. Not all changes to `std::simd` require interacting with either of these, but if you're wondering where something is and it doesn't seem to be in this repository, those might be where to start looking.
+A large amount of the core SIMD implementation is found in the crablangc_codegen_* crates in the [main crablangc repo](https://github.com/crablang/crablang). In addition, actual platform-specific functions are implemented in [stdarch]. Not all changes to `std::simd` require interacting with either of these, but if you're wondering where something is and it doesn't seem to be in this repository, those might be where to start looking.
 
 ## Questions? Concerns? Need Help?
 
-Please feel free to ask in the [#project-portable-simd][zulip-portable-simd] stream on the [rust-lang Zulip][zulip] for help with making changes to `std::simd`!
+Please feel free to ask in the [#project-portable-simd][zulip-portable-simd] stream on the [crablang Zulip][zulip] for help with making changes to `std::simd`!
 If your changes include directly modifying the compiler, it might also be useful to ask in [#t-compiler/help][zulip-compiler-help].
 
-[zulip-portable-simd]: https://rust-lang.zulipchat.com/#narrow/stream/257879-project-portable-simd
-[zulip-compiler-help]: https://rust-lang.zulipchat.com/#narrow/stream/182449-t-compiler.2Fhelp
-[zulip]: https://rust-lang.zulipchat.com
-[stdarch]: https://github.com/rust-lang/stdarch
+[zulip-portable-simd]: https://crablang.zulipchat.com/#narrow/stream/257879-project-portable-simd
+[zulip-compiler-help]: https://crablang.zulipchat.com/#narrow/stream/182449-t-compiler.2Fhelp
+[zulip]: https://crablang.zulipchat.com
+[stdarch]: https://github.com/crablang/stdarch

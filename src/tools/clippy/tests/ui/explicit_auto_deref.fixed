@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 
 #![feature(closure_lifetime_binder)]
 #![warn(clippy::explicit_auto_deref)]
@@ -229,7 +229,7 @@ fn main() {
     }
     let _: &X = &*{ Y(X) };
     let _: &X = &*match 0 {
-        #[rustfmt::skip]
+        #[crablangfmt::skip]
         0 => { Y(X) },
         _ => panic!(),
     };

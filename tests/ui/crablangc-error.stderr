@@ -1,0 +1,8 @@
+error: fatal error triggered by #[crablangc_error]
+  --> $DIR/crablangc-error.rs:4:1
+   |
+LL | fn main() {
+   | ^^^^^^^^^
+
+error: aborting due to previous error
+

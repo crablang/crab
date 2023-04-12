@@ -176,4 +176,4 @@ LL |     T:, T: Copy
 
 error: aborting due to 11 previous errors
 
-For more information about this error, try `rustc --explain E0382`.
+For more information about this error, try `crablangc --explain E0382`.

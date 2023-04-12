@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 #![feature(stmt_expr_attributes)]
 #![deny(clippy::unneeded_wildcard_pattern)]
 
@@ -17,7 +17,7 @@ fn main() {
     if let (0, ..) = t {};
     if let (.., 0) = t {};
 
-    #[rustfmt::skip]
+    #[crablangfmt::skip]
     {
         if let (0, .., _, _,) = t {};
     }
@@ -38,7 +38,7 @@ fn main() {
     if let S(0, ..) = s {};
     if let S(.., 0) = s {};
 
-    #[rustfmt::skip]
+    #[crablangfmt::skip]
     {
         if let S(0, .., _, _,) = s {};
     }

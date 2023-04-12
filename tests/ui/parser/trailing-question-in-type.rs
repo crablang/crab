@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 
 fn foo() -> i32? { //~ ERROR invalid `?` in type
     let x: i32? = Some(1); //~ ERROR invalid `?` in type

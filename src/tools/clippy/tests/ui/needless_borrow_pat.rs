@@ -1,4 +1,4 @@
-// FIXME: run-rustfix waiting on multi-span suggestions
+// FIXME: run-crablangfix waiting on multi-span suggestions
 
 #![warn(clippy::needless_borrow)]
 #![allow(clippy::needless_borrowed_reference, clippy::explicit_auto_deref)]
@@ -142,7 +142,7 @@ impl T1 for S {
     }
 }
 
-// Ok - used to error due to rustc bug
+// Ok - used to error due to crablangc bug
 #[allow(dead_code)]
 #[derive(Debug)]
 enum Foo<'a> {

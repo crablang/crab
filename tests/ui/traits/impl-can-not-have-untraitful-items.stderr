@@ -19,4 +19,4 @@ LL |     fn foo(&self) { }
 error: aborting due to 3 previous errors
 
 Some errors have detailed explanations: E0407, E0437, E0438.
-For more information about an error, try `rustc --explain E0407`.
+For more information about an error, try `crablangc --explain E0407`.

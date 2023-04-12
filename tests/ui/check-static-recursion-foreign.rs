@@ -7,7 +7,7 @@
 
 // pretty-expanded FIXME #23616
 
-#![feature(rustc_private)]
+#![feature(crablangc_private)]
 
 extern crate check_static_recursion_foreign_helper;
 extern crate libc;

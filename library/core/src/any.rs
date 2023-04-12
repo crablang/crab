@@ -47,7 +47,7 @@
 //! We don't know the concrete type of our value at compile time, so we need to
 //! use runtime reflection instead.
 //!
-//! ```rust
+//! ```crablang
 //! use std::fmt::Debug;
 //! use std::any::Any;
 //!
@@ -150,7 +150,7 @@
 //! In this example, if the concrete type of `obj` in `use_my_trait` is `SomeConcreteType`, then
 //! the `get_context_by_ref` call will return a reference to `obj.some_string` with type `&String`.
 
-#![stable(feature = "rust1", since = "1.0.0")]
+#![stable(feature = "crablang1", since = "1.0.0")]
 
 use crate::fmt;
 use crate::intrinsics;
@@ -175,8 +175,8 @@ use crate::intrinsics;
 // both not really necessary and may confuse users about the distinction of
 // unsafe traits and unsafe methods (i.e., `type_id` would still be safe to call,
 // but we would likely want to indicate as such in documentation).
-#[stable(feature = "rust1", since = "1.0.0")]
-#[cfg_attr(not(test), rustc_diagnostic_item = "Any")]
+#[stable(feature = "crablang1", since = "1.0.0")]
+#[cfg_attr(not(test), crablangc_diagnostic_item = "Any")]
 pub trait Any: 'static {
     /// Gets the `TypeId` of `self`.
     ///
@@ -196,7 +196,7 @@ pub trait Any: 'static {
     fn type_id(&self) -> TypeId;
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T: 'static + ?Sized> Any for T {
     fn type_id(&self) -> TypeId {
         TypeId::of::<T>()
@@ -207,7 +207,7 @@ impl<T: 'static + ?Sized> Any for T {
 // Extension methods for Any trait objects.
 ///////////////////////////////////////////////////////////////////////////////
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl fmt::Debug for dyn Any {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_struct("Any").finish_non_exhaustive()
@@ -217,7 +217,7 @@ impl fmt::Debug for dyn Any {
 // Ensure that the result of e.g., joining a thread can be printed and
 // hence used with `unwrap`. May eventually no longer be needed if
 // dispatch works with upcasting.
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl fmt::Debug for dyn Any + Send {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_struct("Any").finish_non_exhaustive()
@@ -250,7 +250,7 @@ impl dyn Any {
     /// is_string(&0);
     /// is_string(&"cookie monster".to_string());
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     pub fn is<T: Any>(&self) -> bool {
         // Get `TypeId` of the type this function is instantiated with.
@@ -282,7 +282,7 @@ impl dyn Any {
     /// print_if_string(&0);
     /// print_if_string(&"cookie monster".to_string());
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     pub fn downcast_ref<T: Any>(&self) -> Option<&T> {
         if self.is::<T>() {
@@ -318,7 +318,7 @@ impl dyn Any {
     /// assert_eq!(x, 42);
     /// assert_eq!(&s, "starlord");
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     pub fn downcast_mut<T: Any>(&mut self) -> Option<&mut T> {
         if self.is::<T>() {
@@ -409,7 +409,7 @@ impl dyn Any + Send {
     /// is_string(&0);
     /// is_string(&"cookie monster".to_string());
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     pub fn is<T: Any>(&self) -> bool {
         <dyn Any>::is::<T>(self)
@@ -433,7 +433,7 @@ impl dyn Any + Send {
     /// print_if_string(&0);
     /// print_if_string(&"cookie monster".to_string());
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     pub fn downcast_ref<T: Any>(&self) -> Option<&T> {
         <dyn Any>::downcast_ref::<T>(self)
@@ -461,7 +461,7 @@ impl dyn Any + Send {
     /// assert_eq!(x, 42);
     /// assert_eq!(&s, "starlord");
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     pub fn downcast_mut<T: Any>(&mut self) -> Option<&mut T> {
         <dyn Any>::downcast_mut::<T>(self)
@@ -660,11 +660,11 @@ impl dyn Any + Send + Sync {
 /// but this limitation may be removed in the future.
 ///
 /// While `TypeId` implements `Hash`, `PartialOrd`, and `Ord`, it is worth
-/// noting that the hashes and ordering will vary between Rust releases. Beware
+/// noting that the hashes and ordering will vary between CrabLang releases. Beware
 /// of relying on them inside of your code!
 #[derive(Clone, Copy, Debug, Hash, Eq)]
 #[derive_const(PartialEq, PartialOrd, Ord)]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub struct TypeId {
     t: u64,
 }
@@ -686,8 +686,8 @@ impl TypeId {
     /// assert_eq!(is_string(&"cookie monster".to_string()), true);
     /// ```
     #[must_use]
-    #[stable(feature = "rust1", since = "1.0.0")]
-    #[rustc_const_unstable(feature = "const_type_id", issue = "77125")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    #[crablangc_const_unstable(feature = "const_type_id", issue = "77125")]
     pub const fn of<T: ?Sized + 'static>() -> TypeId {
         TypeId { t: intrinsics::type_id::<T>() }
     }
@@ -714,7 +714,7 @@ impl TypeId {
 ///
 /// # Examples
 ///
-/// ```rust
+/// ```crablang
 /// assert_eq!(
 ///     std::any::type_name::<Option<String>>(),
 ///     "core::option::Option<alloc::string::String>",
@@ -722,7 +722,7 @@ impl TypeId {
 /// ```
 #[must_use]
 #[stable(feature = "type_name", since = "1.38.0")]
-#[rustc_const_unstable(feature = "const_type_name", issue = "63084")]
+#[crablangc_const_unstable(feature = "const_type_name", issue = "63084")]
 pub const fn type_name<T: ?Sized>() -> &'static str {
     intrinsics::type_name::<T>()
 }
@@ -754,7 +754,7 @@ pub const fn type_name<T: ?Sized>() -> &'static str {
 ///
 /// Prints the default integer and float types.
 ///
-/// ```rust
+/// ```crablang
 /// #![feature(type_name_of_val)]
 /// use std::any::type_name_of_val;
 ///
@@ -765,7 +765,7 @@ pub const fn type_name<T: ?Sized>() -> &'static str {
 /// ```
 #[must_use]
 #[unstable(feature = "type_name_of_val", issue = "66359")]
-#[rustc_const_unstable(feature = "const_type_name", issue = "63084")]
+#[crablangc_const_unstable(feature = "const_type_name", issue = "63084")]
 pub const fn type_name_of_val<T: ?Sized>(_val: &T) -> &'static str {
     type_name::<T>()
 }
@@ -789,7 +789,7 @@ pub trait Provider {
     /// Provides a reference to a field with type `String` as a `&str`, and a value of
     /// type `i32`.
     ///
-    /// ```rust
+    /// ```crablang
     /// # #![feature(provide_any)]
     /// use std::any::{Provider, Demand};
     /// # struct SomeConcreteType { field: String, num_field: i32 }
@@ -811,7 +811,7 @@ pub trait Provider {
 ///
 /// Get a string value from a provider.
 ///
-/// ```rust
+/// ```crablang
 /// # #![feature(provide_any)]
 /// use std::any::{Provider, request_value};
 ///
@@ -833,7 +833,7 @@ where
 ///
 /// Get a string reference from a provider.
 ///
-/// ```rust
+/// ```crablang
 /// # #![feature(provide_any)]
 /// use std::any::{Provider, request_ref};
 ///
@@ -884,7 +884,7 @@ impl<'a> Demand<'a> {
     ///
     /// Provides an `u8`.
     ///
-    /// ```rust
+    /// ```crablang
     /// #![feature(provide_any)]
     ///
     /// use std::any::{Provider, Demand};
@@ -910,7 +910,7 @@ impl<'a> Demand<'a> {
     ///
     /// Provides a `String` by cloning.
     ///
-    /// ```rust
+    /// ```crablang
     /// #![feature(provide_any)]
     ///
     /// use std::any::{Provider, Demand};
@@ -937,7 +937,7 @@ impl<'a> Demand<'a> {
     ///
     /// Provides a reference to a field as a `&str`.
     ///
-    /// ```rust
+    /// ```crablang
     /// #![feature(provide_any)]
     ///
     /// use std::any::{Provider, Demand};
@@ -961,7 +961,7 @@ impl<'a> Demand<'a> {
     ///
     /// Provides a reference to a field as a `&str`.
     ///
-    /// ```rust
+    /// ```crablang
     /// #![feature(provide_any)]
     ///
     /// use std::any::{Provider, Demand};
@@ -1019,7 +1019,7 @@ impl<'a> Demand<'a> {
     /// Check if an `u8` still needs to be provided and then provides
     /// it.
     ///
-    /// ```rust
+    /// ```crablang
     /// #![feature(provide_any)]
     ///
     /// use std::any::{Provider, Demand};
@@ -1090,7 +1090,7 @@ impl<'a> Demand<'a> {
     /// Check if a `&str` still needs to be provided and then provides
     /// it.
     ///
-    /// ```rust
+    /// ```crablang
     /// #![feature(provide_any)]
     ///
     /// use std::any::{Provider, Demand};

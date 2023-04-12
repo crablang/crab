@@ -1,8 +1,8 @@
 use clippy_utils::diagnostics::span_lint;
-use rustc_hir::{Expr, ExprKind};
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_middle::ty;
-use rustc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_hir::{Expr, ExprKind};
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_middle::ty;
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
 
 declare_clippy_lint! {
     /// ### What it does
@@ -10,14 +10,14 @@ declare_clippy_lint! {
     /// when all fields are changed anyway.
     ///
     /// This lint is not applied to structs marked with
-    /// [non_exhaustive](https://doc.rust-lang.org/reference/attributes/type_system.html).
+    /// [non_exhaustive](https://doc.crablang.org/reference/attributes/type_system.html).
     ///
     /// ### Why is this bad?
     /// This will cost resources (because the base has to be
     /// somewhere), and make the code less readable.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// # struct Point {
     /// #     x: i32,
     /// #     y: i32,
@@ -33,7 +33,7 @@ declare_clippy_lint! {
     /// ```
     ///
     /// Use instead:
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// // Missing field `z`
     /// Point {
     ///     x: 1,

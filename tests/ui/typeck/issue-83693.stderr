@@ -34,4 +34,4 @@ LL |     <x as Fn(&usize)>::call
 error: aborting due to 5 previous errors
 
 Some errors have detailed explanations: E0229, E0412.
-For more information about an error, try `rustc --explain E0229`.
+For more information about an error, try `crablangc --explain E0229`.

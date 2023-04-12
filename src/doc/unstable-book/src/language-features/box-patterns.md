@@ -2,14 +2,14 @@
 
 The tracking issue for this feature is: [#29641]
 
-[#29641]: https://github.com/rust-lang/rust/issues/29641
+[#29641]: https://github.com/crablang/crablang/issues/29641
 
 ------------------------
 
 Box patterns let you match on `Box<T>`s:
 
 
-```rust
+```crablang
 #![feature(box_patterns)]
 
 fn main() {

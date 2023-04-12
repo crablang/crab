@@ -1,4 +1,4 @@
-#![feature(rustc_private)]
+#![feature(crablangc_private)]
 
 #![allow(private_in_public)]
 #![deny(improper_ctypes)]
@@ -20,8 +20,8 @@ pub struct StructWithProjectionAndLifetime<'a>(
 pub type I32Pair = (i32, i32);
 #[repr(C)]
 pub struct ZeroSize;
-pub type RustFn = fn();
-pub type RustBadRet = extern "C" fn() -> Box<u32>;
+pub type CrabLangFn = fn();
+pub type CrabLangBadRet = extern "C" fn() -> Box<u32>;
 pub type CVoidRet = ();
 pub struct Foo;
 #[repr(transparent)]
@@ -29,7 +29,7 @@ pub struct TransparentI128(i128);
 #[repr(transparent)]
 pub struct TransparentStr(&'static str);
 #[repr(transparent)]
-pub struct TransparentBadFn(RustBadRet);
+pub struct TransparentBadFn(CrabLangBadRet);
 #[repr(transparent)]
 pub struct TransparentInt(u32);
 #[repr(transparent)]
@@ -65,9 +65,9 @@ extern "C" {
     //~^ ERROR uses type `ZeroSizeWithPhantomData`
     pub fn zero_size_phantom_toplevel()
         -> ::std::marker::PhantomData<bool>; //~ ERROR uses type `PhantomData<bool>`
-    pub fn fn_type(p: RustFn); //~ ERROR uses type `fn()`
+    pub fn fn_type(p: CrabLangFn); //~ ERROR uses type `fn()`
     pub fn fn_type2(p: fn()); //~ ERROR uses type `fn()`
-    pub fn fn_contained(p: RustBadRet); //~ ERROR: uses type `Box<u32>`
+    pub fn fn_contained(p: CrabLangBadRet); //~ ERROR: uses type `Box<u32>`
     pub fn transparent_i128(p: TransparentI128); //~ ERROR: uses type `i128`
     pub fn transparent_str(p: TransparentStr); //~ ERROR: uses type `str`
     pub fn transparent_fn(p: TransparentBadFn); //~ ERROR: uses type `Box<u32>`

@@ -23,30 +23,30 @@ all: $(TMPDIR)/$(call BIN,directly_linked) \
 
 # Native lib linked directly into executable
 $(TMPDIR)/$(call BIN,directly_linked): $(call NATIVE_STATICLIB,c_static_lib_with_constructor)
-	$(RUSTC) directly_linked.rs -l static:+whole-archive=c_static_lib_with_constructor
+	$(CRABLANGC) directly_linked.rs -l static:+whole-archive=c_static_lib_with_constructor
 
 # Native lib linked into test executable, +whole-archive
 $(TMPDIR)/$(call BIN,directly_linked_test_plus_whole_archive): $(call NATIVE_STATICLIB,c_static_lib_with_constructor)
-	$(RUSTC) directly_linked_test_plus_whole_archive.rs --test -l static:+whole-archive=c_static_lib_with_constructor
+	$(CRABLANGC) directly_linked_test_plus_whole_archive.rs --test -l static:+whole-archive=c_static_lib_with_constructor
 # Native lib linked into test executable, -whole-archive
 $(TMPDIR)/$(call BIN,directly_linked_test_minus_whole_archive): $(call NATIVE_STATICLIB,c_static_lib_with_constructor)
-	$(RUSTC) directly_linked_test_minus_whole_archive.rs --test -l static:-whole-archive=c_static_lib_with_constructor
+	$(CRABLANGC) directly_linked_test_minus_whole_archive.rs --test -l static:-whole-archive=c_static_lib_with_constructor
 
 # Native lib linked into RLIB via `-l static:-bundle,+whole-archive`, RLIB linked into executable
 $(TMPDIR)/$(call BIN,indirectly_linked): $(TMPDIR)/librlib_with_cmdline_native_lib.rlib
-	$(RUSTC) indirectly_linked.rs
+	$(CRABLANGC) indirectly_linked.rs
 
 # Native lib linked into RLIB via #[link] attribute, RLIB linked into executable
 $(TMPDIR)/$(call BIN,indirectly_linked_via_attr): $(TMPDIR)/libnative_lib_in_src.rlib
-	$(RUSTC) indirectly_linked_via_attr.rs
+	$(CRABLANGC) indirectly_linked_via_attr.rs
 
 # Native lib linked into rlib with via commandline
 $(TMPDIR)/librlib_with_cmdline_native_lib.rlib: $(call NATIVE_STATICLIB,c_static_lib_with_constructor)
-	$(RUSTC) rlib_with_cmdline_native_lib.rs --crate-type=rlib -l static:-bundle,+whole-archive=c_static_lib_with_constructor
+	$(CRABLANGC) rlib_with_cmdline_native_lib.rs --crate-type=rlib -l static:-bundle,+whole-archive=c_static_lib_with_constructor
 
 # Native lib linked into rlib via `#[link()]` attribute on extern block.
 $(TMPDIR)/libnative_lib_in_src.rlib: $(call NATIVE_STATICLIB,c_static_lib_with_constructor)
-	$(RUSTC) native_lib_in_src.rs --crate-type=rlib
+	$(CRABLANGC) native_lib_in_src.rs --crate-type=rlib
 
 $(TMPDIR)/libc_static_lib_with_constructor.o: c_static_lib_with_constructor.cpp
 	$(call COMPILE_OBJ_CXX,$@,$<)

@@ -1,10 +1,10 @@
 //! Utilities for working with borrowed data.
 
-#![stable(feature = "rust1", since = "1.0.0")]
+#![stable(feature = "crablang1", since = "1.0.0")]
 
 /// A trait for borrowing data.
 ///
-/// In Rust, it is common to provide different representations of a type for
+/// In CrabLang, it is common to provide different representations of a type for
 /// different use cases. For instance, storage location and management for a
 /// value can be specifically chosen as appropriate for a particular use via
 /// pointer types such as [`Box<T>`] or [`Rc<T>`]. Beyond these generic
@@ -152,8 +152,8 @@
 /// [`Hash`]: crate::hash::Hash
 /// [`HashMap<K, V>`]: ../../std/collections/struct.HashMap.html
 /// [`String`]: ../../std/string/struct.String.html
-#[stable(feature = "rust1", since = "1.0.0")]
-#[rustc_diagnostic_item = "Borrow"]
+#[stable(feature = "crablang1", since = "1.0.0")]
+#[crablangc_diagnostic_item = "Borrow"]
 #[const_trait]
 pub trait Borrow<Borrowed: ?Sized> {
     /// Immutably borrows from an owned value.
@@ -175,7 +175,7 @@ pub trait Borrow<Borrowed: ?Sized> {
     ///
     /// check(s);
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     fn borrow(&self) -> &Borrowed;
 }
 
@@ -184,7 +184,7 @@ pub trait Borrow<Borrowed: ?Sized> {
 /// As a companion to [`Borrow<T>`] this trait allows a type to borrow as
 /// an underlying type by providing a mutable reference. See [`Borrow<T>`]
 /// for more information on borrowing as another type.
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[const_trait]
 pub trait BorrowMut<Borrowed: ?Sized>: Borrow<Borrowed> {
     /// Mutably borrows from an owned value.
@@ -202,45 +202,45 @@ pub trait BorrowMut<Borrowed: ?Sized>: Borrow<Borrowed> {
     ///
     /// check(v);
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     fn borrow_mut(&mut self) -> &mut Borrowed;
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
-#[rustc_const_unstable(feature = "const_borrow", issue = "91522")]
+#[stable(feature = "crablang1", since = "1.0.0")]
+#[crablangc_const_unstable(feature = "const_borrow", issue = "91522")]
 impl<T: ?Sized> const Borrow<T> for T {
-    #[rustc_diagnostic_item = "noop_method_borrow"]
+    #[crablangc_diagnostic_item = "noop_method_borrow"]
     fn borrow(&self) -> &T {
         self
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
-#[rustc_const_unstable(feature = "const_borrow", issue = "91522")]
+#[stable(feature = "crablang1", since = "1.0.0")]
+#[crablangc_const_unstable(feature = "const_borrow", issue = "91522")]
 impl<T: ?Sized> const BorrowMut<T> for T {
     fn borrow_mut(&mut self) -> &mut T {
         self
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
-#[rustc_const_unstable(feature = "const_borrow", issue = "91522")]
+#[stable(feature = "crablang1", since = "1.0.0")]
+#[crablangc_const_unstable(feature = "const_borrow", issue = "91522")]
 impl<T: ?Sized> const Borrow<T> for &T {
     fn borrow(&self) -> &T {
         &**self
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
-#[rustc_const_unstable(feature = "const_borrow", issue = "91522")]
+#[stable(feature = "crablang1", since = "1.0.0")]
+#[crablangc_const_unstable(feature = "const_borrow", issue = "91522")]
 impl<T: ?Sized> const Borrow<T> for &mut T {
     fn borrow(&self) -> &T {
         &**self
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
-#[rustc_const_unstable(feature = "const_borrow", issue = "91522")]
+#[stable(feature = "crablang1", since = "1.0.0")]
+#[crablangc_const_unstable(feature = "const_borrow", issue = "91522")]
 impl<T: ?Sized> const BorrowMut<T> for &mut T {
     fn borrow_mut(&mut self) -> &mut T {
         &mut **self

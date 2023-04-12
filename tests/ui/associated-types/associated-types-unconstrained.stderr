@@ -14,4 +14,4 @@ LL |     let x: isize = <isize as Foo>::bar();
 
 error: aborting due to previous error
 
-For more information about this error, try `rustc --explain E0790`.
+For more information about this error, try `crablangc --explain E0790`.

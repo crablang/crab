@@ -85,7 +85,7 @@ pub fn discriminant<T>(t: T) {
     core::intrinsics::discriminant_value(&E::B);
 }
 
-extern "rust-intrinsic" {
+extern "crablang-intrinsic" {
     // Cannot use `std::intrinsics::copy_nonoverlapping` as that is a wrapper function
     fn copy_nonoverlapping<T>(src: *const T, dst: *mut T, count: usize);
 }

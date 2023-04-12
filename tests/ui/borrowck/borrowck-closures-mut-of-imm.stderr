@@ -29,4 +29,4 @@ LL |     c2(); c1();
 error: aborting due to 3 previous errors
 
 Some errors have detailed explanations: E0524, E0596.
-For more information about an error, try `rustc --explain E0524`.
+For more information about an error, try `crablangc --explain E0524`.

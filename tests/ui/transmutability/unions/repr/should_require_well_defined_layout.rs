@@ -21,14 +21,14 @@ mod assert {
     {}
 }
 
-fn should_reject_repr_rust()
+fn should_reject_repr_crablang()
 {
-    union repr_rust {
+    union repr_crablang {
         a: u8
     }
 
-    assert::is_maybe_transmutable::<repr_rust, ()>(); //~ ERROR cannot be safely transmuted
-    assert::is_maybe_transmutable::<u128, repr_rust>(); //~ ERROR cannot be safely transmuted
+    assert::is_maybe_transmutable::<repr_crablang, ()>(); //~ ERROR cannot be safely transmuted
+    assert::is_maybe_transmutable::<u128, repr_crablang>(); //~ ERROR cannot be safely transmuted
 }
 
 fn should_accept_repr_C()
@@ -38,7 +38,7 @@ fn should_accept_repr_C()
         a: u8
     }
 
-    struct repr_rust;
+    struct repr_crablang;
     assert::is_maybe_transmutable::<repr_c, ()>();
     assert::is_maybe_transmutable::<u128, repr_c>();
 }

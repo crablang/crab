@@ -53,4 +53,4 @@ LL |     let x: Vec2 = Vec2 { x: 1.0, y: 2.0 } * 2.0; // trait had reversed orde
 error: aborting due to 5 previous errors
 
 Some errors have detailed explanations: E0053, E0308.
-For more information about an error, try `rustc --explain E0053`.
+For more information about an error, try `crablangc --explain E0053`.

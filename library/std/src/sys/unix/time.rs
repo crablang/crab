@@ -19,8 +19,8 @@ pub(super) const TIMESPEC_MAX_CAPPED: libc::timespec = libc::timespec {
 
 #[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 #[repr(transparent)]
-#[rustc_layout_scalar_valid_range_start(0)]
-#[rustc_layout_scalar_valid_range_end(999_999_999)]
+#[crablangc_layout_scalar_valid_range_start(0)]
+#[crablangc_layout_scalar_valid_range_end(999_999_999)]
 struct Nanoseconds(u32);
 
 #[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]

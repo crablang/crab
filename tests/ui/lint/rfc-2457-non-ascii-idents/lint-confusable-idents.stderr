@@ -4,7 +4,7 @@ error: identifier pair considered confusable between `ｓ` and `s`
 LL | const ｓ: usize = 42;
    |       -- this is where the previous identifier occurred
 ...
-LL |     let s = "rust";
+LL |     let s = "crablang";
    |         ^
    |
 note: the lint level is defined here
@@ -19,7 +19,7 @@ error: identifier pair considered confusable between `s_s` and `ｓ_ｓ`
 LL | const s_s: usize = 42;
    |       --- this is where the previous identifier occurred
 ...
-LL |     let ｓ_ｓ = "rust2";
+LL |     let ｓ_ｓ = "crablang2";
    |         ^^^^^
 
 error: aborting due to 2 previous errors

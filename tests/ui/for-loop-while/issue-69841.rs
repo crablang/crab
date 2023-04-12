@@ -1,4 +1,4 @@
-// This is a regression test for issue rust-lang/rust#69841, which exposed an
+// This is a regression test for issue crablang/crablang#69841, which exposed an
 // LLVM bug which needed a fix to be backported.
 
 // run-pass

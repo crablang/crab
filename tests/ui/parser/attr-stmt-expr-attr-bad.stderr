@@ -433,4 +433,4 @@ LL | #[cfg(FALSE)] fn e() { { fn foo() { #[attr] } } }
 
 error: aborting due to 52 previous errors
 
-For more information about this error, try `rustc --explain E0586`.
+For more information about this error, try `crablangc --explain E0586`.

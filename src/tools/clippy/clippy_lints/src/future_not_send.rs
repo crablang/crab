@@ -1,15 +1,15 @@
 use clippy_utils::diagnostics::span_lint_and_then;
 use clippy_utils::return_ty;
-use rustc_hir::intravisit::FnKind;
-use rustc_hir::{Body, FnDecl};
-use rustc_infer::infer::TyCtxtInferExt;
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_middle::ty::{self, AliasTy, Clause, EarlyBinder, PredicateKind};
-use rustc_session::{declare_lint_pass, declare_tool_lint};
-use rustc_span::def_id::LocalDefId;
-use rustc_span::{sym, Span};
-use rustc_trait_selection::traits::error_reporting::suggestions::TypeErrCtxtExt;
-use rustc_trait_selection::traits::{self, FulfillmentError, ObligationCtxt};
+use crablangc_hir::intravisit::FnKind;
+use crablangc_hir::{Body, FnDecl};
+use crablangc_infer::infer::TyCtxtInferExt;
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_middle::ty::{self, AliasTy, Clause, EarlyBinder, PredicateKind};
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_span::def_id::LocalDefId;
+use crablangc_span::{sym, Span};
+use crablangc_trait_selection::traits::error_reporting::suggestions::TypeErrCtxtExt;
+use crablangc_trait_selection::traits::{self, FulfillmentError, ObligationCtxt};
 
 declare_clippy_lint! {
     /// ### What it does
@@ -34,11 +34,11 @@ declare_clippy_lint! {
     /// produced.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// async fn not_send(bytes: std::rc::Rc<[u8]>) {}
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// async fn is_send(bytes: std::sync::Arc<[u8]>) {}
     /// ```
     #[clippy::version = "1.44.0"]

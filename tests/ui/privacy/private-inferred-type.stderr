@@ -234,4 +234,4 @@ LL |     match a {
 
 error: aborting due to 33 previous errors
 
-For more information about this error, try `rustc --explain E0446`.
+For more information about this error, try `crablangc --explain E0446`.

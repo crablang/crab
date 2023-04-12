@@ -3,12 +3,12 @@ use clippy_utils::higher;
 use clippy_utils::ty::is_type_diagnostic_item;
 use clippy_utils::SpanlessEq;
 use if_chain::if_chain;
-use rustc_errors::Diagnostic;
-use rustc_hir::intravisit::{self as visit, Visitor};
-use rustc_hir::{Expr, ExprKind};
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_session::{declare_lint_pass, declare_tool_lint};
-use rustc_span::sym;
+use crablangc_errors::Diagnostic;
+use crablangc_hir::intravisit::{self as visit, Visitor};
+use crablangc_hir::{Expr, ExprKind};
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_span::sym;
 
 declare_clippy_lint! {
     /// ### What it does
@@ -20,7 +20,7 @@ declare_clippy_lint! {
     /// `if let ... else` block and deadlocks.
     ///
     /// ### Example
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// if let Ok(thing) = mutex.lock() {
     ///     do_thing();
     /// } else {
@@ -28,7 +28,7 @@ declare_clippy_lint! {
     /// }
     /// ```
     /// Should be written
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// let locked = mutex.lock();
     /// if let Ok(thing) = locked {
     ///     do_thing(thing);

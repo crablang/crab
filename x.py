@@ -21,9 +21,9 @@ if sys.version_info.major < 3:
             # Python 3 isn't available, fall back to python 2
             pass
 
-rust_dir = os.path.dirname(os.path.abspath(__file__))
+crablang_dir = os.path.dirname(os.path.abspath(__file__))
 # For the import below, have Python search in src/bootstrap first.
-sys.path.insert(0, os.path.join(rust_dir, "src", "bootstrap"))
+sys.path.insert(0, os.path.join(crablang_dir, "src", "bootstrap"))
 
 import bootstrap
 bootstrap.main()

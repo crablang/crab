@@ -2,7 +2,7 @@
 //@normalize-stderr-test: "OS `.*`" -> "$$OS"
 
 fn main() {
-    extern "Rust" {
+    extern "CrabLang" {
         fn foo();
     }
 

@@ -8,7 +8,7 @@ fn main() {
     if cond() {
         e = E::F(K);
         if let E::F(_k) = e {
-            // older versions of rustc used to not clear the
+            // older versions of crablangc used to not clear the
             // drop flag for `e` in this path.
         }
     }

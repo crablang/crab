@@ -3,8 +3,8 @@
 > _NOTE:_ This document is probably only relevant to you, if you're a member of
 > the Clippy team.
 
-Clippy is released together with stable Rust releases. The dates for these
-releases can be found at the [Rust Forge]. This document explains the necessary
+Clippy is released together with stable CrabLang releases. The dates for these
+releases can be found at the [CrabLang Forge]. This document explains the necessary
 steps to create a Clippy release.
 
 1. [Remerge the `beta` branch](#remerge-the-beta-branch)
@@ -13,22 +13,22 @@ steps to create a Clippy release.
 4. [Tag the stable commit](#tag-the-stable-commit)
 5. [Update `CHANGELOG.md`](#update-changelogmd)
 
-> _NOTE:_ This document is for stable Rust releases, not for point releases. For
+> _NOTE:_ This document is for stable CrabLang releases, not for point releases. For
 > point releases, step 1. and 2. should be enough.
 
-[Rust Forge]: https://forge.rust-lang.org/
+[CrabLang Forge]: https://forge.crablang.org/
 
 ## Remerge the `beta` branch
 
 This step is only necessary, if since the last release something was backported
-to the beta Rust release. The remerge is then necessary, to make sure that the
-Clippy commit, that was used by the now stable Rust release, persists in the
+to the beta CrabLang release. The remerge is then necessary, to make sure that the
+Clippy commit, that was used by the now stable CrabLang release, persists in the
 tree of the Clippy repository.
 
 To find out if this step is necessary run
 
 ```bash
-# Assumes that the local master branch of rust-lang/rust-clippy is up-to-date
+# Assumes that the local master branch of crablang/crablang-clippy is up-to-date
 $ git fetch upstream
 $ git branch master --contains upstream/beta
 ```
@@ -36,7 +36,7 @@ $ git branch master --contains upstream/beta
 If this command outputs `master`, this step is **not** necessary.
 
 ```bash
-# Assuming `HEAD` is the current `master` branch of rust-lang/rust-clippy
+# Assuming `HEAD` is the current `master` branch of crablang/crablang-clippy
 $ git checkout -b backport_remerge
 $ git merge upstream/beta
 $ git diff  # This diff has to be empty, otherwise something with the remerge failed
@@ -51,11 +51,11 @@ changed by this PR.
 
 This step must be done **after** the PR of the previous step was merged.
 
-First, the Clippy commit of the `beta` branch of the Rust repository has to be
+First, the Clippy commit of the `beta` branch of the CrabLang repository has to be
 determined.
 
 ```bash
-# Assuming the current directory corresponds to the Rust repository
+# Assuming the current directory corresponds to the CrabLang repository
 $ git fetch upstream
 $ git checkout upstream/beta
 $ BETA_SHA=$(git log --oneline -- src/tools/clippy/ | grep -o "Merge commit '[a-f0-9]*' into .*" | head -1 | sed -e "s/Merge commit '\([a-f0-9]*\)' into .*/\1/g")
@@ -73,12 +73,12 @@ $ git push upstream beta
 
 ## Find the Clippy commit
 
-The first step is to tag the Clippy commit, that is included in the stable Rust
-release. This commit can be found in the Rust repository.
+The first step is to tag the Clippy commit, that is included in the stable CrabLang
+release. This commit can be found in the CrabLang repository.
 
 ```bash
-# Assuming the current directory corresponds to the Rust repository
-$ git fetch upstream    # `upstream` is the `rust-lang/rust` remote
+# Assuming the current directory corresponds to the CrabLang repository
+$ git fetch upstream    # `upstream` is the `crablang/crablang` remote
 $ git checkout 1.XX.0   # XX should be exchanged with the corresponding version
 $ SHA=$(git log --oneline -- src/tools/clippy/ | grep -o "Merge commit '[a-f0-9]*' into .*" | head -1 | sed -e "s/Merge commit '\([a-f0-9]*\)' into .*/\1/g")
 ```
@@ -90,23 +90,23 @@ After finding the Clippy commit, it can be tagged with the release number.
 ```bash
 # Assuming the current directory corresponds to the Clippy repository
 $ git checkout $SHA
-$ git tag rust-1.XX.0               # XX should be exchanged with the corresponding version
-$ git push upstream rust-1.XX.0     # `upstream` is the `rust-lang/rust-clippy` remote
+$ git tag crablang-1.XX.0               # XX should be exchanged with the corresponding version
+$ git push upstream crablang-1.XX.0     # `upstream` is the `crablang/crablang-clippy` remote
 ```
 
 After this, the release should be available on the Clippy [release page].
 
-[release page]: https://github.com/rust-lang/rust-clippy/releases
+[release page]: https://github.com/crablang/crablang-clippy/releases
 
 ## Update the `stable` branch
 
-At this step you should have already checked out the commit of the `rust-1.XX.0`
+At this step you should have already checked out the commit of the `crablang-1.XX.0`
 tag. Updating the stable branch from here is as easy as:
 
 ```bash
 # Assuming the current directory corresponds to the Clippy repository and the
-# commit of the just created rust-1.XX.0 tag is checked out.
-$ git push upstream rust-1.XX.0:stable  # `upstream` is the `rust-lang/rust-clippy` remote
+# commit of the just created crablang-1.XX.0 tag is checked out.
+$ git push upstream crablang-1.XX.0:stable  # `upstream` is the `crablang/crablang-clippy` remote
 ```
 
 > _NOTE:_ Usually there are no stable backports for Clippy, so this update
@@ -124,7 +124,7 @@ the following parts:
 - Remove the `(beta)` from the new stable version:
 
   ```markdown
-  ## Rust 1.XX (beta) -> ## Rust 1.XX
+  ## CrabLang 1.XX (beta) -> ## CrabLang 1.XX
   ```
 
 - Update the release date line of the new stable version:

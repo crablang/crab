@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 
 fn main() {
     for _i 0..2 { //~ ERROR missing `in`

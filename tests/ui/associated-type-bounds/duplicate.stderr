@@ -504,4 +504,4 @@ LL |     type A: Iterator<Item: 'static, Item: 'static>;
 
 error: aborting due to 63 previous errors
 
-For more information about this error, try `rustc --explain E0719`.
+For more information about this error, try `crablangc --explain E0719`.

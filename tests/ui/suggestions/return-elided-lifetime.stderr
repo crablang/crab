@@ -140,4 +140,4 @@ LL | fn f5_<'a>(a: &'a i32, b: &i32) -> (&'a i32, &'a i32) { loop {} }
 
 error: aborting due to 10 previous errors
 
-For more information about this error, try `rustc --explain E0106`.
+For more information about this error, try `crablangc --explain E0106`.

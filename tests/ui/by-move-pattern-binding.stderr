@@ -48,4 +48,4 @@ LL +     let E::Bar(identifier) = &s.x else {
 
 error: aborting due to 3 previous errors
 
-For more information about this error, try `rustc --explain E0507`.
+For more information about this error, try `crablangc --explain E0507`.

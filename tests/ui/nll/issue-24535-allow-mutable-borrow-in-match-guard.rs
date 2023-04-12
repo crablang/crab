@@ -2,18 +2,18 @@
 // This test illustrates that under NLL, we can remove our overly
 // conservative approach for disallowing mutations of match inputs.
 
-// See further discussion on rust-lang/rust#24535,
-// rust-lang/rfcs#1006, and rust-lang/rfcs#107
+// See further discussion on crablang/crablang#24535,
+// crablang/rfcs#1006, and crablang/rfcs#107
 
 #![feature(if_let_guard)]
 
 fn main() {
-    rust_issue_24535();
+    crablang_issue_24535();
     rfcs_issue_1006_1();
     rfcs_issue_1006_2();
 }
 
-fn rust_issue_24535() {
+fn crablang_issue_24535() {
     fn compare(a: &u8, b: &mut u8) -> bool {
         a == b
     }

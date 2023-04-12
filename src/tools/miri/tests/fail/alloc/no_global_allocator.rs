@@ -4,14 +4,14 @@
 #![feature(lang_items, start)]
 #![no_std]
 
-extern "Rust" {
-    fn __rust_alloc(size: usize, align: usize) -> *mut u8;
+extern "CrabLang" {
+    fn __crablang_alloc(size: usize, align: usize) -> *mut u8;
 }
 
 #[start]
 fn start(_: isize, _: *const *const u8) -> isize {
     unsafe {
-        __rust_alloc(1, 1); //~ERROR: unsupported operation: can't call foreign function `__rust_alloc`
+        __crablang_alloc(1, 1); //~ERROR: unsupported operation: can't call foreign function `__crablang_alloc`
     }
 
     0

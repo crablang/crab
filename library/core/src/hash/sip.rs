@@ -43,7 +43,7 @@ struct SipHasher24 {
 /// Although the SipHash algorithm is considered to be generally strong,
 /// it is not intended for cryptographic purposes. As such, all
 /// cryptographic uses of this implementation are _strongly discouraged_.
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[deprecated(since = "1.13.0", note = "use `std::collections::hash_map::DefaultHasher` instead")]
 #[derive(Debug, Clone, Default)]
 pub struct SipHasher(SipHasher24);
@@ -146,12 +146,12 @@ const unsafe fn u8to64_le(buf: &[u8], start: usize, len: usize) -> u64 {
 impl SipHasher {
     /// Creates a new `SipHasher` with the two initial keys set to 0.
     #[inline]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[deprecated(
         since = "1.13.0",
         note = "use `std::collections::hash_map::DefaultHasher` instead"
     )]
-    #[rustc_const_unstable(feature = "const_hash", issue = "104061")]
+    #[crablangc_const_unstable(feature = "const_hash", issue = "104061")]
     #[must_use]
     pub const fn new() -> SipHasher {
         SipHasher::new_with_keys(0, 0)
@@ -159,12 +159,12 @@ impl SipHasher {
 
     /// Creates a `SipHasher` that is keyed off the provided keys.
     #[inline]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[deprecated(
         since = "1.13.0",
         note = "use `std::collections::hash_map::DefaultHasher` instead"
     )]
-    #[rustc_const_unstable(feature = "const_hash", issue = "104061")]
+    #[crablangc_const_unstable(feature = "const_hash", issue = "104061")]
     #[must_use]
     pub const fn new_with_keys(key0: u64, key1: u64) -> SipHasher {
         SipHasher(SipHasher24 { hasher: Hasher::new_with_keys(key0, key1) })
@@ -179,7 +179,7 @@ impl SipHasher13 {
         since = "1.13.0",
         note = "use `std::collections::hash_map::DefaultHasher` instead"
     )]
-    #[rustc_const_unstable(feature = "const_hash", issue = "104061")]
+    #[crablangc_const_unstable(feature = "const_hash", issue = "104061")]
     pub const fn new() -> SipHasher13 {
         SipHasher13::new_with_keys(0, 0)
     }
@@ -191,7 +191,7 @@ impl SipHasher13 {
         since = "1.13.0",
         note = "use `std::collections::hash_map::DefaultHasher` instead"
     )]
-    #[rustc_const_unstable(feature = "const_hash", issue = "104061")]
+    #[crablangc_const_unstable(feature = "const_hash", issue = "104061")]
     pub const fn new_with_keys(key0: u64, key1: u64) -> SipHasher13 {
         SipHasher13 { hasher: Hasher::new_with_keys(key0, key1) }
     }
@@ -224,8 +224,8 @@ impl<S: Sip> Hasher<S> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
-#[rustc_const_unstable(feature = "const_hash", issue = "104061")]
+#[stable(feature = "crablang1", since = "1.0.0")]
+#[crablangc_const_unstable(feature = "const_hash", issue = "104061")]
 impl const super::Hasher for SipHasher {
     #[inline]
     fn write(&mut self, msg: &[u8]) {
@@ -244,7 +244,7 @@ impl const super::Hasher for SipHasher {
 }
 
 #[unstable(feature = "hashmap_internals", issue = "none")]
-#[rustc_const_unstable(feature = "const_hash", issue = "104061")]
+#[crablangc_const_unstable(feature = "const_hash", issue = "104061")]
 impl const super::Hasher for SipHasher13 {
     #[inline]
     fn write(&mut self, msg: &[u8]) {
@@ -265,7 +265,7 @@ impl const super::Hasher for SipHasher13 {
 impl<S: ~const Sip> const super::Hasher for Hasher<S> {
     // Note: no integer hashing methods (`write_u*`, `write_i*`) are defined
     // for this type. We could add them, copy the `short_write` implementation
-    // in librustc_data_structures/sip128.rs, and add `write_u*`/`write_i*`
+    // in libcrablangc_data_structures/sip128.rs, and add `write_u*`/`write_i*`
     // methods to `SipHasher`, `SipHasher13`, and `DefaultHasher`. This would
     // greatly speed up integer hashing by those hashers, at the cost of
     // slightly slowing down compile speeds on some benchmarks. See #69152 for

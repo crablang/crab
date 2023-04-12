@@ -1,4 +1,4 @@
-// FIXME: should be run-rustfix, but rustfix doesn't currently support multipart suggestions, see
+// FIXME: should be run-crablangfix, but crablangfix doesn't currently support multipart suggestions, see
 // #53934
 
 #![deny(unused)]

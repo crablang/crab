@@ -14,7 +14,7 @@ fn main() {
         println!("{}", std::backtrace::Backtrace::force_capture());
         return;
     }
-    let out = Command::new(&args[0]).env("RUST_BACKTRACE", "1").arg("foo").output().unwrap();
+    let out = Command::new(&args[0]).env("CRABLANG_BACKTRACE", "1").arg("foo").output().unwrap();
     let output = format!(
         "{}\n{}",
         str::from_utf8(&out.stdout).unwrap(),

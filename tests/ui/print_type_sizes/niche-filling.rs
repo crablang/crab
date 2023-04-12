@@ -14,15 +14,15 @@
 // aligned (while on most it is 8-byte aligned) and so the resulting
 // padding and overall computed sizes can be quite different.
 
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 #![allow(dead_code)]
 
 use std::num::NonZeroU32;
 
 pub enum MyOption<T> { None, Some(T) }
 
-#[rustc_layout_scalar_valid_range_start(0)]
-#[rustc_layout_scalar_valid_range_end(0xFF_FF_FF_FE)]
+#[crablangc_layout_scalar_valid_range_start(0)]
+#[crablangc_layout_scalar_valid_range_end(0xFF_FF_FF_FE)]
 pub struct MyNotNegativeOne {
   _i: i32,
 }

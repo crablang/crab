@@ -1,14 +1,14 @@
-// Test that `rustc_unsafe_specialization_marker` is only allowed on marker traits.
+// Test that `crablangc_unsafe_specialization_marker` is only allowed on marker traits.
 
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 
-#[rustc_unsafe_specialization_marker]
+#[crablangc_unsafe_specialization_marker]
 trait SpecMarker {
     fn f();
     //~^ ERROR marker traits
 }
 
-#[rustc_unsafe_specialization_marker]
+#[crablangc_unsafe_specialization_marker]
 trait SpecMarker2 {
     type X;
     //~^ ERROR marker traits

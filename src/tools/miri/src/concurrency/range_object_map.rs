@@ -2,10 +2,10 @@
 //! ranges and data are discrete and non-splittable -- they represent distinct "objects". An
 //! allocation in the map will always have the same range until explicitly removed
 
-use rustc_target::abi::Size;
+use crablangc_target::abi::Size;
 use std::ops::{Index, IndexMut, Range};
 
-use rustc_const_eval::interpret::AllocRange;
+use crablangc_const_eval::interpret::AllocRange;
 
 #[derive(Clone, Debug)]
 struct Elem<T> {
@@ -75,7 +75,7 @@ impl<T> RangeObjectMap<T> {
             Ok(pos) => {
                 // Start of the range belongs to an existing object, now let's check the overlapping situation
                 let elem = &self.v[pos];
-                // FIXME: derive Eq for AllocRange in rustc
+                // FIXME: derive Eq for AllocRange in crablangc
                 if elem.range.start == range.start && elem.range.size == range.size {
                     // Happy case: perfectly overlapping access
                     AccessType::PerfectlyOverlapping(pos)
@@ -154,7 +154,7 @@ impl<T> IndexMut<Position> for RangeObjectMap<T> {
 
 #[cfg(test)]
 mod tests {
-    use rustc_const_eval::interpret::alloc_range;
+    use crablangc_const_eval::interpret::alloc_range;
 
     use super::*;
 

@@ -1,16 +1,16 @@
 // run-pass
 // ignore-wasm32-bare no libc to test ffi with
 
-#![feature(rustc_private)]
+#![feature(crablangc_private)]
 
 extern crate libc;
 
-mod rustrt {
+mod crablangrt {
     extern crate libc;
 
-    #[link(name = "rust_test_helpers", kind = "static")]
+    #[link(name = "crablang_test_helpers", kind = "static")]
     extern "C" {
-        pub fn rust_dbg_call(
+        pub fn crablang_dbg_call(
             cb: extern "C" fn(libc::uintptr_t) -> libc::uintptr_t,
             data: libc::uintptr_t,
         ) -> libc::uintptr_t;
@@ -24,7 +24,7 @@ extern "C" fn cb(data: libc::uintptr_t) -> libc::uintptr_t {
 fn fact(n: libc::uintptr_t) -> libc::uintptr_t {
     unsafe {
         println!("n = {}", n);
-        rustrt::rust_dbg_call(cb, n)
+        crablangrt::crablang_dbg_call(cb, n)
     }
 }
 

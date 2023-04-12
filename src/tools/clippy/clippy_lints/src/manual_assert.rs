@@ -1,12 +1,12 @@
-use crate::rustc_lint::LintContext;
+use crate::crablangc_lint::LintContext;
 use clippy_utils::diagnostics::span_lint_and_then;
 use clippy_utils::macros::root_macro_call;
 use clippy_utils::{is_else_clause, peel_blocks_with_stmt, span_extract_comment, sugg};
-use rustc_errors::Applicability;
-use rustc_hir::{Expr, ExprKind, UnOp};
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_session::{declare_lint_pass, declare_tool_lint};
-use rustc_span::sym;
+use crablangc_errors::Applicability;
+use crablangc_hir::{Expr, ExprKind, UnOp};
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_span::sym;
 
 declare_clippy_lint! {
     /// ### What it does
@@ -16,14 +16,14 @@ declare_clippy_lint! {
     /// `assert!` is simpler than `if`-then-`panic!`.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// let sad_people: Vec<&str> = vec![];
     /// if !sad_people.is_empty() {
     ///     panic!("there are sad people: {:?}", sad_people);
     /// }
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// let sad_people: Vec<&str> = vec![];
     /// assert!(sad_people.is_empty(), "there are sad people: {:?}", sad_people);
     /// ```

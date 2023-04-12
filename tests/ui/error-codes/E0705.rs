@@ -4,7 +4,7 @@
 // gate-test-test_2018_feature
 
 #![feature(test_2018_feature)]
-//~^ WARN the feature `test_2018_feature` is included in the Rust 2018 edition
-#![feature(rust_2018_preview)]
+//~^ WARN the feature `test_2018_feature` is included in the CrabLang 2018 edition
+#![feature(crablang_2018_preview)]
 
 fn main() {}

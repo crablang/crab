@@ -8,7 +8,7 @@ use std::ops::{Fn,FnMut,FnOnce};
 struct S;
 
 impl FnMut<(isize,)> for S {
-    extern "rust-call" fn call_mut(&mut self, (x,): (isize,)) -> isize {
+    extern "crablang-call" fn call_mut(&mut self, (x,): (isize,)) -> isize {
         x * x
     }
 }
@@ -16,7 +16,7 @@ impl FnMut<(isize,)> for S {
 impl FnOnce<(isize,)> for S {
     type Output = isize;
 
-    extern "rust-call" fn call_once(mut self, args: (isize,)) -> isize { self.call_mut(args) }
+    extern "crablang-call" fn call_once(mut self, args: (isize,)) -> isize { self.call_mut(args) }
 }
 
 fn call_it<F:Fn(isize)->isize>(f: &F, x: isize) -> isize {

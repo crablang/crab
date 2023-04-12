@@ -13,10 +13,10 @@ pub struct LintExtractor<'a> {
     pub src_path: &'a Path,
     /// Path where to save the output.
     pub out_path: &'a Path,
-    /// Path to the `rustc` executable.
-    pub rustc_path: &'a Path,
+    /// Path to the `crablangc` executable.
+    pub crablangc_path: &'a Path,
     /// The target arch to build the docs for.
-    pub rustc_target: &'a str,
+    pub crablangc_target: &'a str,
     /// Verbose output.
     pub verbose: bool,
     /// Validate the style and the code example.
@@ -37,7 +37,7 @@ impl Lint {
     }
 
     fn is_ignored(&self) -> bool {
-        let blocks: Vec<_> = self.doc.iter().filter(|line| line.starts_with("```rust")).collect();
+        let blocks: Vec<_> = self.doc.iter().filter(|line| line.starts_with("```crablang")).collect();
         !blocks.is_empty() && blocks.iter().all(|line| line.contains(",ignore"))
     }
 
@@ -53,7 +53,7 @@ impl Lint {
                         example is ignored.\n\
                         Manually include the sample output below the example. For example:\n\
                         \n\
-                        /// ```rust,ignore (needs command line option)\n\
+                        /// ```crablang,ignore (needs command line option)\n\
                         /// #[cfg(widnows)]\n\
                         /// fn foo() {{}}\n\
                         /// ```\n\
@@ -179,7 +179,7 @@ impl<'a> LintExtractor<'a> {
                             continue;
                         } else if line.starts_with("#[allow") {
                             // Ignore allow of lints (useful for
-                            // invalid_rust_codeblocks).
+                            // invalid_crablang_codeblocks).
                             continue;
                         } else {
                             let name = lint_name(line).map_err(|e| {
@@ -223,7 +223,7 @@ impl<'a> LintExtractor<'a> {
                 }
             };
             // These lints are specifically undocumented. This should be reserved
-            // for internal rustc-lints only.
+            // for internal crablangc-lints only.
             if name == "deprecated_in_future" {
                 continue;
             }
@@ -274,8 +274,8 @@ impl<'a> LintExtractor<'a> {
         ) {
             return Ok(());
         }
-        if lint.doc_contains("[rustdoc book]") && !lint.doc_contains("{{produces}}") {
-            // Rustdoc lints are documented in the rustdoc book, don't check these.
+        if lint.doc_contains("[crablangdoc book]") && !lint.doc_contains("{{produces}}") {
+            // CrabLangdoc lints are documented in the crablangdoc book, don't check these.
             return Ok(());
         }
         if self.validate {
@@ -284,7 +284,7 @@ impl<'a> LintExtractor<'a> {
         // Unfortunately some lints have extra requirements that this simple test
         // setup can't handle (like extern crates). An alternative is to use a
         // separate test suite, and use an include mechanism such as mdbook's
-        // `{{#rustdoc_include}}`.
+        // `{{#crablangdoc_include}}`.
         if !lint.is_ignored() {
             if let Err(e) = self.replace_produces(lint) {
                 if self.validate {
@@ -310,12 +310,12 @@ impl<'a> LintExtractor<'a> {
             // Find start of example.
             let options = loop {
                 match lines.next() {
-                    Some(line) if line.starts_with("```rust") => {
+                    Some(line) if line.starts_with("```crablang") => {
                         break line[7..].split(',').collect::<Vec<_>>();
                     }
                     Some(line) if line.contains("{{produces}}") => {
                         return Err("lint marker {{{{produces}}}} found, \
-                            but expected to immediately follow a rust code block"
+                            but expected to immediately follow a crablang code block"
                             .into());
                     }
                     Some(_) => {}
@@ -402,14 +402,14 @@ impl<'a> LintExtractor<'a> {
         }
         fs::write(&tempfile, source)
             .map_err(|e| format!("failed to write {}: {}", tempfile.display(), e))?;
-        let mut cmd = Command::new(self.rustc_path);
+        let mut cmd = Command::new(self.crablangc_path);
         if options.contains(&"edition2015") {
             cmd.arg("--edition=2015");
         } else {
             cmd.arg("--edition=2018");
         }
         cmd.arg("--error-format=json");
-        cmd.arg("--target").arg(self.rustc_target);
+        cmd.arg("--target").arg(self.crablangc_target);
         if options.contains(&"test") {
             cmd.arg("--test");
         }
@@ -481,7 +481,7 @@ impl<'a> LintExtractor<'a> {
             result.push('\n');
         }
         let out_path = self.out_path.join("listing").join(level.doc_filename());
-        // Delete the output because rustbuild uses hard links in its copies.
+        // Delete the output because crablangbuild uses hard links in its copies.
         let _ = fs::remove_file(&out_path);
         fs::write(&out_path, result)
             .map_err(|e| format!("could not write to {}: {}", out_path.display(), e))?;

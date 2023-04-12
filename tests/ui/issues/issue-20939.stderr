@@ -6,4 +6,4 @@ LL | impl<'a> Foo for dyn Foo + 'a {}
 
 error: aborting due to previous error
 
-For more information about this error, try `rustc --explain E0371`.
+For more information about this error, try `crablangc --explain E0371`.

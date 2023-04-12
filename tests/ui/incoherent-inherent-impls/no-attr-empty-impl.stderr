@@ -41,4 +41,4 @@ LL | impl f32 {}
 error: aborting due to 5 previous errors
 
 Some errors have detailed explanations: E0116, E0390.
-For more information about an error, try `rustc --explain E0116`.
+For more information about an error, try `crablangc --explain E0116`.

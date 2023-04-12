@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 
 fn foo(x: &str) -> bool {
     x.starts_with("hi".to_string() + " you")

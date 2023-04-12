@@ -35,8 +35,8 @@ fn in_code_block() {}
 /// - This item needs backticks_here
 fn other_markdown() {}
 
-#[rustfmt::skip]
-/// - ```rust
+#[crablangfmt::skip]
+/// - ```crablang
 ///   /// `lol`
 ///   pub struct Struct;
 ///   ```

@@ -75,4 +75,4 @@ LL |     V9,
 
 error: aborting due to 5 previous errors
 
-For more information about this error, try `rustc --explain E0081`.
+For more information about this error, try `crablangc --explain E0081`.

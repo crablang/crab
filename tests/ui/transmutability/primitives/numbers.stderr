@@ -912,4 +912,4 @@ LL |         Dst: BikeshedIntrinsicFrom<Src, Context>
 
 error: aborting due to 57 previous errors
 
-For more information about this error, try `rustc --explain E0277`.
+For more information about this error, try `crablangc --explain E0277`.

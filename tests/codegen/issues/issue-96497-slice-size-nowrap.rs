@@ -1,6 +1,6 @@
 // This test case checks that LLVM is aware that computing the size of a slice cannot wrap.
 // The possibility of wrapping results in an additional branch when dropping boxed slices
-// in some situations, see https://github.com/rust-lang/rust/issues/96497#issuecomment-1112865218
+// in some situations, see https://github.com/crablang/crablang/issues/96497#issuecomment-1112865218
 
 // compile-flags: -O
 // min-llvm-version: 15.0

@@ -5,11 +5,11 @@ use clippy_utils::msrvs::{self, Msrv};
 use clippy_utils::source::snippet_with_applicability;
 use clippy_utils::{in_constant, is_integer_literal, SpanlessEq};
 use if_chain::if_chain;
-use rustc_errors::Applicability;
-use rustc_hir::{BinOp, BinOpKind, Expr, ExprKind, QPath, TyKind};
-use rustc_lint::{LateContext, LateLintPass, LintContext};
-use rustc_middle::lint::in_external_macro;
-use rustc_session::{declare_tool_lint, impl_lint_pass};
+use crablangc_errors::Applicability;
+use crablangc_hir::{BinOp, BinOpKind, Expr, ExprKind, QPath, TyKind};
+use crablangc_lint::{LateContext, LateLintPass, LintContext};
+use crablangc_middle::lint::in_external_macro;
+use crablangc_session::{declare_tool_lint, impl_lint_pass};
 
 declare_clippy_lint! {
     /// ### What it does
@@ -19,13 +19,13 @@ declare_clippy_lint! {
     /// Reduces the readability of statements & is error prone.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// # let foo: u32 = 5;
     /// foo <= i32::MAX as u32;
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// # let foo = 1;
     /// # #[allow(unused)]
     /// i32::try_from(foo).is_ok();

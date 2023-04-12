@@ -1,7 +1,7 @@
 #![allow(unused)]
 #![warn(clippy::ref_option_ref)]
 
-// This lint is not tagged as run-rustfix because automatically
+// This lint is not tagged as run-crablangfix because automatically
 // changing the type of a variable would also means changing
 // all usages of this variable to match and This is not handled
 // by this lint.

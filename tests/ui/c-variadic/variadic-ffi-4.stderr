@@ -10,7 +10,7 @@ LL |     ap
    |
    = note: requirement occurs because of the type `VaListImpl<'_>`, which makes the generic argument `'_` invariant
    = note: the struct `VaListImpl<'f>` is invariant over the parameter `'f`
-   = help: see <https://doc.rust-lang.org/nomicon/subtyping.html> for more information about variance
+   = help: see <https://doc.crablang.org/nomicon/subtyping.html> for more information about variance
 
 error: lifetime may not live long enough
   --> $DIR/variadic-ffi-4.rs:8:5
@@ -24,7 +24,7 @@ LL |     ap
    |
    = note: requirement occurs because of the type `VaListImpl<'_>`, which makes the generic argument `'_` invariant
    = note: the struct `VaListImpl<'f>` is invariant over the parameter `'f`
-   = help: see <https://doc.rust-lang.org/nomicon/subtyping.html> for more information about variance
+   = help: see <https://doc.crablang.org/nomicon/subtyping.html> for more information about variance
 
 error: lifetime may not live long enough
   --> $DIR/variadic-ffi-4.rs:14:5
@@ -36,7 +36,7 @@ LL |     ap
    |
    = note: requirement occurs because of the type `VaListImpl<'_>`, which makes the generic argument `'_` invariant
    = note: the struct `VaListImpl<'f>` is invariant over the parameter `'f`
-   = help: see <https://doc.rust-lang.org/nomicon/subtyping.html> for more information about variance
+   = help: see <https://doc.crablang.org/nomicon/subtyping.html> for more information about variance
 
 error: lifetime may not live long enough
   --> $DIR/variadic-ffi-4.rs:18:31
@@ -59,7 +59,7 @@ LL |     *ap0 = ap1;
    |
    = note: requirement occurs because of the type `VaListImpl<'_>`, which makes the generic argument `'_` invariant
    = note: the struct `VaListImpl<'f>` is invariant over the parameter `'f`
-   = help: see <https://doc.rust-lang.org/nomicon/subtyping.html> for more information about variance
+   = help: see <https://doc.crablang.org/nomicon/subtyping.html> for more information about variance
 
 error: lifetime may not live long enough
   --> $DIR/variadic-ffi-4.rs:22:5
@@ -73,7 +73,7 @@ LL |     *ap0 = ap1;
    |
    = note: requirement occurs because of the type `VaListImpl<'_>`, which makes the generic argument `'_` invariant
    = note: the struct `VaListImpl<'f>` is invariant over the parameter `'f`
-   = help: see <https://doc.rust-lang.org/nomicon/subtyping.html> for more information about variance
+   = help: see <https://doc.crablang.org/nomicon/subtyping.html> for more information about variance
 
 error: lifetime may not live long enough
   --> $DIR/variadic-ffi-4.rs:28:5
@@ -87,7 +87,7 @@ LL |     ap0 = &mut ap1;
    |
    = note: requirement occurs because of a mutable reference to `VaListImpl<'_>`
    = note: mutable references are invariant over their type parameter
-   = help: see <https://doc.rust-lang.org/nomicon/subtyping.html> for more information about variance
+   = help: see <https://doc.crablang.org/nomicon/subtyping.html> for more information about variance
 
 error: lifetime may not live long enough
   --> $DIR/variadic-ffi-4.rs:28:5
@@ -101,7 +101,7 @@ LL |     ap0 = &mut ap1;
    |
    = note: requirement occurs because of a mutable reference to `VaListImpl<'_>`
    = note: mutable references are invariant over their type parameter
-   = help: see <https://doc.rust-lang.org/nomicon/subtyping.html> for more information about variance
+   = help: see <https://doc.crablang.org/nomicon/subtyping.html> for more information about variance
 
 error[E0597]: `ap1` does not live long enough
   --> $DIR/variadic-ffi-4.rs:28:11
@@ -131,7 +131,7 @@ LL |     *ap0 = ap1.clone();
    |
    = note: requirement occurs because of the type `VaListImpl<'_>`, which makes the generic argument `'_` invariant
    = note: the struct `VaListImpl<'f>` is invariant over the parameter `'f`
-   = help: see <https://doc.rust-lang.org/nomicon/subtyping.html> for more information about variance
+   = help: see <https://doc.crablang.org/nomicon/subtyping.html> for more information about variance
 
 error: lifetime may not live long enough
   --> $DIR/variadic-ffi-4.rs:35:12
@@ -145,8 +145,8 @@ LL |     *ap0 = ap1.clone();
    |
    = note: requirement occurs because of the type `VaListImpl<'_>`, which makes the generic argument `'_` invariant
    = note: the struct `VaListImpl<'f>` is invariant over the parameter `'f`
-   = help: see <https://doc.rust-lang.org/nomicon/subtyping.html> for more information about variance
+   = help: see <https://doc.crablang.org/nomicon/subtyping.html> for more information about variance
 
 error: aborting due to 11 previous errors
 
-For more information about this error, try `rustc --explain E0597`.
+For more information about this error, try `crablangc --explain E0597`.

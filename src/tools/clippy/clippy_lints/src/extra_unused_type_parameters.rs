@@ -1,17 +1,17 @@
 use clippy_utils::diagnostics::span_lint_and_help;
 use clippy_utils::trait_ref_of_method;
-use rustc_data_structures::fx::FxHashMap;
-use rustc_errors::MultiSpan;
-use rustc_hir::intravisit::{walk_impl_item, walk_item, walk_param_bound, walk_ty, Visitor};
-use rustc_hir::{
+use crablangc_data_structures::fx::FxHashMap;
+use crablangc_errors::MultiSpan;
+use crablangc_hir::intravisit::{walk_impl_item, walk_item, walk_param_bound, walk_ty, Visitor};
+use crablangc_hir::{
     BodyId, ExprKind, GenericBound, GenericParamKind, Generics, ImplItem, ImplItemKind, Item, ItemKind,
     PredicateOrigin, Ty, TyKind, WherePredicate,
 };
-use rustc_lint::{LateContext, LateLintPass, LintContext};
-use rustc_middle::hir::nested_filter;
-use rustc_middle::lint::in_external_macro;
-use rustc_session::{declare_tool_lint, impl_lint_pass};
-use rustc_span::{
+use crablangc_lint::{LateContext, LateLintPass, LintContext};
+use crablangc_middle::hir::nested_filter;
+use crablangc_middle::lint::in_external_macro;
+use crablangc_session::{declare_tool_lint, impl_lint_pass};
+use crablangc_span::{
     def_id::{DefId, LocalDefId},
     Span,
 };
@@ -25,13 +25,13 @@ declare_clippy_lint! {
     /// requires using a turbofish, which serves no purpose but to satisfy the compiler.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// fn unused_ty<T>(x: u8) {
     ///     // ..
     /// }
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// fn no_unused_ty(x: u8) {
     ///     // ..
     /// }

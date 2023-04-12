@@ -5,7 +5,7 @@ LL | #![deny(non_exhaustive_omitted_patterns)]
    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
    |
    = note: the `non_exhaustive_omitted_patterns` lint is unstable
-   = note: see issue #89554 <https://github.com/rust-lang/rust/issues/89554> for more information
+   = note: see issue #89554 <https://github.com/crablang/crablang/issues/89554> for more information
    = help: add `#![feature(non_exhaustive_omitted_patterns_lint)]` to the crate attributes to enable
    = note: `#[warn(unknown_lints)]` on by default
 
@@ -16,7 +16,7 @@ LL | #![allow(non_exhaustive_omitted_patterns)]
    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
    |
    = note: the `non_exhaustive_omitted_patterns` lint is unstable
-   = note: see issue #89554 <https://github.com/rust-lang/rust/issues/89554> for more information
+   = note: see issue #89554 <https://github.com/crablang/crablang/issues/89554> for more information
    = help: add `#![feature(non_exhaustive_omitted_patterns_lint)]` to the crate attributes to enable
 
 warning: unknown lint: `non_exhaustive_omitted_patterns`
@@ -26,7 +26,7 @@ LL |     #[allow(non_exhaustive_omitted_patterns)]
    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
    |
    = note: the `non_exhaustive_omitted_patterns` lint is unstable
-   = note: see issue #89554 <https://github.com/rust-lang/rust/issues/89554> for more information
+   = note: see issue #89554 <https://github.com/crablang/crablang/issues/89554> for more information
    = help: add `#![feature(non_exhaustive_omitted_patterns_lint)]` to the crate attributes to enable
 
 warning: unknown lint: `non_exhaustive_omitted_patterns`
@@ -36,7 +36,7 @@ LL |     #[allow(non_exhaustive_omitted_patterns)]
    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
    |
    = note: the `non_exhaustive_omitted_patterns` lint is unstable
-   = note: see issue #89554 <https://github.com/rust-lang/rust/issues/89554> for more information
+   = note: see issue #89554 <https://github.com/crablang/crablang/issues/89554> for more information
    = help: add `#![feature(non_exhaustive_omitted_patterns_lint)]` to the crate attributes to enable
 
 warning: unknown lint: `non_exhaustive_omitted_patterns`
@@ -46,7 +46,7 @@ LL |         #[warn(non_exhaustive_omitted_patterns)]
    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
    |
    = note: the `non_exhaustive_omitted_patterns` lint is unstable
-   = note: see issue #89554 <https://github.com/rust-lang/rust/issues/89554> for more information
+   = note: see issue #89554 <https://github.com/crablang/crablang/issues/89554> for more information
    = help: add `#![feature(non_exhaustive_omitted_patterns_lint)]` to the crate attributes to enable
 
 warning: unknown lint: `non_exhaustive_omitted_patterns`
@@ -56,7 +56,7 @@ LL | #![deny(non_exhaustive_omitted_patterns)]
    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
    |
    = note: the `non_exhaustive_omitted_patterns` lint is unstable
-   = note: see issue #89554 <https://github.com/rust-lang/rust/issues/89554> for more information
+   = note: see issue #89554 <https://github.com/crablang/crablang/issues/89554> for more information
    = help: add `#![feature(non_exhaustive_omitted_patterns_lint)]` to the crate attributes to enable
 
 warning: unknown lint: `non_exhaustive_omitted_patterns`
@@ -66,7 +66,7 @@ LL | #![allow(non_exhaustive_omitted_patterns)]
    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
    |
    = note: the `non_exhaustive_omitted_patterns` lint is unstable
-   = note: see issue #89554 <https://github.com/rust-lang/rust/issues/89554> for more information
+   = note: see issue #89554 <https://github.com/crablang/crablang/issues/89554> for more information
    = help: add `#![feature(non_exhaustive_omitted_patterns_lint)]` to the crate attributes to enable
 
 warning: unknown lint: `non_exhaustive_omitted_patterns`
@@ -76,7 +76,7 @@ LL |     #[allow(non_exhaustive_omitted_patterns)]
    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
    |
    = note: the `non_exhaustive_omitted_patterns` lint is unstable
-   = note: see issue #89554 <https://github.com/rust-lang/rust/issues/89554> for more information
+   = note: see issue #89554 <https://github.com/crablang/crablang/issues/89554> for more information
    = help: add `#![feature(non_exhaustive_omitted_patterns_lint)]` to the crate attributes to enable
 
 warning: unknown lint: `non_exhaustive_omitted_patterns`
@@ -86,7 +86,7 @@ LL |     #[allow(non_exhaustive_omitted_patterns)]
    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
    |
    = note: the `non_exhaustive_omitted_patterns` lint is unstable
-   = note: see issue #89554 <https://github.com/rust-lang/rust/issues/89554> for more information
+   = note: see issue #89554 <https://github.com/crablang/crablang/issues/89554> for more information
    = help: add `#![feature(non_exhaustive_omitted_patterns_lint)]` to the crate attributes to enable
 
 warning: unknown lint: `non_exhaustive_omitted_patterns`
@@ -96,7 +96,7 @@ LL |         #[warn(non_exhaustive_omitted_patterns)]
    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
    |
    = note: the `non_exhaustive_omitted_patterns` lint is unstable
-   = note: see issue #89554 <https://github.com/rust-lang/rust/issues/89554> for more information
+   = note: see issue #89554 <https://github.com/crablang/crablang/issues/89554> for more information
    = help: add `#![feature(non_exhaustive_omitted_patterns_lint)]` to the crate attributes to enable
 
 error[E0004]: non-exhaustive patterns: `Foo::C` not covered
@@ -121,4 +121,4 @@ LL +         Foo::C => todo!()
 
 error: aborting due to previous error; 10 warnings emitted
 
-For more information about this error, try `rustc --explain E0004`.
+For more information about this error, try `crablangc --explain E0004`.

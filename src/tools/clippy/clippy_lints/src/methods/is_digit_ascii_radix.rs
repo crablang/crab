@@ -5,9 +5,9 @@ use clippy_utils::msrvs::{self, Msrv};
 use clippy_utils::{
     consts::constant_full_int, consts::FullInt, diagnostics::span_lint_and_sugg, source::snippet_with_applicability,
 };
-use rustc_errors::Applicability;
-use rustc_hir::Expr;
-use rustc_lint::LateContext;
+use crablangc_errors::Applicability;
+use crablangc_hir::Expr;
+use crablangc_lint::LateContext;
 
 pub(super) fn check<'tcx>(
     cx: &LateContext<'tcx>,

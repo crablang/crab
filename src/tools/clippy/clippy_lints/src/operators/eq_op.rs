@@ -1,8 +1,8 @@
 use clippy_utils::diagnostics::span_lint;
 use clippy_utils::macros::{find_assert_eq_args, first_node_macro_backtrace};
 use clippy_utils::{ast_utils::is_useless_with_eq_exprs, eq_expr_value, is_in_test_function};
-use rustc_hir::{BinOpKind, Expr};
-use rustc_lint::LateContext;
+use crablangc_hir::{BinOpKind, Expr};
+use crablangc_lint::LateContext;
 
 use super::EQ_OP;
 

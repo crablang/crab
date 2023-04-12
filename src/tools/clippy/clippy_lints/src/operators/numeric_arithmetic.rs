@@ -1,9 +1,9 @@
 use clippy_utils::consts::constant_simple;
 use clippy_utils::diagnostics::span_lint;
 use clippy_utils::is_integer_literal;
-use rustc_hir as hir;
-use rustc_lint::LateContext;
-use rustc_span::source_map::Span;
+use crablangc_hir as hir;
+use crablangc_lint::LateContext;
+use crablangc_span::source_map::Span;
 
 use super::{FLOAT_ARITHMETIC, INTEGER_ARITHMETIC};
 

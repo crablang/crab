@@ -14,4 +14,4 @@ LL |     unsafe { asm!("nop"); }
 
 error: aborting due to previous error; 1 warning emitted
 
-For more information about this error, try `rustc --explain E0080`.
+For more information about this error, try `crablangc --explain E0080`.

@@ -1,7 +1,7 @@
 // run-pass
 
 // This file checks that fn ptrs are considered structurally matchable.
-// See also rust-lang/rust#63479.
+// See also crablang/crablang#63479.
 
 fn main() {
     let mut count = 0;

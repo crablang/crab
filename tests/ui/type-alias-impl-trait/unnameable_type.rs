@@ -1,7 +1,7 @@
 #![feature(type_alias_impl_trait)]
 
 // This test ensures that unnameable types stay unnameable
-// https://github.com/rust-lang/rust/issues/63063#issuecomment-1360053614
+// https://github.com/crablang/crablang/issues/63063#issuecomment-1360053614
 
 // library
 mod private {

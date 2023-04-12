@@ -16,8 +16,8 @@
 //!
 //! Like raw pointers, `RawFd` values are primitive values. And in new code,
 //! they should be considered unsafe to do I/O on (analogous to dereferencing
-//! them). Rust did not always provide this guidance, so existing code in the
-//! Rust ecosystem often doesn't mark `RawFd` usage as unsafe. Once the
+//! them). CrabLang did not always provide this guidance, so existing code in the
+//! CrabLang ecosystem often doesn't mark `RawFd` usage as unsafe. Once the
 //! `io_safety` feature is stable, libraries will be encouraged to migrate,
 //! either by adding `unsafe` to APIs that dereference `RawFd` values, or by
 //! using to `BorrowedFd` or `OwnedFd` instead.
@@ -48,7 +48,7 @@
 //! if the API provides `BorrowedFd` access, since as mentioned earlier,
 //! `BorrowedFd` values may be used in APIs which provide safe access to any
 //! system call. Consequently, code using `mmap` and presenting a safe API must
-//! take full responsibility for ensuring that safe Rust code cannot evoke
+//! take full responsibility for ensuring that safe CrabLang code cannot evoke
 //! undefined behavior through it.
 //!
 //! Like boxes, `OwnedFd` values conceptually own the resource they point to,
@@ -58,11 +58,11 @@
 //!
 //! Some platforms have special files, such as `/proc/self/mem`, which
 //! provide read and write access to the process's memory. Such reads
-//! and writes happen outside the control of the Rust compiler, so they do not
-//! uphold Rust's memory safety guarantees.
+//! and writes happen outside the control of the CrabLang compiler, so they do not
+//! uphold CrabLang's memory safety guarantees.
 //!
 //! This does not mean that all APIs that might allow `/proc/self/mem`
-//! to be opened and read from or written must be `unsafe`. Rust's safety guarantees
+//! to be opened and read from or written must be `unsafe`. CrabLang's safety guarantees
 //! only cover what the program itself can do, and not what entities outside
 //! the program can do to it. `/proc/self/mem` is considered to be such an
 //! external entity, along with debugging interfaces, and people with physical access to
@@ -75,9 +75,9 @@
 //!
 //! [`BorrowedFd<'a>`]: crate::os::unix::io::BorrowedFd
 
-#![stable(feature = "rust1", since = "1.0.0")]
+#![stable(feature = "crablang1", since = "1.0.0")]
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub use crate::os::fd::*;
 
 // Tests for this module

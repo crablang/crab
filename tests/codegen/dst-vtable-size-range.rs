@@ -9,7 +9,7 @@ pub trait Trait {
     fn f(&self);
 }
 
-// Note that rustc uses inclusive bounds, but LLVM uses exclusive bounds for range metadata.
+// Note that crablangc uses inclusive bounds, but LLVM uses exclusive bounds for range metadata.
 // CHECK-LABEL: @generate_exclusive_bound
 #[no_mangle]
 pub fn generate_exclusive_bound() -> usize {

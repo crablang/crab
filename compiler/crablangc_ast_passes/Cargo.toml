@@ -1,0 +1,20 @@
+[package]
+name = "crablangc_ast_passes"
+version = "0.0.0"
+edition = "2021"
+
+[dependencies]
+itertools = "0.10.1"
+crablangc_ast = { path = "../crablangc_ast" }
+crablangc_ast_pretty = { path = "../crablangc_ast_pretty" }
+crablangc_attr = { path = "../crablangc_attr" }
+crablangc_data_structures = { path = "../crablangc_data_structures" }
+crablangc_errors = { path = "../crablangc_errors" }
+crablangc_feature = { path = "../crablangc_feature" }
+crablangc_macros = { path = "../crablangc_macros" }
+crablangc_parse = { path = "../crablangc_parse" }
+crablangc_session = { path = "../crablangc_session" }
+crablangc_span = { path = "../crablangc_span" }
+crablangc_target = { path = "../crablangc_target" }
+thin-vec = "0.2.12"
+tracing = "0.1"

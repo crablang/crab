@@ -127,4 +127,4 @@ LL | fn ty_param_wont_outlive_static<T:Debug + 'static>(x: T) -> impl Debug + 's
 error: aborting due to 9 previous errors
 
 Some errors have detailed explanations: E0310, E0621, E0700.
-For more information about an error, try `rustc --explain E0310`.
+For more information about an error, try `crablangc --explain E0310`.

@@ -29,7 +29,7 @@
 // ignore-aarch64
 // ignore-windows
 
-// note: windows is ignored as rust_test_helpers does not have the sysv64 abi on windows
+// note: windows is ignored as crablang_test_helpers does not have the sysv64 abi on windows
 
 #[allow(dead_code)]
 #[allow(improper_ctypes)]
@@ -104,22 +104,22 @@ mod tests {
         Some(u64),
     }
 
-    #[link(name = "rust_test_helpers", kind = "static")]
+    #[link(name = "crablang_test_helpers", kind = "static")]
     extern "sysv64" {
-        pub fn rust_int8_to_int32(_: i8) -> i32;
-        pub fn rust_dbg_extern_identity_u8(v: u8) -> u8;
-        pub fn rust_dbg_extern_identity_u32(v: u32) -> u32;
-        pub fn rust_dbg_extern_identity_u64(v: u64) -> u64;
-        pub fn rust_dbg_extern_identity_double(v: f64) -> f64;
-        pub fn rust_dbg_extern_empty_struct(v1: ManyInts, e: Empty, v2: ManyInts);
-        pub fn rust_dbg_extern_identity_TwoU8s(v: TwoU8s) -> TwoU8s;
-        pub fn rust_dbg_extern_identity_TwoU16s(v: TwoU16s) -> TwoU16s;
-        pub fn rust_dbg_extern_identity_TwoU32s(v: TwoU32s) -> TwoU32s;
-        pub fn rust_dbg_extern_identity_TwoU64s(v: TwoU64s) -> TwoU64s;
-        pub fn rust_dbg_extern_return_TwoU8s() -> TwoU8s;
-        pub fn rust_dbg_extern_return_TwoU16s() -> TwoU16s;
-        pub fn rust_dbg_extern_return_TwoU32s() -> TwoU32s;
-        pub fn rust_dbg_extern_return_TwoU64s() -> TwoU64s;
+        pub fn crablang_int8_to_int32(_: i8) -> i32;
+        pub fn crablang_dbg_extern_identity_u8(v: u8) -> u8;
+        pub fn crablang_dbg_extern_identity_u32(v: u32) -> u32;
+        pub fn crablang_dbg_extern_identity_u64(v: u64) -> u64;
+        pub fn crablang_dbg_extern_identity_double(v: f64) -> f64;
+        pub fn crablang_dbg_extern_empty_struct(v1: ManyInts, e: Empty, v2: ManyInts);
+        pub fn crablang_dbg_extern_identity_TwoU8s(v: TwoU8s) -> TwoU8s;
+        pub fn crablang_dbg_extern_identity_TwoU16s(v: TwoU16s) -> TwoU16s;
+        pub fn crablang_dbg_extern_identity_TwoU32s(v: TwoU32s) -> TwoU32s;
+        pub fn crablang_dbg_extern_identity_TwoU64s(v: TwoU64s) -> TwoU64s;
+        pub fn crablang_dbg_extern_return_TwoU8s() -> TwoU8s;
+        pub fn crablang_dbg_extern_return_TwoU16s() -> TwoU16s;
+        pub fn crablang_dbg_extern_return_TwoU32s() -> TwoU32s;
+        pub fn crablang_dbg_extern_return_TwoU64s() -> TwoU64s;
         pub fn get_x(x: S) -> u64;
         pub fn get_y(x: S) -> u64;
         pub fn get_z(x: S) -> u64;
@@ -135,23 +135,23 @@ mod tests {
             _: *const (),
             h: QuadFloats,
         ) -> f32;
-        pub fn rust_dbg_abi_1(q: Quad) -> Quad;
-        pub fn rust_dbg_abi_2(f: Floats) -> Floats;
-        pub fn rust_dbg_new_some_u64u64(a: u64, b: u64) -> U8TaggedEnumOptionU64U64;
-        pub fn rust_dbg_new_none_u64u64() -> U8TaggedEnumOptionU64U64;
-        pub fn rust_dbg_unpack_option_u64u64(
+        pub fn crablang_dbg_abi_1(q: Quad) -> Quad;
+        pub fn crablang_dbg_abi_2(f: Floats) -> Floats;
+        pub fn crablang_dbg_new_some_u64u64(a: u64, b: u64) -> U8TaggedEnumOptionU64U64;
+        pub fn crablang_dbg_new_none_u64u64() -> U8TaggedEnumOptionU64U64;
+        pub fn crablang_dbg_unpack_option_u64u64(
             o: U8TaggedEnumOptionU64U64,
             a: *mut u64,
             b: *mut u64,
         ) -> i32;
-        pub fn rust_dbg_new_some_u64(some: u64) -> U8TaggedEnumOptionU64;
-        pub fn rust_dbg_new_none_u64() -> U8TaggedEnumOptionU64;
-        pub fn rust_dbg_unpack_option_u64(o: U8TaggedEnumOptionU64, v: *mut u64) -> i32;
+        pub fn crablang_dbg_new_some_u64(some: u64) -> U8TaggedEnumOptionU64;
+        pub fn crablang_dbg_new_none_u64() -> U8TaggedEnumOptionU64;
+        pub fn crablang_dbg_unpack_option_u64(o: U8TaggedEnumOptionU64, v: *mut u64) -> i32;
     }
 
     pub fn cabi_int_widening() {
         let x = unsafe {
-            rust_int8_to_int32(-1)
+            crablang_int8_to_int32(-1)
         };
 
         assert!(x == -1);
@@ -159,25 +159,25 @@ mod tests {
 
     pub fn extern_pass_char() {
         unsafe {
-            assert_eq!(22, rust_dbg_extern_identity_u8(22));
+            assert_eq!(22, crablang_dbg_extern_identity_u8(22));
         }
     }
 
     pub fn extern_pass_u32() {
         unsafe {
-            assert_eq!(22, rust_dbg_extern_identity_u32(22));
+            assert_eq!(22, crablang_dbg_extern_identity_u32(22));
         }
     }
 
     pub fn extern_pass_u64() {
         unsafe {
-            assert_eq!(22, rust_dbg_extern_identity_u64(22));
+            assert_eq!(22, crablang_dbg_extern_identity_u64(22));
         }
     }
 
     pub fn extern_pass_double() {
         unsafe {
-            assert_eq!(22.0_f64, rust_dbg_extern_identity_double(22.0_f64));
+            assert_eq!(22.0_f64, crablang_dbg_extern_identity_double(22.0_f64));
         }
     }
 
@@ -200,14 +200,14 @@ mod tests {
                 arg6: TwoU8s { one: 6, two: 7, }
             };
             let empty = Empty;
-            rust_dbg_extern_empty_struct(x, empty, y);
+            crablang_dbg_extern_empty_struct(x, empty, y);
         }
     }
 
     pub fn extern_pass_twou8s() {
         unsafe {
             let x = TwoU8s {one: 22, two: 23};
-            let y = rust_dbg_extern_identity_TwoU8s(x);
+            let y = crablang_dbg_extern_identity_TwoU8s(x);
             assert_eq!(x, y);
         }
     }
@@ -215,7 +215,7 @@ mod tests {
     pub fn extern_pass_twou16s() {
         unsafe {
             let x = TwoU16s {one: 22, two: 23};
-            let y = rust_dbg_extern_identity_TwoU16s(x);
+            let y = crablang_dbg_extern_identity_TwoU16s(x);
             assert_eq!(x, y);
         }
     }
@@ -223,7 +223,7 @@ mod tests {
     pub fn extern_pass_twou32s() {
         unsafe {
             let x = TwoU32s {one: 22, two: 23};
-            let y = rust_dbg_extern_identity_TwoU32s(x);
+            let y = crablang_dbg_extern_identity_TwoU32s(x);
             assert_eq!(x, y);
         }
     }
@@ -231,14 +231,14 @@ mod tests {
     pub fn extern_pass_twou64s() {
         unsafe {
             let x = TwoU64s {one: 22, two: 23};
-            let y = rust_dbg_extern_identity_TwoU64s(x);
+            let y = crablang_dbg_extern_identity_TwoU64s(x);
             assert_eq!(x, y);
         }
     }
 
     pub fn extern_return_twou8s() {
         unsafe {
-            let y = rust_dbg_extern_return_TwoU8s();
+            let y = crablang_dbg_extern_return_TwoU8s();
             assert_eq!(y.one, 10);
             assert_eq!(y.two, 20);
         }
@@ -246,7 +246,7 @@ mod tests {
 
     pub fn extern_return_twou16s() {
         unsafe {
-            let y = rust_dbg_extern_return_TwoU16s();
+            let y = crablang_dbg_extern_return_TwoU16s();
             assert_eq!(y.one, 10);
             assert_eq!(y.two, 20);
         }
@@ -254,7 +254,7 @@ mod tests {
 
     pub fn extern_return_twou32s() {
         unsafe {
-            let y = rust_dbg_extern_return_TwoU32s();
+            let y = crablang_dbg_extern_return_TwoU32s();
             assert_eq!(y.one, 10);
             assert_eq!(y.two, 20);
         }
@@ -262,7 +262,7 @@ mod tests {
 
     pub fn extern_return_twou64s() {
         unsafe {
-            let y = rust_dbg_extern_return_TwoU64s();
+            let y = crablang_dbg_extern_return_TwoU64s();
             assert_eq!(y.one, 10);
             assert_eq!(y.two, 20);
         }
@@ -327,7 +327,7 @@ mod tests {
                      b: 0xbbbb_bbbb_bbbb_bbbb,
                      c: 0xcccc_cccc_cccc_cccc,
                      d: 0xdddd_dddd_dddd_dddd };
-            let qq = rust_dbg_abi_1(q);
+            let qq = crablang_dbg_abi_1(q);
             println!("a: {:x}", qq.a as usize);
             println!("b: {:x}", qq.b as usize);
             println!("c: {:x}", qq.c as usize);
@@ -344,7 +344,7 @@ mod tests {
             let f = Floats { a: 1.234567890e-15_f64,
                      b: 0b_1010_1010,
                      c: 1.0987654321e-15_f64 };
-            let ff = rust_dbg_abi_2(f);
+            let ff = crablang_dbg_abi_2(f);
             println!("a: {}", ff.a as f64);
             println!("b: {}", ff.b as usize);
             println!("c: {}", ff.c as f64);
@@ -360,7 +360,7 @@ mod tests {
     }
 
     pub fn enum_passing_and_return_pair() {
-        let some_u64u64 = unsafe { rust_dbg_new_some_u64u64(10, 20) };
+        let some_u64u64 = unsafe { crablang_dbg_new_some_u64u64(10, 20) };
         if let U8TaggedEnumOptionU64U64::Some(a, b) = some_u64u64 {
             assert_eq!(10, a);
             assert_eq!(20, b);
@@ -368,7 +368,7 @@ mod tests {
             panic!("unexpected none");
         }
 
-        let none_u64u64 = unsafe { rust_dbg_new_none_u64u64() };
+        let none_u64u64 = unsafe { crablang_dbg_new_none_u64u64() };
         if let U8TaggedEnumOptionU64U64::Some(_,_) = none_u64u64 {
             panic!("unexpected some");
         }
@@ -376,7 +376,7 @@ mod tests {
         let mut a: u64 = 0;
         let mut b: u64 = 0;
         let r = unsafe {
-            rust_dbg_unpack_option_u64u64(some_u64u64, &mut a as *mut _, &mut b as *mut _)
+            crablang_dbg_unpack_option_u64u64(some_u64u64, &mut a as *mut _, &mut b as *mut _)
         };
         assert_eq!(1, r);
         assert_eq!(10, a);
@@ -385,7 +385,7 @@ mod tests {
         let mut a: u64 = 0;
         let mut b: u64 = 0;
         let r = unsafe {
-            rust_dbg_unpack_option_u64u64(none_u64u64, &mut a as *mut _, &mut b as *mut _)
+            crablang_dbg_unpack_option_u64u64(none_u64u64, &mut a as *mut _, &mut b as *mut _)
         };
         assert_eq!(0, r);
         assert_eq!(0, a);
@@ -393,25 +393,25 @@ mod tests {
     }
 
     pub fn enum_passing_and_return() {
-        let some_u64 = unsafe { rust_dbg_new_some_u64(10) };
+        let some_u64 = unsafe { crablang_dbg_new_some_u64(10) };
         if let U8TaggedEnumOptionU64::Some(v) = some_u64 {
             assert_eq!(10, v);
         } else {
             panic!("unexpected none");
         }
 
-        let none_u64 = unsafe { rust_dbg_new_none_u64() };
+        let none_u64 = unsafe { crablang_dbg_new_none_u64() };
         if let U8TaggedEnumOptionU64::Some(_) = none_u64 {
             panic!("unexpected some");
         }
 
         let mut target: u64 = 0;
-        let r = unsafe { rust_dbg_unpack_option_u64(some_u64, &mut target as *mut _) };
+        let r = unsafe { crablang_dbg_unpack_option_u64(some_u64, &mut target as *mut _) };
         assert_eq!(1, r);
         assert_eq!(10, target);
 
         let mut target: u64 = 0;
-        let r = unsafe { rust_dbg_unpack_option_u64(none_u64, &mut target as *mut _) };
+        let r = unsafe { crablang_dbg_unpack_option_u64(none_u64, &mut target as *mut _) };
         assert_eq!(0, r);
         assert_eq!(0, target);
     }

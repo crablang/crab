@@ -12,4 +12,4 @@ LL |     let homura = issue_19452_aux::Homura::Madoka;
 
 error: aborting due to 2 previous errors
 
-For more information about this error, try `rustc --explain E0533`.
+For more information about this error, try `crablangc --explain E0533`.

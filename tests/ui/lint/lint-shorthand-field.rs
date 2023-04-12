@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 
 #![allow(nonstandard_style, unused_variables, unused_mut)]
 #![deny(non_shorthand_field_patterns)]

@@ -15,7 +15,7 @@ LL | |     }
    | |_____- help: remove the invalid body: `;`
    |
    = help: you might have meant to write a function accessible through FFI, which can be done by writing `extern fn` outside of the `extern` block
-   = note: for more information, visit https://doc.rust-lang.org/std/keyword.extern.html
+   = note: for more information, visit https://doc.crablang.org/std/keyword.extern.html
 
 error: `self` parameter is only allowed in associated functions
   --> $DIR/issue-97194.rs:2:13
@@ -33,4 +33,4 @@ LL |     fn bget(&self, index: [usize; Self::DIM]) -> bool {
 
 error: aborting due to 3 previous errors
 
-For more information about this error, try `rustc --explain E0433`.
+For more information about this error, try `crablangc --explain E0433`.

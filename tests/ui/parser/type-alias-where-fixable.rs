@@ -1,5 +1,5 @@
 // check-pass
-// run-rustfix
+// run-crablangfix
 
 trait Trait {
     // Fine.

@@ -2,11 +2,11 @@ use clippy_utils::diagnostics::span_lint_and_sugg;
 use clippy_utils::last_path_segment;
 use clippy_utils::source::snippet_with_context;
 use clippy_utils::{match_def_path, paths};
-use rustc_errors::Applicability;
-use rustc_hir::{def, Expr, ExprKind, GenericArg, QPath, TyKind};
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_session::{declare_lint_pass, declare_tool_lint};
-use rustc_span::SyntaxContext;
+use crablangc_errors::Applicability;
+use crablangc_hir::{def, Expr, ExprKind, GenericArg, QPath, TyKind};
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_span::SyntaxContext;
 
 declare_clippy_lint! {
     /// ### What it does
@@ -15,12 +15,12 @@ declare_clippy_lint! {
     /// ### Why is this bad?
     /// `std::iter::empty()` is the more idiomatic way.
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// let _ = std::iter::Empty::<usize>::default();
     /// let iter: std::iter::Empty<usize> = std::iter::Empty::default();
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// let _ = std::iter::empty::<usize>();
     /// let iter: std::iter::Empty<usize> = std::iter::empty();
     /// ```
@@ -59,7 +59,7 @@ impl<'tcx> LateLintPass<'tcx> for DefaultIterEmpty {
 
 fn make_sugg(
     cx: &LateContext<'_>,
-    ty_path: &rustc_hir::QPath<'_>,
+    ty_path: &crablangc_hir::QPath<'_>,
     ctxt: SyntaxContext,
     applicability: &mut Applicability,
 ) -> String {

@@ -12,4 +12,4 @@ LL | fn sig2(_: for<'a, 'b> fn(&'b i32) -> &'a i32) {
 
 error: aborting due to 2 previous errors
 
-For more information about this error, try `rustc --explain E0581`.
+For more information about this error, try `crablangc --explain E0581`.

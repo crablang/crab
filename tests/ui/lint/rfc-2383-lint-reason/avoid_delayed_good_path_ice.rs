@@ -2,7 +2,7 @@
 #![feature(lint_reasons)]
 
 #[expect(drop_bounds)]
-fn trigger_rustc_lints<T: Drop>() {
+fn trigger_crablangc_lints<T: Drop>() {
 }
 
 fn main() {}

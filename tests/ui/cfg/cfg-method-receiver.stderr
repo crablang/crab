@@ -21,4 +21,4 @@ LL |     cbor_map! { #[cfg(test)] 4_i32};
 
 error: aborting due to 2 previous errors
 
-For more information about this error, try `rustc --explain E0689`.
+For more information about this error, try `crablangc --explain E0689`.

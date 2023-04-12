@@ -41,7 +41,7 @@
     );
     store.register_removed(
         "clippy::unused_collect",
-        "`collect` has been marked as #[must_use] in rustc and that covers all cases of this lint",
+        "`collect` has been marked as #[must_use] in crablangc and that covers all cases of this lint",
     );
     store.register_removed(
         "clippy::replace_consts",

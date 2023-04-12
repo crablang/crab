@@ -3,13 +3,13 @@ use clippy_utils::macros::{root_macro_call_first_node, FormatArgsExpn};
 use clippy_utils::source::snippet_with_context;
 use clippy_utils::sugg::Sugg;
 use if_chain::if_chain;
-use rustc_errors::Applicability;
-use rustc_hir::{Expr, ExprKind};
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_middle::ty;
-use rustc_session::{declare_lint_pass, declare_tool_lint};
-use rustc_span::symbol::kw;
-use rustc_span::{sym, Span};
+use crablangc_errors::Applicability;
+use crablangc_hir::{Expr, ExprKind};
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_middle::ty;
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_span::symbol::kw;
+use crablangc_span::{sym, Span};
 
 declare_clippy_lint! {
     /// ### What it does
@@ -24,13 +24,13 @@ declare_clippy_lint! {
     /// if `foo: &str`.
     ///
     /// ### Examples
-    /// ```rust
+    /// ```crablang
     /// let foo = "foo";
     /// format!("{}", foo);
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// let foo = "foo";
     /// foo.to_owned();
     /// ```

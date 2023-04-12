@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 
 """
-The Rust toolchain test runner for Fuchsia.
+The CrabLang toolchain test runner for Fuchsia.
 
 For instructions on running the compiler test suite, see
-https://doc.rust-lang.org/stable/rustc/platform-support/fuchsia.html#aarch64-unknown-fuchsia-and-x86_64-unknown-fuchsia
+https://doc.crablang.org/stable/crablangc/platform-support/fuchsia.html#aarch64-unknown-fuchsia-and-x86_64-unknown-fuchsia
 """
 
 import argparse
@@ -25,7 +25,7 @@ from typing import ClassVar, List, Optional
 
 @dataclass
 class TestEnvironment:
-    rust_dir: str
+    crablang_dir: str
     sdk_dir: str
     target: str
     package_server_pid: Optional[int] = None
@@ -57,7 +57,7 @@ class TestEnvironment:
     @classmethod
     def from_args(cls, args):
         return cls(
-            os.path.abspath(args.rust),
+            os.path.abspath(args.crablang),
             os.path.abspath(args.sdk),
             args.target,
             verbose=args.verbose,
@@ -68,7 +68,7 @@ class TestEnvironment:
         with open(cls.env_file_path(), encoding="utf-8") as f:
             test_env = json.loads(f.read())
             return cls(
-                test_env["rust_dir"],
+                test_env["crablang_dir"],
                 test_env["sdk_dir"],
                 test_env["target"],
                 libstd_name=test_env["libstd_name"],
@@ -106,21 +106,21 @@ class TestEnvironment:
     def output_dir(self):
         return os.path.join(self.tmp_dir(), "output")
 
-    TEST_REPO_NAME: ClassVar[str] = "rust-testing"
+    TEST_REPO_NAME: ClassVar[str] = "crablang-testing"
 
     def repo_dir(self):
         return os.path.join(self.tmp_dir(), self.TEST_REPO_NAME)
 
     def libs_dir(self):
         return os.path.join(
-            self.rust_dir,
+            self.crablang_dir,
             "lib",
         )
 
-    def rustlibs_dir(self):
+    def crablanglibs_dir(self):
         return os.path.join(
             self.libs_dir(),
-            "rustlib",
+            "crablanglib",
             self.target,
             "lib",
         )
@@ -321,14 +321,14 @@ class TestEnvironment:
         os.mkdir(self.output_dir())
 
         # Find libstd and libtest
-        libstd_paths = glob.glob(os.path.join(self.rustlibs_dir(), "libstd-*.so"))
-        libtest_paths = glob.glob(os.path.join(self.rustlibs_dir(), "libtest-*.so"))
+        libstd_paths = glob.glob(os.path.join(self.crablanglibs_dir(), "libstd-*.so"))
+        libtest_paths = glob.glob(os.path.join(self.crablanglibs_dir(), "libtest-*.so"))
 
         if not libstd_paths:
-            raise Exception(f"Failed to locate libstd (in {self.rustlibs_dir()})")
+            raise Exception(f"Failed to locate libstd (in {self.crablanglibs_dir()})")
 
         if not libtest_paths:
-            raise Exception(f"Failed to locate libtest (in {self.rustlibs_dir()})")
+            raise Exception(f"Failed to locate libtest (in {self.crablanglibs_dir()})")
 
         self.libstd_name = os.path.basename(libstd_paths[0])
         self.libtest_name = os.path.basename(libtest_paths[0])
@@ -512,19 +512,19 @@ class TestEnvironment:
     meta/package={package_dir}/meta/package
     meta/{package_name}.cm={package_dir}/meta/{package_name}.cm
     bin/{exe_name}={bin_path}
-    lib/{libstd_name}={rust_dir}/lib/rustlib/{rustlib_dir}/lib/{libstd_name}
-    lib/{libtest_name}={rust_dir}/lib/rustlib/{rustlib_dir}/lib/{libtest_name}
+    lib/{libstd_name}={crablang_dir}/lib/crablanglib/{crablanglib_dir}/lib/{libstd_name}
+    lib/{libtest_name}={crablang_dir}/lib/crablanglib/{crablanglib_dir}/lib/{libtest_name}
     lib/ld.so.1={sdk_dir}/arch/{target_arch}/sysroot/dist/lib/ld.so.1
     lib/libfdio.so={sdk_dir}/arch/{target_arch}/dist/libfdio.so
     """
 
     TEST_ENV_VARS: ClassVar[List[str]] = [
         "TEST_EXEC_ENV",
-        "RUST_MIN_STACK",
-        "RUST_BACKTRACE",
-        "RUST_NEWRT",
-        "RUST_LOG",
-        "RUST_TEST_THREADS",
+        "CRABLANG_MIN_STACK",
+        "CRABLANG_BACKTRACE",
+        "CRABLANG_NEWRT",
+        "CRABLANG_LOG",
+        "CRABLANG_TEST_THREADS",
     ]
 
     def run(self, args):
@@ -609,8 +609,8 @@ class TestEnvironment:
                         env_vars += f'\n            "{var_name}={var_value}",'
 
                 # Default to no backtrace for test suite
-                if os.getenv("RUST_BACKTRACE") == None:
-                    env_vars += f'\n            "RUST_BACKTRACE=0",'
+                if os.getenv("CRABLANG_BACKTRACE") == None:
+                    env_vars += f'\n            "CRABLANG_BACKTRACE=0",'
 
                 cml.write(
                     self.CML_TEMPLATE.format(env_vars=env_vars, exe_name=exe_name)
@@ -642,8 +642,8 @@ class TestEnvironment:
                         exe_name=exe_name,
                         package_dir=package_dir,
                         package_name=package_name,
-                        rust_dir=self.rust_dir,
-                        rustlib_dir=self.target,
+                        crablang_dir=self.crablang_dir,
+                        crablanglib_dir=self.target,
                         sdk_dir=self.sdk_dir,
                         libstd_name=self.libstd_name,
                         libtest_name=self.libtest_name,
@@ -870,15 +870,15 @@ class TestEnvironment:
             # If no .build-id directory is detected, then assume that the shared
             # libs contain their debug symbols
             command += [
-                f"--symbol-path={self.rust_dir}/lib/rustlib/{self.target}/lib",
+                f"--symbol-path={self.crablang_dir}/lib/crablanglib/{self.target}/lib",
             ]
 
-        # Add rust source if it's available
-        rust_src_map = None
-        if args.rust_src is not None:
+        # Add crablang source if it's available
+        crablang_src_map = None
+        if args.crablang_src is not None:
             # This matches the remapped prefix used by compiletest. There's no
             # clear way that we can determine this, so it's hard coded.
-            rust_src_map = f"/rustc/FAKE_PREFIX={args.rust_src}"
+            crablang_src_map = f"/crablangc/FAKE_PREFIX={args.crablang_src}"
 
         # Add fuchsia source if it's available
         fuchsia_src_map = None
@@ -887,15 +887,15 @@ class TestEnvironment:
 
         # Load debug symbols for the test binary and automatically attach
         if args.test is not None:
-            if args.rust_src is None:
+            if args.crablang_src is None:
                 raise Exception(
-                    "A Rust source path is required with the `test` argument"
+                    "A CrabLang source path is required with the `test` argument"
                 )
 
             test_name = os.path.splitext(os.path.basename(args.test))[0]
 
             build_dir = os.path.join(
-                args.rust_src,
+                args.crablang_src,
                 "fuchsia-build",
                 self.host_arch_triple(),
             )
@@ -907,13 +907,13 @@ class TestEnvironment:
             )
 
             # The fake-test-src-base directory maps to the suite directory
-            # e.g. tests/ui/foo.rs has a path of rust/fake-test-src-base/foo.rs
+            # e.g. tests/ui/foo.rs has a path of crablang/fake-test-src-base/foo.rs
             fake_test_src_base = os.path.join(
-                args.rust_src,
+                args.crablang_src,
                 "fake-test-src-base",
             )
             real_test_src_base = os.path.join(
-                args.rust_src,
+                args.crablang_src,
                 "tests",
                 args.test.split(os.path.sep)[0],
             )
@@ -922,8 +922,8 @@ class TestEnvironment:
             with open(self.zxdb_script_path(), mode="w", encoding="utf-8") as f:
                 print(f"set source-map += {test_src_map}", file=f)
 
-                if rust_src_map is not None:
-                    print(f"set source-map += {rust_src_map}", file=f)
+                if crablang_src_map is not None:
+                    print(f"set source-map += {crablang_src_map}", file=f)
 
                 if fuchsia_src_map is not None:
                     print(f"set source-map += {fuchsia_src_map}", file=f)
@@ -1013,8 +1013,8 @@ def main():
         "start", help="initializes the testing environment"
     )
     start_parser.add_argument(
-        "--rust",
-        help="the directory of the installed Rust compiler for Fuchsia",
+        "--crablang",
+        help="the directory of the installed CrabLang compiler for Fuchsia",
         required=True,
     )
     start_parser.add_argument(
@@ -1070,9 +1070,9 @@ def main():
         help="connect to the active testing environment with zxdb",
     )
     debug_parser.add_argument(
-        "--rust-src",
+        "--crablang-src",
         default=None,
-        help="the path to the Rust source being tested",
+        help="the path to the CrabLang source being tested",
     )
     debug_parser.add_argument(
         "--fuchsia-src",

@@ -3,10 +3,10 @@ use std::ffi::{OsStr, OsString};
 use std::io::ErrorKind;
 use std::mem;
 
-use rustc_const_eval::interpret::Pointer;
-use rustc_data_structures::fx::FxHashMap;
-use rustc_middle::ty::layout::LayoutOf;
-use rustc_target::abi::Size;
+use crablangc_const_eval::interpret::Pointer;
+use crablangc_data_structures::fx::FxHashMap;
+use crablangc_middle::ty::layout::LayoutOf;
+use crablangc_target::abi::Size;
 
 use crate::helpers::target_os_is_unix;
 use crate::*;
@@ -155,7 +155,7 @@ pub trait EvalContextExt<'mir, 'tcx: 'mir>: crate::MiriInterpCxExt<'mir, 'tcx> {
         Ok(match this.machine.env_vars.map.get(&name) {
             Some(var_ptr) => {
                 // The offset is used to strip the "{name}=" part of the string.
-                #[rustfmt::skip]
+                #[crablangfmt::skip]
                 let name_offset_bytes = u64::try_from(name.len()).unwrap()
                     .checked_add(1).unwrap()
                     .checked_mul(2).unwrap();

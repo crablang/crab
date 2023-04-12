@@ -4,7 +4,7 @@ error[E0658]: meta-variable expressions are unstable
 LL |         ${ count(e) }
    |          ^^^^^^^^^^^^
    |
-   = note: see issue #83527 <https://github.com/rust-lang/rust/issues/83527> for more information
+   = note: see issue #83527 <https://github.com/crablang/crablang/issues/83527> for more information
    = help: add `#![feature(macro_metavar_expr)]` to the crate attributes to enable
 
 error[E0658]: meta-variable expressions are unstable
@@ -13,7 +13,7 @@ error[E0658]: meta-variable expressions are unstable
 LL |             ( $$( $$any:tt )* ) => { $$( $$any )* };
    |                ^
    |
-   = note: see issue #83527 <https://github.com/rust-lang/rust/issues/83527> for more information
+   = note: see issue #83527 <https://github.com/crablang/crablang/issues/83527> for more information
    = help: add `#![feature(macro_metavar_expr)]` to the crate attributes to enable
 
 error[E0658]: meta-variable expressions are unstable
@@ -22,7 +22,7 @@ error[E0658]: meta-variable expressions are unstable
 LL |             ( $$( $$any:tt )* ) => { $$( $$any )* };
    |                    ^
    |
-   = note: see issue #83527 <https://github.com/rust-lang/rust/issues/83527> for more information
+   = note: see issue #83527 <https://github.com/crablang/crablang/issues/83527> for more information
    = help: add `#![feature(macro_metavar_expr)]` to the crate attributes to enable
 
 error[E0658]: meta-variable expressions are unstable
@@ -31,7 +31,7 @@ error[E0658]: meta-variable expressions are unstable
 LL |             ( $$( $$any:tt )* ) => { $$( $$any )* };
    |                                       ^
    |
-   = note: see issue #83527 <https://github.com/rust-lang/rust/issues/83527> for more information
+   = note: see issue #83527 <https://github.com/crablang/crablang/issues/83527> for more information
    = help: add `#![feature(macro_metavar_expr)]` to the crate attributes to enable
 
 error[E0658]: meta-variable expressions are unstable
@@ -40,7 +40,7 @@ error[E0658]: meta-variable expressions are unstable
 LL |             ( $$( $$any:tt )* ) => { $$( $$any )* };
    |                                           ^
    |
-   = note: see issue #83527 <https://github.com/rust-lang/rust/issues/83527> for more information
+   = note: see issue #83527 <https://github.com/crablang/crablang/issues/83527> for more information
    = help: add `#![feature(macro_metavar_expr)]` to the crate attributes to enable
 
 error[E0658]: meta-variable expressions are unstable
@@ -49,7 +49,7 @@ error[E0658]: meta-variable expressions are unstable
 LL |         $( ${ignore(e)} ${index()} )*
    |             ^^^^^^^^^^^
    |
-   = note: see issue #83527 <https://github.com/rust-lang/rust/issues/83527> for more information
+   = note: see issue #83527 <https://github.com/crablang/crablang/issues/83527> for more information
    = help: add `#![feature(macro_metavar_expr)]` to the crate attributes to enable
 
 error[E0658]: meta-variable expressions are unstable
@@ -58,7 +58,7 @@ error[E0658]: meta-variable expressions are unstable
 LL |         $( ${ignore(e)} ${index()} )*
    |                          ^^^^^^^^^
    |
-   = note: see issue #83527 <https://github.com/rust-lang/rust/issues/83527> for more information
+   = note: see issue #83527 <https://github.com/crablang/crablang/issues/83527> for more information
    = help: add `#![feature(macro_metavar_expr)]` to the crate attributes to enable
 
 error[E0658]: meta-variable expressions are unstable
@@ -67,7 +67,7 @@ error[E0658]: meta-variable expressions are unstable
 LL |         0 $( + 1 ${ignore(i)} )*
    |                   ^^^^^^^^^^^
    |
-   = note: see issue #83527 <https://github.com/rust-lang/rust/issues/83527> for more information
+   = note: see issue #83527 <https://github.com/crablang/crablang/issues/83527> for more information
    = help: add `#![feature(macro_metavar_expr)]` to the crate attributes to enable
 
 error[E0658]: meta-variable expressions are unstable
@@ -76,7 +76,7 @@ error[E0658]: meta-variable expressions are unstable
 LL |         $( ${ignore(e)} ${length()} )*
    |             ^^^^^^^^^^^
    |
-   = note: see issue #83527 <https://github.com/rust-lang/rust/issues/83527> for more information
+   = note: see issue #83527 <https://github.com/crablang/crablang/issues/83527> for more information
    = help: add `#![feature(macro_metavar_expr)]` to the crate attributes to enable
 
 error[E0658]: meta-variable expressions are unstable
@@ -85,9 +85,9 @@ error[E0658]: meta-variable expressions are unstable
 LL |         $( ${ignore(e)} ${length()} )*
    |                          ^^^^^^^^^^
    |
-   = note: see issue #83527 <https://github.com/rust-lang/rust/issues/83527> for more information
+   = note: see issue #83527 <https://github.com/crablang/crablang/issues/83527> for more information
    = help: add `#![feature(macro_metavar_expr)]` to the crate attributes to enable
 
 error: aborting due to 10 previous errors
 
-For more information about this error, try `rustc --explain E0658`.
+For more information about this error, try `crablangc --explain E0658`.

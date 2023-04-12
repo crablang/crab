@@ -3,11 +3,11 @@
 
 use clippy_utils::consts::{miri_to_const, Constant};
 use clippy_utils::diagnostics::span_lint;
-use rustc_hir::{Item, ItemKind};
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_middle::ty::util::IntTypeExt;
-use rustc_middle::ty::{self, IntTy, UintTy};
-use rustc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_hir::{Item, ItemKind};
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_middle::ty::util::IntTypeExt;
+use crablangc_middle::ty::{self, IntTy, UintTy};
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
 
 declare_clippy_lint! {
     /// ### What it does
@@ -19,7 +19,7 @@ declare_clippy_lint! {
     /// architectures, but works fine on 64 bit.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// # #[cfg(target_pointer_width = "64")]
     /// #[repr(usize)]
     /// enum NonPortable {
@@ -50,7 +50,7 @@ impl<'tcx> LateLintPass<'tcx> for UnportableVariant {
                         .tcx
                         .const_eval_poly(def_id.to_def_id())
                         .ok()
-                        .map(|val| rustc_middle::mir::ConstantKind::from_value(val, ty));
+                        .map(|val| crablangc_middle::mir::ConstantKind::from_value(val, ty));
                     if let Some(Constant::Int(val)) = constant.and_then(|c| miri_to_const(cx.tcx, c)) {
                         if let ty::Adt(adt, _) = ty.kind() {
                             if adt.is_enum() {

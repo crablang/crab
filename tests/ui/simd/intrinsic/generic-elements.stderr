@@ -72,4 +72,4 @@ LL |         simd_shuffle8::<_, i32x2>(x, x, IDX8);
 
 error: aborting due to 12 previous errors
 
-For more information about this error, try `rustc --explain E0511`.
+For more information about this error, try `crablangc --explain E0511`.

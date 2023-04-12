@@ -1,6 +1,6 @@
 // check-pass
 // Make sure unused parens lint doesn't emit a false positive.
-// See https://github.com/rust-lang/rust/issues/71290 for details.
+// See https://github.com/crablang/crablang/issues/71290 for details.
 #![deny(unused_parens)]
 
 fn x() -> u8 {

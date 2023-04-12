@@ -5,7 +5,7 @@ use of qualified paths in patterns.
 
 ## Example
 
-```rust
+```crablang
 #![feature(more_qualified_paths)]
 
 fn main() {

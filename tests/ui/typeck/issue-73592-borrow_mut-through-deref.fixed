@@ -1,7 +1,7 @@
 // check-pass
-// run-rustfix
+// run-crablangfix
 //
-// rust-lang/rust#73592: borrow_mut through Deref should work.
+// crablang/crablang#73592: borrow_mut through Deref should work.
 //
 // Before #72280, when we see something like `&mut *rcvr.method()`, we
 // incorrectly requires `rcvr` to be type-checked as a mut place. While this

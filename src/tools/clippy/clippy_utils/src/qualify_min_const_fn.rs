@@ -1,20 +1,20 @@
-// This code used to be a part of `rustc` but moved to Clippy as a result of
-// https://github.com/rust-lang/rust/issues/76618. Because of that, it contains unused code and some
+// This code used to be a part of `crablangc` but moved to Clippy as a result of
+// https://github.com/crablang/crablang/issues/76618. Because of that, it contains unused code and some
 // of terminologies might not be relevant in the context of Clippy. Note that its behavior might
-// differ from the time of `rustc` even if the name stays the same.
+// differ from the time of `crablangc` even if the name stays the same.
 
 use crate::msrvs::Msrv;
-use rustc_hir as hir;
-use rustc_hir::def_id::DefId;
-use rustc_middle::mir::{
+use crablangc_hir as hir;
+use crablangc_hir::def_id::DefId;
+use crablangc_middle::mir::{
     Body, CastKind, NonDivergingIntrinsic, NullOp, Operand, Place, ProjectionElem, Rvalue, Statement, StatementKind,
     Terminator, TerminatorKind,
 };
-use rustc_middle::ty::subst::GenericArgKind;
-use rustc_middle::ty::{self, adjustment::PointerCast, Ty, TyCtxt};
-use rustc_semver::RustcVersion;
-use rustc_span::symbol::sym;
-use rustc_span::Span;
+use crablangc_middle::ty::subst::GenericArgKind;
+use crablangc_middle::ty::{self, adjustment::PointerCast, Ty, TyCtxt};
+use crablangc_semver::CrabLangcVersion;
+use crablangc_span::symbol::sym;
+use crablangc_span::Span;
 use std::borrow::Cow;
 
 type McfResult = Result<(), (Span, Cow<'static, str>)>;
@@ -234,7 +234,7 @@ fn check_statement<'tcx>(
         StatementKind::Intrinsic(box NonDivergingIntrinsic::Assume(op)) => check_operand(tcx, op, span, body),
 
         StatementKind::Intrinsic(box NonDivergingIntrinsic::CopyNonOverlapping(
-            rustc_middle::mir::CopyNonOverlapping { dst, src, count },
+            crablangc_middle::mir::CopyNonOverlapping { dst, src, count },
         )) => {
             check_operand(tcx, dst, span, body)?;
             check_operand(tcx, src, span, body)?;
@@ -371,24 +371,24 @@ fn check_terminator<'tcx>(
 fn is_const_fn(tcx: TyCtxt<'_>, def_id: DefId, msrv: &Msrv) -> bool {
     tcx.is_const_fn(def_id)
         && tcx.lookup_const_stability(def_id).map_or(true, |const_stab| {
-            if let rustc_attr::StabilityLevel::Stable { since, .. } = const_stab.level {
-                // Checking MSRV is manually necessary because `rustc` has no such concept. This entire
-                // function could be removed if `rustc` provided a MSRV-aware version of `is_const_fn`.
-                // as a part of an unimplemented MSRV check https://github.com/rust-lang/rust/issues/65262.
+            if let crablangc_attr::StabilityLevel::Stable { since, .. } = const_stab.level {
+                // Checking MSRV is manually necessary because `crablangc` has no such concept. This entire
+                // function could be removed if `crablangc` provided a MSRV-aware version of `is_const_fn`.
+                // as a part of an unimplemented MSRV check https://github.com/crablang/crablang/issues/65262.
 
-                // HACK(nilstrieb): CURRENT_RUSTC_VERSION can return versions like 1.66.0-dev. `rustc-semver`
+                // HACK(nilstrieb): CURRENT_CRABLANGC_VERSION can return versions like 1.66.0-dev. `crablangc-semver`
                 // doesn't accept                  the `-dev` version number so we have to strip it
                 // off.
                 let short_version = since
                     .as_str()
                     .split('-')
                     .next()
-                    .expect("rustc_attr::StabilityLevel::Stable::since` is empty");
+                    .expect("crablangc_attr::StabilityLevel::Stable::since` is empty");
 
-                let since = rustc_span::Symbol::intern(short_version);
+                let since = crablangc_span::Symbol::intern(short_version);
 
-                msrv.meets(RustcVersion::parse(since.as_str()).unwrap_or_else(|err| {
-                    panic!("`rustc_attr::StabilityLevel::Stable::since` is ill-formatted: `{since}`, {err:?}")
+                msrv.meets(CrabLangcVersion::parse(since.as_str()).unwrap_or_else(|err| {
+                    panic!("`crablangc_attr::StabilityLevel::Stable::since` is ill-formatted: `{since}`, {err:?}")
                 }))
             } else {
                 // Unstable const fn with the feature enabled.

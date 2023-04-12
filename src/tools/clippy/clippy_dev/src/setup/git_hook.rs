@@ -3,9 +3,9 @@ use std::path::Path;
 
 use super::verify_inside_clippy_dir;
 
-/// Rusts setup uses `git rev-parse --git-common-dir` to get the root directory of the repo.
+/// CrabLangs setup uses `git rev-parse --git-common-dir` to get the root directory of the repo.
 /// I've decided against this for the sake of simplicity and to make sure that it doesn't install
-/// the hook if `clippy_dev` would be used in the rust tree. The hook also references this tool
+/// the hook if `clippy_dev` would be used in the crablang tree. The hook also references this tool
 /// for formatting and should therefore only be used in a normal clone of clippy
 const REPO_GIT_DIR: &str = ".git";
 const HOOK_SOURCE_FILE: &str = "util/etc/pre-commit.sh";
@@ -17,10 +17,10 @@ pub fn install_hook(force_override: bool) {
     }
 
     // So a little bit of a funny story. Git on unix requires the pre-commit file
-    // to have the `execute` permission to be set. The Rust functions for modifying
+    // to have the `execute` permission to be set. The CrabLang functions for modifying
     // these flags doesn't seem to work when executed with normal user permissions.
     //
-    // However, there is a little hack that is also being used by Rust itself in their
+    // However, there is a little hack that is also being used by CrabLang itself in their
     // setup script. Git saves the `execute` flag when syncing files. This means
     // that we can check in a file with execution permissions and the sync it to create
     // a file with the flag set. We then copy this file here. The copy function will also

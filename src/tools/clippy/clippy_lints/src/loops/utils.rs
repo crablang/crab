@@ -1,16 +1,16 @@
 use clippy_utils::ty::{has_iter_method, implements_trait};
 use clippy_utils::{get_parent_expr, is_integer_const, path_to_local, path_to_local_id, sugg};
 use if_chain::if_chain;
-use rustc_ast::ast::{LitIntType, LitKind};
-use rustc_errors::Applicability;
-use rustc_hir::intravisit::{walk_expr, walk_local, walk_pat, walk_stmt, Visitor};
-use rustc_hir::{BinOpKind, BorrowKind, Expr, ExprKind, HirId, HirIdMap, Local, Mutability, Pat, PatKind, Stmt};
-use rustc_hir_analysis::hir_ty_to_ty;
-use rustc_lint::LateContext;
-use rustc_middle::hir::nested_filter;
-use rustc_middle::ty::{self, Ty};
-use rustc_span::source_map::Spanned;
-use rustc_span::symbol::{sym, Symbol};
+use crablangc_ast::ast::{LitIntType, LitKind};
+use crablangc_errors::Applicability;
+use crablangc_hir::intravisit::{walk_expr, walk_local, walk_pat, walk_stmt, Visitor};
+use crablangc_hir::{BinOpKind, BorrowKind, Expr, ExprKind, HirId, HirIdMap, Local, Mutability, Pat, PatKind, Stmt};
+use crablangc_hir_analysis::hir_ty_to_ty;
+use crablangc_lint::LateContext;
+use crablangc_middle::hir::nested_filter;
+use crablangc_middle::ty::{self, Ty};
+use crablangc_span::source_map::Spanned;
+use crablangc_span::symbol::{sym, Symbol};
 use std::iter::Iterator;
 
 #[derive(Debug, PartialEq, Eq)]

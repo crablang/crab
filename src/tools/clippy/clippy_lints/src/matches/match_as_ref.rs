@@ -1,10 +1,10 @@
 use clippy_utils::diagnostics::span_lint_and_sugg;
 use clippy_utils::source::snippet_with_applicability;
 use clippy_utils::{is_res_lang_ctor, path_res, peel_blocks};
-use rustc_errors::Applicability;
-use rustc_hir::{Arm, BindingAnnotation, ByRef, Expr, ExprKind, LangItem, Mutability, PatKind, QPath};
-use rustc_lint::LateContext;
-use rustc_middle::ty;
+use crablangc_errors::Applicability;
+use crablangc_hir::{Arm, BindingAnnotation, ByRef, Expr, ExprKind, LangItem, Mutability, PatKind, QPath};
+use crablangc_lint::LateContext;
+use crablangc_middle::ty;
 
 use super::MATCH_AS_REF;
 

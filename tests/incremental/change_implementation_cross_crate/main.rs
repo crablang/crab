@@ -5,9 +5,9 @@
 // aux-build: a.rs
 // compile-flags: -Zquery-dep-graph
 
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 #![crate_type = "bin"]
-#![rustc_partition_reused(module = "main", cfg = "rpass2")]
+#![crablangc_partition_reused(module = "main", cfg = "rpass2")]
 
 extern crate a;
 

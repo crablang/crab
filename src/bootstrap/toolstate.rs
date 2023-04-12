@@ -67,7 +67,7 @@ static STABLE_TOOLS: &[(&str, &str)] = &[
     ("book", "src/doc/book"),
     ("nomicon", "src/doc/nomicon"),
     ("reference", "src/doc/reference"),
-    ("rust-by-example", "src/doc/rust-by-example"),
+    ("crablang-by-example", "src/doc/crablang-by-example"),
     ("edition-guide", "src/doc/edition-guide"),
 ];
 
@@ -78,7 +78,7 @@ static STABLE_TOOLS: &[(&str, &str)] = &[
 // failing.
 static NIGHTLY_TOOLS: &[(&str, &str)] = &[
     ("embedded-book", "src/doc/embedded-book"),
-    // ("rustc-dev-guide", "src/doc/rustc-dev-guide"),
+    // ("crablangc-dev-guide", "src/doc/crablangc-dev-guide"),
 ];
 
 fn print_error(tool: &str, submodule: &str) {
@@ -142,7 +142,7 @@ impl Step for ToolStateCheck {
     /// error if there are any.
     ///
     /// This also handles publishing the results to the `history` directory of
-    /// the toolstate repo <https://github.com/rust-lang-nursery/rust-toolstate>
+    /// the toolstate repo <https://github.com/crablang-nursery/crablang-toolstate>
     /// if the env var `TOOLSTATE_PUBLISH` is set. Note that there is a
     /// *separate* step of updating the `latest.json` file and creating GitHub
     /// issues and comments in `src/ci/publish_toolstate.sh`, which is only
@@ -152,7 +152,7 @@ impl Step for ToolStateCheck {
     /// The rules for failure are:
     /// * If the PR modifies a tool, the status must be test-pass.
     ///   NOTE: There is intent to change this, see
-    ///   <https://github.com/rust-lang/rust/issues/65000>.
+    ///   <https://github.com/crablang/crablang/issues/65000>.
     /// * All "stable" tools must be test-pass on the stable or beta branches.
     /// * During beta promotion week, a PR is not allowed to "regress" a
     ///   stable tool. That is, the status is not allowed to get worse
@@ -259,7 +259,7 @@ impl Builder<'_> {
     /// Updates the actual toolstate of a tool.
     ///
     /// The toolstates are saved to the file specified by the key
-    /// `rust.save-toolstates` in `config.toml`. If unspecified, nothing will be
+    /// `crablang.save-toolstates` in `config.toml`. If unspecified, nothing will be
     /// done. The file is updated immediately after this function completes.
     pub fn save_toolstate(&self, tool: &str, state: ToolState) {
         // If we're in a dry run setting we don't want to save toolstates as
@@ -268,9 +268,9 @@ impl Builder<'_> {
         if self.config.dry_run() {
             return;
         }
-        // Toolstate isn't tracked for clippy or rustfmt, but since most tools do, we avoid checking
+        // Toolstate isn't tracked for clippy or crablangfmt, but since most tools do, we avoid checking
         // in all the places we could save toolstate and just do so here.
-        if tool == "clippy-driver" || tool == "rustfmt" {
+        if tool == "clippy-driver" || tool == "crablangfmt" {
             return;
         }
         if let Some(ref path) = self.config.save_toolstates {
@@ -293,11 +293,11 @@ impl Builder<'_> {
 
 fn toolstate_repo() -> String {
     env::var("TOOLSTATE_REPO")
-        .unwrap_or_else(|_| "https://github.com/rust-lang-nursery/rust-toolstate.git".to_string())
+        .unwrap_or_else(|_| "https://github.com/crablang-nursery/crablang-toolstate.git".to_string())
 }
 
 /// Directory where the toolstate repo is checked out.
-const TOOLSTATE_DIR: &str = "rust-toolstate";
+const TOOLSTATE_DIR: &str = "crablang-toolstate";
 
 /// Checks out the toolstate repo into `TOOLSTATE_DIR`.
 fn checkout_toolstate_repo() {
@@ -339,8 +339,8 @@ fn prepare_toolstate_config(token: &str) {
 
     // If changing anything here, then please check that `src/ci/publish_toolstate.sh` is up to date
     // as well.
-    git_config("user.email", "7378925+rust-toolstate-update@users.noreply.github.com");
-    git_config("user.name", "Rust Toolstate Update");
+    git_config("user.email", "7378925+crablang-toolstate-update@users.noreply.github.com");
+    git_config("user.name", "CrabLang Toolstate Update");
     git_config("credential.helper", "store");
 
     let credential = format!("https://{}:x-oauth-basic@github.com\n", token,);
@@ -356,7 +356,7 @@ fn read_old_toolstate() -> Vec<RepoState> {
 }
 
 /// This function `commit_toolstate_change` provides functionality for pushing a change
-/// to the `rust-toolstate` repository.
+/// to the `crablang-toolstate` repository.
 ///
 /// The function relies on a GitHub bot user, which should have a Personal access
 /// token defined in the environment variable $TOOLSTATE_REPO_ACCESS_TOKEN. If for

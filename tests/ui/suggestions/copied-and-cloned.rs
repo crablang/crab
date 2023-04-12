@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 
 fn expect<T>(_: T) {}
 

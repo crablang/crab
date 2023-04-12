@@ -2,7 +2,7 @@
 
 //! Unwinding despite `-C panic=abort` is an error.
 
-extern "Rust" {
+extern "CrabLang" {
     fn miri_start_panic(payload: *mut u8) -> !;
 }
 

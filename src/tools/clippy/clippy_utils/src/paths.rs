@@ -2,19 +2,19 @@
 //! about.
 //!
 //! Whenever possible, please consider diagnostic items over hardcoded paths.
-//! See <https://github.com/rust-lang/rust-clippy/issues/5393> for more information.
+//! See <https://github.com/crablang/crablang-clippy/issues/5393> for more information.
 
 #[cfg(feature = "internal")]
-pub const APPLICABILITY: [&str; 2] = ["rustc_lint_defs", "Applicability"];
+pub const APPLICABILITY: [&str; 2] = ["crablangc_lint_defs", "Applicability"];
 #[cfg(feature = "internal")]
 pub const APPLICABILITY_VALUES: [[&str; 3]; 4] = [
-    ["rustc_lint_defs", "Applicability", "Unspecified"],
-    ["rustc_lint_defs", "Applicability", "HasPlaceholders"],
-    ["rustc_lint_defs", "Applicability", "MaybeIncorrect"],
-    ["rustc_lint_defs", "Applicability", "MachineApplicable"],
+    ["crablangc_lint_defs", "Applicability", "Unspecified"],
+    ["crablangc_lint_defs", "Applicability", "HasPlaceholders"],
+    ["crablangc_lint_defs", "Applicability", "MaybeIncorrect"],
+    ["crablangc_lint_defs", "Applicability", "MachineApplicable"],
 ];
 #[cfg(feature = "internal")]
-pub const DIAGNOSTIC_BUILDER: [&str; 3] = ["rustc_errors", "diagnostic_builder", "DiagnosticBuilder"];
+pub const DIAGNOSTIC_BUILDER: [&str; 3] = ["crablangc_errors", "diagnostic_builder", "DiagnosticBuilder"];
 pub const ARC_PTR_EQ: [&str; 4] = ["alloc", "sync", "Arc", "ptr_eq"];
 pub const BTREEMAP_CONTAINS_KEY: [&str; 6] = ["alloc", "collections", "btree", "map", "BTreeMap", "contains_key"];
 pub const BTREEMAP_INSERT: [&str; 6] = ["alloc", "collections", "btree", "map", "BTreeMap", "insert"];
@@ -27,9 +27,9 @@ pub const CSTRING_AS_C_STR: [&str; 5] = ["alloc", "ffi", "c_str", "CString", "as
 pub const DEFAULT_TRAIT_METHOD: [&str; 4] = ["core", "default", "Default", "default"];
 pub const DEREF_MUT_TRAIT_METHOD: [&str; 5] = ["core", "ops", "deref", "DerefMut", "deref_mut"];
 #[cfg(feature = "internal")]
-pub const EARLY_CONTEXT: [&str; 2] = ["rustc_lint", "EarlyContext"];
+pub const EARLY_CONTEXT: [&str; 2] = ["crablangc_lint", "EarlyContext"];
 #[cfg(feature = "internal")]
-pub const EARLY_LINT_PASS: [&str; 3] = ["rustc_lint", "passes", "EarlyLintPass"];
+pub const EARLY_LINT_PASS: [&str; 3] = ["crablangc_lint", "passes", "EarlyLintPass"];
 pub const EXIT: [&str; 3] = ["std", "process", "exit"];
 pub const F32_EPSILON: [&str; 4] = ["core", "f32", "<impl f32>", "EPSILON"];
 pub const F64_EPSILON: [&str; 4] = ["core", "f64", "<impl f64>", "EPSILON"];
@@ -43,20 +43,20 @@ pub const HASHMAP_CONTAINS_KEY: [&str; 6] = ["std", "collections", "hash", "map"
 pub const HASHMAP_INSERT: [&str; 6] = ["std", "collections", "hash", "map", "HashMap", "insert"];
 pub const HASHSET_ITER: [&str; 6] = ["std", "collections", "hash", "set", "HashSet", "iter"];
 #[cfg(feature = "internal")]
-pub const IDENT: [&str; 3] = ["rustc_span", "symbol", "Ident"];
+pub const IDENT: [&str; 3] = ["crablangc_span", "symbol", "Ident"];
 #[cfg(feature = "internal")]
-pub const IDENT_AS_STR: [&str; 4] = ["rustc_span", "symbol", "Ident", "as_str"];
+pub const IDENT_AS_STR: [&str; 4] = ["crablangc_span", "symbol", "Ident", "as_str"];
 pub const INSERT_STR: [&str; 4] = ["alloc", "string", "String", "insert_str"];
 pub const ITER_EMPTY: [&str; 5] = ["core", "iter", "sources", "empty", "Empty"];
 pub const ITERTOOLS_NEXT_TUPLE: [&str; 3] = ["itertools", "Itertools", "next_tuple"];
 #[cfg(feature = "internal")]
-pub const KW_MODULE: [&str; 3] = ["rustc_span", "symbol", "kw"];
+pub const KW_MODULE: [&str; 3] = ["crablangc_span", "symbol", "kw"];
 #[cfg(feature = "internal")]
-pub const LATE_CONTEXT: [&str; 2] = ["rustc_lint", "LateContext"];
+pub const LATE_CONTEXT: [&str; 2] = ["crablangc_lint", "LateContext"];
 #[cfg(feature = "internal")]
-pub const LATE_LINT_PASS: [&str; 3] = ["rustc_lint", "passes", "LateLintPass"];
+pub const LATE_LINT_PASS: [&str; 3] = ["crablangc_lint", "passes", "LateLintPass"];
 #[cfg(feature = "internal")]
-pub const LINT: [&str; 2] = ["rustc_lint_defs", "Lint"];
+pub const LINT: [&str; 2] = ["crablangc_lint_defs", "Lint"];
 pub const MEM_SWAP: [&str; 3] = ["core", "mem", "swap"];
 #[cfg(feature = "internal")]
 pub const MSRV: [&str; 3] = ["clippy_utils", "msrvs", "Msrv"];
@@ -128,17 +128,17 @@ pub const STR_FROM_UTF8_UNCHECKED: [&str; 4] = ["core", "str", "converts", "from
 pub const STR_LEN: [&str; 4] = ["core", "str", "<impl str>", "len"];
 pub const STR_STARTS_WITH: [&str; 4] = ["core", "str", "<impl str>", "starts_with"];
 #[cfg(feature = "internal")]
-pub const SYMBOL: [&str; 3] = ["rustc_span", "symbol", "Symbol"];
+pub const SYMBOL: [&str; 3] = ["crablangc_span", "symbol", "Symbol"];
 #[cfg(feature = "internal")]
-pub const SYMBOL_AS_STR: [&str; 4] = ["rustc_span", "symbol", "Symbol", "as_str"];
+pub const SYMBOL_AS_STR: [&str; 4] = ["crablangc_span", "symbol", "Symbol", "as_str"];
 #[cfg(feature = "internal")]
-pub const SYMBOL_INTERN: [&str; 4] = ["rustc_span", "symbol", "Symbol", "intern"];
+pub const SYMBOL_INTERN: [&str; 4] = ["crablangc_span", "symbol", "Symbol", "intern"];
 #[cfg(feature = "internal")]
-pub const SYMBOL_TO_IDENT_STRING: [&str; 4] = ["rustc_span", "symbol", "Symbol", "to_ident_string"];
+pub const SYMBOL_TO_IDENT_STRING: [&str; 4] = ["crablangc_span", "symbol", "Symbol", "to_ident_string"];
 #[cfg(feature = "internal")]
-pub const SYM_MODULE: [&str; 3] = ["rustc_span", "symbol", "sym"];
+pub const SYM_MODULE: [&str; 3] = ["crablangc_span", "symbol", "sym"];
 #[cfg(feature = "internal")]
-pub const SYNTAX_CONTEXT: [&str; 3] = ["rustc_span", "hygiene", "SyntaxContext"];
+pub const SYNTAX_CONTEXT: [&str; 3] = ["crablangc_span", "hygiene", "SyntaxContext"];
 pub const TO_OWNED_METHOD: [&str; 4] = ["alloc", "borrow", "ToOwned", "to_owned"];
 pub const TO_STRING_METHOD: [&str; 4] = ["alloc", "string", "ToString", "to_string"];
 #[expect(clippy::invalid_paths)] // internal lints do not know about all external crates

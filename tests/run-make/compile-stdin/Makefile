@@ -2,5 +2,5 @@
 include ../tools.mk
 
 all:
-	echo 'fn main(){}' | $(RUSTC) -
-	$(call RUN,rust_out)
+	echo 'fn main(){}' | $(CRABLANGC) -
+	$(call RUN,crablang_out)

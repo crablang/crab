@@ -13,7 +13,7 @@ include ../tools.mk
 # only-thumb
 
 # For cargo setting
-RUSTC := $(RUSTC_ORIGINAL)
+CRABLANGC := $(CRABLANGC_ORIGINAL)
 LD_LIBRARY_PATH := $(HOST_RPATH_DIR)
 # We need to be outside of 'src' dir in order to run cargo
 WORK_DIR := $(TMPDIR)
@@ -21,18 +21,18 @@ WORK_DIR := $(TMPDIR)
 HERE := $(shell pwd)
 
 CRATE := cortex-m
-CRATE_URL := https://github.com/rust-embedded/cortex-m
+CRATE_URL := https://github.com/crablang-embedded/cortex-m
 CRATE_SHA1 := a448e9156e2cb1e556e5441fd65426952ef4b927 # 0.5.0
 
 # Don't make lints fatal, but they need to at least warn or they break Cargo's target info parsing.
-export RUSTFLAGS := --cap-lints=warn
+export CRABLANGFLAGS := --cap-lints=warn
 
 all:
 	env
 	mkdir -p $(WORK_DIR)
 	-cd $(WORK_DIR) && rm -rf $(CRATE)
 	cd $(WORK_DIR) && bash -x $(HERE)/../git_clone_sha1.sh $(CRATE) $(CRATE_URL) $(CRATE_SHA1)
-	# HACK(eddyb) sets `RUSTC_BOOTSTRAP=1` so Cargo can accept nightly features.
-	# These come from the top-level Rust workspace, that this crate is not a
+	# HACK(eddyb) sets `CRABLANGC_BOOTSTRAP=1` so Cargo can accept nightly features.
+	# These come from the top-level CrabLang workspace, that this crate is not a
 	# member of, but Cargo tries to load the workspace `Cargo.toml` anyway.
-	cd $(WORK_DIR) && cd $(CRATE) && env RUSTC_BOOTSTRAP=1 $(BOOTSTRAP_CARGO) build --target $(TARGET) -v
+	cd $(WORK_DIR) && cd $(CRATE) && env CRABLANGC_BOOTSTRAP=1 $(BOOTSTRAP_CARGO) build --target $(TARGET) -v

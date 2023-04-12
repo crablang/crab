@@ -2,7 +2,7 @@
 // an existing type
 //
 // To this end, make sure that when trying to retrieve a field of a (reference to) type parameter,
-// rustc points to the point where the parameter was defined.
+// crablangc points to the point where the parameter was defined.
 #[derive(Debug)]
 struct Point
 {

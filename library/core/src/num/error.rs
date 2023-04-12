@@ -26,7 +26,7 @@ impl Error for TryFromIntError {
 }
 
 #[stable(feature = "try_from", since = "1.34.0")]
-#[rustc_const_unstable(feature = "const_convert", issue = "88674")]
+#[crablangc_const_unstable(feature = "const_convert", issue = "88674")]
 impl const From<Infallible> for TryFromIntError {
     fn from(x: Infallible) -> TryFromIntError {
         match x {}
@@ -62,7 +62,7 @@ impl const From<!> for TryFromIntError {
 /// }
 /// ```
 #[derive(Debug, Clone, PartialEq, Eq)]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub struct ParseIntError {
     pub(super) kind: IntErrorKind,
 }
@@ -119,7 +119,7 @@ impl ParseIntError {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl fmt::Display for ParseIntError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         #[allow(deprecated)]
@@ -127,7 +127,7 @@ impl fmt::Display for ParseIntError {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl Error for ParseIntError {
     #[allow(deprecated)]
     fn description(&self) -> &str {

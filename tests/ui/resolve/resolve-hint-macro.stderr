@@ -50,4 +50,4 @@ LL |     assert_eq!(1, 1);
 error: aborting due to 5 previous errors
 
 Some errors have detailed explanations: E0423, E0574.
-For more information about an error, try `rustc --explain E0423`.
+For more information about an error, try `crablangc --explain E0423`.

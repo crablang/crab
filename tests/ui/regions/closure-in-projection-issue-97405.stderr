@@ -27,4 +27,4 @@ LL |     assert_static(opaque(opaque(async move { t; }).next()).next());
 
 error: aborting due to 3 previous errors
 
-For more information about this error, try `rustc --explain E0310`.
+For more information about this error, try `crablangc --explain E0310`.

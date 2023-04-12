@@ -36,7 +36,7 @@ fn foo(_1: T, _2: i32) -> (i32, T) {
                                          // + substs: [
                                          //     T,
                                          //     i8,
-                                         //     extern "rust-call" fn((i32,)) -> (i32, T),
+                                         //     extern "crablang-call" fn((i32,)) -> (i32, T),
                                          //     (&i32, &T),
                                          // ]
         StorageDead(_5);                 // scope 0 at $DIR/inline_closure_captures.rs:+1:16: +1:17

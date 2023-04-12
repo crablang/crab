@@ -171,9 +171,9 @@ error[E0746]: return type cannot have an unboxed trait object
 LL | fn hat() -> dyn std::fmt::Display {
    |             ^^^^^^^^^^^^^^^^^^^^^ doesn't have a size known at compile-time
    |
-   = note: for information on trait objects, see <https://doc.rust-lang.org/book/ch17-02-trait-objects.html#using-trait-objects-that-allow-for-values-of-different-types>
+   = note: for information on trait objects, see <https://doc.crablang.org/book/ch17-02-trait-objects.html#using-trait-objects-that-allow-for-values-of-different-types>
    = note: if all the returned values were of the same type you could use `impl std::fmt::Display` as the return type
-   = note: for information on `impl Trait`, see <https://doc.rust-lang.org/book/ch10-02-traits.html#returning-types-that-implement-traits>
+   = note: for information on `impl Trait`, see <https://doc.crablang.org/book/ch10-02-traits.html#returning-types-that-implement-traits>
    = note: you can create a new `enum` with a variant for each returned type
 help: return a boxed trait object instead
    |
@@ -211,9 +211,9 @@ error[E0746]: return type cannot have an unboxed trait object
 LL | fn pug() -> dyn std::fmt::Display {
    |             ^^^^^^^^^^^^^^^^^^^^^ doesn't have a size known at compile-time
    |
-   = note: for information on trait objects, see <https://doc.rust-lang.org/book/ch17-02-trait-objects.html#using-trait-objects-that-allow-for-values-of-different-types>
+   = note: for information on trait objects, see <https://doc.crablang.org/book/ch17-02-trait-objects.html#using-trait-objects-that-allow-for-values-of-different-types>
    = note: if all the returned values were of the same type you could use `impl std::fmt::Display` as the return type
-   = note: for information on `impl Trait`, see <https://doc.rust-lang.org/book/ch10-02-traits.html#returning-types-that-implement-traits>
+   = note: for information on `impl Trait`, see <https://doc.crablang.org/book/ch10-02-traits.html#returning-types-that-implement-traits>
    = note: you can create a new `enum` with a variant for each returned type
 help: return a boxed trait object instead
    |
@@ -255,9 +255,9 @@ error[E0746]: return type cannot have an unboxed trait object
 LL | fn man() -> dyn std::fmt::Display {
    |             ^^^^^^^^^^^^^^^^^^^^^ doesn't have a size known at compile-time
    |
-   = note: for information on trait objects, see <https://doc.rust-lang.org/book/ch17-02-trait-objects.html#using-trait-objects-that-allow-for-values-of-different-types>
+   = note: for information on trait objects, see <https://doc.crablang.org/book/ch17-02-trait-objects.html#using-trait-objects-that-allow-for-values-of-different-types>
    = note: if all the returned values were of the same type you could use `impl std::fmt::Display` as the return type
-   = note: for information on `impl Trait`, see <https://doc.rust-lang.org/book/ch10-02-traits.html#returning-types-that-implement-traits>
+   = note: for information on `impl Trait`, see <https://doc.crablang.org/book/ch10-02-traits.html#returning-types-that-implement-traits>
    = note: you can create a new `enum` with a variant for each returned type
 help: return a boxed trait object instead
    |
@@ -275,4 +275,4 @@ LL |         Box::new(1u32)
 error: aborting due to 14 previous errors
 
 Some errors have detailed explanations: E0308, E0746.
-For more information about an error, try `rustc --explain E0308`.
+For more information about an error, try `crablangc --explain E0308`.

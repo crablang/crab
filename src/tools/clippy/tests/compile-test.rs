@@ -2,7 +2,7 @@
 #![feature(lazy_cell)]
 #![feature(is_sorted)]
 #![cfg_attr(feature = "deny-warnings", deny(warnings))]
-#![warn(rust_2018_idioms, unused_lifetimes)]
+#![warn(crablang_2018_idioms, unused_lifetimes)]
 
 use compiletest_rs as compiletest;
 use compiletest_rs::common::Mode as TestMode;
@@ -14,7 +14,7 @@ use std::fs;
 use std::io;
 use std::path::{Path, PathBuf};
 use std::sync::LazyLock;
-use test_utils::IS_RUSTC_TEST_SUITE;
+use test_utils::IS_CRABLANGC_TEST_SUITE;
 
 mod test_utils;
 
@@ -36,7 +36,7 @@ static TEST_DEPENDENCIES: &[&str] = &[
     "syn",
     "tokio",
     "parking_lot",
-    "rustc_semver",
+    "crablangc_semver",
 ];
 
 // Test dependencies may need an `extern crate` here to ensure that they show up
@@ -58,7 +58,7 @@ extern crate parking_lot;
 #[allow(unused_extern_crates)]
 extern crate quote;
 #[allow(unused_extern_crates)]
-extern crate rustc_semver;
+extern crate crablangc_semver;
 #[allow(unused_extern_crates)]
 extern crate syn;
 #[allow(unused_extern_crates)]
@@ -112,7 +112,7 @@ static EXTERN_FLAGS: LazyLock<String> = LazyLock::new(|| {
     assert!(
         not_found.is_empty(),
         "dependencies not found in depinfo: {not_found:?}\n\
-        help: Make sure the `-Z binary-dep-depinfo` rust flag is enabled\n\
+        help: Make sure the `-Z binary-dep-depinfo` crablang flag is enabled\n\
         help: Try adding to dev-dependencies in Cargo.toml\n\
         help: Be sure to also add `extern crate ...;` to tests/compile-test.rs",
     );
@@ -133,7 +133,7 @@ fn base_config(test_dir: &str) -> compiletest::Config {
         config.filters = filters.split(',').map(ToString::to_string).collect();
     }
 
-    if let Some(path) = option_env!("RUSTC_LIB_PATH") {
+    if let Some(path) = option_env!("CRABLANGC_LIB_PATH") {
         let path = PathBuf::from(path);
         config.run_lib_path = path.clone();
         config.compile_lib_path = path;
@@ -148,7 +148,7 @@ fn base_config(test_dir: &str) -> compiletest::Config {
     let host_libs = option_env!("HOST_LIBS")
         .map(|p| format!(" -L dependency={}", Path::new(p).join("deps").display()))
         .unwrap_or_default();
-    config.target_rustcflags = Some(format!(
+    config.target_crablangcflags = Some(format!(
         "--emit=metadata -Dwarnings -Zui-testing -L dependency={}{host_libs}{}",
         deps_path.display(),
         &*EXTERN_FLAGS,
@@ -156,7 +156,7 @@ fn base_config(test_dir: &str) -> compiletest::Config {
 
     config.src_base = Path::new("tests").join(test_dir);
     config.build_base = profile_path.join("test").join(test_dir);
-    config.rustc_path = profile_path.join(if cfg!(windows) {
+    config.crablangc_path = profile_path.join(if cfg!(windows) {
         "clippy-driver.exe"
     } else {
         "clippy-driver"
@@ -166,20 +166,20 @@ fn base_config(test_dir: &str) -> compiletest::Config {
 
 fn run_ui() {
     let mut config = base_config("ui");
-    config.rustfix_coverage = true;
+    config.crablangfix_coverage = true;
     // use tests/clippy.toml
     let _g = VarGuard::set("CARGO_MANIFEST_DIR", fs::canonicalize("tests").unwrap());
     let _threads = VarGuard::set(
-        "RUST_TEST_THREADS",
-        // if RUST_TEST_THREADS is set, adhere to it, otherwise override it
-        env::var("RUST_TEST_THREADS").unwrap_or_else(|_| {
+        "CRABLANG_TEST_THREADS",
+        // if CRABLANG_TEST_THREADS is set, adhere to it, otherwise override it
+        env::var("CRABLANG_TEST_THREADS").unwrap_or_else(|_| {
             std::thread::available_parallelism()
                 .map_or(1, std::num::NonZeroUsize::get)
                 .to_string()
         }),
     );
     compiletest::run_tests(&config);
-    check_rustfix_coverage();
+    check_crablangfix_coverage();
 }
 
 fn run_internal_tests() {
@@ -291,10 +291,10 @@ fn run_ui_cargo() {
 
                 let _g = VarGuard::set("CARGO_MANIFEST_DIR", case.path());
                 let _h = VarGuard::set(
-                    "CARGO_PKG_RUST_VERSION",
+                    "CARGO_PKG_CRABLANG_VERSION",
                     cargo_parsed
                         .get("package")
-                        .and_then(|p| p.get("rust-version"))
+                        .and_then(|p| p.get("crablang-version"))
                         .and_then(toml::Value::as_str)
                         .unwrap_or(""),
                 );
@@ -329,7 +329,7 @@ fn run_ui_cargo() {
         Ok(result)
     }
 
-    if IS_RUSTC_TEST_SUITE {
+    if IS_CRABLANGC_TEST_SUITE {
         return;
     }
 
@@ -360,7 +360,7 @@ fn compile_test() {
     run_internal_tests();
 }
 
-const RUSTFIX_COVERAGE_KNOWN_EXCEPTIONS: &[&str] = &[
+const CRABLANGFIX_COVERAGE_KNOWN_EXCEPTIONS: &[&str] = &[
     "assign_ops2.rs",
     "borrow_deref_ref_unfixable.rs",
     "cast_size_32bit.rs",
@@ -392,7 +392,7 @@ const RUSTFIX_COVERAGE_KNOWN_EXCEPTIONS: &[&str] = &[
     "single_component_path_imports_nested_first.rs",
     "string_add.rs",
     "suspicious_to_owned.rs",
-    "toplevel_ref_arg_non_rustfix.rs",
+    "toplevel_ref_arg_non_crablangfix.rs",
     "unit_arg.rs",
     "unnecessary_clone.rs",
     "unnecessary_lazy_eval_unfixable.rs",
@@ -401,8 +401,8 @@ const RUSTFIX_COVERAGE_KNOWN_EXCEPTIONS: &[&str] = &[
     "write_with_newline.rs",
 ];
 
-fn check_rustfix_coverage() {
-    let missing_coverage_path = Path::new("debug/test/ui/rustfix_missing_coverage.txt");
+fn check_crablangfix_coverage() {
+    let missing_coverage_path = Path::new("debug/test/ui/crablangfix_missing_coverage.txt");
     let missing_coverage_path = if let Ok(target_dir) = std::env::var("CARGO_TARGET_DIR") {
         PathBuf::from(target_dir).join(missing_coverage_path)
     } else {
@@ -410,7 +410,7 @@ fn check_rustfix_coverage() {
     };
 
     if let Ok(missing_coverage_contents) = std::fs::read_to_string(missing_coverage_path) {
-        assert!(RUSTFIX_COVERAGE_KNOWN_EXCEPTIONS.iter().is_sorted_by_key(Path::new));
+        assert!(CRABLANGFIX_COVERAGE_KNOWN_EXCEPTIONS.iter().is_sorted_by_key(Path::new));
 
         for rs_file in missing_coverage_contents.lines() {
             let rs_path = Path::new(rs_file);
@@ -420,20 +420,20 @@ fn check_rustfix_coverage() {
             assert!(rs_path.starts_with("tests/ui/"), "{rs_file:?}");
             let filename = rs_path.strip_prefix("tests/ui/").unwrap();
             assert!(
-                RUSTFIX_COVERAGE_KNOWN_EXCEPTIONS
+                CRABLANGFIX_COVERAGE_KNOWN_EXCEPTIONS
                     .binary_search_by_key(&filename, Path::new)
                     .is_ok(),
-                "`{rs_file}` runs `MachineApplicable` diagnostics but is missing a `run-rustfix` annotation. \
-                Please either add `// run-rustfix` at the top of the file or add the file to \
-                `RUSTFIX_COVERAGE_KNOWN_EXCEPTIONS` in `tests/compile-test.rs`.",
+                "`{rs_file}` runs `MachineApplicable` diagnostics but is missing a `run-crablangfix` annotation. \
+                Please either add `// run-crablangfix` at the top of the file or add the file to \
+                `CRABLANGFIX_COVERAGE_KNOWN_EXCEPTIONS` in `tests/compile-test.rs`.",
             );
         }
     }
 }
 
 #[test]
-fn rustfix_coverage_known_exceptions_accuracy() {
-    for filename in RUSTFIX_COVERAGE_KNOWN_EXCEPTIONS {
+fn crablangfix_coverage_known_exceptions_accuracy() {
+    for filename in CRABLANGFIX_COVERAGE_KNOWN_EXCEPTIONS {
         let rs_path = Path::new("tests/ui").join(filename);
         assert!(
             rs_path.exists(),

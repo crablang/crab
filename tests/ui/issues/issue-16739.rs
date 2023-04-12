@@ -1,36 +1,36 @@
 // run-pass
 #![feature(unboxed_closures, fn_traits)]
 
-// Test that unboxing shim for calling rust-call ABI methods through a
+// Test that unboxing shim for calling crablang-call ABI methods through a
 // trait box works and does not cause an ICE.
 
 struct Foo { foo: u32 }
 
 impl FnMut<()> for Foo {
-    extern "rust-call" fn call_mut(&mut self, _: ()) -> u32 { self.foo }
+    extern "crablang-call" fn call_mut(&mut self, _: ()) -> u32 { self.foo }
 }
 
 impl FnOnce<()> for Foo {
     type Output = u32;
-    extern "rust-call" fn call_once(mut self, _: ()) -> u32 { self.call_mut(()) }
+    extern "crablang-call" fn call_once(mut self, _: ()) -> u32 { self.call_mut(()) }
 }
 
 impl FnMut<(u32,)> for Foo {
-    extern "rust-call" fn call_mut(&mut self, (x,): (u32,)) -> u32 { self.foo + x }
+    extern "crablang-call" fn call_mut(&mut self, (x,): (u32,)) -> u32 { self.foo + x }
 }
 
 impl FnOnce<(u32,)> for Foo {
     type Output = u32;
-    extern "rust-call" fn call_once(mut self, args: (u32,)) -> u32 { self.call_mut(args) }
+    extern "crablang-call" fn call_once(mut self, args: (u32,)) -> u32 { self.call_mut(args) }
 }
 
 impl FnMut<(u32,u32)> for Foo {
-    extern "rust-call" fn call_mut(&mut self, (x, y): (u32, u32)) -> u32 { self.foo + x + y }
+    extern "crablang-call" fn call_mut(&mut self, (x, y): (u32, u32)) -> u32 { self.foo + x + y }
 }
 
 impl FnOnce<(u32,u32)> for Foo {
     type Output = u32;
-    extern "rust-call" fn call_once(mut self, args: (u32,u32)) -> u32 { self.call_mut(args) }
+    extern "crablang-call" fn call_once(mut self, args: (u32,u32)) -> u32 { self.call_mut(args) }
 }
 
 fn main() {

@@ -10,4 +10,4 @@ LL | extern crate crateresolve2;
 
 error: aborting due to previous error
 
-For more information about this error, try `rustc --explain E0464`.
+For more information about this error, try `crablangc --explain E0464`.

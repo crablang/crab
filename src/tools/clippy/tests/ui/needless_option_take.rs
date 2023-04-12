@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 
 fn main() {
     println!("Testing non erroneous option_take_on_temporary");

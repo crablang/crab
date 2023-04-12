@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 
 // Suggest providing a std::ptr::null{,_mut}() to a function that takes in a raw
 // pointer if a literal 0 was provided by the user.

@@ -4,7 +4,7 @@
 
 // compile-flags:-Zverbose
 
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 
 use std::cell::Cell;
 
@@ -14,7 +14,7 @@ where
 {
 }
 
-#[rustc_regions]
+#[crablangc_regions]
 fn case1() {
     let a = 0;
     let cell = Cell::new(&a);
@@ -24,7 +24,7 @@ fn case1() {
     })
 }
 
-#[rustc_regions]
+#[crablangc_regions]
 fn case2() {
     let a = 0;
     let cell = Cell::new(&a);

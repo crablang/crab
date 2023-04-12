@@ -1,13 +1,13 @@
-//! # The Rust Standard Library
+//! # The CrabLang Standard Library
 //!
-//! The Rust Standard Library is the foundation of portable Rust software, a
-//! set of minimal and battle-tested shared abstractions for the [broader Rust
+//! The CrabLang Standard Library is the foundation of portable CrabLang software, a
+//! set of minimal and battle-tested shared abstractions for the [broader CrabLang
 //! ecosystem][crates.io]. It offers core types, like [`Vec<T>`] and
 //! [`Option<T>`], library-defined [operations on language
 //! primitives](#primitives), [standard macros](#macros), [I/O] and
 //! [multithreading], among [many other things][other].
 //!
-//! `std` is available to all Rust crates by default. Therefore, the
+//! `std` is available to all CrabLang crates by default. Therefore, the
 //! standard library can be accessed in [`use`] statements through the path
 //! `std`, as in [`use std::env`].
 //!
@@ -22,7 +22,7 @@
 //! * [`std::*` modules](#modules)
 //! * [Primitive types](#primitives)
 //! * [Standard macros](#macros)
-//! * [The Rust Prelude]
+//! * [The CrabLang Prelude]
 //!
 //! If this is your first time, the documentation for the standard library is
 //! written to be casually perused. Clicking on interesting things should
@@ -36,15 +36,15 @@
 //! page to collapse it into a more skimmable view.
 //!
 //! While you are looking at that `[-]` button also notice the `source`
-//! link. Rust's API documentation comes with the source code and you are
+//! link. CrabLang's API documentation comes with the source code and you are
 //! encouraged to read it. The standard library source is generally high
 //! quality and a peek behind the curtains is often enlightening.
 //!
 //! # What is in the standard library documentation?
 //!
-//! First of all, The Rust Standard Library is divided into a number of focused
+//! First of all, The CrabLang Standard Library is divided into a number of focused
 //! modules, [all listed further down this page](#modules). These modules are
-//! the bedrock upon which all of Rust is forged, and they have mighty names
+//! the bedrock upon which all of CrabLang is forged, and they have mighty names
 //! like [`std::slice`] and [`std::cmp`]. Modules' documentation typically
 //! includes an overview of the module along with examples, and are a smart
 //! place to start familiarizing yourself with the library.
@@ -71,7 +71,7 @@
 //! calls to methods on [`str`] and [`[T]`][prim@slice] respectively, via [deref
 //! coercions][deref-coercions].
 //!
-//! Third, the standard library defines [The Rust Prelude], a small collection
+//! Third, the standard library defines [The CrabLang Prelude], a small collection
 //! of items - mostly traits - that are imported into every module of every
 //! crate. The traits in the prelude are pervasive, making the prelude
 //! documentation a good entry point to learning about the library.
@@ -84,27 +84,27 @@
 //!
 //! # Contributing changes to the documentation
 //!
-//! Check out the rust contribution guidelines [here](
-//! https://rustc-dev-guide.rust-lang.org/contributing.html#writing-documentation).
+//! Check out the crablang contribution guidelines [here](
+//! https://crablangc-dev-guide.crablang.org/contributing.html#writing-documentation).
 //! The source for this documentation can be found on
-//! [GitHub](https://github.com/rust-lang/rust).
+//! [GitHub](https://github.com/crablang/crablang).
 //! To contribute changes, make sure you read the guidelines first, then submit
 //! pull-requests for your suggested changes.
 //!
 //! Contributions are appreciated! If you see a part of the docs that can be
-//! improved, submit a PR, or chat with us first on [Discord][rust-discord]
+//! improved, submit a PR, or chat with us first on [Discord][crablang-discord]
 //! #docs.
 //!
-//! # A Tour of The Rust Standard Library
+//! # A Tour of The CrabLang Standard Library
 //!
 //! The rest of this crate documentation is dedicated to pointing out notable
-//! features of The Rust Standard Library.
+//! features of The CrabLang Standard Library.
 //!
 //! ## Containers and collections
 //!
 //! The [`option`] and [`result`] modules define optional and error-handling
 //! types, [`Option<T>`] and [`Result<T, E>`]. The [`iter`] module defines
-//! Rust's iterator trait, [`Iterator`], which works with the [`for`] loop to
+//! CrabLang's iterator trait, [`Iterator`], which works with the [`for`] loop to
 //! access collections.
 //!
 //! The standard library exposes three common ways to deal with contiguous
@@ -123,7 +123,7 @@
 //! * [`Box<[T]>`][owned slice] - *owned slice*
 //!
 //! [`str`], a UTF-8 string slice, is a primitive type, and the standard library
-//! defines many methods for it. Rust [`str`]s are typically accessed as
+//! defines many methods for it. CrabLang [`str`]s are typically accessed as
 //! immutable references: `&str`. Use the owned [`String`] for building and
 //! mutating strings.
 //!
@@ -148,7 +148,7 @@
 //! Common types of I/O, including [files], [TCP], and [UDP], are defined in
 //! the [`io`], [`fs`], and [`net`] modules.
 //!
-//! The [`thread`] module contains Rust's threading abstractions. [`sync`]
+//! The [`thread`] module contains CrabLang's threading abstractions. [`sync`]
 //! contains further primitive shared memory types, including [`atomic`] and
 //! [`mpsc`], which contains the channel types for message passing.
 //!
@@ -157,7 +157,7 @@
 //! [`MAX`]: i32::MAX
 //! [page for the module `std::i32`]: crate::i32
 //! [TCP]: net::TcpStream
-//! [The Rust Prelude]: prelude
+//! [The CrabLang Prelude]: prelude
 //! [UDP]: net::UdpSocket
 //! [`Arc`]: sync::Arc
 //! [owned slice]: boxed
@@ -184,15 +184,15 @@
 //! [multithreading]: thread
 //! [other]: #what-is-in-the-standard-library-documentation
 //! [primitive types]: ../book/ch03-02-data-types.html
-//! [rust-discord]: https://discord.gg/rust-lang
+//! [crablang-discord]: https://discord.gg/crablang
 //! [array]: prim@array
 //! [slice]: prim@slice
 
-#![cfg_attr(not(feature = "restricted-std"), stable(feature = "rust1", since = "1.0.0"))]
+#![cfg_attr(not(feature = "restricted-std"), stable(feature = "crablang1", since = "1.0.0"))]
 #![cfg_attr(feature = "restricted-std", unstable(feature = "restricted_std", issue = "none"))]
 #![doc(
-    html_playground_url = "https://play.rust-lang.org/",
-    issue_tracker_base_url = "https://github.com/rust-lang/rust/issues/",
+    html_playground_url = "https://play.crablang.org/",
+    issue_tracker_base_url = "https://github.com/crablang/crablang/issues/",
     test(no_crate_inject, attr(deny(warnings))),
     test(attr(allow(dead_code, deprecated, unused_variables, unused_mut)))
 )]
@@ -203,11 +203,11 @@
     not(no_global_oom_handling)
 ))]
 // To run std tests without x.py without ending up with two copies of std, Miri needs to be
-// able to "empty" this crate. See <https://github.com/rust-lang/miri-test-libstd/issues/4>.
-// rustc itself never sets the feature, so this line has no affect there.
+// able to "empty" this crate. See <https://github.com/crablang/miri-test-libstd/issues/4>.
+// crablangc itself never sets the feature, so this line has no affect there.
 #![cfg(any(not(feature = "miri-test-libstd"), test, doctest))]
 // miri-test-libstd also prefers to make std use the sysroot versions of the dependencies.
-#![cfg_attr(feature = "miri-test-libstd", feature(rustc_private))]
+#![cfg_attr(feature = "miri-test-libstd", feature(crablangc_private))]
 // Don't link to std. We are std.
 #![no_std]
 // Tell the compiler to link to either panic_abort or panic_unwind
@@ -219,7 +219,7 @@
 #![warn(missing_debug_implementations)]
 #![allow(explicit_outlives_requirements)]
 #![allow(unused_lifetimes)]
-#![deny(rustc::existing_doc_keyword)]
+#![deny(crablangc::existing_doc_keyword)]
 #![deny(fuzzy_provenance_casts)]
 // Ensure that std can be linked against panic_abort despite compiled with `-C panic=unwind`
 #![deny(ffi_unwind_calls)]
@@ -266,8 +266,8 @@
 #![feature(never_type)]
 #![feature(platform_intrinsics)]
 #![feature(prelude_import)]
-#![feature(rustc_attrs)]
-#![feature(rustdoc_internals)]
+#![feature(crablangc_attrs)]
+#![feature(crablangdoc_internals)]
 #![feature(staged_api)]
 #![feature(thread_local)]
 #![feature(try_blocks)]
@@ -362,7 +362,7 @@
 // to import the prelude implicitly when building crates that depend on std.
 #[prelude_import]
 #[allow(unused)]
-use prelude::rust_2021::*;
+use prelude::crablang_2021::*;
 
 // Access to Bencher, etc.
 #[cfg(test)]
@@ -403,104 +403,104 @@ mod macros;
 #[macro_use]
 pub mod rt;
 
-// The Rust prelude
+// The CrabLang prelude
 pub mod prelude;
 
 // Public module declarations and re-exports
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub use alloc_crate::borrow;
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub use alloc_crate::boxed;
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub use alloc_crate::fmt;
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub use alloc_crate::format;
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub use alloc_crate::rc;
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub use alloc_crate::slice;
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub use alloc_crate::str;
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub use alloc_crate::string;
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub use alloc_crate::vec;
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub use core::any;
 #[stable(feature = "core_array", since = "1.36.0")]
 pub use core::array;
 #[unstable(feature = "async_iterator", issue = "79024")]
 pub use core::async_iter;
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub use core::cell;
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub use core::char;
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub use core::clone;
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub use core::cmp;
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub use core::convert;
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub use core::default;
 #[stable(feature = "futures_api", since = "1.36.0")]
 pub use core::future;
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub use core::hash;
 #[stable(feature = "core_hint", since = "1.27.0")]
 pub use core::hint;
 #[stable(feature = "i128", since = "1.26.0")]
 #[allow(deprecated, deprecated_in_future)]
 pub use core::i128;
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[allow(deprecated, deprecated_in_future)]
 pub use core::i16;
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[allow(deprecated, deprecated_in_future)]
 pub use core::i32;
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[allow(deprecated, deprecated_in_future)]
 pub use core::i64;
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[allow(deprecated, deprecated_in_future)]
 pub use core::i8;
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub use core::intrinsics;
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[allow(deprecated, deprecated_in_future)]
 pub use core::isize;
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub use core::iter;
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub use core::marker;
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub use core::mem;
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub use core::ops;
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub use core::option;
 #[stable(feature = "pin", since = "1.33.0")]
 pub use core::pin;
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub use core::ptr;
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub use core::result;
 #[stable(feature = "i128", since = "1.26.0")]
 #[allow(deprecated, deprecated_in_future)]
 pub use core::u128;
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[allow(deprecated, deprecated_in_future)]
 pub use core::u16;
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[allow(deprecated, deprecated_in_future)]
 pub use core::u32;
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[allow(deprecated, deprecated_in_future)]
 pub use core::u64;
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[allow(deprecated, deprecated_in_future)]
 pub use core::u8;
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[allow(deprecated, deprecated_in_future)]
 pub use core::usize;
 
@@ -527,10 +527,10 @@ pub mod sync;
 pub mod time;
 
 // Pull in `std_float` crate  into std. The contents of
-// `std_float` are in a different repository: rust-lang/portable-simd.
+// `std_float` are in a different repository: crablang/portable-simd.
 #[path = "../../portable-simd/crates/std_float/src/lib.rs"]
 #[allow(missing_debug_implementations, dead_code, unsafe_op_in_unsafe_fn, unused_unsafe)]
-#[allow(rustdoc::bare_urls)]
+#[allow(crablangdoc::bare_urls)]
 #[unstable(feature = "portable_simd", issue = "86656")]
 mod std_float;
 
@@ -562,7 +562,7 @@ pub mod arch {
     #[stable(feature = "simd_arch", since = "1.27.0")]
     // The `no_inline`-attribute is required to make the documentation of all
     // targets available.
-    // See https://github.com/rust-lang/rust/pull/57808#issuecomment-457390549 for
+    // See https://github.com/crablang/crablang/pull/57808#issuecomment-457390549 for
     // more information.
     #[doc(no_inline)] // Note (#82861): required for correct documentation
     pub use core::arch::*;
@@ -597,7 +597,7 @@ mod personality;
 mod backtrace_rs;
 
 // Re-export macros defined in core.
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[allow(deprecated, deprecated_in_future)]
 pub use core::{
     assert_eq, assert_ne, debug_assert, debug_assert_eq, debug_assert_ne, matches, todo, r#try,
@@ -624,17 +624,17 @@ pub use core::concat_bytes;
 pub use core::primitive;
 
 // Include a number of private modules that exist solely to provide
-// the rustdoc documentation for primitive types. Using `include!`
-// because rustdoc only looks for these modules at the crate level.
+// the crablangdoc documentation for primitive types. Using `include!`
+// because crablangdoc only looks for these modules at the crate level.
 include!("primitive_docs.rs");
 
 // Include a number of private modules that exist solely to provide
-// the rustdoc documentation for the existing keywords. Using `include!`
-// because rustdoc only looks for these modules at the crate level.
+// the crablangdoc documentation for the existing keywords. Using `include!`
+// because crablangdoc only looks for these modules at the crate level.
 include!("keyword_docs.rs");
 
 // This is required to avoid an unstable error when `restricted-std` is not
-// enabled. The use of #![feature(restricted_std)] in rustc-std-workspace-std
+// enabled. The use of #![feature(restricted_std)] in crablangc-std-workspace-std
 // is unconditional, so the unstable feature needs to be defined somewhere.
 #[unstable(feature = "restricted_std", issue = "none")]
 mod __restricted_std_workaround {}

@@ -9,7 +9,7 @@
 #![feature(generators)]
 #![feature(generator_clone)]
 #![feature(generator_trait)]
-#![feature(rustc_attrs, stmt_expr_attributes)]
+#![feature(crablangc_attrs, stmt_expr_attributes)]
 
 use std::ops::Generator;
 use std::pin::Pin;
@@ -25,7 +25,7 @@ fn main() {
         // - create a Box that is ignored for trait computations;
         // - compute fields (and yields);
         // - assign to `t`.
-        let t = #[rustc_box]
+        let t = #[crablangc_box]
         Box::new((5, yield));
         drop(t);
     };

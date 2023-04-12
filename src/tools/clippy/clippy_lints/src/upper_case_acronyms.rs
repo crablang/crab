@@ -1,11 +1,11 @@
 use clippy_utils::diagnostics::span_lint_and_sugg;
 use itertools::Itertools;
-use rustc_errors::Applicability;
-use rustc_hir::{Item, ItemKind};
-use rustc_lint::{LateContext, LateLintPass, LintContext};
-use rustc_middle::lint::in_external_macro;
-use rustc_session::{declare_tool_lint, impl_lint_pass};
-use rustc_span::symbol::Ident;
+use crablangc_errors::Applicability;
+use crablangc_hir::{Item, ItemKind};
+use crablangc_lint::{LateContext, LateLintPass, LintContext};
+use crablangc_middle::lint::in_external_macro;
+use crablangc_session::{declare_tool_lint, impl_lint_pass};
+use crablangc_span::symbol::Ident;
 
 declare_clippy_lint! {
     /// ### What it does
@@ -13,7 +13,7 @@ declare_clippy_lint! {
     ///
     /// ### Why is this bad?
     /// In CamelCase, acronyms count as one word.
-    /// See [naming conventions](https://rust-lang.github.io/api-guidelines/naming.html#casing-conforms-to-rfc-430-c-case)
+    /// See [naming conventions](https://crablang.github.io/api-guidelines/naming.html#casing-conforms-to-rfc-430-c-case)
     /// for more.
     ///
     /// By default, the lint only triggers on fully-capitalized names.
@@ -26,11 +26,11 @@ declare_clippy_lint! {
     /// the letters in the second acronym.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// struct HTTPResponse;
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// struct HttpResponse;
     /// ```
     #[clippy::version = "1.51.0"]

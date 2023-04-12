@@ -5,7 +5,7 @@
 //
 // aux-build:metadata-sufficient-for-layout.rs
 
-#![feature(type_alias_impl_trait, rustc_attrs)]
+#![feature(type_alias_impl_trait, crablangc_attrs)]
 #![feature(generator_trait)]
 
 extern crate metadata_sufficient_for_layout;
@@ -21,5 +21,5 @@ fn f() -> F {
     metadata_sufficient_for_layout::g()
 }
 
-#[rustc_error]
+#[crablangc_error]
 fn main() {} //~ ERROR

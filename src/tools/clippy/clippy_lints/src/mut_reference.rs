@@ -1,8 +1,8 @@
 use clippy_utils::diagnostics::span_lint;
-use rustc_hir::{BorrowKind, Expr, ExprKind, Mutability};
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_middle::ty::{self, Ty};
-use rustc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_hir::{BorrowKind, Expr, ExprKind, Mutability};
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_middle::ty::{self, Ty};
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
 use std::iter;
 
 declare_clippy_lint! {
@@ -15,14 +15,14 @@ declare_clippy_lint! {
     /// the value. Also the code misleads about the intent of the call site.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// # let mut vec = Vec::new();
     /// # let mut value = 5;
     /// vec.push(&mut value);
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// # let mut vec = Vec::new();
     /// # let value = 5;
     /// vec.push(&value);
@@ -44,7 +44,7 @@ impl<'tcx> LateLintPass<'tcx> for UnnecessaryMutPassed {
                         cx,
                         arguments.iter().collect(),
                         cx.typeck_results().expr_ty(fn_expr),
-                        &rustc_hir_pretty::to_string(rustc_hir_pretty::NO_ANN, |s| s.print_qpath(path, false)),
+                        &crablangc_hir_pretty::to_string(crablangc_hir_pretty::NO_ANN, |s| s.print_qpath(path, false)),
                         "function",
                     );
                 }

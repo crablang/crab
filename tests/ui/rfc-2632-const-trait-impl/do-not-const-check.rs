@@ -1,5 +1,5 @@
 // check-pass
-#![feature(const_trait_impl, rustc_attrs)]
+#![feature(const_trait_impl, crablangc_attrs)]
 
 #[const_trait]
 trait IntoIter {
@@ -8,7 +8,7 @@ trait IntoIter {
 
 #[const_trait]
 trait Hmm: Sized {
-    #[rustc_do_not_const_check]
+    #[crablangc_do_not_const_check]
     fn chain<U>(self, other: U) where U: IntoIter,
     {
         other.into_iter()

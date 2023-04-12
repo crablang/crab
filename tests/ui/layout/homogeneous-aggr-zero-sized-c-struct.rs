@@ -1,4 +1,4 @@
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 
 // Show that `homogeneous_aggregate` code ignores zero-length C
 // arrays.  This matches the recent C standard, though not the
@@ -18,7 +18,7 @@ pub struct Middle {
     pub b: f32,
 }
 
-#[rustc_layout(homogeneous_aggregate)]
+#[crablangc_layout(homogeneous_aggregate)]
 pub type TestMiddle = Middle;
 //~^ ERROR homogeneous_aggregate: Ok(Homogeneous
 
@@ -29,7 +29,7 @@ pub struct Final {
     pub foo: [Foo; 0],
 }
 
-#[rustc_layout(homogeneous_aggregate)]
+#[crablangc_layout(homogeneous_aggregate)]
 pub type TestFinal = Final;
 //~^ ERROR homogeneous_aggregate: Ok(Homogeneous
 

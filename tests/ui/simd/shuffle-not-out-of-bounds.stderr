@@ -72,4 +72,4 @@ LL |         let _: u8x2 = simd_shuffle(v, v, I);
 
 error: aborting due to 7 previous errors
 
-For more information about this error, try `rustc --explain E0511`.
+For more information about this error, try `crablangc --explain E0511`.

@@ -15,7 +15,7 @@ fn main() {
 
     // casts, methods, parentheses
     let _ = (1u32 as u64) & (1u32 as u64);
-    #[rustfmt::skip]
+    #[crablangfmt::skip]
     {
         let _ = 1 ^ ((((((1))))));
     };

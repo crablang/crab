@@ -4,7 +4,7 @@ error[E0261]: use of undeclared lifetime name `'a`
 LL | type Return<A> = impl WithAssoc<A, AssocType = impl SomeTrait + 'a>;
    |                                                                 ^^ undeclared lifetime
    |
-   = note: for more information on higher-ranked polymorphism, visit https://doc.rust-lang.org/nomicon/hrtb.html
+   = note: for more information on higher-ranked polymorphism, visit https://doc.crablang.org/nomicon/hrtb.html
 help: consider making the bound lifetime-generic with a new `'a` lifetime
    |
 LL | type Return<A> = impl for<'a> WithAssoc<A, AssocType = impl SomeTrait + 'a>;
@@ -26,4 +26,4 @@ LL | fn my_fun() -> Return<()> {}
 error: aborting due to 2 previous errors
 
 Some errors have detailed explanations: E0261, E0792.
-For more information about an error, try `rustc --explain E0261`.
+For more information about an error, try `crablangc --explain E0261`.

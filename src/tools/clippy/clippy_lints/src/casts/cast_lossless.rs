@@ -3,10 +3,10 @@ use clippy_utils::in_constant;
 use clippy_utils::msrvs::{self, Msrv};
 use clippy_utils::source::snippet_opt;
 use clippy_utils::ty::is_isize_or_usize;
-use rustc_errors::Applicability;
-use rustc_hir::{Expr, ExprKind};
-use rustc_lint::LateContext;
-use rustc_middle::ty::{self, FloatTy, Ty};
+use crablangc_errors::Applicability;
+use crablangc_hir::{Expr, ExprKind};
+use crablangc_lint::LateContext;
+use crablangc_middle::ty::{self, FloatTy, Ty};
 
 use super::{utils, CAST_LOSSLESS};
 

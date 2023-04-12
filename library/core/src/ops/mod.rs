@@ -3,13 +3,13 @@
 //! Implementing these traits allows you to overload certain operators.
 //!
 //! Some of these traits are imported by the prelude, so they are available in
-//! every Rust program. Only operators backed by traits can be overloaded. For
+//! every CrabLang program. Only operators backed by traits can be overloaded. For
 //! example, the addition operator (`+`) can be overloaded through the [`Add`]
 //! trait, but since the assignment operator (`=`) has no backing trait, there
 //! is no way of overloading its semantics. Additionally, this module does not
 //! provide any mechanism to create new operators. If traitless overloading or
 //! custom operators are required, you should look toward macros or compiler
-//! plugins to extend Rust's syntax.
+//! plugins to extend CrabLang's syntax.
 //!
 //! Implementations of operator traits should be unsurprising in their
 //! respective contexts, keeping in mind their usual meanings and
@@ -39,7 +39,7 @@
 //! This example creates a `Point` struct that implements [`Add`] and [`Sub`],
 //! and then demonstrates adding and subtracting two `Point`s.
 //!
-//! ```rust
+//! ```crablang
 //! use std::ops::{Add, Sub};
 //!
 //! #[derive(Debug, Copy, Clone, PartialEq)]
@@ -80,7 +80,7 @@
 //!
 //! Taking a [`Fn`] as a parameter:
 //!
-//! ```rust
+//! ```crablang
 //! fn call_with_one<F>(func: F) -> usize
 //!     where F: Fn(usize) -> usize
 //! {
@@ -93,7 +93,7 @@
 //!
 //! Taking a [`FnMut`] as a parameter:
 //!
-//! ```rust
+//! ```crablang
 //! fn do_twice<F>(mut func: F)
 //!     where F: FnMut()
 //! {
@@ -112,7 +112,7 @@
 //!
 //! Taking a [`FnOnce`] as a parameter:
 //!
-//! ```rust
+//! ```crablang
 //! fn consume_with_relish<F>(func: F)
 //!     where F: FnOnce() -> String
 //! {
@@ -136,7 +136,7 @@
 //! [`clone`]: Clone::clone
 //! [operator precedence]: ../../reference/expressions.html#expression-precedence
 
-#![stable(feature = "rust1", since = "1.0.0")]
+#![stable(feature = "crablang1", since = "1.0.0")]
 
 mod arith;
 mod bit;
@@ -151,32 +151,32 @@ mod range;
 mod try_trait;
 mod unsize;
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub use self::arith::{Add, Div, Mul, Neg, Rem, Sub};
 #[stable(feature = "op_assign_traits", since = "1.8.0")]
 pub use self::arith::{AddAssign, DivAssign, MulAssign, RemAssign, SubAssign};
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub use self::bit::{BitAnd, BitOr, BitXor, Not, Shl, Shr};
 #[stable(feature = "op_assign_traits", since = "1.8.0")]
 pub use self::bit::{BitAndAssign, BitOrAssign, BitXorAssign, ShlAssign, ShrAssign};
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub use self::deref::{Deref, DerefMut};
 
 #[unstable(feature = "receiver_trait", issue = "none")]
 pub use self::deref::Receiver;
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub use self::drop::Drop;
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub use self::function::{Fn, FnMut, FnOnce};
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub use self::index::{Index, IndexMut};
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub use self::range::{Range, RangeFrom, RangeFull, RangeTo};
 
 pub(crate) use self::index_range::IndexRange;

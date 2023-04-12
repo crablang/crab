@@ -1,6 +1,6 @@
 // run-pass
 
-// https://github.com/rust-lang/rust/issues/27918
+// https://github.com/crablang/crablang/issues/27918
 
 fn main() {
     match b"    " {

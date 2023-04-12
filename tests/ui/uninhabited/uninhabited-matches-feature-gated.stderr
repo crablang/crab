@@ -102,7 +102,7 @@ LL |     let Ok(x) = x;
    |         ^^^^^ pattern `Err(_)` not covered
    |
    = note: `let` bindings require an "irrefutable pattern", like a `struct` or an `enum` with only one variant
-   = note: for more information, visit https://doc.rust-lang.org/book/ch18-02-refutability.html
+   = note: for more information, visit https://doc.crablang.org/book/ch18-02-refutability.html
    = note: the matched value is of type `Result<u32, Void>`
 help: you might want to use `let else` to handle the variant that isn't matched
    |
@@ -112,4 +112,4 @@ LL |     let Ok(x) = x else { todo!() };
 error: aborting due to 7 previous errors
 
 Some errors have detailed explanations: E0004, E0005.
-For more information about an error, try `rustc --explain E0004`.
+For more information about an error, try `crablangc --explain E0004`.

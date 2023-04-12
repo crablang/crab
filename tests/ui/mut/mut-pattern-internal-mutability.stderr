@@ -22,4 +22,4 @@ LL |     drop(x);
 error: aborting due to 2 previous errors
 
 Some errors have detailed explanations: E0384, E0506.
-For more information about an error, try `rustc --explain E0384`.
+For more information about an error, try `crablangc --explain E0384`.

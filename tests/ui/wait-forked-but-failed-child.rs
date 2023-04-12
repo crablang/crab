@@ -5,7 +5,7 @@
 // ignore-fuchsia no 'ps'
 // ignore-nto no 'ps'
 
-#![feature(rustc_private)]
+#![feature(crablangc_private)]
 
 extern crate libc;
 

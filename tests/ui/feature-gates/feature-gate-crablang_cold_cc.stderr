@@ -1,0 +1,66 @@
+error[E0658]: crablang-cold is experimental and subject to change
+  --> $DIR/feature-gate-crablang_cold_cc.rs:3:8
+   |
+LL | extern "crablang-cold" fn fu() {}
+   |        ^^^^^^^^^^^
+   |
+   = note: see issue #97544 <https://github.com/crablang/crablang/issues/97544> for more information
+   = help: add `#![feature(crablang_cold_cc)]` to the crate attributes to enable
+
+error[E0658]: crablang-cold is experimental and subject to change
+  --> $DIR/feature-gate-crablang_cold_cc.rs:6:12
+   |
+LL |     extern "crablang-cold" fn mu();
+   |            ^^^^^^^^^^^
+   |
+   = note: see issue #97544 <https://github.com/crablang/crablang/issues/97544> for more information
+   = help: add `#![feature(crablang_cold_cc)]` to the crate attributes to enable
+
+error[E0658]: crablang-cold is experimental and subject to change
+  --> $DIR/feature-gate-crablang_cold_cc.rs:7:12
+   |
+LL |     extern "crablang-cold" fn dmu() {}
+   |            ^^^^^^^^^^^
+   |
+   = note: see issue #97544 <https://github.com/crablang/crablang/issues/97544> for more information
+   = help: add `#![feature(crablang_cold_cc)]` to the crate attributes to enable
+
+error[E0658]: crablang-cold is experimental and subject to change
+  --> $DIR/feature-gate-crablang_cold_cc.rs:12:12
+   |
+LL |     extern "crablang-cold" fn mu() {}
+   |            ^^^^^^^^^^^
+   |
+   = note: see issue #97544 <https://github.com/crablang/crablang/issues/97544> for more information
+   = help: add `#![feature(crablang_cold_cc)]` to the crate attributes to enable
+
+error[E0658]: crablang-cold is experimental and subject to change
+  --> $DIR/feature-gate-crablang_cold_cc.rs:16:12
+   |
+LL |     extern "crablang-cold" fn imu() {}
+   |            ^^^^^^^^^^^
+   |
+   = note: see issue #97544 <https://github.com/crablang/crablang/issues/97544> for more information
+   = help: add `#![feature(crablang_cold_cc)]` to the crate attributes to enable
+
+error[E0658]: crablang-cold is experimental and subject to change
+  --> $DIR/feature-gate-crablang_cold_cc.rs:19:19
+   |
+LL | type TAU = extern "crablang-cold" fn();
+   |                   ^^^^^^^^^^^
+   |
+   = note: see issue #97544 <https://github.com/crablang/crablang/issues/97544> for more information
+   = help: add `#![feature(crablang_cold_cc)]` to the crate attributes to enable
+
+error[E0658]: crablang-cold is experimental and subject to change
+  --> $DIR/feature-gate-crablang_cold_cc.rs:21:8
+   |
+LL | extern "crablang-cold" {}
+   |        ^^^^^^^^^^^
+   |
+   = note: see issue #97544 <https://github.com/crablang/crablang/issues/97544> for more information
+   = help: add `#![feature(crablang_cold_cc)]` to the crate attributes to enable
+
+error: aborting due to 7 previous errors
+
+For more information about this error, try `crablangc --explain E0658`.

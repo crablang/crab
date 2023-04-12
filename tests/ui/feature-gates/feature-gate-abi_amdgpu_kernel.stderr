@@ -4,7 +4,7 @@ error[E0658]: amdgpu-kernel ABI is experimental and subject to change
 LL | extern "amdgpu-kernel" fn fu() {}
    |        ^^^^^^^^^^^^^^^
    |
-   = note: see issue #51575 <https://github.com/rust-lang/rust/issues/51575> for more information
+   = note: see issue #51575 <https://github.com/crablang/crablang/issues/51575> for more information
    = help: add `#![feature(abi_amdgpu_kernel)]` to the crate attributes to enable
 
 error[E0658]: amdgpu-kernel ABI is experimental and subject to change
@@ -13,7 +13,7 @@ error[E0658]: amdgpu-kernel ABI is experimental and subject to change
 LL |     extern "amdgpu-kernel" fn mu();
    |            ^^^^^^^^^^^^^^^
    |
-   = note: see issue #51575 <https://github.com/rust-lang/rust/issues/51575> for more information
+   = note: see issue #51575 <https://github.com/crablang/crablang/issues/51575> for more information
    = help: add `#![feature(abi_amdgpu_kernel)]` to the crate attributes to enable
 
 error[E0658]: amdgpu-kernel ABI is experimental and subject to change
@@ -22,7 +22,7 @@ error[E0658]: amdgpu-kernel ABI is experimental and subject to change
 LL |     extern "amdgpu-kernel" fn dmu() {}
    |            ^^^^^^^^^^^^^^^
    |
-   = note: see issue #51575 <https://github.com/rust-lang/rust/issues/51575> for more information
+   = note: see issue #51575 <https://github.com/crablang/crablang/issues/51575> for more information
    = help: add `#![feature(abi_amdgpu_kernel)]` to the crate attributes to enable
 
 error[E0658]: amdgpu-kernel ABI is experimental and subject to change
@@ -31,7 +31,7 @@ error[E0658]: amdgpu-kernel ABI is experimental and subject to change
 LL |     extern "amdgpu-kernel" fn mu() {}
    |            ^^^^^^^^^^^^^^^
    |
-   = note: see issue #51575 <https://github.com/rust-lang/rust/issues/51575> for more information
+   = note: see issue #51575 <https://github.com/crablang/crablang/issues/51575> for more information
    = help: add `#![feature(abi_amdgpu_kernel)]` to the crate attributes to enable
 
 error[E0658]: amdgpu-kernel ABI is experimental and subject to change
@@ -40,7 +40,7 @@ error[E0658]: amdgpu-kernel ABI is experimental and subject to change
 LL |     extern "amdgpu-kernel" fn imu() {}
    |            ^^^^^^^^^^^^^^^
    |
-   = note: see issue #51575 <https://github.com/rust-lang/rust/issues/51575> for more information
+   = note: see issue #51575 <https://github.com/crablang/crablang/issues/51575> for more information
    = help: add `#![feature(abi_amdgpu_kernel)]` to the crate attributes to enable
 
 error[E0658]: amdgpu-kernel ABI is experimental and subject to change
@@ -49,7 +49,7 @@ error[E0658]: amdgpu-kernel ABI is experimental and subject to change
 LL | type TAU = extern "amdgpu-kernel" fn();
    |                   ^^^^^^^^^^^^^^^
    |
-   = note: see issue #51575 <https://github.com/rust-lang/rust/issues/51575> for more information
+   = note: see issue #51575 <https://github.com/crablang/crablang/issues/51575> for more information
    = help: add `#![feature(abi_amdgpu_kernel)]` to the crate attributes to enable
 
 error[E0658]: amdgpu-kernel ABI is experimental and subject to change
@@ -58,7 +58,7 @@ error[E0658]: amdgpu-kernel ABI is experimental and subject to change
 LL | extern "amdgpu-kernel" {}
    |        ^^^^^^^^^^^^^^^
    |
-   = note: see issue #51575 <https://github.com/rust-lang/rust/issues/51575> for more information
+   = note: see issue #51575 <https://github.com/crablang/crablang/issues/51575> for more information
    = help: add `#![feature(abi_amdgpu_kernel)]` to the crate attributes to enable
 
 error[E0570]: `"amdgpu-kernel"` is not a supported ABI for the current target
@@ -94,4 +94,4 @@ LL |     extern "amdgpu-kernel" fn imu() {}
 error: aborting due to 12 previous errors
 
 Some errors have detailed explanations: E0570, E0658.
-For more information about an error, try `rustc --explain E0570`.
+For more information about an error, try `crablangc --explain E0570`.

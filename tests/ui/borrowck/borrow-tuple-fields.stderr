@@ -66,4 +66,4 @@ LL |     a.use_mut();
 error: aborting due to 6 previous errors
 
 Some errors have detailed explanations: E0499, E0502, E0505.
-For more information about an error, try `rustc --explain E0499`.
+For more information about an error, try `crablangc --explain E0499`.

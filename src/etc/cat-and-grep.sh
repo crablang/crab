@@ -1,7 +1,7 @@
 #!/bin/sh
 set -eu
 
-# Performs `cat` and `grep` simultaneously for `run-make` tests in the Rust CI.
+# Performs `cat` and `grep` simultaneously for `run-make` tests in the CrabLang CI.
 #
 # This program will read lines from stdin and print them to stdout immediately.
 # At the same time, it will check if the input line contains the substring or

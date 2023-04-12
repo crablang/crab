@@ -26,7 +26,7 @@ fn main() -> anyhow::Result<()> {
     let mut output = BufWriter::new(File::create(opts.output)?);
     output.write_all(b"[crates]\n")?;
     let client = SyncClient::new(
-        "clippy/lintcheck (github.com/rust-lang/rust-clippy/)",
+        "clippy/lintcheck (github.com/crablang/crablang-clippy/)",
         Duration::from_secs(1),
     )?;
     let mut seen_crates = HashSet::new();

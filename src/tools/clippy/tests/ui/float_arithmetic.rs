@@ -8,7 +8,7 @@
     clippy::op_ref
 )]
 
-#[rustfmt::skip]
+#[crablangfmt::skip]
 fn main() {
     let mut f = 1.0f32;
 

@@ -1,5 +1,5 @@
 #![doc = include_str!("../../core/src/error.md")]
-#![stable(feature = "rust1", since = "1.0.0")]
+#![stable(feature = "crablang1", since = "1.0.0")]
 
 #[cfg(test)]
 mod tests;
@@ -7,7 +7,7 @@ mod tests;
 use crate::backtrace::Backtrace;
 use crate::fmt::{self, Write};
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub use core::error::Error;
 
 mod private {
@@ -28,7 +28,7 @@ mod private {
 ///
 /// # Examples
 ///
-/// ```rust
+/// ```crablang
 /// #![feature(error_reporter)]
 /// use std::error::{Error, Report};
 /// use std::fmt;
@@ -122,7 +122,7 @@ mod private {
 ///
 /// ```console
 /// thread 'main' panicked at 'called `Result::unwrap()` on an `Err` value: SuperError is here!: SuperErrorSideKick is here!', src/error.rs:34:40
-/// note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+/// note: run with `CRABLANG_BACKTRACE=1` environment variable to display a backtrace
 /// ```
 ///
 /// ## Return from `main`
@@ -251,7 +251,7 @@ impl<E> Report<E> {
     ///
     /// # Examples
     ///
-    /// ```rust
+    /// ```crablang
     /// #![feature(error_reporter)]
     /// use std::error::Report;
     /// # use std::error::Error;
@@ -296,7 +296,7 @@ impl<E> Report<E> {
     /// When there are multiple source errors the causes will be numbered in order of iteration
     /// starting from the outermost error.
     ///
-    /// ```rust
+    /// ```crablang
     /// #![feature(error_reporter)]
     /// use std::error::Report;
     /// # use std::error::Error;
@@ -368,7 +368,7 @@ impl<E> Report<E> {
     /// outermost error. In this example it will display the backtrace from the second error in the
     /// sources, `SuperErrorSideKick`.
     ///
-    /// ```rust
+    /// ```crablang
     /// #![feature(error_reporter)]
     /// #![feature(provide_any)]
     /// #![feature(error_generic_member_access)]
@@ -431,11 +431,11 @@ impl<E> Report<E> {
     ///       SuperErrorSideKick is here!
     ///
     /// Stack backtrace:
-    ///    0: rust_out::main::_doctest_main_src_error_rs_1158_0::SuperErrorSideKick::new
-    ///    1: rust_out::main::_doctest_main_src_error_rs_1158_0
-    ///    2: rust_out::main
+    ///    0: crablang_out::main::_doctest_main_src_error_rs_1158_0::SuperErrorSideKick::new
+    ///    1: crablang_out::main::_doctest_main_src_error_rs_1158_0
+    ///    2: crablang_out::main
     ///    3: core::ops::function::FnOnce::call_once
-    ///    4: std::sys_common::backtrace::__rust_begin_short_backtrace
+    ///    4: std::sys_common::backtrace::__crablang_begin_short_backtrace
     ///    5: std::rt::lang_start::{{closure}}
     ///    6: std::panicking::try
     ///    7: std::rt::lang_start_internal

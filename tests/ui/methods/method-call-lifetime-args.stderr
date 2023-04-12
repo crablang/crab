@@ -24,4 +24,4 @@ LL |     fn late_implicit(self, _: &u8, _: &u8) {}
 
 error: aborting due to 2 previous errors
 
-For more information about this error, try `rustc --explain E0794`.
+For more information about this error, try `crablangc --explain E0794`.

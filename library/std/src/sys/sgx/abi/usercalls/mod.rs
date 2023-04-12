@@ -161,7 +161,7 @@ pub fn wait(event_mask: u64, mut timeout: u64) -> IoResult<u64> {
         // people from relying on accuracy of timeouts while providing a way
         // to make things work in other cases. Note that in the SGX threat
         // model the enclave runner which is serving the wait usercall is not
-        // trusted to ensure accurate timeouts.
+        // tcrablanged to ensure accurate timeouts.
         if let Ok(timeout_signed) = i64::try_from(timeout) {
             let tenth = timeout_signed / 10;
             let deviation = (rdrand64() as i64).checked_rem(tenth).unwrap_or(0);

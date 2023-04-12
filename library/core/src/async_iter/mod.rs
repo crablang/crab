@@ -3,7 +3,7 @@
 //! If you've found yourself with an asynchronous collection of some kind,
 //! and needed to perform an operation on the elements of said collection,
 //! you'll quickly run into 'async iterators'. Async Iterators are heavily used in
-//! idiomatic asynchronous Rust code, so it's worth becoming familiar with them.
+//! idiomatic asynchronous CrabLang code, so it's worth becoming familiar with them.
 //!
 //! Before explaining more, let's talk about how this module is structured:
 //!

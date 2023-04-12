@@ -6,15 +6,15 @@ mod wildcard_dependencies;
 use cargo_metadata::MetadataCommand;
 use clippy_utils::diagnostics::span_lint;
 use clippy_utils::is_lint_allowed;
-use rustc_hir::hir_id::CRATE_HIR_ID;
-use rustc_lint::{LateContext, LateLintPass, Lint};
-use rustc_session::{declare_tool_lint, impl_lint_pass};
-use rustc_span::DUMMY_SP;
+use crablangc_hir::hir_id::CRATE_HIR_ID;
+use crablangc_lint::{LateContext, LateLintPass, Lint};
+use crablangc_session::{declare_tool_lint, impl_lint_pass};
+use crablangc_span::DUMMY_SP;
 
 declare_clippy_lint! {
     /// ### What it does
     /// Checks to see if all common metadata is defined in
-    /// `Cargo.toml`. See: https://rust-lang-nursery.github.io/api-guidelines/documentation.html#cargotoml-includes-all-common-metadata-c-metadata
+    /// `Cargo.toml`. See: https://crablang-nursery.github.io/api-guidelines/documentation.html#cargotoml-includes-all-common-metadata-c-metadata
     ///
     /// ### Why is this bad?
     /// It will be more difficult for users to discover the
@@ -26,7 +26,7 @@ declare_clippy_lint! {
     /// [package]
     /// name = "clippy"
     /// version = "0.0.212"
-    /// repository = "https://github.com/rust-lang/rust-clippy"
+    /// repository = "https://github.com/crablang/crablang-clippy"
     /// readme = "README.md"
     /// license = "MIT OR Apache-2.0"
     /// keywords = ["clippy", "lint", "plugin"]
@@ -40,8 +40,8 @@ declare_clippy_lint! {
     /// [package]
     /// name = "clippy"
     /// version = "0.0.212"
-    /// description = "A bunch of helpful lints to avoid common pitfalls in Rust"
-    /// repository = "https://github.com/rust-lang/rust-clippy"
+    /// description = "A bunch of helpful lints to avoid common pitfalls in CrabLang"
+    /// repository = "https://github.com/crablang/crablang-clippy"
     /// readme = "README.md"
     /// license = "MIT OR Apache-2.0"
     /// keywords = ["clippy", "lint", "plugin"]
@@ -147,7 +147,7 @@ declare_clippy_lint! {
     /// Checks for wildcard dependencies in the `Cargo.toml`.
     ///
     /// ### Why is this bad?
-    /// [As the edition guide says](https://rust-lang-nursery.github.io/edition-guide/rust-2018/cargo-and-crates-io/crates-io-disallows-wildcard-dependencies.html),
+    /// [As the edition guide says](https://crablang-nursery.github.io/edition-guide/crablang-2018/cargo-and-crates-io/crates-io-disallows-wildcard-dependencies.html),
     /// it is highly unlikely that you work with any possible version of your dependency,
     /// and wildcard dependencies would cause unnecessary breakage in the ecosystem.
     ///

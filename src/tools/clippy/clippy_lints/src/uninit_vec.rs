@@ -2,12 +2,12 @@ use clippy_utils::diagnostics::{span_lint, span_lint_and_then};
 use clippy_utils::higher::{get_vec_init_kind, VecInitKind};
 use clippy_utils::ty::{is_type_diagnostic_item, is_uninit_value_valid_for_ty};
 use clippy_utils::{is_integer_literal, is_lint_allowed, path_to_local_id, peel_hir_expr_while, SpanlessEq};
-use rustc_hir::{Block, Expr, ExprKind, HirId, PatKind, PathSegment, Stmt, StmtKind};
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_middle::lint::in_external_macro;
-use rustc_middle::ty;
-use rustc_session::{declare_lint_pass, declare_tool_lint};
-use rustc_span::{sym, Span};
+use crablangc_hir::{Block, Expr, ExprKind, HirId, PatKind, PathSegment, Stmt, StmtKind};
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_middle::lint::in_external_macro;
+use crablangc_middle::ty;
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_span::{sym, Span};
 
 // TODO: add `ReadBuf` (RFC 2930) in "How to fix" once it is available in std
 declare_clippy_lint! {
@@ -28,7 +28,7 @@ declare_clippy_lint! {
     /// This lint only checks directly adjacent statements.
     ///
     /// ### Example
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// let mut vec: Vec<u8> = Vec::with_capacity(1000);
     /// unsafe { vec.set_len(1000); }
     /// reader.read(&mut vec); // undefined behavior!
@@ -36,17 +36,17 @@ declare_clippy_lint! {
     ///
     /// ### How to fix?
     /// 1. Use an initialized buffer:
-    ///    ```rust,ignore
+    ///    ```crablang,ignore
     ///    let mut vec: Vec<u8> = vec![0; 1000];
     ///    reader.read(&mut vec);
     ///    ```
     /// 2. Wrap the content in `MaybeUninit`:
-    ///    ```rust,ignore
+    ///    ```crablang,ignore
     ///    let mut vec: Vec<MaybeUninit<T>> = Vec::with_capacity(1000);
     ///    vec.set_len(1000);  // `MaybeUninit` can be uninitialized
     ///    ```
     /// 3. If you are on 1.60.0 or later, `Vec::spare_capacity_mut()` is available:
-    ///    ```rust,ignore
+    ///    ```crablang,ignore
     ///    let mut vec: Vec<u8> = Vec::with_capacity(1000);
     ///    let remaining = vec.spare_capacity_mut();  // `&mut [MaybeUninit<u8>]`
     ///    // perform initialization with `remaining`
@@ -61,7 +61,7 @@ declare_clippy_lint! {
 declare_lint_pass!(UninitVec => [UNINIT_VEC]);
 
 // FIXME: update to a visitor-based implementation.
-// Threads: https://github.com/rust-lang/rust-clippy/pull/7682#discussion_r710998368
+// Threads: https://github.com/crablang/crablang-clippy/pull/7682#discussion_r710998368
 impl<'tcx> LateLintPass<'tcx> for UninitVec {
     fn check_block(&mut self, cx: &LateContext<'tcx>, block: &'tcx Block<'_>) {
         if !in_external_macro(cx.tcx.sess, block.span) {

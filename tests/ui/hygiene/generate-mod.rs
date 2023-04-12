@@ -1,6 +1,6 @@
 // This is an equivalent of issue #50504, but for declarative macros.
 
-#![feature(decl_macro, rustc_attrs)]
+#![feature(decl_macro, crablangc_attrs)]
 
 macro genmod($FromOutside: ident, $Outer: ident) {
     type A = $FromOutside;
@@ -11,7 +11,7 @@ macro genmod($FromOutside: ident, $Outer: ident) {
     }
 }
 
-#[rustc_macro_transparency = "transparent"]
+#[crablangc_macro_transparency = "transparent"]
 macro genmod_transparent() {
     type A = FromOutside;
     struct Outer;

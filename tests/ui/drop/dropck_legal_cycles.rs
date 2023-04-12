@@ -4,7 +4,7 @@
 // as `Vec` or `TypedArena`.
 //
 // The intent is to cover as many such cases as possible, ensuring
-// that if the compiler did not complain circa Rust 1.x (1.2 as of
+// that if the compiler did not complain circa CrabLang 1.x (1.2 as of
 // this writing), then it will continue to not complain in the future.
 //
 // Note that while some of the tests are only exercising using the

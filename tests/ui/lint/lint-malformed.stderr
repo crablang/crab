@@ -30,4 +30,4 @@ LL | #![allow(bar = "baz")]
 
 error: aborting due to 5 previous errors
 
-For more information about this error, try `rustc --explain E0452`.
+For more information about this error, try `crablangc --explain E0452`.

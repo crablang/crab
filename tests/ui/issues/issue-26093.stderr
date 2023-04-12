@@ -29,4 +29,4 @@ LL |     not_a_place!(99);
 error: aborting due to 2 previous errors
 
 Some errors have detailed explanations: E0067, E0070.
-For more information about an error, try `rustc --explain E0067`.
+For more information about an error, try `crablangc --explain E0067`.

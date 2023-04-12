@@ -18,7 +18,7 @@
 //! [`TryFrom<T>`][`TryFrom`] rather than [`Into<U>`][`Into`] or [`TryInto<U>`][`TryInto`],
 //! as [`From`] and [`TryFrom`] provide greater flexibility and offer
 //! equivalent [`Into`] or [`TryInto`] implementations for free, thanks to a
-//! blanket implementation in the standard library. When targeting a version prior to Rust 1.41, it
+//! blanket implementation in the standard library. When targeting a version prior to CrabLang 1.41, it
 //! may be necessary to implement [`Into`] or [`TryInto`] directly when converting to a type
 //! outside the current crate.
 //!
@@ -33,7 +33,7 @@
 //!
 //! See each trait for usage examples.
 
-#![stable(feature = "rust1", since = "1.0.0")]
+#![stable(feature = "crablang1", since = "1.0.0")]
 
 use crate::error::Error;
 use crate::fmt;
@@ -61,7 +61,7 @@ pub use num::FloatToInt;
 /// Using `identity` to do nothing in a sequence of other, interesting,
 /// functions:
 ///
-/// ```rust
+/// ```crablang
 /// use std::convert::identity;
 ///
 /// fn manipulation(x: u32) -> u32 {
@@ -74,7 +74,7 @@ pub use num::FloatToInt;
 ///
 /// Using `identity` as a "do nothing" base case in a conditional:
 ///
-/// ```rust
+/// ```crablang
 /// use std::convert::identity;
 ///
 /// # let condition = true;
@@ -90,7 +90,7 @@ pub use num::FloatToInt;
 ///
 /// Using `identity` to keep the `Some` variants of an iterator of `Option<T>`:
 ///
-/// ```rust
+/// ```crablang
 /// use std::convert::identity;
 ///
 /// let iter = [Some(1), None, Some(3)].into_iter();
@@ -98,7 +98,7 @@ pub use num::FloatToInt;
 /// assert_eq!(vec![1, 3], filtered);
 /// ```
 #[stable(feature = "convert_id", since = "1.33.0")]
-#[rustc_const_stable(feature = "const_identity", since = "1.33.0")]
+#[crablangc_const_stable(feature = "const_identity", since = "1.33.0")]
 #[inline(always)]
 pub const fn identity<T>(x: T) -> T {
     x
@@ -176,7 +176,7 @@ pub const fn identity<T>(x: T) -> T {
 /// Ideally, `AsRef` would be reflexive, i.e. there would be an `impl<T: ?Sized> AsRef<T> for T`
 /// with [`as_ref`] simply returning its argument unchanged.
 /// Such a blanket implementation is currently *not* provided due to technical restrictions of
-/// Rust's type system (it would be overlapping with another existing blanket implementation for
+/// CrabLang's type system (it would be overlapping with another existing blanket implementation for
 /// `&T where T: AsRef<U>` which allows `AsRef` to auto-dereference, see "Generic Implementations"
 /// above).
 ///
@@ -212,12 +212,12 @@ pub const fn identity<T>(x: T) -> T {
 /// let s = "hello".to_string();
 /// is_hello(s);
 /// ```
-#[stable(feature = "rust1", since = "1.0.0")]
-#[cfg_attr(not(test), rustc_diagnostic_item = "AsRef")]
+#[stable(feature = "crablang1", since = "1.0.0")]
+#[cfg_attr(not(test), crablangc_diagnostic_item = "AsRef")]
 #[const_trait]
 pub trait AsRef<T: ?Sized> {
     /// Converts this type into a shared reference of the (usually inferred) input type.
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     fn as_ref(&self) -> &T;
 }
 
@@ -288,7 +288,7 @@ pub trait AsRef<T: ?Sized> {
 /// Ideally, `AsMut` would be reflexive, i.e. there would be an `impl<T: ?Sized> AsMut<T> for T`
 /// with [`as_mut`] simply returning its argument unchanged.
 /// Such a blanket implementation is currently *not* provided due to technical restrictions of
-/// Rust's type system (it would be overlapping with another existing blanket implementation for
+/// CrabLang's type system (it would be overlapping with another existing blanket implementation for
 /// `&mut T where T: AsMut<U>` which allows `AsMut` to auto-dereference, see "Generic
 /// Implementations" above).
 ///
@@ -364,12 +364,12 @@ pub trait AsRef<T: ?Sized> {
 ///
 /// Note, however, that APIs don't need to be generic. In many cases taking a `&mut [u8]` or
 /// `&mut Vec<u8>`, for example, is the better choice (callers need to pass the correct type then).
-#[stable(feature = "rust1", since = "1.0.0")]
-#[cfg_attr(not(test), rustc_diagnostic_item = "AsMut")]
+#[stable(feature = "crablang1", since = "1.0.0")]
+#[cfg_attr(not(test), crablangc_diagnostic_item = "AsMut")]
 #[const_trait]
 pub trait AsMut<T: ?Sized> {
     /// Converts this type into a mutable reference of the (usually inferred) input type.
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     fn as_mut(&mut self) -> &mut T;
 }
 
@@ -390,9 +390,9 @@ pub trait AsMut<T: ?Sized> {
 /// - [`From`]`<T> for U` implies `Into<U> for T`
 /// - [`Into`] is reflexive, which means that `Into<T> for T` is implemented
 ///
-/// # Implementing [`Into`] for conversions to external types in old versions of Rust
+/// # Implementing [`Into`] for conversions to external types in old versions of CrabLang
 ///
-/// Prior to Rust 1.41, if the destination type was not part of the current crate
+/// Prior to CrabLang 1.41, if the destination type was not part of the current crate
 /// then you couldn't implement [`From`] directly.
 /// For example, take this code:
 ///
@@ -404,7 +404,7 @@ pub trait AsMut<T: ?Sized> {
 ///     }
 /// }
 /// ```
-/// This will fail to compile in older versions of the language because Rust's orphaning rules
+/// This will fail to compile in older versions of the language because CrabLang's orphaning rules
 /// used to be a little bit more strict. To bypass this, you could implement [`Into`] directly:
 ///
 /// ```
@@ -441,13 +441,13 @@ pub trait AsMut<T: ?Sized> {
 ///
 /// [`String`]: ../../std/string/struct.String.html
 /// [`Vec`]: ../../std/vec/struct.Vec.html
-#[rustc_diagnostic_item = "Into"]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[crablangc_diagnostic_item = "Into"]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[const_trait]
 pub trait Into<T>: Sized {
     /// Converts this type into the (usually inferred) input type.
     #[must_use]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     fn into(self) -> T;
 }
 
@@ -458,9 +458,9 @@ pub trait Into<T>: Sized {
 /// because implementing `From` automatically provides one with an implementation of [`Into`]
 /// thanks to the blanket implementation in the standard library.
 ///
-/// Only implement [`Into`] when targeting a version prior to Rust 1.41 and converting to a type
+/// Only implement [`Into`] when targeting a version prior to CrabLang 1.41 and converting to a type
 /// outside the current crate.
-/// `From` was not able to do these types of conversions in earlier versions because of Rust's
+/// `From` was not able to do these types of conversions in earlier versions because of CrabLang's
 /// orphaning rules.
 /// See [`Into`] for more details.
 ///
@@ -533,18 +533,18 @@ pub trait Into<T>: Sized {
 /// [`String`]: ../../std/string/struct.String.html
 /// [`from`]: From::from
 /// [book]: ../../book/ch09-00-error-handling.html
-#[rustc_diagnostic_item = "From"]
-#[stable(feature = "rust1", since = "1.0.0")]
-#[rustc_on_unimplemented(on(
+#[crablangc_diagnostic_item = "From"]
+#[stable(feature = "crablang1", since = "1.0.0")]
+#[crablangc_on_unimplemented(on(
     all(_Self = "&str", T = "std::string::String"),
     note = "to coerce a `{T}` into a `{Self}`, use `&*` as a prefix",
 ))]
 #[const_trait]
 pub trait From<T>: Sized {
     /// Converts to this type from the input type.
-    #[rustc_diagnostic_item = "from_fn"]
+    #[crablangc_diagnostic_item = "from_fn"]
     #[must_use]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     fn from(value: T) -> Self;
 }
 
@@ -562,7 +562,7 @@ pub trait From<T>: Sized {
 ///
 /// This suffers the same restrictions and reasoning as implementing
 /// [`Into`], see there for details.
-#[rustc_diagnostic_item = "TryInto"]
+#[crablangc_diagnostic_item = "TryInto"]
 #[stable(feature = "try_from", since = "1.34.0")]
 #[const_trait]
 pub trait TryInto<T>: Sized {
@@ -639,7 +639,7 @@ pub trait TryInto<T>: Sized {
 /// ```
 ///
 /// [`try_from`]: TryFrom::try_from
-#[rustc_diagnostic_item = "TryFrom"]
+#[crablangc_diagnostic_item = "TryFrom"]
 #[stable(feature = "try_from", since = "1.34.0")]
 #[const_trait]
 pub trait TryFrom<T>: Sized {
@@ -657,8 +657,8 @@ pub trait TryFrom<T>: Sized {
 ////////////////////////////////////////////////////////////////////////////////
 
 // As lifts over &
-#[stable(feature = "rust1", since = "1.0.0")]
-#[rustc_const_unstable(feature = "const_convert", issue = "88674")]
+#[stable(feature = "crablang1", since = "1.0.0")]
+#[crablangc_const_unstable(feature = "const_convert", issue = "88674")]
 impl<T: ?Sized, U: ?Sized> const AsRef<U> for &T
 where
     T: ~const AsRef<U>,
@@ -670,8 +670,8 @@ where
 }
 
 // As lifts over &mut
-#[stable(feature = "rust1", since = "1.0.0")]
-#[rustc_const_unstable(feature = "const_convert", issue = "88674")]
+#[stable(feature = "crablang1", since = "1.0.0")]
+#[crablangc_const_unstable(feature = "const_convert", issue = "88674")]
 impl<T: ?Sized, U: ?Sized> const AsRef<U> for &mut T
 where
     T: ~const AsRef<U>,
@@ -691,8 +691,8 @@ where
 // }
 
 // AsMut lifts over &mut
-#[stable(feature = "rust1", since = "1.0.0")]
-#[rustc_const_unstable(feature = "const_convert", issue = "88674")]
+#[stable(feature = "crablang1", since = "1.0.0")]
+#[crablangc_const_unstable(feature = "const_convert", issue = "88674")]
 impl<T: ?Sized, U: ?Sized> const AsMut<U> for &mut T
 where
     T: ~const AsMut<U>,
@@ -712,8 +712,8 @@ where
 // }
 
 // From implies Into
-#[stable(feature = "rust1", since = "1.0.0")]
-#[rustc_const_unstable(feature = "const_convert", issue = "88674")]
+#[stable(feature = "crablang1", since = "1.0.0")]
+#[crablangc_const_unstable(feature = "const_convert", issue = "88674")]
 impl<T, U> const Into<U> for T
 where
     U: ~const From<T>,
@@ -729,8 +729,8 @@ where
 }
 
 // From (and thus Into) is reflexive
-#[stable(feature = "rust1", since = "1.0.0")]
-#[rustc_const_unstable(feature = "const_convert", issue = "88674")]
+#[stable(feature = "crablang1", since = "1.0.0")]
+#[crablangc_const_unstable(feature = "const_convert", issue = "88674")]
 impl<T> const From<T> for T {
     /// Returns the argument unchanged.
     #[inline(always)]
@@ -741,14 +741,14 @@ impl<T> const From<T> for T {
 
 /// **Stability note:** This impl does not yet exist, but we are
 /// "reserving space" to add it in the future. See
-/// [rust-lang/rust#64715][#64715] for details.
+/// [crablang/crablang#64715][#64715] for details.
 ///
-/// [#64715]: https://github.com/rust-lang/rust/issues/64715
+/// [#64715]: https://github.com/crablang/crablang/issues/64715
 #[stable(feature = "convert_infallible", since = "1.34.0")]
 #[allow(unused_attributes)] // FIXME(#58633): do a principled fix instead.
-#[rustc_reservation_impl = "permitting this impl would forbid us from adding \
-                            `impl<T> From<!> for T` later; see rust-lang/rust#64715 for details"]
-#[rustc_const_unstable(feature = "const_convert", issue = "88674")]
+#[crablangc_reservation_impl = "permitting this impl would forbid us from adding \
+                            `impl<T> From<!> for T` later; see crablang/crablang#64715 for details"]
+#[crablangc_const_unstable(feature = "const_convert", issue = "88674")]
 impl<T> const From<!> for T {
     fn from(t: !) -> T {
         t
@@ -757,7 +757,7 @@ impl<T> const From<!> for T {
 
 // TryFrom implies TryInto
 #[stable(feature = "try_from", since = "1.34.0")]
-#[rustc_const_unstable(feature = "const_convert", issue = "88674")]
+#[crablangc_const_unstable(feature = "const_convert", issue = "88674")]
 impl<T, U> const TryInto<U> for T
 where
     U: ~const TryFrom<T>,
@@ -773,7 +773,7 @@ where
 // Infallible conversions are semantically equivalent to fallible conversions
 // with an uninhabited error type.
 #[stable(feature = "try_from", since = "1.34.0")]
-#[rustc_const_unstable(feature = "const_convert", issue = "88674")]
+#[crablangc_const_unstable(feature = "const_convert", issue = "88674")]
 impl<T, U> const TryFrom<U> for T
 where
     U: ~const Into<T>,
@@ -790,7 +790,7 @@ where
 // CONCRETE IMPLS
 ////////////////////////////////////////////////////////////////////////////////
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T> AsRef<[T]> for [T] {
     #[inline(always)]
     fn as_ref(&self) -> &[T] {
@@ -798,7 +798,7 @@ impl<T> AsRef<[T]> for [T] {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<T> AsMut<[T]> for [T] {
     #[inline(always)]
     fn as_mut(&mut self) -> &mut [T] {
@@ -806,7 +806,7 @@ impl<T> AsMut<[T]> for [T] {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl AsRef<str> for str {
     #[inline(always)]
     fn as_ref(&self) -> &str {
@@ -848,7 +848,7 @@ impl AsMut<str> for str {
 /// # Future compatibility
 ///
 /// This enum has the same role as [the `!` “never” type][never],
-/// which is unstable in this version of Rust.
+/// which is unstable in this version of CrabLang.
 /// When `!` is stabilized, we plan to make `Infallible` a type alias to it:
 ///
 /// ```ignore (illustrates future std change)
@@ -876,7 +876,7 @@ impl AsMut<str> for str {
 pub enum Infallible {}
 
 #[stable(feature = "convert_infallible", since = "1.34.0")]
-#[rustc_const_unstable(feature = "const_clone", issue = "91805")]
+#[crablangc_const_unstable(feature = "const_clone", issue = "91805")]
 impl const Clone for Infallible {
     fn clone(&self) -> Infallible {
         match *self {}
@@ -929,7 +929,7 @@ impl Ord for Infallible {
 }
 
 #[stable(feature = "convert_infallible", since = "1.34.0")]
-#[rustc_const_unstable(feature = "const_convert", issue = "88674")]
+#[crablangc_const_unstable(feature = "const_convert", issue = "88674")]
 impl const From<!> for Infallible {
     fn from(x: !) -> Self {
         x

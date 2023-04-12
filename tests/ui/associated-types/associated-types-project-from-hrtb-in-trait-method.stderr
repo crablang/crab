@@ -22,4 +22,4 @@ LL |     fn mango(&self) -> <X as Banana<'_>>::Assoc {
 
 error: aborting due to 2 previous errors
 
-For more information about this error, try `rustc --explain E0212`.
+For more information about this error, try `crablangc --explain E0212`.

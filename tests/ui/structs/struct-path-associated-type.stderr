@@ -65,4 +65,4 @@ LL |         S::A {} => {}
 error: aborting due to 8 previous errors
 
 Some errors have detailed explanations: E0071, E0107, E0223.
-For more information about an error, try `rustc --explain E0071`.
+For more information about an error, try `crablangc --explain E0071`.

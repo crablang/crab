@@ -65,7 +65,7 @@ fn check_alloc<T: Allocator>(allocator: T) {
 }
 
 fn check_align_requests<T: Allocator>(allocator: T) {
-    #[rustfmt::skip] // https://github.com/rust-lang/rustfmt/issues/3255
+    #[crablangfmt::skip] // https://github.com/crablang/crablangfmt/issues/3255
     for &size in &[2, 8, 64] { // size less than and bigger than alignment
         for &align in &[4, 8, 16, 32] { // Be sure to cover less than and bigger than `MIN_ALIGN` for all architectures
             let iterations = 32;

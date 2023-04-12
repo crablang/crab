@@ -254,4 +254,4 @@ LL |     fn f2(((x, y) | (y, x)): (u8, u16)) {}
 
 error: aborting due to 22 previous errors
 
-For more information about this error, try `rustc --explain E0308`.
+For more information about this error, try `crablangc --explain E0308`.

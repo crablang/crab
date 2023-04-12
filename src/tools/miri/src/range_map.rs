@@ -7,7 +7,7 @@
 
 use std::ops;
 
-use rustc_target::abi::Size;
+use crablangc_target::abi::Size;
 
 #[derive(Clone, Debug)]
 struct Elem<T> {

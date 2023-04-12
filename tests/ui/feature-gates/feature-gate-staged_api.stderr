@@ -12,4 +12,4 @@ LL | #![stable(feature = "a", since = "b")]
 
 error: aborting due to 2 previous errors
 
-For more information about this error, try `rustc --explain E0734`.
+For more information about this error, try `crablangc --explain E0734`.

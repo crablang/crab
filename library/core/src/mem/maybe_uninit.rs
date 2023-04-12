@@ -16,7 +16,7 @@ use crate::slice;
 /// variable of reference type causes instantaneous [undefined behavior][ub],
 /// no matter whether that reference ever gets used to access memory:
 ///
-/// ```rust,no_run
+/// ```crablang,no_run
 /// # #![allow(invalid_value)]
 /// use std::mem::{self, MaybeUninit};
 ///
@@ -31,7 +31,7 @@ use crate::slice;
 /// Similarly, entirely uninitialized memory may have any content, while a `bool` must
 /// always be `true` or `false`. Hence, creating an uninitialized `bool` is undefined behavior:
 ///
-/// ```rust,no_run
+/// ```crablang,no_run
 /// # #![allow(invalid_value)]
 /// use std::mem::{self, MaybeUninit};
 ///
@@ -46,7 +46,7 @@ use crate::slice;
 /// uninitialized data in a variable even if that variable has an integer type, which otherwise can
 /// hold any *fixed* bit pattern:
 ///
-/// ```rust,no_run
+/// ```crablang,no_run
 /// # #![allow(invalid_value)]
 /// use std::mem::{self, MaybeUninit};
 ///
@@ -70,7 +70,7 @@ use crate::slice;
 /// It is a signal to the compiler indicating that the data here might *not*
 /// be initialized:
 ///
-/// ```rust
+/// ```crablang
 /// use std::mem::MaybeUninit;
 ///
 /// // Create an explicitly uninitialized reference. The compiler knows that data inside
@@ -169,7 +169,7 @@ use crate::slice;
 ///
 /// You can use `MaybeUninit<T>`, and the [`std::ptr::addr_of_mut`] macro, to initialize structs field by field:
 ///
-/// ```rust
+/// ```crablang
 /// use std::mem::MaybeUninit;
 /// use std::ptr::addr_of_mut;
 ///
@@ -211,19 +211,19 @@ use crate::slice;
 ///
 /// `MaybeUninit<T>` is guaranteed to have the same size, alignment, and ABI as `T`:
 ///
-/// ```rust
+/// ```crablang
 /// use std::mem::{MaybeUninit, size_of, align_of};
 /// assert_eq!(size_of::<MaybeUninit<u64>>(), size_of::<u64>());
 /// assert_eq!(align_of::<MaybeUninit<u64>>(), align_of::<u64>());
 /// ```
 ///
 /// However remember that a type *containing* a `MaybeUninit<T>` is not necessarily the same
-/// layout; Rust does not in general guarantee that the fields of a `Foo<T>` have the same order as
+/// layout; CrabLang does not in general guarantee that the fields of a `Foo<T>` have the same order as
 /// a `Foo<U>` even if `T` and `U` have the same size and alignment. Furthermore because any bit
 /// value is valid for a `MaybeUninit<T>` the compiler can't apply non-zero/niche-filling
 /// optimizations, potentially resulting in a larger size:
 ///
-/// ```rust
+/// ```crablang
 /// # use std::mem::{MaybeUninit, size_of};
 /// assert_eq!(size_of::<Option<bool>>(), 1);
 /// assert_eq!(size_of::<Option<MaybeUninit<bool>>>(), 2);
@@ -236,7 +236,7 @@ use crate::slice;
 /// `Option<MaybeUninit<T>>` may still have different sizes, and types containing a field of type
 /// `T` may be laid out (and sized) differently than if that field were `MaybeUninit<T>`.
 /// `MaybeUninit` is a union type, and `#[repr(transparent)]` on unions is unstable (see [the
-/// tracking issue](https://github.com/rust-lang/rust/issues/60405)). Over time, the exact
+/// tracking issue](https://github.com/crablang/crablang/issues/60405)). Over time, the exact
 /// guarantees of `#[repr(transparent)]` on unions may evolve, and `MaybeUninit` may or may not
 /// remain `#[repr(transparent)]`. That said, `MaybeUninit<T>` will *always* guarantee that it has
 /// the same size, alignment, and ABI as `T`; it's just that the way `MaybeUninit` implements that
@@ -284,7 +284,7 @@ impl<T> MaybeUninit<T> {
     ///
     /// [`assume_init`]: MaybeUninit::assume_init
     #[stable(feature = "maybe_uninit", since = "1.36.0")]
-    #[rustc_const_stable(feature = "const_maybe_uninit", since = "1.36.0")]
+    #[crablangc_const_stable(feature = "const_maybe_uninit", since = "1.36.0")]
     #[must_use = "use `forget` to avoid running Drop code"]
     #[inline(always)]
     pub const fn new(val: T) -> MaybeUninit<T> {
@@ -306,19 +306,19 @@ impl<T> MaybeUninit<T> {
     /// let v: MaybeUninit<String> = MaybeUninit::uninit();
     /// ```
     #[stable(feature = "maybe_uninit", since = "1.36.0")]
-    #[rustc_const_stable(feature = "const_maybe_uninit", since = "1.36.0")]
+    #[crablangc_const_stable(feature = "const_maybe_uninit", since = "1.36.0")]
     #[must_use]
     #[inline(always)]
-    #[rustc_diagnostic_item = "maybe_uninit_uninit"]
+    #[crablangc_diagnostic_item = "maybe_uninit_uninit"]
     pub const fn uninit() -> MaybeUninit<T> {
         MaybeUninit { uninit: () }
     }
 
     /// Create a new array of `MaybeUninit<T>` items, in an uninitialized state.
     ///
-    /// Note: in a future Rust version this method may become unnecessary
-    /// when Rust allows
-    /// [inline const expressions](https://github.com/rust-lang/rust/issues/76001).
+    /// Note: in a future CrabLang version this method may become unnecessary
+    /// when CrabLang allows
+    /// [inline const expressions](https://github.com/crablang/crablang/issues/76001).
     /// The example below could then use `let mut buf = [const { MaybeUninit::<u8>::uninit() }; 32];`.
     ///
     /// # Examples
@@ -344,7 +344,7 @@ impl<T> MaybeUninit<T> {
     /// let data = read(&mut buf);
     /// ```
     #[unstable(feature = "maybe_uninit_uninit_array", issue = "96097")]
-    #[rustc_const_unstable(feature = "const_maybe_uninit_uninit_array", issue = "96097")]
+    #[crablangc_const_unstable(feature = "const_maybe_uninit_uninit_array", issue = "96097")]
     #[must_use]
     #[inline(always)]
     pub const fn uninit_array<const N: usize>() -> [Self; N] {
@@ -366,7 +366,7 @@ impl<T> MaybeUninit<T> {
     /// Correct usage of this function: initializing a struct with zero, where all
     /// fields of the struct can hold the bit-pattern 0 as a valid value.
     ///
-    /// ```rust
+    /// ```crablang
     /// use std::mem::MaybeUninit;
     ///
     /// let x = MaybeUninit::<(u8, bool)>::zeroed();
@@ -377,7 +377,7 @@ impl<T> MaybeUninit<T> {
     /// *Incorrect* usage of this function: calling `x.zeroed().assume_init()`
     /// when `0` is not a valid bit-pattern for the type:
     ///
-    /// ```rust,no_run
+    /// ```crablang,no_run
     /// use std::mem::MaybeUninit;
     ///
     /// enum NotZero { One = 1, Two = 2 }
@@ -388,10 +388,10 @@ impl<T> MaybeUninit<T> {
     /// // This is undefined behavior. ⚠️
     /// ```
     #[stable(feature = "maybe_uninit", since = "1.36.0")]
-    #[rustc_const_unstable(feature = "const_maybe_uninit_zeroed", issue = "91850")]
+    #[crablangc_const_unstable(feature = "const_maybe_uninit_zeroed", issue = "91850")]
     #[must_use]
     #[inline]
-    #[rustc_diagnostic_item = "maybe_uninit_zeroed"]
+    #[crablangc_diagnostic_item = "maybe_uninit_zeroed"]
     pub const fn zeroed() -> MaybeUninit<T> {
         let mut u = MaybeUninit::<T>::uninit();
         // SAFETY: `u.as_mut_ptr()` points to allocated memory.
@@ -412,7 +412,7 @@ impl<T> MaybeUninit<T> {
     /// run for the inner data if the MaybeUninit leaves scope without a call to
     /// [`assume_init`], [`assume_init_drop`], or similar. Code that receives
     /// the mutable reference returned by this function needs to keep this in
-    /// mind. The safety model of Rust regards leaks as safe, but they are
+    /// mind. The safety model of CrabLang regards leaks as safe, but they are
     /// usually still undesirable. This being said, the mutable reference
     /// behaves like any other mutable reference would, so assigning a new value
     /// to it will drop the old content.
@@ -424,7 +424,7 @@ impl<T> MaybeUninit<T> {
     ///
     /// Correct usage of this method:
     ///
-    /// ```rust
+    /// ```crablang
     /// use std::mem::MaybeUninit;
     ///
     /// let mut x = MaybeUninit::<Vec<u8>>::uninit();
@@ -442,7 +442,7 @@ impl<T> MaybeUninit<T> {
     ///
     /// This usage of the method causes a leak:
     ///
-    /// ```rust
+    /// ```crablang
     /// use std::mem::MaybeUninit;
     ///
     /// let mut x = MaybeUninit::<String>::uninit();
@@ -459,7 +459,7 @@ impl<T> MaybeUninit<T> {
     /// pinned references.
     /// With `write`, we can avoid the need to write through a raw pointer:
     ///
-    /// ```rust
+    /// ```crablang
     /// use core::pin::Pin;
     /// use core::mem::MaybeUninit;
     ///
@@ -483,7 +483,7 @@ impl<T> MaybeUninit<T> {
     /// }
     /// ```
     #[stable(feature = "maybe_uninit_write", since = "1.55.0")]
-    #[rustc_const_unstable(feature = "const_maybe_uninit_write", issue = "63567")]
+    #[crablangc_const_unstable(feature = "const_maybe_uninit_write", issue = "63567")]
     #[inline(always)]
     pub const fn write(&mut self, val: T) -> &mut T {
         *self = MaybeUninit::new(val);
@@ -500,7 +500,7 @@ impl<T> MaybeUninit<T> {
     ///
     /// Correct usage of this method:
     ///
-    /// ```rust
+    /// ```crablang
     /// use std::mem::MaybeUninit;
     ///
     /// let mut x = MaybeUninit::<Vec<u32>>::uninit();
@@ -512,7 +512,7 @@ impl<T> MaybeUninit<T> {
     ///
     /// *Incorrect* usage of this method:
     ///
-    /// ```rust,no_run
+    /// ```crablang,no_run
     /// use std::mem::MaybeUninit;
     ///
     /// let x = MaybeUninit::<Vec<u32>>::uninit();
@@ -523,7 +523,7 @@ impl<T> MaybeUninit<T> {
     /// (Notice that the rules around references to uninitialized data are not finalized yet, but
     /// until they are, it is advisable to avoid them.)
     #[stable(feature = "maybe_uninit", since = "1.36.0")]
-    #[rustc_const_stable(feature = "const_maybe_uninit_as_ptr", since = "1.59.0")]
+    #[crablangc_const_stable(feature = "const_maybe_uninit_as_ptr", since = "1.59.0")]
     #[inline(always)]
     pub const fn as_ptr(&self) -> *const T {
         // `MaybeUninit` and `ManuallyDrop` are both `repr(transparent)` so we can cast the pointer.
@@ -537,7 +537,7 @@ impl<T> MaybeUninit<T> {
     ///
     /// Correct usage of this method:
     ///
-    /// ```rust
+    /// ```crablang
     /// use std::mem::MaybeUninit;
     ///
     /// let mut x = MaybeUninit::<Vec<u32>>::uninit();
@@ -551,7 +551,7 @@ impl<T> MaybeUninit<T> {
     ///
     /// *Incorrect* usage of this method:
     ///
-    /// ```rust,no_run
+    /// ```crablang,no_run
     /// use std::mem::MaybeUninit;
     ///
     /// let mut x = MaybeUninit::<Vec<u32>>::uninit();
@@ -562,7 +562,7 @@ impl<T> MaybeUninit<T> {
     /// (Notice that the rules around references to uninitialized data are not finalized yet, but
     /// until they are, it is advisable to avoid them.)
     #[stable(feature = "maybe_uninit", since = "1.36.0")]
-    #[rustc_const_unstable(feature = "const_maybe_uninit_as_mut_ptr", issue = "75251")]
+    #[crablangc_const_unstable(feature = "const_maybe_uninit_as_mut_ptr", issue = "75251")]
     #[inline(always)]
     pub const fn as_mut_ptr(&mut self) -> *mut T {
         // `MaybeUninit` and `ManuallyDrop` are both `repr(transparent)` so we can cast the pointer.
@@ -596,7 +596,7 @@ impl<T> MaybeUninit<T> {
     ///
     /// Correct usage of this method:
     ///
-    /// ```rust
+    /// ```crablang
     /// use std::mem::MaybeUninit;
     ///
     /// let mut x = MaybeUninit::<bool>::uninit();
@@ -607,7 +607,7 @@ impl<T> MaybeUninit<T> {
     ///
     /// *Incorrect* usage of this method:
     ///
-    /// ```rust,no_run
+    /// ```crablang,no_run
     /// use std::mem::MaybeUninit;
     ///
     /// let x = MaybeUninit::<Vec<u32>>::uninit();
@@ -615,9 +615,9 @@ impl<T> MaybeUninit<T> {
     /// // `x` had not been initialized yet, so this last line caused undefined behavior. ⚠️
     /// ```
     #[stable(feature = "maybe_uninit", since = "1.36.0")]
-    #[rustc_const_stable(feature = "const_maybe_uninit_assume_init_by_value", since = "1.59.0")]
+    #[crablangc_const_stable(feature = "const_maybe_uninit_assume_init_by_value", since = "1.59.0")]
     #[inline(always)]
-    #[rustc_diagnostic_item = "assume_init"]
+    #[crablangc_diagnostic_item = "assume_init"]
     #[track_caller]
     pub const unsafe fn assume_init(self) -> T {
         // SAFETY: the caller must guarantee that `self` is initialized.
@@ -655,7 +655,7 @@ impl<T> MaybeUninit<T> {
     ///
     /// Correct usage of this method:
     ///
-    /// ```rust
+    /// ```crablang
     /// use std::mem::MaybeUninit;
     ///
     /// let mut x = MaybeUninit::<u32>::uninit();
@@ -675,7 +675,7 @@ impl<T> MaybeUninit<T> {
     ///
     /// *Incorrect* usage of this method:
     ///
-    /// ```rust,no_run
+    /// ```crablang,no_run
     /// use std::mem::MaybeUninit;
     ///
     /// let mut x = MaybeUninit::<Option<Vec<u32>>>::uninit();
@@ -686,7 +686,7 @@ impl<T> MaybeUninit<T> {
     /// // they both get dropped!
     /// ```
     #[stable(feature = "maybe_uninit_extra", since = "1.60.0")]
-    #[rustc_const_unstable(feature = "const_maybe_uninit_assume_init_read", issue = "63567")]
+    #[crablangc_const_unstable(feature = "const_maybe_uninit_assume_init_read", issue = "63567")]
     #[inline(always)]
     #[track_caller]
     pub const unsafe fn assume_init_read(&self) -> T {
@@ -744,7 +744,7 @@ impl<T> MaybeUninit<T> {
     ///
     /// ### Correct usage of this method:
     ///
-    /// ```rust
+    /// ```crablang
     /// use std::mem::MaybeUninit;
     ///
     /// let mut x = MaybeUninit::<Vec<u32>>::uninit();
@@ -761,7 +761,7 @@ impl<T> MaybeUninit<T> {
     ///
     /// ### *Incorrect* usages of this method:
     ///
-    /// ```rust,no_run
+    /// ```crablang,no_run
     /// use std::mem::MaybeUninit;
     ///
     /// let x = MaybeUninit::<Vec<u32>>::uninit();
@@ -769,7 +769,7 @@ impl<T> MaybeUninit<T> {
     /// // We have created a reference to an uninitialized vector! This is undefined behavior. ⚠️
     /// ```
     ///
-    /// ```rust,no_run
+    /// ```crablang,no_run
     /// use std::{cell::Cell, mem::MaybeUninit};
     ///
     /// let b = MaybeUninit::<Cell<bool>>::uninit();
@@ -781,7 +781,7 @@ impl<T> MaybeUninit<T> {
     /// }
     /// ```
     #[stable(feature = "maybe_uninit_ref", since = "1.55.0")]
-    #[rustc_const_stable(feature = "const_maybe_uninit_assume_init_ref", since = "1.59.0")]
+    #[crablangc_const_stable(feature = "const_maybe_uninit_assume_init_ref", since = "1.59.0")]
     #[inline(always)]
     pub const unsafe fn assume_init_ref(&self) -> &T {
         // SAFETY: the caller must guarantee that `self` is initialized.
@@ -809,7 +809,7 @@ impl<T> MaybeUninit<T> {
     ///
     /// ### Correct usage of this method:
     ///
-    /// ```rust
+    /// ```crablang
     /// # #![allow(unexpected_cfgs)]
     /// use std::mem::MaybeUninit;
     ///
@@ -845,7 +845,7 @@ impl<T> MaybeUninit<T> {
     ///
     /// You cannot use `.assume_init_mut()` to initialize a value:
     ///
-    /// ```rust,no_run
+    /// ```crablang,no_run
     /// use std::mem::MaybeUninit;
     ///
     /// let mut b = MaybeUninit::<bool>::uninit();
@@ -860,7 +860,7 @@ impl<T> MaybeUninit<T> {
     ///
     /// [`Read`]: ../../std/io/trait.Read.html
     ///
-    /// ```rust,no_run
+    /// ```crablang,no_run
     /// use std::{io, mem::MaybeUninit};
     ///
     /// fn read_chunk (reader: &'_ mut dyn io::Read) -> io::Result<[u8; 64]>
@@ -876,7 +876,7 @@ impl<T> MaybeUninit<T> {
     ///
     /// Nor can you use direct field access to do field-by-field gradual initialization:
     ///
-    /// ```rust,no_run
+    /// ```crablang,no_run
     /// use std::{mem::MaybeUninit, ptr};
     ///
     /// struct Foo {
@@ -898,7 +898,7 @@ impl<T> MaybeUninit<T> {
     /// };
     /// ```
     #[stable(feature = "maybe_uninit_ref", since = "1.55.0")]
-    #[rustc_const_unstable(feature = "const_maybe_uninit_assume_init", issue = "none")]
+    #[crablangc_const_unstable(feature = "const_maybe_uninit_assume_init", issue = "none")]
     #[inline(always)]
     pub const unsafe fn assume_init_mut(&mut self) -> &mut T {
         // SAFETY: the caller must guarantee that `self` is initialized.
@@ -936,7 +936,7 @@ impl<T> MaybeUninit<T> {
     /// assert_eq!(array, [0, 1, 2]);
     /// ```
     #[unstable(feature = "maybe_uninit_array_assume_init", issue = "96097")]
-    #[rustc_const_unstable(feature = "const_maybe_uninit_array_assume_init", issue = "96097")]
+    #[crablangc_const_unstable(feature = "const_maybe_uninit_array_assume_init", issue = "96097")]
     #[inline(always)]
     #[track_caller]
     pub const unsafe fn array_assume_init<const N: usize>(array: [Self; N]) -> [T; N] {
@@ -967,7 +967,7 @@ impl<T> MaybeUninit<T> {
     ///
     /// [`assume_init_ref`]: MaybeUninit::assume_init_ref
     #[unstable(feature = "maybe_uninit_slice", issue = "63569")]
-    #[rustc_const_unstable(feature = "maybe_uninit_slice", issue = "63569")]
+    #[crablangc_const_unstable(feature = "maybe_uninit_slice", issue = "63569")]
     #[inline(always)]
     pub const unsafe fn slice_assume_init_ref(slice: &[Self]) -> &[T] {
         // SAFETY: casting `slice` to a `*const [T]` is safe since the caller guarantees that
@@ -989,7 +989,7 @@ impl<T> MaybeUninit<T> {
     ///
     /// [`assume_init_mut`]: MaybeUninit::assume_init_mut
     #[unstable(feature = "maybe_uninit_slice", issue = "63569")]
-    #[rustc_const_unstable(feature = "const_maybe_uninit_assume_init", issue = "none")]
+    #[crablangc_const_unstable(feature = "const_maybe_uninit_assume_init", issue = "none")]
     #[inline(always)]
     pub const unsafe fn slice_assume_init_mut(slice: &mut [Self]) -> &mut [T] {
         // SAFETY: similar to safety notes for `slice_get_ref`, but we have a
@@ -999,7 +999,7 @@ impl<T> MaybeUninit<T> {
 
     /// Gets a pointer to the first element of the array.
     #[unstable(feature = "maybe_uninit_slice", issue = "63569")]
-    #[rustc_const_unstable(feature = "maybe_uninit_slice", issue = "63569")]
+    #[crablangc_const_unstable(feature = "maybe_uninit_slice", issue = "63569")]
     #[inline(always)]
     pub const fn slice_as_ptr(this: &[MaybeUninit<T>]) -> *const T {
         this.as_ptr() as *const T
@@ -1007,7 +1007,7 @@ impl<T> MaybeUninit<T> {
 
     /// Gets a mutable pointer to the first element of the array.
     #[unstable(feature = "maybe_uninit_slice", issue = "63569")]
-    #[rustc_const_unstable(feature = "maybe_uninit_slice", issue = "63569")]
+    #[crablangc_const_unstable(feature = "maybe_uninit_slice", issue = "63569")]
     #[inline(always)]
     pub const fn slice_as_mut_ptr(this: &mut [MaybeUninit<T>]) -> *mut T {
         this.as_mut_ptr() as *mut T
@@ -1102,7 +1102,7 @@ impl<T> MaybeUninit<T> {
     /// use std::mem::MaybeUninit;
     ///
     /// let mut vec = Vec::with_capacity(32);
-    /// let src = ["rust", "is", "a", "pretty", "cool", "language"];
+    /// let src = ["crablang", "is", "a", "pretty", "cool", "language"];
     ///
     /// MaybeUninit::write_slice_cloned(&mut vec.spare_capacity_mut()[..src.len()], &src);
     ///

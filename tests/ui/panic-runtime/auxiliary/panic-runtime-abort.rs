@@ -8,10 +8,10 @@
 #![panic_runtime]
 
 #[no_mangle]
-pub extern "C" fn __rust_maybe_catch_panic() {}
+pub extern "C" fn __crablang_maybe_catch_panic() {}
 
 #[no_mangle]
-pub extern "C" fn __rust_start_panic() {}
+pub extern "C" fn __crablang_start_panic() {}
 
 #[no_mangle]
-pub extern "C" fn rust_eh_personality() {}
+pub extern "C" fn crablang_eh_personality() {}

@@ -64,7 +64,7 @@ fn main() {
 // This goes at the bottom of the file so that we can change it
 // without disturbing line numbers of the functions in the backtrace.
 
-extern "Rust" {
+extern "CrabLang" {
     fn miri_backtrace_size(flags: u64) -> usize;
     fn miri_get_backtrace(flags: u64, buf: *mut *mut ());
     fn miri_resolve_frame(ptr: *mut (), flags: u64) -> MiriFrame;

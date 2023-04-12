@@ -864,4 +864,4 @@ LL | pub struct C(pub isize, isize);
 
 error: aborting due to 48 previous errors
 
-For more information about this error, try `rustc --explain E0603`.
+For more information about this error, try `crablangc --explain E0603`.

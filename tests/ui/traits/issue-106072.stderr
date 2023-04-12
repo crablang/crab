@@ -27,4 +27,4 @@ LL | #[derive(Clone)]
 error: aborting due to 3 previous errors
 
 Some errors have detailed explanations: E0428, E0782.
-For more information about an error, try `rustc --explain E0428`.
+For more information about an error, try `crablangc --explain E0428`.

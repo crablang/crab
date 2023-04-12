@@ -80,4 +80,4 @@ LL |     another_item.write().unwrap().some_mutable_method();
 
 error: aborting due to 5 previous errors
 
-For more information about this error, try `rustc --explain E0599`.
+For more information about this error, try `crablangc --explain E0599`.

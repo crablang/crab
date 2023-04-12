@@ -1,6 +1,6 @@
 // run-pass
 
-// Regression test for https://github.com/rust-lang/rust/issues/73431.
+// Regression test for https://github.com/crablang/crablang/issues/73431.
 
 pub trait Zero {
     const ZERO: Self;

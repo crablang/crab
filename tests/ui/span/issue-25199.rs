@@ -2,7 +2,7 @@
 // destructor's access to borrowed data behind a boxed trait object.
 //
 // Prior to fixing Issue 25199, this example was able to be compiled
-// with rustc, and thus when you ran it, you would see the `Drop` impl
+// with crablangc, and thus when you ran it, you would see the `Drop` impl
 // for `Test` accessing state that had already been dropping (which is
 // marked explicitly here with checking code within the `Drop` impl
 // for `VecHolder`, but in the general case could just do unsound

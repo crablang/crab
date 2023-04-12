@@ -1,6 +1,6 @@
 - Feature Name: syntax-tree-patterns
 - Start Date: 2019-03-12
-- RFC PR: [#3875](https://github.com/rust-lang/rust-clippy/pull/3875)
+- RFC PR: [#3875](https://github.com/crablang/crablang-clippy/pull/3875)
 
 # Summary
 
@@ -16,7 +16,7 @@ lints. For non-trivial lints, it often requires nested pattern matching of AST /
 HIR nodes. For example, testing that an expression is a boolean literal requires
 the following checks:
 
-```rust
+```crablang
 if let ast::ExprKind::Lit(lit) = &expr.node {
     if let ast::LitKind::Bool(_) = &lit.node {
         ...
@@ -28,7 +28,7 @@ Writing this kind of matching code quickly becomes a complex task and the
 resulting code is often hard to comprehend. The code below shows a simplified
 version of the pattern matching required by the `collapsible_if` lint:
 
-```rust
+```crablang
 // simplified version of the collapsible_if lint
 if let ast::ExprKind::If(check, then, None) = &expr.node {
     if then.stmts.len() == 1 {
@@ -44,7 +44,7 @@ if let ast::ExprKind::If(check, then, None) = &expr.node {
 The `if_chain` macro can improve readability by flattening the nested if
 statements, but the resulting code is still quite hard to read:
 
-```rust
+```crablang
 // simplified version of the collapsible_if lint
 if_chain! {
     if let ast::ExprKind::If(check, then, None) = &expr.node;
@@ -97,7 +97,7 @@ syntax trees.
 This proposal adds a `pattern!` macro that can be used to specify a syntax tree
 pattern to search for. A simple pattern is shown below:
 
-```rust
+```crablang
 pattern!{
     my_pattern: Expr =
         Lit(Bool(false))
@@ -111,7 +111,7 @@ expressions that are boolean literals with value `false`.
 
 The pattern can then be used to implement lints in the following way:
 
-```rust
+```crablang
 ...
 
 impl EarlyLintPass for MyAwesomeLint {
@@ -147,7 +147,7 @@ The following examples demonstate the pattern syntax:
 The simplest pattern is the any pattern. It matches anything and is therefore
 similar to regex's `*`.
 
-```rust
+```crablang
 pattern!{
     // matches any expression
     my_pattern: Expr =
@@ -163,7 +163,7 @@ has a single argument that describes the type of the literal. As another
 example, the `If` node has three arguments describing the if's condition, then
 block and else block.
 
-```rust
+```crablang
 pattern!{
     // matches any expression that is a literal
     my_pattern: Expr =
@@ -188,9 +188,9 @@ pattern!{
 
 #### Literal (`<lit>`)
 
-A pattern can also contain Rust literals. These literals match themselves.
+A pattern can also contain CrabLang literals. These literals match themselves.
 
-```rust
+```crablang
 pattern!{
     // matches the boolean literal false
     my_pattern: Expr =
@@ -206,7 +206,7 @@ pattern!{
 
 #### Alternations (`a | b`)
 
-```rust
+```crablang
 pattern!{
     // matches if the literal is a boolean or integer literal
     my_pattern: Lit =
@@ -225,7 +225,7 @@ pattern!{
 The empty pattern represents an empty sequence or the `None` variant of an
 optional.
 
-```rust
+```crablang
 pattern!{
     // matches if the expression is an empty array
     my_pattern: Expr =
@@ -241,7 +241,7 @@ pattern!{
 
 #### Sequence (`<a> <b>`)
 
-```rust
+```crablang
 pattern!{
     // matches the array [true, false]
     my_pattern: Expr =
@@ -254,7 +254,7 @@ pattern!{
 Elements may be repeated. The syntax for specifying repetitions is identical to
 [regex's syntax](https://docs.rs/regex/1.1.2/regex/#repetitions).
 
-```rust
+```crablang
 pattern!{
     // matches arrays that contain 2 'x's as their last or second-last elements
     // Examples:
@@ -281,7 +281,7 @@ pattern!{
 
 #### Named submatch (`<a>#<name>`)
 
-```rust
+```crablang
 pattern!{
     // matches character literals and gives the literal the name foo
     my_pattern: Expr =
@@ -335,7 +335,7 @@ subpatterns. This is similar to capture groups in regular expressions.
 
 For example, given the following pattern
 
-```rust
+```crablang
 pattern!{
     // matches character literals
     my_pattern: Expr =
@@ -346,7 +346,7 @@ pattern!{
 one could get references to the nodes that matched the subpatterns in the
 following way:
 
-```rust
+```crablang
 ...
 fn check_expr(expr: &syntax::ast::Expr) {
     if let Some(result) = my_pattern(expr) {
@@ -360,7 +360,7 @@ fn check_expr(expr: &syntax::ast::Expr) {
 The types in the `result` struct depend on the pattern. For example, the
 following pattern
 
-```rust
+```crablang
 pattern!{
     // matches arrays of character literals
     my_pattern_seq: Expr =
@@ -372,7 +372,7 @@ matches arrays that consist of any number of literal expressions. Because those
 expressions are named `foo`, the result struct contains a `foo` attribute which
 is a vector of expressions:
 
-```rust
+```crablang
 ...
 if let Some(result) = my_pattern_seq(expr) {
     result.foo        // type: Vec<&syntax::ast::Expr>
@@ -382,7 +382,7 @@ if let Some(result) = my_pattern_seq(expr) {
 Another result type occurs when a name is only defined in one branch of an
 alternation:
 
-```rust
+```crablang
 pattern!{
     // matches if expression is a boolean or integer literal
     my_pattern_alt: Expr =
@@ -394,7 +394,7 @@ In the pattern above, the `bar` name is only defined if the pattern matches a
 boolean literal. If it matches an integer literal, the name isn't set. To
 account for this, the result struct's `bar` attribute is an option type:
 
-```rust
+```crablang
 ...
 if let Some(result) = my_pattern_alt(expr) {
     result.bar        // type: Option<&bool>
@@ -404,7 +404,7 @@ if let Some(result) = my_pattern_alt(expr) {
 It's also possible to use a name in multiple alternation branches if they have
 compatible types:
 
-```rust
+```crablang
 pattern!{
     // matches if expression is a boolean or integer literal
     my_pattern_mult: Expr =
@@ -432,7 +432,7 @@ asserting that a node hasn't been created as part of a macro expansion.
 
 As a "real-world" example, I re-implemented the `collapsible_if` lint using
 patterns. The code can be found
-[here](https://github.com/fkohlgrueber/rust-clippy-pattern/blob/039b07ecccaf96d6aa7504f5126720d2c9cceddd/clippy_lints/src/collapsible_if.rs#L88-L163).
+[here](https://github.com/fkohlgrueber/crablang-clippy-pattern/blob/039b07ecccaf96d6aa7504f5126720d2c9cceddd/clippy_lints/src/collapsible_if.rs#L88-L163).
 The pattern-based version passes all test cases that were written for
 `collapsible_if`.
 
@@ -459,12 +459,12 @@ proposed solution:
              +---------------+-----------+---------+
              |               |           |         |
              v               v           v         v
-        syntax::ast     rustc::hir      syn       ...
+        syntax::ast     crablangc::hir      syn       ...
 ```
 
 The pattern syntax described in the previous section is parsed / lowered into
 the so-called *PatternTree* data structure that represents a valid syntax tree
-pattern. Matching a *PatternTree* against an actual syntax tree (e.g. rust ast /
+pattern. Matching a *PatternTree* against an actual syntax tree (e.g. crablang ast /
 hir or the syn ast, ...) is done using the *IsMatch* trait.
 
 The *PatternTree* and the *IsMatch* trait are introduced in more detail in the
@@ -474,7 +474,7 @@ following sections.
 
 The core data structure of this RFC is the **PatternTree**.
 
-It's a data structure similar to rust's AST / HIR, but with the following
+It's a data structure similar to crablang's AST / HIR, but with the following
 differences:
 
 - The PatternTree doesn't contain parsing information like `Span`s
@@ -486,7 +486,7 @@ The code below shows a simplified version of the current PatternTree:
 > [here](https://github.com/fkohlgrueber/pattern-matching/blob/dfb3bc9fbab69cec7c91e72564a63ebaa2ede638/pattern-match/src/pattern_tree.rs#L50-L96).
 
 
-```rust
+```crablang
 pub enum Expr {
     Lit(Alt<Lit>),
     Array(Seq<Expr>),
@@ -519,7 +519,7 @@ The `Alt`, `Seq` and `Opt` structs look like these:
 > Note: The current implementation can be found
 > [here](https://github.com/fkohlgrueber/pattern-matching/blob/dfb3bc9fbab69cec7c91e72564a63ebaa2ede638/pattern-match/src/matchers.rs#L35-L60).
 
-```rust
+```crablang
 pub enum Alt<T> {
     Any,
     Elmt(Box<T>),
@@ -569,7 +569,7 @@ another example, `Array( Lit(_)* )` is a valid pattern because the parameter of
 ## The IsMatch Trait
 
 The pattern syntax and the *PatternTree* are independent of specific syntax tree
-implementations (rust ast / hir, syn, ...). When looking at the different
+implementations (crablang ast / hir, syn, ...). When looking at the different
 pattern examples in the previous sections, it can be seen that the patterns
 don't contain any information specific to a certain syntax tree implementation.
 In contrast, clippy lints currently match against ast / hir syntax tree nodes
@@ -580,7 +580,7 @@ implementations is the `IsMatch` trait. It defines how to match *PatternTree*
 nodes against specific syntax tree nodes. A simplified implementation of the
 `IsMatch` trait is shown below:
 
-```rust
+```crablang
 pub trait IsMatch<O> {
     fn is_match(&self, other: &'o O) -> bool;
 }
@@ -591,7 +591,7 @@ corresponding syntax tree types). For example, the `IsMatch` implementation for
 matching `ast::LitKind` against the *PatternTree's* `Lit` enum might look like
 this:
 
-```rust
+```crablang
 impl IsMatch<ast::LitKind> for Lit {
     fn is_match(&self, other: &ast::LitKind) -> bool {
         match (self, other) {
@@ -619,7 +619,7 @@ approach (matching against the coarse pattern first and checking for additional
 properties later) might be slower than the current practice of checking for
 structure and additional properties in one pass. For example, the following lint
 
-```rust
+```crablang
 pattern!{
     pat_if_without_else: Expr =
         If(
@@ -644,7 +644,7 @@ first matches against the pattern and then checks that the `then` block doesn't
 start with a comment. Using clippy's current approach, it's possible to check
 for these conditions earlier:
 
-```rust
+```crablang
 fn check_expr(&mut self, cx: &EarlyContext<'_>, expr: &ast::Expr) {
     if_chain! {
         if let ast::ExprKind::If(ref check, ref then, None) = expr.node;
@@ -699,16 +699,16 @@ adaptions.
 
 ## Alternatives
 
-### Rust-like pattern syntax
+### CrabLang-like pattern syntax
 
 The proposed pattern syntax requires users to know the structure of the
 `PatternTree` (which is very similar to the AST's / HIR's structure) and also
 the pattern syntax. An alternative would be to introduce a pattern syntax that
-is similar to actual Rust syntax (probably like the `quote!` macro). For
+is similar to actual CrabLang syntax (probably like the `quote!` macro). For
 example, a pattern that matches `if` expressions that have `false` in their
 condition could look like this:
 
-```rust
+```crablang
 if false {
     #[*]
 }
@@ -716,7 +716,7 @@ if false {
 
 #### Problems
 
-Extending Rust syntax (which is quite complex by itself) with additional syntax
+Extending CrabLang syntax (which is quite complex by itself) with additional syntax
 needed for specifying patterns (alternations, sequences, repetitions, named
 submatches, ...) might become difficult to read and really hard to parse
 properly.
@@ -742,14 +742,14 @@ affects the structure of the resulting AST. `1 + 0 + 0` is parsed as `(1 + 0) +
 Another example of a problem would be named submatches. Take a look at this
 pattern:
 
-```rust
+```crablang
 fn test() {
     1 #foo
 }
 ```
 
 Which node is `#foo` referring to? `int`, `ast::Lit`, `ast::Expr`, `ast::Stmt`?
-Naming subpatterns in a rust-like syntax is difficult because a lot of AST nodes
+Naming subpatterns in a crablang-like syntax is difficult because a lot of AST nodes
 don't have a syntactic element that can be used to put the name tag on. In these
 situations, the only sensible option would be to assign the name tag to the
 outermost node (`ast::Stmt` in the example above), because the information of
@@ -757,7 +757,7 @@ all child nodes can be retrieved through the outermost node. The problem with
 this then would be that accessing inner nodes (like `ast::Lit`) would again
 require manual pattern matching.
 
-In general, Rust syntax contains a lot of code structure implicitly. This
+In general, CrabLang syntax contains a lot of code structure implicitly. This
 structure is reconstructed during parsing (e.g. binary operations are
 reconstructed using operator precedence and left-to-right) and is one of the
 reasons why parsing is a complex task. The advantage of this approach is that
@@ -769,18 +769,18 @@ human-friendly syntax that contains structure implicitly seems to be really
 complex, if not impossible.
 
 Developing such a syntax would also require to maintain a custom parser that is
-at least as complex as the Rust parser itself. Additionally, future changes in
-the Rust syntax might be incompatible with such a syntax.
+at least as complex as the CrabLang parser itself. Additionally, future changes in
+the CrabLang syntax might be incompatible with such a syntax.
 
 In summary, I think that developing such a syntax would introduce a lot of
 complexity to solve a relatively minor problem.
 
 The issue of users not knowing about the *PatternTree* structure could be solved
-by a tool that, given a rust program, generates a pattern that matches only this
+by a tool that, given a crablang program, generates a pattern that matches only this
 program (similar to the clippy author lint).
 
 For some simple cases (like the first example above), it might be possible to
-successfully mix Rust and pattern syntax. This space could be further explored
+successfully mix CrabLang and pattern syntax. This space could be further explored
 in a future extension.
 
 # Prior art
@@ -801,7 +801,7 @@ When matching a syntax tree node against a pattern, there are possibly multiple
 ways in which the pattern can be matched. A simple example of this would be the
 following pattern:
 
-```rust
+```crablang
 pattern!{
     my_pattern: Expr =
         Array( _* Lit(_)+#literals)
@@ -820,11 +820,11 @@ most lints. The current implementation simply returns the first match it finds.
 
 # Future possibilities
 
-#### Implement rest of Rust Syntax
+#### Implement rest of CrabLang Syntax
 
-The current project only implements a small part of the Rust syntax. In the
+The current project only implements a small part of the CrabLang syntax. In the
 future, this should incrementally be extended to more syntax to allow
-implementing more lints. Implementing more of the Rust syntax requires extending
+implementing more lints. Implementing more of the CrabLang syntax requires extending
 the `PatternTree` and `IsMatch` implementations, but should be relatively
 straight-forward.
 
@@ -835,7 +835,7 @@ during the pattern matching might be beneficial.
 
 The pattern below shows how this could look like:
 
-```rust
+```crablang
 pattern!{
     pat_if_without_else: Expr =
         If(
@@ -862,7 +862,7 @@ op b` and recommends changing it to `a op= b` requires that both occurrences of
 `a` are the same. Using `=#...` as syntax for backreferences, the lint could be
 implemented like this:
 
-```rust
+```crablang
 pattern!{
     assign_op_pattern: Expr =
         Assign(_#target, Binary(_, =#target, _)
@@ -891,7 +891,7 @@ Patterns currently don't have any concept of composition. This leads to
 repetitions within patterns. For example, one of the collapsible-if patterns
 currently has to be written like this:
 
-```rust
+```crablang
 pattern!{
     pat_if_else: Expr =
         If(
@@ -919,7 +919,7 @@ pattern!{
 If patterns supported defining functions of subpatterns, the code could be
 simplified as follows:
 
-```rust
+```crablang
 pattern!{
     fn expr_or_semi(expr: Expr) -> Stmt {
         Expr(expr) | Semi(expr)
@@ -944,10 +944,10 @@ different lints.
 
 #### Clippy Pattern Author
 
-Another improvement could be to create a tool that, given some valid Rust
+Another improvement could be to create a tool that, given some valid CrabLang
 syntax, generates a pattern that matches this syntax exactly. This would make
 starting to write a pattern easier. A user could take a look at the patterns
-generated for a couple of Rust code examples and use that information to write a
+generated for a couple of CrabLang code examples and use that information to write a
 pattern that matches all of them.
 
 This is similar to clippy's author lint.
@@ -965,7 +965,7 @@ One aspect of this is that it would even be possible to write lints that work on
 the pattern syntax itself. For example, when writing the following pattern
 
 
-```rust
+```crablang
 pattern!{
     my_pattern: Expr =
         Array( Lit(Bool(false)) Lit(Bool(false)) )
@@ -975,7 +975,7 @@ pattern!{
 a lint that works on the pattern syntax's AST could suggest using this pattern
 instead:
 
-```rust
+```crablang
 pattern!{
     my_pattern: Expr =
         Array( Lit(Bool(false)){2} )

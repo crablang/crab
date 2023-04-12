@@ -3,8 +3,8 @@
 blank_issues_enabled: true
 contact_links:
   - name: Intrinsic Support
-    url: https://github.com/rust-lang/stdarch/issues
-    about: Please direct issues about Rust's support for vendor intrinsics to core::arch
+    url: https://github.com/crablang/stdarch/issues
+    about: Please direct issues about CrabLang's support for vendor intrinsics to core::arch
   - name: Internal Compiler Error
-    url: https://github.com/rust-lang/rust/issues
-    about: Please report ICEs to the rustc repository
+    url: https://github.com/crablang/crablang/issues
+    about: Please report ICEs to the crablangc repository

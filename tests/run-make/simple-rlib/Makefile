@@ -1,6 +1,6 @@
 # ignore-cross-compile
 include ../tools.mk
 all:
-	$(RUSTC) bar.rs --crate-type=rlib
-	$(RUSTC) foo.rs
+	$(CRABLANGC) bar.rs --crate-type=rlib
+	$(CRABLANGC) foo.rs
 	$(call RUN,foo)

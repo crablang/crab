@@ -4,7 +4,7 @@ error[E0658]: PTX ABIs are experimental and subject to change
 LL | extern "ptx-kernel" fn fu() {}
    |        ^^^^^^^^^^^^
    |
-   = note: see issue #38788 <https://github.com/rust-lang/rust/issues/38788> for more information
+   = note: see issue #38788 <https://github.com/crablang/crablang/issues/38788> for more information
    = help: add `#![feature(abi_ptx)]` to the crate attributes to enable
 
 error[E0658]: PTX ABIs are experimental and subject to change
@@ -13,7 +13,7 @@ error[E0658]: PTX ABIs are experimental and subject to change
 LL |     extern "ptx-kernel" fn mu();
    |            ^^^^^^^^^^^^
    |
-   = note: see issue #38788 <https://github.com/rust-lang/rust/issues/38788> for more information
+   = note: see issue #38788 <https://github.com/crablang/crablang/issues/38788> for more information
    = help: add `#![feature(abi_ptx)]` to the crate attributes to enable
 
 error[E0658]: PTX ABIs are experimental and subject to change
@@ -22,7 +22,7 @@ error[E0658]: PTX ABIs are experimental and subject to change
 LL |     extern "ptx-kernel" fn dmu() {}
    |            ^^^^^^^^^^^^
    |
-   = note: see issue #38788 <https://github.com/rust-lang/rust/issues/38788> for more information
+   = note: see issue #38788 <https://github.com/crablang/crablang/issues/38788> for more information
    = help: add `#![feature(abi_ptx)]` to the crate attributes to enable
 
 error[E0658]: PTX ABIs are experimental and subject to change
@@ -31,7 +31,7 @@ error[E0658]: PTX ABIs are experimental and subject to change
 LL |     extern "ptx-kernel" fn mu() {}
    |            ^^^^^^^^^^^^
    |
-   = note: see issue #38788 <https://github.com/rust-lang/rust/issues/38788> for more information
+   = note: see issue #38788 <https://github.com/crablang/crablang/issues/38788> for more information
    = help: add `#![feature(abi_ptx)]` to the crate attributes to enable
 
 error[E0658]: PTX ABIs are experimental and subject to change
@@ -40,7 +40,7 @@ error[E0658]: PTX ABIs are experimental and subject to change
 LL |     extern "ptx-kernel" fn imu() {}
    |            ^^^^^^^^^^^^
    |
-   = note: see issue #38788 <https://github.com/rust-lang/rust/issues/38788> for more information
+   = note: see issue #38788 <https://github.com/crablang/crablang/issues/38788> for more information
    = help: add `#![feature(abi_ptx)]` to the crate attributes to enable
 
 error[E0658]: PTX ABIs are experimental and subject to change
@@ -49,7 +49,7 @@ error[E0658]: PTX ABIs are experimental and subject to change
 LL | type TAU = extern "ptx-kernel" fn();
    |                   ^^^^^^^^^^^^
    |
-   = note: see issue #38788 <https://github.com/rust-lang/rust/issues/38788> for more information
+   = note: see issue #38788 <https://github.com/crablang/crablang/issues/38788> for more information
    = help: add `#![feature(abi_ptx)]` to the crate attributes to enable
 
 error[E0658]: PTX ABIs are experimental and subject to change
@@ -58,9 +58,9 @@ error[E0658]: PTX ABIs are experimental and subject to change
 LL | extern "ptx-kernel" {}
    |        ^^^^^^^^^^^^
    |
-   = note: see issue #38788 <https://github.com/rust-lang/rust/issues/38788> for more information
+   = note: see issue #38788 <https://github.com/crablang/crablang/issues/38788> for more information
    = help: add `#![feature(abi_ptx)]` to the crate attributes to enable
 
 error: aborting due to 7 previous errors
 
-For more information about this error, try `rustc --explain E0658`.
+For more information about this error, try `crablangc --explain E0658`.

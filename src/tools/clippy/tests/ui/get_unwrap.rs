@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 
 #![allow(unused_mut, clippy::from_iter_instead_of_collect, clippy::get_first)]
 #![warn(clippy::unwrap_used)]

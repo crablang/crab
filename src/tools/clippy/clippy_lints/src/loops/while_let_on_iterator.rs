@@ -6,13 +6,13 @@ use clippy_utils::{
     get_enclosing_loop_or_multi_call_closure, is_refutable, is_res_lang_ctor, is_trait_method, visitors::is_res_used,
 };
 use if_chain::if_chain;
-use rustc_errors::Applicability;
-use rustc_hir::intravisit::{walk_expr, Visitor};
-use rustc_hir::{def::Res, Closure, Expr, ExprKind, HirId, LangItem, Local, Mutability, PatKind, UnOp};
-use rustc_lint::LateContext;
-use rustc_middle::hir::nested_filter::OnlyBodies;
-use rustc_middle::ty::adjustment::Adjust;
-use rustc_span::{symbol::sym, Symbol};
+use crablangc_errors::Applicability;
+use crablangc_hir::intravisit::{walk_expr, Visitor};
+use crablangc_hir::{def::Res, Closure, Expr, ExprKind, HirId, LangItem, Local, Mutability, PatKind, UnOp};
+use crablangc_lint::LateContext;
+use crablangc_middle::hir::nested_filter::OnlyBodies;
+use crablangc_middle::ty::adjustment::Adjust;
+use crablangc_span::{symbol::sym, Symbol};
 
 pub(super) fn check<'tcx>(cx: &LateContext<'tcx>, expr: &'tcx Expr<'_>) {
     let (scrutinee_expr, iter_expr_struct, iter_expr, some_pat, loop_expr) = if_chain! {

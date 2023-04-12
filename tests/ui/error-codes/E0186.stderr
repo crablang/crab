@@ -9,4 +9,4 @@ LL |     fn foo() {}
 
 error: aborting due to previous error
 
-For more information about this error, try `rustc --explain E0186`.
+For more information about this error, try `crablangc --explain E0186`.

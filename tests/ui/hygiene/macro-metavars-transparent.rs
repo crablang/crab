@@ -1,11 +1,11 @@
 // Ensure macro metavariables are not compared without removing transparent
 // marks.
 
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 
 // run-pass
 
-#[rustc_macro_transparency = "transparent"]
+#[crablangc_macro_transparency = "transparent"]
 macro_rules! k {
     ($($s:tt)*) => {
         macro_rules! m {

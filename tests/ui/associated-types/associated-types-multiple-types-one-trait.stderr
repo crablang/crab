@@ -40,4 +40,4 @@ LL | fn have_y_want_x<T:Foo<Y=i32, X = u32>>(t: &T)
 
 error: aborting due to 2 previous errors
 
-For more information about this error, try `rustc --explain E0271`.
+For more information about this error, try `crablangc --explain E0271`.

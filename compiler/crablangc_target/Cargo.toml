@@ -1,0 +1,17 @@
+[package]
+name = "crablangc_target"
+version = "0.0.0"
+edition = "2021"
+
+[dependencies]
+bitflags = "1.2.1"
+tracing = "0.1"
+serde_json = "1.0.59"
+crablangc_fs_util = { path = "../crablangc_fs_util" }
+crablangc_abi = { path = "../crablangc_abi" }
+crablangc_data_structures = { path = "../crablangc_data_structures" }
+crablangc_feature = { path = "../crablangc_feature" }
+crablangc_index = { path = "../crablangc_index" }
+crablangc_macros = { path = "../crablangc_macros" }
+crablangc_serialize = { path = "../crablangc_serialize" }
+crablangc_span = { path = "../crablangc_span" }

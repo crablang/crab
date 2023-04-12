@@ -1,8 +1,8 @@
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 
 macro_rules! check {
     ($expr: expr) => (
-        #[rustc_dummy = $expr]
+        #[crablangc_dummy = $expr]
         use main as _;
     );
 }

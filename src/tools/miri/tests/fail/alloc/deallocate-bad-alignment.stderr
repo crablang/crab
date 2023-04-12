@@ -1,13 +1,13 @@
 error: Undefined Behavior: incorrect layout on deallocation: ALLOC has size 1 and alignment ALIGN, but gave size 1 and alignment ALIGN
-  --> RUSTLIB/alloc/src/alloc.rs:LL:CC
+  --> CRABLANGLIB/alloc/src/alloc.rs:LL:CC
    |
-LL |     unsafe { __rust_dealloc(ptr, layout.size(), layout.align()) }
+LL |     unsafe { __crablang_dealloc(ptr, layout.size(), layout.align()) }
    |              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ incorrect layout on deallocation: ALLOC has size 1 and alignment ALIGN, but gave size 1 and alignment ALIGN
    |
    = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior
-   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information
+   = help: see https://doc.crablang.org/nightly/reference/behavior-considered-undefined.html for further information
    = note: BACKTRACE:
-   = note: inside `std::alloc::dealloc` at RUSTLIB/alloc/src/alloc.rs:LL:CC
+   = note: inside `std::alloc::dealloc` at CRABLANGLIB/alloc/src/alloc.rs:LL:CC
 note: inside `main`
   --> $DIR/deallocate-bad-alignment.rs:LL:CC
    |

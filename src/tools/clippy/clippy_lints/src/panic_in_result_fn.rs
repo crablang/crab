@@ -4,12 +4,12 @@ use clippy_utils::return_ty;
 use clippy_utils::ty::is_type_diagnostic_item;
 use clippy_utils::visitors::{for_each_expr, Descend};
 use core::ops::ControlFlow;
-use rustc_hir as hir;
-use rustc_hir::intravisit::FnKind;
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_session::{declare_lint_pass, declare_tool_lint};
-use rustc_span::def_id::LocalDefId;
-use rustc_span::{sym, Span};
+use crablangc_hir as hir;
+use crablangc_hir::intravisit::FnKind;
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_span::def_id::LocalDefId;
+use crablangc_span::{sym, Span};
 
 declare_clippy_lint! {
     /// ### What it does
@@ -22,14 +22,14 @@ declare_clippy_lint! {
     /// Functions called from a function returning a `Result` may invoke a panicking macro. This is not checked.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// fn result_with_panic() -> Result<bool, String>
     /// {
     ///     panic!("error");
     /// }
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// fn result_without_panic() -> Result<bool, String> {
     ///     Err(String::from("error"))
     /// }

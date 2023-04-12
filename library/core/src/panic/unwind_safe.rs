@@ -7,7 +7,7 @@ use crate::pin::Pin;
 use crate::ptr::{NonNull, Unique};
 use crate::task::{Context, Poll};
 
-/// A marker trait which represents "panic safe" types in Rust.
+/// A marker trait which represents "panic safe" types in CrabLang.
 ///
 /// This trait is implemented by default for many types and behaves similarly in
 /// terms of inference of implementation to the [`Send`] and [`Sync`] traits. The
@@ -18,7 +18,7 @@ use crate::task::{Context, Poll};
 ///
 /// ## What is unwind safety?
 ///
-/// In Rust a function can "return" early if it either panics or calls a
+/// In CrabLang a function can "return" early if it either panics or calls a
 /// function which transitively panics. This sort of control flow is not always
 /// anticipated, and has the possibility of causing subtle bugs through a
 /// combination of two critical components:
@@ -27,25 +27,25 @@ use crate::task::{Context, Poll};
 ///    panics.
 /// 2. This broken invariant is then later observed.
 ///
-/// Typically in Rust, it is difficult to perform step (2) because catching a
+/// Typically in CrabLang, it is difficult to perform step (2) because catching a
 /// panic involves either spawning a thread (which in turns makes it difficult
 /// to later witness broken invariants) or using the `catch_unwind` function in this
 /// module. Additionally, even if an invariant is witnessed, it typically isn't a
-/// problem in Rust because there are no uninitialized values (like in C or C++).
+/// problem in CrabLang because there are no uninitialized values (like in C or C++).
 ///
-/// It is possible, however, for **logical** invariants to be broken in Rust,
+/// It is possible, however, for **logical** invariants to be broken in CrabLang,
 /// which can end up causing behavioral bugs. Another key aspect of unwind safety
-/// in Rust is that, in the absence of `unsafe` code, a panic cannot lead to
+/// in CrabLang is that, in the absence of `unsafe` code, a panic cannot lead to
 /// memory unsafety.
 ///
 /// That was a bit of a whirlwind tour of unwind safety, but for more information
-/// about unwind safety and how it applies to Rust, see an [associated RFC][rfc].
+/// about unwind safety and how it applies to CrabLang, see an [associated RFC][rfc].
 ///
-/// [rfc]: https://github.com/rust-lang/rfcs/blob/master/text/1236-stabilize-catch-panic.md
+/// [rfc]: https://github.com/crablang/rfcs/blob/master/text/1236-stabilize-catch-panic.md
 ///
 /// ## What is `UnwindSafe`?
 ///
-/// Now that we've got an idea of what unwind safety is in Rust, it's also
+/// Now that we've got an idea of what unwind safety is in CrabLang, it's also
 /// important to understand what this trait represents. As mentioned above, one
 /// way to witness broken invariants is through the `catch_unwind` function in this
 /// module as it allows catching a panic and then re-using the environment of
@@ -82,8 +82,8 @@ use crate::task::{Context, Poll};
 /// [`AssertUnwindSafe`] wrapper struct can be used to force this trait to be
 /// implemented for any closed over variables passed to `catch_unwind`.
 #[stable(feature = "catch_unwind", since = "1.9.0")]
-#[cfg_attr(not(test), rustc_diagnostic_item = "unwind_safe_trait")]
-#[rustc_on_unimplemented(
+#[cfg_attr(not(test), crablangc_diagnostic_item = "unwind_safe_trait")]
+#[crablangc_on_unimplemented(
     message = "the type `{Self}` may not be safely transferred across an unwind boundary",
     label = "`{Self}` may not be safely transferred across an unwind boundary"
 )]
@@ -98,8 +98,8 @@ pub auto trait UnwindSafe {}
 /// This is a "helper marker trait" used to provide impl blocks for the
 /// [`UnwindSafe`] trait, for more information see that documentation.
 #[stable(feature = "catch_unwind", since = "1.9.0")]
-#[cfg_attr(not(test), rustc_diagnostic_item = "ref_unwind_safe_trait")]
-#[rustc_on_unimplemented(
+#[cfg_attr(not(test), crablangc_diagnostic_item = "ref_unwind_safe_trait")]
+#[crablangc_on_unimplemented(
     message = "the type `{Self}` may contain interior mutability and a reference may not be safely \
                transferrable across a catch_unwind boundary",
     label = "`{Self}` may contain interior mutability and a reference may not be safely \
@@ -267,7 +267,7 @@ impl<T> DerefMut for AssertUnwindSafe<T> {
 impl<R, F: FnOnce() -> R> FnOnce<()> for AssertUnwindSafe<F> {
     type Output = R;
 
-    extern "rust-call" fn call_once(self, _args: ()) -> R {
+    extern "crablang-call" fn call_once(self, _args: ()) -> R {
         (self.0)()
     }
 }

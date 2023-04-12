@@ -1,8 +1,8 @@
 use crate::fmt;
 use crate::iter::adapters::{
-    zip::try_get_unchecked, SourceIter, TrustedRandomAccess, TrustedRandomAccessNoCoerce,
+    zip::try_get_unchecked, SourceIter, TcrablangedRandomAccess, TcrablangedRandomAccessNoCoerce,
 };
-use crate::iter::{FusedIterator, InPlaceIterable, TrustedLen, UncheckedIterator};
+use crate::iter::{FusedIterator, InPlaceIterable, TcrablangedLen, UncheckedIterator};
 use crate::ops::Try;
 
 /// An iterator that maps the values of `iter` with `f`.
@@ -18,7 +18,7 @@ use crate::ops::Try;
 /// The [`map`] iterator implements [`DoubleEndedIterator`], meaning that
 /// you can also [`map`] backwards:
 ///
-/// ```rust
+/// ```crablang
 /// let v: Vec<i32> = [1, 2, 3].into_iter().map(|x| x + 1).rev().collect();
 ///
 /// assert_eq!(v, [4, 3, 2]);
@@ -29,7 +29,7 @@ use crate::ops::Try;
 /// But if your closure has state, iterating backwards may act in a way you do
 /// not expect. Let's go through an example. First, in the forward direction:
 ///
-/// ```rust
+/// ```crablang
 /// let mut c = 0;
 ///
 /// for pair in ['a', 'b', 'c'].into_iter()
@@ -46,7 +46,7 @@ use crate::ops::Try;
 /// still being called lazily on each item, but we are popping items off the
 /// back of the vector now, instead of shifting them from the front.
 ///
-/// ```rust
+/// ```crablang
 /// let mut c = 0;
 ///
 /// for pair in ['a', 'b', 'c'].into_iter()
@@ -56,7 +56,7 @@ use crate::ops::Try;
 /// }
 /// ```
 #[must_use = "iterators are lazy and do nothing unless consumed"]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[derive(Clone)]
 pub struct Map<I, F> {
     // Used for `SplitWhitespace` and `SplitAsciiWhitespace` `as_str` methods
@@ -91,7 +91,7 @@ fn map_try_fold<'a, T, B, Acc, R>(
     move |acc, elt| g(acc, f(elt))
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<B, I: Iterator, F> Iterator for Map<I, F>
 where
     F: FnMut(I::Item) -> B,
@@ -127,7 +127,7 @@ where
     #[inline]
     unsafe fn __iterator_get_unchecked(&mut self, idx: usize) -> B
     where
-        Self: TrustedRandomAccessNoCoerce,
+        Self: TcrablangedRandomAccessNoCoerce,
     {
         // SAFETY: the caller must uphold the contract for
         // `Iterator::__iterator_get_unchecked`.
@@ -135,7 +135,7 @@ where
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<B, I: DoubleEndedIterator, F> DoubleEndedIterator for Map<I, F>
 where
     F: FnMut(I::Item) -> B,
@@ -162,7 +162,7 @@ where
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<B, I: ExactSizeIterator, F> ExactSizeIterator for Map<I, F>
 where
     F: FnMut(I::Item) -> B,
@@ -179,10 +179,10 @@ where
 #[stable(feature = "fused", since = "1.26.0")]
 impl<B, I: FusedIterator, F> FusedIterator for Map<I, F> where F: FnMut(I::Item) -> B {}
 
-#[unstable(feature = "trusted_len", issue = "37572")]
-unsafe impl<B, I, F> TrustedLen for Map<I, F>
+#[unstable(feature = "tcrablanged_len", issue = "37572")]
+unsafe impl<B, I, F> TcrablangedLen for Map<I, F>
 where
-    I: TrustedLen,
+    I: TcrablangedLen,
     F: FnMut(I::Item) -> B,
 {
 }
@@ -201,14 +201,14 @@ where
 }
 
 #[doc(hidden)]
-#[unstable(feature = "trusted_random_access", issue = "none")]
-unsafe impl<I, F> TrustedRandomAccess for Map<I, F> where I: TrustedRandomAccess {}
+#[unstable(feature = "tcrablanged_random_access", issue = "none")]
+unsafe impl<I, F> TcrablangedRandomAccess for Map<I, F> where I: TcrablangedRandomAccess {}
 
 #[doc(hidden)]
-#[unstable(feature = "trusted_random_access", issue = "none")]
-unsafe impl<I, F> TrustedRandomAccessNoCoerce for Map<I, F>
+#[unstable(feature = "tcrablanged_random_access", issue = "none")]
+unsafe impl<I, F> TcrablangedRandomAccessNoCoerce for Map<I, F>
 where
-    I: TrustedRandomAccessNoCoerce,
+    I: TcrablangedRandomAccessNoCoerce,
 {
     const MAY_HAVE_SIDE_EFFECT: bool = true;
 }

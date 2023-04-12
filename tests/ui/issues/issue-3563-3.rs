@@ -3,10 +3,10 @@
 #![allow(non_snake_case)]
 
 // ASCII art shape renderer.  Demonstrates traits, impls, operator overloading,
-// non-copyable struct, unit testing.  To run execute: rustc --test shapes.rs &&
+// non-copyable struct, unit testing.  To run execute: crablangc --test shapes.rs &&
 // ./shapes
 
-// Rust's std library is tightly bound to the language itself so it is
+// CrabLang's std library is tightly bound to the language itself so it is
 // automatically linked in.  However the extra library is designed to be
 // optional (for code that must run on constrained environments like embedded
 // devices or special environments like kernel code) so it must be explicitly
@@ -64,7 +64,7 @@ fn AsciiArt(width: usize, height: usize, fill: char) -> AsciiArt {
     // our canvas.
     let lines = vec![vec!['.'; width]; height];
 
-    // Rust code often returns values by omitting the trailing semi-colon
+    // CrabLang code often returns values by omitting the trailing semi-colon
     // instead of using an explicit return statement.
     AsciiArt {width: width, height: height, fill: fill, lines: lines}
 }
@@ -140,7 +140,7 @@ impl Canvas for AsciiArt {
     }
 }
 
-// Rust's unit testing framework is currently a bit under-developed so we'll use
+// CrabLang's unit testing framework is currently a bit under-developed so we'll use
 // this little helper.
 pub fn check_strs(actual: &str, expected: &str) -> bool {
     if actual != expected {

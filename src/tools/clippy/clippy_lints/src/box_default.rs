@@ -2,15 +2,15 @@ use clippy_utils::{
     diagnostics::span_lint_and_sugg, get_parent_node, is_default_equivalent, macros::macro_backtrace, match_path,
     path_def_id, paths, ty::expr_sig,
 };
-use rustc_errors::Applicability;
-use rustc_hir::{
+use crablangc_errors::Applicability;
+use crablangc_hir::{
     intravisit::{walk_ty, Visitor},
     Block, Expr, ExprKind, Local, Node, QPath, TyKind,
 };
-use rustc_lint::{LateContext, LateLintPass, LintContext};
-use rustc_middle::{lint::in_external_macro, ty::print::with_forced_trimmed_paths};
-use rustc_session::{declare_lint_pass, declare_tool_lint};
-use rustc_span::sym;
+use crablangc_lint::{LateContext, LateLintPass, LintContext};
+use crablangc_middle::{lint::in_external_macro, ty::print::with_forced_trimmed_paths};
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_span::sym;
 
 declare_clippy_lint! {
     /// ### What it does
@@ -23,11 +23,11 @@ declare_clippy_lint! {
     /// [in certain cases](https://nnethercote.github.io/perf-book/standard-library-types.html#box).
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// let x: Box<String> = Box::new(Default::default());
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// let x: Box<String> = Box::default();
     /// ```
     #[clippy::version = "1.66.0"]
@@ -87,7 +87,7 @@ fn is_vec_expn(cx: &LateContext<'_>, expr: &Expr<'_>) -> bool {
 struct InferVisitor(bool);
 
 impl<'tcx> Visitor<'tcx> for InferVisitor {
-    fn visit_ty(&mut self, t: &rustc_hir::Ty<'_>) {
+    fn visit_ty(&mut self, t: &crablangc_hir::Ty<'_>) {
         self.0 |= matches!(t.kind, TyKind::Infer | TyKind::OpaqueDef(..) | TyKind::TraitObject(..));
         if !self.0 {
             walk_ty(self, t);

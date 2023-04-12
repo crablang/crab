@@ -1,4 +1,4 @@
-error: fatal error triggered by #[rustc_error]
+error: fatal error triggered by #[crablangc_error]
   --> $DIR/metadata-sufficient-for-layout.rs:25:1
    |
 LL | fn main() {}

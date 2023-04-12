@@ -1,6 +1,6 @@
 # Clippy Development
 
-Hello fellow Rustacean! If you made it here, you're probably interested in
+Hello fellow CrabLangacean! If you made it here, you're probably interested in
 making Clippy better by contributing to it. In that case, welcome to the
 project!
 
@@ -37,7 +37,7 @@ book](../lints.md).
 > - Triage procedure
 > - Bors and Homu
 
-[clippy_rfc]: https://github.com/rust-lang/rfcs/blob/master/text/2476-clippy-uno.md
-[rfc_stability]: https://github.com/rust-lang/rfcs/blob/master/text/2476-clippy-uno.md#stability-guarantees
-[rfc_lint_cats]: https://github.com/rust-lang/rfcs/blob/master/text/2476-clippy-uno.md#lint-audit-and-categories
-[`CONTRIBUTING.md`]: https://github.com/rust-lang/rust-clippy/blob/master/CONTRIBUTING.md
+[clippy_rfc]: https://github.com/crablang/rfcs/blob/master/text/2476-clippy-uno.md
+[rfc_stability]: https://github.com/crablang/rfcs/blob/master/text/2476-clippy-uno.md#stability-guarantees
+[rfc_lint_cats]: https://github.com/crablang/rfcs/blob/master/text/2476-clippy-uno.md#lint-audit-and-categories
+[`CONTRIBUTING.md`]: https://github.com/crablang/crablang-clippy/blob/master/CONTRIBUTING.md

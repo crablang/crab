@@ -94,12 +94,12 @@ pub fn hashmap_random_keys() -> (u64, u64) {
 #[cfg(not(test))]
 #[no_mangle]
 // NB. used by both libunwind and libpanic_abort
-pub extern "C" fn __rust_abort() {
+pub extern "C" fn __crablang_abort() {
     abort_internal();
 }
 
 // SAFETY: must be called only once during runtime initialization.
-// NOTE: this is not guaranteed to run, for example when Rust code is called externally.
+// NOTE: this is not guaranteed to run, for example when CrabLang code is called externally.
 pub unsafe fn init(argc: isize, argv: *const *const u8, _sigpipe: u8) {
     let _ = net::init();
     args::init(argc, argv);

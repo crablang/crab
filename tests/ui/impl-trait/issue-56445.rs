@@ -1,4 +1,4 @@
-// Regression test for https://github.com/rust-lang/rust/issues/56445#issuecomment-629426939
+// Regression test for https://github.com/crablang/crablang/issues/56445#issuecomment-629426939
 // check-pass
 
 #![crate_type = "lib"]

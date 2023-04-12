@@ -21,4 +21,4 @@ LL |     type_ascribe!(0, u8<e<5>=e>)
 error: aborting due to 3 previous errors
 
 Some errors have detailed explanations: E0229, E0308, E0412.
-For more information about an error, try `rustc --explain E0229`.
+For more information about an error, try `crablangc --explain E0229`.

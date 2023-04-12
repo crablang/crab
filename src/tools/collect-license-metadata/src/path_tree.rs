@@ -30,9 +30,9 @@ impl Node<LicenseId> {
     /// system root down to each file, like so:
     ///
     /// ```text
-    ///         ┌─► ./ ──► compiler/ ──► rustc/ ──► src/ ──► main.rs
+    ///         ┌─► ./ ──► compiler/ ──► crablangc/ ──► src/ ──► main.rs
     ///         │
-    /// <root> ─┼─► ./ ──► compiler/ ──► rustc/ ──► Cargo.toml
+    /// <root> ─┼─► ./ ──► compiler/ ──► crablangc/ ──► Cargo.toml
     ///         │
     ///         └─► ./ ──► library/ ───► std/ ──► Cargo.toml
     /// ```
@@ -40,7 +40,7 @@ impl Node<LicenseId> {
     /// This pass is responsible for turning that into a proper directory tree:
     ///
     /// ```text
-    ///                 ┌─► compiler/ ──► rustc/ ──┬─► src/ ──► main.rs
+    ///                 ┌─► compiler/ ──► crablangc/ ──┬─► src/ ──► main.rs
     ///                 │                          │
     /// <root> ──► ./ ──┤                          └─► Cargo.toml
     ///                 │
@@ -100,8 +100,8 @@ impl Node<LicenseId> {
     /// we can add a license for a whole directory, and only record the exceptions to a directory
     /// licensing metadata.
     ///
-    /// We cannot instead record only the difference to Rust's standard licensing, as the majority
-    /// of the files in our repository are *not* licensed under Rust's standard licensing due to
+    /// We cannot instead record only the difference to CrabLang's standard licensing, as the majority
+    /// of the files in our repository are *not* licensed under CrabLang's standard licensing due to
     /// our inclusion of LLVM.
     fn collapse_in_licensed_directories(&mut self) {
         match self {

@@ -98,4 +98,4 @@ LL |     Some::<Alias<_, _>>((&temp(), 0u8));
 error: aborting due to 9 previous errors
 
 Some errors have detailed explanations: E0310, E0716.
-For more information about an error, try `rustc --explain E0310`.
+For more information about an error, try `crablangc --explain E0310`.

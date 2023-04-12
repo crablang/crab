@@ -22,7 +22,7 @@ pub fn check(root: &Path, cargo: &Path, bad: &mut bool) {
             let mut iter = line.split_whitespace();
             if iter.next() == Some("x") {
                 if let Some(version) = iter.next() {
-                    // Check this is the rust-lang/rust x tool installation since it should be
+                    // Check this is the crablang/crablang x tool installation since it should be
                     // installed at a path containing `src/tools/x`.
                     if let Some(path) = iter.next() {
                         if path.contains(&"src/tools/x") {

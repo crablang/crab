@@ -3,7 +3,7 @@
 // including) the call to `use_x`. The `else` branch is not included.
 
 #![allow(warnings)]
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 
 struct MyStruct {
     field: String

@@ -1,7 +1,7 @@
 // check-pass
 // compile-flags:--cfg set1
 
-#![cfg_attr(set1, feature(rustc_attrs))]
-#![rustc_dummy]
+#![cfg_attr(set1, feature(crablangc_attrs))]
+#![crablangc_dummy]
 
 fn main() {}

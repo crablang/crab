@@ -1,8 +1,8 @@
 [book]
-title = "The Rust Style Guide"
-author = "The Rust Style Team"
+title = "The CrabLang Style Guide"
+author = "The CrabLang Style Team"
 multilingual = false
 src = "src"
 
 [output.html]
-git-repository-url = "https://github.com/rust-lang/rust/tree/HEAD/src/doc/style-guide/"
+git-repository-url = "https://github.com/crablang/crablang/tree/HEAD/src/doc/style-guide/"

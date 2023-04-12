@@ -118,7 +118,7 @@ pub use core::time::TryFromFloatSecsError;
 /// [currently]: crate::io#platform-specific-behavior
 /// [QueryPerformanceCounter]: https://docs.microsoft.com/en-us/windows/win32/api/profileapi/nf-profileapi-queryperformancecounter
 /// [`insecure_time` usercall]: https://edp.fortanix.com/docs/api/fortanix_sgx_abi/struct.Usercalls.html#method.insecure_time
-/// [timekeeping in SGX]: https://edp.fortanix.com/docs/concepts/rust-std/#codestdtimecode
+/// [timekeeping in SGX]: https://edp.fortanix.com/docs/concepts/crablang-std/#codestdtimecode
 /// [__wasi_clock_time_get (Monotonic Clock)]: https://github.com/WebAssembly/WASI/blob/master/phases/snapshot/docs.md#clock_time_get
 /// [clock_gettime (Monotonic Clock)]: https://linux.die.net/man/3/clock_gettime
 /// [mach_absolute_time]: https://developer.apple.com/library/archive/documentation/Darwin/Conceptual/KernelProgramming/services/services.html
@@ -136,14 +136,14 @@ pub use core::time::TryFromFloatSecsError;
 /// if available, which is the case for all [tier 1] platforms.
 /// In practice such guarantees are – under rare circumstances – broken by hardware, virtualization
 /// or operating system bugs. To work around these bugs and platforms not offering monotonic clocks
-/// [`duration_since`], [`elapsed`] and [`sub`] saturate to zero. In older Rust versions this
+/// [`duration_since`], [`elapsed`] and [`sub`] saturate to zero. In older CrabLang versions this
 /// lead to a panic instead. [`checked_duration_since`] can be used to detect and handle situations
 /// where monotonicity is violated, or `Instant`s are subtracted in the wrong order.
 ///
 /// This workaround obscures programming errors where earlier and later instants are accidentally
-/// swapped. For this reason future rust versions may reintroduce panics.
+/// swapped. For this reason future crablang versions may reintroduce panics.
 ///
-/// [tier 1]: https://doc.rust-lang.org/rustc/platform-support.html
+/// [tier 1]: https://doc.crablang.org/crablangc/platform-support.html
 /// [`duration_since`]: Instant::duration_since
 /// [`elapsed`]: Instant::elapsed
 /// [`sub`]: Instant::sub
@@ -221,7 +221,7 @@ pub struct Instant(time::Instant);
 ///
 /// [currently]: crate::io#platform-specific-behavior
 /// [`insecure_time` usercall]: https://edp.fortanix.com/docs/api/fortanix_sgx_abi/struct.Usercalls.html#method.insecure_time
-/// [timekeeping in SGX]: https://edp.fortanix.com/docs/concepts/rust-std/#codestdtimecode
+/// [timekeeping in SGX]: https://edp.fortanix.com/docs/concepts/crablang-std/#codestdtimecode
 /// [gettimeofday]: https://man7.org/linux/man-pages/man2/gettimeofday.2.html
 /// [clock_gettime (Realtime Clock)]: https://linux.die.net/man/3/clock_gettime
 /// [__wasi_clock_time_get (Realtime Clock)]: https://github.com/WebAssembly/WASI/blob/master/phases/snapshot/docs.md#clock_time_get
@@ -281,7 +281,7 @@ impl Instant {
     ///
     /// # Panics
     ///
-    /// Previous rust versions panicked when `earlier` was later than `self`. Currently this
+    /// Previous crablang versions panicked when `earlier` was later than `self`. Currently this
     /// method saturates. Future versions may reintroduce the panic in some circumstances.
     /// See [Monotonicity].
     ///
@@ -356,7 +356,7 @@ impl Instant {
     ///
     /// # Panics
     ///
-    /// Previous rust versions panicked when the current time was earlier than self. Currently this
+    /// Previous crablang versions panicked when the current time was earlier than self. Currently this
     /// method returns a Duration of zero in that case. Future versions may reintroduce the panic.
     /// See [Monotonicity].
     ///
@@ -441,7 +441,7 @@ impl Sub<Instant> for Instant {
     ///
     /// # Panics
     ///
-    /// Previous rust versions panicked when `other` was later than `self`. Currently this
+    /// Previous crablang versions panicked when `other` was later than `self`. Currently this
     /// method saturates. Future versions may reintroduce the panic in some circumstances.
     /// See [Monotonicity].
     ///

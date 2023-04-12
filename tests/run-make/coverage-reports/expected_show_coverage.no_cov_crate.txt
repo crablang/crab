@@ -29,7 +29,7 @@
    29|      0|}
    30|       |
    31|       |// FIXME: These test-cases illustrate confusing results of nested functions.
-   32|       |// See https://github.com/rust-lang/rust/issues/93319
+   32|       |// See https://github.com/crablang/crablang/issues/93319
    33|       |mod nested_fns {
    34|       |    #[no_coverage]
    35|       |    pub fn outer_not_covered(is_true: bool) {

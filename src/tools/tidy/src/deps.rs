@@ -5,7 +5,7 @@ use std::collections::HashSet;
 use std::path::Path;
 
 /// These are licenses that are allowed for all crates, including the runtime,
-/// rustc, tools, etc.
+/// crablangc, tools, etc.
 const LICENSES: &[&str] = &[
     "MIT/Apache-2.0",
     "MIT / Apache-2.0",
@@ -26,15 +26,15 @@ const LICENSES: &[&str] = &[
     "Unicode-DFS-2016",                         // tinystr and icu4x
 ];
 
-/// These are exceptions to Rust's permissive licensing policy, and
-/// should be considered bugs. Exceptions are only allowed in Rust
+/// These are exceptions to CrabLang's permissive licensing policy, and
+/// should be considered bugs. Exceptions are only allowed in CrabLang
 /// tooling. It is _crucial_ that no exception crates be dependencies
-/// of the Rust runtime (std/test).
+/// of the CrabLang runtime (std/test).
 const EXCEPTIONS: &[(&str, &str)] = &[
-    ("ar_archive_writer", "Apache-2.0 WITH LLVM-exception"), // rustc
+    ("ar_archive_writer", "Apache-2.0 WITH LLVM-exception"), // crablangc
     ("mdbook", "MPL-2.0"),                                   // mdbook
     ("openssl", "Apache-2.0"),                               // cargo, mdbook
-    ("colored", "MPL-2.0"),                                  // rustfmt
+    ("colored", "MPL-2.0"),                                  // crablangfmt
     ("ryu", "Apache-2.0 OR BSL-1.0"),                        // cargo/... (because of serde)
     ("bytesize", "Apache-2.0"),                              // cargo
     ("im-rc", "MPL-2.0+"),                                   // cargo
@@ -46,15 +46,15 @@ const EXCEPTIONS: &[(&str, &str)] = &[
     ("imara-diff", "Apache-2.0"),                            // cargo via gix
     ("sha1_smol", "BSD-3-Clause"),                           // cargo via gix
     ("unicode-bom", "Apache-2.0"),                           // cargo via gix
-    ("instant", "BSD-3-Clause"), // rustc_driver/tracing-subscriber/parking_lot
-    ("snap", "BSD-3-Clause"),    // rustc
-    ("fluent-langneg", "Apache-2.0"), // rustc (fluent translations)
-    ("self_cell", "Apache-2.0"), // rustc (fluent translations)
+    ("instant", "BSD-3-Clause"), // crablangc_driver/tracing-subscriber/parking_lot
+    ("snap", "BSD-3-Clause"),    // crablangc
+    ("fluent-langneg", "Apache-2.0"), // crablangc (fluent translations)
+    ("self_cell", "Apache-2.0"), // crablangc (fluent translations)
     // FIXME: this dependency violates the documentation comment above:
     ("fortanix-sgx-abi", "MPL-2.0"), // libstd but only for `sgx` target
     ("similar", "Apache-2.0"),       // cargo (dev dependency)
     ("normalize-line-endings", "Apache-2.0"), // cargo (dev dependency)
-    ("dissimilar", "Apache-2.0"),    // rustdoc, rustc_lexer (few tests) via expect-test, (dev deps)
+    ("dissimilar", "Apache-2.0"),    // crablangdoc, crablangc_lexer (few tests) via expect-test, (dev deps)
 ];
 
 const EXCEPTIONS_CRANELIFT: &[(&str, &str)] = &[
@@ -83,11 +83,11 @@ const EXCEPTIONS_BOOTSTRAP: &[(&str, &str)] = &[
 /// these and all their dependencies *must not* be in the exception list.
 const RUNTIME_CRATES: &[&str] = &["std", "core", "alloc", "test", "panic_abort", "panic_unwind"];
 
-/// Crates rustc is allowed to depend on. Avoid adding to the list if possible.
+/// Crates crablangc is allowed to depend on. Avoid adding to the list if possible.
 ///
 /// This list is here to provide a speed-bump to adding a new dependency to
-/// rustc. Please check with the compiler team before adding an entry.
-const PERMITTED_RUSTC_DEPENDENCIES: &[&str] = &[
+/// crablangc. Please check with the compiler team before adding an entry.
+const PERMITTED_CRABLANGC_DEPENDENCIES: &[&str] = &[
     "addr2line",
     "adler",
     "ahash",
@@ -196,11 +196,11 @@ const PERMITTED_RUSTC_DEPENDENCIES: &[&str] = &[
     "regex-automata",
     "regex-syntax",
     "remove_dir_all",
-    "rustc-demangle",
-    "rustc-hash",
-    "rustc-rayon",
-    "rustc-rayon-core",
-    "rustc_version",
+    "crablangc-demangle",
+    "crablangc-hash",
+    "crablangc-rayon",
+    "crablangc-rayon-core",
+    "crablangc_version",
     "ryu",
     "scoped-tls",
     "scopeguard",
@@ -266,8 +266,8 @@ const PERMITTED_RUSTC_DEPENDENCIES: &[&str] = &[
     "winapi-util",
     "winapi-x86_64-pc-windows-gnu",
     "writeable",
-    // this is a false-positive: it's only used by rustfmt, but because it's enabled through a
-    // feature, tidy thinks it's used by rustc as well.
+    // this is a false-positive: it's only used by crablangfmt, but because it's enabled through a
+    // feature, tidy thinks it's used by crablangc as well.
     "yansi-term",
     "yoke",
     "yoke-derive",
@@ -354,18 +354,18 @@ pub fn check(root: &Path, cargo: &Path, bad: &mut bool) {
     check_license_exceptions(&metadata, EXCEPTIONS, runtime_ids, bad);
     check_permitted_dependencies(
         &metadata,
-        "rustc",
-        PERMITTED_RUSTC_DEPENDENCIES,
-        &["rustc_driver", "rustc_codegen_llvm"],
+        "crablangc",
+        PERMITTED_CRABLANGC_DEPENDENCIES,
+        &["crablangc_driver", "crablangc_codegen_llvm"],
         bad,
     );
     check_crate_duplicate(&metadata, FORBIDDEN_TO_HAVE_DUPLICATES, bad);
-    check_rustfix(&metadata, bad);
+    check_crablangfix(&metadata, bad);
 
-    // Check rustc_codegen_cranelift independently as it has it's own workspace.
+    // Check crablangc_codegen_cranelift independently as it has it's own workspace.
     let mut cmd = cargo_metadata::MetadataCommand::new();
     cmd.cargo_path(cargo)
-        .manifest_path(root.join("compiler/rustc_codegen_cranelift/Cargo.toml"))
+        .manifest_path(root.join("compiler/crablangc_codegen_cranelift/Cargo.toml"))
         .features(cargo_metadata::CargoOpt::AllFeatures);
     let metadata = t!(cmd.exec());
     let runtime_ids = HashSet::new();
@@ -374,7 +374,7 @@ pub fn check(root: &Path, cargo: &Path, bad: &mut bool) {
         &metadata,
         "cranelift",
         PERMITTED_CRANELIFT_DEPENDENCIES,
-        &["rustc_codegen_cranelift"],
+        &["crablangc_codegen_cranelift"],
         bad,
     );
     check_crate_duplicate(&metadata, &[], bad);
@@ -452,7 +452,7 @@ fn check_license_exceptions(
             if pkg.name == "fortanix-sgx-abi" {
                 // This is a specific exception because SGX is considered
                 // "third party". See
-                // https://github.com/rust-lang/rust/issues/62620 for more. In
+                // https://github.com/crablang/crablang/issues/62620 for more. In
                 // general, these should never be added.
                 continue;
             }
@@ -570,7 +570,7 @@ fn pkg_from_id<'a>(metadata: &'a Metadata, id: &PackageId) -> &'a Package {
     metadata.packages.iter().find(|p| &p.id == id).unwrap()
 }
 
-/// Finds all the packages that are in the rust runtime.
+/// Finds all the packages that are in the crablang runtime.
 fn compute_runtime_crates<'a>(metadata: &'a Metadata) -> HashSet<&'a PackageId> {
     let mut result = HashSet::new();
     for name in RUNTIME_CRATES {
@@ -612,21 +612,21 @@ fn direct_deps_of<'a>(metadata: &'a Metadata, pkg_id: &'a PackageId) -> Vec<&'a 
     node.deps.iter().map(|dep| pkg_from_id(metadata, &dep.pkg)).collect()
 }
 
-fn check_rustfix(metadata: &Metadata, bad: &mut bool) {
+fn check_crablangfix(metadata: &Metadata, bad: &mut bool) {
     let cargo = pkg_from_name(metadata, "cargo");
     let compiletest = pkg_from_name(metadata, "compiletest");
     let cargo_deps = direct_deps_of(metadata, &cargo.id);
     let compiletest_deps = direct_deps_of(metadata, &compiletest.id);
-    let cargo_rustfix = cargo_deps.iter().find(|p| p.name == "rustfix").unwrap();
-    let compiletest_rustfix = compiletest_deps.iter().find(|p| p.name == "rustfix").unwrap();
-    if cargo_rustfix.version != compiletest_rustfix.version {
+    let cargo_crablangfix = cargo_deps.iter().find(|p| p.name == "crablangfix").unwrap();
+    let compiletest_crablangfix = compiletest_deps.iter().find(|p| p.name == "crablangfix").unwrap();
+    if cargo_crablangfix.version != compiletest_crablangfix.version {
         tidy_error!(
             bad,
-            "cargo's rustfix version {} does not match compiletest's rustfix version {}\n\
-             rustfix should be kept in sync, update the cargo side first, and then update \
+            "cargo's crablangfix version {} does not match compiletest's crablangfix version {}\n\
+             crablangfix should be kept in sync, update the cargo side first, and then update \
              compiletest along with cargo.",
-            cargo_rustfix.version,
-            compiletest_rustfix.version
+            cargo_crablangfix.version,
+            compiletest_crablangfix.version
         );
     }
 }

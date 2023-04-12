@@ -164,7 +164,7 @@ pub extern "C" fn test_UnionF32WithZsts(_: UnionF32WithZsts) -> UnionF32WithZsts
 // single CHECK line.
 //
 // You may be wondering why we don't just compare the return types and argument types for equality
-// with FileCheck regex captures. Well, rustc doesn't perform newtype unwrapping on newtypes
+// with FileCheck regex captures. Well, crablangc doesn't perform newtype unwrapping on newtypes
 // containing aggregates. This is OK on all ABIs we support, but because LLVM has not gotten rid of
 // pointee types yet, the IR function signature will be syntactically different (%Foo* vs
 // %FooWrapper*).

@@ -1,7 +1,7 @@
 error: this operation will panic at runtime
   --> $DIR/modulo_one.rs:11:5
    |
-LL |     i32::MIN % (-1); // also caught by rustc
+LL |     i32::MIN % (-1); // also caught by crablangc
    |     ^^^^^^^^^^^^^^^ attempt to compute the remainder of `i32::MIN % -1_i32`, which would overflow
    |
    = note: `#[deny(unconditional_panic)]` on by default
@@ -9,13 +9,13 @@ LL |     i32::MIN % (-1); // also caught by rustc
 error: this operation will panic at runtime
   --> $DIR/modulo_one.rs:21:5
    |
-LL |     INT_MIN % NEG_ONE; // also caught by rustc
+LL |     INT_MIN % NEG_ONE; // also caught by crablangc
    |     ^^^^^^^^^^^^^^^^^ attempt to compute the remainder of `i64::MIN % -1_i64`, which would overflow
 
 error: this operation will panic at runtime
   --> $DIR/modulo_one.rs:22:5
    |
-LL |     INT_MIN % STATIC_NEG_ONE; // ONLY caught by rustc
+LL |     INT_MIN % STATIC_NEG_ONE; // ONLY caught by crablangc
    |     ^^^^^^^^^^^^^^^^^^^^^^^^ attempt to compute the remainder of `i64::MIN % -1_i64`, which would overflow
 
 error: any number modulo 1 will be 0
@@ -35,7 +35,7 @@ LL |     10 % -1;
 error: any number modulo -1 will panic/overflow or result in 0
   --> $DIR/modulo_one.rs:11:5
    |
-LL |     i32::MIN % (-1); // also caught by rustc
+LL |     i32::MIN % (-1); // also caught by crablangc
    |     ^^^^^^^^^^^^^^^
 
 error: any number modulo 1 will be 0
@@ -53,7 +53,7 @@ LL |     2 % NEG_ONE;
 error: any number modulo -1 will panic/overflow or result in 0
   --> $DIR/modulo_one.rs:21:5
    |
-LL |     INT_MIN % NEG_ONE; // also caught by rustc
+LL |     INT_MIN % NEG_ONE; // also caught by crablangc
    |     ^^^^^^^^^^^^^^^^^
 
 error: aborting due to 9 previous errors

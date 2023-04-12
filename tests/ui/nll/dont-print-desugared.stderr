@@ -22,4 +22,4 @@ LL |     }
 error: aborting due to 2 previous errors
 
 Some errors have detailed explanations: E0596, E0597.
-For more information about an error, try `rustc --explain E0596`.
+For more information about an error, try `crablangc --explain E0596`.

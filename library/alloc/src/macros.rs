@@ -36,21 +36,21 @@
 /// [`Vec`]: crate::vec::Vec
 #[cfg(all(not(no_global_oom_handling), not(test)))]
 #[macro_export]
-#[stable(feature = "rust1", since = "1.0.0")]
-#[rustc_diagnostic_item = "vec_macro"]
-#[allow_internal_unstable(rustc_attrs, liballoc_internals)]
+#[stable(feature = "crablang1", since = "1.0.0")]
+#[crablangc_diagnostic_item = "vec_macro"]
+#[allow_internal_unstable(crablangc_attrs, liballoc_internals)]
 macro_rules! vec {
     () => (
-        $crate::__rust_force_expr!($crate::vec::Vec::new())
+        $crate::__crablang_force_expr!($crate::vec::Vec::new())
     );
     ($elem:expr; $n:expr) => (
-        $crate::__rust_force_expr!($crate::vec::from_elem($elem, $n))
+        $crate::__crablang_force_expr!($crate::vec::from_elem($elem, $n))
     );
     ($($x:expr),+ $(,)?) => (
-        $crate::__rust_force_expr!(<[_]>::into_vec(
-            // This rustc_box is not required, but it produces a dramatic improvement in compile
+        $crate::__crablang_force_expr!(<[_]>::into_vec(
+            // This crablangc_box is not required, but it produces a dramatic improvement in compile
             // time when constructing arrays with many elements.
-            #[rustc_box]
+            #[crablangc_box]
             $crate::boxed::Box::new([$($x),+])
         ))
     );
@@ -113,8 +113,8 @@ macro_rules! vec {
 /// format!("{x} + {y} = 3");
 /// ```
 #[macro_export]
-#[stable(feature = "rust1", since = "1.0.0")]
-#[cfg_attr(not(test), rustc_diagnostic_item = "format_macro")]
+#[stable(feature = "crablang1", since = "1.0.0")]
+#[cfg_attr(not(test), crablangc_diagnostic_item = "format_macro")]
 macro_rules! format {
     ($($arg:tt)*) => {{
         let res = $crate::fmt::format($crate::__export::format_args!($($arg)*));
@@ -126,7 +126,7 @@ macro_rules! format {
 #[doc(hidden)]
 #[macro_export]
 #[unstable(feature = "liballoc_internals", issue = "none", reason = "implementation detail")]
-macro_rules! __rust_force_expr {
+macro_rules! __crablang_force_expr {
     ($e:expr) => {
         $e
     };

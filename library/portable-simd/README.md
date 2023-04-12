@@ -1,7 +1,7 @@
-# The Rust standard library's portable SIMD API
-![Build Status](https://github.com/rust-lang/portable-simd/actions/workflows/ci.yml/badge.svg?branch=master)
+# The CrabLang standard library's portable SIMD API
+![Build Status](https://github.com/crablang/portable-simd/actions/workflows/ci.yml/badge.svg?branch=master)
 
-Code repository for the [Portable SIMD Project Group](https://github.com/rust-lang/project-portable-simd).
+Code repository for the [Portable SIMD Project Group](https://github.com/crablang/project-portable-simd).
 Please refer to [CONTRIBUTING.md](./CONTRIBUTING.md) for our contributing guidelines.
 
 The docs for this crate are published from the main branch.
@@ -17,10 +17,10 @@ If you are interested in support for a specific architecture, you may want [stda
 Now we're gonna dip our toes into this world with a small SIMD "Hello, World!" example. Make sure your compiler is up to date and using `nightly`. We can do that by running 
 
 ```bash
-rustup update -- nightly
+crablangup update -- nightly
 ```
 
-or by setting up `rustup default nightly` or else with `cargo +nightly {build,test,run}`. After updating, run 
+or by setting up `crablangup default nightly` or else with `cargo +nightly {build,test,run}`. After updating, run 
 ```bash
 cargo new hellosimd
 ```
@@ -31,11 +31,11 @@ name = "hellosimd"
 version = "0.1.0"
 edition = "2018"
 [dependencies]
-core_simd = { git = "https://github.com/rust-lang/portable-simd" }
+core_simd = { git = "https://github.com/crablang/portable-simd" }
 ```
 
 and finally write this in `src/main.rs`:
-```rust
+```crablang
 use core_simd::*;
 fn main() {
     let a = f32x4::splat(10.0);
@@ -60,10 +60,10 @@ The supported element types are as follows:
 * **Unsigned Integers:** `u8`, `u16`, `u32`, `u64`, `u128`, `usize`
 * **Masks:** `mask8`, `mask16`, `mask32`, `mask64`, `mask128`, `masksize`
 
-Floating point, signed integers, and unsigned integers are the [primitive types](https://doc.rust-lang.org/core/primitive/index.html) you're already used to.
+Floating point, signed integers, and unsigned integers are the [primitive types](https://doc.crablang.org/core/primitive/index.html) you're already used to.
 The `mask` types are "truthy" values, but they use the number of bits in their name instead of just 1 bit like a normal `bool` uses.
 
 [simd-guide]: ./beginners-guide.md
-[zulip-project-portable-simd]: https://rust-lang.zulipchat.com/#narrow/stream/257879-project-portable-simd
-[stdarch]: https://github.com/rust-lang/stdarch
-[docs]: https://rust-lang.github.io/portable-simd/core_simd
+[zulip-project-portable-simd]: https://crablang.zulipchat.com/#narrow/stream/257879-project-portable-simd
+[stdarch]: https://github.com/crablang/stdarch
+[docs]: https://crablang.github.io/portable-simd/core_simd

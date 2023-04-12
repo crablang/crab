@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 #![warn(clippy::match_single_binding)]
 #![allow(unused_variables)]
 #![allow(clippy::uninlined_format_args)]
@@ -26,7 +26,7 @@ fn main() {
     let opt = Some((5, 2));
     let get_tup = || -> (i32, i32) { (1, 2) };
     match opt {
-        #[rustfmt::skip]
+        #[crablangfmt::skip]
         Some((first, _second)) => {
             match get_tup() {
                 (a, b) => println!("a {:?} and b {:?}", a, b),

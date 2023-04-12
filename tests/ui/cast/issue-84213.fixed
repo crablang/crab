@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 
 struct Something {
     pub field: u32,

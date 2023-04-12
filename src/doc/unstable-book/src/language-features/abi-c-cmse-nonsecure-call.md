@@ -2,17 +2,17 @@
 
 The tracking issue for this feature is: [#81391]
 
-[#81391]: https://github.com/rust-lang/rust/issues/81391
+[#81391]: https://github.com/crablang/crablang/issues/81391
 
 ------------------------
 
-The [TrustZone-M
+The [TcrablangZone-M
 feature](https://developer.arm.com/documentation/100690/latest/) is available
 for targets with the Armv8-M architecture profile (`thumbv8m` in their target
 name).
-LLVM, the Rust compiler and the linker are providing
+LLVM, the CrabLang compiler and the linker are providing
 [support](https://developer.arm.com/documentation/ecm0359818/latest/) for the
-TrustZone-M feature.
+TcrablangZone-M feature.
 
 One of the things provided, with this unstable feature, is the
 `C-cmse-nonsecure-call` function ABI. This ABI is used on function pointers to
@@ -33,7 +33,7 @@ The `extern "C-cmse-nonsecure-call"` ABI is otherwise equivalent to the
 
 <!-- NOTE(ignore) this example is specific to thumbv8m targets -->
 
-``` rust,ignore
+``` crablang,ignore
 #![no_std]
 #![feature(abi_c_cmse_nonsecure_call)]
 
@@ -46,7 +46,7 @@ pub fn call_nonsecure_function(addr: usize) -> u32 {
 ```
 
 ``` text
-$ rustc --emit asm --crate-type lib --target thumbv8m.main-none-eabi function.rs
+$ crablangc --emit asm --crate-type lib --target thumbv8m.main-none-eabi function.rs
 
 call_nonsecure_function:
         .fnstart

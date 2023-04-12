@@ -1,14 +1,14 @@
 # `check-cfg`
 
-The tracking issue for this feature is: [#82450](https://github.com/rust-lang/rust/issues/82450).
+The tracking issue for this feature is: [#82450](https://github.com/crablang/crablang/issues/82450).
 
 ------------------------
 
 This feature allows you to enable complete or partial checking of configuration.
 
-`rustc` accepts the `--check-cfg` option, which specifies whether to check conditions and how to
+`crablangc` accepts the `--check-cfg` option, which specifies whether to check conditions and how to
 check them. The `--check-cfg` option takes a value, called the _check cfg specification_. The
-check cfg specification is parsed using the Rust metadata syntax, just as the `--cfg` option is.
+check cfg specification is parsed using the CrabLang metadata syntax, just as the `--cfg` option is.
 
 `--check-cfg` option can take one of two forms:
 
@@ -26,18 +26,18 @@ pass all expected names and values using `names(...)` and `values(...)`.
 The `names(...)` form enables checking the names. This form uses a named list:
 
 ```bash
-rustc --check-cfg 'names(name1, name2, ... nameN)'
+crablangc --check-cfg 'names(name1, name2, ... nameN)'
 ```
 
 where each `name` is a bare identifier (has no quotes). The order of the names is not significant.
 
-If `--check-cfg names(...)` is specified at least once, then `rustc` will check all references to
-condition names. `rustc` will check every `#[cfg]` attribute, `#[cfg_attr]` attribute, `cfg` clause
+If `--check-cfg names(...)` is specified at least once, then `crablangc` will check all references to
+condition names. `crablangc` will check every `#[cfg]` attribute, `#[cfg_attr]` attribute, `cfg` clause
 inside `#[link]` attribute and `cfg!(...)` call against the provided list of expected condition
-names. If a name is not present in this list, then `rustc` will report an `unexpected_cfgs` lint
+names. If a name is not present in this list, then `crablangc` will report an `unexpected_cfgs` lint
 diagnostic. The default diagnostic level for this lint is `Warn`.
 
-If `--check-cfg names(...)` is not specified, then `rustc` will not check references to condition
+If `--check-cfg names(...)` is not specified, then `crablangc` will not check references to condition
 names.
 
 `--check-cfg names(...)` may be specified more than once. The result is that the list of valid
@@ -48,12 +48,12 @@ To enable checking condition names with an empty set of valid condition names, u
 form. The parentheses are required.
 
 ```bash
-rustc --check-cfg 'names()'
+crablangc --check-cfg 'names()'
 ```
 
 Note that `--check-cfg 'names()'` is _not_ equivalent to omitting the option entirely.
 The first form enables checking condition names, while specifying that there are no valid
-condition names (outside of the set of well-known names defined by `rustc`). Omitting the
+condition names (outside of the set of well-known names defined by `crablangc`). Omitting the
 `--check-cfg 'names(...)'` option does not enable checking condition names.
 
 ## The `values(...)` form
@@ -62,29 +62,29 @@ The `values(...)` form enables checking the values within list-valued conditions
 form:
 
 ```bash
-rustc --check-cfg `values(name, "value1", "value2", ... "valueN")'
+crablangc --check-cfg `values(name, "value1", "value2", ... "valueN")'
 ```
 
 where `name` is a bare identifier (has no quotes) and each `"value"` term is a quoted literal
 string. `name` specifies the name of the condition, such as `feature` or `target_os`.
 
-When the `values(...)` option is specified, `rustc` will check every `#[cfg(name = "value")]`
+When the `values(...)` option is specified, `crablangc` will check every `#[cfg(name = "value")]`
 attribute, `#[cfg_attr(name = "value")]` attribute, `#[link(name = "a", cfg(name = "value"))]`
 and `cfg!(name = "value")` call. It will check that the `"value"` specified is present in the
-list of expected values. If `"value"` is not in it, then `rustc` will report an `unexpected_cfgs`
+list of expected values. If `"value"` is not in it, then `crablangc` will report an `unexpected_cfgs`
 lint diagnostic. The default diagnostic level for this lint is `Warn`.
 
 To enable checking of values, but to provide an empty set of valid values, use this form:
 
 ```bash
-rustc --check-cfg `values(name)`
+crablangc --check-cfg `values(name)`
 ```
 
 The `--check-cfg values(...)` option can be repeated, both for the same condition name and for
 different names. If it is repeated for the same condition name, then the sets of values for that
 condition are merged together.
 
-If `values()` is specified, then `rustc` will enable the checking of well-known values defined
+If `values()` is specified, then `crablangc` will enable the checking of well-known values defined
 by itself. Note that it's necessary to specify the `values()` form to enable the checking of
 well known values, specifying the other forms doesn't implicitly enable it.
 
@@ -93,7 +93,7 @@ well known values, specifying the other forms doesn't implicitly enable it.
 Consider this command line:
 
 ```bash
-rustc --check-cfg 'names(feature)' \
+crablangc --check-cfg 'names(feature)' \
       --check-cfg 'values(feature, "lion", "zebra")' \
       --cfg 'feature="lion"' -Z unstable-options \
       example.rs
@@ -102,7 +102,7 @@ rustc --check-cfg 'names(feature)' \
 This command line indicates that this crate has two features: `lion` and `zebra`. The `lion`
 feature is enabled, while the `zebra` feature is disabled. Consider compiling this code:
 
-```rust
+```crablang
 // This is expected, and tame_lion() will be compiled
 #[cfg(feature = "lion")]
 fn tame_lion(lion: Lion) {}
@@ -130,11 +130,11 @@ fn tame_lion() {}
 
 ```bash
 # This turns on checking for condition names, but not values, such as 'feature' values.
-rustc --check-cfg 'names(is_embedded, has_feathers)' \
+crablangc --check-cfg 'names(is_embedded, has_feathers)' \
       --cfg has_feathers -Z unstable-options
 ```
 
-```rust
+```crablang
 #[cfg(is_embedded)]         // This is expected as "is_embedded" was provided in names()
 fn do_embedded() {}
 
@@ -155,11 +155,11 @@ fn do_mumble_frotz() {}
 
 ```bash
 # This turns on checking for feature values, but not for condition names.
-rustc --check-cfg 'values(feature, "zapping", "lasers")' \
+crablangc --check-cfg 'values(feature, "zapping", "lasers")' \
       --cfg 'feature="zapping"' -Z unstable-options
 ```
 
-```rust
+```crablang
 #[cfg(is_embedded)]         // This is doesn't raise a warning, because names checking was not
                             // enable (ie not names())
 fn do_embedded() {}
@@ -181,12 +181,12 @@ fn write_shakespeare() {}
 
 ```bash
 # This turns on checking for feature values and for condition names.
-rustc --check-cfg 'names(is_embedded, has_feathers)' \
+crablangc --check-cfg 'names(is_embedded, has_feathers)' \
       --check-cfg 'values(feature, "zapping", "lasers")' \
       --cfg has_feathers --cfg 'feature="zapping"' -Z unstable-options
 ```
 
-```rust
+```crablang
 #[cfg(is_embedded)]         // This is expected because "is_embedded" was provided in names()
 fn do_embedded() {}
 

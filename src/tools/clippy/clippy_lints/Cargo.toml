@@ -1,8 +1,8 @@
 [package]
 name = "clippy_lints"
 version = "0.1.70"
-description = "A bunch of helpful lints to avoid common pitfalls in Rust"
-repository = "https://github.com/rust-lang/rust-clippy"
+description = "A bunch of helpful lints to avoid common pitfalls in CrabLang"
+repository = "https://github.com/crablang/crablang-clippy"
 readme = "README.md"
 license = "MIT OR Apache-2.0"
 keywords = ["clippy", "lint", "plugin"]
@@ -24,9 +24,9 @@ toml = "0.5"
 unicode-normalization = "0.1"
 unicode-script = { version = "0.5", default-features = false }
 semver = "1.0"
-rustc-semver = "1.1"
+crablangc-semver = "1.1"
 # NOTE: cargo requires serde feat in its url dep
-# see <https://github.com/rust-lang/rust/pull/63587#issuecomment-522343864>
+# see <https://github.com/crablang/crablang/pull/63587#issuecomment-522343864>
 url = { version = "2.2", features = ["serde"] }
 
 [features]
@@ -34,6 +34,6 @@ deny-warnings = ["clippy_utils/deny-warnings"]
 # build clippy with internal lints enabled, off by default
 internal = ["clippy_utils/internal", "serde_json", "tempfile"]
 
-[package.metadata.rust-analyzer]
-# This crate uses #[feature(rustc_private)]
-rustc_private = true
+[package.metadata.crablang-analyzer]
+# This crate uses #[feature(crablangc_private)]
+crablangc_private = true

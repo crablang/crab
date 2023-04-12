@@ -11,4 +11,4 @@ LL |     let a = (1.0_f32).pow(1.0);
 
 error: aborting due to previous error
 
-For more information about this error, try `rustc --explain E0689`.
+For more information about this error, try `crablangc --explain E0689`.

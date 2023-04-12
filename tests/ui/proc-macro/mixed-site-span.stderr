@@ -31,4 +31,4 @@ LL | pass_dollar_crate!();
 error: aborting due to 4 previous errors
 
 Some errors have detailed explanations: E0412, E0425, E0426.
-For more information about an error, try `rustc --explain E0412`.
+For more information about an error, try `crablangc --explain E0412`.

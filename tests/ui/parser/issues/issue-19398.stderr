@@ -3,7 +3,7 @@ error: expected `{`, found keyword `unsafe`
    |
 LL | trait T {
    |         - while parsing this item list starting here
-LL |     extern "Rust" unsafe fn foo();
+LL |     extern "CrabLang" unsafe fn foo();
    |                   ^^^^^^ expected `{`
 LL |
 LL | }

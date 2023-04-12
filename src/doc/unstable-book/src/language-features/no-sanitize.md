@@ -2,7 +2,7 @@
 
 The tracking issue for this feature is: [#39699]
 
-[#39699]: https://github.com/rust-lang/rust/issues/39699
+[#39699]: https://github.com/crablang/crablang/issues/39699
 
 ------------------------
 
@@ -19,7 +19,7 @@ traces.
 
 ## Examples
 
-``` rust
+``` crablang
 #![feature(no_sanitize)]
 
 #[no_sanitize(address)]

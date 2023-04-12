@@ -38,4 +38,4 @@ LL | fn black_car<C:Car<Color=Black>>(c: C) {
 
 error: aborting due to 2 previous errors
 
-For more information about this error, try `rustc --explain E0271`.
+For more information about this error, try `crablangc --explain E0271`.

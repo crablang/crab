@@ -6,4 +6,4 @@ LL | pub async fn start(_: isize, _: *const *const u8) -> isize {
 
 error: aborting due to previous error
 
-For more information about this error, try `rustc --explain E0752`.
+For more information about this error, try `crablangc --explain E0752`.

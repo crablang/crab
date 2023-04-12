@@ -4,13 +4,13 @@ use clippy_utils::source::snippet_with_context;
 use clippy_utils::ty::{has_debug_impl, is_copy, is_type_diagnostic_item};
 use clippy_utils::usage::local_used_after_expr;
 use clippy_utils::{is_expr_final_block_expr, path_res};
-use rustc_errors::Applicability;
-use rustc_hir::def::Res;
-use rustc_hir::{Expr, ExprKind};
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_middle::ty::{self, Ty};
-use rustc_session::{declare_lint_pass, declare_tool_lint};
-use rustc_span::sym;
+use crablangc_errors::Applicability;
+use crablangc_hir::def::Res;
+use crablangc_hir::{Expr, ExprKind};
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_middle::ty::{self, Ty};
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_span::sym;
 
 declare_clippy_lint! {
     /// ### What it does
@@ -23,7 +23,7 @@ declare_clippy_lint! {
     /// The suggested replacement decreases the readability of code and log output.
     ///
     /// ### Example
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// # let r = Ok::<_, ()>(());
     /// assert!(r.is_ok());
     /// # let r = Err::<_, ()>(());

@@ -1,6 +1,6 @@
 # `src-hash-algorithm`
 
-The tracking issue for this feature is: [#70401](https://github.com/rust-lang/rust/issues/70401).
+The tracking issue for this feature is: [#70401](https://github.com/crablang/crablang/issues/70401).
 
 ------------------------
 

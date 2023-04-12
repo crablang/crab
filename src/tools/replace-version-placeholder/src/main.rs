@@ -1,7 +1,7 @@
 use std::path::PathBuf;
 use tidy::{t, walk};
 
-pub const VERSION_PLACEHOLDER: &str = "CURRENT_RUSTC_VERSION";
+pub const VERSION_PLACEHOLDER: &str = "CURRENT_CRABLANGC_VERSION";
 
 fn main() {
     let root_path: PathBuf = std::env::args_os().nth(1).expect("need path to root of repo").into();
@@ -14,7 +14,7 @@ fn main() {
             walk::filter_dirs(path)
                 // We exempt these as they require the placeholder
                 // for their operation
-                || path.ends_with("compiler/rustc_attr/src/builtin.rs")
+                || path.ends_with("compiler/crablangc_attr/src/builtin.rs")
                 || path.ends_with("src/tools/tidy/src/features/version.rs")
                 || path.ends_with("src/tools/replace-version-placeholder")
         },

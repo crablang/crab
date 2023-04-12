@@ -6,7 +6,7 @@ LL |     const A: isize;
    |     |
    |     help: try using a static value: `static`
    |
-   = note: for more information, visit https://doc.rust-lang.org/std/keyword.extern.html
+   = note: for more information, visit https://doc.crablang.org/std/keyword.extern.html
 
 error: extern items cannot be `const`
   --> $DIR/foreign-const-semantic-fail.rs:6:11
@@ -16,7 +16,7 @@ LL |     const B: isize = 42;
    |     |
    |     help: try using a static value: `static`
    |
-   = note: for more information, visit https://doc.rust-lang.org/std/keyword.extern.html
+   = note: for more information, visit https://doc.crablang.org/std/keyword.extern.html
 
 error: incorrect `static` inside `extern` block
   --> $DIR/foreign-const-semantic-fail.rs:6:11
@@ -29,7 +29,7 @@ LL |     const B: isize = 42;
    |           |
    |           cannot have a body
    |
-   = note: for more information, visit https://doc.rust-lang.org/std/keyword.extern.html
+   = note: for more information, visit https://doc.crablang.org/std/keyword.extern.html
 
 error: aborting due to 3 previous errors
 

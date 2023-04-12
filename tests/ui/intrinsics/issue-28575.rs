@@ -4,7 +4,7 @@
 #![feature(intrinsics)]
 
 extern "C" {
-    pub static FOO: extern "rust-intrinsic" fn();
+    pub static FOO: extern "crablang-intrinsic" fn();
 }
 
 fn main() {

@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 #![allow(dead_code, unused_variables)]
 enum NonNullary {
     Nullary,

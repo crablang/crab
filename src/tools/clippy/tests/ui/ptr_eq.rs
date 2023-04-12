@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 #![warn(clippy::ptr_eq)]
 
 macro_rules! mac {

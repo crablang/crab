@@ -5,15 +5,15 @@ use std::ffi::OsStr;
 use std::path::PathBuf;
 use std::process::{self, Command};
 
-use rustc_build_sysroot::{BuildMode, SysrootBuilder, SysrootConfig};
-use rustc_version::VersionMeta;
+use crablangc_build_sysroot::{BuildMode, SysrootBuilder, SysrootConfig};
+use crablangc_version::VersionMeta;
 
 use crate::util::*;
 
 /// Performs the setup required to make `cargo miri` work: Getting a custom-built libstd. Then sets
 /// `MIRI_SYSROOT`. Skipped if `MIRI_SYSROOT` is already set, in which case we expect the user has
 /// done all this already.
-pub fn setup(subcommand: &MiriCommand, target: &str, rustc_version: &VersionMeta, verbose: usize) {
+pub fn setup(subcommand: &MiriCommand, target: &str, crablangc_version: &VersionMeta, verbose: usize) {
     let only_setup = matches!(subcommand, MiriCommand::Setup);
     let ask_user = !only_setup;
     let print_sysroot = only_setup && has_arg_flag("--print-sysroot"); // whether we just print the sysroot path
@@ -22,39 +22,39 @@ pub fn setup(subcommand: &MiriCommand, target: &str, rustc_version: &VersionMeta
         return;
     }
 
-    // Determine where the rust sources are located.  The env var trumps auto-detection.
-    let rust_src_env_var = std::env::var_os("MIRI_LIB_SRC");
-    let rust_src = match rust_src_env_var {
+    // Determine where the crablang sources are located.  The env var trumps auto-detection.
+    let crablang_src_env_var = std::env::var_os("MIRI_LIB_SRC");
+    let crablang_src = match crablang_src_env_var {
         Some(path) => {
             let path = PathBuf::from(path);
             // Make path absolute if possible.
             path.canonicalize().unwrap_or(path)
         }
         None => {
-            // Check for `rust-src` rustup component.
-            let rustup_src = rustc_build_sysroot::rustc_sysroot_src(miri_for_host())
+            // Check for `crablang-src` crablangup component.
+            let crablangup_src = crablangc_build_sysroot::crablangc_sysroot_src(miri_for_host())
                 .expect("could not determine sysroot source directory");
-            if !rustup_src.exists() {
-                // Ask the user to install the `rust-src` component, and use that.
-                let mut cmd = Command::new("rustup");
-                cmd.args(["component", "add", "rust-src"]);
+            if !crablangup_src.exists() {
+                // Ask the user to install the `crablang-src` component, and use that.
+                let mut cmd = Command::new("crablangup");
+                cmd.args(["component", "add", "crablang-src"]);
                 ask_to_run(
                     cmd,
                     ask_user,
-                    "install the `rust-src` component for the selected toolchain",
+                    "install the `crablang-src` component for the selected toolchain",
                 );
             }
-            rustup_src
+            crablangup_src
         }
     };
-    if !rust_src.exists() {
-        show_error!("given Rust source directory `{}` does not exist.", rust_src.display());
+    if !crablang_src.exists() {
+        show_error!("given CrabLang source directory `{}` does not exist.", crablang_src.display());
     }
-    if rust_src.file_name().and_then(OsStr::to_str) != Some("library") {
+    if crablang_src.file_name().and_then(OsStr::to_str) != Some("library") {
         show_error!(
-            "given Rust source directory `{}` does not seem to be the `library` subdirectory of \
-             a Rust source checkout.",
-            rust_src.display()
+            "given CrabLang source directory `{}` does not seem to be the `library` subdirectory of \
+             a CrabLang source checkout.",
+            crablang_src.display()
         );
     }
 
@@ -62,7 +62,7 @@ pub fn setup(subcommand: &MiriCommand, target: &str, rustc_version: &VersionMeta
     let sysroot_dir = match std::env::var_os("MIRI_SYSROOT") {
         Some(dir) => PathBuf::from(dir),
         None => {
-            let user_dirs = directories::ProjectDirs::from("org", "rust-lang", "miri").unwrap();
+            let user_dirs = directories::ProjectDirs::from("org", "crablang", "miri").unwrap();
             user_dirs.cache_dir().to_owned()
         }
     };
@@ -76,28 +76,28 @@ pub fn setup(subcommand: &MiriCommand, target: &str, rustc_version: &VersionMeta
     };
     let cargo_cmd = {
         let mut command = cargo();
-        // Use Miri as rustc to build a libstd compatible with us (and use the right flags).
-        // However, when we are running in bootstrap, we cannot just overwrite `RUSTC`,
+        // Use Miri as crablangc to build a libstd compatible with us (and use the right flags).
+        // However, when we are running in bootstrap, we cannot just overwrite `CRABLANGC`,
         // because we still need bootstrap to distinguish between host and target crates.
-        // In that case we overwrite `RUSTC_REAL` instead which determines the rustc used
+        // In that case we overwrite `CRABLANGC_REAL` instead which determines the crablangc used
         // for target crates.
         // We set ourselves (`cargo-miri`) instead of Miri directly to be able to patch the flags
         // for `libpanic_abort` (usually this is done by bootstrap but we have to do it ourselves).
-        // The `MIRI_CALLED_FROM_SETUP` will mean we dispatch to `phase_setup_rustc`.
+        // The `MIRI_CALLED_FROM_SETUP` will mean we dispatch to `phase_setup_crablangc`.
         let cargo_miri_path = std::env::current_exe().expect("current executable path invalid");
-        if env::var_os("RUSTC_STAGE").is_some() {
-            assert!(env::var_os("RUSTC").is_some());
-            command.env("RUSTC_REAL", &cargo_miri_path);
+        if env::var_os("CRABLANGC_STAGE").is_some() {
+            assert!(env::var_os("CRABLANGC").is_some());
+            command.env("CRABLANGC_REAL", &cargo_miri_path);
         } else {
-            command.env("RUSTC", &cargo_miri_path);
+            command.env("CRABLANGC", &cargo_miri_path);
         }
         command.env("MIRI_CALLED_FROM_SETUP", "1");
         // Make sure there are no other wrappers getting in our way (Cc
-        // https://github.com/rust-lang/miri/issues/1421,
-        // https://github.com/rust-lang/miri/issues/2429). Looks like setting
-        // `RUSTC_WRAPPER` to the empty string overwrites `build.rustc-wrapper` set via
+        // https://github.com/crablang/miri/issues/1421,
+        // https://github.com/crablang/miri/issues/2429). Looks like setting
+        // `CRABLANGC_WRAPPER` to the empty string overwrites `build.crablangc-wrapper` set via
         // `config.toml`.
-        command.env("RUSTC_WRAPPER", "");
+        command.env("CRABLANGC_WRAPPER", "");
 
         if only_setup && !print_sysroot {
             // Forward output. Even make it verbose, if requested.
@@ -115,8 +115,8 @@ pub fn setup(subcommand: &MiriCommand, target: &str, rustc_version: &VersionMeta
     // Disable debug assertions in the standard library -- Miri is already slow enough.
     // But keep the overflow checks, they are cheap. This completely overwrites flags
     // the user might have set, which is consistent with normal `cargo build` that does
-    // not apply `RUSTFLAGS` to the sysroot either.
-    let rustflags = &["-Cdebug-assertions=off", "-Coverflow-checks=on"];
+    // not apply `CRABLANGFLAGS` to the sysroot either.
+    let crablangflags = &["-Cdebug-assertions=off", "-Coverflow-checks=on"];
     // Make sure all target-level Miri invocations know their sysroot.
     std::env::set_var("MIRI_SYSROOT", &sysroot_dir);
 
@@ -132,11 +132,11 @@ pub fn setup(subcommand: &MiriCommand, target: &str, rustc_version: &VersionMeta
     }
     SysrootBuilder::new(&sysroot_dir, target)
         .build_mode(BuildMode::Check)
-        .rustc_version(rustc_version.clone())
+        .crablangc_version(crablangc_version.clone())
         .sysroot_config(sysroot_config)
-        .rustflags(rustflags)
+        .crablangflags(crablangflags)
         .cargo(cargo_cmd)
-        .build_from_source(&rust_src)
+        .build_from_source(&crablang_src)
         .unwrap_or_else(|err| {
             if print_sysroot {
                 show_error!("failed to build sysroot")

@@ -1,10 +1,10 @@
 error[E0658]: attributes on expressions are experimental
   --> $DIR/issue-87378.rs:14:13
    |
-LL |     let c = #[rustc_capture_analysis]
+LL |     let c = #[crablangc_capture_analysis]
    |             ^^^^^^^^^^^^^^^^^^^^^^^^^
    |
-   = note: see issue #15701 <https://github.com/rust-lang/rust/issues/15701> for more information
+   = note: see issue #15701 <https://github.com/crablang/crablang/issues/15701> for more information
    = help: add `#![feature(stmt_expr_attributes)]` to the crate attributes to enable
 
 error: First Pass analysis includes:
@@ -45,4 +45,4 @@ LL |        unsafe { u.value }
 
 error: aborting due to 3 previous errors
 
-For more information about this error, try `rustc --explain E0658`.
+For more information about this error, try `crablangc --explain E0658`.

@@ -1,6 +1,6 @@
 use clippy_utils::diagnostics::span_lint_and_help;
-use rustc_hir as hir;
-use rustc_lint::LateContext;
+use crablangc_hir as hir;
+use crablangc_lint::LateContext;
 
 use super::INTEGER_DIVISION;
 

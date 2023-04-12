@@ -60,7 +60,7 @@ impl<T> RefUnwindSafe for ReentrantMutex<T> {}
 /// # Mutability
 ///
 /// Unlike `MutexGuard`, `ReentrantMutexGuard` does not implement `DerefMut`,
-/// because implementation of the trait would violate Rust’s reference aliasing
+/// because implementation of the trait would violate CrabLang’s reference aliasing
 /// rules. Use interior mutability (usually `RefCell`) in order to mutate the
 /// guarded data.
 #[must_use = "if unused the ReentrantMutex will immediately unlock"]

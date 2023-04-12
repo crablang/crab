@@ -30,7 +30,7 @@ fn tmp() -> PathBuf {
     let mut out = Vec::with_capacity(1024);
 
     unsafe {
-        extern "Rust" {
+        extern "CrabLang" {
             fn miri_host_to_target_path(
                 path: *const c_char,
                 out: *mut c_char,

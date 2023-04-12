@@ -5,7 +5,7 @@ LL | #[repr(C, u64)]
    |        ^  ^^^
    |
    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
-   = note: for more information, see issue #68585 <https://github.com/rust-lang/rust/issues/68585>
+   = note: for more information, see issue #68585 <https://github.com/crablang/crablang/issues/68585>
    = note: `#[deny(conflicting_repr_hints)]` on by default
 
 error[E0566]: conflicting representation hints
@@ -15,7 +15,7 @@ LL | #[repr(u32, u64)]
    |        ^^^  ^^^
    |
    = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
-   = note: for more information, see issue #68585 <https://github.com/rust-lang/rust/issues/68585>
+   = note: for more information, see issue #68585 <https://github.com/crablang/crablang/issues/68585>
 
 error[E0587]: type has conflicting packed and align representation hints
   --> $DIR/conflicting-repr-hints.rs:29:1
@@ -80,4 +80,4 @@ LL | pub union U {
 error: aborting due to 12 previous errors
 
 Some errors have detailed explanations: E0566, E0587, E0634.
-For more information about an error, try `rustc --explain E0566`.
+For more information about an error, try `crablangc --explain E0566`.

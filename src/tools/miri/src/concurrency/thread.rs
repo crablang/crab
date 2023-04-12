@@ -8,13 +8,13 @@ use std::time::{Duration, SystemTime};
 
 use log::trace;
 
-use rustc_data_structures::fx::FxHashMap;
-use rustc_hir::def_id::DefId;
-use rustc_index::vec::{Idx, IndexVec};
-use rustc_middle::mir::Mutability;
-use rustc_middle::ty::layout::TyAndLayout;
-use rustc_span::Span;
-use rustc_target::spec::abi::Abi;
+use crablangc_data_structures::fx::FxHashMap;
+use crablangc_hir::def_id::DefId;
+use crablangc_index::vec::{Idx, IndexVec};
+use crablangc_middle::mir::Mutability;
+use crablangc_middle::ty::layout::TyAndLayout;
+use crablangc_span::Span;
+use crablangc_target::spec::abi::Abi;
 
 use crate::concurrency::data_race;
 use crate::concurrency::sync::SynchronizationState;
@@ -118,7 +118,7 @@ pub struct Thread<'mir, 'tcx> {
 
     /// The function to call when the stack ran empty, to figure out what to do next.
     /// Conceptually, this is the interpreter implementation of the things that happen 'after' the
-    /// Rust language entry point for this thread returns (usually implemented by the C or OS runtime).
+    /// CrabLang language entry point for this thread returns (usually implemented by the C or OS runtime).
     /// (`None` is an error, it means the callback has not been set up yet or is actively running.)
     pub(crate) on_stack_empty: Option<StackEmptyCallback<'mir, 'tcx>>,
 
@@ -179,7 +179,7 @@ impl<'mir, 'tcx> Thread<'mir, 'tcx> {
     pub fn top_user_relevant_frame(&self) -> Option<usize> {
         debug_assert_eq!(self.top_user_relevant_frame, self.compute_top_user_relevant_frame());
         // This can be called upon creation of an allocation. We create allocations while setting up
-        // parts of the Rust runtime when we do not have any stack frames yet, so we need to handle
+        // parts of the CrabLang runtime when we do not have any stack frames yet, so we need to handle
         // empty stacks.
         self.top_user_relevant_frame.or_else(|| self.stack.len().checked_sub(1))
     }
@@ -733,7 +733,7 @@ trait EvalContextPrivExt<'mir, 'tcx: 'mir>: MiriInterpCxExt<'mir, 'tcx> {
             // get_ready_callback can return None if the computer's clock
             // was shifted after calling the scheduler and before the call
             // to get_ready_callback (see issue
-            // https://github.com/rust-lang/miri/issues/1763). In this case,
+            // https://github.com/crablang/miri/issues/1763). In this case,
             // just do nothing, which effectively just returns to the
             // scheduler.
             return Ok(());
@@ -837,7 +837,7 @@ pub trait EvalContextExt<'mir, 'tcx: 'mir>: crate::MiriInterpCxExt<'mir, 'tcx> {
         let instance = this.get_ptr_fn(start_routine)?.as_instance()?;
 
         // Note: the returned value is currently ignored (see the FIXME in
-        // pthread_join in shims/unix/thread.rs) because the Rust standard library does not use
+        // pthread_join in shims/unix/thread.rs) because the CrabLang standard library does not use
         // it.
         let ret_place = this.allocate(ret_layout, MiriMemoryKind::Machine.into())?;
 

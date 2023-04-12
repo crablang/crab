@@ -49,7 +49,7 @@ macro_rules! define_handles {
                 handle: handle::Handle,
                 // Prevent Send and Sync impls. `!Send`/`!Sync` is the usual
                 // way of doing this, but that requires unstable features.
-                // rust-analyzer uses this code and avoids unstable features.
+                // crablang-analyzer uses this code and avoids unstable features.
                 _marker: PhantomData<*mut ()>,
             }
 
@@ -134,7 +134,7 @@ macro_rules! define_handles {
                 handle: handle::Handle,
                 // Prevent Send and Sync impls. `!Send`/`!Sync` is the usual
                 // way of doing this, but that requires unstable features.
-                // rust-analyzer uses this code and avoids unstable features.
+                // crablang-analyzer uses this code and avoids unstable features.
                 _marker: PhantomData<*mut ()>,
             }
 

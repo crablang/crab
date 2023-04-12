@@ -9,7 +9,7 @@ LL |     let a = 4;
    |         help: introduce a variable instead: `a_var`
    |
    = note: `let` bindings require an "irrefutable pattern", like a `struct` or an `enum` with only one variant
-   = note: for more information, visit https://doc.rust-lang.org/book/ch18-02-refutability.html
+   = note: for more information, visit https://doc.crablang.org/book/ch18-02-refutability.html
    = note: the matched value is of type `u8`
 
 error[E0005]: refutable pattern in local binding
@@ -23,7 +23,7 @@ LL |     let c = 4;
    |         help: introduce a variable instead: `c_var`
    |
    = note: `let` bindings require an "irrefutable pattern", like a `struct` or an `enum` with only one variant
-   = note: for more information, visit https://doc.rust-lang.org/book/ch18-02-refutability.html
+   = note: for more information, visit https://doc.crablang.org/book/ch18-02-refutability.html
    = note: the matched value is of type `u8`
 
 error[E0005]: refutable pattern in local binding
@@ -37,9 +37,9 @@ LL |     let d = 4;
    |         help: introduce a variable instead: `d_var`
    |
    = note: `let` bindings require an "irrefutable pattern", like a `struct` or an `enum` with only one variant
-   = note: for more information, visit https://doc.rust-lang.org/book/ch18-02-refutability.html
+   = note: for more information, visit https://doc.crablang.org/book/ch18-02-refutability.html
    = note: the matched value is of type `u8`
 
 error: aborting due to 3 previous errors
 
-For more information about this error, try `rustc --explain E0005`.
+For more information about this error, try `crablangc --explain E0005`.

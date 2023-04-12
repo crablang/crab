@@ -1,6 +1,6 @@
-// run-rustfix
+// run-crablangfix
 
-#![allow(unused)] // for rustfix
+#![allow(unused)] // for crablangfix
 
 #[derive(Clone, Copy)]
 struct S;

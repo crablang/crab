@@ -28,4 +28,4 @@ LL |     fn abc() -> bool {
 error: aborting due to 3 previous errors
 
 Some errors have detailed explanations: E0119, E0592.
-For more information about an error, try `rustc --explain E0119`.
+For more information about an error, try `crablangc --explain E0119`.

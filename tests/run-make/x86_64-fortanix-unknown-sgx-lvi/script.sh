@@ -10,10 +10,10 @@ function build {
         cp -a $TEST_DIR/enclave .
         pushd $CRATE
             echo ${WORK_DIR}
-            # HACK(eddyb) sets `RUSTC_BOOTSTRAP=1` so Cargo can accept nightly features.
-            # These come from the top-level Rust workspace, that this crate is not a
+            # HACK(eddyb) sets `CRABLANGC_BOOTSTRAP=1` so Cargo can accept nightly features.
+            # These come from the top-level CrabLang workspace, that this crate is not a
             # member of, but Cargo tries to load the workspace `Cargo.toml` anyway.
-            env RUSTC_BOOTSTRAP=1
+            env CRABLANGC_BOOTSTRAP=1
                 cargo -v run --target $TARGET
         popd
     popd
@@ -40,7 +40,7 @@ build
 check "unw_getcontext" unw_getcontext.checks
 check "__libunwind_Registers_x86_64_jumpto" jumpto.checks
 check 'std::io::stdio::_print::[[:alnum:]]+' print.checks
-check rust_plus_one_global_asm rust_plus_one_global_asm.checks
+check crablang_plus_one_global_asm crablang_plus_one_global_asm.checks
 
 check cc_plus_one_c cc_plus_one_c.checks
 check cc_plus_one_c_asm cc_plus_one_c_asm.checks

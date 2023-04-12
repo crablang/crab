@@ -1,24 +1,24 @@
-#![feature(rustc_private)]
+#![feature(crablangc_private)]
 #![feature(let_chains)]
 #![feature(lazy_cell)]
 #![feature(lint_reasons)]
 #![cfg_attr(feature = "deny-warnings", deny(warnings))]
-// warn on lints, that are included in `rust-lang/rust`s bootstrap
-#![warn(rust_2018_idioms, unused_lifetimes)]
-// warn on rustc internal lints
-#![warn(rustc::internal)]
+// warn on lints, that are included in `crablang/crablang`s bootstrap
+#![warn(crablang_2018_idioms, unused_lifetimes)]
+// warn on crablangc internal lints
+#![warn(crablangc::internal)]
 
 // FIXME: switch to something more ergonomic here, once available.
 // (Currently there is no way to opt into sysroot crates without `extern crate`.)
-extern crate rustc_driver;
-extern crate rustc_errors;
-extern crate rustc_interface;
-extern crate rustc_session;
-extern crate rustc_span;
+extern crate crablangc_driver;
+extern crate crablangc_errors;
+extern crate crablangc_interface;
+extern crate crablangc_session;
+extern crate crablangc_span;
 
-use rustc_interface::interface;
-use rustc_session::parse::ParseSess;
-use rustc_span::symbol::Symbol;
+use crablangc_interface::interface;
+use crablangc_session::parse::ParseSess;
+use crablangc_span::symbol::Symbol;
 
 use std::borrow::Cow;
 use std::env;
@@ -104,15 +104,15 @@ fn track_files(parse_sess: &mut ParseSess, conf_path_string: Option<String>) {
 }
 
 struct DefaultCallbacks;
-impl rustc_driver::Callbacks for DefaultCallbacks {}
+impl crablangc_driver::Callbacks for DefaultCallbacks {}
 
 /// This is different from `DefaultCallbacks` that it will inform Cargo to track the value of
 /// `CLIPPY_ARGS` environment variable.
-struct RustcCallbacks {
+struct CrabLangcCallbacks {
     clippy_args_var: Option<String>,
 }
 
-impl rustc_driver::Callbacks for RustcCallbacks {
+impl crablangc_driver::Callbacks for CrabLangcCallbacks {
     fn config(&mut self, config: &mut interface::Config) {
         let clippy_args_var = self.clippy_args_var.take();
         config.parse_sess_created = Some(Box::new(move |parse_sess| {
@@ -125,9 +125,9 @@ struct ClippyCallbacks {
     clippy_args_var: Option<String>,
 }
 
-impl rustc_driver::Callbacks for ClippyCallbacks {
+impl crablangc_driver::Callbacks for ClippyCallbacks {
     // JUSTIFICATION: necessary in clippy driver to set `mir_opt_level`
-    #[allow(rustc::bad_opt_access)]
+    #[allow(crablangc::bad_opt_access)]
     fn config(&mut self, config: &mut interface::Config) {
         let conf_path = clippy_lints::lookup_conf_file();
         let conf_path_string = if let Ok(Some(path)) = &conf_path {
@@ -166,14 +166,14 @@ impl rustc_driver::Callbacks for ClippyCallbacks {
 fn display_help() {
     println!(
         "\
-Checks a package to catch common mistakes and improve your Rust code.
+Checks a package to catch common mistakes and improve your CrabLang code.
 
 Usage:
     cargo clippy [options] [--] [<opts>...]
 
 Common options:
     -h, --help               Print this message
-        --rustc              Pass all args to rustc
+        --crablangc              Pass all args to crablangc
     -V, --version            Print version info and exit
 
 For the other options see `cargo check --help`.
@@ -193,7 +193,7 @@ You can use tool lints to allow or deny lints from your code, eg.:
     );
 }
 
-const BUG_REPORT_URL: &str = "https://github.com/rust-lang/rust-clippy/issues/new";
+const BUG_REPORT_URL: &str = "https://github.com/crablang/crablang-clippy/issues/new";
 
 type PanicCallback = dyn Fn(&panic::PanicInfo<'_>) + Sync + Send + 'static;
 static ICE_HOOK: LazyLock<Box<PanicCallback>> = LazyLock::new(|| {
@@ -209,9 +209,9 @@ fn report_clippy_ice(info: &panic::PanicInfo<'_>, bug_report_url: &str) {
     // Separate the output with an empty line
     eprintln!();
 
-    let fallback_bundle = rustc_errors::fallback_fluent_bundle(rustc_driver::DEFAULT_LOCALE_RESOURCES.to_vec(), false);
-    let emitter = Box::new(rustc_errors::emitter::EmitterWriter::stderr(
-        rustc_errors::ColorConfig::Auto,
+    let fallback_bundle = crablangc_errors::fallback_fluent_bundle(crablangc_driver::DEFAULT_LOCALE_RESOURCES.to_vec(), false);
+    let emitter = Box::new(crablangc_errors::emitter::EmitterWriter::stderr(
+        crablangc_errors::ColorConfig::Auto,
         None,
         None,
         fallback_bundle,
@@ -220,18 +220,18 @@ fn report_clippy_ice(info: &panic::PanicInfo<'_>, bug_report_url: &str) {
         None,
         false,
         false,
-        rustc_errors::TerminalUrl::No,
+        crablangc_errors::TerminalUrl::No,
     ));
-    let handler = rustc_errors::Handler::with_emitter(true, None, emitter);
+    let handler = crablangc_errors::Handler::with_emitter(true, None, emitter);
 
     // a .span_bug or .bug call has already printed what
     // it wants to print.
-    if !info.payload().is::<rustc_errors::ExplicitBug>() {
-        let mut d = rustc_errors::Diagnostic::new(rustc_errors::Level::Bug, "unexpected panic");
+    if !info.payload().is::<crablangc_errors::ExplicitBug>() {
+        let mut d = crablangc_errors::Diagnostic::new(crablangc_errors::Level::Bug, "unexpected panic");
         handler.emit_diagnostic(&mut d);
     }
 
-    let version_info = rustc_tools_util::get_version_info!();
+    let version_info = crablangc_tools_util::get_version_info!();
 
     let xs: Vec<Cow<'static, str>> = vec![
         "the compiler unexpectedly panicked. this is a bug.".into(),
@@ -244,7 +244,7 @@ fn report_clippy_ice(info: &panic::PanicInfo<'_>, bug_report_url: &str) {
     }
 
     // If backtraces are enabled, also print the query stack
-    let backtrace = env::var_os("RUST_BACKTRACE").map_or(false, |x| &x != "0");
+    let backtrace = env::var_os("CRABLANG_BACKTRACE").map_or(false, |x| &x != "0");
 
     let num_frames = if backtrace { None } else { Some(2) };
 
@@ -253,9 +253,9 @@ fn report_clippy_ice(info: &panic::PanicInfo<'_>, bug_report_url: &str) {
 
 #[allow(clippy::too_many_lines)]
 pub fn main() {
-    rustc_driver::init_rustc_env_logger();
+    crablangc_driver::init_crablangc_env_logger();
     LazyLock::force(&ICE_HOOK);
-    exit(rustc_driver::catch_with_exit_code(move || {
+    exit(crablangc_driver::catch_with_exit_code(move || {
         let mut orig_args: Vec<String> = env::args().collect();
         let has_sysroot_arg = arg_value(&orig_args, "--sysroot", |_| true).is_some();
 
@@ -268,28 +268,28 @@ pub fn main() {
             };
         };
 
-        // make "clippy-driver --rustc" work like a subcommand that passes further args to "rustc"
-        // for example `clippy-driver --rustc --version` will print the rustc version that clippy-driver
+        // make "clippy-driver --crablangc" work like a subcommand that passes further args to "crablangc"
+        // for example `clippy-driver --crablangc --version` will print the crablangc version that clippy-driver
         // uses
-        if let Some(pos) = orig_args.iter().position(|arg| arg == "--rustc") {
+        if let Some(pos) = orig_args.iter().position(|arg| arg == "--crablangc") {
             orig_args.remove(pos);
-            orig_args[0] = "rustc".to_string();
+            orig_args[0] = "crablangc".to_string();
 
             let mut args: Vec<String> = orig_args.clone();
             pass_sysroot_env_if_given(&mut args, sys_root_env);
 
-            return rustc_driver::RunCompiler::new(&args, &mut DefaultCallbacks).run();
+            return crablangc_driver::RunCompiler::new(&args, &mut DefaultCallbacks).run();
         }
 
         if orig_args.iter().any(|a| a == "--version" || a == "-V") {
-            let version_info = rustc_tools_util::get_version_info!();
+            let version_info = crablangc_tools_util::get_version_info!();
             println!("{version_info}");
             exit(0);
         }
 
-        // Setting RUSTC_WRAPPER causes Cargo to pass 'rustc' as the first argument.
+        // Setting CRABLANGC_WRAPPER causes Cargo to pass 'crablangc' as the first argument.
         // We're invoking the compiler programmatically, so we ignore this/
-        let wrapper_mode = orig_args.get(1).map(Path::new).and_then(Path::file_stem) == Some("rustc".as_ref());
+        let wrapper_mode = orig_args.get(1).map(Path::new).and_then(Path::file_stem) == Some("crablangc".as_ref());
 
         if wrapper_mode {
             // we still want to be able to invoke it normally though
@@ -333,9 +333,9 @@ pub fn main() {
         let clippy_enabled = !cap_lints_allow && (!no_deps || in_primary_package);
         if clippy_enabled {
             args.extend(clippy_args);
-            rustc_driver::RunCompiler::new(&args, &mut ClippyCallbacks { clippy_args_var }).run()
+            crablangc_driver::RunCompiler::new(&args, &mut ClippyCallbacks { clippy_args_var }).run()
         } else {
-            rustc_driver::RunCompiler::new(&args, &mut RustcCallbacks { clippy_args_var }).run()
+            crablangc_driver::RunCompiler::new(&args, &mut CrabLangcCallbacks { clippy_args_var }).run()
         }
     }))
 }

@@ -1,5 +1,5 @@
 // Disabling on android for the time being
-// See https://github.com/rust-lang/rust/issues/73535#event-3477699747
+// See https://github.com/crablang/crablang/issues/73535#event-3477699747
 #![cfg(not(target_os = "android"))]
 #![feature(btree_drain_filter)]
 #![feature(iter_next_chunk)]

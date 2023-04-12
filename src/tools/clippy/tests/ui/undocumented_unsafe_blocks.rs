@@ -257,7 +257,7 @@ fn in_closure(x: *const u32) {
 
 // Invalid comments
 
-#[rustfmt::skip]
+#[crablangfmt::skip]
 fn inline_block_comment() {
     /* Safety: */ unsafe {}
 }
@@ -354,7 +354,7 @@ mod unsafe_impl_smoke_test {
         unsafe trait B {}
     }
 
-    #[rustfmt::skip]
+    #[crablangfmt::skip]
     mod sub_mod2 {
         //
         // SAFETY: ok
@@ -413,7 +413,7 @@ mod unsafe_impl_macro_and_not_macro {
     unsafe impl T for (bool) {}
 }
 
-#[rustfmt::skip]
+#[crablangfmt::skip]
 mod unsafe_impl_valid_comment {
     unsafe trait SaFety {}
     // SaFety:
@@ -452,7 +452,7 @@ mod unsafe_impl_valid_comment {
     unsafe impl MultiLineBlockComment for () {}
 }
 
-#[rustfmt::skip]
+#[crablangfmt::skip]
 mod unsafe_impl_invalid_comment {
     unsafe trait NoComment {}
 
@@ -493,7 +493,7 @@ unsafe impl CrateRoot for (i32) {}
 fn issue_9142() {
     // SAFETY: ok
     let _ =
-        // we need this comment to avoid rustfmt putting
+        // we need this comment to avoid crablangfmt putting
         // it all on one line
         unsafe {};
 

@@ -1,11 +1,11 @@
 use clippy_utils::diagnostics::span_lint_and_sugg;
 use clippy_utils::{expr_custom_deref_adjustment, ty::is_type_diagnostic_item};
 use if_chain::if_chain;
-use rustc_errors::Applicability;
-use rustc_hir::{Expr, Mutability};
-use rustc_lint::LateContext;
-use rustc_middle::ty;
-use rustc_span::{sym, Span};
+use crablangc_errors::Applicability;
+use crablangc_hir::{Expr, Mutability};
+use crablangc_lint::LateContext;
+use crablangc_middle::ty;
+use crablangc_span::{sym, Span};
 
 use super::MUT_MUTEX_LOCK;
 

@@ -3,7 +3,7 @@
 // this test is testing `cmd.exe` specifically rather than the OS.
 //
 // Unfortunately `cmd.exe` has a 8192 limit which is relatively small
-// in the grand scheme of things and anyone sripting rustc's linker
+// in the grand scheme of things and anyone sripting crablangc's linker
 // is probably using a `*.bat` script and is likely to hit this limit.
 //
 // This test uses a `foo.bat` script as the linker which just simply
@@ -36,7 +36,7 @@ fn main() {
         return
     }
 
-    let rustc = env::var_os("RUSTC").unwrap_or("rustc".into());
+    let crablangc = env::var_os("CRABLANGC").unwrap_or("crablangc".into());
     let me = env::current_exe().unwrap();
     let bat = me.parent()
         .unwrap()
@@ -59,7 +59,7 @@ fn main() {
 
         drop(fs::remove_file(&ok));
         drop(fs::remove_file(&not_ok));
-        let status = Command::new(&rustc)
+        let status = Command::new(&crablangc)
             .arg(&file)
             .arg("-C").arg(&bat_linker)
             .arg("--out-dir").arg(&tmpdir)
@@ -69,7 +69,7 @@ fn main() {
             .unwrap();
 
         if !status.success() {
-            panic!("rustc didn't succeed: {}", status);
+            panic!("crablangc didn't succeed: {}", status);
         }
 
         if !ok.exists() {

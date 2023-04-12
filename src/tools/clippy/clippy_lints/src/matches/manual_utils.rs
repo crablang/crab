@@ -5,12 +5,12 @@ use clippy_utils::{
     can_move_expr_to_closure, is_else_clause, is_lint_allowed, is_res_lang_ctor, path_res, path_to_local_id,
     peel_blocks, peel_hir_expr_refs, peel_hir_expr_while, sugg::Sugg, CaptureKind,
 };
-use rustc_ast::util::parser::PREC_POSTFIX;
-use rustc_errors::Applicability;
-use rustc_hir::LangItem::{OptionNone, OptionSome};
-use rustc_hir::{def::Res, BindingAnnotation, Expr, ExprKind, HirId, Mutability, Pat, PatKind, Path, QPath};
-use rustc_lint::LateContext;
-use rustc_span::{sym, SyntaxContext};
+use crablangc_ast::util::parser::PREC_POSTFIX;
+use crablangc_errors::Applicability;
+use crablangc_hir::LangItem::{OptionNone, OptionSome};
+use crablangc_hir::{def::Res, BindingAnnotation, Expr, ExprKind, HirId, Mutability, Pat, PatKind, Path, QPath};
+use crablangc_lint::LateContext;
+use crablangc_span::{sym, SyntaxContext};
 
 #[expect(clippy::too_many_arguments)]
 #[expect(clippy::too_many_lines)]

@@ -1,10 +1,10 @@
 // ignore-macos
 
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 
 #[warn(clippy::main_recursion)]
 #[allow(unconditional_recursion)]
-#[rustc_main]
+#[crablangc_main]
 fn a() {
     println!("Hello, World!");
     a();

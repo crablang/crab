@@ -4,7 +4,7 @@
 #![allow(dead_code)]
 #![feature(staged_api, unstable_test_feature)]
 
-#![stable(feature = "rust1", since = "1.0.0")]
+#![stable(feature = "crablang1", since = "1.0.0")]
 
 mod cross_crate {
     extern crate lint_stability_fields;
@@ -155,7 +155,7 @@ mod cross_crate {
 }
 
 mod this_crate {
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     struct Stable {
         inherit: u8,
         #[unstable(feature = "unstable_test_feature", issue = "none")]
@@ -165,16 +165,16 @@ mod this_crate {
         override2: u8,
     }
 
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     struct Stable2(u8,
-                   #[stable(feature = "rust1", since = "1.0.0")] u8,
+                   #[stable(feature = "crablang1", since = "1.0.0")] u8,
                    #[unstable(feature = "unstable_test_feature", issue = "none")]
                    #[deprecated(since = "1.0.0", note = "text")] u8);
 
     #[unstable(feature = "unstable_test_feature", issue = "none")]
     struct Unstable {
         inherit: u8,
-        #[stable(feature = "rust1", since = "1.0.0")]
+        #[stable(feature = "crablang1", since = "1.0.0")]
         override1: u8,
         #[deprecated(since = "1.0.0", note = "text")]
         #[unstable(feature = "unstable_test_feature", issue = "none")]
@@ -183,7 +183,7 @@ mod this_crate {
 
     #[unstable(feature = "unstable_test_feature", issue = "none")]
     struct Unstable2(u8,
-                     #[stable(feature = "rust1", since = "1.0.0")] u8,
+                     #[stable(feature = "crablang1", since = "1.0.0")] u8,
                      #[unstable(feature = "unstable_test_feature", issue = "none")]
                      #[deprecated(since = "1.0.0", note = "text")] u8);
 
@@ -191,7 +191,7 @@ mod this_crate {
     #[deprecated(since = "1.0.0", note = "text")]
     struct Deprecated {
         inherit: u8,
-        #[stable(feature = "rust1", since = "1.0.0")]
+        #[stable(feature = "crablang1", since = "1.0.0")]
         override1: u8,
         #[unstable(feature = "unstable_test_feature", issue = "none")]
         override2: u8,
@@ -200,7 +200,7 @@ mod this_crate {
     #[unstable(feature = "unstable_test_feature", issue = "none")]
     #[deprecated(since = "1.0.0", note = "text")]
     struct Deprecated2(u8,
-                       #[stable(feature = "rust1", since = "1.0.0")] u8,
+                       #[stable(feature = "crablang1", since = "1.0.0")] u8,
                        #[unstable(feature = "unstable_test_feature", issue = "none")] u8);
 
     pub fn foo() {

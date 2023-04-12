@@ -8,7 +8,7 @@ void println(const char* s) {
 }
 
 struct exception {};
-struct rust_panic {};
+struct crablang_panic {};
 
 struct drop_check {
     bool* ok;
@@ -21,7 +21,7 @@ struct drop_check {
 };
 
 extern "C" {
-    void rust_catch_callback(void (*cb)(), bool* rust_ok);
+    void crablang_catch_callback(void (*cb)(), bool* crablang_ok);
 
     void throw_cxx_exception() {
         println("throwing C++ exception");
@@ -29,13 +29,13 @@ extern "C" {
     }
 
     void test_cxx_exception() {
-        bool rust_ok = false;
+        bool crablang_ok = false;
         try {
-            rust_catch_callback(throw_cxx_exception, &rust_ok);
+            crablang_catch_callback(throw_cxx_exception, &crablang_ok);
             assert(false && "unreachable");
         } catch (exception e) {
             println("caught C++ exception");
-            assert(rust_ok);
+            assert(crablang_ok);
             return;
         }
         assert(false && "did not catch thrown C++ exception");
@@ -46,8 +46,8 @@ extern "C" {
         x.ok = NULL;
         try {
             cb();
-        } catch (rust_panic e) {
-            assert(false && "shouldn't be able to catch a rust panic");
+        } catch (crablang_panic e) {
+            assert(false && "shouldn't be able to catch a crablang panic");
         } catch (...) {
             println("caught foreign exception in catch (...)");
             // Foreign exceptions are caught by catch (...). We only set the ok

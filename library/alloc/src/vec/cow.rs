@@ -42,7 +42,7 @@ impl<'a, T: Clone> From<&'a Vec<T>> for Cow<'a, [T]> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<'a, T> FromIterator<T> for Cow<'a, [T]>
 where
     T: Clone,

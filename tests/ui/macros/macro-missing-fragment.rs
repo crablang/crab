@@ -1,7 +1,7 @@
 #![warn(missing_fragment_specifier)]
 
 macro_rules! used_arm {
-    ( $( any_token $field_rust_type )* ) => {};
+    ( $( any_token $field_crablang_type )* ) => {};
     //~^ ERROR missing fragment
     //~| WARN missing fragment
     //~| WARN this was previously accepted

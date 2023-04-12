@@ -10,7 +10,7 @@ pub use NamePadding::*;
 pub use TestFn::*;
 pub use TestName::*;
 
-/// Type of the test according to the [rust book](https://doc.rust-lang.org/cargo/guide/tests.html)
+/// Type of the test according to the [crablang book](https://doc.crablang.org/cargo/guide/tests.html)
 /// conventions.
 #[derive(Copy, Clone, Debug, PartialEq, Eq, Hash)]
 pub enum TestType {
@@ -18,10 +18,10 @@ pub enum TestType {
     UnitTest,
     /// Integration-style tests are expected to be in the `tests` folder of the crate.
     IntegrationTest,
-    /// Doctests are created by the `librustdoc` manually, so it's a different type of test.
+    /// Doctests are created by the `libcrablangdoc` manually, so it's a different type of test.
     DocTest,
     /// Tests for the sources that don't follow the project layout convention
-    /// (e.g. tests in raw `main.rs` compiled by calling `rustc --test` directly).
+    /// (e.g. tests in raw `main.rs` compiled by calling `crablangc --test` directly).
     Unknown,
 }
 
@@ -31,7 +31,7 @@ pub enum NamePadding {
     PadOnRight,
 }
 
-// The name of a test. By convention this follows the rules for rust
+// The name of a test. By convention this follows the rules for crablang
 // paths; i.e., it should be a series of identifiers separated by double
 // colons. This way if some test runner wants to arrange the tests
 // hierarchically it may.

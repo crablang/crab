@@ -6,7 +6,7 @@ unsafe impl Sync for NotSend {}
 
 #[test]
 fn test_btree_map() {
-    // Tests of this form are prone to https://github.com/rust-lang/rust/issues/64552.
+    // Tests of this form are prone to https://github.com/crablang/crablang/issues/64552.
     //
     // In theory the async block's future would be Send if the value we hold
     // across the await point is Send, and Sync if the value we hold across the
@@ -14,7 +14,7 @@ fn test_btree_map() {
     //
     // We test autotraits in this convoluted way, instead of a straightforward
     // `require_send_sync::<TypeIWantToTest>()`, because the interaction with
-    // generators exposes some current limitations in rustc's ability to prove a
+    // generators exposes some current limitations in crablangc's ability to prove a
     // lifetime bound on the erased generator witness types. See the above link.
     //
     // A typical way this would surface in real code is:

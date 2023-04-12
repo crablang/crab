@@ -1,6 +1,6 @@
 // Example taken from RFC 1238 text
 
-// https://github.com/rust-lang/rfcs/blob/master/text/1238-nonparametric-dropck.md
+// https://github.com/crablang/rfcs/blob/master/text/1238-nonparametric-dropck.md
 //     #examples-of-code-that-will-start-to-be-rejected
 
 // Compare against test/run-pass/issue28498-must-work-ex2.rs

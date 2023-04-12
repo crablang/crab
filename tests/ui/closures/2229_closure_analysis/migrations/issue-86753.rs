@@ -1,7 +1,7 @@
 // edition:2018
 // check-pass
 
-#![warn(rust_2021_compatibility)]
+#![warn(crablang_2021_compatibility)]
 
 use std::future::Future;
 

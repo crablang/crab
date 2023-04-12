@@ -1,17 +1,17 @@
-#![feature(rustc_private)]
+#![feature(crablangc_private)]
 
-extern crate rustc_ast;
+extern crate crablangc_ast;
 
-// Load rustc as a plugin to get macros
-extern crate rustc_driver;
+// Load crablangc as a plugin to get macros
+extern crate crablangc_driver;
 #[macro_use]
-extern crate rustc_lint;
+extern crate crablangc_lint;
 #[macro_use]
-extern crate rustc_session;
+extern crate crablangc_session;
 
-use rustc_driver::plugin::Registry;
-use rustc_lint::{EarlyContext, EarlyLintPass, LintArray, LintContext, LintId, LintPass};
-use rustc_ast as ast;
+use crablangc_driver::plugin::Registry;
+use crablangc_lint::{EarlyContext, EarlyLintPass, LintArray, LintContext, LintId, LintPass};
+use crablangc_ast as ast;
 declare_tool_lint!(pub clippy::TEST_LINT, Warn, "Warn about stuff");
 declare_tool_lint!(
     /// Some docs
@@ -21,12 +21,12 @@ declare_tool_lint!(
 
 declare_tool_lint!(
     /// Some docs
-    pub rustc::TEST_RUSTC_TOOL_LINT,
+    pub crablangc::TEST_CRABLANGC_TOOL_LINT,
     Deny,
     "Deny internal stuff"
 );
 
-declare_lint_pass!(Pass => [TEST_LINT, TEST_GROUP, TEST_RUSTC_TOOL_LINT]);
+declare_lint_pass!(Pass => [TEST_LINT, TEST_GROUP, TEST_CRABLANGC_TOOL_LINT]);
 
 impl EarlyLintPass for Pass {
     fn check_item(&mut self, cx: &EarlyContext, it: &ast::Item) {
@@ -40,8 +40,8 @@ impl EarlyLintPass for Pass {
 }
 
 #[no_mangle]
-fn __rustc_plugin_registrar(reg: &mut Registry) {
-    reg.lint_store.register_lints(&[&TEST_RUSTC_TOOL_LINT, &TEST_LINT, &TEST_GROUP]);
+fn __crablangc_plugin_registrar(reg: &mut Registry) {
+    reg.lint_store.register_lints(&[&TEST_CRABLANGC_TOOL_LINT, &TEST_LINT, &TEST_GROUP]);
     reg.lint_store.register_early_pass(|| Box::new(Pass));
     reg.lint_store.register_group(
         true,

@@ -5,7 +5,7 @@
 // error-pattern: link modifiers combination `+bundle,+whole-archive` is unstable when generating rlibs
 // build-fail
 
-#[link(name = "rust_test_helpers", kind = "static", modifiers = "+bundle,+whole-archive")]
+#[link(name = "crablang_test_helpers", kind = "static", modifiers = "+bundle,+whole-archive")]
 extern "C" {}
 
 fn main() {}

@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 #![warn(clippy::result_map_unit_fn)]
 #![allow(unused)]
 #![allow(clippy::uninlined_format_args)]
@@ -25,7 +25,7 @@ impl HasResult {
     }
 }
 
-#[rustfmt::skip]
+#[crablangfmt::skip]
 fn result_map_unit_fn() {
     let x = HasResult { field: Ok(10) };
 

@@ -8,4 +8,4 @@ LL | impl Vec<u8> {}
 
 error: aborting due to previous error
 
-For more information about this error, try `rustc --explain E0116`.
+For more information about this error, try `crablangc --explain E0116`.

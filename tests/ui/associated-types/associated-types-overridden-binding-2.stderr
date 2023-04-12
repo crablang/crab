@@ -8,4 +8,4 @@ LL |     let _: &dyn I32Iterator<Item = u32> = &vec![42].into_iter();
 
 error: aborting due to previous error
 
-For more information about this error, try `rustc --explain E0271`.
+For more information about this error, try `crablangc --explain E0271`.

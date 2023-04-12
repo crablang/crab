@@ -9,7 +9,7 @@ where
     G: FnOnce<(F::Output,)>,
 {
     type Output = G::Output;
-    extern "rust-call" fn call_once(self, (x,): (T,)) -> G::Output {
+    extern "crablang-call" fn call_once(self, (x,): (T,)) -> G::Output {
         (self.1)((self.0)(x))
     }
 }

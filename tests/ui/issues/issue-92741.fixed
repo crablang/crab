@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 fn main() {}
 fn _foo() -> bool {
     if true { true } else { false }

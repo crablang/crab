@@ -22,12 +22,12 @@ use crate::marker::Tuple;
 /// calling it concurrently). If you do not need such strict requirements, use
 /// [`FnMut`] or [`FnOnce`] as bounds.
 ///
-/// See the [chapter on closures in *The Rust Programming Language*][book] for
+/// See the [chapter on closures in *The CrabLang Programming Language*][book] for
 /// some more information on this topic.
 ///
 /// Also of note is the special syntax for `Fn` traits (e.g.
 /// `Fn(usize, bool) -> usize`). Those interested in the technical details of
-/// this can refer to [the relevant section in the *Rustonomicon*][nomicon].
+/// this can refer to [the relevant section in the *CrabLangonomicon*][nomicon].
 ///
 /// [book]: ../../book/ch13-01-closures.html
 /// [function pointers]: fn
@@ -54,9 +54,9 @@ use crate::marker::Tuple;
 /// assert_eq!(call_with_one(double), 2);
 /// ```
 #[lang = "fn"]
-#[stable(feature = "rust1", since = "1.0.0")]
-#[rustc_paren_sugar]
-#[rustc_on_unimplemented(
+#[stable(feature = "crablang1", since = "1.0.0")]
+#[crablangc_paren_sugar]
+#[crablangc_on_unimplemented(
     on(
         Args = "()",
         note = "wrap the `{Self}` in a closure with no arguments: `|| {{ /* code */ }}`"
@@ -76,7 +76,7 @@ use crate::marker::Tuple;
 pub trait Fn<Args: Tuple>: FnMut<Args> {
     /// Performs the call operation.
     #[unstable(feature = "fn_traits", issue = "29625")]
-    extern "rust-call" fn call(&self, args: Args) -> Self::Output;
+    extern "crablang-call" fn call(&self, args: Args) -> Self::Output;
 }
 
 /// The version of the call operator that takes a mutable receiver.
@@ -98,12 +98,12 @@ pub trait Fn<Args: Tuple>: FnMut<Args> {
 /// If you don't want the parameter to mutate state, use [`Fn`] as a
 /// bound; if you don't need to call it repeatedly, use [`FnOnce`].
 ///
-/// See the [chapter on closures in *The Rust Programming Language*][book] for
+/// See the [chapter on closures in *The CrabLang Programming Language*][book] for
 /// some more information on this topic.
 ///
 /// Also of note is the special syntax for `Fn` traits (e.g.
 /// `Fn(usize, bool) -> usize`). Those interested in the technical details of
-/// this can refer to [the relevant section in the *Rustonomicon*][nomicon].
+/// this can refer to [the relevant section in the *CrabLangonomicon*][nomicon].
 ///
 /// [book]: ../../book/ch13-01-closures.html
 /// [function pointers]: fn
@@ -141,9 +141,9 @@ pub trait Fn<Args: Tuple>: FnMut<Args> {
 /// assert_eq!(x, 5);
 /// ```
 #[lang = "fn_mut"]
-#[stable(feature = "rust1", since = "1.0.0")]
-#[rustc_paren_sugar]
-#[rustc_on_unimplemented(
+#[stable(feature = "crablang1", since = "1.0.0")]
+#[crablangc_paren_sugar]
+#[crablangc_on_unimplemented(
     on(
         Args = "()",
         note = "wrap the `{Self}` in a closure with no arguments: `|| {{ /* code */ }}`"
@@ -163,7 +163,7 @@ pub trait Fn<Args: Tuple>: FnMut<Args> {
 pub trait FnMut<Args: Tuple>: FnOnce<Args> {
     /// Performs the call operation.
     #[unstable(feature = "fn_traits", issue = "29625")]
-    extern "rust-call" fn call_mut(&mut self, args: Args) -> Self::Output;
+    extern "crablang-call" fn call_mut(&mut self, args: Args) -> Self::Output;
 }
 
 /// The version of the call operator that takes a by-value receiver.
@@ -184,12 +184,12 @@ pub trait FnMut<Args: Tuple>: FnOnce<Args> {
 /// repeatedly, use [`FnMut`] as a bound; if you also need it to not mutate
 /// state, use [`Fn`].
 ///
-/// See the [chapter on closures in *The Rust Programming Language*][book] for
+/// See the [chapter on closures in *The CrabLang Programming Language*][book] for
 /// some more information on this topic.
 ///
 /// Also of note is the special syntax for `Fn` traits (e.g.
 /// `Fn(usize, bool) -> usize`). Those interested in the technical details of
-/// this can refer to [the relevant section in the *Rustonomicon*][nomicon].
+/// this can refer to [the relevant section in the *CrabLangonomicon*][nomicon].
 ///
 /// [book]: ../../book/ch13-01-closures.html
 /// [function pointers]: fn
@@ -220,9 +220,9 @@ pub trait FnMut<Args: Tuple>: FnOnce<Args> {
 /// // `consume_and_return_x` can no longer be invoked at this point
 /// ```
 #[lang = "fn_once"]
-#[stable(feature = "rust1", since = "1.0.0")]
-#[rustc_paren_sugar]
-#[rustc_on_unimplemented(
+#[stable(feature = "crablang1", since = "1.0.0")]
+#[crablangc_paren_sugar]
+#[crablangc_on_unimplemented(
     on(
         Args = "()",
         note = "wrap the `{Self}` in a closure with no arguments: `|| {{ /* code */ }}`"
@@ -247,66 +247,66 @@ pub trait FnOnce<Args: Tuple> {
 
     /// Performs the call operation.
     #[unstable(feature = "fn_traits", issue = "29625")]
-    extern "rust-call" fn call_once(self, args: Args) -> Self::Output;
+    extern "crablang-call" fn call_once(self, args: Args) -> Self::Output;
 }
 
 mod impls {
     use crate::marker::Tuple;
 
-    #[stable(feature = "rust1", since = "1.0.0")]
-    #[rustc_const_unstable(feature = "const_fn_trait_ref_impls", issue = "101803")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    #[crablangc_const_unstable(feature = "const_fn_trait_ref_impls", issue = "101803")]
     impl<A: Tuple, F: ?Sized> const Fn<A> for &F
     where
         F: ~const Fn<A>,
     {
-        extern "rust-call" fn call(&self, args: A) -> F::Output {
+        extern "crablang-call" fn call(&self, args: A) -> F::Output {
             (**self).call(args)
         }
     }
 
-    #[stable(feature = "rust1", since = "1.0.0")]
-    #[rustc_const_unstable(feature = "const_fn_trait_ref_impls", issue = "101803")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    #[crablangc_const_unstable(feature = "const_fn_trait_ref_impls", issue = "101803")]
     impl<A: Tuple, F: ?Sized> const FnMut<A> for &F
     where
         F: ~const Fn<A>,
     {
-        extern "rust-call" fn call_mut(&mut self, args: A) -> F::Output {
+        extern "crablang-call" fn call_mut(&mut self, args: A) -> F::Output {
             (**self).call(args)
         }
     }
 
-    #[stable(feature = "rust1", since = "1.0.0")]
-    #[rustc_const_unstable(feature = "const_fn_trait_ref_impls", issue = "101803")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    #[crablangc_const_unstable(feature = "const_fn_trait_ref_impls", issue = "101803")]
     impl<A: Tuple, F: ?Sized> const FnOnce<A> for &F
     where
         F: ~const Fn<A>,
     {
         type Output = F::Output;
 
-        extern "rust-call" fn call_once(self, args: A) -> F::Output {
+        extern "crablang-call" fn call_once(self, args: A) -> F::Output {
             (*self).call(args)
         }
     }
 
-    #[stable(feature = "rust1", since = "1.0.0")]
-    #[rustc_const_unstable(feature = "const_fn_trait_ref_impls", issue = "101803")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    #[crablangc_const_unstable(feature = "const_fn_trait_ref_impls", issue = "101803")]
     impl<A: Tuple, F: ?Sized> const FnMut<A> for &mut F
     where
         F: ~const FnMut<A>,
     {
-        extern "rust-call" fn call_mut(&mut self, args: A) -> F::Output {
+        extern "crablang-call" fn call_mut(&mut self, args: A) -> F::Output {
             (*self).call_mut(args)
         }
     }
 
-    #[stable(feature = "rust1", since = "1.0.0")]
-    #[rustc_const_unstable(feature = "const_fn_trait_ref_impls", issue = "101803")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    #[crablangc_const_unstable(feature = "const_fn_trait_ref_impls", issue = "101803")]
     impl<A: Tuple, F: ?Sized> const FnOnce<A> for &mut F
     where
         F: ~const FnMut<A>,
     {
         type Output = F::Output;
-        extern "rust-call" fn call_once(self, args: A) -> F::Output {
+        extern "crablang-call" fn call_once(self, args: A) -> F::Output {
             (*self).call_mut(args)
         }
     }

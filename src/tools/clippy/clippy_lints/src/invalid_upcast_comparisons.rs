@@ -1,9 +1,9 @@
-use rustc_hir::{Expr, ExprKind};
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_middle::ty::layout::LayoutOf;
-use rustc_middle::ty::{self, IntTy, UintTy};
-use rustc_session::{declare_lint_pass, declare_tool_lint};
-use rustc_span::Span;
+use crablangc_hir::{Expr, ExprKind};
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_middle::ty::layout::LayoutOf;
+use crablangc_middle::ty::{self, IntTy, UintTy};
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_span::Span;
 
 use clippy_utils::comparisons;
 use clippy_utils::comparisons::Rel;
@@ -23,10 +23,10 @@ declare_clippy_lint! {
     /// `u8`.
     ///
     /// ### Known problems
-    /// https://github.com/rust-lang/rust-clippy/issues/886
+    /// https://github.com/crablang/crablang-clippy/issues/886
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// let x: u8 = 1;
     /// (x as u32) > 300;
     /// ```

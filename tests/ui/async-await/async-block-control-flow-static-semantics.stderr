@@ -78,4 +78,4 @@ LL | fn rethrow_targets_async_block_not_async_fn() -> Result<u8, MyErr> {
 error: aborting due to 8 previous errors
 
 Some errors have detailed explanations: E0267, E0271, E0308.
-For more information about an error, try `rustc --explain E0267`.
+For more information about an error, try `crablangc --explain E0267`.

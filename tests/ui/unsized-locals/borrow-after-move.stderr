@@ -4,7 +4,7 @@ warning: the feature `unsized_locals` is incomplete and may not be safe to use a
 LL | #![feature(unsized_locals, unsized_fn_params)]
    |            ^^^^^^^^^^^^^^
    |
-   = note: see issue #48055 <https://github.com/rust-lang/rust/issues/48055> for more information
+   = note: see issue #48055 <https://github.com/crablang/crablang/issues/48055> for more information
    = note: `#[warn(incomplete_features)]` on by default
 
 error[E0382]: borrow of moved value: `x`
@@ -82,4 +82,4 @@ LL |         x.clone().foo();
 
 error: aborting due to 5 previous errors; 1 warning emitted
 
-For more information about this error, try `rustc --explain E0382`.
+For more information about this error, try `crablangc --explain E0382`.

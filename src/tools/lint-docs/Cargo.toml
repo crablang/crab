@@ -2,9 +2,9 @@
 name = "lint-docs"
 version = "0.1.0"
 edition = "2021"
-description = "A script to extract the lint documentation for the rustc book."
+description = "A script to extract the lint documentation for the crablangc book."
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+# See more keys and their definitions at https://doc.crablang.org/cargo/reference/manifest.html
 
 [dependencies]
 serde_json = "1.0.57"

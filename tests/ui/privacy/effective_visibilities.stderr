@@ -1,10 +1,10 @@
 error: Direct: pub, Reexported: pub, Reachable: pub, ReachableThroughImplTrait: pub
   --> $DIR/effective_visibilities.rs:1:1
    |
-LL | / #![rustc_effective_visibility]
-LL | | #![feature(rustc_attrs)]
+LL | / #![crablangc_effective_visibility]
+LL | | #![feature(crablangc_attrs)]
 LL | |
-LL | | #[rustc_effective_visibility]
+LL | | #[crablangc_effective_visibility]
 ...  |
 LL | |
 LL | | fn main() {}

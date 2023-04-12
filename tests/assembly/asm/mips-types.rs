@@ -5,20 +5,20 @@
 //[mips64] compile-flags: --target mips64-unknown-linux-gnuabi64
 //[mips64] needs-llvm-components: mips
 
-#![feature(no_core, lang_items, rustc_attrs, repr_simd, asm_experimental_arch)]
+#![feature(no_core, lang_items, crablangc_attrs, repr_simd, asm_experimental_arch)]
 #![crate_type = "rlib"]
 #![no_core]
 #![allow(asm_sub_register, non_camel_case_types)]
 
-#[rustc_builtin_macro]
+#[crablangc_builtin_macro]
 macro_rules! asm {
     () => {};
 }
-#[rustc_builtin_macro]
+#[crablangc_builtin_macro]
 macro_rules! concat {
     () => {};
 }
-#[rustc_builtin_macro]
+#[crablangc_builtin_macro]
 macro_rules! stringify {
     () => {};
 }
@@ -44,7 +44,7 @@ extern "C" {
 }
 
 // Hack to avoid function merging
-extern "Rust" {
+extern "CrabLang" {
     fn dont_merge(s: &str);
 }
 

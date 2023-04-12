@@ -12,11 +12,11 @@ disallowed-names = ["toto", "tata", "titi"]
 
 The [table of configurations](./lint_configuration.md)
 contains all config values, their default, and a list of lints they affect.
-Each [configurable lint](https://rust-lang.github.io/rust-clippy/master/index.html#Configuration)
+Each [configurable lint](https://crablang.github.io/crablang-clippy/master/index.html#Configuration)
 , also contains information about these values.
 
 For configurations that are a list type with default values such as
-[disallowed-names](https://rust-lang.github.io/rust-clippy/master/index.html#disallowed_names),
+[disallowed-names](https://crablang.github.io/crablang-clippy/master/index.html#disallowed_names),
 you can use the unique value `".."` to extend the default values instead of replacing them.
 
 ```toml
@@ -73,10 +73,10 @@ interested in:
 cargo clippy -- -A clippy::all -W clippy::useless_format -W clippy::...
 ```
 
-### Specifying the minimum supported Rust version
+### Specifying the minimum supported CrabLang version
 
-Projects that intend to support old versions of Rust can disable lints pertaining to newer features by specifying the
-minimum supported Rust version (MSRV) in the clippy configuration file.
+Projects that intend to support old versions of CrabLang can disable lints pertaining to newer features by specifying the
+minimum supported CrabLang version (MSRV) in the clippy configuration file.
 
 ```toml
 msrv = "1.30.0"
@@ -84,7 +84,7 @@ msrv = "1.30.0"
 
 The MSRV can also be specified as an attribute, like below.
 
-```rust
+```crablang
 #![feature(custom_inner_attributes)]
 #![clippy::msrv = "1.30.0"]
 
@@ -99,4 +99,4 @@ is equivalent to `msrv = 1.30.0`.
 Note: `custom_inner_attributes` is an unstable feature so it has to be enabled explicitly.
 
 Lints that recognize this configuration option can be
-found [here](https://rust-lang.github.io/rust-clippy/master/index.html#msrv)
+found [here](https://crablang.github.io/crablang-clippy/master/index.html#msrv)

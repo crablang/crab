@@ -24,4 +24,4 @@ LL | fn wrap(f: impl Fn()) -> impl Fn() {
 
 error: aborting due to previous error; 1 warning emitted
 
-For more information about this error, try `rustc --explain E0720`.
+For more information about this error, try `crablangc --explain E0720`.

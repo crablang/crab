@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 #![warn(clippy::manual_async_fn)]
 #![allow(unused)]
 
@@ -6,18 +6,18 @@ use std::future::Future;
 
 async fn fut() -> i32 { 42 }
 
-#[rustfmt::skip]
+#[crablangfmt::skip]
 async fn fut2() -> i32 { 42 }
 
-#[rustfmt::skip]
+#[crablangfmt::skip]
 async fn fut3() -> i32 { 42 }
 
 async fn empty_fut() {}
 
-#[rustfmt::skip]
+#[crablangfmt::skip]
 async fn empty_fut2() {}
 
-#[rustfmt::skip]
+#[crablangfmt::skip]
 async fn empty_fut3() {}
 
 async fn core_fut() -> i32 { 42 }

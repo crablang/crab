@@ -57,4 +57,4 @@ LL |     const TEST6: _ = 13;
 
 error: aborting due to 7 previous errors
 
-For more information about this error, try `rustc --explain E0121`.
+For more information about this error, try `crablangc --explain E0121`.

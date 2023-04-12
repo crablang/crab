@@ -7,7 +7,7 @@
 #![feature(naked_functions)]
 use std::arch::asm;
 
-// The problem at hand: Rust has adopted a fairly strict meaning for "naked functions",
+// The problem at hand: CrabLang has adopted a fairly strict meaning for "naked functions",
 // meaning "no prologue whatsoever, no, really, not one instruction."
 // Unfortunately, x86's control-flow enforcement, specifically indirect branch protection,
 // works by using an instruction for each possible landing site,

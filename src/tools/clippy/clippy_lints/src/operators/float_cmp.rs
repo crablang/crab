@@ -3,10 +3,10 @@ use clippy_utils::diagnostics::span_lint_and_then;
 use clippy_utils::get_item_name;
 use clippy_utils::sugg::Sugg;
 use if_chain::if_chain;
-use rustc_errors::Applicability;
-use rustc_hir::{BinOpKind, Expr, ExprKind, UnOp};
-use rustc_lint::LateContext;
-use rustc_middle::ty;
+use crablangc_errors::Applicability;
+use crablangc_hir::{BinOpKind, Expr, ExprKind, UnOp};
+use crablangc_lint::LateContext;
+use crablangc_middle::ty;
 
 use super::{FLOAT_CMP, FLOAT_CMP_CONST};
 
@@ -62,7 +62,7 @@ pub(crate) fn check<'tcx>(
 fn get_lint_and_message(
     is_comparing_constants: bool,
     is_comparing_arrays: bool,
-) -> (&'static rustc_lint::Lint, &'static str) {
+) -> (&'static crablangc_lint::Lint, &'static str) {
     if is_comparing_constants {
         (
             FLOAT_CMP_CONST,

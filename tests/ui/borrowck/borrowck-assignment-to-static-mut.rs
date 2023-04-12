@@ -1,6 +1,6 @@
 // run-pass
 #![allow(dead_code)]
-// Test taken from #45641 (https://github.com/rust-lang/rust/issues/45641)
+// Test taken from #45641 (https://github.com/crablang/crablang/issues/45641)
 
 static mut Y: u32 = 0;
 

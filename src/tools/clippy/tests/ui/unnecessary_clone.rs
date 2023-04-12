@@ -1,4 +1,4 @@
-// does not test any rustfixable lints
+// does not test any crablangfixable lints
 #![warn(clippy::clone_on_ref_ptr)]
 #![allow(unused)]
 #![allow(clippy::redundant_clone, clippy::uninlined_format_args, clippy::unnecessary_wraps)]

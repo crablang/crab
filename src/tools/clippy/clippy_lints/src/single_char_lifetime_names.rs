@@ -1,8 +1,8 @@
 use clippy_utils::diagnostics::span_lint_and_help;
-use rustc_ast::ast::{GenericParam, GenericParamKind};
-use rustc_lint::{EarlyContext, EarlyLintPass, LintContext};
-use rustc_middle::lint::in_external_macro;
-use rustc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_ast::ast::{GenericParam, GenericParamKind};
+use crablangc_lint::{EarlyContext, EarlyLintPass, LintContext};
+use crablangc_middle::lint::in_external_macro;
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
 
 declare_clippy_lint! {
     /// ### What it does
@@ -13,22 +13,22 @@ declare_clippy_lint! {
     /// A single character is likely not enough to express the
     /// purpose of a lifetime. Using a longer name can make code
     /// easier to understand, especially for those who are new to
-    /// Rust.
+    /// CrabLang.
     ///
     /// ### Known problems
-    /// Rust programmers and learning resources tend to use single
+    /// CrabLang programmers and learning resources tend to use single
     /// character lifetimes, so this lint is at odds with the
     /// ecosystem at large. In addition, the lifetime's purpose may
     /// be obvious or, rarely, expressible in one character.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// struct DiagnosticCtx<'a> {
     ///     source: &'a str,
     /// }
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// struct DiagnosticCtx<'src> {
     ///     source: &'src str,
     /// }

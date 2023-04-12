@@ -1,13 +1,13 @@
 use clippy_utils::diagnostics::span_lint_and_help;
 use clippy_utils::ty::is_c_void;
 use clippy_utils::{match_def_path, path_def_id, paths};
-use rustc_hir::def_id::DefId;
-use rustc_hir::{Expr, ExprKind, QPath};
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_middle::ty::RawPtr;
-use rustc_middle::ty::TypeAndMut;
-use rustc_session::{declare_lint_pass, declare_tool_lint};
-use rustc_span::sym;
+use crablangc_hir::def_id::DefId;
+use crablangc_hir::{Expr, ExprKind, QPath};
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_middle::ty::RawPtr;
+use crablangc_middle::ty::TypeAndMut;
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_span::sym;
 
 declare_clippy_lint! {
     /// ### What it does
@@ -19,13 +19,13 @@ declare_clippy_lint! {
     /// For this to be safe, `c_void` would need to have the same memory layout as the original type, which is often not the case.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// # use std::ffi::c_void;
     /// let ptr = Box::into_raw(Box::new(42usize)) as *mut c_void;
     /// let _ = unsafe { Box::from_raw(ptr) };
     /// ```
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// # use std::ffi::c_void;
     /// # let ptr = Box::into_raw(Box::new(42usize)) as *mut c_void;
     /// let _ = unsafe { Box::from_raw(ptr as *mut usize) };

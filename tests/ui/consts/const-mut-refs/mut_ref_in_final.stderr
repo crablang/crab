@@ -57,4 +57,4 @@ LL | static mut FOO3: NotAMutex<&mut i32> = NotAMutex(UnsafeCell::new(&mut 42));
 error: aborting due to 6 previous errors
 
 Some errors have detailed explanations: E0716, E0764.
-For more information about an error, try `rustc --explain E0716`.
+For more information about an error, try `crablangc --explain E0716`.

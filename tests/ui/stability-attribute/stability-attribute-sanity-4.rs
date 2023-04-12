@@ -2,7 +2,7 @@
 
 #![feature(staged_api)]
 
-#![stable(feature = "rust1", since = "1.0.0")]
+#![stable(feature = "crablang1", since = "1.0.0")]
 
 mod bogus_attribute_types_2 {
     #[unstable] //~ ERROR malformed `unstable` attribute

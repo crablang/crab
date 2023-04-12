@@ -2,7 +2,7 @@
 //!
 //! *[See also the `str` primitive type](str).*
 
-#![stable(feature = "rust1", since = "1.0.0")]
+#![stable(feature = "crablang1", since = "1.0.0")]
 // Many of the usings in this module are only used in the test configuration.
 // It's cleaner to just turn off the unused_imports warning than to fix them.
 #![allow(unused_imports)]
@@ -20,7 +20,7 @@ use crate::slice::{Concat, Join, SliceIndex};
 use crate::string::String;
 use crate::vec::Vec;
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub use core::str::pattern;
 #[stable(feature = "encode_utf16", since = "1.8.0")]
 pub use core::str::EncodeUtf16;
@@ -28,28 +28,28 @@ pub use core::str::EncodeUtf16;
 pub use core::str::SplitAsciiWhitespace;
 #[stable(feature = "split_inclusive", since = "1.51.0")]
 pub use core::str::SplitInclusive;
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub use core::str::SplitWhitespace;
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub use core::str::{from_utf8, from_utf8_mut, Bytes, CharIndices, Chars};
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub use core::str::{from_utf8_unchecked, from_utf8_unchecked_mut, ParseBoolError};
 #[stable(feature = "str_escape", since = "1.34.0")]
 pub use core::str::{EscapeDebug, EscapeDefault, EscapeUnicode};
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub use core::str::{FromStr, Utf8Error};
 #[allow(deprecated)]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub use core::str::{Lines, LinesAny};
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub use core::str::{MatchIndices, RMatchIndices};
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub use core::str::{Matches, RMatches};
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub use core::str::{RSplit, Split};
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub use core::str::{RSplitN, SplitN};
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub use core::str::{RSplitTerminator, SplitTerminator};
 #[unstable(feature = "utf8_chunks", issue = "99543")]
 pub use core::str::{Utf8Chunk, Utf8Chunks};
@@ -184,7 +184,7 @@ where
     result
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl Borrow<str> for String {
     #[inline]
     fn borrow(&self) -> &str {
@@ -201,7 +201,7 @@ impl BorrowMut<str> for String {
 }
 
 #[cfg(not(no_global_oom_handling))]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl ToOwned for str {
     type Owned = String;
     #[inline]
@@ -231,7 +231,7 @@ impl str {
     /// let boxed_bytes = boxed_str.into_boxed_bytes();
     /// assert_eq!(*boxed_bytes, *s.as_bytes());
     /// ```
-    #[rustc_allow_incoherent_impl]
+    #[crablangc_allow_incoherent_impl]
     #[stable(feature = "str_box_extras", since = "1.20.0")]
     #[must_use = "`self` will be dropped if the result is not used"]
     #[inline]
@@ -263,10 +263,10 @@ impl str {
     /// assert_eq!(s, s.replace("cookie monster", "little lamb"));
     /// ```
     #[cfg(not(no_global_oom_handling))]
-    #[rustc_allow_incoherent_impl]
+    #[crablangc_allow_incoherent_impl]
     #[must_use = "this returns the replaced string as a new allocation, \
                   without modifying the original"]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     pub fn replace<'a, P: Pattern<'a>>(&'a self, from: P, to: &str) -> String {
         let mut result = String::new();
@@ -304,7 +304,7 @@ impl str {
     /// assert_eq!(s, s.replacen("cookie monster", "little lamb", 10));
     /// ```
     #[cfg(not(no_global_oom_handling))]
-    #[rustc_allow_incoherent_impl]
+    #[crablangc_allow_incoherent_impl]
     #[must_use = "this returns the replaced string as a new allocation, \
                   without modifying the original"]
     #[stable(feature = "str_replacen", since = "1.16.0")]
@@ -361,7 +361,7 @@ impl str {
     /// assert_eq!(new_year, new_year.to_lowercase());
     /// ```
     #[cfg(not(no_global_oom_handling))]
-    #[rustc_allow_incoherent_impl]
+    #[crablangc_allow_incoherent_impl]
     #[must_use = "this returns the lowercase string as a new String, \
                   without modifying the original"]
     #[stable(feature = "unicode_case_mapping", since = "1.2.0")]
@@ -381,7 +381,7 @@ impl str {
                 // This is the only conditional (contextual) but language-independent mapping
                 // in `SpecialCasing.txt`,
                 // so hard-code it rather than have a generic "condition" mechanism.
-                // See https://github.com/rust-lang/rust/issues/26035
+                // See https://github.com/crablang/crablang/issues/26035
                 map_uppercase_sigma(rest, i, &mut s)
             } else {
                 match conversions::to_lower(c) {
@@ -452,7 +452,7 @@ impl str {
     /// assert_eq!("TSCHÜSS", s.to_uppercase());
     /// ```
     #[cfg(not(no_global_oom_handling))]
-    #[rustc_allow_incoherent_impl]
+    #[crablangc_allow_incoherent_impl]
     #[must_use = "this returns the uppercase string as a new String, \
                   without modifying the original"]
     #[stable(feature = "unicode_case_mapping", since = "1.2.0")]
@@ -496,7 +496,7 @@ impl str {
     /// assert_eq!(boxed_str.into_string(), string);
     /// ```
     #[stable(feature = "box_str", since = "1.4.0")]
-    #[rustc_allow_incoherent_impl]
+    #[crablangc_allow_incoherent_impl]
     #[must_use = "`self` will be dropped if the result is not used"]
     #[inline]
     pub fn into_string(self: Box<str>) -> String {
@@ -525,7 +525,7 @@ impl str {
     /// let huge = "0123456789abcdef".repeat(usize::MAX);
     /// ```
     #[cfg(not(no_global_oom_handling))]
-    #[rustc_allow_incoherent_impl]
+    #[crablangc_allow_incoherent_impl]
     #[must_use]
     #[stable(feature = "repeat_str", since = "1.16.0")]
     pub fn repeat(&self, n: usize) -> String {
@@ -554,7 +554,7 @@ impl str {
     /// [`make_ascii_uppercase`]: str::make_ascii_uppercase
     /// [`to_uppercase`]: #method.to_uppercase
     #[cfg(not(no_global_oom_handling))]
-    #[rustc_allow_incoherent_impl]
+    #[crablangc_allow_incoherent_impl]
     #[must_use = "to uppercase the value in-place, use `make_ascii_uppercase()`"]
     #[stable(feature = "ascii_methods_on_intrinsics", since = "1.23.0")]
     #[inline]
@@ -586,7 +586,7 @@ impl str {
     /// [`make_ascii_lowercase`]: str::make_ascii_lowercase
     /// [`to_lowercase`]: #method.to_lowercase
     #[cfg(not(no_global_oom_handling))]
-    #[rustc_allow_incoherent_impl]
+    #[crablangc_allow_incoherent_impl]
     #[must_use = "to lowercase the value in-place, use `make_ascii_lowercase()`"]
     #[stable(feature = "ascii_methods_on_intrinsics", since = "1.23.0")]
     #[inline]

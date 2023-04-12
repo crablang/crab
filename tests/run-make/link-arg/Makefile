@@ -1,5 +1,5 @@
 include ../tools.mk
-RUSTC_FLAGS = -C link-arg="-lfoo" -C link-arg="-lbar" --print link-args
+CRABLANGC_FLAGS = -C link-arg="-lfoo" -C link-arg="-lbar" --print link-args
 
 all:
-	$(RUSTC) $(RUSTC_FLAGS) empty.rs | $(CGREP) lfoo lbar
+	$(CRABLANGC) $(CRABLANGC_FLAGS) empty.rs | $(CGREP) lfoo lbar

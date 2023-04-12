@@ -9,9 +9,9 @@ use std::io::BufRead;
 use std::io::Write;
 
 const ALERT_MSG: &str = "\
-RLS is no longer available as of Rust 1.65.
-Consider migrating to rust-analyzer instead.
-See https://rust-analyzer.github.io/ for installation instructions.
+RLS is no longer available as of CrabLang 1.65.
+Consider migrating to crablang-analyzer instead.
+See https://crablang-analyzer.github.io/ for installation instructions.
 ";
 
 fn main() {

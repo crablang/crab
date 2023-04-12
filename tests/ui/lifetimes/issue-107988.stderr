@@ -12,7 +12,7 @@ error[E0261]: use of undeclared lifetime name `'tcx`
 LL | impl<T: ?Sized + TraitEngine<'tcx>> TraitEngineExt<'tcx> for T {
    |                              ^^^^ undeclared lifetime
    |
-   = note: for more information on higher-ranked polymorphism, visit https://doc.rust-lang.org/nomicon/hrtb.html
+   = note: for more information on higher-ranked polymorphism, visit https://doc.crablang.org/nomicon/hrtb.html
 help: consider making the bound lifetime-generic with a new `'tcx` lifetime
    |
 LL | impl<T: ?Sized + for<'tcx> TraitEngine<'tcx>> TraitEngineExt<'tcx> for T {
@@ -24,4 +24,4 @@ LL | impl<'tcx, T: ?Sized + TraitEngine<'tcx>> TraitEngineExt<'tcx> for T {
 
 error: aborting due to 2 previous errors
 
-For more information about this error, try `rustc --explain E0261`.
+For more information about this error, try `crablangc --explain E0261`.

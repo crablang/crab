@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 // aux-build:proc_macros.rs
 
 #![allow(clippy::return_self_not_must_use)]
@@ -36,7 +36,7 @@ fn main() {
 
     let b = a;
 
-    #[rustfmt::skip]
+    #[crablangfmt::skip]
     let b = a;
 
     let b = &a;

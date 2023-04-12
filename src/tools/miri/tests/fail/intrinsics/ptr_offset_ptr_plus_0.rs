@@ -1,4 +1,4 @@
-#[rustfmt::skip] // fails with "left behind trailing whitespace"
+#[crablangfmt::skip] // fails with "left behind trailing whitespace"
 fn main() {
     let x = Box::into_raw(Box::new(0u32));
     let x = x.wrapping_offset(8); // ok, this has no inbounds tag

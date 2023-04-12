@@ -1,18 +1,18 @@
 use std::borrow::Cow;
 use std::collections::BTreeMap;
 
-use rustc_errors::Diagnostic;
-use rustc_hir as hir;
-use rustc_hir::intravisit::{walk_body, walk_expr, walk_inf, walk_ty, Visitor};
-use rustc_hir::{Body, Expr, ExprKind, GenericArg, Item, ItemKind, QPath, TyKind};
-use rustc_hir_analysis::hir_ty_to_ty;
-use rustc_lint::{LateContext, LateLintPass, LintContext};
-use rustc_middle::hir::nested_filter;
-use rustc_middle::lint::in_external_macro;
-use rustc_middle::ty::{Ty, TypeckResults};
-use rustc_session::{declare_lint_pass, declare_tool_lint};
-use rustc_span::source_map::Span;
-use rustc_span::symbol::sym;
+use crablangc_errors::Diagnostic;
+use crablangc_hir as hir;
+use crablangc_hir::intravisit::{walk_body, walk_expr, walk_inf, walk_ty, Visitor};
+use crablangc_hir::{Body, Expr, ExprKind, GenericArg, Item, ItemKind, QPath, TyKind};
+use crablangc_hir_analysis::hir_ty_to_ty;
+use crablangc_lint::{LateContext, LateLintPass, LintContext};
+use crablangc_middle::hir::nested_filter;
+use crablangc_middle::lint::in_external_macro;
+use crablangc_middle::ty::{Ty, TypeckResults};
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_span::source_map::Span;
+use crablangc_span::symbol::sym;
 
 use if_chain::if_chain;
 
@@ -36,7 +36,7 @@ declare_clippy_lint! {
     /// pieces of code, possibly including external crates.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// # use std::collections::HashMap;
     /// # use std::hash::{Hash, BuildHasher};
     /// # trait Serialize {};
@@ -45,7 +45,7 @@ declare_clippy_lint! {
     /// pub fn foo(map: &mut HashMap<i32, i32>) { }
     /// ```
     /// could be rewritten as
-    /// ```rust
+    /// ```crablang
     /// # use std::collections::HashMap;
     /// # use std::hash::{Hash, BuildHasher};
     /// # trait Serialize {};
@@ -64,7 +64,7 @@ declare_lint_pass!(ImplicitHasher => [IMPLICIT_HASHER]);
 impl<'tcx> LateLintPass<'tcx> for ImplicitHasher {
     #[expect(clippy::cast_possible_truncation, clippy::too_many_lines)]
     fn check_item(&mut self, cx: &LateContext<'tcx>, item: &'tcx Item<'_>) {
-        use rustc_span::BytePos;
+        use crablangc_span::BytePos;
 
         fn suggestion(
             cx: &LateContext<'_>,

@@ -29,7 +29,7 @@ use crate::task::{Context, Poll};
 #[must_use = "futures do nothing unless you `.await` or poll them"]
 #[stable(feature = "futures_api", since = "1.36.0")]
 #[lang = "future_trait"]
-#[rustc_on_unimplemented(
+#[crablangc_on_unimplemented(
     label = "`{Self}` is not a future",
     message = "`{Self}` is not a future",
     note = "{Self} must be a future or must implement `IntoFuture` to be awaited"
@@ -37,7 +37,7 @@ use crate::task::{Context, Poll};
 pub trait Future {
     /// The type of value produced on completion.
     #[stable(feature = "futures_api", since = "1.36.0")]
-    #[rustc_diagnostic_item = "FutureOutput"]
+    #[crablangc_diagnostic_item = "FutureOutput"]
     type Output;
 
     /// Attempt to resolve the future to a final value, registering
@@ -93,7 +93,7 @@ pub trait Future {
     /// `poll` method again may panic, block forever, or cause other kinds of
     /// problems; the `Future` trait places no requirements on the effects of
     /// such a call. However, as the `poll` method is not marked `unsafe`,
-    /// Rust's usual rules apply: calls must never cause undefined behavior
+    /// CrabLang's usual rules apply: calls must never cause undefined behavior
     /// (memory corruption, incorrect use of `unsafe` functions, or the like),
     /// regardless of the future's state.
     ///

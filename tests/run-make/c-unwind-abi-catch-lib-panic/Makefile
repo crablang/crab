@@ -3,7 +3,7 @@ include ../tools.mk
 
 all: archive
 	# Compile `main.rs`, which will link into our library, and run it.
-	$(RUSTC) main.rs
+	$(CRABLANGC) main.rs
 	$(call RUN,main)
 
 ifdef IS_MSVC
@@ -18,10 +18,10 @@ endif
 
 # Compile `panic.rs` into an object file.
 #
-# Note that we invoke `rustc` directly, so we may emit an object rather
+# Note that we invoke `crablangc` directly, so we may emit an object rather
 # than an archive. We'll do that later.
 panic.o:
-	$(BARE_RUSTC) $(RUSTFLAGS)  \
+	$(BARE_CRABLANGC) $(CRABLANGFLAGS)  \
 		--out-dir $(TMPDIR) \
 		--emit=obj panic.rs
 

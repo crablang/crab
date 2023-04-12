@@ -1,11 +1,11 @@
 use clippy_utils::diagnostics::{span_lint, span_lint_and_then};
 use clippy_utils::{higher, is_else_clause, is_expn_of};
 use if_chain::if_chain;
-use rustc_hir as hir;
-use rustc_hir::{BinOpKind, Block, Expr, ExprKind, HirId, Local, Node, Stmt, StmtKind};
-use rustc_lint::{LateContext, LateLintPass, LintContext};
-use rustc_session::{declare_lint_pass, declare_tool_lint};
-use rustc_span::{BytePos, Span};
+use crablangc_hir as hir;
+use crablangc_hir::{BinOpKind, Block, Expr, ExprKind, HirId, Local, Node, Stmt, StmtKind};
+use crablangc_lint::{LateContext, LateLintPass, LintContext};
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_span::{BytePos, Span};
 
 declare_clippy_lint! {
     /// Finds unidiomatic usage of `if_chain!`
@@ -75,7 +75,7 @@ fn check_nested_if_chains(
     then_block: &Block<'_>,
     if_chain_span: Option<Span>,
 ) {
-    #[rustfmt::skip]
+    #[crablangfmt::skip]
     let (head, tail) = match *then_block {
         Block { stmts, expr: Some(tail), .. } => (stmts, tail),
         Block {
@@ -123,7 +123,7 @@ fn is_first_if_chain_expr(cx: &LateContext<'_>, hir_id: HirId, if_chain_span: Sp
         .hir()
         .parent_iter(hir_id)
         .find(|(_, node)| {
-            #[rustfmt::skip]
+            #[crablangfmt::skip]
             !matches!(node, Node::Expr(Expr { kind: ExprKind::Block(..), .. }) | Node::Stmt(_))
         })
         .map_or(false, |(id, _)| {

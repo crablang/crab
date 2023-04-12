@@ -7,7 +7,7 @@ struct Fun<F>(F);
 impl<F, T> FnOnce<(T,)> for Fun<F> where F: Fn(T) -> T {
     type Output = T;
 
-    extern "rust-call" fn call_once(self, (t,): (T,)) -> T {
+    extern "crablang-call" fn call_once(self, (t,): (T,)) -> T {
         (self.0)(t)
     }
 }

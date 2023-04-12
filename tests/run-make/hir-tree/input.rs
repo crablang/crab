@@ -1,3 +1,3 @@
 fn main() {
-    println!("Hello, Rustaceans!");
+    println!("Hello, CrabLangaceans!");
 }

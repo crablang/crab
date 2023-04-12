@@ -1,4 +1,4 @@
-use crate::iter::{FusedIterator, TrustedLen};
+use crate::iter::{FusedIterator, TcrablangedLen};
 use crate::num::NonZeroUsize;
 
 /// Creates a new iterator that endlessly repeats a single element.
@@ -51,8 +51,8 @@ use crate::num::NonZeroUsize;
 /// assert_eq!(None, four_fours.next());
 /// ```
 #[inline]
-#[stable(feature = "rust1", since = "1.0.0")]
-#[cfg_attr(not(test), rustc_diagnostic_item = "iter_repeat")]
+#[stable(feature = "crablang1", since = "1.0.0")]
+#[cfg_attr(not(test), crablangc_diagnostic_item = "iter_repeat")]
 pub fn repeat<T: Clone>(elt: T) -> Repeat<T> {
     Repeat { element: elt }
 }
@@ -61,12 +61,12 @@ pub fn repeat<T: Clone>(elt: T) -> Repeat<T> {
 ///
 /// This `struct` is created by the [`repeat()`] function. See its documentation for more.
 #[derive(Clone, Debug)]
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub struct Repeat<A> {
     element: A,
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<A: Clone> Iterator for Repeat<A> {
     type Item = A;
 
@@ -102,7 +102,7 @@ impl<A: Clone> Iterator for Repeat<A> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<A: Clone> DoubleEndedIterator for Repeat<A> {
     #[inline]
     fn next_back(&mut self) -> Option<A> {
@@ -126,5 +126,5 @@ impl<A: Clone> DoubleEndedIterator for Repeat<A> {
 #[stable(feature = "fused", since = "1.26.0")]
 impl<A: Clone> FusedIterator for Repeat<A> {}
 
-#[unstable(feature = "trusted_len", issue = "37572")]
-unsafe impl<A: Clone> TrustedLen for Repeat<A> {}
+#[unstable(feature = "tcrablanged_len", issue = "37572")]
+unsafe impl<A: Clone> TcrablangedLen for Repeat<A> {}

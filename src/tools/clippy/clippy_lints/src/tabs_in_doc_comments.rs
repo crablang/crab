@@ -1,22 +1,22 @@
 use clippy_utils::diagnostics::span_lint_and_sugg;
-use rustc_ast::ast;
-use rustc_errors::Applicability;
-use rustc_lint::{EarlyContext, EarlyLintPass};
-use rustc_session::{declare_lint_pass, declare_tool_lint};
-use rustc_span::source_map::{BytePos, Span};
+use crablangc_ast::ast;
+use crablangc_errors::Applicability;
+use crablangc_lint::{EarlyContext, EarlyLintPass};
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_span::source_map::{BytePos, Span};
 
 declare_clippy_lint! {
     /// ### What it does
     /// Checks doc comments for usage of tab characters.
     ///
     /// ### Why is this bad?
-    /// The rust style-guide promotes spaces instead of tabs for indentation.
+    /// The crablang style-guide promotes spaces instead of tabs for indentation.
     /// To keep a consistent view on the source, also doc comments should not have tabs.
     /// Also, explaining ascii-diagrams containing tabs can get displayed incorrectly when the
     /// display settings of the author and reader differ.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// ///
     /// /// Struct to hold two strings:
     /// /// 	- first		one
@@ -34,7 +34,7 @@ declare_clippy_lint! {
     /// ```
     ///
     /// Will be converted to:
-    /// ```rust
+    /// ```crablang
     /// ///
     /// /// Struct to hold two strings:
     /// ///     - first        one

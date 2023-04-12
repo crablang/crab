@@ -7,4 +7,4 @@ macro m($f:ident) {
     }
 }
 
-m!(rust_function_name);
+m!(crablang_function_name);

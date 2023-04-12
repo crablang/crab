@@ -2,7 +2,7 @@
 #![cfg(not(target_arch = "wasm32"))]
 #![feature(flt2dec)]
 #![feature(test)]
-#![feature(trusted_random_access)]
+#![feature(tcrablanged_random_access)]
 #![feature(iter_array_chunks)]
 #![feature(iter_next_chunk)]
 

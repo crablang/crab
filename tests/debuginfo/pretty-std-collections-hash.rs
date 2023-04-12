@@ -1,5 +1,5 @@
 // CDB doesn't like how libstd.natvis casts to tuples before this version.
-// https://github.com/rust-lang/rust/issues/76352#issuecomment-687640746
+// https://github.com/crablang/crablang/issues/76352#issuecomment-687640746
 // min-cdb-version: 10.0.18362.1
 
 // cdb-only

@@ -30,7 +30,7 @@ impl Foo {
     }
 }
 
-// rust-lang/rust#61115
+// crablang/crablang#61115
 // ok
 async fn print(s: &str) {
     println!("{}", s);

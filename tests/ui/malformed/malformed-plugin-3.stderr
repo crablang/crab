@@ -4,7 +4,7 @@ error[E0498]: malformed `plugin` attribute
 LL | #![plugin(foo="bleh")]
    |           ^^^^^^^^^^ malformed attribute
 
-warning: use of deprecated attribute `plugin`: compiler plugins are deprecated. See https://github.com/rust-lang/rust/pull/64675
+warning: use of deprecated attribute `plugin`: compiler plugins are deprecated. See https://github.com/crablang/crablang/pull/64675
   --> $DIR/malformed-plugin-3.rs:2:1
    |
 LL | #![plugin(foo="bleh")]
@@ -14,4 +14,4 @@ LL | #![plugin(foo="bleh")]
 
 error: aborting due to previous error; 1 warning emitted
 
-For more information about this error, try `rustc --explain E0498`.
+For more information about this error, try `crablangc --explain E0498`.

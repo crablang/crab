@@ -1,12 +1,12 @@
 use clippy_utils::diagnostics::span_lint_and_then;
 use clippy_utils::source::{snippet, snippet_with_applicability};
 use clippy_utils::{path_def_id, qpath_generic_tys};
-use rustc_errors::Applicability;
-use rustc_hir::{self as hir, def_id::DefId, QPath, TyKind};
-use rustc_hir_analysis::hir_ty_to_ty;
-use rustc_lint::LateContext;
-use rustc_middle::ty::TypeVisitableExt;
-use rustc_span::symbol::sym;
+use crablangc_errors::Applicability;
+use crablangc_hir::{self as hir, def_id::DefId, QPath, TyKind};
+use crablangc_hir_analysis::hir_ty_to_ty;
+use crablangc_lint::LateContext;
+use crablangc_middle::ty::TypeVisitableExt;
+use crablangc_span::symbol::sym;
 
 use super::{utils, REDUNDANT_ALLOCATION};
 

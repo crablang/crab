@@ -1,4 +1,4 @@
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 #![feature(type_alias_impl_trait)]
 
 type Foo = impl Fn() -> usize;
@@ -7,5 +7,5 @@ const fn bar() -> Foo {
 }
 const BAZR: Foo = bar();
 
-#[rustc_error]
+#[crablangc_error]
 fn main() {} //~ ERROR

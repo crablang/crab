@@ -55,4 +55,4 @@ LL |     !bar.is_empty()
 error: aborting due to 4 previous errors
 
 Some errors have detailed explanations: E0605, E0606.
-For more information about an error, try `rustc --explain E0605`.
+For more information about an error, try `crablangc --explain E0605`.

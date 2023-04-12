@@ -361,10 +361,10 @@ impl Crate {
         if let Some(server) = server {
             let target = shared_target_dir.join("recursive");
 
-            // `cargo clippy` is a wrapper around `cargo check` that mainly sets `RUSTC_WORKSPACE_WRAPPER` to
+            // `cargo clippy` is a wrapper around `cargo check` that mainly sets `CRABLANGC_WORKSPACE_WRAPPER` to
             // `clippy-driver`. We do the same thing here with a couple changes:
             //
-            // `RUSTC_WRAPPER` is used instead of `RUSTC_WORKSPACE_WRAPPER` so that we can lint all crate
+            // `CRABLANGC_WRAPPER` is used instead of `CRABLANGC_WORKSPACE_WRAPPER` so that we can lint all crate
             // dependencies rather than only workspace members
             //
             // The wrapper is set to the `lintcheck` so we can force enable linting and ignore certain crates
@@ -375,7 +375,7 @@ impl Crate {
                 .current_dir(&self.path)
                 .env("CLIPPY_ARGS", clippy_args.join("__CLIPPY_HACKERY__"))
                 .env("CARGO_TARGET_DIR", target)
-                .env("RUSTC_WRAPPER", env::current_exe().unwrap())
+                .env("CRABLANGC_WRAPPER", env::current_exe().unwrap())
                 // Pass the absolute path so `crate::driver` can find `clippy-driver`, as it's executed in various
                 // different working directories
                 .env("CLIPPY_DRIVER", clippy_driver_path)
@@ -417,7 +417,7 @@ impl Crate {
         if config.fix {
             if let Some(stderr) = stderr
                 .lines()
-                .find(|line| line.contains("failed to automatically apply fixes suggested by rustc to crate"))
+                .find(|line| line.contains("failed to automatically apply fixes suggested by crablangc to crate"))
             {
                 let subcrate = &stderr[63..];
                 println!(
@@ -545,7 +545,7 @@ fn gather_stats(clippy_warnings: &[ClippyWarning]) -> (String, HashMap<&String, 
 
 #[allow(clippy::too_many_lines)]
 fn main() {
-    // We're being executed as a `RUSTC_WRAPPER` as part of `--recursive`
+    // We're being executed as a `CRABLANGC_WRAPPER` as part of `--recursive`
     if let Ok(addr) = env::var("LINTCHECK_SERVER") {
         driver::drive(&addr);
     }

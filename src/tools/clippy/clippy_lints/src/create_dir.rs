@@ -2,10 +2,10 @@ use clippy_utils::diagnostics::span_lint_and_sugg;
 use clippy_utils::source::snippet;
 use clippy_utils::{match_def_path, paths};
 use if_chain::if_chain;
-use rustc_errors::Applicability;
-use rustc_hir::{Expr, ExprKind};
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_errors::Applicability;
+use crablangc_hir::{Expr, ExprKind};
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
 
 declare_clippy_lint! {
     /// ### What it does
@@ -15,12 +15,12 @@ declare_clippy_lint! {
     /// Sometimes `std::fs::create_dir` is mistakenly chosen over `std::fs::create_dir_all`.
     ///
     /// ### Example
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// std::fs::create_dir("foo");
     /// ```
     ///
     /// Use instead:
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// std::fs::create_dir_all("foo");
     /// ```
     #[clippy::version = "1.48.0"]

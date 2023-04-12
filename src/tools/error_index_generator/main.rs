@@ -1,6 +1,6 @@
-#![feature(rustc_private)]
+#![feature(crablangc_private)]
 
-extern crate rustc_driver;
+extern crate crablangc_driver;
 
 use std::env;
 use std::error::Error;
@@ -34,19 +34,19 @@ impl OutputFormat {
 fn render_markdown(output_path: &Path) -> Result<(), Box<dyn Error>> {
     let mut output_file = File::create(output_path)?;
 
-    write!(output_file, "# Rust Compiler Error Index\n")?;
+    write!(output_file, "# CrabLang Compiler Error Index\n")?;
 
-    for (err_code, description) in rustc_error_codes::DIAGNOSTICS.iter() {
+    for (err_code, description) in crablangc_error_codes::DIAGNOSTICS.iter() {
         write!(output_file, "## {}\n{}\n", err_code, description)?
     }
 
     Ok(())
 }
 
-// By default, mdbook doesn't consider code blocks as Rust ones contrary to rustdoc so we have
-// to manually add `rust` attribute whenever needed.
-fn add_rust_attribute_on_codeblock(explanation: &str) -> String {
-    // Very hacky way to add the rust attribute on all code blocks.
+// By default, mdbook doesn't consider code blocks as CrabLang ones contrary to crablangdoc so we have
+// to manually add `crablang` attribute whenever needed.
+fn add_crablang_attribute_on_codeblock(explanation: &str) -> String {
+    // Very hacky way to add the crablang attribute on all code blocks.
     let mut skip = true;
     explanation.split("\n```").fold(String::new(), |mut acc, part| {
         if !acc.is_empty() {
@@ -54,16 +54,16 @@ fn add_rust_attribute_on_codeblock(explanation: &str) -> String {
         }
         if !skip {
             if let Some(attrs) = part.split('\n').next() {
-                if !attrs.contains("rust")
+                if !attrs.contains("crablang")
                     && (attrs.is_empty()
                         || attrs.contains("compile_fail")
                         || attrs.contains("ignore")
                         || attrs.contains("edition"))
                 {
                     if !attrs.is_empty() {
-                        acc.push_str("rust,");
+                        acc.push_str("crablang,");
                     } else {
-                        acc.push_str("rust");
+                        acc.push_str("crablang");
                     }
                 }
             }
@@ -76,20 +76,20 @@ fn add_rust_attribute_on_codeblock(explanation: &str) -> String {
 
 fn render_html(output_path: &Path) -> Result<(), Box<dyn Error>> {
     let mut introduction = format!(
-        "# Rust error codes index
+        "# CrabLang error codes index
 
-This page lists all the error codes emitted by the Rust compiler.
+This page lists all the error codes emitted by the CrabLang compiler.
 
 "
     );
 
-    let err_codes = rustc_error_codes::DIAGNOSTICS;
+    let err_codes = crablangc_error_codes::DIAGNOSTICS;
     let mut chapters = Vec::with_capacity(err_codes.len());
 
     for (err_code, explanation) in err_codes.iter() {
         introduction.push_str(&format!(" * [{0}](./{0}.html)\n", err_code));
 
-        let content = add_rust_attribute_on_codeblock(explanation);
+        let content = add_crablang_attribute_on_codeblock(explanation);
         chapters.push(BookItem::Chapter(Chapter {
             name: err_code.to_string(),
             content: format!("# Error code {}\n\n{}\n", err_code, content),
@@ -110,7 +110,7 @@ This page lists all the error codes emitted by the Rust compiler.
         parse_summary("")?,
     )?;
     let chapter = Chapter {
-        name: "Rust error codes index".to_owned(),
+        name: "CrabLang error codes index".to_owned(),
         content: introduction,
         number: None,
         sub_items: chapters,
@@ -134,9 +134,9 @@ This page lists all the error codes emitted by the Rust compiler.
         r#"<!DOCTYPE html>
 <html>
     <head>
-        <title>Rust error codes index - Error codes index</title>
+        <title>CrabLang error codes index - Error codes index</title>
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
-        <meta name="description" content="Book listing all Rust error codes">
+        <meta name="description" content="Book listing all CrabLang error codes">
         <script src="error_codes/redirect.js"></script>
     </head>
     <body>
@@ -170,7 +170,7 @@ fn parse_args() -> (OutputFormat, PathBuf) {
 }
 
 fn main() {
-    rustc_driver::init_env_logger("RUST_LOG");
+    crablangc_driver::init_env_logger("CRABLANG_LOG");
     let (format, dst) = parse_args();
     let result = main_with_result(format, &dst);
     if let Err(e) = result {

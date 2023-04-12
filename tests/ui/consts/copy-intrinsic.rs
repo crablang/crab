@@ -5,11 +5,11 @@
 #![feature(const_mut_refs)]
 use std::mem;
 
-extern "rust-intrinsic" {
-    #[rustc_const_stable(feature = "const_intrinsic_copy", since = "1.63.0")]
+extern "crablang-intrinsic" {
+    #[crablangc_const_stable(feature = "const_intrinsic_copy", since = "1.63.0")]
     fn copy_nonoverlapping<T>(src: *const T, dst: *mut T, count: usize);
 
-    #[rustc_const_stable(feature = "const_intrinsic_copy", since = "1.63.0")]
+    #[crablangc_const_stable(feature = "const_intrinsic_copy", since = "1.63.0")]
     fn copy<T>(src: *const T, dst: *mut T, count: usize);
 }
 

@@ -1,5 +1,5 @@
 // Checking that none of these ICE, which was introduced in
-// https://github.com/rust-lang/rust/issues/93553
+// https://github.com/crablang/crablang/issues/93553
 trait Foo {
     type Bar;
 }

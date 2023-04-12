@@ -98,7 +98,7 @@ impl<F> DlsymWeak<F> {
                     // need to have loaded it with at least C11's consume
                     // ordering in order to be guaranteed that the data we read
                     // from the pointer isn't from before the pointer was
-                    // stored. Rust has no equivalent to memory_order_consume,
+                    // stored. CrabLang has no equivalent to memory_order_consume,
                     // so we use an acquire fence (sorry, ARM).
                     //
                     // Now, in practice this likely isn't needed even on CPUs

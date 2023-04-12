@@ -67,4 +67,4 @@ LL | struct Foo;
 error: aborting due to 9 previous errors
 
 Some errors have detailed explanations: E0253, E0432, E0603.
-For more information about an error, try `rustc --explain E0253`.
+For more information about an error, try `crablangc --explain E0253`.

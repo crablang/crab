@@ -1,0 +1,10 @@
+[package]
+name = "crablangc_feature"
+version = "0.0.0"
+edition = "2021"
+
+[lib]
+
+[dependencies]
+crablangc_data_structures = { path = "../crablangc_data_structures" }
+crablangc_span = { path = "../crablangc_span" }

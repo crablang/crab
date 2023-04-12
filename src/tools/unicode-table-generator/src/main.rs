@@ -2,7 +2,7 @@
 //! encode Unicode properties.
 //!
 //! We have two primary goals with the encoding: we want to be compact, because
-//! these tables often end up in ~every Rust program (especially the
+//! these tables often end up in ~every CrabLang program (especially the
 //! grapheme_extend table, used for str debugging), including those for embedded
 //! targets (where space is important). We also want to be relatively fast,
 //! though this is more of a nice to have rather than a key design constraint.
@@ -227,7 +227,7 @@ fn main() {
         std::process::exit(1);
     });
 
-    // Optional test path, which is a Rust source file testing that the unicode
+    // Optional test path, which is a CrabLang source file testing that the unicode
     // property lookups are correct.
     let test_path = std::env::args().nth(2);
 
@@ -282,7 +282,7 @@ fn main() {
     modules.push((String::from("conversions"), case_mapping::generate_case_mapping(&unicode_data)));
 
     for (name, contents) in modules {
-        table_file.push_str("#[rustfmt::skip]\n");
+        table_file.push_str("#[crablangfmt::skip]\n");
         table_file.push_str(&format!("pub mod {name} {{\n"));
         for line in contents.lines() {
             if !line.trim().is_empty() {

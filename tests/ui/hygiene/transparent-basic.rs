@@ -1,16 +1,16 @@
 // check-pass
 // aux-build:transparent-basic.rs
 
-#![feature(decl_macro, rustc_attrs)]
+#![feature(decl_macro, crablangc_attrs)]
 
 extern crate transparent_basic;
 
-#[rustc_macro_transparency = "transparent"]
+#[crablangc_macro_transparency = "transparent"]
 macro binding() {
     let x = 10;
 }
 
-#[rustc_macro_transparency = "transparent"]
+#[crablangc_macro_transparency = "transparent"]
 macro label() {
     break 'label
 }

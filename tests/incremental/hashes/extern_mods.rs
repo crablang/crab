@@ -13,7 +13,7 @@
 // [cfail3]compile-flags: -Zincremental-ignore-spans
 
 #![allow(warnings)]
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 #![feature(unboxed_closures)]
 #![crate_type = "rlib"]
 
@@ -24,10 +24,10 @@ extern "C" {
 }
 
 #[cfg(not(any(cfail1,cfail4)))]
-#[rustc_clean(cfg = "cfail2", except = "hir_owner,hir_owner_nodes")]
-#[rustc_clean(cfg = "cfail3")]
-#[rustc_clean(cfg = "cfail5", except = "hir_owner,hir_owner_nodes")]
-#[rustc_clean(cfg = "cfail6")]
+#[crablangc_clean(cfg = "cfail2", except = "hir_owner,hir_owner_nodes")]
+#[crablangc_clean(cfg = "cfail3")]
+#[crablangc_clean(cfg = "cfail5", except = "hir_owner,hir_owner_nodes")]
+#[crablangc_clean(cfg = "cfail6")]
 extern "C" {
     pub fn change_function_name2(c: i64) -> i32;
 }
@@ -39,10 +39,10 @@ extern "C" {
 }
 
 #[cfg(not(any(cfail1,cfail4)))]
-#[rustc_clean(cfg = "cfail2")]
-#[rustc_clean(cfg = "cfail3")]
-#[rustc_clean(cfg = "cfail5")]
-#[rustc_clean(cfg = "cfail6")]
+#[crablangc_clean(cfg = "cfail2")]
+#[crablangc_clean(cfg = "cfail3")]
+#[crablangc_clean(cfg = "cfail5")]
+#[crablangc_clean(cfg = "cfail6")]
 extern "C" {
     pub fn change_parameter_name(d: i64) -> i32;
 }
@@ -54,10 +54,10 @@ extern "C" {
 }
 
 #[cfg(not(any(cfail1,cfail4)))]
-#[rustc_clean(cfg = "cfail2")]
-#[rustc_clean(cfg = "cfail3")]
-#[rustc_clean(cfg = "cfail5")]
-#[rustc_clean(cfg = "cfail6")]
+#[crablangc_clean(cfg = "cfail2")]
+#[crablangc_clean(cfg = "cfail3")]
+#[crablangc_clean(cfg = "cfail5")]
+#[crablangc_clean(cfg = "cfail6")]
 extern "C" {
     pub fn change_parameter_type(c: i32) -> i32;
 }
@@ -69,10 +69,10 @@ extern "C" {
 }
 
 #[cfg(not(any(cfail1,cfail4)))]
-#[rustc_clean(cfg = "cfail2")]
-#[rustc_clean(cfg = "cfail3")]
-#[rustc_clean(cfg = "cfail5")]
-#[rustc_clean(cfg = "cfail6")]
+#[crablangc_clean(cfg = "cfail2")]
+#[crablangc_clean(cfg = "cfail3")]
+#[crablangc_clean(cfg = "cfail5")]
+#[crablangc_clean(cfg = "cfail6")]
 extern "C" {
     pub fn change_return_type(c: i32) -> i8 ;
 }
@@ -84,10 +84,10 @@ extern "C" {
 }
 
 #[cfg(not(any(cfail1,cfail4)))]
-#[rustc_clean(cfg = "cfail2")]
-#[rustc_clean(cfg = "cfail3")]
-#[rustc_clean(cfg = "cfail5")]
-#[rustc_clean(cfg = "cfail6")]
+#[crablangc_clean(cfg = "cfail2")]
+#[crablangc_clean(cfg = "cfail3")]
+#[crablangc_clean(cfg = "cfail5")]
+#[crablangc_clean(cfg = "cfail6")]
 extern "C" {
     pub fn add_parameter(c: i32, d: i32) -> i32;
 }
@@ -99,10 +99,10 @@ extern "C" {
 }
 
 #[cfg(not(any(cfail1,cfail4)))]
-#[rustc_clean(cfg = "cfail2")]
-#[rustc_clean(cfg = "cfail3")]
-#[rustc_clean(cfg = "cfail5")]
-#[rustc_clean(cfg = "cfail6")]
+#[crablangc_clean(cfg = "cfail2")]
+#[crablangc_clean(cfg = "cfail3")]
+#[crablangc_clean(cfg = "cfail5")]
+#[crablangc_clean(cfg = "cfail6")]
 extern "C" {
     pub fn add_return_type(c: i32) -> i32;
 }
@@ -114,10 +114,10 @@ extern "C" {
 }
 
 #[cfg(not(any(cfail1,cfail4)))]
-#[rustc_clean(cfg = "cfail2")]
-#[rustc_clean(cfg = "cfail3")]
-#[rustc_clean(cfg = "cfail5")]
-#[rustc_clean(cfg = "cfail6")]
+#[crablangc_clean(cfg = "cfail2")]
+#[crablangc_clean(cfg = "cfail3")]
+#[crablangc_clean(cfg = "cfail5")]
+#[crablangc_clean(cfg = "cfail6")]
 extern "C" {
     pub fn make_function_variadic(c: i32, ...);
 }
@@ -129,11 +129,11 @@ extern "C" {
 }
 
 #[cfg(not(any(cfail1,cfail4)))]
-#[rustc_clean(cfg = "cfail2", except = "hir_owner,hir_owner_nodes")]
-#[rustc_clean(cfg = "cfail3")]
-#[rustc_clean(cfg = "cfail5", except = "hir_owner,hir_owner_nodes")]
-#[rustc_clean(cfg = "cfail6")]
-extern "rust-call" {
+#[crablangc_clean(cfg = "cfail2", except = "hir_owner,hir_owner_nodes")]
+#[crablangc_clean(cfg = "cfail3")]
+#[crablangc_clean(cfg = "cfail5", except = "hir_owner,hir_owner_nodes")]
+#[crablangc_clean(cfg = "cfail6")]
+extern "crablang-call" {
     pub fn change_calling_convention(c: (i32,));
 }
 
@@ -144,10 +144,10 @@ extern "C" {
 }
 
 #[cfg(not(any(cfail1,cfail4)))]
-#[rustc_clean(cfg = "cfail2")]
-#[rustc_clean(cfg = "cfail3")]
-#[rustc_clean(cfg = "cfail5")]
-#[rustc_clean(cfg = "cfail6")]
+#[crablangc_clean(cfg = "cfail2")]
+#[crablangc_clean(cfg = "cfail3")]
+#[crablangc_clean(cfg = "cfail5")]
+#[crablangc_clean(cfg = "cfail6")]
 extern "C" {
     pub fn make_function_public(c: i32);
 }
@@ -159,10 +159,10 @@ extern "C" {
 }
 
 #[cfg(not(any(cfail1,cfail4)))]
-#[rustc_clean(cfg = "cfail2", except = "hir_owner,hir_owner_nodes")]
-#[rustc_clean(cfg = "cfail3")]
-#[rustc_clean(cfg = "cfail5", except = "hir_owner,hir_owner_nodes")]
-#[rustc_clean(cfg = "cfail6")]
+#[crablangc_clean(cfg = "cfail2", except = "hir_owner,hir_owner_nodes")]
+#[crablangc_clean(cfg = "cfail3")]
+#[crablangc_clean(cfg = "cfail5", except = "hir_owner,hir_owner_nodes")]
+#[crablangc_clean(cfg = "cfail6")]
 extern "C" {
     pub fn add_function1(c: i32);
     pub fn add_function2();
@@ -176,10 +176,10 @@ extern "C" {
 }
 
 #[cfg(not(any(cfail1,cfail4)))]
-#[rustc_clean(cfg = "cfail2")]
-#[rustc_clean(cfg = "cfail3")]
-#[rustc_clean(cfg = "cfail5")]
-#[rustc_clean(cfg = "cfail6")]
+#[crablangc_clean(cfg = "cfail2")]
+#[crablangc_clean(cfg = "cfail3")]
+#[crablangc_clean(cfg = "cfail5")]
+#[crablangc_clean(cfg = "cfail6")]
 #[link(name = "bar")]
 extern "C" {
     pub fn change_link_name(c: i32);
@@ -195,10 +195,10 @@ mod indirectly_change_parameter_type {
     #[cfg(not(any(cfail1,cfail4)))]
     use super::c_i64 as c_int;
 
-    #[rustc_clean(cfg = "cfail2")]
-    #[rustc_clean(cfg = "cfail3")]
-    #[rustc_clean(cfg = "cfail5")]
-    #[rustc_clean(cfg = "cfail6")]
+    #[crablangc_clean(cfg = "cfail2")]
+    #[crablangc_clean(cfg = "cfail3")]
+    #[crablangc_clean(cfg = "cfail5")]
+    #[crablangc_clean(cfg = "cfail6")]
     extern "C" {
         pub fn indirectly_change_parameter_type(c: c_int);
     }
@@ -211,10 +211,10 @@ mod indirectly_change_return_type {
     #[cfg(not(any(cfail1,cfail4)))]
     use super::c_i64 as c_int;
 
-    #[rustc_clean(cfg = "cfail2")]
-    #[rustc_clean(cfg = "cfail3")]
-    #[rustc_clean(cfg = "cfail5")]
-    #[rustc_clean(cfg = "cfail6")]
+    #[crablangc_clean(cfg = "cfail2")]
+    #[crablangc_clean(cfg = "cfail3")]
+    #[crablangc_clean(cfg = "cfail5")]
+    #[crablangc_clean(cfg = "cfail6")]
     extern "C" {
         pub fn indirectly_change_return_type() -> c_int;
     }

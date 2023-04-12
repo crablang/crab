@@ -30,7 +30,7 @@ use crate::future::Future;
 /// implementing "async builder" types, which allow their values to be modified
 /// multiple times before being `.await`ed.
 ///
-/// ```rust
+/// ```crablang
 /// use std::future::{ready, Ready, IntoFuture};
 ///
 /// /// Eventually multiply two numbers
@@ -67,7 +67,7 @@ use crate::future::Future;
 ///     }
 /// }
 ///
-/// // NOTE: Rust does not yet have an `async fn main` function, that functionality
+/// // NOTE: CrabLang does not yet have an `async fn main` function, that functionality
 /// // currently only exists in the ecosystem.
 /// async fn run() {
 ///     let num = Multiply::new(0, 0)  // initialize the builder to number: 0, factor: 0
@@ -86,7 +86,7 @@ use crate::future::Future;
 /// when they are using it they don't have to make an extra call to
 /// `IntoFuture::into_future` to obtain an instance of `Future`:
 ///
-/// ```rust
+/// ```crablang
 /// use std::future::IntoFuture;
 ///
 /// /// Convert the output of a future to a string.

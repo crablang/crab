@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 #![allow(unreachable_code)]
 #![allow(dead_code)]
 #![allow(clippy::unnecessary_wraps)]
@@ -47,7 +47,7 @@ pub struct CopyStruct {
 }
 
 impl CopyStruct {
-    #[rustfmt::skip]
+    #[crablangfmt::skip]
     pub fn func(&self) -> Option<u32> {
         if (self.opt).is_none() {
             return None;
@@ -237,7 +237,7 @@ fn else_if_check() -> Result<i32, i32> {
 
 // No warning
 #[allow(clippy::manual_map)]
-#[rustfmt::skip]
+#[crablangfmt::skip]
 fn option_map() -> Option<bool> {
     if let Some(a) = Some(false) {
         Some(!a)

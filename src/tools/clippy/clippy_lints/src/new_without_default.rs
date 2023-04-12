@@ -3,23 +3,23 @@ use clippy_utils::return_ty;
 use clippy_utils::source::snippet;
 use clippy_utils::sugg::DiagnosticExt;
 use if_chain::if_chain;
-use rustc_errors::Applicability;
-use rustc_hir as hir;
-use rustc_hir::HirIdSet;
-use rustc_lint::{LateContext, LateLintPass, LintContext};
-use rustc_middle::lint::in_external_macro;
-use rustc_session::{declare_tool_lint, impl_lint_pass};
-use rustc_span::sym;
+use crablangc_errors::Applicability;
+use crablangc_hir as hir;
+use crablangc_hir::HirIdSet;
+use crablangc_lint::{LateContext, LateLintPass, LintContext};
+use crablangc_middle::lint::in_external_macro;
+use crablangc_session::{declare_tool_lint, impl_lint_pass};
+use crablangc_span::sym;
 
 declare_clippy_lint! {
     /// ### What it does
     /// Checks for public types with a `pub fn new() -> Self` method and no
     /// implementation of
-    /// [`Default`](https://doc.rust-lang.org/std/default/trait.Default.html).
+    /// [`Default`](https://doc.crablang.org/std/default/trait.Default.html).
     ///
     /// ### Why is this bad?
     /// The user might expect to be able to use
-    /// [`Default`](https://doc.rust-lang.org/std/default/trait.Default.html) as the
+    /// [`Default`](https://doc.crablang.org/std/default/trait.Default.html) as the
     /// type can be constructed without arguments.
     ///
     /// ### Example
@@ -160,7 +160,7 @@ impl<'tcx> LateLintPass<'tcx> for NewWithoutDefault {
 }
 
 fn create_new_without_default_suggest_msg(self_type_snip: &str, generics_sugg: &str) -> String {
-    #[rustfmt::skip]
+    #[crablangfmt::skip]
     format!(
 "impl{generics_sugg} Default for {self_type_snip} {{
     fn default() -> Self {{

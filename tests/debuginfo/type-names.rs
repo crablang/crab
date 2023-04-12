@@ -126,7 +126,7 @@
 // gdb-check:type = &dyn type_names::TraitNoGenericsButWithAssocType<Output=isize>
 
 // BARE FUNCTIONS
-// gdb-command:whatis rust_fn
+// gdb-command:whatis crablang_fn
 // gdb-check:type = (fn(core::option::Option<isize>, core::option::Option<&type_names::mod1::Struct2>), usize)
 
 // gdb-command:whatis extern_c_fn
@@ -135,7 +135,7 @@
 // gdb-command:whatis unsafe_fn
 // gdb-check:type = (unsafe fn(core::result::Result<char, f64>), usize)
 
-// gdb-command:whatis rust_fn_with_return_value
+// gdb-command:whatis crablang_fn_with_return_value
 // gdb-check:type = (fn(f64) -> usize, usize)
 
 // gdb-command:whatis extern_c_fn_with_return_value
@@ -236,18 +236,18 @@
 // cdb-command:dv /t *_fn*
 // cdb-check:struct tuple$<type_names::mod1::Struct2 (*)(type_names::GenericStruct<u16,u8>),usize> unsafe_fn_with_return_value = [...]
 // cdb-check:struct tuple$<type_names::Struct1 (*)(),usize> extern_c_fn_with_return_value = [...]
-// cdb-check:struct tuple$<usize (*)(f64),usize> rust_fn_with_return_value = [...]
+// cdb-check:struct tuple$<usize (*)(f64),usize> crablang_fn_with_return_value = [...]
 // cdb-check:struct tuple$<void (*)(enum2$<core::result::Result<char,f64> >),usize> unsafe_fn = [...]
 // cdb-check:struct tuple$<void (*)(isize),usize> extern_c_fn = [...]
-// cdb-check:struct tuple$<void (*)(enum2$<core::option::Option<isize> >,enum2$<core::option::Option<ref$<type_names::mod1::Struct2> > >),usize> rust_fn = [...]
+// cdb-check:struct tuple$<void (*)(enum2$<core::option::Option<isize> >,enum2$<core::option::Option<ref$<type_names::mod1::Struct2> > >),usize> crablang_fn = [...]
 // cdb-command:dv /t *_function*
 // cdb-check:struct tuple$<isize (*)(ptr_const$<u8>, ...),usize> variadic_function = [...]
 // cdb-check:struct tuple$<type_names::mod1::mod2::Struct3 (*)(type_names::mod1::mod2::Struct3),usize> generic_function_struct3 = [...]
 // cdb-check:struct tuple$<isize (*)(isize),usize> generic_function_int = [...]
-// cdb-command:dx Debugger.State.Scripts.@"type-names.cdb".Contents.getFunctionDetails("rust_fn")
+// cdb-command:dx Debugger.State.Scripts.@"type-names.cdb".Contents.getFunctionDetails("crablang_fn")
 // cdb-check:Return Type: void
 // cdb-check:Parameter Types: enum2$<core::option::Option<isize> >,enum2$<core::option::Option<ref$<type_names::mod1::Struct2> > >
-// cdb-command:dx Debugger.State.Scripts.@"type-names.cdb".Contents.getFunctionDetails("rust_fn_with_return_value")
+// cdb-command:dx Debugger.State.Scripts.@"type-names.cdb".Contents.getFunctionDetails("crablang_fn_with_return_value")
 // cdb-check:Return Type: usize
 // cdb-check:Parameter Types: f64
 // cdb-command:dx Debugger.State.Scripts.@"type-names.cdb".Contents.getFunctionDetails("extern_c_fn_with_return_value")
@@ -337,11 +337,11 @@ impl TraitNoGenericsButWithAssocType for isize {
     }
 }
 
-fn rust_fn(_: Option<isize>, _: Option<&mod1::Struct2>) {}
+fn crablang_fn(_: Option<isize>, _: Option<&mod1::Struct2>) {}
 extern "C" fn extern_c_fn(_: isize) {}
 unsafe fn unsafe_fn(_: Result<char, f64>) {}
 
-fn rust_fn_with_return_value(_: f64) -> usize {
+fn crablang_fn_with_return_value(_: f64) -> usize {
     4
 }
 extern "C" fn extern_c_fn_with_return_value() -> Struct1 {
@@ -437,11 +437,11 @@ fn main() {
         as &mut dyn Trait2<mod1::mod2::Struct3, GenericStruct<usize, isize>>;
 
     // Bare Functions
-    let rust_fn = (rust_fn, 0_usize);
+    let crablang_fn = (crablang_fn, 0_usize);
     let extern_c_fn = (extern_c_fn, 0_usize);
     let unsafe_fn = (unsafe_fn, 0_usize);
 
-    let rust_fn_with_return_value = (rust_fn_with_return_value, 0_usize);
+    let crablang_fn_with_return_value = (crablang_fn_with_return_value, 0_usize);
     let extern_c_fn_with_return_value = (extern_c_fn_with_return_value, 0_usize);
     let unsafe_fn_with_return_value = (unsafe_fn_with_return_value, 0_usize);
 
@@ -453,7 +453,7 @@ fn main() {
     // Closures
     // I (mw) am a bit unclear about the current state of closures, their
     // various forms (boxed, unboxed, proc, capture-by-ref, by-val, once) and
-    // how that maps to rustc's internal representation of these forms.
+    // how that maps to crablangc's internal representation of these forms.
     // Once closures have reached their 1.0 form, the tests below should
     // probably be expanded.
     let closure1 = (|x: isize| {}, 0_usize);

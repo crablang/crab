@@ -2,27 +2,27 @@ use clippy_utils::diagnostics::span_lint_and_sugg;
 use clippy_utils::macros::root_macro_call_first_node;
 use clippy_utils::source::snippet_with_applicability;
 use clippy_utils::{is_in_cfg_test, is_in_test_function};
-use rustc_errors::Applicability;
-use rustc_hir::{Expr, ExprKind};
-use rustc_lint::{LateContext, LateLintPass};
-use rustc_session::{declare_tool_lint, impl_lint_pass};
-use rustc_span::sym;
+use crablangc_errors::Applicability;
+use crablangc_hir::{Expr, ExprKind};
+use crablangc_lint::{LateContext, LateLintPass};
+use crablangc_session::{declare_tool_lint, impl_lint_pass};
+use crablangc_span::sym;
 
 declare_clippy_lint! {
     /// ### What it does
-    /// Checks for usage of the [`dbg!`](https://doc.rust-lang.org/std/macro.dbg.html) macro.
+    /// Checks for usage of the [`dbg!`](https://doc.crablang.org/std/macro.dbg.html) macro.
     ///
     /// ### Why is this bad?
     /// The `dbg!` macro is intended as a debugging tool. It should not be present in released
     /// software or committed to a version control system.
     ///
     /// ### Example
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// dbg!(true)
     /// ```
     ///
     /// Use instead:
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// true
     /// ```
     #[clippy::version = "1.34.0"]

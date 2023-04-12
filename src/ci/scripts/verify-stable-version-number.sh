@@ -16,7 +16,7 @@ if [[ "$(cat src/ci/channel)" != "stable" ]]; then
 fi
 
 version="$(cat src/version)"
-url="https://static.rust-lang.org/dist/channel-rust-${version}.toml"
+url="https://static.crablang.org/dist/channel-crablang-${version}.toml"
 
 if curl --silent --fail "${url}" >/dev/null; then
     echo "The version number ${version} matches an existing release."

@@ -2,26 +2,26 @@
 // pp-exact - Make sure we print all the attributes
 // pretty-expanded FIXME #23616
 
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 
-#[rustc_dummy]
+#[crablangc_dummy]
 trait Frobable {
-    #[rustc_dummy]
+    #[crablangc_dummy]
     fn frob(&self);
-    #[rustc_dummy]
+    #[crablangc_dummy]
     fn defrob(&self);
 }
 
-#[rustc_dummy]
+#[crablangc_dummy]
 impl Frobable for isize {
-    #[rustc_dummy]
+    #[crablangc_dummy]
     fn frob(&self) {
-        #![rustc_dummy]
+        #![crablangc_dummy]
     }
 
-    #[rustc_dummy]
+    #[crablangc_dummy]
     fn defrob(&self) {
-        #![rustc_dummy]
+        #![crablangc_dummy]
     }
 }
 

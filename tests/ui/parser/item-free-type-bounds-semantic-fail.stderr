@@ -64,4 +64,4 @@ LL |     type F<_T>: Ord where 'static: 'static = u8;
 
 error: aborting due to 10 previous errors
 
-For more information about this error, try `rustc --explain E0091`.
+For more information about this error, try `crablangc --explain E0091`.

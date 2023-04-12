@@ -44,4 +44,4 @@ LL |     let y: usize = x.foo().try_into().unwrap();
 error: aborting due to 3 previous errors
 
 Some errors have detailed explanations: E0282, E0283, E0308.
-For more information about an error, try `rustc --explain E0282`.
+For more information about an error, try `crablangc --explain E0282`.

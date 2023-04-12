@@ -63,4 +63,4 @@ LL |     S { x: a, y: b } += s;
 error: aborting due to 7 previous errors
 
 Some errors have detailed explanations: E0067, E0368.
-For more information about an error, try `rustc --explain E0067`.
+For more information about an error, try `crablangc --explain E0067`.

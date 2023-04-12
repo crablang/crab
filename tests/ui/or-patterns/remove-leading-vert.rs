@@ -1,6 +1,6 @@
 // Test the suggestion to remove a leading, or trailing `|`.
 
-// run-rustfix
+// run-crablangfix
 
 #![allow(warnings)]
 
@@ -40,7 +40,7 @@ fn trailing() {
     }
 
     // These test trailing-vert in `let` bindings, but they also test that we don't emit a
-    // duplicate suggestion that would confuse rustfix.
+    // duplicate suggestion that would confuse crablangfix.
 
     let a | : u8 = 0; //~ ERROR a trailing `|` is not allowed in an or-pattern
     let a | = 0; //~ ERROR a trailing `|` is not allowed in an or-pattern

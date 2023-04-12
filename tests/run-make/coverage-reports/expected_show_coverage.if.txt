@@ -2,7 +2,7 @@
     2|       |
     3|      1|fn main() {
     4|      1|    // Initialize test constants in a way that cannot be determined at compile time, to ensure
-    5|      1|    // rustc and LLVM cannot optimize out statements (or coverage counters) downstream from
+    5|      1|    // crablangc and LLVM cannot optimize out statements (or coverage counters) downstream from
     6|      1|    // dependent conditions.
     7|      1|    let
     8|      1|    is_true

@@ -5,11 +5,11 @@
 // revisions:rpass1 rpass2
 // compile-flags: -Z query-dep-graph
 
-#![feature(rustc_attrs)]
+#![feature(crablangc_attrs)]
 
-#![rustc_partition_reused(module="spike", cfg="rpass2")]
-#![rustc_partition_codegened(module="spike-x", cfg="rpass2")]
-#![rustc_partition_reused(module="spike-y", cfg="rpass2")]
+#![crablangc_partition_reused(module="spike", cfg="rpass2")]
+#![crablangc_partition_codegened(module="spike-x", cfg="rpass2")]
+#![crablangc_partition_reused(module="spike-y", cfg="rpass2")]
 
 mod x {
     pub struct X {

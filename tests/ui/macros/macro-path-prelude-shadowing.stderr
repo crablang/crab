@@ -16,4 +16,4 @@ LL |     use m2::*; // glob-import user-defined `std`
 
 error: aborting due to previous error
 
-For more information about this error, try `rustc --explain E0659`.
+For more information about this error, try `crablangc --explain E0659`.

@@ -26,8 +26,8 @@ warning: anonymous parameters are deprecated and will be removed in the next edi
 LL |     fn call(export_name);
    |             ^^^^^^^^^^^ help: try naming the parameter or explicitly ignoring it: `_: export_name`
    |
-   = warning: this is accepted in the current edition (Rust 2015) but is a hard error in Rust 2018!
-   = note: for more information, see issue #41686 <https://github.com/rust-lang/rust/issues/41686>
+   = warning: this is accepted in the current edition (CrabLang 2015) but is a hard error in CrabLang 2018!
+   = note: for more information, see issue #41686 <https://github.com/crablang/crablang/issues/41686>
    = note: `#[warn(anonymous_parameters)]` on by default
 
 error[E0718]: `fn` language item must be applied to a trait with 1 generic argument
@@ -48,4 +48,4 @@ LL |     a()
 error: aborting due to 5 previous errors; 1 warning emitted
 
 Some errors have detailed explanations: E0425, E0573, E0658, E0718.
-For more information about an error, try `rustc --explain E0425`.
+For more information about an error, try `crablangc --explain E0425`.

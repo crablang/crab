@@ -9,7 +9,7 @@ use crate::ops::{NeverShortCircuit, Try};
 #[derive(Debug)]
 pub struct ByRefSized<'a, I>(pub &'a mut I);
 
-// The following implementations use UFCS-style, rather than trusting autoderef,
+// The following implementations use UFCS-style, rather than tcrablanging autoderef,
 // to avoid accidentally calling the `&mut Iterator` implementations.
 
 #[unstable(feature = "std_internals", issue = "none")]

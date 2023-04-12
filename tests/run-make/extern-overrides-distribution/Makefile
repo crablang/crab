@@ -2,5 +2,5 @@
 include ../tools.mk
 
 all:
-	$(RUSTC) libc.rs -Cmetadata=foo
-	$(RUSTC) main.rs --extern libc=$(TMPDIR)/liblibc.rlib
+	$(CRABLANGC) libc.rs -Cmetadata=foo
+	$(CRABLANGC) main.rs --extern libc=$(TMPDIR)/liblibc.rlib

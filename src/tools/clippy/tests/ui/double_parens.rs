@@ -1,7 +1,7 @@
 #![warn(clippy::double_parens)]
 #![allow(dead_code, clippy::eq_op)]
 #![feature(custom_inner_attributes)]
-#![rustfmt::skip]
+#![crablangfmt::skip]
 
 fn dummy_fn<T>(_: T) {}
 

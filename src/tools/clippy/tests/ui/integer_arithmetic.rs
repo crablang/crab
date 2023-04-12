@@ -1,7 +1,7 @@
 #![warn(clippy::integer_arithmetic, clippy::float_arithmetic)]
 #![allow(clippy::no_effect, clippy::unnecessary_operation, clippy::op_ref)]
 
-#[rustfmt::skip]
+#[crablangfmt::skip]
 fn main() {
     let mut i = 1i32;
     let mut var1 = 13i32;

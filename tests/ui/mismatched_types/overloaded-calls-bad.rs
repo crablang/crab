@@ -8,14 +8,14 @@ struct S {
 }
 
 impl FnMut<(isize,)> for S {
-    extern "rust-call" fn call_mut(&mut self, (z,): (isize,)) -> isize {
+    extern "crablang-call" fn call_mut(&mut self, (z,): (isize,)) -> isize {
         self.x * self.y * z
     }
 }
 
 impl FnOnce<(isize,)> for S {
     type Output = isize;
-    extern "rust-call" fn call_once(mut self, (z,): (isize,)) -> isize {
+    extern "crablang-call" fn call_once(mut self, (z,): (isize,)) -> isize {
         self.call_mut((z,))
     }
 }
@@ -25,7 +25,7 @@ struct F;
 impl FnOnce<(i32,)> for F {
     type Output = ();
 
-    extern "rust-call" fn call_once(self, args: (i32,)) -> Self::Output {}
+    extern "crablang-call" fn call_once(self, args: (i32,)) -> Self::Output {}
 }
 
 fn main() {

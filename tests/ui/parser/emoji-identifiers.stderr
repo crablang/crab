@@ -88,4 +88,4 @@ LL |     let _ = i_like_to_😄_a_lot() ➖ 4;
 error: aborting due to 10 previous errors
 
 Some errors have detailed explanations: E0425, E0599.
-For more information about an error, try `rustc --explain E0425`.
+For more information about an error, try `crablangc --explain E0425`.

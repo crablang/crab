@@ -1,5 +1,5 @@
 // aux-build:test-macros.rs
-// run-rustfix
+// run-crablangfix
 
 #[macro_use]
 extern crate test_macros;

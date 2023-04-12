@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 #![warn(clippy::map_collect_result_unit)]
 
 fn main() {

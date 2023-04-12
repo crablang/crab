@@ -1,5 +1,5 @@
 use crate::methods::chars_cmp_with_unwrap;
-use rustc_lint::LateContext;
+use crablangc_lint::LateContext;
 
 use super::CHARS_LAST_CMP;
 

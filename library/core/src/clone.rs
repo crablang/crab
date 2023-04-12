@@ -1,6 +1,6 @@
 //! The `Clone` trait for types that cannot be 'implicitly copied'.
 //!
-//! In Rust, some simple types are "implicitly copyable" and when you
+//! In CrabLang, some simple types are "implicitly copyable" and when you
 //! assign them or pass them as arguments, the receiver will get a copy,
 //! leaving the original value in place. These types do not require
 //! allocation to copy and do not have finalizers (i.e., they do not
@@ -34,7 +34,7 @@
 //! }
 //! ```
 
-#![stable(feature = "rust1", since = "1.0.0")]
+#![stable(feature = "crablang1", since = "1.0.0")]
 
 use crate::marker::Destruct;
 
@@ -42,7 +42,7 @@ use crate::marker::Destruct;
 ///
 /// Differs from [`Copy`] in that [`Copy`] is implicit and an inexpensive bit-wise copy, while
 /// `Clone` is always explicit and may or may not be expensive. In order to enforce
-/// these characteristics, Rust does not allow you to reimplement [`Copy`], but you
+/// these characteristics, CrabLang does not allow you to reimplement [`Copy`], but you
 /// may reimplement `Clone` and run arbitrary code.
 ///
 /// Since `Clone` is more general than [`Copy`], you can automatically make anything
@@ -102,10 +102,10 @@ use crate::marker::Destruct;
 ///   while variables captured by mutable reference never implement `Clone`.
 ///
 /// [impls]: #implementors
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[lang = "clone"]
-#[rustc_diagnostic_item = "Clone"]
-#[rustc_trivial_field_reads]
+#[crablangc_diagnostic_item = "Clone"]
+#[crablangc_trivial_field_reads]
 #[const_trait]
 pub trait Clone: Sized {
     /// Returns a copy of the value.
@@ -118,7 +118,7 @@ pub trait Clone: Sized {
     ///
     /// assert_eq!("Hello", hello.clone());
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[must_use = "cloning is often expensive and is not expected to have side effects"]
     fn clone(&self) -> Self;
 
@@ -128,7 +128,7 @@ pub trait Clone: Sized {
     /// but can be overridden to reuse the resources of `a` to avoid unnecessary
     /// allocations.
     #[inline]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     fn clone_from(&mut self, source: &Self)
     where
         Self: ~const Destruct,
@@ -138,7 +138,7 @@ pub trait Clone: Sized {
 }
 
 /// Derive macro generating an impl of the trait `Clone`.
-#[rustc_builtin_macro]
+#[crablangc_builtin_macro]
 #[stable(feature = "builtin_macro_prelude", since = "1.38.0")]
 #[allow_internal_unstable(core_intrinsics, derive_clone_copy)]
 pub macro Clone($item:item) {
@@ -172,17 +172,17 @@ pub struct AssertParamIsCopy<T: Copy + ?Sized> {
 
 /// Implementations of `Clone` for primitive types.
 ///
-/// Implementations that cannot be described in Rust
+/// Implementations that cannot be described in CrabLang
 /// are implemented in `traits::SelectionContext::copy_clone_conditions()`
-/// in `rustc_trait_selection`.
+/// in `crablangc_trait_selection`.
 mod impls {
     use super::Clone;
 
     macro_rules! impl_clone {
         ($($t:ty)*) => {
             $(
-                #[stable(feature = "rust1", since = "1.0.0")]
-                #[rustc_const_unstable(feature = "const_clone", issue = "91805")]
+                #[stable(feature = "crablang1", since = "1.0.0")]
+                #[crablangc_const_unstable(feature = "const_clone", issue = "91805")]
                 impl const Clone for $t {
                     #[inline(always)]
                     fn clone(&self) -> Self {
@@ -201,7 +201,7 @@ mod impls {
     }
 
     #[unstable(feature = "never_type", issue = "35121")]
-    #[rustc_const_unstable(feature = "const_clone", issue = "91805")]
+    #[crablangc_const_unstable(feature = "const_clone", issue = "91805")]
     impl const Clone for ! {
         #[inline]
         fn clone(&self) -> Self {
@@ -209,8 +209,8 @@ mod impls {
         }
     }
 
-    #[stable(feature = "rust1", since = "1.0.0")]
-    #[rustc_const_unstable(feature = "const_clone", issue = "91805")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    #[crablangc_const_unstable(feature = "const_clone", issue = "91805")]
     impl<T: ?Sized> const Clone for *const T {
         #[inline(always)]
         fn clone(&self) -> Self {
@@ -218,8 +218,8 @@ mod impls {
         }
     }
 
-    #[stable(feature = "rust1", since = "1.0.0")]
-    #[rustc_const_unstable(feature = "const_clone", issue = "91805")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    #[crablangc_const_unstable(feature = "const_clone", issue = "91805")]
     impl<T: ?Sized> const Clone for *mut T {
         #[inline(always)]
         fn clone(&self) -> Self {
@@ -228,17 +228,17 @@ mod impls {
     }
 
     /// Shared references can be cloned, but mutable references *cannot*!
-    #[stable(feature = "rust1", since = "1.0.0")]
-    #[rustc_const_unstable(feature = "const_clone", issue = "91805")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
+    #[crablangc_const_unstable(feature = "const_clone", issue = "91805")]
     impl<T: ?Sized> const Clone for &T {
         #[inline(always)]
-        #[rustc_diagnostic_item = "noop_method_clone"]
+        #[crablangc_diagnostic_item = "noop_method_clone"]
         fn clone(&self) -> Self {
             *self
         }
     }
 
     /// Shared references can be cloned, but mutable references *cannot*!
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     impl<T: ?Sized> !Clone for &mut T {}
 }

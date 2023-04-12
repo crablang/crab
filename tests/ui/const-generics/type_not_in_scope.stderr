@@ -13,4 +13,4 @@ LL | fn getn<const N: cfg_attr>() -> [u8; N] {}
 error: aborting due to 2 previous errors
 
 Some errors have detailed explanations: E0412, E0573.
-For more information about an error, try `rustc --explain E0412`.
+For more information about an error, try `crablangc --explain E0412`.

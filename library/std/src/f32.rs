@@ -9,7 +9,7 @@
 //! new code should instead use the associated constants
 //! defined directly on the `f32` type.
 
-#![stable(feature = "rust1", since = "1.0.0")]
+#![stable(feature = "crablang1", since = "1.0.0")]
 #![allow(missing_docs)]
 
 #[cfg(test)]
@@ -20,7 +20,7 @@ use crate::intrinsics;
 #[cfg(not(test))]
 use crate::sys::cmath;
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 #[allow(deprecated, deprecated_in_future)]
 pub use core::f32::{
     consts, DIGITS, EPSILON, INFINITY, MANTISSA_DIGITS, MAX, MAX_10_EXP, MAX_EXP, MIN, MIN_10_EXP,
@@ -42,9 +42,9 @@ impl f32 {
     /// assert_eq!(g.floor(), 3.0);
     /// assert_eq!(h.floor(), -4.0);
     /// ```
-    #[rustc_allow_incoherent_impl]
+    #[crablangc_allow_incoherent_impl]
     #[must_use = "method returns a new number and does not mutate the original value"]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     pub fn floor(self) -> f32 {
         unsafe { intrinsics::floorf32(self) }
@@ -61,9 +61,9 @@ impl f32 {
     /// assert_eq!(f.ceil(), 4.0);
     /// assert_eq!(g.ceil(), 4.0);
     /// ```
-    #[rustc_allow_incoherent_impl]
+    #[crablangc_allow_incoherent_impl]
     #[must_use = "method returns a new number and does not mutate the original value"]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     pub fn ceil(self) -> f32 {
         unsafe { intrinsics::ceilf32(self) }
@@ -87,9 +87,9 @@ impl f32 {
     /// assert_eq!(i.round(), 4.0);
     /// assert_eq!(j.round(), 5.0);
     /// ```
-    #[rustc_allow_incoherent_impl]
+    #[crablangc_allow_incoherent_impl]
     #[must_use = "method returns a new number and does not mutate the original value"]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     pub fn round(self) -> f32 {
         unsafe { intrinsics::roundf32(self) }
@@ -113,7 +113,7 @@ impl f32 {
     /// assert_eq!(h.round_ties_even(), 4.0);
     /// assert_eq!(i.round_ties_even(), 4.0);
     /// ```
-    #[rustc_allow_incoherent_impl]
+    #[crablangc_allow_incoherent_impl]
     #[must_use = "method returns a new number and does not mutate the original value"]
     #[unstable(feature = "round_ties_even", issue = "96710")]
     #[inline]
@@ -135,9 +135,9 @@ impl f32 {
     /// assert_eq!(g.trunc(), 3.0);
     /// assert_eq!(h.trunc(), -3.0);
     /// ```
-    #[rustc_allow_incoherent_impl]
+    #[crablangc_allow_incoherent_impl]
     #[must_use = "method returns a new number and does not mutate the original value"]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     pub fn trunc(self) -> f32 {
         unsafe { intrinsics::truncf32(self) }
@@ -156,9 +156,9 @@ impl f32 {
     /// assert!(abs_difference_x <= f32::EPSILON);
     /// assert!(abs_difference_y <= f32::EPSILON);
     /// ```
-    #[rustc_allow_incoherent_impl]
+    #[crablangc_allow_incoherent_impl]
     #[must_use = "method returns a new number and does not mutate the original value"]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     pub fn fract(self) -> f32 {
         self - self.trunc()
@@ -180,9 +180,9 @@ impl f32 {
     ///
     /// assert!(f32::NAN.abs().is_nan());
     /// ```
-    #[rustc_allow_incoherent_impl]
+    #[crablangc_allow_incoherent_impl]
     #[must_use = "method returns a new number and does not mutate the original value"]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     pub fn abs(self) -> f32 {
         unsafe { intrinsics::fabsf32(self) }
@@ -204,9 +204,9 @@ impl f32 {
     ///
     /// assert!(f32::NAN.signum().is_nan());
     /// ```
-    #[rustc_allow_incoherent_impl]
+    #[crablangc_allow_incoherent_impl]
     #[must_use = "method returns a new number and does not mutate the original value"]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     pub fn signum(self) -> f32 {
         if self.is_nan() { Self::NAN } else { 1.0_f32.copysign(self) }
@@ -233,7 +233,7 @@ impl f32 {
     ///
     /// assert!(f32::NAN.copysign(1.0).is_nan());
     /// ```
-    #[rustc_allow_incoherent_impl]
+    #[crablangc_allow_incoherent_impl]
     #[must_use = "method returns a new number and does not mutate the original value"]
     #[inline]
     #[stable(feature = "copysign", since = "1.35.0")]
@@ -261,9 +261,9 @@ impl f32 {
     ///
     /// assert!(abs_difference <= f32::EPSILON);
     /// ```
-    #[rustc_allow_incoherent_impl]
+    #[crablangc_allow_incoherent_impl]
     #[must_use = "method returns a new number and does not mutate the original value"]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     pub fn mul_add(self, a: f32, b: f32) -> f32 {
         unsafe { intrinsics::fmaf32(self, a, b) }
@@ -286,7 +286,7 @@ impl f32 {
     /// assert_eq!(a.div_euclid(-b), -1.0); // 7.0 >= -4.0 * -1.0
     /// assert_eq!((-a).div_euclid(-b), 2.0); // -7.0 >= -4.0 * 2.0
     /// ```
-    #[rustc_allow_incoherent_impl]
+    #[crablangc_allow_incoherent_impl]
     #[must_use = "method returns a new number and does not mutate the original value"]
     #[inline]
     #[stable(feature = "euclidean_division", since = "1.38.0")]
@@ -321,7 +321,7 @@ impl f32 {
     /// // limitation due to round-off error
     /// assert!((-f32::EPSILON).rem_euclid(3.0) != 0.0);
     /// ```
-    #[rustc_allow_incoherent_impl]
+    #[crablangc_allow_incoherent_impl]
     #[must_use = "method returns a new number and does not mutate the original value"]
     #[inline]
     #[stable(feature = "euclidean_division", since = "1.38.0")]
@@ -344,9 +344,9 @@ impl f32 {
     ///
     /// assert!(abs_difference <= f32::EPSILON);
     /// ```
-    #[rustc_allow_incoherent_impl]
+    #[crablangc_allow_incoherent_impl]
     #[must_use = "method returns a new number and does not mutate the original value"]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     pub fn powi(self, n: i32) -> f32 {
         unsafe { intrinsics::powif32(self, n) }
@@ -362,9 +362,9 @@ impl f32 {
     ///
     /// assert!(abs_difference <= f32::EPSILON);
     /// ```
-    #[rustc_allow_incoherent_impl]
+    #[crablangc_allow_incoherent_impl]
     #[must_use = "method returns a new number and does not mutate the original value"]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     pub fn powf(self, n: f32) -> f32 {
         unsafe { intrinsics::powf32(self, n) }
@@ -387,9 +387,9 @@ impl f32 {
     /// assert!(negative.sqrt().is_nan());
     /// assert!(negative_zero.sqrt() == negative_zero);
     /// ```
-    #[rustc_allow_incoherent_impl]
+    #[crablangc_allow_incoherent_impl]
     #[must_use = "method returns a new number and does not mutate the original value"]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     pub fn sqrt(self) -> f32 {
         unsafe { intrinsics::sqrtf32(self) }
@@ -409,9 +409,9 @@ impl f32 {
     ///
     /// assert!(abs_difference <= f32::EPSILON);
     /// ```
-    #[rustc_allow_incoherent_impl]
+    #[crablangc_allow_incoherent_impl]
     #[must_use = "method returns a new number and does not mutate the original value"]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     pub fn exp(self) -> f32 {
         unsafe { intrinsics::expf32(self) }
@@ -429,9 +429,9 @@ impl f32 {
     ///
     /// assert!(abs_difference <= f32::EPSILON);
     /// ```
-    #[rustc_allow_incoherent_impl]
+    #[crablangc_allow_incoherent_impl]
     #[must_use = "method returns a new number and does not mutate the original value"]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     pub fn exp2(self) -> f32 {
         unsafe { intrinsics::exp2f32(self) }
@@ -451,9 +451,9 @@ impl f32 {
     ///
     /// assert!(abs_difference <= f32::EPSILON);
     /// ```
-    #[rustc_allow_incoherent_impl]
+    #[crablangc_allow_incoherent_impl]
     #[must_use = "method returns a new number and does not mutate the original value"]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     pub fn ln(self) -> f32 {
         unsafe { intrinsics::logf32(self) }
@@ -475,9 +475,9 @@ impl f32 {
     ///
     /// assert!(abs_difference <= f32::EPSILON);
     /// ```
-    #[rustc_allow_incoherent_impl]
+    #[crablangc_allow_incoherent_impl]
     #[must_use = "method returns a new number and does not mutate the original value"]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     pub fn log(self, base: f32) -> f32 {
         self.ln() / base.ln()
@@ -495,9 +495,9 @@ impl f32 {
     ///
     /// assert!(abs_difference <= f32::EPSILON);
     /// ```
-    #[rustc_allow_incoherent_impl]
+    #[crablangc_allow_incoherent_impl]
     #[must_use = "method returns a new number and does not mutate the original value"]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     pub fn log2(self) -> f32 {
         #[cfg(target_os = "android")]
@@ -518,9 +518,9 @@ impl f32 {
     ///
     /// assert!(abs_difference <= f32::EPSILON);
     /// ```
-    #[rustc_allow_incoherent_impl]
+    #[crablangc_allow_incoherent_impl]
     #[must_use = "method returns a new number and does not mutate the original value"]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     pub fn log10(self) -> f32 {
         unsafe { intrinsics::log10f32(self) }
@@ -543,9 +543,9 @@ impl f32 {
     /// assert!(abs_difference_x <= f32::EPSILON);
     /// assert!(abs_difference_y <= f32::EPSILON);
     /// ```
-    #[rustc_allow_incoherent_impl]
+    #[crablangc_allow_incoherent_impl]
     #[must_use = "method returns a new number and does not mutate the original value"]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     #[deprecated(
         since = "1.10.0",
@@ -573,9 +573,9 @@ impl f32 {
     ///
     /// assert!(abs_difference <= f32::EPSILON);
     /// ```
-    #[rustc_allow_incoherent_impl]
+    #[crablangc_allow_incoherent_impl]
     #[must_use = "method returns a new number and does not mutate the original value"]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     pub fn cbrt(self) -> f32 {
         unsafe { cmath::cbrtf(self) }
@@ -595,9 +595,9 @@ impl f32 {
     ///
     /// assert!(abs_difference <= f32::EPSILON);
     /// ```
-    #[rustc_allow_incoherent_impl]
+    #[crablangc_allow_incoherent_impl]
     #[must_use = "method returns a new number and does not mutate the original value"]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     pub fn hypot(self, other: f32) -> f32 {
         unsafe { cmath::hypotf(self, other) }
@@ -614,9 +614,9 @@ impl f32 {
     ///
     /// assert!(abs_difference <= f32::EPSILON);
     /// ```
-    #[rustc_allow_incoherent_impl]
+    #[crablangc_allow_incoherent_impl]
     #[must_use = "method returns a new number and does not mutate the original value"]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     pub fn sin(self) -> f32 {
         unsafe { intrinsics::sinf32(self) }
@@ -633,9 +633,9 @@ impl f32 {
     ///
     /// assert!(abs_difference <= f32::EPSILON);
     /// ```
-    #[rustc_allow_incoherent_impl]
+    #[crablangc_allow_incoherent_impl]
     #[must_use = "method returns a new number and does not mutate the original value"]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     pub fn cos(self) -> f32 {
         unsafe { intrinsics::cosf32(self) }
@@ -651,9 +651,9 @@ impl f32 {
     ///
     /// assert!(abs_difference <= f32::EPSILON);
     /// ```
-    #[rustc_allow_incoherent_impl]
+    #[crablangc_allow_incoherent_impl]
     #[must_use = "method returns a new number and does not mutate the original value"]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     pub fn tan(self) -> f32 {
         unsafe { cmath::tanf(self) }
@@ -673,9 +673,9 @@ impl f32 {
     ///
     /// assert!(abs_difference <= f32::EPSILON);
     /// ```
-    #[rustc_allow_incoherent_impl]
+    #[crablangc_allow_incoherent_impl]
     #[must_use = "method returns a new number and does not mutate the original value"]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     pub fn asin(self) -> f32 {
         unsafe { cmath::asinf(self) }
@@ -695,9 +695,9 @@ impl f32 {
     ///
     /// assert!(abs_difference <= f32::EPSILON);
     /// ```
-    #[rustc_allow_incoherent_impl]
+    #[crablangc_allow_incoherent_impl]
     #[must_use = "method returns a new number and does not mutate the original value"]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     pub fn acos(self) -> f32 {
         unsafe { cmath::acosf(self) }
@@ -716,9 +716,9 @@ impl f32 {
     ///
     /// assert!(abs_difference <= f32::EPSILON);
     /// ```
-    #[rustc_allow_incoherent_impl]
+    #[crablangc_allow_incoherent_impl]
     #[must_use = "method returns a new number and does not mutate the original value"]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     pub fn atan(self) -> f32 {
         unsafe { cmath::atanf(self) }
@@ -750,9 +750,9 @@ impl f32 {
     /// assert!(abs_difference_1 <= f32::EPSILON);
     /// assert!(abs_difference_2 <= f32::EPSILON);
     /// ```
-    #[rustc_allow_incoherent_impl]
+    #[crablangc_allow_incoherent_impl]
     #[must_use = "method returns a new number and does not mutate the original value"]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     pub fn atan2(self, other: f32) -> f32 {
         unsafe { cmath::atan2f(self, other) }
@@ -773,8 +773,8 @@ impl f32 {
     /// assert!(abs_difference_0 <= f32::EPSILON);
     /// assert!(abs_difference_1 <= f32::EPSILON);
     /// ```
-    #[rustc_allow_incoherent_impl]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[crablangc_allow_incoherent_impl]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     pub fn sin_cos(self) -> (f32, f32) {
         (self.sin(), self.cos())
@@ -794,9 +794,9 @@ impl f32 {
     ///
     /// assert!(abs_difference < 1e-10);
     /// ```
-    #[rustc_allow_incoherent_impl]
+    #[crablangc_allow_incoherent_impl]
     #[must_use = "method returns a new number and does not mutate the original value"]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     pub fn exp_m1(self) -> f32 {
         unsafe { cmath::expm1f(self) }
@@ -816,9 +816,9 @@ impl f32 {
     ///
     /// assert!(abs_difference < 1e-10);
     /// ```
-    #[rustc_allow_incoherent_impl]
+    #[crablangc_allow_incoherent_impl]
     #[must_use = "method returns a new number and does not mutate the original value"]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     pub fn ln_1p(self) -> f32 {
         unsafe { cmath::log1pf(self) }
@@ -839,9 +839,9 @@ impl f32 {
     ///
     /// assert!(abs_difference <= f32::EPSILON);
     /// ```
-    #[rustc_allow_incoherent_impl]
+    #[crablangc_allow_incoherent_impl]
     #[must_use = "method returns a new number and does not mutate the original value"]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     pub fn sinh(self) -> f32 {
         unsafe { cmath::sinhf(self) }
@@ -862,9 +862,9 @@ impl f32 {
     /// // Same result
     /// assert!(abs_difference <= f32::EPSILON);
     /// ```
-    #[rustc_allow_incoherent_impl]
+    #[crablangc_allow_incoherent_impl]
     #[must_use = "method returns a new number and does not mutate the original value"]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     pub fn cosh(self) -> f32 {
         unsafe { cmath::coshf(self) }
@@ -885,9 +885,9 @@ impl f32 {
     ///
     /// assert!(abs_difference <= f32::EPSILON);
     /// ```
-    #[rustc_allow_incoherent_impl]
+    #[crablangc_allow_incoherent_impl]
     #[must_use = "method returns a new number and does not mutate the original value"]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     pub fn tanh(self) -> f32 {
         unsafe { cmath::tanhf(self) }
@@ -905,9 +905,9 @@ impl f32 {
     ///
     /// assert!(abs_difference <= f32::EPSILON);
     /// ```
-    #[rustc_allow_incoherent_impl]
+    #[crablangc_allow_incoherent_impl]
     #[must_use = "method returns a new number and does not mutate the original value"]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     pub fn asinh(self) -> f32 {
         let ax = self.abs();
@@ -927,9 +927,9 @@ impl f32 {
     ///
     /// assert!(abs_difference <= f32::EPSILON);
     /// ```
-    #[rustc_allow_incoherent_impl]
+    #[crablangc_allow_incoherent_impl]
     #[must_use = "method returns a new number and does not mutate the original value"]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     pub fn acosh(self) -> f32 {
         if self < 1.0 {
@@ -951,9 +951,9 @@ impl f32 {
     ///
     /// assert!(abs_difference <= 1e-5);
     /// ```
-    #[rustc_allow_incoherent_impl]
+    #[crablangc_allow_incoherent_impl]
     #[must_use = "method returns a new number and does not mutate the original value"]
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     #[inline]
     pub fn atanh(self) -> f32 {
         0.5 * ((2.0 * self) / (1.0 - self)).ln_1p()

@@ -1,5 +1,5 @@
 name: Diagnostic issue
-description: Create a bug report or feature request for a change to `rustc`'s error output
+description: Create a bug report or feature request for a change to `crablangc`'s error output
 labels: ["A-diagnostics", "T-compiler"]
 body:
   - type: markdown
@@ -16,15 +16,15 @@ body:
       label: Code
       description: Please provide code that can reproduce the problem
       placeholder: code
-      render: Rust
+      render: CrabLang
     validations:
       required: true
   - type: textarea
     id: output
     attributes:
       label: Current output
-      description: Please provide the `rustc` output you see
-      placeholder: rustc output
+      description: Please provide the `crablangc` output you see
+      placeholder: crablangc output
       render: Shell
     validations:
       required: true
@@ -49,7 +49,7 @@ body:
     attributes:
       label: Other cases
       description: If dramatically different output is caused by small changes, consider also adding them here.
-      render: Rust
+      render: CrabLang
     validations:
       required: false
   - type: markdown

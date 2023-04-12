@@ -19,4 +19,4 @@ LL |         0xFFFF_FFFF_FFFF_FFFF ..= 1 => { }
 error: aborting due to 3 previous errors
 
 Some errors have detailed explanations: E0030, E0579.
-For more information about an error, try `rustc --explain E0030`.
+For more information about an error, try `crablangc --explain E0030`.

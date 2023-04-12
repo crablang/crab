@@ -85,4 +85,4 @@ LL |     let s = 0 as *const T;
 error: aborting due to 11 previous errors
 
 Some errors have detailed explanations: E0605, E0606, E0607.
-For more information about an error, try `rustc --explain E0605`.
+For more information about an error, try `crablangc --explain E0605`.

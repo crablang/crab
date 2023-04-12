@@ -13,7 +13,7 @@ impl UserDefined for i32 { }
 impl<'a, T> UserDefined for &'a T { }
 
 // e.g., `impl_drop!(Send, D_Send)` expands to:
-//   ```rust
+//   ```crablang
 //   struct D_Send<T:Send>(T);
 //   impl<T:Send> Drop for D_Send<T> { fn drop(&mut self) { } }
 //   ```

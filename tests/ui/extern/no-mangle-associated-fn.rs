@@ -24,7 +24,7 @@ impl Bar for Foo {
 }
 
 fn main() {
-    extern "Rust" {
+    extern "CrabLang" {
         fn foo() -> u8;
         fn bar() -> u8;
         fn baz() -> u8;

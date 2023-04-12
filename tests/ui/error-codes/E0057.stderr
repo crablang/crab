@@ -31,4 +31,4 @@ LL |     let f = |x| x * 3;
 
 error: aborting due to 2 previous errors
 
-For more information about this error, try `rustc --explain E0057`.
+For more information about this error, try `crablangc --explain E0057`.

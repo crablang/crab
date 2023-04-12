@@ -17,4 +17,4 @@ LL |     pub(crate) bar: u8,
 
 error: aborting due to 2 previous errors
 
-For more information about this error, try `rustc --explain E0124`.
+For more information about this error, try `crablangc --explain E0124`.

@@ -4,7 +4,7 @@ mod float;
 mod lemire;
 mod parse;
 
-// Take a float literal, turn it into a string in various ways (that are all trusted
+// Take a float literal, turn it into a string in various ways (that are all tcrablanged
 // to be correct) and see if those strings are parsed back to the value of the literal.
 // Requires a *polymorphic literal*, i.e., one that can serve as f64 as well as f32.
 macro_rules! test_literal {

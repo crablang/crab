@@ -2,7 +2,7 @@
 //!
 //! For example, the lint would catch:
 //!
-//! ```rust,ignore
+//! ```crablang,ignore
 //! if x {
 //!     if y {
 //!         println!("Hello world");
@@ -16,11 +16,11 @@ use clippy_utils::diagnostics::{span_lint_and_sugg, span_lint_and_then};
 use clippy_utils::source::{snippet, snippet_block, snippet_block_with_applicability};
 use clippy_utils::sugg::Sugg;
 use if_chain::if_chain;
-use rustc_ast::ast;
-use rustc_errors::Applicability;
-use rustc_lint::{EarlyContext, EarlyLintPass};
-use rustc_session::{declare_lint_pass, declare_tool_lint};
-use rustc_span::Span;
+use crablangc_ast::ast;
+use crablangc_errors::Applicability;
+use crablangc_lint::{EarlyContext, EarlyLintPass};
+use crablangc_session::{declare_lint_pass, declare_tool_lint};
+use crablangc_span::Span;
 
 declare_clippy_lint! {
     /// ### What it does
@@ -32,7 +32,7 @@ declare_clippy_lint! {
     /// makes code look more complex than it really is.
     ///
     /// ### Example
-    /// ```rust
+    /// ```crablang
     /// # let (x, y) = (true, true);
     /// if x {
     ///     if y {
@@ -42,7 +42,7 @@ declare_clippy_lint! {
     /// ```
     ///
     /// Use instead:
-    /// ```rust
+    /// ```crablang
     /// # let (x, y) = (true, true);
     /// if x && y {
     ///     // …
@@ -64,7 +64,7 @@ declare_clippy_lint! {
     /// makes code look more complex than it really is.
     ///
     /// ### Example
-    /// ```rust,ignore
+    /// ```crablang,ignore
     ///
     /// if x {
     ///     …
@@ -77,7 +77,7 @@ declare_clippy_lint! {
     ///
     /// Should be written:
     ///
-    /// ```rust,ignore
+    /// ```crablang,ignore
     /// if x {
     ///     …
     /// } else if y {

@@ -1,7 +1,7 @@
 error[E0277]: `[String; 0]` cannot be safely transmuted into `()` in the defining scope of `assert::Context`.
   --> $DIR/should_require_well_defined_layout.rs:26:52
    |
-LL |         assert::is_maybe_transmutable::<repr_rust, ()>();
+LL |         assert::is_maybe_transmutable::<repr_crablang, ()>();
    |                                                    ^^ `[String; 0]` cannot be safely transmuted into `()` in the defining scope of `assert::Context`.
    |
    = help: the trait `BikeshedIntrinsicFrom<[String; 0], assert::Context, Assume { alignment: true, lifetimes: true, safety: true, validity: true }>` is not implemented for `()`
@@ -23,7 +23,7 @@ LL | |         }>
 error[E0277]: `u128` cannot be safely transmuted into `[String; 0]` in the defining scope of `assert::Context`.
   --> $DIR/should_require_well_defined_layout.rs:27:47
    |
-LL |         assert::is_maybe_transmutable::<u128, repr_rust>();
+LL |         assert::is_maybe_transmutable::<u128, repr_crablang>();
    |                                               ^^^^^^^^^ `u128` cannot be safely transmuted into `[String; 0]` in the defining scope of `assert::Context`.
    |
    = help: the trait `BikeshedIntrinsicFrom<u128, assert::Context, Assume { alignment: true, lifetimes: true, safety: true, validity: true }>` is not implemented for `[String; 0]`
@@ -45,7 +45,7 @@ LL | |         }>
 error[E0277]: `[String; 1]` cannot be safely transmuted into `()` in the defining scope of `assert::Context`.
   --> $DIR/should_require_well_defined_layout.rs:32:52
    |
-LL |         assert::is_maybe_transmutable::<repr_rust, ()>();
+LL |         assert::is_maybe_transmutable::<repr_crablang, ()>();
    |                                                    ^^ `[String; 1]` cannot be safely transmuted into `()` in the defining scope of `assert::Context`.
    |
    = help: the trait `BikeshedIntrinsicFrom<[String; 1], assert::Context, Assume { alignment: true, lifetimes: true, safety: true, validity: true }>` is not implemented for `()`
@@ -67,7 +67,7 @@ LL | |         }>
 error[E0277]: `u128` cannot be safely transmuted into `[String; 1]` in the defining scope of `assert::Context`.
   --> $DIR/should_require_well_defined_layout.rs:33:47
    |
-LL |         assert::is_maybe_transmutable::<u128, repr_rust>();
+LL |         assert::is_maybe_transmutable::<u128, repr_crablang>();
    |                                               ^^^^^^^^^ `u128` cannot be safely transmuted into `[String; 1]` in the defining scope of `assert::Context`.
    |
    = help: the trait `BikeshedIntrinsicFrom<u128, assert::Context, Assume { alignment: true, lifetimes: true, safety: true, validity: true }>` is not implemented for `[String; 1]`
@@ -89,7 +89,7 @@ LL | |         }>
 error[E0277]: `[String; 2]` cannot be safely transmuted into `()` in the defining scope of `assert::Context`.
   --> $DIR/should_require_well_defined_layout.rs:38:52
    |
-LL |         assert::is_maybe_transmutable::<repr_rust, ()>();
+LL |         assert::is_maybe_transmutable::<repr_crablang, ()>();
    |                                                    ^^ `[String; 2]` cannot be safely transmuted into `()` in the defining scope of `assert::Context`.
    |
    = help: the trait `BikeshedIntrinsicFrom<[String; 2], assert::Context, Assume { alignment: true, lifetimes: true, safety: true, validity: true }>` is not implemented for `()`
@@ -111,7 +111,7 @@ LL | |         }>
 error[E0277]: `u128` cannot be safely transmuted into `[String; 2]` in the defining scope of `assert::Context`.
   --> $DIR/should_require_well_defined_layout.rs:39:47
    |
-LL |         assert::is_maybe_transmutable::<u128, repr_rust>();
+LL |         assert::is_maybe_transmutable::<u128, repr_crablang>();
    |                                               ^^^^^^^^^ `u128` cannot be safely transmuted into `[String; 2]` in the defining scope of `assert::Context`.
    |
    = help: the trait `BikeshedIntrinsicFrom<u128, assert::Context, Assume { alignment: true, lifetimes: true, safety: true, validity: true }>` is not implemented for `[String; 2]`
@@ -132,4 +132,4 @@ LL | |         }>
 
 error: aborting due to 6 previous errors
 
-For more information about this error, try `rustc --explain E0277`.
+For more information about this error, try `crablangc --explain E0277`.

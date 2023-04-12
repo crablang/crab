@@ -1,9 +1,9 @@
 use libffi::{high::call as ffi, low::CodePtr};
 use std::ops::Deref;
 
-use rustc_middle::ty::{self as ty, IntTy, Ty, UintTy};
-use rustc_span::Symbol;
-use rustc_target::abi::HasDataLayout;
+use crablangc_middle::ty::{self as ty, IntTy, Ty, UintTy};
+use crablangc_span::Symbol;
+use crablangc_target::abi::HasDataLayout;
 
 use crate::*;
 

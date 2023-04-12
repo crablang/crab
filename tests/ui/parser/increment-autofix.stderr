@@ -1,4 +1,4 @@
-error: Rust has no prefix increment operator
+error: CrabLang has no prefix increment operator
   --> $DIR/increment-autofix.rs:5:5
    |
 LL |     ++i;
@@ -10,7 +10,7 @@ LL -     ++i;
 LL +     i += 1;
    |
 
-error: Rust has no prefix increment operator
+error: CrabLang has no prefix increment operator
   --> $DIR/increment-autofix.rs:11:11
    |
 LL |     while ++i < 5 {
@@ -23,7 +23,7 @@ help: use `+= 1` instead
 LL |     while { i += 1; i } < 5 {
    |           ~   +++++++++
 
-error: Rust has no prefix increment operator
+error: CrabLang has no prefix increment operator
   --> $DIR/increment-autofix.rs:19:5
    |
 LL |     ++tmp;
@@ -35,7 +35,7 @@ LL -     ++tmp;
 LL +     tmp += 1;
    |
 
-error: Rust has no prefix increment operator
+error: CrabLang has no prefix increment operator
   --> $DIR/increment-autofix.rs:25:11
    |
 LL |     while ++tmp < 5 {

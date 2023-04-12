@@ -46,7 +46,7 @@ use buffer::Buffer;
 ///     Ok(())
 /// }
 /// ```
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 pub struct BufReader<R> {
     inner: R,
     buf: Buffer,
@@ -68,7 +68,7 @@ impl<R: Read> BufReader<R> {
     ///     Ok(())
     /// }
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn new(inner: R) -> BufReader<R> {
         BufReader::with_capacity(DEFAULT_BUF_SIZE, inner)
     }
@@ -89,7 +89,7 @@ impl<R: Read> BufReader<R> {
     ///     Ok(())
     /// }
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn with_capacity(capacity: usize, inner: R) -> BufReader<R> {
         BufReader { inner, buf: Buffer::with_capacity(capacity) }
     }
@@ -114,7 +114,7 @@ impl<R> BufReader<R> {
     ///     Ok(())
     /// }
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn get_ref(&self) -> &R {
         &self.inner
     }
@@ -137,7 +137,7 @@ impl<R> BufReader<R> {
     ///     Ok(())
     /// }
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn get_mut(&mut self) -> &mut R {
         &mut self.inner
     }
@@ -212,7 +212,7 @@ impl<R> BufReader<R> {
     ///     Ok(())
     /// }
     /// ```
-    #[stable(feature = "rust1", since = "1.0.0")]
+    #[stable(feature = "crablang1", since = "1.0.0")]
     pub fn into_inner(self) -> R {
         self.inner
     }
@@ -256,7 +256,7 @@ impl<R: Seek> BufReader<R> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<R: Read> Read for BufReader<R> {
     fn read(&mut self, buf: &mut [u8]) -> io::Result<usize> {
         // If we don't have any buffered data and we're doing a massive read
@@ -346,7 +346,7 @@ impl<R: Read> Read for BufReader<R> {
         if buf.is_empty() {
             // `append_to_string`'s safety relies on the buffer only being appended to since
             // it only checks the UTF-8 validity of new data. If there were existing content in
-            // `buf` then an untrustworthy reader (i.e. `self.inner`) could not only append
+            // `buf` then an untcrablangworthy reader (i.e. `self.inner`) could not only append
             // bytes but also modify existing bytes and render them invalid. On the other hand,
             // if `buf` is empty then by definition any writes must be appends and
             // `append_to_string` will validate all of the new bytes.
@@ -370,7 +370,7 @@ impl<R: Read> Read for BufReader<R> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<R: Read> BufRead for BufReader<R> {
     fn fill_buf(&mut self) -> io::Result<&[u8]> {
         self.buf.fill_buf(&mut self.inner)
@@ -381,7 +381,7 @@ impl<R: Read> BufRead for BufReader<R> {
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<R> fmt::Debug for BufReader<R>
 where
     R: fmt::Debug,
@@ -397,7 +397,7 @@ where
     }
 }
 
-#[stable(feature = "rust1", since = "1.0.0")]
+#[stable(feature = "crablang1", since = "1.0.0")]
 impl<R: Seek> Seek for BufReader<R> {
     /// Seek to an offset, in bytes, in the underlying reader.
     ///

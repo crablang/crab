@@ -1,4 +1,4 @@
-// run-rustfix
+// run-crablangfix
 #![warn(clippy::crate_in_macro_def)]
 
 mod hygienic {

@@ -23,9 +23,9 @@ COPY scripts/sccache.sh /scripts/
 RUN sh /scripts/sccache.sh
 
 RUN mkdir -p /config
-RUN echo "[rust]" > /config/nopt-std-config.toml
+RUN echo "[crablang]" > /config/nopt-std-config.toml
 RUN echo "optimize = false" >> /config/nopt-std-config.toml
 
-ENV RUST_CONFIGURE_ARGS --build=i686-unknown-linux-gnu --disable-optimize-tests
+ENV CRABLANG_CONFIGURE_ARGS --build=i686-unknown-linux-gnu --disable-optimize-tests
 ENV SCRIPT python3 ../x.py test --stage 0 --config /config/nopt-std-config.toml library/std \
   && python3 ../x.py --stage 2 test
