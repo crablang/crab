@@ -1,6 +1,6 @@
 # The CrabLang Programming Language
 
-[![CrabLang Community](https://img.shields.io/badge/CrabLang_Community%20-Join_us-brightgreen?style=plastic&logo=crablang)](https://www.crablang.org/community)
+[![CrabLang Community](https://img.shields.io/badge/CrabLang_Community%20-Join_us-brightgreen?style=plastic&logo=crablang)](https://discord.gg/NntY9T2wZp)
 
 This is the main source code repository for [CrabLang]. It contains the compiler,
 standard library, and documentation.
