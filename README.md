@@ -294,11 +294,9 @@ See [LICENSE-APACHE](LICENSE-APACHE), [LICENSE-MIT](LICENSE-MIT), and
 
 ## Trademark
 
-[The CrabLang Foundation][crablang-foundation] owns and protects the CrabLang and Cargo
-trademarks and logos (the "CrabLang Trademarks").
+To the extent possible under law, [The CrabLang Foundation][crablang-foundation] has waived all copyright and related or neighboring rights to CrabLang.
 
-If you want to use these names or brands, please read the
-[media guide][media-guide].
+If you want to use these names or brands, please feel free to do so in any capacity.
 
 Third-party logos may be subject to third-party copyrights and trademarks. See
 [Licenses][policies-licenses] for details.
