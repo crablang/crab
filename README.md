@@ -4,7 +4,7 @@
 
 [![CrabLang Community](https://img.shields.io/badge/CrabLang_Community%20-Join_us-brightgreen?style=plastic&logo=crablang)](https://discord.gg/NntY9T2wZp)
 
-This is the main source code repository for [Crab]. It contains the compiler,
+This is the main source code repository for [Crab](https://github.com/crablang/crab). It contains the compiler,
 standard library, and documentation.
 
 [CrabLang]: https://www.crablang.org/
