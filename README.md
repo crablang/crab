@@ -94,8 +94,8 @@ See [the crablangc-dev-guide for more info][sysllvm].
 1. Clone the [source] with `git`:
 
    ```sh
-   git clone https://github.com/crablang/crablang.git
-   cd crablang
+   git clone https://github.com/crablang/crab.git
+   cd crab
    ```
 
 [source]: https://github.com/crablang/crablang
@@ -127,7 +127,7 @@ See [the crablangc-dev-guide for more info][sysllvm].
    `build.extended = true`, it will also include [Cargo], CrabLang's package
    manager.
 
-[Cargo]: https://github.com/crablang/cargo
+[Cargo]: https://github.com/crablang/crabgo
 
 ### Building on Windows
 
