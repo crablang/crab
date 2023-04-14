@@ -2,9 +2,9 @@
 
 # The Crab Programming Language
 
-[![CrabLang Community](https://img.shields.io/badge/CrabLang_Community%20-Join_us-brightgreen?style=plastic&logo=discord)](https://community.crablang.org)
+[![CrabLang Community](https://img.shields.io/badge/CrabLang_Community%20-Join_us-brightgreen?style=plastic&logo=crablang)](https://discord.gg/NntY9T2wZp)
 
-This is the main source code repository for [Crab](https://github.com/crablang/crab). It contains the compiler,
+This is the main source code repository for [CrabLang]. It contains the compiler,
 standard library, and documentation.
 
 [CrabLang]: https://www.crablang.org/
@@ -21,11 +21,11 @@ If you wish to _contribute_ to the compiler, you should read
 Read ["Installation"] from [The Book].
 
 ["Installation"]: https://doc.crablang.org/book/ch01-01-installation.html
-[The Book]: https://doc.crablang.org/book/index.html -->
+[The Book]: https://doc.crablang.org/book/index.html
 
 ## Installing from Source
 
-The Crab build system uses a Python script called `x.py` to build the compiler,
+The CrabLang build system uses a Python script called `x.py` to build the compiler,
 which manages the bootstrapping process. It lives at the root of the project.
 
 The `x.py` command can be run directly on most Unix systems in the following
@@ -51,10 +51,10 @@ python x.py <subcommand> [flags]
 ```
 
 More information about `x.py` can be found by running it with the `--help` flag
-or reading the [crabc dev guide][crabcguidebuild].
+or reading the [crablangc dev guide][crablangcguidebuild].
 
-[gettingstarted]: https://crabc-dev-guide.crablang.org/getting-started.html
-[crabcguidebuild]: https://crabc-dev-guide.crablang.org/building/how-to-build-and-run.html
+[gettingstarted]: https://crablangc-dev-guide.crablang.org/getting-started.html
+[crablangcguidebuild]: https://crablangc-dev-guide.crablang.org/building/how-to-build-and-run.html
 
 ### Dependencies
 
@@ -84,9 +84,9 @@ If building LLVM from source, you'll need additional tools:
 On tier 1 or tier 2 with host tools platforms, you can also choose to download
 LLVM by setting `llvm.download-ci-llvm = true`.
 Otherwise, you'll need LLVM installed and `llvm-config` in your path.
-See [the crabc-dev-guide for more info][sysllvm].
+See [the crablangc-dev-guide for more info][sysllvm].
 
-[sysllvm]: https://crabc-dev-guide.crablang.org/building/new-target.html#using-pre-built-llvm
+[sysllvm]: https://crablangc-dev-guide.crablang.org/building/new-target.html#using-pre-built-llvm
 
 
 ### Building on a Unix-like system
@@ -94,8 +94,8 @@ See [the crabc-dev-guide for more info][sysllvm].
 1. Clone the [source] with `git`:
 
    ```sh
-   git clone https://github.com/crablang/crab.git
-   cd crab
+   git clone https://github.com/crablang/crablang.git
+   cd crablang
    ```
 
 [source]: https://github.com/crablang/crablang
@@ -122,12 +122,12 @@ See [the crabc-dev-guide for more info][sysllvm].
    ```
 
    When complete, `./x.py install` will place several programs into
-   `$PREFIX/bin`: `crabc`, the CrabLang compiler, and `crablangdoc`, the
+   `$PREFIX/bin`: `crablangc`, the CrabLang compiler, and `crablangdoc`, the
    API-documentation tool. If you've set `profile = "user"` or
-   `build.extended = true`, it will also include [Crabgo], CrabLang's package
+   `build.extended = true`, it will also include [Cargo], CrabLang's package
    manager.
 
-[Crabgo]: https://github.com/crablang/crabgo
+[Cargo]: https://github.com/crablang/cargo
 
 ### Building on Windows
 
@@ -198,7 +198,7 @@ toolchain.
 #### MSVC
 
 MSVC builds of CrabLang additionally require an installation of Visual Studio 2017
-(or later) so `crabc` can use its linker.  The simplest way is to get
+(or later) so `crablangc` can use its linker.  The simplest way is to get
 [Visual Studio], check the "C++ build tools" and "Windows 10 SDK" workload.
 
 [Visual Studio]: https://visualstudio.microsoft.com/downloads/
@@ -273,7 +273,7 @@ Since the CrabLang compiler is written in CrabLang, it must be built by a precom
 As such, source builds require an Internet connection to fetch snapshots, and an
 OS that can execute the available snapshot binaries.
 
-See https://doc.crablang.org/nightly/crabc/platform-support.html for a list of
+See https://doc.crablang.org/nightly/crablangc/platform-support.html for a list of
 supported platforms.
 Only "host tools" platforms have a pre-compiled snapshot binary available; to
 compile for a platform without host tools you must cross-compile.
