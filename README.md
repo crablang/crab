@@ -4,7 +4,7 @@
 
 [![CrabLang Community](https://img.shields.io/badge/CrabLang_Community%20-Join_us-brightgreen?style=plastic&logo=crablang)](https://discord.gg/NntY9T2wZp)
 
-This is the main source code repository for [CrabLang]. It contains the compiler,
+This is the main source code repository for [Crab]. It contains the compiler,
 standard library, and documentation.
 
 [CrabLang]: https://www.crablang.org/
@@ -15,14 +15,17 @@ If you wish to _contribute_ to the compiler, you should read
 
 ## Quick Start
 
+!TODO
+
+<!-- 
 Read ["Installation"] from [The Book].
 
 ["Installation"]: https://doc.crablang.org/book/ch01-01-installation.html
-[The Book]: https://doc.crablang.org/book/index.html
+[The Book]: https://doc.crablang.org/book/index.html -->
 
 ## Installing from Source
 
-The CrabLang build system uses a Python script called `x.py` to build the compiler,
+The Crab build system uses a Python script called `x.py` to build the compiler,
 which manages the bootstrapping process. It lives at the root of the project.
 
 The `x.py` command can be run directly on most Unix systems in the following
@@ -33,6 +36,7 @@ format:
 ```
 
 This is how the documentation and examples assume you are running `x.py`.
+
 Some alternative ways are:
 
 ```sh
@@ -47,7 +51,7 @@ python x.py <subcommand> [flags]
 ```
 
 More information about `x.py` can be found by running it with the `--help` flag
-or reading the [crablangc dev guide][crablangcguidebuild].
+or reading the [crabc dev guide][crabcguidebuild].
 
 [gettingstarted]: https://crablangc-dev-guide.crablang.org/getting-started.html
 [crablangcguidebuild]: https://crablangc-dev-guide.crablang.org/building/how-to-build-and-run.html
