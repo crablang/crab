@@ -1,0 +1,21 @@
+#!/bin/bash
+pkgmngr="Not-Found"
+distro=$(echo -e "///\n$(ls /etc/*-release)" | awk -F"/" '$3!="os-release"{print}' | awk '{FS="/";d=$3}{split(d,a,"-");split(a[1],b,"_");print b[1]}')
+
+if [ $distro == "arch" ];then
+		pkgmngr="pacman -S"
+elif [ $distro == "redhat" ];then
+		pkgmngr="yum install"
+elif [ $distro == "SuSE" ];then
+		pkgmngr="zypp install"
+elif [ $distro == "gentoo" ];then
+		pkgmngr="emerge"
+elif [ $distro == "debian" ];then
+		pkgmngr="apt-get install"
+fi
+
+packages="git make diffutils tar  mingw-w64-x86_64-python  mingw-w64-x86_64-cmake  mingw-w64-x86_64-gcc  mingw-w64-x86_64-ninja"
+
+echo "$pkgmngr $packages"
+$($pkgmngr $packages)
+
