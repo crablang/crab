@@ -53,8 +53,8 @@ python x.py <subcommand> [flags]
 More information about `x.py` can be found by running it with the `--help` flag
 or reading the [crabc dev guide][crabcguidebuild].
 
-[gettingstarted]: https://crablangc-dev-guide.crablang.org/getting-started.html
-[crablangcguidebuild]: https://crablangc-dev-guide.crablang.org/building/how-to-build-and-run.html
+[gettingstarted]: https://crabc-dev-guide.crablang.org/getting-started.html
+[crabcguidebuild]: https://crabc-dev-guide.crablang.org/building/how-to-build-and-run.html
 
 ### Dependencies
 
@@ -84,9 +84,9 @@ If building LLVM from source, you'll need additional tools:
 On tier 1 or tier 2 with host tools platforms, you can also choose to download
 LLVM by setting `llvm.download-ci-llvm = true`.
 Otherwise, you'll need LLVM installed and `llvm-config` in your path.
-See [the crablangc-dev-guide for more info][sysllvm].
+See [the crabc-dev-guide for more info][sysllvm].
 
-[sysllvm]: https://crablangc-dev-guide.crablang.org/building/new-target.html#using-pre-built-llvm
+[sysllvm]: https://crabc-dev-guide.crablang.org/building/new-target.html#using-pre-built-llvm
 
 
 ### Building on a Unix-like system
@@ -122,7 +122,7 @@ See [the crablangc-dev-guide for more info][sysllvm].
    ```
 
    When complete, `./x.py install` will place several programs into
-   `$PREFIX/bin`: `crablangc`, the CrabLang compiler, and `crablangdoc`, the
+   `$PREFIX/bin`: `crabc`, the CrabLang compiler, and `crablangdoc`, the
    API-documentation tool. If you've set `profile = "user"` or
    `build.extended = true`, it will also include [Cargo], CrabLang's package
    manager.
@@ -198,7 +198,7 @@ toolchain.
 #### MSVC
 
 MSVC builds of CrabLang additionally require an installation of Visual Studio 2017
-(or later) so `crablangc` can use its linker.  The simplest way is to get
+(or later) so `crabc` can use its linker.  The simplest way is to get
 [Visual Studio], check the "C++ build tools" and "Windows 10 SDK" workload.
 
 [Visual Studio]: https://visualstudio.microsoft.com/downloads/
@@ -273,7 +273,7 @@ Since the CrabLang compiler is written in CrabLang, it must be built by a precom
 As such, source builds require an Internet connection to fetch snapshots, and an
 OS that can execute the available snapshot binaries.
 
-See https://doc.crablang.org/nightly/crablangc/platform-support.html for a list of
+See https://doc.crablang.org/nightly/crabc/platform-support.html for a list of
 supported platforms.
 Only "host tools" platforms have a pre-compiled snapshot binary available; to
 compile for a platform without host tools you must cross-compile.
