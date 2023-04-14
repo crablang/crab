@@ -1,5 +1,10 @@
 #!/bin/bash
+
+if ! ls /etc 1>/dev/null 2>/dev/null;then echo "the OS might not be Linux(Unix)" && exit;fi
+if ! ls /etc/*-release 1>/dev/null 2>/dev/null;then echo "cannot determine the distribution" && exit;fi
+
 pkgmngr="Not-Found"
+
 distro=$(echo -e "///\n$(ls /etc/*-release)" | awk -F"/" '$3!="os-release"{print}' | awk '{FS="/";d=$3}{split(d,a,"-");split(a[1],b,"_");print b[1]}')
 
 if [ $distro == "arch" ];then
