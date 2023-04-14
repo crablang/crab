@@ -124,10 +124,10 @@ See [the crabc-dev-guide for more info][sysllvm].
    When complete, `./x.py install` will place several programs into
    `$PREFIX/bin`: `crabc`, the CrabLang compiler, and `crablangdoc`, the
    API-documentation tool. If you've set `profile = "user"` or
-   `build.extended = true`, it will also include [Cargo], CrabLang's package
+   `build.extended = true`, it will also include [Crabgo], CrabLang's package
    manager.
 
-[Cargo]: https://github.com/crablang/crabgo
+[Crabgo]: https://github.com/crablang/crabgo
 
 #### Configure and Make
 
