@@ -1,8 +1,0 @@
-error: [+, o]
-  --> $DIR/E0208.rs:4:1
-   |
-LL | struct Foo<'a, T> {
-   | ^^^^^^^^^^^^^^^^^
-
-error: aborting due to previous error
-

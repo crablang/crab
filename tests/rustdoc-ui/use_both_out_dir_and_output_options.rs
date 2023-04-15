@@ -1,1 +1,0 @@
-// compile-flags: --output ./foo

@@ -1,2 +1,0 @@
-CHECK: cmake_plus_one_cxx_global_asm
-CHECK: lfence

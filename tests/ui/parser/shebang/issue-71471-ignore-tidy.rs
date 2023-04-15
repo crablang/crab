@@ -1,2 +1,0 @@
-
-#!B //~ expected `[`, found `B`

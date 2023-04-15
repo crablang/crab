@@ -1,2 +1,0 @@
-mod foo;
-fn main() {}

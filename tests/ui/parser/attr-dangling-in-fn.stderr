@@ -1,8 +1,0 @@
-error: expected statement after outer attribute
-  --> $DIR/attr-dangling-in-fn.rs:4:3
-   |
-LL |   #[foo = "bar"]
-   |   ^^^^^^^^^^^^^^
-
-error: aborting due to previous error
-
