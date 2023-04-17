@@ -283,7 +283,7 @@ build environments that are most likely to work.
 
 ## Getting Help
 
-See https://www.crablang.org/community for a list of chat platforms and forums.
+Need help? Join us on discord at https://community.crablang.org! 
 
 ## Contributing
 
