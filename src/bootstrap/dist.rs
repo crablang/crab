@@ -996,11 +996,14 @@ impl Step for PlainSourceTarball {
         // If we're building from git sources, we need to vendor a complete distribution.
         if builder.rust_info().is_managed_git_subrepository() {
             // Ensure we have the submodules checked out.
+            builder.update_submodule(Path::new("src/tools/cargo"));
             builder.update_submodule(Path::new("src/tools/rust-analyzer"));
 
             // Vendor all Cargo dependencies
             let mut cmd = Command::new(&builder.initial_cargo);
             cmd.arg("vendor")
+                .arg("--sync")
+                .arg(builder.src.join("./src/tools/cargo/Cargo.toml"))
                 .arg("--sync")
                 .arg(builder.src.join("./src/tools/rust-analyzer/Cargo.toml"))
                 .arg("--sync")
@@ -1960,6 +1963,20 @@ fn maybe_install_llvm(builder: &Builder<'_>, target: TargetSelection, dst_libdir
             // still want to install it, as it otherwise won't be available.
             return false;
         }
+    }
+
+    // FIXME: for reasons I don't understand, the LLVM so in the `rustc` component is different than the one in `rust-dev`.
+    // Only the one in `rustc` works with the downloaded compiler.
+    if builder.download_rustc() && target == builder.build.build {
+        let src_libdir = builder.ci_rustc_dir(target).join("lib");
+        for entry in t!(std::fs::read_dir(&src_libdir)) {
+            let entry = t!(entry);
+            if entry.file_name().to_str().unwrap().starts_with("libLLVM-") {
+                install_llvm_file(builder, &entry.path(), dst_libdir);
+                return !builder.config.dry_run();
+            }
+        }
+        panic!("libLLVM.so not found in src_libdir {}!", src_libdir.display());
     }
 
     // On macOS, rustc (and LLVM tools) link to an unversioned libLLVM.dylib
