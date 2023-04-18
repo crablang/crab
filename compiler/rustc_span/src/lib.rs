@@ -1663,10 +1663,11 @@ impl SourceFile {
 
         if let Some(ref src) = self.src {
             Some(Cow::from(get_until_newline(src, begin)))
-        } else if let Some(src) = self.external_src.borrow().get_source() {
-            Some(Cow::Owned(String::from(get_until_newline(src, begin))))
         } else {
-            None
+            self.external_src
+                .borrow()
+                .get_source()
+                .map(|src| Cow::Owned(String::from(get_until_newline(src, begin))))
         }
     }
 
@@ -2159,9 +2160,7 @@ where
         };
 
         Hash::hash(&TAG_VALID_SPAN, hasher);
-        // We truncate the stable ID hash and line and column numbers. The chances
-        // of causing a collision this way should be minimal.
-        Hash::hash(&(file.name_hash as u64), hasher);
+        Hash::hash(&file.name_hash, hasher);
 
         // Hash both the length and the end location (line/column) of a span. If we
         // hash only the length, for example, then two otherwise equal spans with

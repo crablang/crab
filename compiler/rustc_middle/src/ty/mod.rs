@@ -1627,7 +1627,8 @@ struct ParamTag {
 }
 
 unsafe impl rustc_data_structures::tagged_ptr::Tag for ParamTag {
-    const BITS: usize = 2;
+    const BITS: u32 = 2;
+
     #[inline]
     fn into_usize(self) -> usize {
         match self {
@@ -1637,6 +1638,7 @@ unsafe impl rustc_data_structures::tagged_ptr::Tag for ParamTag {
             Self { reveal: traits::Reveal::All, constness: hir::Constness::Const } => 3,
         }
     }
+
     #[inline]
     unsafe fn from_usize(ptr: usize) -> Self {
         match ptr {
@@ -1962,6 +1964,16 @@ impl VariantDef {
     #[inline]
     pub fn ctor_def_id(&self) -> Option<DefId> {
         self.ctor.map(|(_, def_id)| def_id)
+    }
+
+    /// Returns the one field in this variant.
+    ///
+    /// `panic!`s if there are no fields or multiple fields.
+    #[inline]
+    pub fn single_field(&self) -> &FieldDef {
+        assert!(self.fields.len() == 1);
+
+        &self.fields[FieldIdx::from_u32(0)]
     }
 }
 
