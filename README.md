@@ -1,9 +1,6 @@
 <img src="https://user-images.githubusercontent.com/8974888/231858967-7c37bf1e-335b-4f5a-9760-da97be9f54bb.png" width="200" />
 
 # The Crab Programming Language
-<img src="https://user-images.githubusercontent.com/8974888/231858967-7c37bf1e-335b-4f5a-9760-da97be9f54bb.png" width="200" />
-
-# The Crab Programming Language
 
 [![CrabLang Community](https://img.shields.io/badge/CrabLang_Community%20-Join_us-brightgreen?style=plastic&logo=discord)](https://community.crablang.org)
 
@@ -308,9 +305,6 @@ If you want to use any names or brands associated with Crab or CrabLang, please 
 Third-party logos may be subject to third-party copyrights and trademarks. See
 [Licenses][policies-licenses] for details.
 
-[crablang-foundation]: https://foundation.crablang.org/
-[media-guide]: https://foundation.crablang.org/policies/logo-policy-and-media-guide/
-[policies-licenses]: https://www.crablang.org/policies/licenses
 [crablang-foundation]: https://foundation.crablang.org/
 [media-guide]: https://foundation.crablang.org/policies/logo-policy-and-media-guide/
 [policies-licenses]: https://www.crablang.org/policies/licenses
