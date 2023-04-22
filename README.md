@@ -27,8 +27,6 @@ Read ["Installation"] from [The Book].
 
 The Crab build system uses a Python script called `x.py` to build the compiler,
 which manages the bootstrapping process. It lives at the root of the project.
-It also uses a file named `config.toml` to determine various configuration settings for the build.
-You can see a full list of options in `config.example.toml`.
 
 The `x.py` command can be run directly on most Unix systems in the following
 format:
@@ -93,8 +91,6 @@ See [the crabc-dev-guide for more info][sysllvm].
 
 ### Building on a Unix-like system
 
-#### Build steps
-
 1. Clone the [source] with `git`:
 
    ```sh
@@ -112,12 +108,12 @@ See [the crabc-dev-guide for more info][sysllvm].
    list of options in `config.example.toml`.
 
    ```sh
-   ./configure
+   printf 'profile = "user" \nchangelog-seen = 2 \n' > config.toml
    ```
 
    If you plan to use `x.py install` to create an installation, it is
    recommended that you set the `prefix` value in the `[install]` section to a
-   directory: `./configure --set install.prefix=<path>`
+   directory.
 
 3. Build and install:
 
@@ -196,7 +192,7 @@ toolchain.
 4. Navigate to CrabLang's source code (or clone it), then build it:
 
    ```sh
-   python x.py setup user && python x.py build && python x.py install
+   ./x.py build && ./x.py install
    ```
 
 #### MSVC
@@ -214,7 +210,6 @@ With these dependencies installed, you can build the compiler in a `cmd.exe`
 shell with:
 
 ```sh
-python x.py setup user
 python x.py build
 ```
 
@@ -243,7 +238,21 @@ Windows build triples are:
 
 The build triple can be specified by either specifying `--build=<triple>` when
 invoking `x.py` commands, or by creating a `config.toml` file (as described in
-[Building on a Unix-like system](#building-on-a-unix-like-system)), and passing `--set build.build=<triple>` to `./configure`.
+[Installing from Source](#installing-from-source)), and modifying the `build`
+option under the `[build]` section.
+
+### Configure and Make
+
+While it's not the recommended build system, this project also provides a
+configure script and makefile (the latter of which just invokes `x.py`).
+
+```sh
+./configure
+make && sudo make install
+```
+
+`configure` generates a `config.toml` which can also be used with normal `x.py`
+invocations.
 
 ## Building Documentation
 
