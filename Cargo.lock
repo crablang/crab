@@ -4,12 +4,12 @@ version = 3
 
 [[package]]
 name = "addr2line"
-version = "0.17.0"
+version = "0.19.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b9ecd88a8c8378ca913a680cd98f0f13ac67383d35993f86c90a70e3f137816b"
+checksum = "a76fd60b23679b7d19bd066031410fb7e458ccc5e958eb5c325888ce4baedc97"
 dependencies = [
  "compiler_builtins",
- "gimli",
+ "gimli 0.27.2",
  "rustc-std-workspace-alloc",
  "rustc-std-workspace-core",
 ]
@@ -149,7 +149,7 @@ version = "0.1.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b0639441fd17a3197d1cbca8dc8768cc172a63b64b4bb6c372e8f41ed0acc9bb"
 dependencies = [
- "object 0.30.1",
+ "object",
 ]
 
 [[package]]
@@ -215,16 +215,16 @@ checksum = "d468802bab17cbc0cc575e9b053f41e72aa36bfa6b7f55e3529ffa43161b97fa"
 
 [[package]]
 name = "backtrace"
-version = "0.3.66"
+version = "0.3.67"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "cab84319d616cfb654d03394f38ab7e6f0919e181b1b57e1fd15e7fb4077d9a7"
+checksum = "233d376d6d185f2a3093e58f283f60f880315b6c60075b01f36b3b85154564ca"
 dependencies = [
  "addr2line",
  "cc",
  "cfg-if",
  "libc",
  "miniz_oxide",
- "object 0.29.0",
+ "object",
  "rustc-demangle",
 ]
 
@@ -1187,13 +1187,11 @@ checksum = "37ab347416e802de484e4d03c7316c48f1ecb56574dfd4a46a80f173ce1de04d"
 
 [[package]]
 name = "flate2"
-version = "1.0.23"
+version = "1.0.25"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b39522e96686d38f4bc984b9198e3a0613264abaebaff2c5c918bfa6b6da09af"
+checksum = "a8a2db397cb1c8772f31494cb8917e48cd1e64f0fa7efac59fbd741a0a8ce841"
 dependencies = [
- "cfg-if",
  "crc32fast",
- "libc",
  "miniz_oxide",
 ]
 
@@ -1409,12 +1407,20 @@ version = "0.26.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "22030e2c5a68ec659fde1e949a745124b48e6fa8b045b7ed5bd1fe4ccc5c4e5d"
 dependencies = [
- "compiler_builtins",
  "fallible-iterator",
  "indexmap",
+ "stable_deref_trait",
+]
+
+[[package]]
+name = "gimli"
+version = "0.27.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ad0a93d233ebf96623465aad4046a8d3aa4da22d4f4beba5388838c8a434bbb4"
+dependencies = [
+ "compiler_builtins",
  "rustc-std-workspace-alloc",
  "rustc-std-workspace-core",
- "stable_deref_trait",
 ]
 
 [[package]]
@@ -1869,9 +1875,9 @@ checksum = "7fc7aa29613bd6a620df431842069224d8bc9011086b1db4c0e0cd47fa03ec9a"
 
 [[package]]
 name = "libz-sys"
-version = "1.1.3"
+version = "1.1.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "de5435b8549c16d423ed0c03dbaafe57cf6c3344744f1242520d59c9d8ecec66"
+checksum = "9702761c3935f8cc2f101793272e202c72b99da8f4224a19ddcf1279a6450bbf"
 dependencies = [
  "cc",
  "libc",
@@ -2098,9 +2104,9 @@ checksum = "68354c5c6bd36d73ff3feceb05efa59b6acb7626617f4962be322a825e61f79a"
 
 [[package]]
 name = "miniz_oxide"
-version = "0.5.3"
+version = "0.6.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6f5c75688da582b8ffc1f1799e9db273f32133c49e048f614d22ec3256773ccc"
+checksum = "b275950c28b37e794e8c55d88aeb5e139d0ce23fdbbeda68f8d7174abdf9e8fa"
 dependencies = [
  "adler",
  "compiler_builtins",
@@ -2202,27 +2208,18 @@ dependencies = [
 
 [[package]]
 name = "object"
-version = "0.29.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "21158b2c33aa6d4561f1c0a6ea283ca92bc54802a93b263e910746d679a7eb53"
-dependencies = [
- "compiler_builtins",
- "memchr",
- "rustc-std-workspace-alloc",
- "rustc-std-workspace-core",
-]
-
-[[package]]
-name = "object"
 version = "0.30.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "8d864c91689fdc196779b98dba0aceac6118594c2df6ee5d943eb6a8df4d107a"
 dependencies = [
+ "compiler_builtins",
  "crc32fast",
  "flate2",
  "hashbrown 0.13.1",
  "indexmap",
  "memchr",
+ "rustc-std-workspace-alloc",
+ "rustc-std-workspace-core",
 ]
 
 [[package]]
@@ -2941,6 +2938,7 @@ dependencies = [
  "rustc_ast_pretty",
  "rustc_data_structures",
  "rustc_errors",
+ "rustc_fluent_macro",
  "rustc_hir",
  "rustc_index",
  "rustc_macros",
@@ -2964,6 +2962,7 @@ dependencies = [
  "rustc_data_structures",
  "rustc_errors",
  "rustc_feature",
+ "rustc_fluent_macro",
  "rustc_macros",
  "rustc_parse",
  "rustc_session",
@@ -2991,6 +2990,7 @@ dependencies = [
  "rustc_data_structures",
  "rustc_errors",
  "rustc_feature",
+ "rustc_fluent_macro",
  "rustc_lexer",
  "rustc_macros",
  "rustc_serialize",
@@ -3018,6 +3018,7 @@ dependencies = [
  "polonius-engine",
  "rustc_data_structures",
  "rustc_errors",
+ "rustc_fluent_macro",
  "rustc_graphviz",
  "rustc_hir",
  "rustc_index",
@@ -3047,6 +3048,7 @@ dependencies = [
  "rustc_errors",
  "rustc_expand",
  "rustc_feature",
+ "rustc_fluent_macro",
  "rustc_lexer",
  "rustc_lint_defs",
  "rustc_macros",
@@ -3068,13 +3070,14 @@ dependencies = [
  "cstr",
  "libc",
  "measureme",
- "object 0.30.1",
+ "object",
  "rustc-demangle",
  "rustc_ast",
  "rustc_attr",
  "rustc_codegen_ssa",
  "rustc_data_structures",
  "rustc_errors",
+ "rustc_fluent_macro",
  "rustc_fs_util",
  "rustc_hir",
  "rustc_index",
@@ -3104,7 +3107,7 @@ dependencies = [
  "itertools",
  "jobserver",
  "libc",
- "object 0.30.1",
+ "object",
  "pathdiff",
  "regex",
  "rustc_arena",
@@ -3112,6 +3115,7 @@ dependencies = [
  "rustc_attr",
  "rustc_data_structures",
  "rustc_errors",
+ "rustc_fluent_macro",
  "rustc_fs_util",
  "rustc_hir",
  "rustc_incremental",
@@ -3144,6 +3148,7 @@ dependencies = [
  "rustc_attr",
  "rustc_data_structures",
  "rustc_errors",
+ "rustc_fluent_macro",
  "rustc_hir",
  "rustc_index",
  "rustc_infer",
@@ -3181,7 +3186,6 @@ dependencies = [
  "rustc_index",
  "rustc_macros",
  "rustc_serialize",
- "serde_json",
  "smallvec",
  "stable_deref_trait",
  "stacker",
@@ -3218,6 +3222,7 @@ dependencies = [
  "rustc_errors",
  "rustc_expand",
  "rustc_feature",
+ "rustc_fluent_macro",
  "rustc_hir",
  "rustc_hir_analysis",
  "rustc_hir_pretty",
@@ -3266,6 +3271,7 @@ dependencies = [
  "intl-memoizer",
  "rustc_baked_icu_data",
  "rustc_data_structures",
+ "rustc_fluent_macro",
  "rustc_macros",
  "rustc_serialize",
  "rustc_span",
@@ -3282,6 +3288,7 @@ dependencies = [
  "rustc_ast_pretty",
  "rustc_data_structures",
  "rustc_error_messages",
+ "rustc_fluent_macro",
  "rustc_hir",
  "rustc_lint_defs",
  "rustc_macros",
@@ -3310,6 +3317,7 @@ dependencies = [
  "rustc_data_structures",
  "rustc_errors",
  "rustc_feature",
+ "rustc_fluent_macro",
  "rustc_lexer",
  "rustc_lint_defs",
  "rustc_macros",
@@ -3328,6 +3336,20 @@ version = "0.0.0"
 dependencies = [
  "rustc_data_structures",
  "rustc_span",
+]
+
+[[package]]
+name = "rustc_fluent_macro"
+version = "0.1.0"
+dependencies = [
+ "annotate-snippets",
+ "fluent-bundle",
+ "fluent-syntax",
+ "proc-macro2",
+ "quote",
+ "syn 2.0.8",
+ "synstructure 0.13.0",
+ "unic-langid",
 ]
 
 [[package]]
@@ -3366,6 +3388,7 @@ dependencies = [
  "rustc_data_structures",
  "rustc_errors",
  "rustc_feature",
+ "rustc_fluent_macro",
  "rustc_hir",
  "rustc_index",
  "rustc_infer",
@@ -3400,6 +3423,7 @@ dependencies = [
  "rustc_ast",
  "rustc_data_structures",
  "rustc_errors",
+ "rustc_fluent_macro",
  "rustc_graphviz",
  "rustc_hir",
  "rustc_hir_analysis",
@@ -3427,6 +3451,7 @@ dependencies = [
  "rustc_ast",
  "rustc_data_structures",
  "rustc_errors",
+ "rustc_fluent_macro",
  "rustc_fs_util",
  "rustc_graphviz",
  "rustc_hir",
@@ -3455,6 +3480,7 @@ version = "0.0.0"
 dependencies = [
  "rustc_data_structures",
  "rustc_errors",
+ "rustc_fluent_macro",
  "rustc_hir",
  "rustc_index",
  "rustc_macros",
@@ -3485,6 +3511,7 @@ dependencies = [
  "rustc_data_structures",
  "rustc_errors",
  "rustc_expand",
+ "rustc_fluent_macro",
  "rustc_fs_util",
  "rustc_hir",
  "rustc_hir_analysis",
@@ -3534,6 +3561,7 @@ dependencies = [
  "rustc_data_structures",
  "rustc_errors",
  "rustc_feature",
+ "rustc_fluent_macro",
  "rustc_hir",
  "rustc_index",
  "rustc_infer",
@@ -3587,14 +3615,10 @@ dependencies = [
 name = "rustc_macros"
 version = "0.1.0"
 dependencies = [
- "annotate-snippets",
- "fluent-bundle",
- "fluent-syntax",
  "proc-macro2",
  "quote",
  "syn 2.0.8",
  "synstructure 0.13.0",
- "unic-langid",
 ]
 
 [[package]]
@@ -3610,6 +3634,7 @@ dependencies = [
  "rustc_errors",
  "rustc_expand",
  "rustc_feature",
+ "rustc_fluent_macro",
  "rustc_fs_util",
  "rustc_hir",
  "rustc_hir_pretty",
@@ -3647,6 +3672,7 @@ dependencies = [
  "rustc_error_messages",
  "rustc_errors",
  "rustc_feature",
+ "rustc_fluent_macro",
  "rustc_graphviz",
  "rustc_hir",
  "rustc_index",
@@ -3672,6 +3698,7 @@ dependencies = [
  "rustc_ast",
  "rustc_data_structures",
  "rustc_errors",
+ "rustc_fluent_macro",
  "rustc_hir",
  "rustc_index",
  "rustc_infer",
@@ -3695,6 +3722,7 @@ dependencies = [
  "rustc_ast",
  "rustc_data_structures",
  "rustc_errors",
+ "rustc_fluent_macro",
  "rustc_graphviz",
  "rustc_hir",
  "rustc_index",
@@ -3738,6 +3766,7 @@ version = "0.0.0"
 dependencies = [
  "rustc_data_structures",
  "rustc_errors",
+ "rustc_fluent_macro",
  "rustc_hir",
  "rustc_index",
  "rustc_macros",
@@ -3761,6 +3790,7 @@ dependencies = [
  "rustc_data_structures",
  "rustc_errors",
  "rustc_feature",
+ "rustc_fluent_macro",
  "rustc_lexer",
  "rustc_macros",
  "rustc_session",
@@ -3791,6 +3821,7 @@ dependencies = [
  "rustc_errors",
  "rustc_expand",
  "rustc_feature",
+ "rustc_fluent_macro",
  "rustc_hir",
  "rustc_index",
  "rustc_lexer",
@@ -3811,6 +3842,7 @@ dependencies = [
  "libloading",
  "rustc_ast",
  "rustc_errors",
+ "rustc_fluent_macro",
  "rustc_lint",
  "rustc_macros",
  "rustc_metadata",
@@ -3826,6 +3858,7 @@ dependencies = [
  "rustc_attr",
  "rustc_data_structures",
  "rustc_errors",
+ "rustc_fluent_macro",
  "rustc_hir",
  "rustc_hir_analysis",
  "rustc_macros",
@@ -3867,6 +3900,7 @@ dependencies = [
  "rustc_data_structures",
  "rustc_errors",
  "rustc_feature",
+ "rustc_fluent_macro",
  "rustc_hir",
  "rustc_index",
  "rustc_macros",
@@ -3894,6 +3928,7 @@ dependencies = [
  "rustc_errors",
  "rustc_expand",
  "rustc_feature",
+ "rustc_fluent_macro",
  "rustc_hir",
  "rustc_index",
  "rustc_macros",
@@ -3927,6 +3962,7 @@ dependencies = [
  "rustc_data_structures",
  "rustc_errors",
  "rustc_feature",
+ "rustc_fluent_macro",
  "rustc_fs_util",
  "rustc_hir",
  "rustc_index",
@@ -3978,6 +4014,7 @@ dependencies = [
  "rustc-demangle",
  "rustc_data_structures",
  "rustc_errors",
+ "rustc_fluent_macro",
  "rustc_hir",
  "rustc_macros",
  "rustc_middle",
@@ -4020,6 +4057,7 @@ dependencies = [
  "rustc_attr",
  "rustc_data_structures",
  "rustc_errors",
+ "rustc_fluent_macro",
  "rustc_hir",
  "rustc_index",
  "rustc_infer",
@@ -4077,6 +4115,7 @@ version = "0.0.0"
 dependencies = [
  "rustc_data_structures",
  "rustc_errors",
+ "rustc_fluent_macro",
  "rustc_hir",
  "rustc_index",
  "rustc_infer",
@@ -4456,7 +4495,7 @@ dependencies = [
  "hermit-abi 0.3.0",
  "libc",
  "miniz_oxide",
- "object 0.29.0",
+ "object",
  "panic_abort",
  "panic_unwind",
  "profiler_builtins",
@@ -4724,9 +4763,9 @@ version = "0.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "da8fbf660a019b6bf11ea95762041464aa9099cc293b6a66d77cea5107619671"
 dependencies = [
- "gimli",
+ "gimli 0.26.2",
  "hashbrown 0.12.3",
- "object 0.30.1",
+ "object",
  "tracing",
 ]
 

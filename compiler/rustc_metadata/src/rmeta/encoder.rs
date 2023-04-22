@@ -7,7 +7,7 @@ use rustc_ast::Attribute;
 use rustc_data_structures::fingerprint::Fingerprint;
 use rustc_data_structures::fx::{FxHashMap, FxIndexSet};
 use rustc_data_structures::memmap::{Mmap, MmapMut};
-use rustc_data_structures::stable_hasher::{HashStable, StableHasher};
+use rustc_data_structures::stable_hasher::{Hash128, HashStable, StableHasher};
 use rustc_data_structures::sync::{join, par_iter, Lrc, ParallelIterator};
 use rustc_data_structures::temp_dir::MaybeTempDir;
 use rustc_hir as hir;
@@ -531,7 +531,7 @@ impl<'a, 'tcx> EncodeContext<'a, 'tcx> {
                         adapted.name_hash = {
                             let mut hasher: StableHasher = StableHasher::new();
                             adapted.name.hash(&mut hasher);
-                            hasher.finish::<u128>()
+                            hasher.finish::<Hash128>()
                         };
                         Lrc::new(adapted)
                     } else {
@@ -676,7 +676,6 @@ impl<'a, 'tcx> EncodeContext<'a, 'tcx> {
                 panic_in_drop_strategy: tcx.sess.opts.unstable_opts.panic_in_drop,
                 edition: tcx.sess.edition(),
                 has_global_allocator: tcx.has_global_allocator(LOCAL_CRATE),
-                has_alloc_error_handler: tcx.has_alloc_error_handler(LOCAL_CRATE),
                 has_panic_handler: tcx.has_panic_handler(LOCAL_CRATE),
                 has_default_lib_allocator: attr::contains_name(&attrs, sym::default_lib_allocator),
                 proc_macro_data,
@@ -824,6 +823,7 @@ fn should_encode_span(def_kind: DefKind) -> bool {
         | DefKind::AssocTy
         | DefKind::TyParam
         | DefKind::ConstParam
+        | DefKind::LifetimeParam
         | DefKind::Fn
         | DefKind::Const
         | DefKind::Static(_)
@@ -831,6 +831,8 @@ fn should_encode_span(def_kind: DefKind) -> bool {
         | DefKind::AssocFn
         | DefKind::AssocConst
         | DefKind::Macro(_)
+        | DefKind::ExternCrate
+        | DefKind::Use
         | DefKind::AnonConst
         | DefKind::InlineConst
         | DefKind::OpaqueTy
@@ -838,12 +840,7 @@ fn should_encode_span(def_kind: DefKind) -> bool {
         | DefKind::Impl { .. }
         | DefKind::Closure
         | DefKind::Generator => true,
-        DefKind::ExternCrate
-        | DefKind::Use
-        | DefKind::ForeignMod
-        | DefKind::ImplTraitPlaceholder
-        | DefKind::LifetimeParam
-        | DefKind::GlobalAsm => false,
+        DefKind::ForeignMod | DefKind::ImplTraitPlaceholder | DefKind::GlobalAsm => false,
     }
 }
 
@@ -1367,7 +1364,7 @@ impl<'a, 'tcx> EncodeContext<'a, 'tcx> {
 
         if adt_def.is_enum() {
             let module_children = tcx.module_children_non_reexports(local_def_id);
-            record_array!(self.tables.children[def_id] <-
+            record_array!(self.tables.module_children_non_reexports[def_id] <-
                 module_children.iter().map(|def_id| def_id.local_def_index));
         } else {
             // For non-enum, there is only one variant, and its def_id is the adt's.
@@ -1385,7 +1382,7 @@ impl<'a, 'tcx> EncodeContext<'a, 'tcx> {
             record!(self.tables.variant_data[variant.def_id] <- data);
 
             self.tables.constness.set_some(variant.def_id.index, hir::Constness::Const);
-            record_array!(self.tables.children[variant.def_id] <- variant.fields.iter().map(|f| {
+            record_array!(self.tables.associated_item_or_field_def_ids[variant.def_id] <- variant.fields.iter().map(|f| {
                 assert!(f.did.is_local());
                 f.did.index
             }));
@@ -1415,7 +1412,7 @@ impl<'a, 'tcx> EncodeContext<'a, 'tcx> {
             record!(self.tables.expn_that_defined[def_id] <- tcx.expn_that_defined(local_def_id));
         } else {
             let non_reexports = tcx.module_children_non_reexports(local_def_id);
-            record_array!(self.tables.children[def_id] <-
+            record_array!(self.tables.module_children_non_reexports[def_id] <-
                 non_reexports.iter().map(|def_id| def_id.local_def_index));
 
             record_defaulted_array!(self.tables.module_children_reexports[def_id] <-
@@ -1469,8 +1466,8 @@ impl<'a, 'tcx> EncodeContext<'a, 'tcx> {
 
         match impl_item.kind {
             ty::AssocKind::Fn => {
-                let ast_item = self.tcx.hir().expect_impl_item(def_id.expect_local());
-                let hir::ImplItemKind::Fn(ref sig, body) = ast_item.kind else { bug!() };
+                let (sig, body) =
+                    self.tcx.hir().expect_impl_item(def_id.expect_local()).expect_fn();
                 self.tables.asyncness.set_some(def_id.index, sig.header.asyncness);
                 record_array!(self.tables.fn_arg_names[def_id] <- self.tcx.hir().body_param_names(body));
                 // Can be inside `impl const Trait`, so using sig.header.constness is not reliable
@@ -1539,8 +1536,7 @@ impl<'a, 'tcx> EncodeContext<'a, 'tcx> {
             }
             record!(self.tables.promoted_mir[def_id.to_def_id()] <- tcx.promoted_mir(def_id));
 
-            let instance =
-                ty::InstanceDef::Item(ty::WithOptConstParam::unknown(def_id.to_def_id()));
+            let instance = ty::InstanceDef::Item(def_id.to_def_id());
             let unused = tcx.unused_generic_params(instance);
             self.tables.unused_generic_params.set(def_id.local_def_index, unused);
         }
@@ -1618,7 +1614,7 @@ impl<'a, 'tcx> EncodeContext<'a, 'tcx> {
         debug!("EncodeContext::encode_info_for_item({:?})", def_id);
 
         let record_associated_item_def_ids = |this: &mut Self, def_ids: &[DefId]| {
-            record_array!(this.tables.children[def_id] <- def_ids.iter().map(|&def_id| {
+            record_array!(this.tables.associated_item_or_field_def_ids[def_id] <- def_ids.iter().map(|&def_id| {
                 assert!(def_id.is_local());
                 def_id.index
             }))
@@ -1678,6 +1674,10 @@ impl<'a, 'tcx> EncodeContext<'a, 'tcx> {
             }
             hir::ItemKind::Trait(..) => {
                 record!(self.tables.trait_def[def_id] <- self.tcx.trait_def(def_id));
+
+                let module_children = tcx.module_children_non_reexports(item.owner_id.def_id);
+                record_array!(self.tables.module_children_non_reexports[def_id] <-
+                    module_children.iter().map(|def_id| def_id.local_def_index));
 
                 let associated_item_def_ids = self.tcx.associated_item_def_ids(def_id);
                 record_associated_item_def_ids(self, associated_item_def_ids);

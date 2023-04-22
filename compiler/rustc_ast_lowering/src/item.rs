@@ -89,9 +89,9 @@ impl<'a, 'hir> ItemLowerer<'a, 'hir> {
         lctx.with_hir_id_owner(owner, |lctx| f(lctx));
 
         for (def_id, info) in lctx.children {
-            self.owners.ensure_contains_elem(def_id, || hir::MaybeOwner::Phantom);
-            debug_assert!(matches!(self.owners[def_id], hir::MaybeOwner::Phantom));
-            self.owners[def_id] = info;
+            let owner = self.owners.ensure_contains_elem(def_id, || hir::MaybeOwner::Phantom);
+            debug_assert!(matches!(owner, hir::MaybeOwner::Phantom));
+            *owner = info;
         }
     }
 
@@ -99,8 +99,8 @@ impl<'a, 'hir> ItemLowerer<'a, 'hir> {
         &mut self,
         def_id: LocalDefId,
     ) -> hir::MaybeOwner<&'hir hir::OwnerInfo<'hir>> {
-        self.owners.ensure_contains_elem(def_id, || hir::MaybeOwner::Phantom);
-        if let hir::MaybeOwner::Phantom = self.owners[def_id] {
+        let owner = self.owners.ensure_contains_elem(def_id, || hir::MaybeOwner::Phantom);
+        if let hir::MaybeOwner::Phantom = owner {
             let node = self.ast_index[def_id];
             match node {
                 AstOwner::NonOwner => {}
@@ -138,12 +138,10 @@ impl<'a, 'hir> ItemLowerer<'a, 'hir> {
             // Evaluate with the lifetimes in `params` in-scope.
             // This is used to track which lifetimes have already been defined,
             // and which need to be replicated when lowering an async fn.
-            match parent_hir.node().expect_item().kind {
-                hir::ItemKind::Impl(hir::Impl { of_trait, .. }) => {
-                    lctx.is_in_trait_impl = of_trait.is_some();
-                }
-                _ => {}
-            };
+
+            if let hir::ItemKind::Impl(impl_) = parent_hir.node().expect_item().kind {
+                lctx.is_in_trait_impl = impl_.of_trait.is_some();
+            }
 
             match ctxt {
                 AssocCtxt::Trait => hir::OwnerNode::TraitItem(lctx.lower_trait_item(item)),

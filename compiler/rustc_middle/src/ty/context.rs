@@ -13,7 +13,7 @@ use crate::middle::codegen_fn_attrs::CodegenFnAttrs;
 use crate::middle::resolve_bound_vars;
 use crate::middle::stability;
 use crate::mir::interpret::{self, Allocation, ConstAllocation};
-use crate::mir::{Body, BorrowCheckResult, Local, Place, PlaceElem, ProjectionKind, Promoted};
+use crate::mir::{Body, Local, Place, PlaceElem, ProjectionKind, Promoted};
 use crate::query::LocalCrate;
 use crate::thir::Thir;
 use crate::traits;
@@ -24,7 +24,7 @@ use crate::ty::{
     self, AdtDef, AdtDefData, AdtKind, Binder, Const, ConstData, FloatTy, FloatVar, FloatVid,
     GenericParamDefKind, ImplPolarity, InferTy, IntTy, IntVar, IntVid, List, ParamConst, ParamTy,
     PolyExistentialPredicate, PolyFnSig, Predicate, PredicateKind, Region, RegionKind, ReprOptions,
-    TraitObjectVisitor, Ty, TyKind, TyVar, TyVid, TypeAndMut, TypeckResults, UintTy, Visibility,
+    TraitObjectVisitor, Ty, TyKind, TyVar, TyVid, TypeAndMut, UintTy, Visibility,
 };
 use crate::ty::{GenericArg, InternalSubsts, SubstsRef};
 use rustc_ast::{self as ast, attr};
@@ -141,6 +141,7 @@ pub struct CtxtInterners<'tcx> {
     type_: InternedSet<'tcx, WithCachedTypeInfo<TyKind<'tcx>>>,
     const_lists: InternedSet<'tcx, List<ty::Const<'tcx>>>,
     substs: InternedSet<'tcx, InternalSubsts<'tcx>>,
+    type_lists: InternedSet<'tcx, List<Ty<'tcx>>>,
     canonical_var_infos: InternedSet<'tcx, List<CanonicalVarInfo<'tcx>>>,
     region: InternedSet<'tcx, RegionKind<'tcx>>,
     poly_existential_predicates: InternedSet<'tcx, List<PolyExistentialPredicate<'tcx>>>,
@@ -154,6 +155,7 @@ pub struct CtxtInterners<'tcx> {
     layout: InternedSet<'tcx, LayoutS>,
     adt_def: InternedSet<'tcx, AdtDefData>,
     external_constraints: InternedSet<'tcx, ExternalConstraintsData<'tcx>>,
+    fields: InternedSet<'tcx, List<FieldIdx>>,
 }
 
 impl<'tcx> CtxtInterners<'tcx> {
@@ -163,6 +165,7 @@ impl<'tcx> CtxtInterners<'tcx> {
             type_: Default::default(),
             const_lists: Default::default(),
             substs: Default::default(),
+            type_lists: Default::default(),
             region: Default::default(),
             poly_existential_predicates: Default::default(),
             canonical_var_infos: Default::default(),
@@ -176,6 +179,7 @@ impl<'tcx> CtxtInterners<'tcx> {
             layout: Default::default(),
             adt_def: Default::default(),
             external_constraints: Default::default(),
+            fields: Default::default(),
         }
     }
 
@@ -447,6 +451,14 @@ impl<'tcx> TyCtxt<'tcx> {
     pub fn feed_local_crate(self) -> TyCtxtFeed<'tcx, CrateNum> {
         TyCtxtFeed { tcx: self, key: LOCAL_CRATE }
     }
+
+    /// In order to break cycles involving `AnonConst`, we need to set the expected type by side
+    /// effect. However, we do not want this as a general capability, so this interface restricts
+    /// to the only allowed case.
+    pub fn feed_anon_const_type(self, key: LocalDefId, value: ty::EarlyBinder<Ty<'tcx>>) {
+        debug_assert_eq!(self.def_kind(key), DefKind::AnonConst);
+        TyCtxtFeed { tcx: self, key }.type_of(value)
+    }
 }
 
 impl<'tcx, KEY: Copy> TyCtxtFeed<'tcx, KEY> {
@@ -578,28 +590,6 @@ impl<'tcx> TyCtxt<'tcx> {
                 def_id,
                 def_kind
             )
-        }
-    }
-
-    pub fn typeck_opt_const_arg(
-        self,
-        def: ty::WithOptConstParam<LocalDefId>,
-    ) -> &'tcx TypeckResults<'tcx> {
-        if let Some(param_did) = def.const_param_did {
-            self.typeck_const_arg((def.did, param_did))
-        } else {
-            self.typeck(def.did)
-        }
-    }
-
-    pub fn mir_borrowck_opt_const_arg(
-        self,
-        def: ty::WithOptConstParam<LocalDefId>,
-    ) -> &'tcx BorrowCheckResult<'tcx> {
-        if let Some(param_did) = def.const_param_did {
-            self.mir_borrowck_const_arg((def.did, param_did))
-        } else {
-            self.mir_borrowck(def.did)
         }
     }
 
@@ -925,7 +915,7 @@ impl<'tcx> TyCtxt<'tcx> {
             crate_name,
             // Don't print the whole stable crate id. That's just
             // annoying in debug output.
-            stable_crate_id.to_u64() >> (8 * 6),
+            stable_crate_id.as_u64() >> (8 * 6),
             self.def_path(def_id).to_string_no_crate_verbose()
         )
     }
@@ -1278,25 +1268,6 @@ macro_rules! nop_lift {
     };
 }
 
-// Can't use the macros as we have reuse the `substs` here.
-//
-// See `mk_type_list` for more info.
-impl<'a, 'tcx> Lift<'tcx> for &'a List<Ty<'a>> {
-    type Lifted = &'tcx List<Ty<'tcx>>;
-    fn lift_to_tcx(self, tcx: TyCtxt<'tcx>) -> Option<Self::Lifted> {
-        if self.is_empty() {
-            return Some(List::empty());
-        }
-
-        tcx.interners
-            .substs
-            .contains_pointer_to(&InternedInSet(self.as_substs()))
-            // SAFETY: `self` is interned and therefore valid
-            // for the entire lifetime of the `TyCtxt`.
-            .then(|| unsafe { mem::transmute::<&'a List<Ty<'a>>, &'tcx List<Ty<'tcx>>>(self) })
-    }
-}
-
 macro_rules! nop_list_lift {
     ($set:ident; $ty:ty => $lifted:ty) => {
         impl<'a, 'tcx> Lift<'tcx> for &'a List<$ty> {
@@ -1320,6 +1291,7 @@ nop_lift! {const_; Const<'a> => Const<'tcx>}
 nop_lift! {const_allocation; ConstAllocation<'a> => ConstAllocation<'tcx>}
 nop_lift! {predicate; Predicate<'a> => Predicate<'tcx>}
 
+nop_list_lift! {type_lists; Ty<'a> => Ty<'tcx>}
 nop_list_lift! {poly_existential_predicates; PolyExistentialPredicate<'a> => PolyExistentialPredicate<'tcx>}
 nop_list_lift! {predicates; Predicate<'a> => Predicate<'tcx>}
 nop_list_lift! {canonical_var_infos; CanonicalVarInfo<'a> => CanonicalVarInfo<'tcx>}
@@ -1594,12 +1566,14 @@ macro_rules! slice_interners {
 slice_interners!(
     const_lists: pub mk_const_list(Const<'tcx>),
     substs: pub mk_substs(GenericArg<'tcx>),
+    type_lists: pub mk_type_list(Ty<'tcx>),
     canonical_var_infos: pub mk_canonical_var_infos(CanonicalVarInfo<'tcx>),
     poly_existential_predicates: intern_poly_existential_predicates(PolyExistentialPredicate<'tcx>),
     predicates: intern_predicates(Predicate<'tcx>),
     projs: pub mk_projs(ProjectionKind),
     place_elems: pub mk_place_elems(PlaceElem<'tcx>),
     bound_variable_kinds: pub mk_bound_variable_kinds(ty::BoundVariableKind),
+    fields: pub mk_fields(FieldIdx),
 );
 
 impl<'tcx> TyCtxt<'tcx> {
@@ -2193,18 +2167,6 @@ impl<'tcx> TyCtxt<'tcx> {
         T::collect_and_apply(iter, |xs| self.mk_const_list(xs))
     }
 
-    pub fn mk_type_list(self, ts: &[Ty<'tcx>]) -> &'tcx List<Ty<'tcx>> {
-        // Actually intern type lists as lists of `GenericArg`s.
-        //
-        // Transmuting from `Ty<'tcx>` to `GenericArg<'tcx>` is sound
-        // as explained in `ty_slice_as_generic_arg`. With this,
-        // we guarantee that even when transmuting between `List<Ty<'tcx>>`
-        // and `List<GenericArg<'tcx>>`, the uniqueness requirement for
-        // lists is upheld.
-        let substs = self.mk_substs(ty::subst::ty_slice_as_generic_args(ts));
-        substs.try_as_type_list().unwrap()
-    }
-
     // Unlike various other `mk_*_from_iter` functions, this one uses `I:
     // IntoIterator` instead of `I: Iterator`, and it doesn't have a slice
     // variant, because of the need to combine `inputs` and `output`. This
@@ -2278,6 +2240,14 @@ impl<'tcx> TyCtxt<'tcx> {
         T: CollectAndApply<PlaceElem<'tcx>, &'tcx List<PlaceElem<'tcx>>>,
     {
         T::collect_and_apply(iter, |xs| self.mk_place_elems(xs))
+    }
+
+    pub fn mk_fields_from_iter<I, T>(self, iter: I) -> T::Output
+    where
+        I: Iterator<Item = T>,
+        T: CollectAndApply<FieldIdx, &'tcx List<FieldIdx>>,
+    {
+        T::collect_and_apply(iter, |xs| self.mk_fields(xs))
     }
 
     pub fn mk_substs_trait(

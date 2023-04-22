@@ -51,6 +51,13 @@ impl<'tcx> EvalCtxt<'_, 'tcx> {
         certainty: Certainty,
     ) -> QueryResult<'tcx> {
         let goals_certainty = self.try_evaluate_added_goals()?;
+        assert_eq!(
+            self.tainted,
+            Ok(()),
+            "EvalCtxt is tainted -- nested goals may have been dropped in a \
+            previous call to `try_evaluate_added_goals!`"
+        );
+
         let certainty = certainty.unify_with(goals_certainty);
 
         let external_constraints = self.compute_external_query_constraints()?;
@@ -156,8 +163,8 @@ impl<'tcx> EvalCtxt<'_, 'tcx> {
                     }
                 }
                 GenericArgKind::Const(c) => {
-                    if let ty::ConstKind::Bound(debrujin, b) = c.kind() {
-                        assert_eq!(debrujin, ty::INNERMOST);
+                    if let ty::ConstKind::Bound(debruijn, b) = c.kind() {
+                        assert_eq!(debruijn, ty::INNERMOST);
                         opt_values[b] = Some(*original_value);
                     }
                 }
@@ -177,7 +184,7 @@ impl<'tcx> EvalCtxt<'_, 'tcx> {
                     // As an optimization we sometimes avoid creating a new inference variable here.
                     //
                     // All new inference variables we create start out in the current universe of the caller.
-                    // This is conceptionally wrong as these inference variables would be able to name
+                    // This is conceptually wrong as these inference variables would be able to name
                     // more placeholders then they should be able to. However the inference variables have
                     // to "come from somewhere", so by equating them with the original values of the caller
                     // later on, we pull them down into their correct universe again.

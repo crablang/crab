@@ -2131,9 +2131,8 @@ fn confirm_impl_candidate<'cx, 'tcx>(
     let ty = tcx.type_of(assoc_ty.item.def_id);
     let is_const = matches!(tcx.def_kind(assoc_ty.item.def_id), DefKind::AssocConst);
     let term: ty::EarlyBinder<ty::Term<'tcx>> = if is_const {
-        let identity_substs =
-            crate::traits::InternalSubsts::identity_for_item(tcx, assoc_ty.item.def_id);
-        let did = ty::WithOptConstParam::unknown(assoc_ty.item.def_id);
+        let did = assoc_ty.item.def_id;
+        let identity_substs = crate::traits::InternalSubsts::identity_for_item(tcx, did);
         let kind = ty::ConstKind::Unevaluated(ty::UnevaluatedConst::new(did, identity_substs));
         ty.map_bound(|ty| tcx.mk_const(kind, ty).into())
     } else {
@@ -2277,11 +2276,10 @@ fn confirm_impl_trait_in_trait_candidate<'tcx>(
         obligation.param_env,
         cause.clone(),
         obligation.recursion_depth + 1,
-        tcx.bound_return_position_impl_trait_in_trait_tys(impl_fn_def_id)
-            .map_bound(|tys| {
-                tys.map_or_else(|guar| tcx.ty_error(guar), |tys| tys[&obligation.predicate.def_id])
-            })
-            .subst(tcx, impl_fn_substs),
+        tcx.collect_return_position_impl_trait_in_trait_tys(impl_fn_def_id).map_or_else(
+            |guar| tcx.ty_error(guar),
+            |tys| tys[&obligation.predicate.def_id].subst(tcx, impl_fn_substs),
+        ),
         &mut obligations,
     );
 

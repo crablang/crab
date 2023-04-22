@@ -888,7 +888,7 @@ impl<'cx, 'tcx> SelectionContext<'cx, 'tcx> {
                         let c1 = tcx.expand_abstract_consts(c1);
                         let c2 = tcx.expand_abstract_consts(c2);
                         debug!(
-                            "evalaute_predicate_recursively: equating consts:\nc1= {:?}\nc2= {:?}",
+                            "evaluate_predicate_recursively: equating consts:\nc1= {:?}\nc2= {:?}",
                             c1, c2
                         );
 
@@ -896,8 +896,7 @@ impl<'cx, 'tcx> SelectionContext<'cx, 'tcx> {
                         use ty::ConstKind::Unevaluated;
                         match (c1.kind(), c2.kind()) {
                             (Unevaluated(a), Unevaluated(b))
-                                if a.def.did == b.def.did
-                                    && tcx.def_kind(a.def.did) == DefKind::AssocConst =>
+                                if a.def == b.def && tcx.def_kind(a.def) == DefKind::AssocConst =>
                             {
                                 if let Ok(InferOk { obligations, value: () }) = self
                                     .infcx

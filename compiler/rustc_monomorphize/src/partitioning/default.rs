@@ -16,17 +16,20 @@ use super::PartitioningCx;
 use crate::collector::InliningMap;
 use crate::partitioning::merging;
 use crate::partitioning::{
-    MonoItemPlacement, Partitioner, PostInliningPartitioning, PreInliningPartitioning,
+    MonoItemPlacement, Partition, PostInliningPartitioning, PreInliningPartitioning,
 };
 
 pub struct DefaultPartitioning;
 
-impl<'tcx> Partitioner<'tcx> for DefaultPartitioning {
-    fn place_root_mono_items(
+impl<'tcx> Partition<'tcx> for DefaultPartitioning {
+    fn place_root_mono_items<I>(
         &mut self,
         cx: &PartitioningCx<'_, 'tcx>,
-        mono_items: &mut dyn Iterator<Item = MonoItem<'tcx>>,
-    ) -> PreInliningPartitioning<'tcx> {
+        mono_items: &mut I,
+    ) -> PreInliningPartitioning<'tcx>
+    where
+        I: Iterator<Item = MonoItem<'tcx>>,
+    {
         let mut roots = FxHashSet::default();
         let mut codegen_units = FxHashMap::default();
         let is_incremental_build = cx.tcx.sess.opts.incremental.is_some();
@@ -267,7 +270,7 @@ fn characteristic_def_id_of_mono_item<'tcx>(
     match mono_item {
         MonoItem::Fn(instance) => {
             let def_id = match instance.def {
-                ty::InstanceDef::Item(def) => def.did,
+                ty::InstanceDef::Item(def) => def,
                 ty::InstanceDef::VTableShim(..)
                 | ty::InstanceDef::ReifyShim(..)
                 | ty::InstanceDef::FnPtrShim(..)
@@ -421,10 +424,9 @@ fn mono_item_visibility<'tcx>(
     };
 
     let def_id = match instance.def {
-        InstanceDef::Item(def) => def.did,
-        InstanceDef::DropGlue(def_id, Some(_)) => def_id,
+        InstanceDef::Item(def_id) | InstanceDef::DropGlue(def_id, Some(_)) => def_id,
 
-        // We match the visiblity of statics here
+        // We match the visibility of statics here
         InstanceDef::ThreadLocalShim(def_id) => {
             return static_visibility(tcx, can_be_internalized, def_id);
         }

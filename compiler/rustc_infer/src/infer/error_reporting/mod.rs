@@ -74,7 +74,6 @@ use rustc_middle::ty::{
     self, error::TypeError, List, Region, Ty, TyCtxt, TypeFoldable, TypeSuperVisitable,
     TypeVisitable, TypeVisitableExt,
 };
-use rustc_span::DUMMY_SP;
 use rustc_span::{sym, symbol::kw, BytePos, DesugaringKind, Pos, Span};
 use rustc_target::spec::abi;
 use std::ops::{ControlFlow, Deref};
@@ -138,7 +137,7 @@ impl Drop for TypeErrCtxt<'_, '_> {
             self.infcx
                 .tcx
                 .sess
-                .delay_span_bug(DUMMY_SP, "used a `TypeErrCtxt` without failing compilation");
+                .delay_good_path_bug("used a `TypeErrCtxt` without raising an error or lint");
         }
     }
 }
@@ -2886,7 +2885,7 @@ impl<'tcx> ObligationCauseExt<'tcx> for ObligationCause<'tcx> {
             LetElse => ObligationCauseFailureCode::NoDiverge { span, subdiags },
             MainFunctionType => ObligationCauseFailureCode::FnMainCorrectType { span },
             StartFunctionType => ObligationCauseFailureCode::FnStartCorrectType { span, subdiags },
-            IntrinsicType => ObligationCauseFailureCode::IntristicCorrectType { span, subdiags },
+            IntrinsicType => ObligationCauseFailureCode::IntrinsicCorrectType { span, subdiags },
             MethodReceiver => ObligationCauseFailureCode::MethodCorrectType { span, subdiags },
 
             // In the case where we have no more specific thing to
@@ -2943,7 +2942,7 @@ impl IntoDiagnosticArg for ObligationCauseAsDiagArg<'_> {
             IfExpressionWithNoElse => "no_else",
             MainFunctionType => "fn_main_correct_type",
             StartFunctionType => "fn_start_correct_type",
-            IntrinsicType => "intristic_correct_type",
+            IntrinsicType => "intrinsic_correct_type",
             MethodReceiver => "method_correct_type",
             _ => "other",
         }

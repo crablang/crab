@@ -1715,6 +1715,7 @@ impl Expr<'_> {
             ExprKind::Continue(..) => ExprPrecedence::Continue,
             ExprKind::Ret(..) => ExprPrecedence::Ret,
             ExprKind::InlineAsm(..) => ExprPrecedence::InlineAsm,
+            ExprKind::OffsetOf(..) => ExprPrecedence::OffsetOf,
             ExprKind::Struct(..) => ExprPrecedence::Struct,
             ExprKind::Repeat(..) => ExprPrecedence::Repeat,
             ExprKind::Yield(..) => ExprPrecedence::Yield,
@@ -1774,6 +1775,7 @@ impl Expr<'_> {
             | ExprKind::Loop(..)
             | ExprKind::Assign(..)
             | ExprKind::InlineAsm(..)
+            | ExprKind::OffsetOf(..)
             | ExprKind::AssignOp(..)
             | ExprKind::Lit(_)
             | ExprKind::ConstBlock(..)
@@ -1818,7 +1820,7 @@ impl Expr<'_> {
 
     pub fn can_have_side_effects(&self) -> bool {
         match self.peel_drop_temps().kind {
-            ExprKind::Path(_) | ExprKind::Lit(_) => false,
+            ExprKind::Path(_) | ExprKind::Lit(_) | ExprKind::OffsetOf(..) => false,
             ExprKind::Type(base, _)
             | ExprKind::Unary(_, base)
             | ExprKind::Field(base, _)
@@ -1960,7 +1962,7 @@ pub enum ExprKind<'hir> {
     Lit(&'hir Lit),
     /// A cast (e.g., `foo as f64`).
     Cast(&'hir Expr<'hir>, &'hir Ty<'hir>),
-    /// A type reference (e.g., `Foo`).
+    /// A type ascription (e.g., `x: Foo`). See RFC 3307.
     Type(&'hir Expr<'hir>, &'hir Ty<'hir>),
     /// Wraps the expression in a terminating scope.
     /// This makes it semantically equivalent to `{ let _t = expr; _t }`.
@@ -2021,6 +2023,9 @@ pub enum ExprKind<'hir> {
 
     /// Inline assembly (from `asm!`), with its outputs and inputs.
     InlineAsm(&'hir InlineAsm<'hir>),
+
+    /// Field offset (`offset_of!`)
+    OffsetOf(&'hir Ty<'hir>, &'hir [Ident]),
 
     /// A struct or struct-like variant literal expression.
     ///
@@ -3146,7 +3151,6 @@ impl<'hir> Item<'hir> {
         (ty, gen)
     }
 
-    /// An opaque `impl Trait` type alias, e.g., `type Foo = impl Bar;`.
     /// Expect an [`ItemKind::OpaqueTy`] or panic.
     #[track_caller]
     pub fn expect_opaque_ty(&self) -> &OpaqueTy<'hir> {
@@ -3168,7 +3172,6 @@ impl<'hir> Item<'hir> {
         (data, gen)
     }
 
-    /// A union definition, e.g., `union Foo<A, B> {x: A, y: B}`.
     /// Expect an [`ItemKind::Union`] or panic.
     #[track_caller]
     pub fn expect_union(&self) -> (&VariantData<'hir>, &'hir Generics<'hir>) {
@@ -3531,12 +3534,20 @@ impl<'hir> OwnerNode<'hir> {
 
     pub fn body_id(&self) -> Option<BodyId> {
         match self {
-            OwnerNode::TraitItem(TraitItem {
-                kind: TraitItemKind::Fn(_, TraitFn::Provided(body_id)),
+            OwnerNode::Item(Item {
+                kind:
+                    ItemKind::Static(_, _, body) | ItemKind::Const(_, body) | ItemKind::Fn(_, _, body),
                 ..
             })
-            | OwnerNode::ImplItem(ImplItem { kind: ImplItemKind::Fn(_, body_id), .. })
-            | OwnerNode::Item(Item { kind: ItemKind::Fn(.., body_id), .. }) => Some(*body_id),
+            | OwnerNode::TraitItem(TraitItem {
+                kind:
+                    TraitItemKind::Fn(_, TraitFn::Provided(body)) | TraitItemKind::Const(_, Some(body)),
+                ..
+            })
+            | OwnerNode::ImplItem(ImplItem {
+                kind: ImplItemKind::Fn(_, body) | ImplItemKind::Const(_, body),
+                ..
+            }) => Some(*body),
             _ => None,
         }
     }
@@ -3731,12 +3742,27 @@ impl<'hir> Node<'hir> {
 
     pub fn body_id(&self) -> Option<BodyId> {
         match self {
-            Node::TraitItem(TraitItem {
-                kind: TraitItemKind::Fn(_, TraitFn::Provided(body_id)),
+            Node::Item(Item {
+                kind:
+                    ItemKind::Static(_, _, body) | ItemKind::Const(_, body) | ItemKind::Fn(_, _, body),
                 ..
             })
-            | Node::ImplItem(ImplItem { kind: ImplItemKind::Fn(_, body_id), .. })
-            | Node::Item(Item { kind: ItemKind::Fn(.., body_id), .. }) => Some(*body_id),
+            | Node::TraitItem(TraitItem {
+                kind:
+                    TraitItemKind::Fn(_, TraitFn::Provided(body)) | TraitItemKind::Const(_, Some(body)),
+                ..
+            })
+            | Node::ImplItem(ImplItem {
+                kind: ImplItemKind::Fn(_, body) | ImplItemKind::Const(_, body),
+                ..
+            })
+            | Node::Expr(Expr {
+                kind:
+                    ExprKind::ConstBlock(AnonConst { body, .. })
+                    | ExprKind::Closure(Closure { body, .. })
+                    | ExprKind::Repeat(_, ArrayLen::Body(AnonConst { body, .. })),
+                ..
+            }) => Some(*body),
             _ => None,
         }
     }

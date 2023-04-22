@@ -11,7 +11,7 @@ use crate::ty::{
 use crate::ty::{GenericArgKind, SubstsRef};
 use rustc_apfloat::Float as _;
 use rustc_data_structures::fx::{FxHashMap, FxHashSet};
-use rustc_data_structures::stable_hasher::{HashStable, StableHasher};
+use rustc_data_structures::stable_hasher::{Hash64, HashStable, StableHasher};
 use rustc_errors::ErrorGuaranteed;
 use rustc_hir as hir;
 use rustc_hir::def::{CtorOf, DefKind, Res};
@@ -124,7 +124,7 @@ impl IntTypeExt for IntegerType {
 impl<'tcx> TyCtxt<'tcx> {
     /// Creates a hash of the type `Ty` which will be the same no matter what crate
     /// context it's calculated within. This is used by the `type_id` intrinsic.
-    pub fn type_id_hash(self, ty: Ty<'tcx>) -> u64 {
+    pub fn type_id_hash(self, ty: Ty<'tcx>) -> Hash64 {
         // We want the type_id be independent of the types free regions, so we
         // erase them. The erase_regions() call will also anonymize bound
         // regions, which is desirable too.
@@ -642,7 +642,7 @@ impl<'tcx> TyCtxt<'tcx> {
         }
     }
 
-    /// Return the set of types that should be taken into accound when checking
+    /// Return the set of types that should be taken into account when checking
     /// trait bounds on a generator's internal state.
     pub fn generator_hidden_types(
         self,
@@ -692,13 +692,6 @@ impl<'tcx> TyCtxt<'tcx> {
 
         let expanded_type = visitor.expand_opaque_ty(def_id, substs).unwrap();
         if visitor.found_recursion { Err(expanded_type) } else { Ok(expanded_type) }
-    }
-
-    pub fn bound_return_position_impl_trait_in_trait_tys(
-        self,
-        def_id: DefId,
-    ) -> ty::EarlyBinder<Result<&'tcx FxHashMap<DefId, Ty<'tcx>>, ErrorGuaranteed>> {
-        ty::EarlyBinder(self.collect_return_position_impl_trait_in_trait_tys(def_id))
     }
 
     pub fn bound_explicit_item_bounds(
@@ -1402,7 +1395,7 @@ pub fn is_trivially_const_drop(ty: Ty<'_>) -> bool {
 }
 
 /// Does the equivalent of
-/// ```ignore (ilustrative)
+/// ```ignore (illustrative)
 /// let v = self.iter().map(|p| p.fold_with(folder)).collect::<SmallVec<[_; 8]>>();
 /// folder.tcx().intern_*(&v)
 /// ```

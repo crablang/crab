@@ -1399,7 +1399,7 @@ pub(crate) fn mir_generator_witnesses<'tcx>(
 ) -> GeneratorLayout<'tcx> {
     assert!(tcx.sess.opts.unstable_opts.drop_tracking_mir);
 
-    let (body, _) = tcx.mir_promoted(ty::WithOptConstParam::unknown(def_id));
+    let (body, _) = tcx.mir_promoted(def_id);
     let body = body.borrow();
     let body = &*body;
 
@@ -1869,7 +1869,7 @@ fn check_must_not_suspend_ty<'tcx>(
                 },
             )
         }
-        // If drop tracking is enabled, we want to look through references, since the referrent
+        // If drop tracking is enabled, we want to look through references, since the referent
         // may not be considered live across the await point.
         ty::Ref(_region, ty, _mutability) => {
             let descr_pre = &format!("{}reference{} to ", data.descr_pre, plural_suffix);

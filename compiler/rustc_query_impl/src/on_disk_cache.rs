@@ -1,6 +1,7 @@
 use crate::QueryCtxt;
 use rustc_data_structures::fx::{FxHashMap, FxIndexSet};
 use rustc_data_structures::memmap::Mmap;
+use rustc_data_structures::stable_hasher::Hash64;
 use rustc_data_structures::sync::{HashMapExt, Lock, Lrc, RwLock};
 use rustc_data_structures::unhash::UnhashMap;
 use rustc_data_structures::unord::UnordSet;
@@ -138,7 +139,7 @@ impl AbsoluteBytePos {
 /// is the only thing available when decoding the cache's [Footer].
 #[derive(Encodable, Decodable, Clone, Debug)]
 struct EncodedSourceFileId {
-    file_name_hash: u64,
+    file_name_hash: Hash64,
     stable_crate_id: StableCrateId,
 }
 
@@ -299,7 +300,7 @@ impl<'sess> rustc_middle::ty::OnDiskCache<'sess> for OnDiskCache<'sess> {
                     interpret_alloc_index.reserve(new_n - n);
                     for idx in n..new_n {
                         let id = encoder.interpret_allocs[idx];
-                        let pos = encoder.position() as u32;
+                        let pos: u32 = encoder.position().try_into().unwrap();
                         interpret_alloc_index.push(pos);
                         interpret::specialized_encode_alloc_id(&mut encoder, tcx, id);
                     }
@@ -667,7 +668,7 @@ impl<'a, 'tcx> Decodable<CacheDecoder<'a, 'tcx>> for ExpnId {
             #[cfg(debug_assertions)]
             {
                 use rustc_data_structures::stable_hasher::{HashStable, StableHasher};
-                let local_hash: u64 = decoder.tcx.with_stable_hashing_context(|mut hcx| {
+                let local_hash = decoder.tcx.with_stable_hashing_context(|mut hcx| {
                     let mut hasher = StableHasher::new();
                     expn_id.expn_data().hash_stable(&mut hcx, &mut hasher);
                     hasher.finish()
@@ -744,7 +745,7 @@ impl<'a, 'tcx> Decodable<CacheDecoder<'a, 'tcx>> for Symbol {
                 let pos = d.read_usize();
                 let old_pos = d.opaque.position();
 
-                // move to str ofset and read
+                // move to str offset and read
                 d.opaque.set_position(pos);
                 let s = d.read_str();
                 let sym = Symbol::intern(s);
@@ -806,7 +807,9 @@ impl<'a, 'tcx> Decodable<CacheDecoder<'a, 'tcx>> for &'tcx UnordSet<LocalDefId> 
     }
 }
 
-impl<'a, 'tcx> Decodable<CacheDecoder<'a, 'tcx>> for &'tcx FxHashMap<DefId, Ty<'tcx>> {
+impl<'a, 'tcx> Decodable<CacheDecoder<'a, 'tcx>>
+    for &'tcx FxHashMap<DefId, ty::EarlyBinder<Ty<'tcx>>>
+{
     fn decode(d: &mut CacheDecoder<'a, 'tcx>) -> Self {
         RefDecodable::decode(d)
     }

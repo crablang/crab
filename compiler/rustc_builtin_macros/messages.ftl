@@ -4,8 +4,6 @@ builtin_macros_requires_cfg_pattern =
 
 builtin_macros_expected_one_cfg_pattern = expected 1 cfg-pattern
 
-builtin_macros_alloc_error_must_be_fn = alloc_error_handler must be a function
-
 builtin_macros_assert_requires_boolean = macro requires a boolean expression as an argument
     .label = boolean expression required
 
@@ -149,3 +147,6 @@ builtin_macros_format_pos_mismatch = {$n} positional {$n ->
     [one] argument
     *[more] arguments
     } in format string, but {$desc}
+builtin_macros_offset_of_expected_field = expected field
+
+builtin_macros_offset_of_expected_two_args = expected 2 arguments

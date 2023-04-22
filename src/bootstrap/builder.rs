@@ -1008,9 +1008,24 @@ impl<'a> Builder<'a> {
                 // Avoid deleting the rustlib/ directory we just copied
                 // (in `impl Step for Sysroot`).
                 if !builder.download_rustc() {
+                    builder.verbose(&format!(
+                        "Removing sysroot {} to avoid caching bugs",
+                        sysroot.display()
+                    ));
                     let _ = fs::remove_dir_all(&sysroot);
                     t!(fs::create_dir_all(&sysroot));
                 }
+
+                if self.compiler.stage == 0 {
+                    // The stage 0 compiler for the build triple is always pre-built.
+                    // Ensure that `libLLVM.so` ends up in the target libdir, so that ui-fulldeps tests can use it when run.
+                    dist::maybe_install_llvm_target(
+                        builder,
+                        self.compiler.host,
+                        &builder.sysroot(self.compiler),
+                    );
+                }
+
                 INTERNER.intern_path(sysroot)
             }
         }
@@ -1384,7 +1399,7 @@ impl<'a> Builder<'a> {
 
         // Add extra cfg not defined in/by rustc
         //
-        // Note: Altrough it would seems that "-Zunstable-options" to `rustflags` is useless as
+        // Note: Although it would seems that "-Zunstable-options" to `rustflags` is useless as
         // cargo would implicitly add it, it was discover that sometimes bootstrap only use
         // `rustflags` without `cargo` making it required.
         rustflags.arg("-Zunstable-options");
@@ -1574,8 +1589,8 @@ impl<'a> Builder<'a> {
         // which adds to the runtime dynamic loader path when looking for
         // dynamic libraries. We use this by default on Unix platforms to ensure
         // that our nightlies behave the same on Windows, that is they work out
-        // of the box. This can be disabled, of course, but basically that's why
-        // we're gated on RUSTC_RPATH here.
+        // of the box. This can be disabled by setting `rpath = false` in `[rust]`
+        // table of `config.toml`
         //
         // Ok, so the astute might be wondering "why isn't `-C rpath` used
         // here?" and that is indeed a good question to ask. This codegen
@@ -2030,7 +2045,7 @@ impl<'a> Builder<'a> {
         }
 
         #[cfg(feature = "build-metrics")]
-        self.metrics.enter_step(&step);
+        self.metrics.enter_step(&step, self);
 
         let (out, dur) = {
             let start = Instant::now();
@@ -2056,7 +2071,7 @@ impl<'a> Builder<'a> {
         }
 
         #[cfg(feature = "build-metrics")]
-        self.metrics.exit_step();
+        self.metrics.exit_step(self);
 
         {
             let mut stack = self.stack.borrow_mut();

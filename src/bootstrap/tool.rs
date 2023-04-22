@@ -121,7 +121,7 @@ impl Step for ToolBuild {
         builder.info(&msg);
 
         let mut cargo = Command::from(cargo);
-        let is_expected = builder.try_run_quiet(&mut cargo);
+        let is_expected = builder.try_run(&mut cargo);
 
         builder.save_toolstate(
             tool,
@@ -194,6 +194,12 @@ pub fn prepare_tool_cargo(
     cargo.env("CFG_VERSION", builder.rust_version());
     cargo.env("CFG_RELEASE_NUM", &builder.version);
     cargo.env("DOC_RUST_LANG_ORG_CHANNEL", builder.doc_rust_lang_org_channel());
+    if let Some(ref ver_date) = builder.rust_info().commit_date() {
+        cargo.env("CFG_VER_DATE", ver_date);
+    }
+    if let Some(ref ver_hash) = builder.rust_info().sha() {
+        cargo.env("CFG_VER_HASH", ver_hash);
+    }
 
     let info = GitInfo::new(builder.config.omit_git_hash, &dir);
     if let Some(sha) = info.sha() {
@@ -742,6 +748,7 @@ macro_rules! tool_extended {
        stable = $stable:expr
        $(,tool_std = $tool_std:literal)?
        $(,allow_features = $allow_features:expr)?
+       $(,add_bins_to_sysroot = $add_bins_to_sysroot:expr)?
        ;)+) => {
         $(
             #[derive(Debug, Clone, Hash, PartialEq, Eq)]
@@ -784,7 +791,7 @@ macro_rules! tool_extended {
 
             #[allow(unused_mut)]
             fn run(mut $sel, $builder: &Builder<'_>) -> Option<PathBuf> {
-                $builder.ensure(ToolBuild {
+                let tool = $builder.ensure(ToolBuild {
                     compiler: $sel.compiler,
                     target: $sel.target,
                     tool: $tool_name,
@@ -794,7 +801,27 @@ macro_rules! tool_extended {
                     is_optional_tool: true,
                     source_type: SourceType::InTree,
                     allow_features: concat!($($allow_features)*),
-                })
+                })?;
+
+                if (false $(|| !$add_bins_to_sysroot.is_empty())?) && $sel.compiler.stage > 0 {
+                    let bindir = $builder.sysroot($sel.compiler).join("bin");
+                    t!(fs::create_dir_all(&bindir));
+
+                    #[allow(unused_variables)]
+                    let tools_out = $builder
+                        .cargo_out($sel.compiler, Mode::ToolRustc, $sel.target);
+
+                    $(for add_bin in $add_bins_to_sysroot {
+                        let bin_source = tools_out.join(exe(add_bin, $sel.target));
+                        let bin_destination = bindir.join(exe(add_bin, $sel.compiler.host));
+                        $builder.copy(&bin_source, &bin_destination);
+                    })?
+
+                    let tool = bindir.join(exe($tool_name, $sel.compiler.host));
+                    Some(tool)
+                } else {
+                    Some(tool)
+                }
             }
         }
         )+
@@ -808,15 +835,15 @@ macro_rules! tool_extended {
 tool_extended!((self, builder),
     Cargofmt, "src/tools/rustfmt", "cargo-fmt", stable=true;
     CargoClippy, "src/tools/clippy", "cargo-clippy", stable=true;
-    Clippy, "src/tools/clippy", "clippy-driver", stable=true;
-    Miri, "src/tools/miri", "miri", stable=false;
-    CargoMiri, "src/tools/miri/cargo-miri", "cargo-miri", stable=true;
+    Clippy, "src/tools/clippy", "clippy-driver", stable=true, add_bins_to_sysroot = ["clippy-driver", "cargo-clippy"];
+    Miri, "src/tools/miri", "miri", stable=false, add_bins_to_sysroot = ["miri"];
+    CargoMiri, "src/tools/miri/cargo-miri", "cargo-miri", stable=true, add_bins_to_sysroot = ["cargo-miri"];
     // FIXME: tool_std is not quite right, we shouldn't allow nightly features.
     // But `builder.cargo` doesn't know how to handle ToolBootstrap in stages other than 0,
     // and this is close enough for now.
     Rls, "src/tools/rls", "rls", stable=true, tool_std=true;
     RustDemangler, "src/tools/rust-demangler", "rust-demangler", stable=false, tool_std=true;
-    Rustfmt, "src/tools/rustfmt", "rustfmt", stable=true;
+    Rustfmt, "src/tools/rustfmt", "rustfmt", stable=true, add_bins_to_sysroot = ["rustfmt", "cargo-fmt"];
 );
 
 impl<'a> Builder<'a> {

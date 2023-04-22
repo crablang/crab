@@ -47,6 +47,8 @@ declare_features! (
 
     (removed, advanced_slice_patterns, "1.0.0", Some(62254), None,
      Some("merged into `#![feature(slice_patterns)]`")),
+    /// Allows defining an `#[alloc_error_handler]`.
+    (removed, alloc_error_handler, "CURRENT_RUSTC_VERSION", Some(51540), None, Some("now handled by panic handler")),
     (removed, allocator, "1.0.0", None, None, None),
     /// Allows a test to fail without failing the whole suite.
     (removed, allow_fail, "1.19.0", Some(46488), None, Some("removed due to no clear use cases")),
@@ -139,7 +141,7 @@ declare_features! (
     /// Allows using `#[on_unimplemented(..)]` on traits.
     /// (Moved to `rustc_attrs`.)
     (removed, on_unimplemented, "1.40.0", None, None, None),
-    /// A way to temporarily opt out of opt in copy. This will *never* be accepted.
+    /// A way to temporarily opt out of opt-in copy. This will *never* be accepted.
     (removed, opt_out_copy, "1.0.0", None, None, None),
     /// Allows features specific to OIBIT (now called auto traits).
     /// Renamed to `auto_traits`.
