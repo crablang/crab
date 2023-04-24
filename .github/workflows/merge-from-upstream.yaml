@@ -1,0 +1,30 @@
+name: Update from Upstream
+
+permissions:
+    contents: write
+
+on:
+    workflow_dispatch:
+    schedule:
+        - cron: "0 0/4 * * *" # Every 4 hours
+
+jobs:
+    update-versions:
+        name: Merge and Open PR
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v3
+              with:
+                  submodules: recursive
+                  fetch-depth: 1
+            - name: Add remote and fetch
+              run: |
+                  git remote add upstream https://github.com/rust-lang/rust.git
+                  git fetch upstream master
+            - name: Create a branch that equals upstream master
+              id: create-branch
+              run: |
+                  git checkout -B upstream upstream/master
+            - name: Push to local
+              run: |
+                  git push -u origin upstream
