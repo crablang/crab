@@ -14,9 +14,6 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v3
-              with:
-                  submodules: recursive
-                  fetch-depth: 1
             - name: Add remote and fetch
               run: |
                   git remote add upstream https://github.com/rust-lang/rust.git
