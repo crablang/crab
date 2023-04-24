@@ -25,4 +25,4 @@ jobs:
                   git reset upstream/master --hard
             - name: Push to local
               run: |
-                  git push -u origin upstream
+                  git push -f -u origin upstream
