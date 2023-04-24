@@ -1,4 +1,4 @@
-name: Update from Upstream
+name: Update Upstream Branch
 
 permissions:
     contents: write
@@ -14,6 +14,8 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v3
+              with:
+                  ref: upstream
             - name: Add remote and fetch
               run: |
                   git remote add upstream https://github.com/rust-lang/rust.git
@@ -21,7 +23,8 @@ jobs:
             - name: Create a branch that equals upstream master
               id: create-branch
               run: |
-                  git checkout -B upstream upstream/master
+                  git checkout -B upstream upstream/master || true
+                  git reset upstream/master --hard
             - name: Push to local
               run: |
                   git push -u origin upstream
