@@ -20,10 +20,8 @@ jobs:
               run: |
                   git remote add upstream https://github.com/rust-lang/rust.git
                   git fetch upstream master
-            - name: Create a branch that equals upstream master
-              id: create-branch
+            - name: Reset to upstream/master
               run: |
-                  git checkout -B upstream upstream/master || true
                   git reset upstream/master --hard
             - name: Push to local
               run: |
