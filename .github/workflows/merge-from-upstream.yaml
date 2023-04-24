@@ -1,4 +1,4 @@
-name: Update Upstream Branch
+name: Update from Upstream
 
 permissions:
     contents: write
@@ -10,19 +10,21 @@ on:
 
 jobs:
     update-versions:
-        name: Upstream Upstream Branch
+        name: Merge and Open PR
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v3
               with:
-                  ref: upstream
+                  submodules: recursive
+                  fetch-depth: 1
             - name: Add remote and fetch
               run: |
                   git remote add upstream https://github.com/rust-lang/rust.git
                   git fetch upstream master
-            - name: Reset to upstream/master
+            - name: Create a branch that equals upstream master
+              id: create-branch
               run: |
-                  git reset upstream/master --hard
+                  git checkout -B upstream upstream/master
             - name: Push to local
               run: |
-                  git push -f -u origin upstream
+                  git push -u origin upstream
