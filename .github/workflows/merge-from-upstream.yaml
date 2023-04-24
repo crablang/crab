@@ -10,7 +10,7 @@ on:
 
 jobs:
     update-versions:
-        name: Merge and Open PR
+        name: Upstream Upstream Branch
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v3
