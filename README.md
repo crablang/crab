@@ -15,7 +15,13 @@ If you wish to _contribute_ to the compiler, you should read
 
 ## Quick Start
 
-!TODO
+To get started with the renamed CrabLang toolchain, run the following:
+
+```sh
+sh <(curl https://install.crablang.org -L)
+```
+
+\* currently Unix only
 
 <!-- 
 Read ["Installation"] from [The Book].
