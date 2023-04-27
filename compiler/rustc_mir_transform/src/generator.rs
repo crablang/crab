@@ -59,7 +59,7 @@ use rustc_hir as hir;
 use rustc_hir::lang_items::LangItem;
 use rustc_hir::GeneratorKind;
 use rustc_index::bit_set::{BitMatrix, BitSet, GrowableBitSet};
-use rustc_index::vec::{Idx, IndexVec};
+use rustc_index::{Idx, IndexVec};
 use rustc_middle::mir::dump_mir;
 use rustc_middle::mir::visit::{MutVisitor, PlaceContext, Visitor};
 use rustc_middle::mir::*;
@@ -1800,7 +1800,7 @@ fn check_must_not_suspend_ty<'tcx>(
         // FIXME: support adding the attribute to TAITs
         ty::Alias(ty::Opaque, ty::AliasTy { def_id: def, .. }) => {
             let mut has_emitted = false;
-            for &(predicate, _) in tcx.explicit_item_bounds(def) {
+            for &(predicate, _) in tcx.explicit_item_bounds(def).skip_binder() {
                 // We only look at the `DefId`, so it is safe to skip the binder here.
                 if let ty::PredicateKind::Clause(ty::Clause::Trait(ref poly_trait_predicate)) =
                     predicate.kind().skip_binder()

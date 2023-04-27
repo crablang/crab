@@ -251,7 +251,7 @@ rustc_queries! {
     /// `key` is the `DefId` of the associated type or opaque type.
     ///
     /// Bounds from the parent (e.g. with nested impl trait) are not included.
-    query explicit_item_bounds(key: DefId) -> &'tcx [(ty::Predicate<'tcx>, Span)] {
+    query explicit_item_bounds(key: DefId) -> ty::EarlyBinder<&'tcx [(ty::Predicate<'tcx>, Span)]> {
         desc { |tcx| "finding item bounds for `{}`", tcx.def_path_str(key) }
         cache_on_disk_if { key.is_local() }
         separate_provide_extern
@@ -1351,6 +1351,13 @@ rustc_queries! {
         desc { "checking if the crate has_global_allocator" }
         separate_provide_extern
     }
+    query has_alloc_error_handler(_: CrateNum) -> bool {
+        // This query depends on untracked global state in CStore
+        eval_always
+        fatal_cycle
+        desc { "checking if the crate has_alloc_error_handler" }
+        separate_provide_extern
+    }
     query has_panic_handler(_: CrateNum) -> bool {
         fatal_cycle
         desc { "checking if the crate has_panic_handler" }
@@ -1722,6 +1729,10 @@ rustc_queries! {
     query allocator_kind(_: ()) -> Option<AllocatorKind> {
         eval_always
         desc { "getting the allocator kind for the current crate" }
+    }
+    query alloc_error_handler_kind(_: ()) -> Option<AllocatorKind> {
+        eval_always
+        desc { "alloc error handler kind for the current crate" }
     }
 
     query upvars_mentioned(def_id: DefId) -> Option<&'tcx FxIndexMap<hir::HirId, hir::Upvar>> {

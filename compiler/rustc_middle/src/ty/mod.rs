@@ -41,7 +41,7 @@ use rustc_hir as hir;
 use rustc_hir::def::{CtorKind, CtorOf, DefKind, DocLinkResMap, LifetimeRes, Res};
 use rustc_hir::def_id::{CrateNum, DefId, DefIdMap, LocalDefId, LocalDefIdMap};
 use rustc_hir::Node;
-use rustc_index::vec::IndexVec;
+use rustc_index::IndexVec;
 use rustc_macros::HashStable;
 use rustc_query_system::ich::StableHashingContext;
 use rustc_serialize::{Decodable, Encodable};
@@ -861,6 +861,11 @@ impl<'tcx> PolyTraitPredicate<'tcx> {
     pub fn is_const_if_const(self) -> bool {
         self.skip_binder().is_const_if_const()
     }
+
+    #[inline]
+    pub fn polarity(self) -> ImplPolarity {
+        self.skip_binder().polarity
+    }
 }
 
 /// `A: B`
@@ -1497,29 +1502,12 @@ struct ParamTag {
     constness: hir::Constness,
 }
 
-unsafe impl rustc_data_structures::tagged_ptr::Tag for ParamTag {
-    const BITS: u32 = 2;
-
-    #[inline]
-    fn into_usize(self) -> usize {
-        match self {
-            Self { reveal: traits::Reveal::UserFacing, constness: hir::Constness::NotConst } => 0,
-            Self { reveal: traits::Reveal::All, constness: hir::Constness::NotConst } => 1,
-            Self { reveal: traits::Reveal::UserFacing, constness: hir::Constness::Const } => 2,
-            Self { reveal: traits::Reveal::All, constness: hir::Constness::Const } => 3,
-        }
-    }
-
-    #[inline]
-    unsafe fn from_usize(ptr: usize) -> Self {
-        match ptr {
-            0 => Self { reveal: traits::Reveal::UserFacing, constness: hir::Constness::NotConst },
-            1 => Self { reveal: traits::Reveal::All, constness: hir::Constness::NotConst },
-            2 => Self { reveal: traits::Reveal::UserFacing, constness: hir::Constness::Const },
-            3 => Self { reveal: traits::Reveal::All, constness: hir::Constness::Const },
-            _ => std::hint::unreachable_unchecked(),
-        }
-    }
+impl_tag! {
+    impl Tag for ParamTag;
+    ParamTag { reveal: traits::Reveal::UserFacing, constness: hir::Constness::NotConst },
+    ParamTag { reveal: traits::Reveal::All,        constness: hir::Constness::NotConst },
+    ParamTag { reveal: traits::Reveal::UserFacing, constness: hir::Constness::Const    },
+    ParamTag { reveal: traits::Reveal::All,        constness: hir::Constness::Const    },
 }
 
 impl<'tcx> fmt::Debug for ParamEnv<'tcx> {

@@ -16,14 +16,14 @@ use rustc_hir::def::{CtorKind, DefKind, DocLinkResMap, Res};
 use rustc_hir::def_id::{CrateNum, DefId, DefIndex, CRATE_DEF_INDEX, LOCAL_CRATE};
 use rustc_hir::definitions::{DefKey, DefPath, DefPathData, DefPathHash};
 use rustc_hir::diagnostic_items::DiagnosticItems;
-use rustc_index::vec::{Idx, IndexVec};
+use rustc_index::{Idx, IndexVec};
 use rustc_middle::metadata::ModChild;
 use rustc_middle::middle::exported_symbols::{ExportedSymbol, SymbolExportInfo};
 use rustc_middle::mir::interpret::{AllocDecodingSession, AllocDecodingState};
 use rustc_middle::ty::codec::TyDecoder;
 use rustc_middle::ty::fast_reject::SimplifiedType;
 use rustc_middle::ty::GeneratorDiagnosticData;
-use rustc_middle::ty::{self, ParameterizedOverTcx, Ty, TyCtxt, Visibility};
+use rustc_middle::ty::{self, ParameterizedOverTcx, Predicate, Ty, TyCtxt, Visibility};
 use rustc_serialize::opaque::MemDecoder;
 use rustc_serialize::{Decodable, Decoder};
 use rustc_session::cstore::{
@@ -373,16 +373,6 @@ impl<'a, 'tcx> TyDecoder for DecodeContext<'a, 'tcx> {
         self.tcx()
     }
 
-    #[inline]
-    fn peek_byte(&self) -> u8 {
-        self.opaque.data[self.opaque.position()]
-    }
-
-    #[inline]
-    fn position(&self) -> usize {
-        self.opaque.position()
-    }
-
     fn cached_ty_for_shorthand<F>(&mut self, shorthand: usize, or_insert_with: F) -> Ty<'tcx>
     where
         F: FnOnce(&mut Self) -> Ty<'tcx>,
@@ -404,7 +394,7 @@ impl<'a, 'tcx> TyDecoder for DecodeContext<'a, 'tcx> {
     where
         F: FnOnce(&mut Self) -> R,
     {
-        let new_opaque = MemDecoder::new(self.opaque.data, pos);
+        let new_opaque = MemDecoder::new(self.opaque.data(), pos);
         let old_opaque = mem::replace(&mut self.opaque, new_opaque);
         let old_state = mem::replace(&mut self.lazy_state, LazyState::NoNode);
         let r = f(self);
@@ -625,17 +615,12 @@ impl<'a, 'tcx> Decodable<DecodeContext<'a, 'tcx>> for Symbol {
             SYMBOL_OFFSET => {
                 // read str offset
                 let pos = d.read_usize();
-                let old_pos = d.opaque.position();
 
                 // move to str offset and read
-                d.opaque.set_position(pos);
-                let s = d.read_str();
-                let sym = Symbol::intern(s);
-
-                // restore position
-                d.opaque.set_position(old_pos);
-
-                sym
+                d.opaque.with_position(pos, |d| {
+                    let s = d.read_str();
+                    Symbol::intern(s)
+                })
             }
             SYMBOL_PREINTERNED => {
                 let symbol_index = d.read_u32();
@@ -855,6 +840,20 @@ impl<'a, 'tcx> CrateMetadataRef<'a> {
             Symbol::intern(name),
             &attrs,
         )
+    }
+
+    fn get_explicit_item_bounds(
+        self,
+        index: DefIndex,
+        tcx: TyCtxt<'tcx>,
+    ) -> ty::EarlyBinder<&'tcx [(Predicate<'tcx>, Span)]> {
+        let lazy = self.root.tables.explicit_item_bounds.get(self, index);
+        let output = if lazy.is_default() {
+            &mut []
+        } else {
+            tcx.arena.alloc_from_iter(lazy.decode((self, tcx)))
+        };
+        ty::EarlyBinder(&*output)
     }
 
     fn get_variant(self, kind: &DefKind, index: DefIndex, parent_did: DefId) -> ty::VariantDef {
@@ -1681,6 +1680,10 @@ impl CrateMetadata {
 
     pub(crate) fn has_global_allocator(&self) -> bool {
         self.root.has_global_allocator
+    }
+
+    pub(crate) fn has_alloc_error_handler(&self) -> bool {
+        self.root.has_alloc_error_handler
     }
 
     pub(crate) fn has_default_lib_allocator(&self) -> bool {

@@ -24,7 +24,7 @@ use rustc_data_structures::fx::FxHashMap;
 use rustc_data_structures::stable_hasher::Hash128;
 use rustc_data_structures::sync::Lrc;
 use rustc_hir::def_id::{DefId, DefIdMap};
-use rustc_index::vec::IndexVec;
+use rustc_index::IndexVec;
 use rustc_middle::mir;
 use rustc_middle::ty::layout::LayoutOf;
 use rustc_middle::ty::subst::SubstsRef;
@@ -515,7 +515,7 @@ impl<'ll, 'tcx> DebugInfoMethods<'tcx> for CodegenCx<'ll, 'tcx> {
                         ty::Adt(def, ..) if !def.is_box() => {
                             // Again, only create type information if full debuginfo is enabled
                             if cx.sess().opts.debuginfo == DebugInfo::Full
-                                && !impl_self_ty.needs_subst()
+                                && !impl_self_ty.has_param()
                             {
                                 Some(type_di_node(cx, impl_self_ty))
                             } else {

@@ -10,7 +10,7 @@ use crate::ty::print::{with_no_trimmed_paths, FmtPrinter, Printer};
 use crate::ty::visit::{TypeSuperVisitable, TypeVisitable, TypeVisitor};
 use crate::ty::{self, AliasTy, InferConst, Lift, Term, TermKind, Ty, TyCtxt};
 use rustc_hir::def::Namespace;
-use rustc_index::vec::{Idx, IndexVec};
+use rustc_index::{Idx, IndexVec};
 use rustc_target::abi::TyAndLayout;
 
 use std::fmt;
@@ -95,7 +95,7 @@ impl<'tcx> fmt::Debug for ty::FnSig<'tcx> {
 
 impl<'tcx> fmt::Debug for ty::ConstVid<'tcx> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "_#{}c", self.index)
+        write!(f, "?{}c", self.index)
     }
 }
 

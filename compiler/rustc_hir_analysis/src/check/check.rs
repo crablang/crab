@@ -170,9 +170,7 @@ fn check_static_inhabited(tcx: TyCtxt<'_>, def_id: LocalDefId) {
             if matches!(tcx.def_kind(def_id), DefKind::Static(_)
                 if tcx.def_kind(tcx.local_parent(def_id)) == DefKind::ForeignMod) =>
         {
-            tcx.sess
-                .struct_span_err(span, "extern static is too large for the current architecture")
-                .emit();
+            tcx.sess.emit_err(errors::TooLargeStatic { span });
             return;
         }
         // Generic statics are rejected, but we still reach this case.
@@ -320,7 +318,7 @@ pub(super) fn check_opaque_for_inheriting_lifetimes(
         };
         let prohibit_opaque = tcx
             .explicit_item_bounds(def_id)
-            .iter()
+            .subst_identity_iter_copied()
             .try_for_each(|(predicate, _)| predicate.visit_with(&mut visitor));
 
         if let Some(ty) = prohibit_opaque.break_value() {

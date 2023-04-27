@@ -1400,7 +1400,8 @@ The default is {DEFAULT_EDITION} and the latest stable edition is {LATEST_STABLE
 pub fn rustc_short_optgroups() -> Vec<RustcOptGroup> {
     vec![
         opt::flag_s("h", "help", "Display this message"),
-        opt::multi_s("", "cfg", "Configure the compilation environment", "SPEC"),
+        opt::multi_s("", "cfg", "Configure the compilation environment.
+                             SPEC supports the syntax `NAME[=\"VALUE\"]`.", "SPEC"),
         opt::multi("", "check-cfg", "Provide list of valid cfg options for checking", "SPEC"),
         opt::multi_s(
             "L",
@@ -3048,9 +3049,9 @@ pub(crate) mod dep_tracking {
 #[derive(Clone, Copy, PartialEq, Hash, Debug, Encodable, Decodable, HashStable_Generic)]
 pub enum OomStrategy {
     /// Generate a panic that can be caught by `catch_unwind`.
-    Unwind,
+    Panic,
 
-    /// Calls the panic hook as normal but aborts instead of unwinding.
+    /// Abort the process immediately.
     Abort,
 }
 
@@ -3059,7 +3060,7 @@ impl OomStrategy {
 
     pub fn should_panic(self) -> u8 {
         match self {
-            OomStrategy::Unwind => 1,
+            OomStrategy::Panic => 1,
             OomStrategy::Abort => 0,
         }
     }

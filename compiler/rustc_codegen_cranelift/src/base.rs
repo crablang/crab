@@ -1,7 +1,7 @@
 //! Codegen of a single function
 
 use rustc_ast::InlineAsmOptions;
-use rustc_index::vec::IndexVec;
+use rustc_index::IndexVec;
 use rustc_middle::ty::adjustment::PointerCast;
 use rustc_middle::ty::layout::FnAbiOf;
 use rustc_middle::ty::print::with_no_trimmed_paths;
@@ -28,7 +28,7 @@ pub(crate) fn codegen_fn<'tcx>(
     module: &mut dyn Module,
     instance: Instance<'tcx>,
 ) -> CodegenedFunction {
-    debug_assert!(!instance.substs.needs_infer());
+    debug_assert!(!instance.substs.has_infer());
 
     let symbol_name = tcx.symbol_name(instance).name.to_string();
     let _timer = tcx.prof.generic_activity_with_arg("codegen fn", &*symbol_name);

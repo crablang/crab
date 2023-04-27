@@ -16,7 +16,7 @@ use rustc_hir as hir;
 use rustc_hir::def::{CtorOf, DefKind, Res};
 use rustc_hir::def_id::{DefId, LocalDefId};
 use rustc_index::bit_set::GrowableBitSet;
-use rustc_index::vec::{Idx, IndexVec};
+use rustc_index::{Idx, IndexVec};
 use rustc_macros::HashStable;
 use rustc_session::Limit;
 use rustc_span::sym;
@@ -701,13 +701,6 @@ impl<'tcx> TyCtxt<'tcx> {
         if visitor.found_recursion { Err(expanded_type) } else { Ok(expanded_type) }
     }
 
-    pub fn bound_explicit_item_bounds(
-        self,
-        def_id: DefId,
-    ) -> ty::EarlyBinder<&'tcx [(ty::Predicate<'tcx>, rustc_span::Span)]> {
-        ty::EarlyBinder(self.explicit_item_bounds(def_id))
-    }
-
     /// Returns names of captured upvars for closures and generators.
     ///
     /// Here are some examples:
@@ -1158,7 +1151,7 @@ impl<'tcx> Ty<'tcx> {
                 // context, or *something* like that, but for now just avoid passing inference
                 // variables to queries that can't cope with them. Instead, conservatively
                 // return "true" (may change drop order).
-                if query_ty.needs_infer() {
+                if query_ty.has_infer() {
                     return true;
                 }
 

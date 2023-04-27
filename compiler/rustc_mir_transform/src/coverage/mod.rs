@@ -16,7 +16,7 @@ use crate::MirPass;
 
 use rustc_data_structures::graph::WithNumNodes;
 use rustc_data_structures::sync::Lrc;
-use rustc_index::vec::IndexVec;
+use rustc_index::IndexVec;
 use rustc_middle::hir;
 use rustc_middle::middle::codegen_fn_attrs::CodegenFnAttrFlags;
 use rustc_middle::mir::coverage::*;
@@ -514,7 +514,7 @@ fn make_code_region(
         // Extend an empty span by one character so the region will be counted.
         let CharPos(char_pos) = start_col;
         if span.hi() == body_span.hi() {
-            start_col = CharPos(char_pos - 1);
+            start_col = CharPos(char_pos.saturating_sub(1));
         } else {
             end_col = CharPos(char_pos + 1);
         }

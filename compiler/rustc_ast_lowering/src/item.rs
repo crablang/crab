@@ -12,7 +12,7 @@ use rustc_hir as hir;
 use rustc_hir::def::{DefKind, Res};
 use rustc_hir::def_id::{LocalDefId, CRATE_DEF_ID};
 use rustc_hir::PredicateOrigin;
-use rustc_index::vec::{Idx, IndexSlice, IndexVec};
+use rustc_index::{Idx, IndexSlice, IndexVec};
 use rustc_middle::ty::{ResolverAstLowering, TyCtxt};
 use rustc_span::edit_distance::find_best_match_for_name;
 use rustc_span::source_map::DesugaringKind;
@@ -83,7 +83,6 @@ impl<'a, 'hir> ItemLowerer<'a, 'hir> {
             impl_trait_bounds: Vec::new(),
             allow_try_trait: Some([sym::try_trait_v2, sym::yeet_desugar_details][..].into()),
             allow_gen_future: Some([sym::gen_future, sym::closure_track_caller][..].into()),
-            allow_into_future: Some([sym::into_future][..].into()),
             generics_def_id_map: Default::default(),
         };
         lctx.with_hir_id_owner(owner, |lctx| f(lctx));

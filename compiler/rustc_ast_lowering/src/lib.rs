@@ -61,7 +61,7 @@ use rustc_hir::def::{DefKind, LifetimeRes, Namespace, PartialRes, PerNS, Res};
 use rustc_hir::def_id::{LocalDefId, CRATE_DEF_ID};
 use rustc_hir::definitions::DefPathData;
 use rustc_hir::{ConstArg, GenericArg, ItemLocalId, ParamName, TraitCandidate};
-use rustc_index::vec::{Idx, IndexSlice, IndexVec};
+use rustc_index::{Idx, IndexSlice, IndexVec};
 use rustc_middle::{
     span_bug,
     ty::{ResolverAstLowering, TyCtxt},
@@ -136,7 +136,6 @@ struct LoweringContext<'a, 'hir> {
 
     allow_try_trait: Option<Lrc<[Symbol]>>,
     allow_gen_future: Option<Lrc<[Symbol]>>,
-    allow_into_future: Option<Lrc<[Symbol]>>,
 
     /// Mapping from generics `def_id`s to TAIT generics `def_id`s.
     /// For each captured lifetime (e.g., 'a), we create a new lifetime parameter that is a generic

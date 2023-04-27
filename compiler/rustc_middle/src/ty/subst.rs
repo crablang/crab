@@ -612,6 +612,12 @@ where
     ) -> SubstIter<'s, 'tcx, I> {
         SubstIter { it: self.0.into_iter(), tcx, substs }
     }
+
+    /// Similar to [`subst_identity`](EarlyBinder::subst_identity),
+    /// but on an iterator of `TypeFoldable` values.
+    pub fn subst_identity_iter(self) -> I::IntoIter {
+        self.0.into_iter()
+    }
 }
 
 pub struct SubstIter<'s, 'tcx, I: IntoIterator> {
@@ -663,6 +669,12 @@ where
         substs: &'s [GenericArg<'tcx>],
     ) -> SubstIterCopied<'s, 'tcx, I> {
         SubstIterCopied { it: self.0.into_iter(), tcx, substs }
+    }
+
+    /// Similar to [`subst_identity`](EarlyBinder::subst_identity),
+    /// but on an iterator of values that deref to a `TypeFoldable`.
+    pub fn subst_identity_iter_copied(self) -> impl Iterator<Item = <I::Item as Deref>::Target> {
+        self.0.into_iter().map(|v| *v)
     }
 }
 
@@ -749,7 +761,7 @@ impl<'tcx, T: TypeFoldable<TyCtxt<'tcx>>> ty::EarlyBinder<T> {
 
     /// Returns the inner value, but only if it contains no bound vars.
     pub fn no_bound_vars(self) -> Option<T> {
-        if !self.0.needs_subst() { Some(self.0) } else { None }
+        if !self.0.has_param() { Some(self.0) } else { None }
     }
 }
 
@@ -817,12 +829,18 @@ impl<'a, 'tcx> TypeFolder<TyCtxt<'tcx>> for SubstFolder<'a, 'tcx> {
                     None => region_param_out_of_range(data, self.substs),
                 }
             }
-            _ => r,
+            ty::ReLateBound(..)
+            | ty::ReFree(_)
+            | ty::ReStatic
+            | ty::RePlaceholder(_)
+            | ty::ReErased
+            | ty::ReError(_) => r,
+            ty::ReVar(_) => bug!("unexpected region: {r:?}"),
         }
     }
 
     fn fold_ty(&mut self, t: Ty<'tcx>) -> Ty<'tcx> {
-        if !t.needs_subst() {
+        if !t.has_param() {
             return t;
         }
 
