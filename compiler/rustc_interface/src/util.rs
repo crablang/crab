@@ -4,6 +4,8 @@ use libloading::Library;
 use rustc_ast as ast;
 use rustc_codegen_ssa::traits::CodegenBackend;
 use rustc_data_structures::fx::{FxHashMap, FxHashSet};
+#[cfg(parallel_compiler)]
+use rustc_data_structures::sync;
 use rustc_errors::registry::Registry;
 use rustc_parse::validate_attr;
 use rustc_session as session;
@@ -168,8 +170,10 @@ pub(crate) fn run_in_thread_pool_with_globals<F: FnOnce() -> R + Send, R: Send>(
 ) -> R {
     use rustc_data_structures::jobserver;
     use rustc_middle::ty::tls;
-    use rustc_query_impl::{deadlock, QueryContext, QueryCtxt};
+    use rustc_query_impl::QueryCtxt;
+    use rustc_query_system::query::{deadlock, QueryContext};
 
+    let registry = sync::Registry::new(threads);
     let mut builder = rayon::ThreadPoolBuilder::new()
         .thread_name(|_| "rustc".to_string())
         .acquire_thread_handler(jobserver::acquire_thread)
@@ -179,7 +183,7 @@ pub(crate) fn run_in_thread_pool_with_globals<F: FnOnce() -> R + Send, R: Send>(
             // On deadlock, creates a new thread and forwards information in thread
             // locals to it. The new thread runs the deadlock handler.
             let query_map = tls::with(|tcx| {
-                QueryCtxt::from_tcx(tcx)
+                QueryCtxt::new(tcx)
                     .try_collect_active_jobs()
                     .expect("active jobs shouldn't be locked in deadlock handler")
             });
@@ -200,6 +204,9 @@ pub(crate) fn run_in_thread_pool_with_globals<F: FnOnce() -> R + Send, R: Send>(
                 .build_scoped(
                     // Initialize each new worker thread when created.
                     move |thread: rayon::ThreadBuilder| {
+                        // Register the thread for use with the `WorkerLocal` type.
+                        registry.register();
+
                         rustc_span::set_session_globals_then(session_globals, || thread.run())
                     },
                     // Run `f` on the first thread in the thread pool.

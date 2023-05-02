@@ -1430,8 +1430,8 @@ pub enum ExprKind {
     /// The async block used to have a `NodeId`, which was removed in favor of
     /// using the parent `NodeId` of the parent `Expr`.
     Async(CaptureBy, P<Block>),
-    /// An await expression (`my_future.await`).
-    Await(P<Expr>),
+    /// An await expression (`my_future.await`). Span is of await keyword.
+    Await(P<Expr>, Span),
 
     /// A try block (`try { ... }`).
     TryBlock(P<Block>),
@@ -2976,7 +2976,7 @@ pub enum ItemKind {
 }
 
 impl ItemKind {
-    pub fn article(&self) -> &str {
+    pub fn article(&self) -> &'static str {
         use ItemKind::*;
         match self {
             Use(..) | Static(..) | Const(..) | Fn(..) | Mod(..) | GlobalAsm(..) | TyAlias(..)
@@ -2985,7 +2985,7 @@ impl ItemKind {
         }
     }
 
-    pub fn descr(&self) -> &str {
+    pub fn descr(&self) -> &'static str {
         match self {
             ItemKind::ExternCrate(..) => "extern crate",
             ItemKind::Use(..) => "`use` import",

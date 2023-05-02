@@ -1501,11 +1501,17 @@ impl<'a, T> Iterator for Iter<'a, T> {
         self.next_back()
     }
 
-    fn min(mut self) -> Option<&'a T> {
+    fn min(mut self) -> Option<&'a T>
+    where
+        &'a T: Ord,
+    {
         self.next()
     }
 
-    fn max(mut self) -> Option<&'a T> {
+    fn max(mut self) -> Option<&'a T>
+    where
+        &'a T: Ord,
+    {
         self.next_back()
     }
 }
@@ -1538,7 +1544,7 @@ impl<T, A: Allocator + Clone> Iterator for IntoIter<T, A> {
     }
 }
 
-#[stable(feature = "default_iters", since = "CURRENT_RUSTC_VERSION")]
+#[stable(feature = "default_iters", since = "1.70.0")]
 impl<T> Default for Iter<'_, T> {
     /// Creates an empty `btree_set::Iter`.
     ///
@@ -1568,7 +1574,7 @@ impl<T, A: Allocator + Clone> ExactSizeIterator for IntoIter<T, A> {
 #[stable(feature = "fused", since = "1.26.0")]
 impl<T, A: Allocator + Clone> FusedIterator for IntoIter<T, A> {}
 
-#[stable(feature = "default_iters", since = "CURRENT_RUSTC_VERSION")]
+#[stable(feature = "default_iters", since = "1.70.0")]
 impl<T, A> Default for IntoIter<T, A>
 where
     A: Allocator + Default + Clone,
@@ -1604,11 +1610,17 @@ impl<'a, T> Iterator for Range<'a, T> {
         self.next_back()
     }
 
-    fn min(mut self) -> Option<&'a T> {
+    fn min(mut self) -> Option<&'a T>
+    where
+        &'a T: Ord,
+    {
         self.next()
     }
 
-    fn max(mut self) -> Option<&'a T> {
+    fn max(mut self) -> Option<&'a T>
+    where
+        &'a T: Ord,
+    {
         self.next_back()
     }
 }
@@ -1623,7 +1635,7 @@ impl<'a, T> DoubleEndedIterator for Range<'a, T> {
 #[stable(feature = "fused", since = "1.26.0")]
 impl<T> FusedIterator for Range<'_, T> {}
 
-#[stable(feature = "default_iters", since = "CURRENT_RUSTC_VERSION")]
+#[stable(feature = "default_iters", since = "1.70.0")]
 impl<T> Default for Range<'_, T> {
     /// Creates an empty `btree_set::Range`.
     ///

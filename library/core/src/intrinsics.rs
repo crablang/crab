@@ -1413,6 +1413,10 @@ extern "rust-intrinsic" {
     /// This is implemented as an intrinsic to avoid converting to and from an
     /// integer, since the conversion would throw away aliasing information.
     ///
+    /// This can only be used with `Ptr` as a raw pointer type (`*mut` or `*const`)
+    /// to a `Sized` pointee and with `Delta` as `usize` or `isize`.  Any other
+    /// instantiations may arbitrarily misbehave, and that's *not* a compiler bug.
+    ///
     /// # Safety
     ///
     /// Both the starting and resulting pointer must be either in bounds or one
@@ -1421,6 +1425,14 @@ extern "rust-intrinsic" {
     /// returned value will result in undefined behavior.
     ///
     /// The stabilized version of this intrinsic is [`pointer::offset`].
+    #[cfg(not(bootstrap))]
+    #[must_use = "returns a new pointer rather than modifying its argument"]
+    #[rustc_const_stable(feature = "const_ptr_offset", since = "1.61.0")]
+    #[rustc_nounwind]
+    pub fn offset<Ptr, Delta>(dst: Ptr, offset: Delta) -> Ptr;
+
+    /// The bootstrap version of this is more restricted.
+    #[cfg(bootstrap)]
     #[must_use = "returns a new pointer rather than modifying its argument"]
     #[rustc_const_stable(feature = "const_ptr_offset", since = "1.61.0")]
     #[rustc_nounwind]
@@ -1811,14 +1823,12 @@ extern "rust-intrinsic" {
     /// with an even least significant digit.
     ///
     /// This intrinsic does not have a stable counterpart.
-    #[cfg(not(bootstrap))]
     #[rustc_nounwind]
     pub fn roundevenf32(x: f32) -> f32;
     /// Returns the nearest integer to an `f64`. Rounds half-way cases to the number
     /// with an even least significant digit.
     ///
     /// This intrinsic does not have a stable counterpart.
-    #[cfg(not(bootstrap))]
     #[rustc_nounwind]
     pub fn roundevenf64(x: f64) -> f64;
 
@@ -2247,13 +2257,23 @@ extern "rust-intrinsic" {
     /// This is an implementation detail of [`crate::ptr::read`] and should
     /// not be used anywhere else.  See its comments for why this exists.
     ///
-    /// This intrinsic can *only* be called where the argument is a local without
-    /// projections (`read_via_copy(p)`, not `read_via_copy(*p)`) so that it
+    /// This intrinsic can *only* be called where the pointer is a local without
+    /// projections (`read_via_copy(ptr)`, not `read_via_copy(*ptr)`) so that it
     /// trivially obeys runtime-MIR rules about derefs in operands.
-    #[cfg(not(bootstrap))]
     #[rustc_const_unstable(feature = "const_ptr_read", issue = "80377")]
     #[rustc_nounwind]
-    pub fn read_via_copy<T>(p: *const T) -> T;
+    pub fn read_via_copy<T>(ptr: *const T) -> T;
+
+    /// This is an implementation detail of [`crate::ptr::write`] and should
+    /// not be used anywhere else.  See its comments for why this exists.
+    ///
+    /// This intrinsic can *only* be called where the pointer is a local without
+    /// projections (`write_via_move(ptr, x)`, not `write_via_move(*ptr, x)`) so
+    /// that it trivially obeys runtime-MIR rules about derefs in operands.
+    #[cfg(not(bootstrap))]
+    #[rustc_const_unstable(feature = "const_ptr_write", issue = "86302")]
+    #[rustc_nounwind]
+    pub fn write_via_move<T>(ptr: *mut T, value: T);
 
     /// Returns the value of the discriminant for the variant in 'v';
     /// if `T` has no discriminant, returns `0`.
@@ -2458,7 +2478,6 @@ extern "rust-intrinsic" {
     /// This method creates a pointer to any `Some` value. If the argument is
     /// `None`, an invalid within-bounds pointer (that is still acceptable for
     /// constructing an empty slice) is returned.
-    #[cfg(not(bootstrap))]
     #[rustc_nounwind]
     pub fn option_payload_ptr<T>(arg: *const Option<T>) -> *const T;
 }
@@ -2819,4 +2838,17 @@ pub const unsafe fn transmute_unchecked<Src, Dst>(src: Src) -> Dst {
     use crate::mem::*;
     // SAFETY: It's a transmute -- the caller promised it's fine.
     unsafe { transmute_copy(&ManuallyDrop::new(src)) }
+}
+
+/// Polyfill for bootstrap
+#[cfg(bootstrap)]
+pub const unsafe fn write_via_move<T>(ptr: *mut T, value: T) {
+    use crate::mem::*;
+    // SAFETY: the caller must guarantee that `dst` is valid for writes.
+    // `dst` cannot overlap `src` because the caller has mutable access
+    // to `dst` while `src` is owned by this function.
+    unsafe {
+        copy_nonoverlapping::<T>(&value, ptr, 1);
+        forget(value);
+    }
 }

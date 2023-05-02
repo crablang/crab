@@ -709,6 +709,7 @@ impl File {
 // `AsRawHandle`/`IntoRawHandle`/`FromRawHandle` on Windows.
 
 impl AsInner<fs_imp::File> for File {
+    #[inline]
     fn as_inner(&self) -> &fs_imp::File {
         &self.inner
     }
@@ -1087,12 +1088,14 @@ impl OpenOptions {
 }
 
 impl AsInner<fs_imp::OpenOptions> for OpenOptions {
+    #[inline]
     fn as_inner(&self) -> &fs_imp::OpenOptions {
         &self.0
     }
 }
 
 impl AsInnerMut<fs_imp::OpenOptions> for OpenOptions {
+    #[inline]
     fn as_inner_mut(&mut self) -> &mut fs_imp::OpenOptions {
         &mut self.0
     }
@@ -1352,6 +1355,7 @@ impl fmt::Debug for Metadata {
 }
 
 impl AsInner<fs_imp::FileAttr> for Metadata {
+    #[inline]
     fn as_inner(&self) -> &fs_imp::FileAttr {
         &self.0
     }
@@ -1604,6 +1608,7 @@ impl FileType {
 }
 
 impl AsInner<fs_imp::FileType> for FileType {
+    #[inline]
     fn as_inner(&self) -> &fs_imp::FileType {
         &self.0
     }
@@ -1616,6 +1621,7 @@ impl FromInner<fs_imp::FilePermissions> for Permissions {
 }
 
 impl AsInner<fs_imp::FilePermissions> for Permissions {
+    #[inline]
     fn as_inner(&self) -> &fs_imp::FilePermissions {
         &self.0
     }
@@ -1770,6 +1776,7 @@ impl fmt::Debug for DirEntry {
 }
 
 impl AsInner<fs_imp::DirEntry> for DirEntry {
+    #[inline]
     fn as_inner(&self) -> &fs_imp::DirEntry {
         &self.0
     }
@@ -2284,6 +2291,11 @@ pub fn remove_dir<P: AsRef<Path>>(path: P) -> io::Result<()> {
 ///
 /// See [`fs::remove_file`] and [`fs::remove_dir`].
 ///
+/// `remove_dir_all` will fail if `remove_dir` or `remove_file` fail on any constituent paths, including the root path.
+/// As a result, the directory you are deleting must exist, meaning that this function is not idempotent.
+///
+/// Consider ignoring the error if validating the removal is not required for your use case.
+///
 /// [`fs::remove_file`]: remove_file
 /// [`fs::remove_dir`]: remove_dir
 ///
@@ -2505,6 +2517,7 @@ impl DirBuilder {
 }
 
 impl AsInnerMut<fs_imp::DirBuilder> for DirBuilder {
+    #[inline]
     fn as_inner_mut(&mut self) -> &mut fs_imp::DirBuilder {
         &mut self.inner
     }

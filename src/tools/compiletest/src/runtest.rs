@@ -224,6 +224,7 @@ enum Emit {
     Metadata,
     LlvmIr,
     Asm,
+    LinkArgsAsm,
 }
 
 impl<'test> TestCx<'test> {
@@ -1613,8 +1614,13 @@ impl<'test> TestCx<'test> {
                 test_client
                     .args(&["run", &support_libs.len().to_string(), &prog])
                     .args(support_libs)
-                    .args(args)
-                    .envs(env.clone());
+                    .args(args);
+
+                for key in &self.props.unset_exec_env {
+                    test_client.env_remove(key);
+                }
+                test_client.envs(env.clone());
+
                 self.compose_and_run(
                     test_client,
                     self.config.run_lib_path.to_str().unwrap(),
@@ -1626,7 +1632,13 @@ impl<'test> TestCx<'test> {
                 let aux_dir = self.aux_output_dir_name();
                 let ProcArgs { prog, args } = self.make_run_args();
                 let mut wr_run = Command::new("wr-run");
-                wr_run.args(&[&prog]).args(args).envs(env.clone());
+                wr_run.args(&[&prog]).args(args);
+
+                for key in &self.props.unset_exec_env {
+                    wr_run.env_remove(key);
+                }
+                wr_run.envs(env.clone());
+
                 self.compose_and_run(
                     wr_run,
                     self.config.run_lib_path.to_str().unwrap(),
@@ -1638,7 +1650,13 @@ impl<'test> TestCx<'test> {
                 let aux_dir = self.aux_output_dir_name();
                 let ProcArgs { prog, args } = self.make_run_args();
                 let mut program = Command::new(&prog);
-                program.args(args).current_dir(&self.output_base_dir()).envs(env.clone());
+                program.args(args).current_dir(&self.output_base_dir());
+
+                for key in &self.props.unset_exec_env {
+                    program.env_remove(key);
+                }
+                program.envs(env.clone());
+
                 self.compose_and_run(
                     program,
                     self.config.run_lib_path.to_str().unwrap(),
@@ -2035,6 +2053,9 @@ impl<'test> TestCx<'test> {
             Emit::Asm => {
                 rustc.args(&["--emit", "asm"]);
             }
+            Emit::LinkArgsAsm => {
+                rustc.args(&["-Clink-args=--emit=asm"]);
+            }
         }
 
         if !is_rustdoc {
@@ -2328,11 +2349,15 @@ impl<'test> TestCx<'test> {
                 emit = Emit::Asm;
             }
 
+            Some("bpf-linker") => {
+                emit = Emit::LinkArgsAsm;
+            }
+
             Some("ptx-linker") => {
                 // No extra flags needed.
             }
 
-            Some(_) => self.fatal("unknown 'assembly-output' header"),
+            Some(header) => self.fatal(&format!("unknown 'assembly-output' header: {header}")),
             None => self.fatal("missing 'assembly-output' header"),
         }
 

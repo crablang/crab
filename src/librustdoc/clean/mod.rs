@@ -304,7 +304,7 @@ pub(crate) fn clean_predicate<'tcx>(
             clean_region_outlives_predicate(pred)
         }
         ty::PredicateKind::Clause(ty::Clause::TypeOutlives(pred)) => {
-            clean_type_outlives_predicate(pred, cx)
+            clean_type_outlives_predicate(bound_predicate.rebind(pred), cx)
         }
         ty::PredicateKind::Clause(ty::Clause::Projection(pred)) => {
             Some(clean_projection_predicate(bound_predicate.rebind(pred), cx))
@@ -345,7 +345,7 @@ fn clean_poly_trait_predicate<'tcx>(
 }
 
 fn clean_region_outlives_predicate<'tcx>(
-    pred: ty::OutlivesPredicate<ty::Region<'tcx>, ty::Region<'tcx>>,
+    pred: ty::RegionOutlivesPredicate<'tcx>,
 ) -> Option<WherePredicate> {
     let ty::OutlivesPredicate(a, b) = pred;
 
@@ -358,13 +358,13 @@ fn clean_region_outlives_predicate<'tcx>(
 }
 
 fn clean_type_outlives_predicate<'tcx>(
-    pred: ty::OutlivesPredicate<Ty<'tcx>, ty::Region<'tcx>>,
+    pred: ty::Binder<'tcx, ty::TypeOutlivesPredicate<'tcx>>,
     cx: &mut DocContext<'tcx>,
 ) -> Option<WherePredicate> {
-    let ty::OutlivesPredicate(ty, lt) = pred;
+    let ty::OutlivesPredicate(ty, lt) = pred.skip_binder();
 
     Some(WherePredicate::BoundPredicate {
-        ty: clean_middle_ty(ty::Binder::dummy(ty), cx, None),
+        ty: clean_middle_ty(pred.rebind(ty), cx, None),
         bounds: vec![GenericBound::Outlives(
             clean_middle_region(lt).expect("failed to clean lifetimes"),
         )],
@@ -1529,7 +1529,9 @@ fn maybe_expand_private_type_alias<'tcx>(
     let Res::Def(DefKind::TyAlias, def_id) = path.res else { return None };
     // Substitute private type aliases
     let def_id = def_id.as_local()?;
-    let alias = if !cx.cache.effective_visibilities.is_exported(cx.tcx, def_id.to_def_id()) {
+    let alias = if !cx.cache.effective_visibilities.is_exported(cx.tcx, def_id.to_def_id())
+        && !cx.current_type_aliases.contains_key(&def_id.to_def_id())
+    {
         &cx.tcx.hir().expect_item(def_id).kind
     } else {
         return None;
@@ -1609,7 +1611,7 @@ fn maybe_expand_private_type_alias<'tcx>(
         }
     }
 
-    Some(cx.enter_alias(substs, |cx| clean_ty(ty, cx)))
+    Some(cx.enter_alias(substs, def_id.to_def_id(), |cx| clean_ty(ty, cx)))
 }
 
 pub(crate) fn clean_ty<'tcx>(ty: &hir::Ty<'tcx>, cx: &mut DocContext<'tcx>) -> Type {
@@ -1700,7 +1702,7 @@ fn normalize<'tcx>(
 pub(crate) fn clean_middle_ty<'tcx>(
     bound_ty: ty::Binder<'tcx, Ty<'tcx>>,
     cx: &mut DocContext<'tcx>,
-    def_id: Option<DefId>,
+    parent_def_id: Option<DefId>,
 ) -> Type {
     let bound_ty = normalize(cx, bound_ty).unwrap_or(bound_ty);
     match *bound_ty.skip_binder().kind() {
@@ -1830,7 +1832,9 @@ pub(crate) fn clean_middle_ty<'tcx>(
             Tuple(t.iter().map(|t| clean_middle_ty(bound_ty.rebind(t), cx, None)).collect())
         }
 
-        ty::Alias(ty::Projection, ref data) => clean_projection(bound_ty.rebind(*data), cx, def_id),
+        ty::Alias(ty::Projection, ref data) => {
+            clean_projection(bound_ty.rebind(*data), cx, parent_def_id)
+        }
 
         ty::Param(ref p) => {
             if let Some(bounds) = cx.impl_trait_bounds.remove(&p.index.into()) {
@@ -1841,15 +1845,30 @@ pub(crate) fn clean_middle_ty<'tcx>(
         }
 
         ty::Alias(ty::Opaque, ty::AliasTy { def_id, substs, .. }) => {
-            // Grab the "TraitA + TraitB" from `impl TraitA + TraitB`,
-            // by looking up the bounds associated with the def_id.
-            let bounds = cx
-                .tcx
-                .explicit_item_bounds(def_id)
-                .subst_iter_copied(cx.tcx, substs)
-                .map(|(bound, _)| bound)
-                .collect::<Vec<_>>();
-            clean_middle_opaque_bounds(cx, bounds)
+            // If it's already in the same alias, don't get an infinite loop.
+            if cx.current_type_aliases.contains_key(&def_id) {
+                let path =
+                    external_path(cx, def_id, false, ThinVec::new(), bound_ty.rebind(substs));
+                Type::Path { path }
+            } else {
+                *cx.current_type_aliases.entry(def_id).or_insert(0) += 1;
+                // Grab the "TraitA + TraitB" from `impl TraitA + TraitB`,
+                // by looking up the bounds associated with the def_id.
+                let bounds = cx
+                    .tcx
+                    .explicit_item_bounds(def_id)
+                    .subst_iter_copied(cx.tcx, substs)
+                    .map(|(bound, _)| bound)
+                    .collect::<Vec<_>>();
+                let ty = clean_middle_opaque_bounds(cx, bounds);
+                if let Some(count) = cx.current_type_aliases.get_mut(&def_id) {
+                    *count -= 1;
+                    if *count == 0 {
+                        cx.current_type_aliases.remove(&def_id);
+                    }
+                }
+                ty
+            }
         }
 
         ty::Closure(..) => panic!("Closure"),
@@ -2229,13 +2248,17 @@ fn clean_maybe_renamed_item<'tcx>(
                 generics: clean_generics(ty.generics, cx),
             }),
             ItemKind::TyAlias(hir_ty, generics) => {
+                *cx.current_type_aliases.entry(def_id).or_insert(0) += 1;
                 let rustdoc_ty = clean_ty(hir_ty, cx);
                 let ty = clean_middle_ty(ty::Binder::dummy(hir_ty_to_ty(cx.tcx, hir_ty)), cx, None);
-                TypedefItem(Box::new(Typedef {
-                    type_: rustdoc_ty,
-                    generics: clean_generics(generics, cx),
-                    item_type: Some(ty),
-                }))
+                let generics = clean_generics(generics, cx);
+                if let Some(count) = cx.current_type_aliases.get_mut(&def_id) {
+                    *count -= 1;
+                    if *count == 0 {
+                        cx.current_type_aliases.remove(&def_id);
+                    }
+                }
+                TypedefItem(Box::new(Typedef { type_: rustdoc_ty, generics, item_type: Some(ty) }))
             }
             ItemKind::Enum(ref def, generics) => EnumItem(Enum {
                 variants: def.variants.iter().map(|v| clean_variant(v, cx)).collect(),

@@ -656,7 +656,7 @@ impl<'a: 'ast, 'ast, 'tcx> Visitor<'ast> for LateResolutionVisitor<'a, '_, 'ast,
     fn visit_anon_const(&mut self, constant: &'ast AnonConst) {
         // We deal with repeat expressions explicitly in `resolve_expr`.
         self.with_lifetime_rib(LifetimeRibKind::AnonConst, |this| {
-            this.with_lifetime_rib(LifetimeRibKind::Elided(LifetimeRes::Static), |this| {
+            this.with_lifetime_rib(LifetimeRibKind::Elided(LifetimeRes::Infer), |this| {
                 this.resolve_anon_const(constant, IsRepeatExpr::No);
             })
         })
@@ -859,13 +859,9 @@ impl<'a: 'ast, 'ast, 'tcx> Visitor<'ast> for LateResolutionVisitor<'a, '_, 'ast,
                             sig.decl.inputs.iter().map(|Param { ty, .. }| (None, &**ty)),
                             &sig.decl.output,
                         );
-
-                        this.record_lifetime_params_for_async(
-                            fn_id,
-                            sig.header.asyncness.opt_return_id(),
-                        );
                     },
                 );
+                self.record_lifetime_params_for_async(fn_id, sig.header.asyncness.opt_return_id());
                 return;
             }
             FnKind::Fn(..) => {
@@ -4130,7 +4126,7 @@ impl<'a: 'ast, 'b, 'ast, 'tcx> LateResolutionVisitor<'a, 'b, 'ast, 'tcx> {
             ExprKind::Repeat(ref elem, ref ct) => {
                 self.visit_expr(elem);
                 self.with_lifetime_rib(LifetimeRibKind::AnonConst, |this| {
-                    this.with_lifetime_rib(LifetimeRibKind::Elided(LifetimeRes::Static), |this| {
+                    this.with_lifetime_rib(LifetimeRibKind::Elided(LifetimeRes::Infer), |this| {
                         this.resolve_anon_const(ct, IsRepeatExpr::Yes)
                     })
                 });

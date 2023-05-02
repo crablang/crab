@@ -7,14 +7,15 @@
 #![feature(assert_matches)]
 #![feature(box_patterns)]
 #![feature(drain_filter)]
-#![feature(let_chains)]
-#![feature(test)]
-#![feature(never_type)]
-#![feature(lazy_cell)]
-#![feature(type_ascription)]
+#![feature(impl_trait_in_assoc_type)]
 #![feature(iter_intersperse)]
+#![feature(lazy_cell)]
+#![feature(let_chains)]
+#![feature(never_type)]
+#![feature(round_char_boundary)]
+#![feature(test)]
 #![feature(type_alias_impl_trait)]
-#![cfg_attr(not(bootstrap), feature(impl_trait_in_assoc_type))]
+#![feature(type_ascription)]
 #![recursion_limit = "256"]
 #![warn(rustc::internal)]
 #![allow(clippy::collapsible_if, clippy::collapsible_else_if)]
@@ -33,6 +34,7 @@ extern crate tracing;
 // Dependencies listed in Cargo.toml do not need `extern crate`.
 
 extern crate pulldown_cmark;
+extern crate rustc_abi;
 extern crate rustc_ast;
 extern crate rustc_ast_pretty;
 extern crate rustc_attr;

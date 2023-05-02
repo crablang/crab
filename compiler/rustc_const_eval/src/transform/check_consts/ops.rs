@@ -184,6 +184,9 @@ impl<'tcx> NonConstOp<'tcx> for FnCallNonConst<'tcx> {
                     CallDesugaringKind::TryBlockFromOutput => {
                         error!("`try` block cannot convert `{}` to the result in {}s")
                     }
+                    CallDesugaringKind::Await => {
+                        error!("cannot convert `{}` into a future in {}s")
+                    }
                 };
 
                 diag_trait(&mut err, self_ty, kind.trait_def_id(tcx));
@@ -296,7 +299,7 @@ impl<'tcx> NonConstOp<'tcx> for FnCallNonConst<'tcx> {
                 diag_trait(&mut err, self_ty, tcx.require_lang_item(LangItem::Deref, Some(span)));
                 err
             }
-            _ if tcx.opt_parent(callee) == tcx.get_diagnostic_item(sym::ArgumentV1Methods) => ccx
+            _ if tcx.opt_parent(callee) == tcx.get_diagnostic_item(sym::ArgumentMethods) => ccx
                 .tcx
                 .sess
                 .create_err(errors::NonConstFmtMacroCall { span, kind: ccx.const_kind() }),
