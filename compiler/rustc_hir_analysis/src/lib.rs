@@ -116,7 +116,7 @@ use rustc_trait_selection::traits::{self, ObligationCause, ObligationCauseCode, 
 
 use std::ops::Not;
 
-use astconv::AstConv;
+use astconv::{AstConv, OnlySelfBounds};
 use bounds::Bounds;
 
 fluent_messages! { "../messages.ftl" }
@@ -528,9 +528,11 @@ pub fn hir_trait_to_predicates<'tcx>(
         hir_trait,
         DUMMY_SP,
         ty::BoundConstness::NotConst,
+        ty::ImplPolarity::Positive,
         self_ty,
         &mut bounds,
         true,
+        OnlySelfBounds(false),
     );
 
     bounds

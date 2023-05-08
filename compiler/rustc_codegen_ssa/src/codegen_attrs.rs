@@ -301,7 +301,7 @@ fn codegen_fn_attrs(tcx: TyCtxt<'_>, did: LocalDefId) -> CodegenFnAttrs {
                 if let Some(val) = attr.value_str() {
                     if val.as_str().bytes().any(|b| b == 0) {
                         let msg = format!("illegal null byte in link_section value: `{}`", &val);
-                        tcx.sess.span_err(attr.span, &msg);
+                        tcx.sess.span_err(attr.span, msg);
                     } else {
                         codegen_fn_attrs.link_section = Some(val);
                     }
@@ -592,15 +592,6 @@ fn should_inherit_track_caller(tcx: TyCtxt<'_>, def_id: DefId) -> bool {
 
 fn check_link_ordinal(tcx: TyCtxt<'_>, attr: &ast::Attribute) -> Option<u16> {
     use rustc_ast::{LitIntType, LitKind, MetaItemLit};
-    if !tcx.features().raw_dylib && tcx.sess.target.arch == "x86" {
-        feature_err(
-            &tcx.sess.parse_sess,
-            sym::raw_dylib,
-            attr.span,
-            "`#[link_ordinal]` is unstable on x86",
-        )
-        .emit();
-    }
     let meta_item_list = attr.meta_item_list();
     let meta_item_list = meta_item_list.as_deref();
     let sole_meta_list = match meta_item_list {
@@ -631,7 +622,7 @@ fn check_link_ordinal(tcx: TyCtxt<'_>, attr: &ast::Attribute) -> Option<u16> {
         } else {
             let msg = format!("ordinal value in `link_ordinal` is too large: `{}`", &ordinal);
             tcx.sess
-                .struct_span_err(attr.span, &msg)
+                .struct_span_err(attr.span, msg)
                 .note("the value may not exceed `u16::MAX`")
                 .emit();
             None

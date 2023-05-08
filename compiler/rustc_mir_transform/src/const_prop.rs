@@ -21,9 +21,9 @@ use rustc_target::spec::abi::Abi as CallAbi;
 
 use crate::MirPass;
 use rustc_const_eval::interpret::{
-    self, compile_time_machine, AllocId, ConstAllocation, ConstValue, CtfeValidationMode, Frame,
-    ImmTy, Immediate, InterpCx, InterpResult, LocalValue, MemoryKind, OpTy, PlaceTy, Pointer,
-    Scalar, StackPopCleanup,
+    self, compile_time_machine, AllocId, ConstAllocation, ConstValue, Frame, ImmTy, Immediate,
+    InterpCx, InterpResult, LocalValue, MemoryKind, OpTy, PlaceTy, Pointer, Scalar,
+    StackPopCleanup,
 };
 
 /// The maximum number of bytes that we'll allocate space for a local or the return value.
@@ -464,16 +464,6 @@ impl<'mir, 'tcx> ConstPropagator<'mir, 'tcx> {
 
                 return None;
             }
-            // Do not try creating references, nor any types with potentially-complex
-            // invariants. This avoids an issue where checking validity would do a
-            // bunch of work generating a nice message about the invariant violation,
-            // only to not show it to anyone (since this isn't the lint).
-            Rvalue::Cast(CastKind::Transmute, op, dst_ty) if !dst_ty.is_primitive() => {
-                trace!("skipping Transmute of {:?} to {:?}", op, dst_ty);
-
-                return None;
-            }
-
             // There's no other checking to do at this time.
             Rvalue::Aggregate(..)
             | Rvalue::Use(..)
@@ -591,18 +581,6 @@ impl<'mir, 'tcx> ConstPropagator<'mir, 'tcx> {
         }
 
         trace!("attempting to replace {:?} with {:?}", rval, value);
-        if let Err(e) = self.ecx.const_validate_operand(
-            value,
-            vec![],
-            // FIXME: is ref tracking too expensive?
-            // FIXME: what is the point of ref tracking if we do not even check the tracked refs?
-            &mut interpret::RefTracking::empty(),
-            CtfeValidationMode::Regular,
-        ) {
-            trace!("validation error, attempt failed: {:?}", e);
-            return;
-        }
-
         // FIXME> figure out what to do when read_immediate_raw fails
         let imm = self.ecx.read_immediate_raw(value).ok();
 
@@ -736,13 +714,22 @@ impl CanConstProp {
     }
 }
 
-impl Visitor<'_> for CanConstProp {
+impl<'tcx> Visitor<'tcx> for CanConstProp {
+    fn visit_place(&mut self, place: &Place<'tcx>, mut context: PlaceContext, loc: Location) {
+        use rustc_middle::mir::visit::PlaceContext::*;
+
+        // Dereferencing just read the addess of `place.local`.
+        if place.projection.first() == Some(&PlaceElem::Deref) {
+            context = NonMutatingUse(NonMutatingUseContext::Copy);
+        }
+
+        self.visit_local(place.local, context, loc);
+        self.visit_projection(place.as_ref(), context, loc);
+    }
+
     fn visit_local(&mut self, local: Local, context: PlaceContext, _: Location) {
         use rustc_middle::mir::visit::PlaceContext::*;
         match context {
-            // Projections are fine, because `&mut foo.x` will be caught by
-            // `MutatingUseContext::Borrow` elsewhere.
-            MutatingUse(MutatingUseContext::Projection)
             // These are just stores, where the storing is not propagatable, but there may be later
             // mutations of the same local via `Store`
             | MutatingUse(MutatingUseContext::Call)
@@ -773,7 +760,7 @@ impl Visitor<'_> for CanConstProp {
             NonMutatingUse(NonMutatingUseContext::Copy)
             | NonMutatingUse(NonMutatingUseContext::Move)
             | NonMutatingUse(NonMutatingUseContext::Inspect)
-            | NonMutatingUse(NonMutatingUseContext::Projection)
+            | NonMutatingUse(NonMutatingUseContext::PlaceMention)
             | NonUse(_) => {}
 
             // These could be propagated with a smarter analysis or just some careful thinking about
@@ -792,6 +779,8 @@ impl Visitor<'_> for CanConstProp {
                 trace!("local {:?} can't be propagated because it's used: {:?}", local, context);
                 self.can_const_prop[local] = ConstPropMode::NoPropagation;
             }
+            MutatingUse(MutatingUseContext::Projection)
+            | NonMutatingUse(NonMutatingUseContext::Projection) => bug!("visit_place should not pass {context:?} for {local:?}"),
         }
     }
 }

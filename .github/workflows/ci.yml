@@ -42,24 +42,20 @@ jobs:
       TOOLSTATE_REPO: "https://github.com/rust-lang-nursery/rust-toolstate"
       CACHE_DOMAIN: ci-caches.rust-lang.org
     if: "github.event_name == 'pull_request'"
-    continue-on-error: "${{ matrix.tidy }}"
+    continue-on-error: "${{ matrix.name == 'mingw-check-tidy' }}"
     strategy:
       matrix:
         include:
           - name: mingw-check
-            tidy: false
             os: ubuntu-20.04-16core-64gb
             env: {}
           - name: mingw-check-tidy
-            tidy: true
             os: ubuntu-20.04-16core-64gb
             env: {}
           - name: x86_64-gnu-llvm-14
-            tidy: false
             os: ubuntu-20.04-16core-64gb
             env: {}
           - name: x86_64-gnu-tools
-            tidy: false
             os: ubuntu-20.04-16core-64gb
             env: {}
     timeout-minutes: 600
@@ -97,9 +93,6 @@ jobs:
         if: success() && !env.SKIP_JOB
       - name: show the current environment
         run: src/ci/scripts/dump-environment.sh
-        if: success() && !env.SKIP_JOB
-      - name: install awscli
-        run: src/ci/scripts/install-awscli.sh
         if: success() && !env.SKIP_JOB
       - name: install sccache
         run: src/ci/scripts/install-sccache.sh
@@ -170,6 +163,7 @@ jobs:
       TOOLSTATE_PUBLISH: 1
       CACHES_AWS_ACCESS_KEY_ID: AKIA46X5W6CZI5DHEBFL
       ARTIFACTS_AWS_ACCESS_KEY_ID: AKIA46X5W6CZN24CBO55
+      AWS_REGION: us-west-1
       CACHE_DOMAIN: ci-caches.rust-lang.org
     if: "github.event_name == 'push' && github.ref == 'refs/heads/auto' && github.repository == 'rust-lang-ci/rust'"
     strategy:
@@ -260,13 +254,13 @@ jobs:
             os: ubuntu-20.04-8core-32gb
             env: {}
           - name: i686-gnu
-            os: ubuntu-20.04-16core-64gb
+            os: ubuntu-20.04-8core-32gb
             env: {}
           - name: i686-gnu-nopt
-            os: ubuntu-20.04-16core-64gb
+            os: ubuntu-20.04-8core-32gb
             env: {}
           - name: mingw-check
-            os: ubuntu-20.04-8core-32gb
+            os: ubuntu-20.04-4core-16gb
             env: {}
           - name: test-various
             os: ubuntu-20.04-8core-32gb
@@ -275,16 +269,16 @@ jobs:
             os: ubuntu-20.04-8core-32gb
             env: {}
           - name: x86_64-gnu
-            os: ubuntu-20.04-8core-32gb
+            os: ubuntu-20.04-4core-16gb
             env: {}
           - name: x86_64-gnu-stable
             env:
               IMAGE: x86_64-gnu
               RUST_CI_OVERRIDE_RELEASE_CHANNEL: stable
               CI_ONLY_WHEN_CHANNEL: nightly
-            os: ubuntu-20.04-8core-32gb
+            os: ubuntu-20.04-4core-16gb
           - name: x86_64-gnu-aux
-            os: ubuntu-20.04-8core-32gb
+            os: ubuntu-20.04-4core-16gb
             env: {}
           - name: x86_64-gnu-debug
             os: ubuntu-20.04-8core-32gb
@@ -309,7 +303,7 @@ jobs:
               RUST_BACKTRACE: 1
             os: ubuntu-20.04-8core-32gb
           - name: x86_64-gnu-nopt
-            os: ubuntu-20.04-8core-32gb
+            os: ubuntu-20.04-4core-16gb
             env: {}
           - name: x86_64-gnu-tools
             env:
@@ -521,9 +515,6 @@ jobs:
       - name: show the current environment
         run: src/ci/scripts/dump-environment.sh
         if: success() && !env.SKIP_JOB
-      - name: install awscli
-        run: src/ci/scripts/install-awscli.sh
-        if: success() && !env.SKIP_JOB
       - name: install sccache
         run: src/ci/scripts/install-sccache.sh
         if: success() && !env.SKIP_JOB
@@ -593,6 +584,7 @@ jobs:
       TOOLSTATE_PUBLISH: 1
       CACHES_AWS_ACCESS_KEY_ID: AKIA46X5W6CZI5DHEBFL
       ARTIFACTS_AWS_ACCESS_KEY_ID: AKIA46X5W6CZN24CBO55
+      AWS_REGION: us-west-1
       CACHE_DOMAIN: ci-caches.rust-lang.org
     if: "github.event_name == 'push' && (github.ref == 'refs/heads/try' || github.ref == 'refs/heads/try-perf') && github.repository == 'rust-lang-ci/rust'"
     strategy:
@@ -636,9 +628,6 @@ jobs:
         if: success() && !env.SKIP_JOB
       - name: show the current environment
         run: src/ci/scripts/dump-environment.sh
-        if: success() && !env.SKIP_JOB
-      - name: install awscli
-        run: src/ci/scripts/install-awscli.sh
         if: success() && !env.SKIP_JOB
       - name: install sccache
         run: src/ci/scripts/install-sccache.sh
@@ -706,6 +695,7 @@ jobs:
       TOOLSTATE_PUBLISH: 1
       CACHES_AWS_ACCESS_KEY_ID: AKIA46X5W6CZI5DHEBFL
       ARTIFACTS_AWS_ACCESS_KEY_ID: AKIA46X5W6CZN24CBO55
+      AWS_REGION: us-west-1
       CACHE_DOMAIN: ci-caches.rust-lang.org
     if: "github.event_name == 'push' && github.ref == 'refs/heads/master' && github.repository == 'rust-lang-ci/rust'"
     steps:

@@ -192,6 +192,7 @@ impl EmissionGuarantee for ErrorGuaranteed {
                      became non-error ({:?}), after original `.emit()`",
                     db.inner.diagnostic.level,
                 );
+                #[allow(deprecated)]
                 ErrorGuaranteed::unchecked_claim_error_was_emitted()
             }
         }
@@ -791,7 +792,7 @@ macro_rules! struct_span_err {
     ($session:expr, $span:expr, $code:ident, $($message:tt)*) => ({
         $session.struct_span_err_with_code(
             $span,
-            &format!($($message)*),
+            format!($($message)*),
             $crate::error_code!($code),
         )
     })

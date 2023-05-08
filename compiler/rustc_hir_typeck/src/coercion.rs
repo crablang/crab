@@ -601,7 +601,7 @@ impl<'f, 'tcx> Coerce<'f, 'tcx> {
             self.tcx,
             cause,
             self.fcx.param_env,
-            self.tcx.mk_trait_ref(coerce_unsized_did, [coerce_source, coerce_target])
+            ty::TraitRef::new(self.tcx, coerce_unsized_did, [coerce_source, coerce_target])
         )];
 
         let mut has_unsized_tuple_coercion = false;
@@ -707,9 +707,9 @@ impl<'f, 'tcx> Coerce<'f, 'tcx> {
                 &self.tcx.sess.parse_sess,
                 sym::trait_upcasting,
                 self.cause.span,
-                &format!("cannot cast `{sub}` to `{sup}`, trait upcasting coercion is experimental"),
+                format!("cannot cast `{sub}` to `{sup}`, trait upcasting coercion is experimental"),
             );
-            err.note(&format!("required when coercing `{source}` into `{target}`"));
+            err.note(format!("required when coercing `{source}` into `{target}`"));
             err.emit();
         }
 
@@ -764,8 +764,11 @@ impl<'f, 'tcx> Coerce<'f, 'tcx> {
             self.tcx,
             self.cause.clone(),
             self.param_env,
-            ty::Binder::dummy(
-                self.tcx.at(self.cause.span).mk_trait_ref(hir::LangItem::PointerLike, [a]),
+            ty::TraitRef::from_lang_item(
+                self.tcx,
+                hir::LangItem::PointerLike,
+                self.cause.span,
+                [a],
             ),
         ));
 
@@ -1657,7 +1660,7 @@ impl<'tcx, 'exprs, E: AsCoercionSite> CoerceMany<'tcx, 'exprs, E> {
             "the function expects a value to always be returned, but loops might run zero times",
         );
         if MAXITER < ret_exprs.len() {
-            err.note(&format!(
+            err.note(format!(
                 "if the loop doesn't execute, {} other values would never get returned",
                 ret_exprs.len() - MAXITER
             ));
@@ -1767,7 +1770,7 @@ impl<'tcx, 'exprs, E: AsCoercionSite> CoerceMany<'tcx, 'exprs, E> {
         {
             err.span_note(
                 sp,
-                &format!(
+                format!(
                     "return type inferred to be `{}` here",
                     expected
                 ),
@@ -1864,7 +1867,7 @@ impl<'tcx, 'exprs, E: AsCoercionSite> CoerceMany<'tcx, 'exprs, E> {
                     Applicability::MaybeIncorrect,
                 );
             } else {
-                err.help(&format!(
+                err.help(format!(
                     "if the trait `{}` were object safe, you could return a boxed trait object",
                     &snippet[5..]
                 ));

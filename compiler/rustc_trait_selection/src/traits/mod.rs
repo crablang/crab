@@ -62,7 +62,7 @@ pub use self::util::elaborate;
 pub use self::util::{expand_trait_aliases, TraitAliasExpander};
 pub use self::util::{get_vtable_index_of_object_method, impl_item_is_final, upcast_choices};
 pub use self::util::{
-    supertrait_def_ids, supertraits, transitive_bounds, transitive_bounds_that_define_assoc_type,
+    supertrait_def_ids, supertraits, transitive_bounds, transitive_bounds_that_define_assoc_item,
     SupertraitDefIds,
 };
 
@@ -127,7 +127,7 @@ pub fn type_known_to_meet_bound_modulo_regions<'tcx>(
     ty: Ty<'tcx>,
     def_id: DefId,
 ) -> bool {
-    let trait_ref = ty::Binder::dummy(infcx.tcx.mk_trait_ref(def_id, [ty]));
+    let trait_ref = ty::TraitRef::new(infcx.tcx, def_id, [ty]);
     pred_known_to_hold_modulo_regions(infcx, param_env, trait_ref.without_const())
 }
 

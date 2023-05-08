@@ -287,11 +287,19 @@ pub enum TraitBoundModifier {
     /// No modifiers
     None,
 
+    /// `!Trait`
+    Negative,
+
     /// `?Trait`
     Maybe,
 
     /// `~const Trait`
     MaybeConst,
+
+    /// `~const !Trait`
+    //
+    // This parses but will be rejected during AST validation.
+    MaybeConstNegative,
 
     /// `~const ?Trait`
     //
@@ -1589,7 +1597,6 @@ pub enum ClosureBinder {
 pub struct MacCall {
     pub path: Path,
     pub args: P<DelimArgs>,
-    pub prior_type_ascription: Option<(Span, bool)>,
 }
 
 impl MacCall {
@@ -1814,6 +1821,8 @@ pub enum LitKind {
     /// A byte string (`b"foo"`). Not stored as a symbol because it might be
     /// non-utf8, and symbols only allow utf8 strings.
     ByteStr(Lrc<[u8]>, StrStyle),
+    /// A C String (`c"foo"`). Guaranteed to only have `\0` at the end.
+    CStr(Lrc<[u8]>, StrStyle),
     /// A byte char (`b'f'`).
     Byte(u8),
     /// A character literal (`'a'`).
@@ -1868,6 +1877,7 @@ impl LitKind {
             // unsuffixed variants
             LitKind::Str(..)
             | LitKind::ByteStr(..)
+            | LitKind::CStr(..)
             | LitKind::Byte(..)
             | LitKind::Char(..)
             | LitKind::Int(_, LitIntType::Unsuffixed)
@@ -2445,6 +2455,16 @@ impl fmt::Debug for ImplPolarity {
             ImplPolarity::Negative(_) => "negative".fmt(f),
         }
     }
+}
+
+#[derive(Copy, Clone, PartialEq, Encodable, Decodable, HashStable_Generic)]
+pub enum BoundPolarity {
+    /// `Type: Trait`
+    Positive,
+    /// `Type: !Trait`
+    Negative(Span),
+    /// `Type: ?Trait`
+    Maybe(Span),
 }
 
 #[derive(Clone, Encodable, Decodable, Debug)]

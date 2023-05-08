@@ -444,6 +444,10 @@ pub enum ObligationCauseCode<'tcx> {
     AscribeUserTypeProvePredicate(Span),
 
     RustCall,
+
+    /// Obligations to prove that a `std::ops::Drop` impl is not stronger than
+    /// the ADT it's being implemented for.
+    DropImpl,
 }
 
 /// The 'location' at which we try to perform HIR-based wf checking.
@@ -1010,10 +1014,7 @@ impl ObjectSafetyViolation {
             ) => {
                 err.span_suggestion(
                     *span,
-                    &format!(
-                        "consider changing method `{}`'s `self` parameter to be `&self`",
-                        name
-                    ),
+                    format!("consider changing method `{}`'s `self` parameter to be `&self`", name),
                     "&Self",
                     Applicability::MachineApplicable,
                 );
@@ -1021,7 +1022,7 @@ impl ObjectSafetyViolation {
             ObjectSafetyViolation::AssocConst(name, _)
             | ObjectSafetyViolation::GAT(name, _)
             | ObjectSafetyViolation::Method(name, ..) => {
-                err.help(&format!("consider moving `{}` to another trait", name));
+                err.help(format!("consider moving `{}` to another trait", name));
             }
         }
     }

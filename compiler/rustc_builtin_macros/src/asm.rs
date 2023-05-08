@@ -2,9 +2,10 @@ use rustc_ast as ast;
 use rustc_ast::ptr::P;
 use rustc_ast::token::{self, Delimiter};
 use rustc_ast::tokenstream::TokenStream;
-use rustc_data_structures::fx::{FxHashMap, FxHashSet};
+use rustc_data_structures::fx::{FxHashMap, FxIndexMap};
 use rustc_errors::PResult;
 use rustc_expand::base::{self, *};
+use rustc_index::bit_set::GrowableBitSet;
 use rustc_parse::parser::Parser;
 use rustc_parse_format as parse;
 use rustc_session::lint;
@@ -20,8 +21,8 @@ use crate::errors;
 pub struct AsmArgs {
     pub templates: Vec<P<ast::Expr>>,
     pub operands: Vec<(ast::InlineAsmOperand, Span)>,
-    named_args: FxHashMap<Symbol, usize>,
-    reg_args: FxHashSet<usize>,
+    named_args: FxIndexMap<Symbol, usize>,
+    reg_args: GrowableBitSet<usize>,
     pub clobber_abis: Vec<(Symbol, Span)>,
     options: ast::InlineAsmOptions,
     pub options_spans: Vec<Span>,
@@ -56,8 +57,8 @@ pub fn parse_asm_args<'a>(
     let mut args = AsmArgs {
         templates: vec![first_template],
         operands: vec![],
-        named_args: FxHashMap::default(),
-        reg_args: FxHashSet::default(),
+        named_args: Default::default(),
+        reg_args: Default::default(),
         clobber_abis: Vec::new(),
         options: ast::InlineAsmOptions::empty(),
         options_spans: vec![],
@@ -68,9 +69,7 @@ pub fn parse_asm_args<'a>(
         if !p.eat(&token::Comma) {
             if allow_templates {
                 // After a template string, we always expect *only* a comma...
-                let mut err = diag.create_err(errors::AsmExpectedComma { span: p.token.span });
-                p.maybe_annotate_with_ascription(&mut err, false);
-                return Err(err);
+                return Err(diag.create_err(errors::AsmExpectedComma { span: p.token.span }));
             } else {
                 // ...after that delegate to `expect` to also include the other expected tokens.
                 return Err(p.expect(&token::Comma).err().unwrap());
@@ -215,7 +214,7 @@ pub fn parse_asm_args<'a>(
         } else {
             if !args.named_args.is_empty() || !args.reg_args.is_empty() {
                 let named = args.named_args.values().map(|p| args.operands[*p].1).collect();
-                let explicit = args.reg_args.iter().map(|p| args.operands[*p].1).collect();
+                let explicit = args.reg_args.iter().map(|p| args.operands[p].1).collect();
 
                 diag.emit_err(errors::AsmPositionalAfter { span, named, explicit });
             }
@@ -448,8 +447,8 @@ fn expand_preparsed_asm(ecx: &mut ExtCtxt<'_>, args: AsmArgs) -> Option<ast::Inl
     // Register operands are implicitly used since they are not allowed to be
     // referenced in the template string.
     let mut used = vec![false; args.operands.len()];
-    for pos in &args.reg_args {
-        used[*pos] = true;
+    for pos in args.reg_args.iter() {
+        used[pos] = true;
     }
     let named_pos: FxHashMap<usize, Symbol> =
         args.named_args.iter().map(|(&sym, &idx)| (idx, sym)).collect();
@@ -555,7 +554,7 @@ fn expand_preparsed_asm(ecx: &mut ExtCtxt<'_>, args: AsmArgs) -> Option<ast::Inl
             let mut e = ecx.struct_span_err(err_sp, msg);
             e.span_label(err_sp, err.label + " in asm template string");
             if let Some(note) = err.note {
-                e.note(&note);
+                e.note(note);
             }
             if let Some((label, span)) = err.secondary_label {
                 let err_sp = template_span.from_inner(InnerSpan::new(span.start, span.end));
@@ -583,7 +582,7 @@ fn expand_preparsed_asm(ecx: &mut ExtCtxt<'_>, args: AsmArgs) -> Option<ast::Inl
                         parse::ArgumentIs(idx) | parse::ArgumentImplicitlyIs(idx) => {
                             if idx >= args.operands.len()
                                 || named_pos.contains_key(&idx)
-                                || args.reg_args.contains(&idx)
+                                || args.reg_args.contains(idx)
                             {
                                 let msg = format!("invalid reference to argument at index {}", idx);
                                 let mut err = ecx.struct_span_err(span, &msg);
@@ -602,7 +601,7 @@ fn expand_preparsed_asm(ecx: &mut ExtCtxt<'_>, args: AsmArgs) -> Option<ast::Inl
                                     1 => format!("there is 1 {}argument", positional),
                                     x => format!("there are {} {}arguments", x, positional),
                                 };
-                                err.note(&msg);
+                                err.note(msg);
 
                                 if named_pos.contains_key(&idx) {
                                     err.span_label(args.operands[idx].1, "named argument");
@@ -610,7 +609,7 @@ fn expand_preparsed_asm(ecx: &mut ExtCtxt<'_>, args: AsmArgs) -> Option<ast::Inl
                                         args.operands[idx].1,
                                         "named arguments cannot be referenced by position",
                                     );
-                                } else if args.reg_args.contains(&idx) {
+                                } else if args.reg_args.contains(idx) {
                                     err.span_label(
                                         args.operands[idx].1,
                                         "explicit register argument",
@@ -705,7 +704,7 @@ fn expand_preparsed_asm(ecx: &mut ExtCtxt<'_>, args: AsmArgs) -> Option<ast::Inl
             let (sp, msg) = unused_operands.into_iter().next().unwrap();
             let mut err = ecx.struct_span_err(sp, msg);
             err.span_label(sp, msg);
-            err.help(&format!(
+            err.help(format!(
                 "if this argument is intentionally unused, \
                  consider using it in an asm comment: `\"/*{} */\"`",
                 help_str
@@ -720,7 +719,7 @@ fn expand_preparsed_asm(ecx: &mut ExtCtxt<'_>, args: AsmArgs) -> Option<ast::Inl
             for (sp, msg) in unused_operands {
                 err.span_label(sp, msg);
             }
-            err.help(&format!(
+            err.help(format!(
                 "if these arguments are intentionally unused, \
                  consider using them in an asm comment: `\"/*{} */\"`",
                 help_str

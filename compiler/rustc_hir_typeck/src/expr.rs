@@ -1426,6 +1426,12 @@ impl<'a, 'tcx> FnCtxt<'a, 'tcx> {
 
         self.check_repeat_element_needs_copy_bound(element, count, element_ty);
 
+        self.register_wf_obligation(
+            tcx.mk_array_with_const_len(t, count).into(),
+            expr.span,
+            traits::WellFormed(None),
+        );
+
         tcx.mk_array_with_const_len(t, count)
     }
 
@@ -1944,12 +1950,13 @@ impl<'a, 'tcx> FnCtxt<'a, 'tcx> {
         private_fields: Vec<&ty::FieldDef>,
         used_fields: &'tcx [hir::ExprField<'tcx>],
     ) {
-        let mut err = self.tcx.sess.struct_span_err(
-            span,
-            &format!(
-                "cannot construct `{adt_ty}` with struct literal syntax due to private fields",
-            ),
-        );
+        let mut err =
+            self.tcx.sess.struct_span_err(
+                span,
+                format!(
+                    "cannot construct `{adt_ty}` with struct literal syntax due to private fields",
+                ),
+            );
         let (used_private_fields, remaining_private_fields): (
             Vec<(Symbol, Span, bool)>,
             Vec<(Symbol, Span, bool)>,
@@ -2045,7 +2052,7 @@ impl<'a, 'tcx> FnCtxt<'a, 'tcx> {
                     err.span_label(field.ident.span, "field does not exist");
                     err.span_suggestion_verbose(
                         expr_span,
-                        &format!(
+                        format!(
                             "`{adt}::{variant}` is a tuple {kind_name}, use the appropriate syntax",
                             adt = ty,
                             variant = variant.name,
@@ -2063,7 +2070,7 @@ impl<'a, 'tcx> FnCtxt<'a, 'tcx> {
                     err.span_label(field.ident.span, "field does not exist");
                     err.span_suggestion_verbose(
                         expr_span,
-                        &format!(
+                        format!(
                             "`{adt}` is a tuple {kind_name}, use the appropriate syntax",
                             adt = ty,
                             kind_name = kind_name,
@@ -2105,7 +2112,7 @@ impl<'a, 'tcx> FnCtxt<'a, 'tcx> {
                             let available_field_names =
                                 self.available_field_names(variant, expr_span);
                             if !available_field_names.is_empty() {
-                                err.note(&format!(
+                                err.note(format!(
                                     "available fields are: {}",
                                     self.name_series_display(available_field_names)
                                 ));
@@ -2384,7 +2391,7 @@ impl<'a, 'tcx> FnCtxt<'a, 'tcx> {
             }
         }
         if add_label {
-            err.span_label(field_ident.span, &format!("field not found in `{ty}`"));
+            err.span_label(field_ident.span, format!("field not found in `{ty}`"));
         }
     }
 
@@ -2565,7 +2572,7 @@ impl<'a, 'tcx> FnCtxt<'a, 'tcx> {
         let param_span = self.tcx.hir().span(param_hir_id);
         let param_name = self.tcx.hir().ty_param_name(param_def_id.expect_local());
 
-        err.span_label(param_span, &format!("type parameter '{param_name}' declared here"));
+        err.span_label(param_span, format!("type parameter '{param_name}' declared here"));
     }
 
     fn suggest_fields_on_recordish(
@@ -2589,7 +2596,7 @@ impl<'a, 'tcx> FnCtxt<'a, 'tcx> {
             let struct_variant_def = def.non_enum_variant();
             let field_names = self.available_field_names(struct_variant_def, access_span);
             if !field_names.is_empty() {
-                err.note(&format!(
+                err.note(format!(
                     "available fields are: {}",
                     self.name_series_display(field_names),
                 ));
@@ -2630,7 +2637,7 @@ impl<'a, 'tcx> FnCtxt<'a, 'tcx> {
         if let Ok(base) = self.tcx.sess.source_map().span_to_snippet(base.span) {
             let msg = format!("`{base}` is a raw pointer; try dereferencing it");
             let suggestion = format!("(*{base}).{field}");
-            err.span_suggestion(expr.span, &msg, suggestion, Applicability::MaybeIncorrect);
+            err.span_suggestion(expr.span, msg, suggestion, Applicability::MaybeIncorrect);
         }
     }
 
@@ -2821,7 +2828,7 @@ impl<'a, 'tcx> FnCtxt<'a, 'tcx> {
                     // but has nested obligations which are unsatisfied.
                     for (base_t, _) in self.autoderef(base.span, base_t).silence_errors() {
                         if let Some((_, index_ty, element_ty)) =
-                            self.find_and_report_unsatisfied_index_impl(expr.hir_id, base, base_t)
+                            self.find_and_report_unsatisfied_index_impl(base, base_t)
                         {
                             self.demand_coerce(idx, idx_t, index_ty, None, AllowTwoPhase::No);
                             return element_ty;
@@ -2880,7 +2887,6 @@ impl<'a, 'tcx> FnCtxt<'a, 'tcx> {
     /// predicates cause this to be, so that the user can add them to fix their code.
     fn find_and_report_unsatisfied_index_impl(
         &self,
-        index_expr_hir_id: HirId,
         base_expr: &hir::Expr<'_>,
         base_ty: Ty<'tcx>,
     ) -> Option<(ErrorGuaranteed, Ty<'tcx>, Ty<'tcx>)> {
@@ -2913,13 +2919,21 @@ impl<'a, 'tcx> FnCtxt<'a, 'tcx> {
             // in the first place.
             ocx.register_obligations(traits::predicates_for_generics(
                 |idx, span| {
-                    traits::ObligationCause::new(
-                        base_expr.span,
-                        self.body_id,
-                        if span.is_dummy() {
-                            traits::ExprItemObligation(impl_def_id, index_expr_hir_id, idx)
-                        } else {
-                            traits::ExprBindingObligation(impl_def_id, span, index_expr_hir_id, idx)
+                    cause.clone().derived_cause(
+                        ty::Binder::dummy(ty::TraitPredicate {
+                            trait_ref: impl_trait_ref,
+                            polarity: ty::ImplPolarity::Positive,
+                            constness: ty::BoundConstness::NotConst,
+                        }),
+                        |derived| {
+                            traits::ImplDerivedObligation(Box::new(
+                                traits::ImplDerivedObligationCause {
+                                    derived,
+                                    impl_or_alias_def_id: impl_def_id,
+                                    impl_def_predicate_index: Some(idx),
+                                    span,
+                                },
+                            ))
                         },
                     )
                 },

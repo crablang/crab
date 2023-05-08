@@ -6,7 +6,7 @@ use rustc_errors::{
     MultiSpan,
 };
 use rustc_macros::{Diagnostic, Subdiagnostic};
-use rustc_middle::ty::Ty;
+use rustc_middle::ty::{self, print::TraitRefPrintOnlyTraitPath, Ty};
 use rustc_span::{symbol::Ident, Span, Symbol};
 
 #[derive(Diagnostic)]
@@ -102,6 +102,14 @@ pub struct MultipleRelaxedDefaultBounds {
 #[derive(Diagnostic)]
 #[diag(hir_analysis_copy_impl_on_non_adt, code = "E0206")]
 pub struct CopyImplOnNonAdt {
+    #[primary_span]
+    #[label]
+    pub span: Span,
+}
+
+#[derive(Diagnostic)]
+#[diag(hir_analysis_const_param_ty_impl_on_non_adt)]
+pub struct ConstParamTyImplOnNonAdt {
     #[primary_span]
     #[label]
     pub span: Span,
@@ -504,8 +512,20 @@ pub(crate) struct ReturnTypeNotationEqualityBound {
 pub(crate) struct ReturnTypeNotationMissingMethod {
     #[primary_span]
     pub span: Span,
-    pub trait_name: Symbol,
+    pub ty_name: String,
     pub assoc_name: Symbol,
+}
+
+#[derive(Diagnostic)]
+#[diag(hir_analysis_return_type_notation_conflicting_bound)]
+#[note]
+pub(crate) struct ReturnTypeNotationConflictingBound<'tcx> {
+    #[primary_span]
+    pub span: Span,
+    pub ty_name: String,
+    pub assoc_name: Symbol,
+    pub first_bound: ty::Binder<'tcx, TraitRefPrintOnlyTraitPath<'tcx>>,
+    pub second_bound: ty::Binder<'tcx, TraitRefPrintOnlyTraitPath<'tcx>>,
 }
 
 #[derive(Diagnostic)]
@@ -649,7 +669,6 @@ pub enum ImplNotMarkedDefault {
     #[note]
     Err {
         #[primary_span]
-        #[label]
         span: Span,
         cname: Symbol,
         ident: Symbol,
@@ -814,4 +833,18 @@ pub(crate) struct StaticSpecialize {
 pub(crate) struct MissingTildeConst {
     #[primary_span]
     pub span: Span,
+}
+
+#[derive(Diagnostic)]
+pub(crate) enum DropImplPolarity {
+    #[diag(hir_analysis_drop_impl_negative)]
+    Negative {
+        #[primary_span]
+        span: Span,
+    },
+    #[diag(hir_analysis_drop_impl_reservation)]
+    Reservation {
+        #[primary_span]
+        span: Span,
+    },
 }

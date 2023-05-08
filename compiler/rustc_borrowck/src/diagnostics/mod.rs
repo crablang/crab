@@ -1073,7 +1073,7 @@ impl<'cx, 'tcx> MirBorrowckCtxt<'cx, 'tcx> {
                             if !is_loop_move {
                                 err.span_suggestion_verbose(
                                     move_span.shrink_to_lo(),
-                                    &format!(
+                                    format!(
                                         "consider creating a fresh reborrow of {} here",
                                         self.describe_place(moved_place.as_ref())
                                             .map(|n| format!("`{n}`"))
@@ -1120,7 +1120,7 @@ impl<'cx, 'tcx> MirBorrowckCtxt<'cx, 'tcx> {
                                 });
                         }
                         if let Some(clone_trait) = tcx.lang_items().clone_trait()
-                            && let trait_ref = tcx.mk_trait_ref(clone_trait, [ty])
+                            && let trait_ref = ty::TraitRef::new(tcx, clone_trait, [ty])
                             && let o = Obligation::new(
                                 tcx,
                                 ObligationCause::dummy(),

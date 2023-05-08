@@ -954,7 +954,7 @@ impl<'a, 'tcx> ProbeContext<'a, 'tcx> {
     ) {
         debug!("assemble_extension_candidates_for_trait(trait_def_id={:?})", trait_def_id);
         let trait_substs = self.fresh_item_substs(trait_def_id);
-        let trait_ref = self.tcx.mk_trait_ref(trait_def_id, trait_substs);
+        let trait_ref = ty::TraitRef::new(self.tcx, trait_def_id, trait_substs);
 
         if self.tcx.is_trait_alias(trait_def_id) {
             // For trait aliases, recursively assume all explicitly named traits are relevant
@@ -1396,7 +1396,7 @@ impl<'tcx> Pick<'tcx> {
                         // However `self.span` only
                         // highlights the method name, so we can't use it. Also consider reusing
                         // the code from `report_method_error()`.
-                        lint.help(&format!(
+                        lint.help(format!(
                             "call with fully qualified syntax `{}(...)` to keep using the current \
                              method",
                             tcx.def_path_str(self.item.def_id),
@@ -1420,7 +1420,7 @@ impl<'tcx> Pick<'tcx> {
                 }
                 if tcx.sess.is_nightly_build() {
                     for (candidate, feature) in &self.unstable_candidates {
-                        lint.help(&format!(
+                        lint.help(format!(
                             "add `#![feature({})]` to the crate attributes to enable `{}`",
                             feature,
                             tcx.def_path_str(candidate.item.def_id),

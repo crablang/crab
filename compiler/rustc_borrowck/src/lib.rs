@@ -498,11 +498,11 @@ impl<'cx, 'tcx> BorrowckInferCtxt<'cx, 'tcx> {
         let next_region = self.infcx.next_region_var(origin);
         let vid = next_region.as_var();
 
-        if cfg!(debug_assertions) && !self.inside_canonicalization_ctxt() {
+        if cfg!(debug_assertions) {
             debug!("inserting vid {:?} with origin {:?} into var_to_origin", vid, origin);
             let ctxt = get_ctxt_fn();
             let mut var_to_origin = self.reg_var_to_origin.borrow_mut();
-            var_to_origin.insert(vid, ctxt);
+            assert_eq!(var_to_origin.insert(vid, ctxt), None);
         }
 
         next_region
@@ -520,11 +520,11 @@ impl<'cx, 'tcx> BorrowckInferCtxt<'cx, 'tcx> {
         let next_region = self.infcx.next_nll_region_var(origin);
         let vid = next_region.as_var();
 
-        if cfg!(debug_assertions) && !self.inside_canonicalization_ctxt() {
+        if cfg!(debug_assertions) {
             debug!("inserting vid {:?} with origin {:?} into var_to_origin", vid, origin);
             let ctxt = get_ctxt_fn();
             let mut var_to_origin = self.reg_var_to_origin.borrow_mut();
-            var_to_origin.insert(vid, ctxt);
+            assert_eq!(var_to_origin.insert(vid, ctxt), None);
         }
 
         next_region
@@ -738,7 +738,7 @@ impl<'cx, 'tcx> rustc_mir_dataflow::ResultsVisitor<'cx, 'tcx> for MirBorrowckCtx
             TerminatorKind::Assert { cond, expected: _, msg, target: _, unwind: _ } => {
                 self.consume_operand(loc, (cond, span), flow_state);
                 use rustc_middle::mir::AssertKind;
-                if let AssertKind::BoundsCheck { len, index } = msg {
+                if let AssertKind::BoundsCheck { len, index } = &**msg {
                     self.consume_operand(loc, (len, span), flow_state);
                     self.consume_operand(loc, (index, span), flow_state);
                 }
@@ -2022,7 +2022,7 @@ impl<'cx, 'tcx> MirBorrowckCtxt<'cx, 'tcx> {
                     // been emitted (#52262).
                     self.infcx.tcx.sess.delay_span_bug(
                         span,
-                        &format!(
+                        format!(
                             "Accessing `{:?}` with the kind `{:?}` shouldn't be possible",
                             place, kind,
                         ),
@@ -2383,7 +2383,7 @@ mod error {
             }
             for (_, (mut diag, count)) in std::mem::take(&mut self.errors.buffered_mut_errors) {
                 if count > 10 {
-                    diag.note(&format!("...and {} other attempted mutable borrows", count - 10));
+                    diag.note(format!("...and {} other attempted mutable borrows", count - 10));
                 }
                 diag.buffer(&mut self.errors.buffered);
             }

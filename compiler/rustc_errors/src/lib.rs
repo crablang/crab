@@ -1069,26 +1069,29 @@ impl Handler {
     }
 
     pub fn has_errors(&self) -> Option<ErrorGuaranteed> {
-        self.inner.borrow().has_errors().then(ErrorGuaranteed::unchecked_claim_error_was_emitted)
+        self.inner.borrow().has_errors().then(|| {
+            #[allow(deprecated)]
+            ErrorGuaranteed::unchecked_claim_error_was_emitted()
+        })
     }
 
     pub fn has_errors_or_lint_errors(&self) -> Option<ErrorGuaranteed> {
-        self.inner
-            .borrow()
-            .has_errors_or_lint_errors()
-            .then(ErrorGuaranteed::unchecked_claim_error_was_emitted)
+        self.inner.borrow().has_errors_or_lint_errors().then(|| {
+            #[allow(deprecated)]
+            ErrorGuaranteed::unchecked_claim_error_was_emitted()
+        })
     }
     pub fn has_errors_or_delayed_span_bugs(&self) -> Option<ErrorGuaranteed> {
-        self.inner
-            .borrow()
-            .has_errors_or_delayed_span_bugs()
-            .then(ErrorGuaranteed::unchecked_claim_error_was_emitted)
+        self.inner.borrow().has_errors_or_delayed_span_bugs().then(|| {
+            #[allow(deprecated)]
+            ErrorGuaranteed::unchecked_claim_error_was_emitted()
+        })
     }
     pub fn is_compilation_going_to_fail(&self) -> Option<ErrorGuaranteed> {
-        self.inner
-            .borrow()
-            .is_compilation_going_to_fail()
-            .then(ErrorGuaranteed::unchecked_claim_error_was_emitted)
+        self.inner.borrow().is_compilation_going_to_fail().then(|| {
+            #[allow(deprecated)]
+            ErrorGuaranteed::unchecked_claim_error_was_emitted()
+        })
     }
 
     pub fn print_error_count(&self, registry: &Registry) {
@@ -1333,6 +1336,7 @@ impl HandlerInner {
                 .push(DelayedDiagnostic::with_backtrace(diagnostic.clone(), backtrace));
 
             if !self.flags.report_delayed_bugs {
+                #[allow(deprecated)]
                 return Some(ErrorGuaranteed::unchecked_claim_error_was_emitted());
             }
         }
@@ -1411,7 +1415,10 @@ impl HandlerInner {
                     self.bump_err_count();
                 }
 
-                guaranteed = Some(ErrorGuaranteed::unchecked_claim_error_was_emitted());
+                #[allow(deprecated)]
+                {
+                    guaranteed = Some(ErrorGuaranteed::unchecked_claim_error_was_emitted());
+                }
             } else {
                 self.bump_warn_count();
             }
@@ -1462,10 +1469,10 @@ impl HandlerInner {
                 DiagnosticMessage::Str(warnings),
             )),
             (_, 0) => {
-                let _ = self.fatal(&errors);
+                let _ = self.fatal(errors);
             }
             (_, _) => {
-                let _ = self.fatal(&format!("{}; {}", &errors, &warnings));
+                let _ = self.fatal(format!("{}; {}", &errors, &warnings));
             }
         }
 
@@ -1486,18 +1493,18 @@ impl HandlerInner {
                 error_codes.sort();
                 if error_codes.len() > 1 {
                     let limit = if error_codes.len() > 9 { 9 } else { error_codes.len() };
-                    self.failure(&format!(
+                    self.failure(format!(
                         "Some errors have detailed explanations: {}{}",
                         error_codes[..limit].join(", "),
                         if error_codes.len() > 9 { "..." } else { "." }
                     ));
-                    self.failure(&format!(
+                    self.failure(format!(
                         "For more information about an error, try \
                          `rustc --explain {}`.",
                         &error_codes[0]
                     ));
                 } else {
-                    self.failure(&format!(
+                    self.failure(format!(
                         "For more information about this error, try \
                          `rustc --explain {}`.",
                         &error_codes[0]
@@ -1663,7 +1670,7 @@ impl HandlerInner {
             if bug.level != Level::DelayedBug {
                 // NOTE(eddyb) not panicking here because we're already producing
                 // an ICE, and the more information the merrier.
-                bug.note(&format!(
+                bug.note(format!(
                     "`flushed_delayed` got diagnostic with level {:?}, \
                      instead of the expected `DelayedBug`",
                     bug.level,
@@ -1732,7 +1739,7 @@ impl DelayedDiagnostic {
     }
 
     fn decorate(mut self) -> Diagnostic {
-        self.inner.note(&format!("delayed at {}", self.note));
+        self.inner.note(format!("delayed at {}", self.note));
         self.inner
     }
 }
@@ -1831,7 +1838,7 @@ pub fn add_elided_lifetime_in_path_suggestion(
         if incl_angl_brckt { format!("<{}>", anon_lts) } else { format!("{}, ", anon_lts) };
     diag.span_suggestion_verbose(
         insertion_span.shrink_to_hi(),
-        &format!("indicate the anonymous lifetime{}", pluralize!(n)),
+        format!("indicate the anonymous lifetime{}", pluralize!(n)),
         suggestion,
         Applicability::MachineApplicable,
     );

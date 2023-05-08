@@ -685,7 +685,7 @@ impl<'a, 'tcx> FnCtxt<'a, 'tcx> {
                     } else {
                         err = tcx.sess.struct_span_err_with_code(
                             full_call_span,
-                            &format!(
+                            format!(
                                 "{call_name} takes {}{} but {} {} supplied",
                                 if c_variadic { "at least " } else { "" },
                                 potentially_plural_count(
@@ -828,7 +828,7 @@ impl<'a, 'tcx> FnCtxt<'a, 'tcx> {
         } else {
             tcx.sess.struct_span_err_with_code(
                 full_call_span,
-                &format!(
+                format!(
                     "this {} takes {}{} but {} {} supplied",
                     call_name,
                     if c_variadic { "at least " } else { "" },
@@ -1203,7 +1203,7 @@ impl<'a, 'tcx> FnCtxt<'a, 'tcx> {
             }
             SuggestionText::Remove(plural) => {
                 err.multipart_suggestion(
-                    &format!("remove the extra argument{}", if plural { "s" } else { "" }),
+                    format!("remove the extra argument{}", if plural { "s" } else { "" }),
                     suggestions,
                     Applicability::HasPlaceholders,
                 );
@@ -1253,7 +1253,7 @@ impl<'a, 'tcx> FnCtxt<'a, 'tcx> {
             suggestion += ")";
             err.span_suggestion_verbose(
                 suggestion_span,
-                &suggestion_text,
+                suggestion_text,
                 suggestion,
                 Applicability::HasPlaceholders,
             );
@@ -1300,6 +1300,11 @@ impl<'a, 'tcx> FnCtxt<'a, 'tcx> {
                 opt_ty.unwrap_or_else(|| self.next_float_var())
             }
             ast::LitKind::Bool(_) => tcx.types.bool,
+            ast::LitKind::CStr(_, _) => tcx.mk_imm_ref(
+                tcx.lifetimes.re_static,
+                tcx.type_of(tcx.require_lang_item(hir::LangItem::CStr, Some(lit.span)))
+                    .skip_binder(),
+            ),
             ast::LitKind::Err => tcx.ty_error_misc(),
         }
     }
@@ -1895,7 +1900,7 @@ impl<'a, 'tcx> FnCtxt<'a, 'tcx> {
                 _ => {
                     // Look for a user-provided impl of a `Fn` trait, and point to it.
                     let new_def_id = self.probe(|_| {
-                        let trait_ref = self.tcx.mk_trait_ref(
+                        let trait_ref = ty::TraitRef::new(self.tcx,
                             call_kind.to_def_id(self.tcx),
                             [
                                 callee_ty,
@@ -1947,7 +1952,7 @@ impl<'a, 'tcx> FnCtxt<'a, 'tcx> {
                 spans.push_span_label(param.span, "");
             }
 
-            err.span_note(spans, &format!("{} defined here", self.tcx.def_descr(def_id)));
+            err.span_note(spans, format!("{} defined here", self.tcx.def_descr(def_id)));
         } else if let Some(hir::Node::Expr(e)) = self.tcx.hir().get_if_local(def_id)
             && let hir::ExprKind::Closure(hir::Closure { body, .. }) = &e.kind
         {
@@ -1958,11 +1963,11 @@ impl<'a, 'tcx> FnCtxt<'a, 'tcx> {
             } else {
                 ("closure", self.tcx.def_span(def_id))
             };
-            err.span_note(span, &format!("{} defined here", kind));
+            err.span_note(span, format!("{} defined here", kind));
         } else {
             err.span_note(
                 self.tcx.def_span(def_id),
-                &format!("{} defined here", self.tcx.def_descr(def_id)),
+                format!("{} defined here", self.tcx.def_descr(def_id)),
             );
         }
     }

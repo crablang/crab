@@ -63,9 +63,9 @@ impl<'a, 'tcx> FnCtxt<'a, 'tcx> {
                     lint::builtin::UNREACHABLE_CODE,
                     id,
                     span,
-                    &msg,
+                    msg.clone(),
                     |lint| {
-                        lint.span_label(span, &msg).span_label(
+                        lint.span_label(span, msg).span_label(
                             orig_span,
                             custom_note
                                 .unwrap_or("any code following this expression is unreachable"),
@@ -275,7 +275,7 @@ impl<'a, 'tcx> FnCtxt<'a, 'tcx> {
                     _ => {
                         self.tcx.sess.delay_span_bug(
                             expr.span,
-                            &format!(
+                            format!(
                                 "while adjusting {:?}, can't compose {:?} and {:?}",
                                 expr,
                                 entry.get(),
@@ -854,9 +854,13 @@ impl<'a, 'tcx> FnCtxt<'a, 'tcx> {
         let result = self
             .resolve_fully_qualified_call(span, item_name, ty.normalized, qself.span, hir_id)
             .or_else(|error| {
+                let guar = self
+                    .tcx
+                    .sess
+                    .delay_span_bug(span, "method resolution should've emitted an error");
                 let result = match error {
                     method::MethodError::PrivateMatch(kind, def_id, _) => Ok((kind, def_id)),
-                    _ => Err(ErrorGuaranteed::unchecked_claim_error_was_emitted()),
+                    _ => Err(guar),
                 };
 
                 // If we have a path like `MyTrait::missing_method`, then don't register
@@ -1034,15 +1038,15 @@ impl<'a, 'tcx> FnCtxt<'a, 'tcx> {
                 rcvr.span,
                 "you probably want to use this value after calling the method...",
             );
-            err.span_note(sp, &modifies_rcvr_note);
-            err.note(&format!("...instead of the `()` output of method `{}`", path_segment.ident));
+            err.span_note(sp, modifies_rcvr_note);
+            err.note(format!("...instead of the `()` output of method `{}`", path_segment.ident));
         } else if let ExprKind::MethodCall(..) = rcvr.kind {
             err.span_note(
                 sp,
                 modifies_rcvr_note.clone() + ", it is not meant to be used in method chains.",
             );
         } else {
-            err.span_note(sp, &modifies_rcvr_note);
+            err.span_note(sp, modifies_rcvr_note);
         }
     }
 
@@ -1374,7 +1378,7 @@ impl<'a, 'tcx> FnCtxt<'a, 'tcx> {
                 Err(_) => {
                     self.tcx.sess.delay_span_bug(
                         span,
-                        &format!(
+                        format!(
                         "instantiate_value_path: (UFCS) {:?} was a subtype of {:?} but now is not?",
                         self_ty,
                         impl_ty,

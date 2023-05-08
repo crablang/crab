@@ -35,6 +35,10 @@ hir_analysis_field_already_declared =
 
 hir_analysis_expected_used_symbol = expected `used`, `used(compiler)` or `used(linker)`
 
+hir_analysis_const_param_ty_impl_on_non_adt =
+    the trait `ConstParamTy` may not be implemented for this type
+    .label = type is not a structure or enumeration
+
 hir_analysis_ambiguous_lifetime_bound =
     ambiguous lifetime bound, explicit lifetime bound required
 
@@ -188,7 +192,11 @@ hir_analysis_return_type_notation_equality_bound =
     return type notation is not allowed to use type equality
 
 hir_analysis_return_type_notation_missing_method =
-    cannot find associated function `{$assoc_name}` in trait `{$trait_name}`
+    cannot find associated function `{$assoc_name}` for `{$ty_name}`
+
+hir_analysis_return_type_notation_conflicting_bound =
+    ambiguous associated function `{$assoc_name}` for `{$ty_name}`
+    .note = `{$assoc_name}` is declared in two supertraits: `{$first_bound}` and `{$second_bound}`
 
 hir_analysis_placeholder_not_allowed_item_signatures = the placeholder `_` is not allowed within types on item signatures for {$kind}
     .label = not allowed in type signatures
@@ -276,3 +284,7 @@ hir_analysis_const_specialize = cannot specialize on const impl with non-const i
 hir_analysis_static_specialize = cannot specialize on `'static` lifetime
 
 hir_analysis_missing_tilde_const = missing `~const` qualifier for specialization
+
+hir_analysis_drop_impl_negative = negative `Drop` impls are not supported
+
+hir_analysis_drop_impl_reservation = reservation `Drop` impls are not supported

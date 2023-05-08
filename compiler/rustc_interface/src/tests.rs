@@ -69,6 +69,7 @@ where
         is_private_dep: false,
         add_prelude: true,
         nounused_dep: false,
+        force: false,
     }
 }
 
@@ -547,6 +548,7 @@ fn test_codegen_options_tracking_hash() {
     untracked!(ar, String::from("abc"));
     untracked!(codegen_units, Some(42));
     untracked!(default_linker_libraries, true);
+    untracked!(dlltool, Some(PathBuf::from("custom_dlltool.exe")));
     untracked!(extra_filename, String::from("extra-filename"));
     untracked!(incremental, Some(String::from("abc")));
     // `link_arg` is omitted because it just forwards to `link_args`.
@@ -651,7 +653,6 @@ fn test_unstable_options_tracking_hash() {
     untracked!(assert_incr_state, Some(String::from("loaded")));
     untracked!(deduplicate_diagnostics, false);
     untracked!(dep_tasks, true);
-    untracked!(dlltool, Some(PathBuf::from("custom_dlltool.exe")));
     untracked!(dont_buffer_diagnostics, true);
     untracked!(dump_dep_graph, true);
     untracked!(dump_drop_tracking_cfg, Some("cfg.dot".to_string()));
@@ -795,12 +796,16 @@ fn test_unstable_options_tracking_hash() {
     tracked!(remap_cwd_prefix, Some(PathBuf::from("abc")));
     tracked!(report_delayed_bugs, true);
     tracked!(sanitizer, SanitizerSet::ADDRESS);
+    tracked!(sanitizer_cfi_canonical_jump_tables, None);
+    tracked!(sanitizer_cfi_generalize_pointers, Some(true));
+    tracked!(sanitizer_cfi_normalize_integers, Some(true));
     tracked!(sanitizer_memory_track_origins, 2);
     tracked!(sanitizer_recover, SanitizerSet::ADDRESS);
     tracked!(saturating_float_casts, Some(true));
     tracked!(share_generics, Some(true));
     tracked!(show_span, Some(String::from("abc")));
     tracked!(simulate_remapped_rust_src_base, Some(PathBuf::from("/rustc/abc")));
+    tracked!(split_lto_unit, Some(true));
     tracked!(src_hash_algorithm, Some(SourceFileHashAlgorithm::Sha1));
     tracked!(stack_protector, StackProtector::All);
     tracked!(symbol_mangling_version, Some(SymbolManglingVersion::V0));
