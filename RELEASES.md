@@ -67,7 +67,7 @@ Cargo
 
 <a id="1.69.0-Rustdoc"></a>
 
-Rustdoc
+Crabdoc
 -----
 
 - [Vertically compact trait bound formatting.](https://github.com/rust-lang/rust/pull/102842/)
@@ -88,7 +88,7 @@ Compatibility Notes
 - [When `default-features` is set to false of a workspace dependency, and an inherited dependency of a member has `default-features = true`, Cargo will enable default features of that dependency.](https://github.com/rust-lang/cargo/pull/11409/)
 - [Cargo denies `CARGO_HOME` in the `[env]` configuration table. Cargo itself doesn't pick up this value, but recursive calls to cargo would, which was not intended.](https://github.com/rust-lang/cargo/pull/11644/)
 - [Debuginfo for build dependencies is now off if not explicitly set. This is expected to improve the overall build time.](https://github.com/rust-lang/cargo/pull/11252/)
-- [The Rust distribution no longer always includes rustdoc](https://github.com/rust-lang/rust/pull/106886)
+- [The Crab distribution no longer always includes rustdoc](https://github.com/rust-lang/rust/pull/106886)
   If `tools = [...]` is set in config.toml, we will respect a missing rustdoc in that list. By
   default rustdoc remains included. To retain the prior behavior explicitly add `"rustdoc"` to the
   list.
@@ -98,7 +98,7 @@ Compatibility Notes
 Internal Changes
 ----------------
 
-These changes do not affect any public interfaces of Rust, but they represent
+These changes do not affect any public interfaces of Crab, but they represent
 significant improvements to the performance or internals of rustc and related
 tools.
 
@@ -211,7 +211,7 @@ Compatibility Notes
 Internal Changes
 ----------------
 
-These changes do not affect any public interfaces of Rust, but they represent
+These changes do not affect any public interfaces of Crab, but they represent
 significant improvements to the performance or internals of rustc and related
 tools.
 
@@ -264,8 +264,8 @@ Added, updated, and removed targets:
 - [Promote UEFI targets to tier 2](https://github.com/rust-lang/rust/pull/103933/), `aarch64-unknown-uefi`, `i686-unknown-uefi`, and `x86_64-unknown-uefi`.
 - [Remove tier 3 `linuxkernel` targets](https://github.com/rust-lang/rust/pull/104015/) (not used by the actual kernel).
 
-Refer to Rust's [platform support page][platform-support-doc]
-for more information on Rust's tiered platform support.
+Refer to Crab's [platform support page][platform-support-doc]
+for more information on Crab's tiered platform support.
 
 <a id="1.67.0-Libraries"></a>
 
@@ -305,11 +305,11 @@ These APIs are now stable in const contexts:
 Compatibility Notes
 -------------------
 
-- [The layout of `repr(Rust)` types now groups m\*2^n-sized fields with
+- [The layout of `repr(Crab)` types now groups m\*2^n-sized fields with
   equivalently aligned ones.](https://github.com/rust-lang/rust/pull/102750/)
   This is intended to be an optimization, but it is also known to increase type
   sizes in a few cases for the placement of enum tags. As a reminder, the layout
-  of `repr(Rust)` types is an implementation detail, subject to change.
+  of `repr(Crab)` types is an implementation detail, subject to change.
 - [0.5 now rounds to 0 when formatted to 0 decimal places.](https://github.com/rust-lang/rust/pull/102935/)
   This makes it consistent with the rest of floating point formatting that
   rounds ties toward even digits.
@@ -329,11 +329,11 @@ Compatibility Notes
 Internal Changes
 ----------------
 
-These changes do not affect any public interfaces of Rust, but they represent
+These changes do not affect any public interfaces of Crab, but they represent
 significant improvements to the performance or internals of rustc and related
 tools.
 
-- [Rewrite LLVM's archive writer in Rust.](https://github.com/rust-lang/rust/pull/97485/)
+- [Rewrite LLVM's archive writer in Crab.](https://github.com/rust-lang/rust/pull/97485/)
 
 Version 1.66.1 (2023-01-10)
 ===========================
@@ -368,8 +368,8 @@ Language
 Compiler
 --------
 - [Add armv5te-none-eabi and thumbv5te-none-eabi tier 3 targets](https://github.com/rust-lang/rust/pull/101329/)
-  - Refer to Rust's [platform support page][platform-support-doc] for more
-    information on Rust's tiered platform support.
+  - Refer to Crab's [platform support page][platform-support-doc] for more
+    information on Crab's tiered platform support.
 - [Add support for linking against macOS universal libraries](https://github.com/rust-lang/rust/pull/98736)
 
 Libraries
@@ -394,10 +394,10 @@ Stabilized APIs
 - [`std::os::fd`](https://doc.rust-lang.org/stable/std/os/fd/index.html)
 
 
-Rustdoc
+Crabdoc
 -------
 
-- [Add Rustdoc warning for invalid HTML tags in the documentation](https://github.com/rust-lang/rust/pull/101720/)
+- [Add Crabdoc warning for invalid HTML tags in the documentation](https://github.com/rust-lang/rust/pull/101720/)
 
 Cargo
 -----
@@ -424,7 +424,7 @@ Compatibility Notes
 Internal Changes
 ----------------
 
-These changes do not affect any public interfaces of Rust, but they represent
+These changes do not affect any public interfaces of Crab, but they represent
 significant improvements to the performance or internals of rustc and related
 tools.
 
@@ -464,8 +464,8 @@ New targets:
 
 - [Add armv4t-none-eabi as a tier 3 target](https://github.com/rust-lang/rust/pull/100244/)
 - [Add powerpc64-unknown-openbsd and riscv64-unknown-openbsd as tier 3 targets](https://github.com/rust-lang/rust/pull/101025/)
-  - Refer to Rust's [platform support page][platform-support-doc] for more
-    information on Rust's tiered platform support.
+  - Refer to Crab's [platform support page][platform-support-doc] for more
+    information on Crab's tiered platform support.
 
 Libraries
 ---------
@@ -518,16 +518,16 @@ Compatibility Notes
 - [Sunset RLS](https://github.com/rust-lang/rust/pull/100863/)
 - [Deny usage of `#![cfg_attr(..., crate_type = ...)]` to set the crate type](https://github.com/rust-lang/rust/pull/99784/)
   This strengthens the forward compatibility lint deprecated_cfg_attr_crate_type_name to deny.
-- [`llvm-has-rust-patches` allows setting the build system to treat the LLVM as having Rust-specific patches](https://github.com/rust-lang/rust/pull/101072)
-  This option may need to be set for distributions that are building Rust with a patched LLVM via `llvm-config`, not the built-in LLVM.
-- Combining three or more languages (e.g. Objective C, C++ and Rust) into one binary may hit linker limitations when using `lld`. For more information, see [issue 102754][102754].
+- [`llvm-has-rust-patches` allows setting the build system to treat the LLVM as having Crab-specific patches](https://github.com/rust-lang/rust/pull/101072)
+  This option may need to be set for distributions that are building Crab with a patched LLVM via `llvm-config`, not the built-in LLVM.
+- Combining three or more languages (e.g. Objective C, C++ and Crab) into one binary may hit linker limitations when using `lld`. For more information, see [issue 102754][102754].
 
 [102754]: https://github.com/rust-lang/rust/issues/102754
 
 Internal Changes
 ----------------
 
-These changes do not affect any public interfaces of Rust, but they represent
+These changes do not affect any public interfaces of Crab, but they represent
 significant improvements to the performance or internals of rustc and related
 tools.
 
@@ -549,8 +549,8 @@ Language
 Compiler
 --------
 - [Add Nintendo Switch as tier 3 target](https://github.com/rust-lang/rust/pull/88991/)
-  - Refer to Rust's [platform support page][platform-support-doc] for more
-    information on Rust's tiered platform support.
+  - Refer to Crab's [platform support page][platform-support-doc] for more
+    information on Crab's tiered platform support.
 - [Only compile `#[used]` as llvm.compiler.used for ELF targets](https://github.com/rust-lang/rust/pull/93718/)
 - [Add the `--diagnostic-width` compiler flag to define the terminal width.](https://github.com/rust-lang/rust/pull/95635/)
 - [Add support for link-flavor `rust-lld` for iOS, tvOS and watchOS](https://github.com/rust-lang/rust/pull/98771/)
@@ -646,7 +646,7 @@ Misc
 Compatibility Notes
 -------------------
 - The minimum required versions for all `-linux-gnu` targets are now at least kernel 3.2 and glibc 2.17, for targets that previously supported older versions: [Increase the minimum linux-gnu versions](https://github.com/rust-lang/rust/pull/95026/)
-- [Network primitives are now implemented with the ideal Rust layout, not the C system layout](https://github.com/rust-lang/rust/pull/78802/). This can cause problems when transmuting the types.
+- [Network primitives are now implemented with the ideal Crab layout, not the C system layout](https://github.com/rust-lang/rust/pull/78802/). This can cause problems when transmuting the types.
 - [Add assertion that `transmute_copy`'s `U` is not larger than `T`](https://github.com/rust-lang/rust/pull/98839/)
 - [A soundness bug in `BTreeMap` was fixed](https://github.com/rust-lang/rust/pull/99413/) that allowed data it was borrowing to be dropped before the container.
 - [The Drop behavior of C-like enums cast to ints has changed](https://github.com/rust-lang/rust/pull/96862/). These are already discouraged by a compiler warning.
@@ -658,7 +658,7 @@ Compatibility Notes
 Internal Changes
 ----------------
 
-These changes do not affect any public interfaces of Rust, but they represent
+These changes do not affect any public interfaces of Crab, but they represent
 significant improvements to the performance or internals of rustc and related
 tools.
 
@@ -698,8 +698,8 @@ Compiler
 - [Add Apple WatchOS compile targets\*.][95243]
 - [Add a Windows application manifest to rustc-main.][96737]
 
-\* Refer to Rust's [platform support page][platform-support-doc] for more
-   information on Rust's tiered platform support.
+\* Refer to Crab's [platform support page][platform-support-doc] for more
+   information on Crab's tiered platform support.
 
 Libraries
 ---------
@@ -715,7 +715,7 @@ Libraries
 - [Put a bound on collection misbehavior.][97316]
 - [Make `std::mem::needs_drop` accept `?Sized`.][97675]
 - [`impl Termination for Infallible` and then make the `Result` impls of `Termination` more generic.][97803]
-- [Document Rust's stance on `/proc/self/mem`.][97837]
+- [Document Crab's stance on `/proc/self/mem`.][97837]
 
 Stabilized APIs
 ---------------
@@ -790,7 +790,7 @@ These changes provide no direct user facing benefits, but represent significant
 improvements to the internals and overall performance of rustc
 and related tools.
 
-- [Prepare Rust for LLVM opaque pointers.][94214]
+- [Prepare Crab for LLVM opaque pointers.][94214]
 
 [94214]: https://github.com/rust-lang/rust/pull/94214/
 [94530]: https://github.com/rust-lang/rust/pull/94530/
@@ -871,7 +871,7 @@ and related tools.
 Version 1.62.1 (2022-07-19)
 ==========================
 
-Rust 1.62.1 addresses a few recent regressions in the compiler and standard
+Crab 1.62.1 addresses a few recent regressions in the compiler and standard
 library, and also mitigates a CPU vulnerability on Intel SGX.
 
 * [The compiler fixed unsound function coercions involving `impl Trait` return types.][98608]
@@ -897,7 +897,7 @@ Language
 - [Fix constants not getting dropped if part of a diverging expression][94775]
 - [Support unit struct/enum variant in destructuring assignment][95380]
 - [Remove mutable_borrow_reservation_conflict lint and allow the code pattern][96268]
-- [`const` functions may now specify `extern "C"` or `extern "Rust"`][95346]
+- [`const` functions may now specify `extern "C"` or `extern "Crab"`][95346]
 
 Compiler
 --------
@@ -912,8 +912,8 @@ Compiler
 - [Implement a lint to warn about unused macro rules][96150]
 - [Promote `x86_64-unknown-none` target to Tier 2\*][95705]
 
-\* Refer to Rust's [platform support page][platform-support-doc] for more
-   information on Rust's tiered platform support.
+\* Refer to Crab's [platform support page][platform-support-doc] for more
+   information on Crab's tiered platform support.
 
 Libraries
 ---------
@@ -1041,7 +1041,7 @@ Libraries
 - [`ManuallyDrop<T>` is now documented to have the same layout as `T`][88375]
 - [`#[ignore = "…"]` messages are printed when running tests][92714]
 - [Consistently show absent stdio handles on Windows as NULL handles][93263]
-- [Make `std::io::stdio::lock()` return `'static` handles.][93965] Previously, the creation of locked handles to stdin/stdout/stderr would borrow the handles being locked, which prevented writing `let out = std::io::stdout().lock();` because `out` would outlive the return value of `stdout()`. Such code now works, eliminating a common pitfall that affected many Rust users.
+- [Make `std::io::stdio::lock()` return `'static` handles.][93965] Previously, the creation of locked handles to stdin/stdout/stderr would borrow the handles being locked, which prevented writing `let out = std::io::stdout().lock();` because `out` would outlive the return value of `stdout()`. Such code now works, eliminating a common pitfall that affected many Crab users.
 - [`Vec::from_raw_parts` is now less restrictive about its inputs][95016]
 - [`std::thread::available_parallelism` now takes cgroup quotas into account.][92697] Since `available_parallelism` is often used to create a thread pool for parallel computation, which may be CPU-bound for performance, `available_parallelism` will return a value consistent with the ability to use that many threads continuously, if possible. For instance, in a container with 8 virtual CPUs but quotas only allowing for 50% usage, `available_parallelism` will return 4.
 
@@ -1080,7 +1080,7 @@ Compatibility Notes
 - Previously native static libraries were linked as `whole-archive` in some cases, but now rustc tries not to use `whole-archive` unless explicitly requested. This [change][93901] may result in linking errors in some cases. To fix such errors, native libraries linked from the command line, build scripts, or [`#[link]` attributes][link-attr] need to
   - (more common) either be reordered to respect dependencies between them (if `a` depends on `b` then `a` should go first and `b` second)
   - (less common) or be updated to use the [`+whole-archive`] modifier.
-- [Catching a second unwind from FFI code while cleaning up from a Rust panic now causes the process to abort][92911]
+- [Catching a second unwind from FFI code while cleaning up from a Crab panic now causes the process to abort][92911]
 - [Proc macros no longer see `ident` matchers wrapped in groups][92472]
 - [The number of `#` in `r#` raw string literals is now required to be less than 256][95251]
 - [When checking that a dyn type satisfies a trait bound, supertrait bounds are now enforced][92285]
@@ -1159,13 +1159,13 @@ Compiler
 - [Add new Tier 3 target `mips64-openwrt-linux-musl`\*][92300]
 - [Add new Tier 3 target `armv7-unknown-linux-uclibceabi` (softfloat)\*][92383]
 - [Fix invalid removal of newlines from doc comments][92357]
-- [Add kernel target for RustyHermit][92670]
+- [Add kernel target for CrabyHermit][92670]
 - [Deny mixing bin crate type with lib crate types][92933]
 - [Make rustc use `RUST_BACKTRACE=full` by default][93566]
 - [Upgrade to LLVM 14][93577]
 
-\* Refer to Rust's [platform support page][platform-support-doc] for more
-   information on Rust's tiered platform support.
+\* Refer to Crab's [platform support page][platform-support-doc] for more
+   information on Crab's tiered platform support.
 
 Libraries
 ---------
@@ -1390,7 +1390,7 @@ Compatibility Notes
   certain symbols at runtime.
 - [Deprecate crate_type and crate_name nested inside `#![cfg_attr]`][83744]
   This adds a future compatibility lint to supporting the use of cfg_attr
-  wrapping either crate_type or crate_name specification within Rust files;
+  wrapping either crate_type or crate_name specification within Crab files;
   it is recommended that users migrate to setting the equivalent command line
   flags.
 - [Remove effect of `#[no_link]` attribute on name resolution][92034]
@@ -1401,7 +1401,7 @@ Compatibility Notes
 - [Weaken guarantee around advancing underlying iterators in zip][83791]
 - [Make split_inclusive() on an empty slice yield an empty output][89825]
 - [Update std::env::temp_dir to use GetTempPath2 on Windows when available.][89999]
-- [unreachable! was updated to match other formatting macro behavior on Rust 2021][92137]
+- [unreachable! was updated to match other formatting macro behavior on Crab 2021][92137]
 
 Internal Changes
 ----------------
@@ -1509,8 +1509,8 @@ Language
 Compiler
 --------
 
-- [Add LLVM CFI support to the Rust compiler][89652]
-- [Stabilize -Z strip as -C strip][90058]. Note that while release builds already don't add debug symbols for the code you compile, the compiled standard library that ships with Rust includes debug symbols, so you may want to use the `strip` option to remove these symbols to produce smaller release binaries. Note that this release only includes support in rustc, not directly in cargo.
+- [Add LLVM CFI support to the Crab compiler][89652]
+- [Stabilize -Z strip as -C strip][90058]. Note that while release builds already don't add debug symbols for the code you compile, the compiled standard library that ships with Crab includes debug symbols, so you may want to use the `strip` option to remove these symbols to produce smaller release binaries. Note that this release only includes support in rustc, not directly in cargo.
 - [Add support for LLVM coverage mapping format versions 5 and 6][91207]
 - [Emit LLVM optimization remarks when enabled with `-Cremark`][90833]
 - [Update the minimum external LLVM to 12][90175]
@@ -1519,8 +1519,8 @@ Compiler
 - [Don't abort compilation after giving a lint error][87337]
 - [Error messages point at the source of trait bound obligations in more places][89580]
 
-\* Refer to Rust's [platform support page][platform-support-doc] for more
-   information on Rust's tiered platform support.
+\* Refer to Crab's [platform support page][platform-support-doc] for more
+   information on Crab's tiered platform support.
 
 Libraries
 ---------
@@ -1560,7 +1560,7 @@ Cargo
 - [Add --message-format for install command][cargo/10107]
 - [Warn when alias shadows external subcommand][cargo/10082]
 
-Rustdoc
+Crabdoc
 -------
 
 - [Show all Deref implementations recursively in rustdoc][90183]
@@ -1569,7 +1569,7 @@ Rustdoc
 Compatibility Notes
 -------------------
 
-- [Try all stable method candidates first before trying unstable ones][90329]. This change ensures that adding new nightly-only methods to the Rust standard library will not break code invoking methods of the same name from traits outside the standard library.
+- [Try all stable method candidates first before trying unstable ones][90329]. This change ensures that adding new nightly-only methods to the Crab standard library will not break code invoking methods of the same name from traits outside the standard library.
 - Windows: [`std::process::Command` will no longer search the current directory for executables.][87704]
 - [All proc-macro backward-compatibility lints are now deny-by-default.][88041]
 - [proc_macro: Append .0 to unsuffixed float if it would otherwise become int token][90297]
@@ -1650,8 +1650,8 @@ Compiler
 - [Add `m68k-unknown-linux-gnu` at Tier 3\*.][88321]
 - [Add SOLID targets at Tier 3\*:][86191] `aarch64-kmc-solid_asp3`, `armv7a-kmc-solid_asp3-eabi`, `armv7a-kmc-solid_asp3-eabihf`
 
-\* Refer to Rust's [platform support page][platform-support-doc] for more
-   information on Rust's tiered platform support.
+\* Refer to Crab's [platform support page][platform-support-doc] for more
+   information on Crab's tiered platform support.
 
 Libraries
 ---------
@@ -1781,8 +1781,8 @@ Compiler
 - [Add `powerpc-unknown-freebsd` at Tier 3\*.][rust#87370]
 - [Add `riscv32imc-esp-espidf` at Tier 3\*.][rust#87666]
 
-\* Refer to Rust's [platform support page][platform-support-doc] for more
-information on Rust's tiered platform support.
+\* Refer to Crab's [platform support page][platform-support-doc] for more
+information on Crab's tiered platform support.
 
 Libraries
 ---------
@@ -1832,17 +1832,17 @@ These APIs are now usable in const contexts:
 Cargo
 -----
 
-- [Cargo supports specifying a minimum supported Rust version in Cargo.toml.][`rust-version`]
+- [Cargo supports specifying a minimum supported Crab version in Cargo.toml.][`rust-version`]
   This has no effect at present on dependency version selection.
-  We encourage crates to specify their minimum supported Rust version, and we encourage CI systems
-  that support Rust code to include a crate's specified minimum version in the test matrix for that
+  We encourage crates to specify their minimum supported Crab version, and we encourage CI systems
+  that support Crab code to include a crate's specified minimum version in the test matrix for that
   crate by default.
 
 Compatibility notes
 -------------------
 
 - [Update to new argument parsing rules on Windows.][rust#87580]
-  This adjusts Rust's standard library to match the behavior of the standard
+  This adjusts Crab's standard library to match the behavior of the standard
   libraries for C/C++. The rules have changed slightly over time, and this PR
   brings us to the latest set of rules (changed in 2008).
 - [Disallow the aapcs calling convention on aarch64][rust#88399]
@@ -1852,7 +1852,7 @@ Compatibility notes
 - [Warn when an escaped newline skips multiple lines.][rust#87671]
 - [Calls to `libc::getpid` / `std::process::id` from `Command::pre_exec`
    may return different values on glibc <= 2.24.][rust#81825]
-   Rust now invokes the `clone3` system call directly, when available, to use new functionality
+   Crab now invokes the `clone3` system call directly, when available, to use new functionality
    available via that system call. Older versions of glibc cache the result of `getpid`, and only
    update that cache when calling glibc's clone/fork functions, so a direct system call bypasses
    that cache update. glibc 2.25 and newer no longer cache `getpid` for exactly this reason.
@@ -1864,7 +1864,7 @@ improvements to the internals and overall performance of rustc
 and related tools.
 
 - [LLVM is compiled with PGO in published x86_64-unknown-linux-gnu artifacts.][rust#88069]
-  This improves the performance of most Rust builds.
+  This improves the performance of most Crab builds.
 - [Unify representation of macros in internal data structures.][rust#88019]
   This change fixes a host of bugs with the handling of macros by the compiler,
   as well as rustdoc.
@@ -1926,8 +1926,8 @@ Compiler
 --------
 - [Added tier 3\* support for `powerpc64le-unknown-freebsd`.][83572]
 
-\* Refer to Rust's [platform support page][platform-support-doc] for more
-   information on Rust's tiered platform support.
+\* Refer to Crab's [platform support page][platform-support-doc] for more
+   information on Crab's tiered platform support.
 
 Libraries
 ---------
@@ -1974,7 +1974,7 @@ Cargo
 - [Added `{lib}` as formatting option for `cargo tree` to print the `"lib_name"`
   of packages.][cargo/9663]
 
-Rustdoc
+Crabdoc
 -------
 - [Added "Go to item on exact match" search option.][85876]
 - [The "Implementors" section on traits no longer shows redundant
@@ -1996,7 +1996,7 @@ Compatibility Notes
 - [Using environment variable names with `process::Command` on Windows now
   behaves as expected.][85270] Previously using environment variables with
   `Command` would cause them to be ASCII-uppercased.
-- [Rustdoc will now warn on using rustdoc lints that aren't prefixed
+- [Crabdoc will now warn on using rustdoc lints that aren't prefixed
   with `rustdoc::`][86849]
 - `RUSTFLAGS` is no longer set for build scripts. Build scripts
   should use `CARGO_ENCODED_RUSTFLAGS` instead. See the
@@ -2065,7 +2065,7 @@ Language
 Compiler
 -----------------------
 
-- [Rustc will now search for custom JSON targets in
+- [Crabc will now search for custom JSON targets in
   `/lib/rustlib/<target-triple>/target.json` where `/` is the "sysroot"
   directory.][83800] You can find your sysroot directory by running
   `rustc --print sysroot`.
@@ -2077,8 +2077,8 @@ Compiler
    and `bpfeb-unknown-none`.][79608]
 - [`-Zmutable-noalias=yes`][82834] is enabled by default when using LLVM 12 or above.
 
-\* Refer to Rust's [platform support page][platform-support-doc] for more
-   information on Rust's tiered platform support.
+\* Refer to Crab's [platform support page][platform-support-doc] for more
+   information on Crab's tiered platform support.
 
 Libraries
 -----------------------
@@ -2090,7 +2090,7 @@ Libraries
    significantly refactored.][83278] The main user-visible changes are
    a 50% reduction in the size of libcore.rlib and stricter validation
    of constant operands passed to intrinsics. The latter is technically
-   a breaking change, but allows Rust to more closely match the C vendor
+   a breaking change, but allows Crab to more closely match the C vendor
    intrinsics API.
 
 Stabilized APIs
@@ -2170,7 +2170,7 @@ Language
   identifiers but still doesn't allow glyphs that are not considered characters
   such as `◆` or `🦀`. More specifically you can now use any identifier that
   matches the UAX #31 "Unicode Identifier and Pattern Syntax" standard. This
-  is the same standard as languages like Python, however Rust uses NFC
+  is the same standard as languages like Python, however Crab uses NFC
   normalization which may be different from other languages.
 - [You can now specify "or patterns" inside pattern matches.][79278]
   Previously you could only use `|` (OR) on complete patterns. E.g.
@@ -2191,8 +2191,8 @@ Compiler
 - [Added Tier 3\* support for the `wasm64-unknown-unknown` target.][80525]
 - [Improved debuginfo for closures and async functions on Windows MSVC.][83941]
 
-\* Refer to Rust's [platform support page][platform-support-doc] for more
-information on Rust's tiered platform support.
+\* Refer to Crab's [platform support page][platform-support-doc] for more
+information on Crab's tiered platform support.
 
 Libraries
 -----------------------
@@ -2260,7 +2260,7 @@ Cargo
 - [The `authors` field is no longer included in `Cargo.toml` for new
   projects.][cargo/9282]
 
-Rustdoc
+Crabdoc
 -----------------------
 - [Added the `rustdoc::bare_urls` lint that warns when you have URLs
   without hyperlinks.][81764]
@@ -2360,11 +2360,11 @@ This release disables incremental compilation, unless the user has explicitly
 opted in via the newly added RUSTC_FORCE_INCREMENTAL=1 environment variable.
 
 This is due to the widespread, and frequently occurring, breakage encountered by
-Rust users due to newly enabled incremental verification in 1.52.0. Notably,
-Rust users **should** upgrade to 1.52.0 or 1.52.1: the bugs that are detected by
+Crab users due to newly enabled incremental verification in 1.52.0. Notably,
+Crab users **should** upgrade to 1.52.0 or 1.52.1: the bugs that are detected by
 newly added incremental verification are still present in past stable versions,
 and are not yet fixed on any channel. These bugs can lead to miscompilation of
-Rust binaries.
+Crab binaries.
 
 These problems only affect incremental builds, so release builds with Cargo
 should not be affected unless the user has explicitly opted into incremental.
@@ -2396,8 +2396,8 @@ Added tier 3\* support for the following targets.
 - [`riscv32gc-unknown-linux-musl` & `riscv64gc-unknown-linux-musl`][82202]
 - [`powerpc-unknown-openbsd`][82733]
 
-\* Refer to Rust's [platform support page][platform-support-doc] for more
-information on Rust's tiered platform support.
+\* Refer to Crab's [platform support page][platform-support-doc] for more
+information on Crab's tiered platform support.
 
 Libraries
 ---------
@@ -2431,15 +2431,15 @@ The following previously stable APIs are now `const`.
 - [`u8::to_ascii_lowercase`]
 - [`u8::eq_ignore_ascii_case`]
 
-Rustdoc
+Crabdoc
 -------
-- [Rustdoc lints are now treated as a tool lint, meaning that
+- [Crabdoc lints are now treated as a tool lint, meaning that
   lints are now prefixed with `rustdoc::` (e.g. `#[warn(rustdoc::broken_intra_doc_links)]`).][80527]
   Using the old style is still allowed, and will become a warning in
   a future release.
-- [Rustdoc now supports argument files.][82261]
-- [Rustdoc now generates smart punctuation for documentation.][79423]
-- [You can now use "task lists" in Rustdoc Markdown.][81766] E.g.
+- [Crabdoc now supports argument files.][82261]
+- [Crabdoc now generates smart punctuation for documentation.][79423]
+- [You can now use "task lists" in Crabdoc Markdown.][81766] E.g.
   ```markdown
   - [x] Complete
   - [ ] Todo
@@ -2449,7 +2449,7 @@ Misc
 ----
 - [You can now pass multiple filters to tests.][81356] E.g.
   `cargo test -- foo bar` will run all tests that match `foo` and `bar`.
-- [Rustup now distributes PDB symbols for the `std` library on Windows,
+- [Crabup now distributes PDB symbols for the `std` library on Windows,
   allowing you to see `std` symbols when debugging.][82218]
 
 Internal Only
@@ -2468,9 +2468,9 @@ Compatibility Notes
 - [Cargo build scripts are now forbidden from setting `RUSTC_BOOTSTRAP`.][cargo/9181]
 - [Removed support for the `x86_64-rumprun-netbsd` target.][82594]
 - [Deprecated the `x86_64-sun-solaris` target in favor of `x86_64-pc-solaris`.][82216]
-- [Rustdoc now only accepts `,`, ` `, and `\t` as delimiters for specifying
+- [Crabdoc now only accepts `,`, ` `, and `\t` as delimiters for specifying
   languages in code blocks.][78429]
-- [Rustc now catches more cases of `pub_use_of_private_extern_crate`][80763]
+- [Crabc now catches more cases of `pub_use_of_private_extern_crate`][80763]
 - [Changes in how proc macros handle whitespace may lead to panics when used
   with older `proc-macro-hack` versions. A `cargo update` should be sufficient to fix this in all cases.][84136]
 - [Turn `#[derive]` into a regular macro attribute][79078]
@@ -2561,8 +2561,8 @@ Compiler
 - [Added tier 3 support for `i386-unknown-linux-gnu` and `i486-unknown-linux-gnu` targets.][80662]
 - [The `target-cpu=native` option will now detect individual features of CPUs.][80749]
 
-\* Refer to Rust's [platform support page][platform-support-doc] for more
-information on Rust's tiered platform support.
+\* Refer to Crab's [platform support page][platform-support-doc] for more
+information on Crab's tiered platform support.
 
 Libraries
 ---------
@@ -2614,10 +2614,10 @@ Cargo
   proc-macros, while using the `no-std` feature in the final binary. See the
   [Cargo book documentation][feature-resolver@2.0] for more information on the feature.
 
-Rustdoc
+Crabdoc
 -------
 
-- [Rustdoc will now include documentation for methods available from _nested_ `Deref` traits.][80653]
+- [Crabdoc will now include documentation for methods available from _nested_ `Deref` traits.][80653]
 - [You can now provide a `--default-theme` flag which sets the default theme to use for
   documentation.][79642]
 
@@ -2717,8 +2717,8 @@ Compiler
 - [The `x86_64-unknown-freebsd` is now built with the full toolset.][79484]
 - [Dropped support for all cloudabi targets.][78439]
 
-\* Refer to Rust's [platform support page][platform-support-doc] for more
-information on Rust's tiered platform support.
+\* Refer to Crab's [platform support page][platform-support-doc] for more
+information on Crab's tiered platform support.
 
 Libraries
 -----------------------
@@ -2894,8 +2894,8 @@ Compiler
 - [Output from threads spawned in tests is now captured.][78227]
 - [Change os and vendor values to "none" and "unknown" for some targets][78951]
 
-\* Refer to Rust's [platform support page][platform-support-doc] for more
-information on Rust's tiered platform support.
+\* Refer to Crab's [platform support page][platform-support-doc] for more
+information on Crab's tiered platform support.
 
 Libraries
 -----------------------
@@ -2930,7 +2930,7 @@ Compatibility Notes
 
 - [Demoted `i686-unknown-freebsd` from host tier 2 to target tier 2 support.][78746]
 - [Macros that end with a semi-colon are now treated as statements even if they expand to nothing.][78376]
-- [Rustc will now check for the validity of some built-in attributes on enum variants.][77015]
+- [Crabc will now check for the validity of some built-in attributes on enum variants.][77015]
   Previously such invalid or unused attributes could be ignored.
 - Leading whitespace is stripped more uniformly in documentation comments, which may change behavior. You
   read [this post about the changes][rustdoc-ws-post] for more details.
@@ -2998,8 +2998,8 @@ Compiler
   Note: If you're using cargo you must explicitly pass the `--target` flag.
 - [Added tier 2\* support for `aarch64-unknown-linux-musl`.][76420]
 
-\* Refer to Rust's [platform support page][platform-support-doc] for more
-information on Rust's tiered platform support.
+\* Refer to Crab's [platform support page][platform-support-doc] for more
+information on Crab's tiered platform support.
 
 Libraries
 ---------
@@ -3032,7 +3032,7 @@ The following previously stable methods are now `const fn`'s:
 Cargo
 -----
 
-Rustdoc
+Crabdoc
 -------
 - [You can now link to items in `rustdoc` using the intra-doc link
   syntax.][74430] E.g. ``/// Uses [`std::future`]`` will automatically generate
@@ -3137,8 +3137,8 @@ Compiler
 - [Upgrade the FreeBSD toolchain to version 11.4][75204]
 - [`RUST_BACKTRACE`'s output is now more compact.][75048]
 
-\* Refer to Rust's [platform support page][platform-support-doc] for more
-information on Rust's tiered platform support.
+\* Refer to Crab's [platform support page][platform-support-doc] for more
+information on Crab's tiered platform support.
 
 Libraries
 ---------
@@ -3192,7 +3192,7 @@ Cargo
 
 Misc
 ----
-- [Added a help button beside Rustdoc's searchbar that explains rustdoc's
+- [Added a help button beside Crabdoc's searchbar that explains rustdoc's
   type based search.][75366]
 - [Added the Ayu theme to rustdoc.][71237]
 
@@ -3213,7 +3213,7 @@ Compatibility Notes
 Internal Only
 --------
 
-- [Improved default settings for bootstrapping in `x.py`.][73964] You can read details about this change in the ["Changes to `x.py` defaults"](https://blog.rust-lang.org/inside-rust/2020/08/30/changes-to-x-py-defaults.html) post on the Inside Rust blog.
+- [Improved default settings for bootstrapping in `x.py`.][73964] You can read details about this change in the ["Changes to `x.py` defaults"](https://blog.rust-lang.org/inside-rust/2020/08/30/changes-to-x-py-defaults.html) post on the Inside Crab blog.
 
 [1.47.0-cfg]: https://docs.microsoft.com/en-us/windows/win32/secbp/control-flow-guard
 [75048]: https://github.com/rust-lang/rust/pull/75048/
@@ -3305,9 +3305,9 @@ Compatibility Notes
 -------------------
 - [The target configuration option `abi_blacklist` has been renamed
   to `unsupported_abis`.][74150] The old name will still continue to work.
-- [Rustc will now warn if you cast a C-like enum that implements `Drop`.][72331]
+- [Crabc will now warn if you cast a C-like enum that implements `Drop`.][72331]
   This was previously accepted but will become a hard error in a future release.
-- [Rustc will fail to compile if you have a struct with
+- [Crabc will fail to compile if you have a struct with
   `#[repr(i128)]` or `#[repr(u128)]`.][74109] This representation is currently only
   allowed on `enum`s.
 - [Tokens passed to `macro_rules!` are now always captured.][73293] This helps
@@ -3317,12 +3317,12 @@ Compatibility Notes
   a legacy installer that was replaced by a MSI installer a few years ago but
   was still being built.
 - [`{f32, f64}::asinh` now returns the correct values for negative numbers.][72486]
-- [Rustc will no longer accept overlapping trait implementations that only
+- [Crabc will no longer accept overlapping trait implementations that only
   differ in how the lifetime was bound.][72493]
-- [Rustc now correctly relates the lifetime of an existential associated
+- [Crabc now correctly relates the lifetime of an existential associated
   type.][71896] This fixes some edge cases where `rustc` would erroneously allow
   you to pass a shorter lifetime than expected.
-- [Rustc now dynamically links to `libz` (also called `zlib`) on Linux.][74420]
+- [Crabc now dynamically links to `libz` (also called `zlib`) on Linux.][74420]
   The library will need to be installed for `rustc` to work, even though we
   expect it to be already available on most systems.
 - [Tests annotated with `#[should_panic]` are broken on ARMv7 while running
@@ -3418,8 +3418,8 @@ Compiler
 - [Added tier 3 support for the `thumbv7a-uwp-windows-msvc` target.][72133]
 - [Upgraded to LLVM 10.][67759]
 
-\* Refer to Rust's [platform support page][platform-support-doc] for more
-information on Rust's tiered platform support.
+\* Refer to Crab's [platform support page][platform-support-doc] for more
+information on Crab's tiered platform support.
 
 
 Libraries
@@ -3479,9 +3479,9 @@ Cargo
 
 Misc
 ----
-- [Rustdoc now supports strikethrough text in Markdown.][71928] E.g.
+- [Crabdoc now supports strikethrough text in Markdown.][71928] E.g.
   `~~outdated information~~` becomes "~~outdated information~~".
-- [Added an emoji to Rustdoc's deprecated API message.][72014]
+- [Added an emoji to Crabdoc's deprecated API message.][72014]
 
 Compatibility Notes
 -------------------
@@ -3489,10 +3489,10 @@ Compatibility Notes
   itself) is unsound and now causes a compile error.][71140]
 - [`{f32, f64}::powi` now returns a slightly different value on Windows.][73420]
   This is due to changes in LLVM's intrinsics which `{f32, f64}::powi` uses.
-- [Rustdoc's CLI's extra error exit codes have been removed.][71900] These were
-  previously undocumented and not intended for public use. Rustdoc still provides
+- [Crabdoc's CLI's extra error exit codes have been removed.][71900] These were
+  previously undocumented and not intended for public use. Crabdoc still provides
   a non-zero exit code on errors.
-- [Rustc's `lto` flag is incompatible with the new `embed-bitcode=no`.][71848]
+- [Crabc's `lto` flag is incompatible with the new `embed-bitcode=no`.][71848]
   This may cause issues if LTO is enabled through `RUSTFLAGS` or `cargo rustc`
   flags while cargo is adding `embed-bitcode` itself. The recommended way to
   control LTO is with Cargo profiles, either in `Cargo.toml` or `.cargo/config`,
@@ -3589,7 +3589,7 @@ these changes can be seen and parsed by macros and conditional compilation.
 
 Compiler
 --------
-- [Rustc now respects the `-C codegen-units` flag in incremental mode.][70156]
+- [Crabc now respects the `-C codegen-units` flag in incremental mode.][70156]
   Additionally when in incremental mode rustc defaults to 256 codegen units.
 - [Refactored `catch_unwind` to have zero-cost, unless unwinding is enabled and
   a panic is thrown.][67502]
@@ -3656,12 +3656,12 @@ Cargo
 
 Misc
 ----
-- [Rustdoc now allows you to specify `--crate-version` to have rustdoc include
+- [Crabdoc now allows you to specify `--crate-version` to have rustdoc include
   the version in the sidebar.][69494]
 
 Compatibility Notes
 -------------------
-- [Rustc now correctly generates static libraries on Windows GNU targets with
+- [Crabc now correctly generates static libraries on Windows GNU targets with
   the `.a` extension, rather than the previous `.lib`.][70937]
 - [Removed the `-C no_integrated_as` flag from rustc.][70345]
 - [The `file_name` property in JSON output of macro errors now points the actual
@@ -3794,7 +3794,7 @@ Libraries
 - [`u8::is_ascii` is now `const`.][68984]
 - [`String` now implements `AsMut<str>`.][68742]
 - [Added the `primitive` module to `std` and `core`.][67637] This module
-  reexports Rust's primitive types. This is mainly useful in macros
+  reexports Crab's primitive types. This is mainly useful in macros
   where you want avoid these types being shadowed.
 - [Relaxed some of the trait bounds on `HashMap` and `HashSet`.][67642]
 - [`string::FromUtf8Error` now implements `Clone + Eq`.][68738]
@@ -3928,8 +3928,8 @@ Compiler
    pointing to the location where they were called, rather than
    `core`'s internals. ][67887]
 
-\* Refer to Rust's [platform support page][platform-support-doc] for more
-information on Rust's tiered platform support.
+\* Refer to Crab's [platform support page][platform-support-doc] for more
+information on Crab's tiered platform support.
 
 Libraries
 ---------
@@ -3992,7 +3992,7 @@ Version 1.41.1 (2020-02-27)
 * [Always check types of static items][69145]
 * [Always check lifetime bounds of `Copy` impls][69145]
 * [Fix miscompilation in callers of `Layout::repeat`][69225]
-* [Rust 1.41.0 was announced as the last Rust release with tier 1 or tier 2 support for 32-bit Apple targets][apple-32bit-drop].
+* [Crab 1.41.0 was announced as the last Rust release with tier 1 or tier 2 support for 32-bit Apple targets][apple-32bit-drop].
   That announcement did not expect a patch release. 1.41.1 also includes release binaries for these targets.
 
 [69225]: https://github.com/rust-lang/rust/issues/69225
@@ -4015,16 +4015,16 @@ Language
 - [Visibility modifiers (e.g. `pub`) are now syntactically allowed on trait items and
   enum variants.][66183] These are still rejected semantically, but
   can be seen and parsed by procedural macros and conditional compilation.
-- [You can now define a Rust `extern "C"` function with `Box<T>` and use `T*` as the corresponding
+- [You can now define a Crab `extern "C"` function with `Box<T>` and use `T*` as the corresponding
   type on the C side.][62514] Please see [the documentation][box-memory-layout] for more information,
-  including the important caveat about preferring to avoid `Box<T>` in Rust signatures for functions defined in C.
+  including the important caveat about preferring to avoid `Box<T>` in Crab signatures for functions defined in C.
 
 [box-memory-layout]: https://doc.rust-lang.org/std/boxed/index.html#memory-layout
 
 Compiler
 --------
 
-- [Rustc will now warn if you have unused loop `'label`s.][66325]
+- [Crabc will now warn if you have unused loop `'label`s.][66325]
 - [Removed support for the `i686-unknown-dragonfly` target.][67255]
 - [Added tier 3 support\* for the `riscv64gc-unknown-linux-gnu` target.][66661]
 - [You can now pass an arguments file passing the `@path` syntax
@@ -4034,8 +4034,8 @@ Compiler
 - [You can now provide `--extern` flag without a path, indicating that it is
   available from the search path or specified with an `-L` flag.][64882]
 
-\* Refer to Rust's [platform support page][platform-support-doc] for more
-information on Rust's tiered platform support.
+\* Refer to Crab's [platform support page][platform-support-doc] for more
+information on Crab's tiered platform support.
 
 [argfile-docs]: https://doc.rust-lang.org/nightly/rustc/command-line-arguments.html#path-load-command-line-flags-from-a-path
 
@@ -4078,7 +4078,7 @@ Misc
 
 - [You can now specify `edition` in documentation code blocks to compile the block
   for that edition.][66238] E.g. `edition2018` tells rustdoc that the code sample
-  should be compiled the 2018 edition of Rust.
+  should be compiled the 2018 edition of Crab.
 - [You can now provide custom themes to rustdoc with `--theme`, and check the
   current theme with `--check-theme`.][54733]
 - [You can use `#[cfg(doc)]` to compile an item when building documentation.][61351]
@@ -4089,7 +4089,7 @@ Compatibility Notes
 - [As previously announced 1.41 will be the last tier 1 release for 32-bit
   Apple targets.][apple-32bit-drop] This means that the source code is still
   available to build, but the targets are no longer being tested and release
-  binaries for those platforms will no longer be distributed by the Rust project.
+  binaries for those platforms will no longer be distributed by the Crab project.
   Please refer to the linked blog post for more information.
 
 [54733]: https://github.com/rust-lang/rust/pull/54733/
@@ -4159,8 +4159,8 @@ Compiler
 - [Added tier 3 support for the `mips64-unknown-linux-muslabi64`, and
   `mips64el-unknown-linux-muslabi64` targets.][65843]
 
-\* Refer to Rust's [platform support page][platform-support-doc] for more
-  information on Rust's tiered platform support.
+\* Refer to Crab's [platform support page][platform-support-doc] for more
+  information on Crab's tiered platform support.
 
 Libraries
 ---------
@@ -4308,8 +4308,8 @@ Compiler
   output of successful tests.][62600]
 
 
-\* Refer to Rust's [platform support page][platform-support-doc] for more
-information on Rust's tiered platform support.
+\* Refer to Crab's [platform support page][platform-support-doc] for more
+information on Crab's tiered platform support.
 
 Libraries
 ---------
@@ -4339,8 +4339,8 @@ Misc
 Compatibility Notes
 -------------------
 - [Code that was previously accepted by the old borrow checker, but rejected by
-  the NLL borrow checker is now a hard error in Rust 2018.][63565] This was
-  previously a warning, and will also become a hard error in the Rust 2015
+  the NLL borrow checker is now a hard error in Crab 2018.][63565] This was
+  previously a warning, and will also become a hard error in the Crab 2015
   edition in the 1.40.0 release.
 - [`rustdoc` now requires `rustc` to be installed and in the same directory to
   run tests.][63827] This should improve performance when running a large
@@ -4395,8 +4395,8 @@ Compiler
 - [Added tier 3 support for the `riscv32i-unknown-none-elf` target.][62784]
 - [Upgraded to LLVM 9.][62592]
 
-\* Refer to Rust's [platform support page][platform-support-doc] for more
-information on Rust's tiered platform support.
+\* Refer to Crab's [platform support page][platform-support-doc] for more
+information on Crab's tiered platform support.
 
 Libraries
 ---------
@@ -4437,7 +4437,7 @@ Cargo
 - [You can now pass the `--features` option multiple times to enable
   multiple features.][cargo/7084]
 
-Rustdoc
+Crabdoc
 -------
 
 - [Documentation on `pub use` statements is prepended to the documentation of the re-exported item][63048]
@@ -4776,7 +4776,7 @@ Cargo
 
 Misc
 ----
-- [The Rust toolchain is now available natively for musl based distros.][58575]
+- [The Crab toolchain is now available natively for musl based distros.][58575]
 
 [59460]: https://github.com/rust-lang/rust/pull/59460/
 [59464]: https://github.com/rust-lang/rust/pull/59464/
@@ -4845,7 +4845,7 @@ Compiler
 - [You can now target `riscv64imac-unknown-none-elf` and
   `riscv64gc-unknown-none-elf`.][58406]
 - [You can now enable linker plugin LTO optimisations with
-  `-C linker-plugin-lto`.][58057] This allows rustc to compile your Rust code
+  `-C linker-plugin-lto`.][58057] This allows rustc to compile your Crab code
   into LLVM bitcode allowing LLVM to perform LTO optimisations across C/C++ FFI
   boundaries.
 - [You can now target `powerpc64-unknown-freebsd`.][57809]
@@ -4920,7 +4920,7 @@ Misc
 Compatibility Notes
 -------------------
 - [`Command::before_exec` is being replaced by the unsafe method
-  `Command::pre_exec`][58059] and will be deprecated with Rust 1.37.0.
+  `Command::pre_exec`][58059] and will be deprecated with Crab 1.37.0.
 - [Use of `ATOMIC_{BOOL, ISIZE, USIZE}_INIT` is now deprecated][57425] as you
   can now use `const` functions in `static` variables.
 
@@ -5035,7 +5035,7 @@ Compiler
 - [Added support for the PowerPC64 architecture on FreeBSD.][57615]
 - [The `x86_64-fortanix-unknown-sgx` target support has been upgraded to
   tier 2 support.][57130] Visit the [platform support][platform-support] page for
-  information on Rust's platform support.
+  information on Crab's platform support.
 - [Added support for the `thumbv7neon-linux-androideabi` and
   `thumbv7neon-unknown-linux-gnueabihf` targets.][56947]
 - [Added support for the `x86_64-unknown-uefi` target.][56769]
@@ -5428,7 +5428,7 @@ Compatibility Notes
 Version 1.31.1 (2018-12-20)
 ===========================
 
-- [Fix Rust failing to build on `powerpc-unknown-netbsd`][56562]
+- [Fix Crab failing to build on `powerpc-unknown-netbsd`][56562]
 - [Fix broken go-to-definition in RLS][rls/1171]
 - [Fix infinite loop on hover in RLS][rls/1170]
 
@@ -5441,7 +5441,7 @@ Version 1.31.0 (2018-12-06)
 
 Language
 --------
-- 🎉 [This version marks the release of the 2018 edition of Rust.][54057] 🎉
+- 🎉 [This version marks the release of the 2018 edition of Crab.][54057] 🎉
 - [New lifetime elision rules now allow for eliding lifetimes in functions and
   impl headers.][54778] E.g. `impl<'a> Reader for BufReader<'a> {}` can now be
   `impl Reader for BufReader<'_> {}`. Lifetimes are still required to be defined
@@ -5527,7 +5527,7 @@ Language
 --------
 - [Procedural macros are now available.][52081] These kinds of macros allow for
   more powerful code generation. There is a [new chapter available][proc-macros]
-  in the Rust Programming Language book that goes further in depth.
+  in the Crab Programming Language book that goes further in depth.
 - [You can now use keywords as identifiers using the raw identifiers
   syntax (`r#`),][53236] e.g. `let r#for = true;`
 - [Using anonymous parameters in traits is now deprecated with a warning and
@@ -5552,7 +5552,7 @@ Language
 - [Non-macro attributes now allow all forms of literals, not just
   strings.][53044] Previously, you would write `#[attr("true")]`, and you can now
   write `#[attr(true)]`.
-- [You can now specify a function to handle a panic in the Rust runtime with the
+- [You can now specify a function to handle a panic in the Crab runtime with the
   `#[panic_handler]` attribute.][51366]
 
 Compiler
@@ -5595,9 +5595,9 @@ Misc
   `--edition` option.][54057]
 - [`rustdoc` now has the `--color` (specify whether to output color) and
   `--error-format` (specify error format, e.g. `json`) options.][53003]
-- [We now distribute a `rust-gdbgui` script that invokes `gdbgui` with Rust
+- [We now distribute a `rust-gdbgui` script that invokes `gdbgui` with Crab
   debug symbols.][53774]
-- [Attributes from Rust tools such as `rustfmt` or `clippy` are now
+- [Attributes from Crab tools such as `rustfmt` or `clippy` are now
   available,][53459] e.g. `#[rustfmt::skip]` will skip formatting the next item.
 
 [50911]: https://github.com/rust-lang/rust/pull/50911/
@@ -5747,7 +5747,7 @@ Version 1.28.0 (2018-08-02)
 Language
 --------
 - [The `#[repr(transparent)]` attribute is now stable.][51562] This attribute
-  allows a Rust newtype wrapper (`struct NewType<T>(T);`) to be represented as
+  allows a Crab newtype wrapper (`struct NewType<T>(T);`) to be represented as
   the inner type across Foreign Function Interface (FFI) boundaries.
 - [The keywords `pure`, `sizeof`, `alignof`, and `offsetof` have been unreserved
   and can now be used as identifiers.][51196]
@@ -5837,7 +5837,7 @@ Misc
 
 Compatibility Notes
 -------------------
-- [Rust will consider trait objects with duplicated constraints to be the same
+- [Crab will consider trait objects with duplicated constraints to be the same
   type as without the duplicated constraint.][51276] For example the below code will
   now fail to compile.
   ```rust
@@ -6008,7 +6008,7 @@ Cargo
 - [Added the `--target-dir` optional argument.][cargo/5393] This allows you to specify
   a different directory than `target` for placing compilation artifacts.
 - [Cargo will be adding automatic target inference for binaries, benchmarks,
-  examples, and tests in the Rust 2018 edition.][cargo/5335] If your project specifies
+  examples, and tests in the Crab 2018 edition.][cargo/5335] If your project specifies
   specific targets, e.g. using `[[bin]]`, and have other binaries in locations
   where cargo would infer a binary, Cargo will produce a warning. You can
   disable this feature ahead of time by setting any of the following to false:
@@ -6018,8 +6018,8 @@ Cargo
 
 Misc
 ----
-- [Added “The Rustc book” into the official documentation.][49707]
-  [“The Rustc book”] documents and teaches how to use the rustc compiler.
+- [Added “The Crabc book” into the official documentation.][49707]
+  [“The Crabc book”] documents and teaches how to use the rustc compiler.
 - [All books available on `doc.rust-lang.org` are now searchable.][49623]
 
 Compatibility Notes
@@ -6080,7 +6080,7 @@ Compatibility Notes
 [`slice::swap_with_slice`]: https://doc.rust-lang.org/std/primitive.slice.html#method.swap_with_slice
 [`arch::x86_64`]: https://doc.rust-lang.org/std/arch/x86_64/index.html
 [`arch::x86`]: https://doc.rust-lang.org/std/arch/x86/index.html
-[“The Rustc book”]: https://doc.rust-lang.org/rustc
+[“The Crabc book”]: https://doc.rust-lang.org/rustc
 
 
 Version 1.26.2 (2018-06-05)
@@ -6101,7 +6101,7 @@ Tools
 -----
 
 - [RLS now works on Windows.][50646]
-- [Rustfmt stopped badly formatting text in some cases.][rustfmt/2695]
+- [Crabfmt stopped badly formatting text in some cases.][rustfmt/2695]
 
 
 Compatibility Notes
@@ -6217,11 +6217,11 @@ Cargo
 -----
 - [Cargo will now output path to custom commands when `-v` is
   passed with `--list`][cargo/5041]
-- [The Cargo binary version is now the same as the Rust version][cargo/5083]
+- [The Cargo binary version is now the same as the Crab version][cargo/5083]
 
 Misc
 ----
-- [The second edition of "The Rust Programming Language" book is now recommended
+- [The second edition of "The Crab Programming Language" book is now recommended
   over the first.][48404]
 
 Compatibility Notes
@@ -6377,7 +6377,7 @@ Cargo
 
 Misc
 ----
-- [Rust by example is now shipped with new releases][46196]
+- [Crab by example is now shipped with new releases][46196]
 
 Compatibility Notes
 -------------------
@@ -6868,7 +6868,7 @@ Libraries
   ie. `unimplemented!("Waiting for 1.21 to be stable")`
 - [`pub(restricted)` is now supported in the `thread_local!` macro.][43185]
 - [Upgrade to Unicode 10.0.0][42999]
-- [Reimplemented `{f32, f64}::{min, max}` in Rust instead of using CMath.][42430]
+- [Reimplemented `{f32, f64}::{min, max}` in Crab instead of using CMath.][42430]
 - [Skip the main thread's manual stack guard on Linux][43072]
 - [Iterator::nth for `ops::{Range, RangeFrom}` is now done in *O*(1) time][43077]
 - [`#[repr(align(N))]` attribute max number is now 2^31 - 1.][43097] This was
@@ -7024,7 +7024,7 @@ Language
 Compiler
 --------
 
-- [Add support for bootstrapping the Rust compiler toolchain on Android.][41370]
+- [Add support for bootstrapping the Crab compiler toolchain on Android.][41370]
 - [Change `arm-linux-androideabi` to correspond to the `armeabi`
   official ABI.][41656] If you wish to continue targeting the `armeabi-v7a` ABI
   you should use `--target armv7-linux-androideabi`.
@@ -7090,7 +7090,7 @@ Misc
 
 - [Added `rust-windbg.cmd`][39983] for loading rust `.natvis` files in the
   Windows Debugger.
-- [Rust will now release XZ compressed packages][rust-installer/57]
+- [Crab will now release XZ compressed packages][rust-installer/57]
 - [rustup will now prefer to download rust packages with
   XZ compression][rustup/1100] over GZip packages.
 - [Added the ability to escape `#` in rust documentation][41785] By adding
@@ -7205,7 +7205,7 @@ Language
 - [0e+10 is now a valid floating point literal][40589]
 - [Now warns if you bind a lifetime parameter to 'static][40734]
 - [Tuples, Enum variant fields, and structs with no `repr` attribute or with
-  `#[repr(Rust)]` are reordered to minimize padding and produce a smaller
+  `#[repr(Crab)]` are reordered to minimize padding and produce a smaller
   representation in some cases.][40377]
 
 Compiler
@@ -7247,7 +7247,7 @@ Stabilized APIs
 Cargo
 -----
 
-- [Added partial Pijul support][cargo/3842] Pijul is a version control system in Rust.
+- [Added partial Pijul support][cargo/3842] Pijul is a version control system in Crab.
   You can now create new cargo projects with Pijul using `cargo new --vcs pijul`
 - [Now always emits build script warnings for crates that fail to build][cargo/3847]
 - [Added Android build support][cargo/3885]
@@ -7260,7 +7260,7 @@ Misc
 ----
 
 - [rustdoc can now use pulldown-cmark with the `--enable-commonmark` flag][40338]
-- [Rust now uses the official cross compiler for NetBSD][40612]
+- [Crab now uses the official cross compiler for NetBSD][40612]
 - [rustdoc now accepts `#` at the start of files][40828]
 - [Fixed jemalloc support for musl][41168]
 
@@ -7271,7 +7271,7 @@ Compatibility Notes
   always placed after the sign if it exists and before the digits. With the `#`
   flag the zeroes are placed after the prefix and before the digits.
 - [Due to the struct field optimisation][40377], using `transmute` on structs
-  that have no `repr` attribute or `#[repr(Rust)]` will no longer work. This has
+  that have no `repr` attribute or `#[repr(Crab)]` will no longer work. This has
   always been undefined behavior, but is now more likely to break in practice.
 - [The refactor of trait object type parsing][40043] fixed a bug where `+` was
   receiving the wrong priority parsing things like `&for<'a> Tr<'a> + Send` as
@@ -7459,19 +7459,19 @@ Misc
   `aarch64-unknown-linux-fuchsia`, and `x86_64-unknown-linux-fuchsia`.
 * [Initial support for `aarch64-unknown-freebsd`][39491]
 * [Initial support for `i686-unknown-netbsd`][39426]
-* [This release no longer includes the old makefile build system][39431]. Rust
-  is built with a custom build system, written in Rust, and with Cargo.
+* [This release no longer includes the old makefile build system][39431]. Crab
+  is built with a custom build system, written in Crab, and with Cargo.
 * [Add Debug implementations for libcollection structs][39002]
 * [`TypeId` implements `PartialOrd` and `Ord`][38981]
 * [`--test-threads=0` produces an error][38945]
 * [`rustup` installs documentation by default][40526]
-* [The Rust source includes NatVis visualizations][39843]. These can be used by
+* [The Crab source includes NatVis visualizations][39843]. These can be used by
   WinDbg and Visual Studio to improve the debugging experience.
 
 Compatibility Notes
 -------------------
 
-* [Rust 1.17 does not correctly detect the MSVC 2017 linker][38584]. As a
+* [Crab 1.17 does not correctly detect the MSVC 2017 linker][38584]. As a
   workaround, either use MSVC 2015 or run vcvars.bat.
 * [When coercing to an unsized type lifetimes must be equal][40319]. That is,
   disallow subtyping between `T` and `U` when `T: Unsize<U>`, e.g. coercing
@@ -7483,11 +7483,11 @@ Compatibility Notes
   to a string.
 * [In-tree crates are verified to be unstable][39851]. Previously, some minor
   crates were marked stable and could be accessed from the stable toolchain.
-* [Rust git source no longer includes vendored crates][39728]. Those that need
+* [Crab git source no longer includes vendored crates][39728]. Those that need
   to build with vendored crates should build from release tarballs.
 * [Fix inert attributes from `proc_macro_derives`][39572]
 * [During crate resolution, rustc prefers a crate in the sysroot if two crates
-  are otherwise identical][39518]. Unlikely to be encountered outside the Rust
+  are otherwise identical][39518]. Unlikely to be encountered outside the Crab
   build system.
 * [Fixed bugs around how type inference interacts with dead-code][39485]. The
   existing code generally ignores the type of dead-code unless a type-hint is
@@ -7610,7 +7610,7 @@ Compiler
 
 * [`rustc` now supports `--emit=metadata`, which causes rustc to emit
   a `.rmeta` file containing only crate metadata][38571]. This can be
-  used by tools like the Rust Language Service to perform
+  used by tools like the Crab Language Service to perform
   metadata-only builds.
 * [Levenshtein based typo suggestions now work in most places, while
   previously they worked only for fields and sometimes for local
@@ -7695,13 +7695,13 @@ Misc
 ----
 
 * [`rustdoc` has a `--sysroot` argument that, like `rustc`, specifies
-  the path to the Rust implementation][38589]
+  the path to the Crab implementation][38589]
 * [The `armv7-linux-androideabi` target no longer enables NEON
   extensions, per Google's ABI guide][38413]
 * [The stock standard library can be compiled for Redox OS][38401]
-* [Rust has initial SPARC support][38726]. Tier 3. No builds
+* [Crab has initial SPARC support][38726]. Tier 3. No builds
   available.
-* [Rust has experimental support for Nvidia PTX][38559]. Tier 3. No
+* [Crab has experimental support for Nvidia PTX][38559]. Tier 3. No
   builds available.
 * [Fix backtraces on i686-pc-windows-gnu by disabling FPO][39379]
 
@@ -7807,7 +7807,7 @@ Language
   with curly braces][36868]. Part of [RFC 1506].
 * [A number of minor changes to name resolution have been activated][37127].
   They add up to more consistent semantics, allowing for future evolution of
-  Rust macros. Specified in [RFC 1560], see its section on ["changes"] for
+  Crab macros. Specified in [RFC 1560], see its section on ["changes"] for
   details of what is different. The breaking changes here have been transitioned
   through the [`legacy_imports`] lint since 1.14, with no known regressions.
 * [In `macro_rules`, `path` fragments can now be parsed as type parameter
@@ -7823,7 +7823,7 @@ Compiler
 * [On Windows, the compiler will apply dllimport attributes when linking to
   extern functions][37973]. Additional attributes and flags can control which
   library kind is linked and its name. [RFC 1717].
-* [Rust-ABI symbols are no longer exported from cdylibs][38117]
+* [Crab-ABI symbols are no longer exported from cdylibs][38117]
 * [The `--test` flag works with procedural macro crates][38107]
 * [Fix `extern "aapcs" fn` ABI][37814]
 * [The `-C no-stack-check` flag is deprecated][37636]. It does nothing.
@@ -7917,15 +7917,15 @@ Tooling
 Misc
 ----
 
-* [The Rust build system is now written in Rust][37817]. The Makefiles may
+* [The Crab build system is now written in Crab][37817]. The Makefiles may
   continue to be used in this release by passing `--disable-rustbuild` to the
   configure script, but they will be deleted soon. Note that the new build
   system uses a different on-disk layout that will likely affect any scripts
-  building Rust.
-* [Rust supports i686-unknown-openbsd][38086]. Tier 3 support. No testing or
+  building Crab.
+* [Crab supports i686-unknown-openbsd][38086]. Tier 3 support. No testing or
   releases.
-* [Rust supports the MSP430][37627]. Tier 3 support. No testing or releases.
-* [Rust supports the ARMv5TE architecture][37615]. Tier 3 support. No testing or
+* [Crab supports the MSP430][37627]. Tier 3 support. No testing or releases.
+* [Crab supports the ARMv5TE architecture][37615]. Tier 3 support. No testing or
   releases.
 
 Compatibility Notes
@@ -7933,7 +7933,7 @@ Compatibility Notes
 
 * [A number of minor changes to name resolution have been activated][37127].
   They add up to more consistent semantics, allowing for future evolution of
-  Rust macros. Specified in [RFC 1560], see its section on ["changes"] for
+  Crab macros. Specified in [RFC 1560], see its section on ["changes"] for
   details of what is different. The breaking changes here have been transitioned
   through the [`legacy_imports`] lint since 1.14, with no known regressions.
 * [In this release, Cargo build scripts no longer have access to the `OUT_DIR`
@@ -7949,7 +7949,7 @@ Compatibility Notes
   minor ways][37602]. This is captured in the new `legacy_directory_ownership`
   lint, which is a warning in this release, and will become a hard error in the
   future.
-* [Rust-ABI symbols are no longer exported from cdylibs][38117]
+* [Crab-ABI symbols are no longer exported from cdylibs][38117]
 * [Once `Peekable` peeks a `None` it will return that `None` without re-querying
   the underlying iterator][37834]
 
@@ -8120,7 +8120,7 @@ Cargo
 Tooling
 -------
 
-* [rustup is the recommended Rust installation method][1.14rustup]
+* [rustup is the recommended Crab installation method][1.14rustup]
 * This release includes host (rustc) builds for Linux on MIPS, PowerPC, and
   S390x. These are [tier 2] platforms and may have major defects. Follow the
   instructions on the website to install, or add the targets to an existing
@@ -8329,7 +8329,7 @@ Libraries
 * [Implement `CoerceUnsized` for `{Cell, RefCell, UnsafeCell}`][35627]
 * [Use arc4rand on FreeBSD][35884]
 * [memrchr: Correct aligned offset computation][35969]
-* [Improve Demangling of Rust Symbols][36059]
+* [Improve Demangling of Crab Symbols][36059]
 * [Use monotonic time in condition variables][35048]
 * [Implement `Debug` for `std::path::{Components,Iter}`][36101]
 * [Implement conversion traits for `char`][35755]
@@ -8379,7 +8379,7 @@ Tooling
 * [rustdoc: Add the `--sysroot` argument][36586]
 * [rustdoc: Fix a couple of issues with the search results][35655]
 * [rustdoc: remove the `!` from macro URLs and titles][35234]
-* [gdb: Fix pretty-printing special-cased Rust types][35585]
+* [gdb: Fix pretty-printing special-cased Crab types][35585]
 * [rustdoc: Filter more incorrect methods inherited through Deref][36266]
 
 Misc
@@ -8516,7 +8516,7 @@ Regression Fixes
 * [ICE: 'rustc' panicked at 'assertion failed: concrete_substs.is_normalized_for_trans()' #36381][36381]
 * [Confusion with double negation and booleans][36856]
 * [rustc 1.12.0 fails with SIGSEGV in release mode (syn crate 0.8.0)][36875]
-* [Rustc 1.12.0 Windows build of `ethcore` crate fails with LLVM error][36924]
+* [Crabc 1.12.0 Windows build of `ethcore` crate fails with LLVM error][36924]
 * [1.12.0: High memory usage when linking in release mode with debug info][36926]
 * [Corrupted memory after updated to 1.12][36936]
 * ["Let NullaryConstructor = something;" causes internal compiler error: "tried to overwrite interned AdtDef"][37026]
@@ -8543,11 +8543,11 @@ Highlights
 * [`rustc` translates code to LLVM IR via its own "middle" IR (MIR)](https://github.com/rust-lang/rust/pull/34096).
   This translation pass is far simpler than the previous AST->LLVM pass, and
   creates opportunities to perform new optimizations directly on the MIR. It
-  was previously described [on the Rust blog](https://blog.rust-lang.org/2016/04/19/MIR.html).
+  was previously described [on the Crab blog](https://blog.rust-lang.org/2016/04/19/MIR.html).
 * [`rustc` presents a new, more readable error format, along with
   machine-readable JSON error output for use by IDEs](https://github.com/rust-lang/rust/pull/35401).
-  Most common editors supporting Rust have been updated to work with it. It was
-  previously described [on the Rust blog](https://blog.rust-lang.org/2016/08/10/Shape-of-errors-to-come.html).
+  Most common editors supporting Crab have been updated to work with it. It was
+  previously described [on the Crab blog](https://blog.rust-lang.org/2016/08/10/Shape-of-errors-to-come.html).
 
 Compiler
 --------
@@ -8555,8 +8555,8 @@ Compiler
 * [`rustc` translates code to LLVM IR via its own "middle" IR (MIR)](https://github.com/rust-lang/rust/pull/34096).
   This translation pass is far simpler than the previous AST->LLVM pass, and
   creates opportunities to perform new optimizations directly on the MIR. It
-  was previously described [on the Rust blog](https://blog.rust-lang.org/2016/04/19/MIR.html).
-* [Print the Rust target name, not the LLVM target name, with
+  was previously described [on the Crab blog](https://blog.rust-lang.org/2016/04/19/MIR.html).
+* [Print the Crab target name, not the LLVM target name, with
   `--print target-list`](https://github.com/rust-lang/rust/pull/35489)
 * [The computation of `TypeId` is correct in some cases where it was previously
   producing inconsistent results](https://github.com/rust-lang/rust/pull/35267)
@@ -8575,8 +8575,8 @@ Diagnostics
 
 * [`rustc` presents a new, more readable error format, along with
   machine-readable JSON error output for use by IDEs](https://github.com/rust-lang/rust/pull/35401).
-  Most common editors supporting Rust have been updated to work with it. It was
-  previously described [on the Rust blog](https://blog.rust-lang.org/2016/08/10/Shape-of-errors-to-come.html).
+  Most common editors supporting Crab have been updated to work with it. It was
+  previously described [on the Crab blog](https://blog.rust-lang.org/2016/08/10/Shape-of-errors-to-come.html).
 * [In error descriptions, references are now described in plain English,
   instead of as "&-ptr"](https://github.com/rust-lang/rust/pull/35611)
 * [In error type descriptions, unknown numeric types are named `{integer}` or
@@ -8682,7 +8682,7 @@ Tooling
 * [The test runner now emits a warning when tests run over 60 seconds](https://github.com/rust-lang/rust/pull/35405)
 * [rustdoc: Fix methods in search results](https://github.com/rust-lang/rust/pull/34752)
 * [`rust-lldb` warns about unsupported versions of LLDB](https://github.com/rust-lang/rust/pull/34646)
-* [Rust releases now come with source packages that can be installed by rustup
+* [Crab releases now come with source packages that can be installed by rustup
   via `rustup component add rust-src`](https://github.com/rust-lang/rust/pull/34366).
   The resulting source code can be used by tools and IDES, located in the
   sysroot under `lib/rustlib/src`.
@@ -8692,7 +8692,7 @@ Misc
 
 * [The compiler can now be built against LLVM 3.9](https://github.com/rust-lang/rust/pull/35594)
 * Many minor improvements to the documentation.
-* [The Rust exception handling "personality" routine is now written in Rust](https://github.com/rust-lang/rust/pull/34832)
+* [The Crab exception handling "personality" routine is now written in Crab](https://github.com/rust-lang/rust/pull/34832)
 
 Compatibility Notes
 -------------------
@@ -8779,7 +8779,7 @@ Performance
   protection from collision attacks.
 * [Comparison of `Ipv4Addr` is 10x faster](https://github.com/rust-lang/rust/pull/33891)
 
-Rustdoc
+Crabdoc
 -------
 
 * [Fix empty implementation section on some module pages](https://github.com/rust-lang/rust/pull/34536)
@@ -8805,7 +8805,7 @@ Misc
 * [rustc no longer hangs when dependencies recursively re-export
   submodules](https://github.com/rust-lang/rust/pull/34542)
 * [rustc requires LLVM 3.7+](https://github.com/rust-lang/rust/pull/34104)
-* [The 'How Safe and Unsafe Interact' chapter of The Rustonomicon was
+* [The 'How Safe and Unsafe Interact' chapter of The Crabonomicon was
   rewritten](https://github.com/rust-lang/rust/pull/33895)
 * [rustc support 16-bit pointer sizes](https://github.com/rust-lang/rust/pull/33460).
   No targets use this yet, but it works toward AVR support.
@@ -8831,12 +8831,12 @@ Language
 * [`Copy` types are required to have a trivial implementation of `Clone`](https://github.com/rust-lang/rust/pull/33420).
   [RFC 1521](https://github.com/rust-lang/rfcs/blob/master/text/1521-copy-clone-semantics.md).
 * [Single-variant enums support the `#[repr(..)]` attribute](https://github.com/rust-lang/rust/pull/33355).
-* [Fix `#[derive(RustcEncodable)]` in the presence of other `encode` methods](https://github.com/rust-lang/rust/pull/32908).
+* [Fix `#[derive(CrabcEncodable)]` in the presence of other `encode` methods](https://github.com/rust-lang/rust/pull/32908).
 * [`panic!` can be converted to a runtime abort with the
   `-C panic=abort` flag](https://github.com/rust-lang/rust/pull/32900).
   [RFC 1513](https://github.com/rust-lang/rfcs/blob/master/text/1513-less-unwinding.md).
 * [Add a new crate type, 'cdylib'](https://github.com/rust-lang/rust/pull/33553).
-  cdylibs are dynamic libraries suitable for loading by non-Rust hosts.
+  cdylibs are dynamic libraries suitable for loading by non-Crab hosts.
   [RFC 1510](https://github.com/rust-lang/rfcs/blob/master/text/1510-cdylib.md).
   Note that Cargo does not yet directly support cdylibs.
 
@@ -9000,7 +9000,7 @@ Misc
   Unix platforms](https://github.com/rust-lang/rust/pull/32835).
 * [On Unix the runtime aborts by calling `libc::abort` instead of
   generating an illegal instruction](https://github.com/rust-lang/rust/pull/31457).
-* [Rust is now bootstrapped from the previous release of Rust,
+* [Crab is now bootstrapped from the previous release of Crab,
   instead of a snapshot from an arbitrary commit](https://github.com/rust-lang/rust/pull/32942).
 
 Compatibility Notes
@@ -9177,7 +9177,7 @@ Misc
 
 * [Passing the `--quiet` flag to a test runner will produce
   much-abbreviated output][1.9q].
-* The Rust Project now publishes std binaries for the
+* The Crab Project now publishes std binaries for the
   `mips-unknown-linux-musl`, `mipsel-unknown-linux-musl`, and
   `i586-pc-windows-msvc` targets.
 
@@ -9314,7 +9314,7 @@ Version 1.8.0 (2016-04-14)
 Language
 --------
 
-* Rust supports overloading of compound assignment statements like
+* Crab supports overloading of compound assignment statements like
   `+=` by implementing the [`AddAssign`], [`SubAssign`],
   [`MulAssign`], [`DivAssign`], [`RemAssign`], [`BitAndAssign`],
   [`BitOrAssign`], [`BitXorAssign`], [`ShlAssign`], or [`ShrAssign`]
@@ -9385,13 +9385,13 @@ Misc
 * [The `--print cfg` flag prints the `cfg`s defined for the current
   target][1.8cf].
 * [`rustc` can be built with an new Cargo-based build system, written
-  in Rust][1.8b].  It will eventually replace Rust's Makefile-based
+  in Crab][1.8b].  It will eventually replace Crab's Makefile-based
   build system. To enable it configure with `configure --rustbuild`.
 * [Errors for non-exhaustive `match` patterns now list up to 3 missing
   variants while also indicating the total number of missing variants
   if more than 3][1.8m].
 * [Executable stacks are disabled on Linux and BSD][1.8nx].
-* The Rust Project now publishes binary releases of the standard
+* The Crab Project now publishes binary releases of the standard
   library for a number of tier-2 targets:
   `armv7-unknown-linux-gnueabihf`, `powerpc-unknown-linux-gnu`,
   `powerpc64-unknown-linux-gnu`, `powerpc64le-unknown-linux-gnu`
@@ -9410,7 +9410,7 @@ Cargo
   via environment variables][1.8ce]. For example the `build.jobs` key
   can be set via `CARGO_BUILD_JOBS`. Environment variables take
   precedence over config files.
-* [Target-specific dependencies support Rust `cfg` syntax for
+* [Target-specific dependencies support Crab `cfg` syntax for
   describing targets][1.8cfg] so that dependencies for multiple
   targets can be specified together. [RFC 1361].
 * [The environment variables `CARGO_TARGET_ROOT`, `RUSTC`, and
@@ -9728,7 +9728,7 @@ Language
 * The `#![no_std]` attribute causes a crate to not be linked to the
   standard library, but only the [core library][1.6co], as described
   in [RFC 1184]. The core library defines common types and traits but
-  has no platform dependencies whatsoever, and is the basis for Rust
+  has no platform dependencies whatsoever, and is the basis for Crab
   software in environments that cannot support a full port of the
   standard library, such as operating systems. Most of the core
   library is now stable.
@@ -9906,7 +9906,7 @@ Highlights
   [`str::MatchIndices`], [`str::RMatchIndices`],
   [`str::match_indices`], [`str::rmatch_indices`],
   [`str::slice_mut_unchecked`], [`string::ParseError`].
-* Rust applications hosted on crates.io can be installed locally to
+* Crab applications hosted on crates.io can be installed locally to
   `~/.cargo/bin` with the [`cargo install`] command. Among other
   things this makes it easier to augment Cargo with new subcommands:
   when a binary named e.g. `cargo-foo` is found in `$PATH` it can be
@@ -9979,7 +9979,7 @@ Libraries
 * [`AsMut` is implemented for `Vec`][1.5am].
 * The `clone_from` implementations for `String` and `BinaryHeap` [have
   been optimized][1.5cf] and no longer rely on the default impl.
-* The `extern "Rust"`, `extern "C"`, `unsafe extern "Rust"` and
+* The `extern "Crab"`, `extern "C"`, `unsafe extern "Crab"` and
   `unsafe extern "C"` function types now [implement `Clone`,
   `PartialEq`, `Eq`, `PartialOrd`, `Ord`, `Hash`, `fmt::Pointer`, and
   `fmt::Debug` for up to 12 arguments][1.5fp].
@@ -9999,8 +9999,8 @@ Miscellaneous
   unoptimized builds][1.5dr].
 * Various errors in trait resolution [are deduplicated to only be
   reported once][1.5te].
-* Rust has preliminary [support for rumprun kernels][1.5rr].
-* Rust has preliminary [support for NetBSD on amd64][1.5na].
+* Crab has preliminary [support for rumprun kernels][1.5rr].
+* Crab has preliminary [support for NetBSD on amd64][1.5na].
 
 [1.5use]: https://github.com/rust-lang/rust/pull/28364
 [1.5po]: https://github.com/rust-lang/rust/pull/28436
@@ -10176,7 +10176,7 @@ Libraries
 * [`BinaryHeap` implements `Debug`][bh2].
 * [`Borrow` and `BorrowMut` are implemented for fixed-size
   arrays][bm].
-* [`extern fn`s with the "Rust" and "C" ABIs implement common
+* [`extern fn`s with the "Crab" and "C" ABIs implement common
   traits including `Eq`, `Ord`, `Debug`, `Hash`][fp].
 * [String comparison is faster][faststr].
 * `&mut T` where `T: std::fmt::Write` [also implements
@@ -10284,8 +10284,8 @@ Highlights
   like `&'a Box<Trait>` (or `&'a Rc<Trait>`, etc) will change from
   being interpreted as `&'a Box<Trait+'a>` to `&'a
   Box<Trait+'static>`.
-* [The Rustonomicon][nom] is a new book in the official documentation
-  that dives into writing unsafe Rust.
+* [The Crabonomicon][nom] is a new book in the official documentation
+  that dives into writing unsafe Crab.
 * The [`Duration`] API, [has been stabilized][ds]. This basic unit of
   timekeeping is employed by other std APIs, as well as out-of-tree
   time crates.
@@ -10377,9 +10377,9 @@ Libraries
 Misc
 ----
 
-* Rust can now, with some coercion, [produce programs that run on
+* Crab can now, with some coercion, [produce programs that run on
   Windows XP][xp], though XP is not considered a supported platform.
-* Porting Rust on Windows from the GNU toolchain to MSVC continues
+* Porting Crab on Windows from the GNU toolchain to MSVC continues
   ([1][win1], [2][win2], [3][win3], [4][win4]). It is still not
   recommended for use in 1.3, though should be fully-functional
   in the [64-bit 1.4 beta][b14].
@@ -10394,7 +10394,7 @@ Misc
 * `rustc` now uses [LLVM to write archive files where possible][ar].
   Eventually this will eliminate the compiler's dependency on the ar
   utility.
-* Rust has [preliminary support for i686 FreeBSD][26959] (it has long
+* Crab has [preliminary support for i686 FreeBSD][26959] (it has long
   supported FreeBSD on x86_64).
 * The [`unused_mut`][lum], [`unconditional_recursion`][lur],
   [`improper_ctypes`][lic], and [`negate_unsigned`][lnu] lints are
@@ -10497,7 +10497,7 @@ Highlights
 * This is the first release with [experimental support for linking
   with the MSVC linker and lib C on Windows (instead of using the GNU
   variants via MinGW)][win]. It is yet recommended only for the most
-  intrepid Rustaceans.
+  intrepid Crabaceans.
 * Benchmark compilations are showing a 30% improvement in
   bootstrapping over 1.1.
 
@@ -10544,7 +10544,7 @@ Libraries
   [`wrapping_neg`], [`wrapping_shl`], [`wrapping_shr`]. These are in
   addition to the existing [`wrapping_add`], [`wrapping_sub`], and
   [`wrapping_mul`] methods, and alternatives to the [`Wrapping`]
-  type.. It is illegal for the default arithmetic operations in Rust
+  type.. It is illegal for the default arithmetic operations in Crab
   to overflow; the desire to wrap must be explicit.
 * The `{:#?}` formatting specifier [displays the alternate,
   pretty-printed][debugfmt] form of the `Debug` formatter. This
@@ -10685,7 +10685,7 @@ Libraries
 * Incorrect handling of paths on Windows has been improved in both the
   compiler and the standard library.
 * [`AtomicPtr` gained a `Default` implementation][ap].
-* In accordance with Rust's policy on arithmetic overflow `abs` now
+* In accordance with Crab's policy on arithmetic overflow `abs` now
   [panics on overflow when debug assertions are enabled][abs].
 * The [`Cloned`] iterator, which was accidentally left unstable for
   1.0 [has been stabilized][c].
@@ -10805,7 +10805,7 @@ Libraries
 * The `thread_local` module [has been renamed to `std::thread`][th].
 * The methods of `IteratorExt` [have been moved to the `Iterator`
   trait itself][23300].
-* Several traits that implement Rust's conventions for type
+* Several traits that implement Crab's conventions for type
   conversions, `AsMut`, `AsRef`, `From`, and `Into` have been
   [centralized in the `std::convert` module][con].
 * The `FromError` trait [was removed in favor of `From`][fe].
@@ -10967,7 +10967,7 @@ Version 1.0.0-alpha.2 (2015-02-20)
     * Certain long error messages of the form 'expected foo found bar'
       are now [split neatly across multiple
       lines][multiline]. Examples in the PR.
-    * On Unix Rust can be [uninstalled][un] by running
+    * On Unix Crab can be [uninstalled][un] by running
       `/usr/local/lib/rustlib/uninstall.sh`.
     * The `#[rustc_on_unimplemented]` attribute, requiring the
       'on_unimplemented' feature, lets rustc [display custom error
@@ -10976,8 +10976,8 @@ Version 1.0.0-alpha.2 (2015-02-20)
 
 * Misc
 
-    * Rust is tested against a [LALR grammar][lalr], which parses
-      almost all the Rust files that rustc does.
+    * Crab is tested against a [LALR grammar][lalr], which parses
+      almost all the Crab files that rustc does.
 
 [boxraw]: https://github.com/rust-lang/rust/pull/21318
 [close]: https://github.com/rust-lang/rust/pull/21843
@@ -11018,19 +11018,19 @@ Version 1.0.0-alpha (2015-01-09)
       been declared 'stable'. Those interfaces are unlikely to change
       before 1.0.
     * The long-running debate over integer types has been
-      [settled][ints]: Rust will ship with types named `isize` and
+      [settled][ints]: Crab will ship with types named `isize` and
       `usize`, rather than `int` and `uint`, for pointer-sized
       integers. Guidelines will be rolled out during the alpha cycle.
-    * Most crates that are not `std` have been moved out of the Rust
+    * Most crates that are not `std` have been moved out of the Crab
       distribution into the Cargo ecosystem so they can evolve
       separately and don't need to be stabilized as quickly, including
       'time', 'getopts', 'num', 'regex', and 'term'.
     * Documentation continues to be expanded with more API coverage, more
       examples, and more in-depth explanations. The guides have been
-      consolidated into [The Rust Programming Language][trpl].
-    * "[Rust By Example][rbe]" is now maintained by the Rust team.
-    * All official Rust binary installers now come with [Cargo], the
-      Rust package manager.
+      consolidated into [The Crab Programming Language][trpl].
+    * "[Crab By Example][rbe]" is now maintained by the Crab team.
+    * All official Crab binary installers now come with [Cargo], the
+      Crab package manager.
 
 * Language
 
@@ -11046,15 +11046,15 @@ Version 1.0.0-alpha (2015-01-09)
     * [`where` clauses][where] provide a more versatile and attractive
       syntax for specifying generic bounds, though the previous syntax
       remains valid.
-    * Rust again picks a [fallback][fb] (either i32 or f64) for uninferred
+    * Crab again picks a [fallback][fb] (either i32 or f64) for uninferred
       numeric types.
-    * Rust [no longer has a runtime][rt] of any description, and only
+    * Crab [no longer has a runtime][rt] of any description, and only
       supports OS threads, not green threads.
-    * At long last, Rust has been overhauled for 'dynamically-sized
+    * At long last, Crab has been overhauled for 'dynamically-sized
       types' ([DST]), which integrates 'fat pointers' (object types,
       arrays, and `str`) more deeply into the type system, making it
       more consistent.
-    * Rust now has a general [range syntax][range], `i..j`, `i..`, and
+    * Crab now has a general [range syntax][range], `i..j`, `i..`, and
       `..j` that produce range types and which, when combined with the
       `Index` operator and multidispatch, leads to a convenient slice
       notation, `[i..j]`.
@@ -11076,7 +11076,7 @@ Version 1.0.0-alpha (2015-01-09)
       against multiple other types, allowing e.g. `String` to be
       compared with `&str`.
     * `if let` and `while let` are no longer feature-gated.
-    * Rust has adopted a more [uniform syntax for escaping unicode
+    * Crab has adopted a more [uniform syntax for escaping unicode
       characters][unicode].
     * `macro_rules!` [has been declared stable][mac]. Though it is a
       flawed system it is sufficiently popular that it must be usable
@@ -11088,7 +11088,7 @@ Version 1.0.0-alpha (2015-01-09)
       that it is the minimum necessary to support the most pervasive
       code patterns, and through [generalized where clauses][where]
       many of the prelude extension traits have been consolidated.
-    * Rust's rudimentary reflection [has been removed][refl], as it
+    * Crab's rudimentary reflection [has been removed][refl], as it
       incurred too much code generation for little benefit.
     * [Struct variants][structvars] are no longer feature-gated.
     * Trait bounds can be [polymorphic over lifetimes][hrtb]. Also
@@ -11119,7 +11119,7 @@ Version 1.0.0-alpha (2015-01-09)
       improvements throughout the standard library.
     * New [APIs for error handling][err] provide ergonomic interop
       between error types, and [new conventions][err-conv] describe
-      more clearly the recommended error handling strategies in Rust.
+      more clearly the recommended error handling strategies in Crab.
     * The `fail!` macro has been renamed to [`panic!`][panic] so that
       it is easier to discuss failure in the context of error handling
       without making clarifications as to whether you are referring to
@@ -11142,9 +11142,9 @@ Version 1.0.0-alpha (2015-01-09)
     * [Flexible target specification][flex] allows rustc's code
       generation to be configured to support otherwise-unsupported
       platforms.
-    * Rust comes with rust-gdb and rust-lldb scripts that launch their
-      respective debuggers with Rust-appropriate pretty-printing.
-    * The Windows installation of Rust is distributed with the
+    * Crab comes with rust-gdb and rust-lldb scripts that launch their
+      respective debuggers with Crab-appropriate pretty-printing.
+    * The Windows installation of Crab is distributed with the
       MinGW components currently required to link binaries on that
       platform.
 
@@ -11198,13 +11198,13 @@ Version 0.12.0 (2014-10-09)
 
   * Highlights
 
-    * The introductory documentation (now called The Rust Guide) has
+    * The introductory documentation (now called The Crab Guide) has
       been completely rewritten, as have a number of supplementary
       guides.
-    * Rust's package manager, Cargo, continues to improve and is
+    * Crab's package manager, Cargo, continues to improve and is
       sometimes considered to be quite awesome.
     * Many API's in `std` have been reviewed and updated for
-      consistency with the in-development Rust coding
+      consistency with the in-development Crab coding
       guidelines. The standard library documentation tracks
       stabilization progress.
     * Minor libraries have been moved out-of-tree to the rust-lang org
@@ -11212,7 +11212,7 @@ Version 0.12.0 (2014-10-09)
       be installed with Cargo.
     * Lifetime elision allows lifetime annotations to be left off of
       function declarations in many common scenarios.
-    * Rust now works on 64-bit Windows.
+    * Crab now works on 64-bit Windows.
 
   * Language
     * Indexing can be overloaded with the `Index` and `IndexMut`
@@ -11310,7 +11310,7 @@ Version 0.12.0 (2014-10-09)
 
   * Misc
     * Stack usage has been optimized with LLVM lifetime annotations.
-    * Official Rust binaries on Linux are more compatible with older
+    * Official Crab binaries on Linux are more compatible with older
       kernels and distributions, built on CentOS 5.10.
 
 
@@ -11366,7 +11366,7 @@ Version 0.11.0 (2014-07-02)
       be speedier due to smaller crates, as well as a clearer line between
       all dependencies.
     * A new library, libcore, lives under the standard library's facade
-      which is Rust's "0-assumption" library, suitable for embedded and
+      which is Crab's "0-assumption" library, suitable for embedded and
       kernel development for example.
     * A regex crate has been added to the standard distribution. This crate
       includes statically compiled regular expressions.
@@ -11670,7 +11670,7 @@ Version 0.9 (2014-01-09)
       * Octal numeric literals, as in `0o7777`.
       * The `concat!` syntax extension performs compile-time string concatenation.
       * The `#[fixed_stack_segment]` and `#[rust_stack]` attributes have been
-        removed as Rust no longer uses segmented stacks.
+        removed as Crab no longer uses segmented stacks.
       * Non-ascii identifiers are feature-gated (`#[feature(non_ascii_idents)]`).
       * Ignoring all fields of an enum variant or tuple-struct is done with `..`,
         not `*`; ignoring remaining fields of a struct is also done with `..`,
@@ -11686,7 +11686,7 @@ Version 0.9 (2014-01-09)
       * The `unknown_features` lint (default: warn) warns about unknown
         feature gates.
       * The `dead_code` lint (default: warn) checks for dead code.
-      * Rust libraries can be linked statically to one another
+      * Crab libraries can be linked statically to one another
       * `#[link_args]` is behind the `link_args` feature gate.
       * Native libraries are now linked with `#[link(name = "foo")]`
       * Native libraries can be statically linked to a rust crate
@@ -11758,7 +11758,7 @@ Version 0.9 (2014-01-09)
       * green: The green thread scheduler and message passing types are almost
         entirely lock-free.
       * extra: The `flatpipes` module had bitrotted and was removed.
-      * extra: All crypto functions have been removed and Rust now has a policy of
+      * extra: All crypto functions have been removed and Crab now has a policy of
         not reimplementing crypto in the standard library. In the future crypto
         will be provided by external crates with bindings to established libraries.
       * extra: `c_vec` has been modernized.
@@ -11802,7 +11802,7 @@ Version 0.8 (2013-09-26)
       * The type of foreign functions is now `extern "C" fn` instead of `*u8'.
       * The FFI has been overhauled such that foreign functions are called directly,
         instead of through a stack-switching wrapper.
-      * Calling a foreign function must be done through a Rust function with the
+      * Calling a foreign function must be done through a Crab function with the
         `#[fixed_stack_segment]` attribute.
       * The `externfn!` macro can be used to declare both a foreign function and
         a `#[fixed_stack_segment]` wrapper at once.
@@ -11845,7 +11845,7 @@ Version 0.8 (2013-09-26)
         if executed.
 
    * Libraries
-      * std: Transitioned to the new runtime, written in Rust.
+      * std: Transitioned to the new runtime, written in Crab.
       * std: Added an experimental I/O library, `rt::io`, based on the new
         runtime.
       * std: A new generic `range` function was added to the prelude, replacing
@@ -12152,7 +12152,7 @@ Version 0.6 (2013-04-03)
       * Preliminary MIPS backend
       * Improved foreign function ABI implementation for x86, x86_64
       * Various memory usage improvements
-      * Rust code may be embedded in foreign code under limited circumstances
+      * Crab code may be embedded in foreign code under limited circumstances
       * Inline assembler supported by new asm!() syntax extension.
 
 
@@ -12265,7 +12265,7 @@ Version 0.4 (2012-10-15)
       * Preliminary work on precise GC
       * Extensive architectural improvements to rustc
       * Begun a transition away from buggy C++-based reflection (shape) code to
-        Rust-based (visitor) code
+        Crab-based (visitor) code
       * All hash functions and tables converted to secure, randomized SipHash
 
 
