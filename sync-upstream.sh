@@ -3,7 +3,13 @@
 # check if we're on the "current" branch, and if not, switch to it
 current_branch=$(git rev-parse --abbrev-ref HEAD)
 if [ "$current_branch" != "current" ]; then
-  git checkout current
+    # check if the branch already exists locally
+    git branch | grep -q current
+    if [ $? -ne 0 ]; then
+      git checkout -b current
+    else
+      git checkout current
+    fi
 fi
 
 # add the remote "upstream" if it doesn't exist
