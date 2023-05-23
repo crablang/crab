@@ -11,7 +11,7 @@ git fetch upstream
 git reset --hard upstream/master
 
 # copy the README.md file from the local master branch
-git checkout master -- README.md CODE_OF_CONDUCT.md CONTRIBUTING.md
+git checkout master -- README.md CODE_OF_CONDUCT.md CONTRIBUTING.md sync-upstream.sh
 
 # add it to git in the current branch and create a commit
 git add --all
