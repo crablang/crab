@@ -30,3 +30,4 @@ git add --all
 git commit -m "incorporate stable changes"
 
 # git push git paid
+git push --force origin current
