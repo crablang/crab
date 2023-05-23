@@ -4,13 +4,95 @@
 //! ["Queries: demand-driven compilation"](https://rustc-dev-guide.rust-lang.org/query.html).
 //! This chapter includes instructions for adding new queries.
 
-use crate::ty::{self, print::describe_as_module, TyCtxt};
+#![allow(unused_parens)]
+
+use crate::dep_graph;
+use crate::dep_graph::DepKind;
+use crate::infer::canonical::{self, Canonical};
+use crate::lint::LintExpectation;
+use crate::metadata::ModChild;
+use crate::middle::codegen_fn_attrs::CodegenFnAttrs;
+use crate::middle::debugger_visualizer::DebuggerVisualizerFile;
+use crate::middle::exported_symbols::{ExportedSymbol, SymbolExportInfo};
+use crate::middle::lib_features::LibFeatures;
+use crate::middle::privacy::EffectiveVisibilities;
+use crate::middle::resolve_bound_vars::{ObjectLifetimeDefault, ResolveBoundVars, ResolvedArg};
+use crate::middle::stability::{self, DeprecationEntry};
+use crate::mir;
+use crate::mir::interpret::GlobalId;
+use crate::mir::interpret::{
+    ConstValue, EvalToAllocationRawResult, EvalToConstValueResult, EvalToValTreeResult,
+};
+use crate::mir::interpret::{LitToConstError, LitToConstInput};
+use crate::mir::mono::CodegenUnit;
+use crate::query::erase::{erase, restore, Erase};
+use crate::query::plumbing::{query_ensure, query_get_at, DynamicQuery};
+use crate::thir;
+use crate::traits::query::{
+    CanonicalPredicateGoal, CanonicalProjectionGoal, CanonicalTyGoal,
+    CanonicalTypeOpAscribeUserTypeGoal, CanonicalTypeOpEqGoal, CanonicalTypeOpNormalizeGoal,
+    CanonicalTypeOpProvePredicateGoal, CanonicalTypeOpSubtypeGoal, NoSolution,
+};
+use crate::traits::query::{
+    DropckConstraint, DropckOutlivesResult, MethodAutoderefStepsResult, NormalizationResult,
+    OutlivesBound,
+};
+use crate::traits::specialization_graph;
+use crate::traits::{self, ImplSource};
+use crate::ty::fast_reject::SimplifiedType;
+use crate::ty::layout::ValidityRequirement;
+use crate::ty::subst::{GenericArg, SubstsRef};
+use crate::ty::util::AlwaysRequiresDrop;
+use crate::ty::GeneratorDiagnosticData;
+use crate::ty::TyCtxtFeed;
+use crate::ty::{
+    self, print::describe_as_module, CrateInherentImpls, ParamEnvAnd, Ty, TyCtxt,
+    UnusedGenericParams,
+};
+use rustc_arena::TypedArena;
+use rustc_ast as ast;
+use rustc_ast::expand::allocator::AllocatorKind;
+use rustc_attr as attr;
+use rustc_data_structures::fingerprint::Fingerprint;
+use rustc_data_structures::fx::{FxHashMap, FxIndexMap, FxIndexSet};
+use rustc_data_structures::steal::Steal;
+use rustc_data_structures::svh::Svh;
+use rustc_data_structures::sync::Lrc;
+use rustc_data_structures::sync::WorkerLocal;
+use rustc_data_structures::unord::UnordSet;
+use rustc_errors::ErrorGuaranteed;
+use rustc_hir as hir;
+use rustc_hir::def::{DefKind, DocLinkResMap};
+use rustc_hir::def_id::{
+    CrateNum, DefId, DefIdMap, DefIdSet, LocalDefId, LocalDefIdMap, LocalDefIdSet,
+};
+use rustc_hir::lang_items::{LangItem, LanguageItems};
+use rustc_hir::{Crate, ItemLocalId, TraitCandidate};
+use rustc_index::IndexVec;
+use rustc_query_system::ich::StableHashingContext;
+use rustc_query_system::query::{try_get_cached, CacheSelector, QueryCache, QueryMode, QueryState};
+use rustc_session::config::{EntryFnType, OptLevel, OutputFilenames, SymbolManglingVersion};
+use rustc_session::cstore::{CrateDepKind, CrateSource};
+use rustc_session::cstore::{ExternCrate, ForeignModule, LinkagePreference, NativeLib};
+use rustc_session::lint::LintExpectationId;
+use rustc_session::Limits;
 use rustc_span::def_id::LOCAL_CRATE;
+use rustc_span::symbol::Symbol;
+use rustc_span::{Span, DUMMY_SP};
+use rustc_target::abi;
+use rustc_target::spec::PanicStrategy;
+use std::mem;
+use std::ops::Deref;
+use std::path::PathBuf;
+use std::sync::Arc;
 
 pub mod erase;
 mod keys;
-pub mod on_disk_cache;
 pub use keys::{AsLocalKey, Key, LocalCrate};
+pub mod on_disk_cache;
+#[macro_use]
+pub mod plumbing;
+pub use plumbing::{IntoQueryParam, TyCtxtAt, TyCtxtEnsure, TyCtxtEnsureWithValue};
 
 // Each of these queries corresponds to a function pointer field in the
 // `Providers` struct for requesting a value of that type, and a method
@@ -236,6 +318,15 @@ rustc_queries! {
         cache_on_disk_if { key.is_local() }
     }
 
+    query opaque_types_defined_by(
+        key: LocalDefId
+    ) -> &'tcx [LocalDefId] {
+        desc {
+            |tcx| "computing the opaque types defined by `{}`",
+            tcx.def_path_str(key.to_def_id())
+        }
+    }
+
     /// Returns the list of bounds that can be used for
     /// `SelectionCandidate::ProjectionCandidate(_)` and
     /// `ProjectionTyCandidate::TraitDef`.
@@ -402,7 +493,7 @@ rustc_queries! {
     /// Try to build an abstract representation of the given constant.
     query thir_abstract_const(
         key: DefId
-    ) -> Result<Option<ty::Const<'tcx>>, ErrorGuaranteed> {
+    ) -> Result<Option<ty::EarlyBinder<ty::Const<'tcx>>>, ErrorGuaranteed> {
         desc {
             |tcx| "building an abstract representation for `{}`", tcx.def_path_str(key),
         }
@@ -437,7 +528,7 @@ rustc_queries! {
         }
     }
 
-    query mir_generator_witnesses(key: DefId) -> &'tcx mir::GeneratorLayout<'tcx> {
+    query mir_generator_witnesses(key: DefId) -> &'tcx Option<mir::GeneratorLayout<'tcx>> {
         arena_cache
         desc { |tcx| "generator witness types for `{}`", tcx.def_path_str(key) }
         cache_on_disk_if { key.is_local() }
@@ -634,12 +725,6 @@ rustc_queries! {
     /// constructor function).
     query is_promotable_const_fn(key: DefId) -> bool {
         desc { |tcx| "checking if item is promotable: `{}`", tcx.def_path_str(key) }
-    }
-
-    /// Returns `true` if this is a foreign item (i.e., linked via `extern { ... }`).
-    query is_foreign_item(key: DefId) -> bool {
-        desc { |tcx| "checking if `{}` is a foreign item", tcx.def_path_str(key) }
-        separate_provide_extern
     }
 
     /// Returns `Some(generator_kind)` if the node pointed to by `def_id` is a generator.
@@ -1016,7 +1101,7 @@ rustc_queries! {
         desc { "converting literal to mir constant" }
     }
 
-    query check_match(key: LocalDefId) {
+    query check_match(key: LocalDefId) -> Result<(), rustc_errors::ErrorGuaranteed> {
         desc { |tcx| "match-checking `{}`", tcx.def_path_str(key) }
         cache_on_disk_if { true }
     }
@@ -1700,12 +1785,18 @@ rustc_queries! {
         desc { "looking at the source for a crate" }
         separate_provide_extern
     }
+
     /// Returns the debugger visualizers defined for this crate.
-    query debugger_visualizers(_: CrateNum) -> &'tcx Vec<rustc_span::DebuggerVisualizerFile> {
+    /// NOTE: This query has to be marked `eval_always` because it reads data
+    ///       directly from disk that is not tracked anywhere else. I.e. it
+    ///       represents a genuine input to the query system.
+    query debugger_visualizers(_: CrateNum) -> &'tcx Vec<DebuggerVisualizerFile> {
         arena_cache
         desc { "looking up the debugger visualizers for this crate" }
         separate_provide_extern
+        eval_always
     }
+
     query postorder_cnums(_: ()) -> &'tcx [CrateNum] {
         eval_always
         desc { "generating a postorder list of CrateNums" }
@@ -1813,6 +1904,16 @@ rustc_queries! {
 
     /// Do not call this query directly: invoke `normalize` instead.
     query normalize_projection_ty(
+        goal: CanonicalProjectionGoal<'tcx>
+    ) -> Result<
+        &'tcx Canonical<'tcx, canonical::QueryResponse<'tcx, NormalizationResult<'tcx>>>,
+        NoSolution,
+    > {
+        desc { "normalizing `{}`", goal.value.value }
+    }
+
+    /// Do not call this query directly: invoke `normalize` instead.
+    query normalize_inherent_projection_ty(
         goal: CanonicalProjectionGoal<'tcx>
     ) -> Result<
         &'tcx Canonical<'tcx, canonical::QueryResponse<'tcx, NormalizationResult<'tcx>>>,
@@ -2083,3 +2184,6 @@ rustc_queries! {
         desc { "check whether two const param are definitely not equal to eachother"}
     }
 }
+
+rustc_query_append! { define_callbacks! }
+rustc_feedable_queries! { define_feedable! }

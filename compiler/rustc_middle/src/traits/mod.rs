@@ -281,9 +281,6 @@ pub enum ObligationCauseCode<'tcx> {
     /// A type like `Box<Foo<'a> + 'b>` is WF only if `'b: 'a`.
     ObjectTypeBound(Ty<'tcx>, ty::Region<'tcx>),
 
-    /// Obligation incurred due to an object cast.
-    ObjectCastObligation(/* Concrete type */ Ty<'tcx>, /* Object type */ Ty<'tcx>),
-
     /// Obligation incurred due to a coercion.
     Coercion {
         source: Ty<'tcx>,
@@ -580,11 +577,7 @@ pub enum SelectionError<'tcx> {
     /// After a closure impl has selected, its "outputs" were evaluated
     /// (which for closures includes the "input" type params) and they
     /// didn't resolve. See `confirm_poly_trait_refs` for more.
-    OutputTypeParameterMismatch(
-        ty::PolyTraitRef<'tcx>,
-        ty::PolyTraitRef<'tcx>,
-        ty::error::TypeError<'tcx>,
-    ),
+    OutputTypeParameterMismatch(Box<SelectionOutputTypeParameterMismatch<'tcx>>),
     /// The trait pointed by `DefId` is not object safe.
     TraitNotObjectSafe(DefId),
     /// A given constant couldn't be evaluated.
@@ -594,6 +587,13 @@ pub enum SelectionError<'tcx> {
     /// Signaling that an error has already been emitted, to avoid
     /// multiple errors being shown.
     ErrorReporting,
+}
+
+#[derive(Clone, Debug, TypeVisitable, Lift)]
+pub struct SelectionOutputTypeParameterMismatch<'tcx> {
+    pub found_trait_ref: ty::PolyTraitRef<'tcx>,
+    pub expected_trait_ref: ty::PolyTraitRef<'tcx>,
+    pub terr: ty::error::TypeError<'tcx>,
 }
 
 /// When performing resolution, it is typically the case that there
@@ -701,9 +701,9 @@ impl<'tcx, N> ImplSource<'tcx, N> {
     }
 
     pub fn borrow_nested_obligations(&self) -> &[N] {
-        match &self {
-            ImplSource::UserDefined(i) => &i.nested[..],
-            ImplSource::Param(n, _) => &n,
+        match self {
+            ImplSource::UserDefined(i) => &i.nested,
+            ImplSource::Param(n, _) => n,
             ImplSource::Builtin(i) => &i.nested,
             ImplSource::AutoImpl(d) => &d.nested,
             ImplSource::Closure(c) => &c.nested,
@@ -714,6 +714,23 @@ impl<'tcx, N> ImplSource<'tcx, N> {
             ImplSource::TraitAlias(d) => &d.nested,
             ImplSource::TraitUpcasting(d) => &d.nested,
             ImplSource::ConstDestruct(i) => &i.nested,
+        }
+    }
+
+    pub fn borrow_nested_obligations_mut(&mut self) -> &mut [N] {
+        match self {
+            ImplSource::UserDefined(i) => &mut i.nested,
+            ImplSource::Param(n, _) => n,
+            ImplSource::Builtin(i) => &mut i.nested,
+            ImplSource::AutoImpl(d) => &mut d.nested,
+            ImplSource::Closure(c) => &mut c.nested,
+            ImplSource::Generator(c) => &mut c.nested,
+            ImplSource::Future(c) => &mut c.nested,
+            ImplSource::Object(d) => &mut d.nested,
+            ImplSource::FnPointer(d) => &mut d.nested,
+            ImplSource::TraitAlias(d) => &mut d.nested,
+            ImplSource::TraitUpcasting(d) => &mut d.nested,
+            ImplSource::ConstDestruct(i) => &mut i.nested,
         }
     }
 

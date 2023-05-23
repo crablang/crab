@@ -10,6 +10,7 @@ use rustc_data_structures::stack::ensure_sufficient_stack;
 use rustc_hir::lang_items::LangItem;
 use rustc_infer::infer::LateBoundRegionConversionTime::HigherRankedType;
 use rustc_infer::infer::{DefineOpaqueTypes, InferOk};
+use rustc_middle::traits::SelectionOutputTypeParameterMismatch;
 use rustc_middle::ty::{
     self, Binder, GenericParamDefKind, InternalSubsts, SubstsRef, ToPolyTraitRef, ToPredicate,
     TraitRef, Ty, TyCtxt, TypeVisitableExt,
@@ -28,9 +29,9 @@ use crate::traits::{
     ImplSourceAutoImplData, ImplSourceBuiltinData, ImplSourceClosureData,
     ImplSourceConstDestructData, ImplSourceFnPointerData, ImplSourceFutureData,
     ImplSourceGeneratorData, ImplSourceObjectData, ImplSourceTraitAliasData,
-    ImplSourceTraitUpcastingData, ImplSourceUserDefinedData, Normalized, ObjectCastObligation,
-    Obligation, ObligationCause, OutputTypeParameterMismatch, PredicateObligation, Selection,
-    SelectionError, TraitNotObjectSafe, TraitObligation, Unimplemented,
+    ImplSourceTraitUpcastingData, ImplSourceUserDefinedData, Normalized, Obligation,
+    ObligationCause, OutputTypeParameterMismatch, PredicateObligation, Selection, SelectionError,
+    TraitNotObjectSafe, TraitObligation, Unimplemented,
 };
 
 use super::BuiltinImplConditions;
@@ -131,6 +132,12 @@ impl<'cx, 'tcx> SelectionContext<'cx, 'tcx> {
             }
         };
 
+        // The obligations returned by confirmation are recursively evaluated
+        // so we need to make sure they have the correct depth.
+        for subobligation in impl_src.borrow_nested_obligations_mut() {
+            subobligation.set_depth_from_parent(obligation.recursion_depth);
+        }
+
         if !obligation.predicate.is_const_if_const() {
             // normalize nested predicates according to parent predicate's constness.
             impl_src = impl_src.map(|mut o| {
@@ -155,7 +162,10 @@ impl<'cx, 'tcx> SelectionContext<'cx, 'tcx> {
         let placeholder_self_ty = placeholder_trait_predicate.self_ty();
         let placeholder_trait_predicate = ty::Binder::dummy(placeholder_trait_predicate);
         let (def_id, substs) = match *placeholder_self_ty.kind() {
-            ty::Alias(_, ty::AliasTy { def_id, substs, .. }) => (def_id, substs),
+            // Excluding IATs here as they don't have meaningful item bounds.
+            ty::Alias(ty::Projection | ty::Opaque, ty::AliasTy { def_id, substs, .. }) => {
+                (def_id, substs)
+            }
             _ => bug!("projection candidate for unexpected type: {:?}", placeholder_self_ty),
         };
 
@@ -811,7 +821,7 @@ impl<'cx, 'tcx> SelectionContext<'cx, 'tcx> {
     fn confirm_poly_trait_refs(
         &mut self,
         obligation: &TraitObligation<'tcx>,
-        expected_trait_ref: ty::PolyTraitRef<'tcx>,
+        self_ty_trait_ref: ty::PolyTraitRef<'tcx>,
     ) -> Result<Vec<PredicateObligation<'tcx>>, SelectionError<'tcx>> {
         let obligation_trait_ref = obligation.predicate.to_poly_trait_ref();
         // Normalize the obligation and expected trait refs together, because why not
@@ -822,7 +832,7 @@ impl<'cx, 'tcx> SelectionContext<'cx, 'tcx> {
                     obligation.param_env,
                     obligation.cause.clone(),
                     obligation.recursion_depth + 1,
-                    (obligation_trait_ref, expected_trait_ref),
+                    (obligation_trait_ref, self_ty_trait_ref),
                 )
             });
 
@@ -834,7 +844,13 @@ impl<'cx, 'tcx> SelectionContext<'cx, 'tcx> {
                 obligations.extend(nested);
                 obligations
             })
-            .map_err(|e| OutputTypeParameterMismatch(expected_trait_ref, obligation_trait_ref, e))
+            .map_err(|terr| {
+                OutputTypeParameterMismatch(Box::new(SelectionOutputTypeParameterMismatch {
+                    expected_trait_ref: obligation_trait_ref,
+                    found_trait_ref: expected_trait_ref,
+                    terr,
+                }))
+            })
     }
 
     fn confirm_trait_upcasting_unsize_candidate(
@@ -898,16 +914,10 @@ impl<'cx, 'tcx> SelectionContext<'cx, 'tcx> {
                     .map_err(|_| Unimplemented)?;
                 nested.extend(obligations);
 
-                // Register one obligation for 'a: 'b.
-                let cause = ObligationCause::new(
-                    obligation.cause.span,
-                    obligation.cause.body_id,
-                    ObjectCastObligation(source, target),
-                );
                 let outlives = ty::OutlivesPredicate(r_a, r_b);
                 nested.push(Obligation::with_depth(
                     tcx,
-                    cause,
+                    obligation.cause.clone(),
                     obligation.recursion_depth + 1,
                     obligation.param_env,
                     obligation.predicate.rebind(outlives),
@@ -998,15 +1008,10 @@ impl<'cx, 'tcx> SelectionContext<'cx, 'tcx> {
                 nested.extend(obligations);
 
                 // Register one obligation for 'a: 'b.
-                let cause = ObligationCause::new(
-                    obligation.cause.span,
-                    obligation.cause.body_id,
-                    ObjectCastObligation(source, target),
-                );
                 let outlives = ty::OutlivesPredicate(r_a, r_b);
                 nested.push(Obligation::with_depth(
                     tcx,
-                    cause,
+                    obligation.cause.clone(),
                     obligation.recursion_depth + 1,
                     obligation.param_env,
                     obligation.predicate.rebind(outlives),
@@ -1020,16 +1025,10 @@ impl<'cx, 'tcx> SelectionContext<'cx, 'tcx> {
                     return Err(TraitNotObjectSafe(did));
                 }
 
-                let cause = ObligationCause::new(
-                    obligation.cause.span,
-                    obligation.cause.body_id,
-                    ObjectCastObligation(source, target),
-                );
-
                 let predicate_to_obligation = |predicate| {
                     Obligation::with_depth(
                         tcx,
-                        cause.clone(),
+                        obligation.cause.clone(),
                         obligation.recursion_depth + 1,
                         obligation.param_env,
                         predicate,
@@ -1049,7 +1048,12 @@ impl<'cx, 'tcx> SelectionContext<'cx, 'tcx> {
                 );
 
                 // We can only make objects from sized types.
-                let tr = ty::TraitRef::from_lang_item(tcx, LangItem::Sized, cause.span, [source]);
+                let tr = ty::TraitRef::from_lang_item(
+                    tcx,
+                    LangItem::Sized,
+                    obligation.cause.span,
+                    [source],
+                );
                 nested.push(predicate_to_obligation(tr.without_const().to_predicate(tcx)));
 
                 // If the type is `Foo + 'a`, ensure that the type
@@ -1268,7 +1272,7 @@ impl<'cx, 'tcx> SelectionContext<'cx, 'tcx> {
 
                 // If we have a projection type, make sure to normalize it so we replace it
                 // with a fresh infer variable
-                ty::Alias(ty::Projection, ..) => {
+                ty::Alias(ty::Projection | ty::Inherent, ..) => {
                     let predicate = normalize_with_depth_to(
                         self,
                         obligation.param_env,

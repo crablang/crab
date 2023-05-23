@@ -16,6 +16,7 @@ libc = "0.2"
 measureme = "10.0.0"
 rustc-rayon-core = { version = "0.5.0", optional = true }
 rustc-rayon = { version = "0.5.0", optional = true }
+rustc_arena = { path = "../rustc_arena" }
 rustc_graphviz = { path = "../rustc_graphviz" }
 rustc-hash = "1.1.0"
 rustc_index = { path = "../rustc_index", package = "rustc_index" }
@@ -37,7 +38,7 @@ itertools = "0.10.1"
 version = "0.11"
 
 [target.'cfg(windows)'.dependencies.windows]
-version = "0.46.0"
+version = "0.48.0"
 features = [
     "Win32_Foundation",
     "Win32_Storage_FileSystem",

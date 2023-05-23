@@ -8,7 +8,6 @@ use crate::{errors, fluent_generated as fluent};
 use rustc_ast::{ast, AttrStyle, Attribute, LitKind, MetaItemKind, MetaItemLit, NestedMetaItem};
 use rustc_data_structures::fx::FxHashMap;
 use rustc_errors::{Applicability, IntoDiagnosticArg, MultiSpan};
-use rustc_expand::base::resolve_path;
 use rustc_feature::{AttributeDuplicates, AttributeType, BuiltinAttribute, BUILTIN_ATTRIBUTE_MAP};
 use rustc_hir as hir;
 use rustc_hir::def_id::LocalDefId;
@@ -19,9 +18,9 @@ use rustc_hir::{
 use rustc_hir::{MethodKind, Target, Unsafety};
 use rustc_middle::hir::nested_filter;
 use rustc_middle::middle::resolve_bound_vars::ObjectLifetimeDefault;
+use rustc_middle::query::Providers;
 use rustc_middle::traits::ObligationCause;
 use rustc_middle::ty::error::{ExpectedFound, TypeError};
-use rustc_middle::ty::query::Providers;
 use rustc_middle::ty::{self, TyCtxt};
 use rustc_session::lint::builtin::{
     CONFLICTING_REPR_HINTS, INVALID_DOC_ATTRIBUTES, INVALID_MACRO_EXPORT_ARGUMENTS,
@@ -1916,6 +1915,10 @@ impl CheckAttrVisitor<'_> {
 
     /// Checks if the items on the `#[debugger_visualizer]` attribute are valid.
     fn check_debugger_visualizer(&self, attr: &Attribute, target: Target) -> bool {
+        // Here we only check that the #[debugger_visualizer] attribute is attached
+        // to nothing other than a module. All other checks are done in the
+        // `debugger_visualizer` query where they need to be done for decoding
+        // anyway.
         match target {
             Target::Mod => {}
             _ => {
@@ -1924,53 +1927,7 @@ impl CheckAttrVisitor<'_> {
             }
         }
 
-        let Some(hints) = attr.meta_item_list() else {
-            self.tcx.sess.emit_err(errors::DebugVisualizerInvalid { span: attr.span });
-            return false;
-        };
-
-        let hint = match hints.len() {
-            1 => &hints[0],
-            _ => {
-                self.tcx.sess.emit_err(errors::DebugVisualizerInvalid { span: attr.span });
-                return false;
-            }
-        };
-
-        let Some(meta_item) = hint.meta_item() else {
-            self.tcx.sess.emit_err(errors::DebugVisualizerInvalid { span: attr.span });
-            return false;
-        };
-
-        let visualizer_path = match (meta_item.name_or_empty(), meta_item.value_str()) {
-            (sym::natvis_file, Some(value)) => value,
-            (sym::gdb_script_file, Some(value)) => value,
-            (_, _) => {
-                self.tcx.sess.emit_err(errors::DebugVisualizerInvalid { span: meta_item.span });
-                return false;
-            }
-        };
-
-        let file =
-            match resolve_path(&self.tcx.sess.parse_sess, visualizer_path.as_str(), attr.span) {
-                Ok(file) => file,
-                Err(mut err) => {
-                    err.emit();
-                    return false;
-                }
-            };
-
-        match std::fs::File::open(&file) {
-            Ok(_) => true,
-            Err(error) => {
-                self.tcx.sess.emit_err(errors::DebugVisualizerUnreadable {
-                    span: meta_item.span,
-                    file: &file,
-                    error,
-                });
-                false
-            }
-        }
+        true
     }
 
     /// Outputs an error for `#[allow_internal_unstable]` which can only be applied to macros.

@@ -99,6 +99,7 @@ pub static DEFAULT_LOCALE_RESOURCES: &[&str] = &[
     rustc_middle::DEFAULT_LOCALE_RESOURCE,
     rustc_mir_build::DEFAULT_LOCALE_RESOURCE,
     rustc_mir_dataflow::DEFAULT_LOCALE_RESOURCE,
+    rustc_mir_transform::DEFAULT_LOCALE_RESOURCE,
     rustc_monomorphize::DEFAULT_LOCALE_RESOURCE,
     rustc_parse::DEFAULT_LOCALE_RESOURCE,
     rustc_passes::DEFAULT_LOCALE_RESOURCE,
@@ -255,6 +256,9 @@ fn run_compiler(
 
     let sopts = config::build_session_options(&matches);
 
+    // Set parallel mode before thread pool creation, which will create `Lock`s.
+    interface::set_thread_safe_mode(&sopts.unstable_opts);
+
     if let Some(ref code) = matches.opt_str("explain") {
         handle_explain(diagnostics_registry(), code, sopts.error_format);
         return Ok(());
@@ -318,7 +322,7 @@ fn run_compiler(
             1 => panic!("make_input should have provided valid inputs"),
             _ => early_error(
                 config.opts.error_format,
-                &format!(
+                format!(
                     "multiple input filenames provided (first two filenames are `{}` and `{}`)",
                     matches.free[0], matches.free[1],
                 ),
@@ -523,7 +527,7 @@ fn handle_explain(registry: Registry, code: &str, output: ErrorOutputType) {
             }
         }
         Err(InvalidErrorCode) => {
-            early_error(output, &format!("{code} is not a valid error code"));
+            early_error(output, format!("{code} is not a valid error code"));
         }
     }
 }
@@ -568,7 +572,7 @@ pub fn try_process_rlink(sess: &Session, compiler: &interface::Compiler) -> Comp
             let rlink_data = fs::read(file).unwrap_or_else(|err| {
                 sess.emit_fatal(RlinkUnableToRead { err });
             });
-            let codegen_results = match CodegenResults::deserialize_rlink(rlink_data) {
+            let codegen_results = match CodegenResults::deserialize_rlink(sess, rlink_data) {
                 Ok(codegen) => codegen,
                 Err(err) => {
                     match err {
@@ -582,10 +586,10 @@ pub fn try_process_rlink(sess: &Session, compiler: &interface::Compiler) -> Comp
                                 rlink_version,
                             })
                         }
-                        CodegenErrors::RustcVersionMismatch { rustc_version, current_version } => {
+                        CodegenErrors::RustcVersionMismatch { rustc_version } => {
                             sess.emit_fatal(RLinkRustcVersionMismatch {
                                 rustc_version,
-                                current_version,
+                                current_version: sess.cfg_version,
                             })
                         }
                     };
@@ -743,6 +747,22 @@ fn print_crate_info(
                     if stable || unstable_ok {
                         safe_println!("{split}");
                     }
+                }
+            }
+            DeploymentTarget => {
+                use rustc_target::spec::current_apple_deployment_target;
+
+                if sess.target.is_like_osx {
+                    safe_println!(
+                        "deployment_target={}",
+                        current_apple_deployment_target(&sess.target)
+                            .expect("unknown Apple target OS")
+                    )
+                } else {
+                    early_error(
+                        ErrorOutputType::default(),
+                        "only Apple targets currently support deployment version info",
+                    )
                 }
             }
         }
@@ -1082,7 +1102,7 @@ pub fn handle_options(args: &[String]) -> Option<getopts::Matches> {
                 .map(|(flag, _)| format!("{e}. Did you mean `-{flag} {opt}`?")),
             _ => None,
         };
-        early_error(ErrorOutputType::default(), &msg.unwrap_or_else(|| e.to_string()));
+        early_error(ErrorOutputType::default(), msg.unwrap_or_else(|| e.to_string()));
     });
 
     // For all options we just parsed, we check a few aspects:
@@ -1230,7 +1250,8 @@ pub fn install_ice_hook(bug_report_url: &'static str, extra_info: fn(&Handler)) 
         #[cfg(windows)]
         if let Some(msg) = info.payload().downcast_ref::<String>() {
             if msg.starts_with("failed printing to stdout: ") && msg.ends_with("(os error 232)") {
-                early_error_no_abort(ErrorOutputType::default(), &msg);
+                // the error code is already going to be reported when the panic unwinds up the stack
+                let _ = early_error_no_abort(ErrorOutputType::default(), msg.as_str());
                 return;
             }
         };
@@ -1322,7 +1343,7 @@ pub fn init_rustc_env_logger() {
 /// other than `RUSTC_LOG`.
 pub fn init_env_logger(env: &str) {
     if let Err(error) = rustc_log::init_env_logger(env) {
-        early_error(ErrorOutputType::default(), &error.to_string());
+        early_error(ErrorOutputType::default(), error.to_string());
     }
 }
 
@@ -1389,7 +1410,7 @@ pub fn main() -> ! {
                 arg.into_string().unwrap_or_else(|arg| {
                     early_error(
                         ErrorOutputType::default(),
-                        &format!("argument {i} is not valid Unicode: {arg:?}"),
+                        format!("argument {i} is not valid Unicode: {arg:?}"),
                     )
                 })
             })

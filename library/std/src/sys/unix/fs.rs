@@ -349,6 +349,8 @@ pub struct FilePermissions {
 pub struct FileTimes {
     accessed: Option<SystemTime>,
     modified: Option<SystemTime>,
+    #[cfg(any(target_os = "macos", target_os = "ios", target_os = "watchos"))]
+    created: Option<SystemTime>,
 }
 
 #[derive(Copy, Clone, Eq, Debug)]
@@ -447,7 +449,12 @@ impl FileAttr {
 
 #[cfg(not(any(target_os = "netbsd", target_os = "nto")))]
 impl FileAttr {
-    #[cfg(not(any(target_os = "vxworks", target_os = "espidf", target_os = "horizon")))]
+    #[cfg(not(any(
+        target_os = "vxworks",
+        target_os = "espidf",
+        target_os = "horizon",
+        target_os = "vita"
+    )))]
     pub fn modified(&self) -> io::Result<SystemTime> {
         #[cfg(target_pointer_width = "32")]
         cfg_has_statx! {
@@ -459,7 +466,7 @@ impl FileAttr {
         Ok(SystemTime::new(self.stat.st_mtime as i64, self.stat.st_mtime_nsec as i64))
     }
 
-    #[cfg(any(target_os = "vxworks", target_os = "espidf"))]
+    #[cfg(any(target_os = "vxworks", target_os = "espidf", target_os = "vita"))]
     pub fn modified(&self) -> io::Result<SystemTime> {
         Ok(SystemTime::new(self.stat.st_mtime as i64, 0))
     }
@@ -469,7 +476,12 @@ impl FileAttr {
         Ok(SystemTime::from(self.stat.st_mtim))
     }
 
-    #[cfg(not(any(target_os = "vxworks", target_os = "espidf", target_os = "horizon")))]
+    #[cfg(not(any(
+        target_os = "vxworks",
+        target_os = "espidf",
+        target_os = "horizon",
+        target_os = "vita"
+    )))]
     pub fn accessed(&self) -> io::Result<SystemTime> {
         #[cfg(target_pointer_width = "32")]
         cfg_has_statx! {
@@ -481,7 +493,7 @@ impl FileAttr {
         Ok(SystemTime::new(self.stat.st_atime as i64, self.stat.st_atime_nsec as i64))
     }
 
-    #[cfg(any(target_os = "vxworks", target_os = "espidf"))]
+    #[cfg(any(target_os = "vxworks", target_os = "espidf", target_os = "vita"))]
     pub fn accessed(&self) -> io::Result<SystemTime> {
         Ok(SystemTime::new(self.stat.st_atime as i64, 0))
     }
@@ -580,6 +592,11 @@ impl FileTimes {
 
     pub fn set_modified(&mut self, t: SystemTime) {
         self.modified = Some(t);
+    }
+
+    #[cfg(any(target_os = "macos", target_os = "ios", target_os = "watchos"))]
+    pub fn set_created(&mut self, t: SystemTime) {
+        self.created = Some(t);
     }
 }
 
@@ -866,6 +883,7 @@ impl DirEntry {
         target_os = "vxworks",
         target_os = "espidf",
         target_os = "horizon",
+        target_os = "vita",
         target_os = "nto",
     ))]
     pub fn ino(&self) -> u64 {
@@ -1199,31 +1217,46 @@ impl File {
                 // Redox doesn't appear to support `UTIME_OMIT`.
                 // ESP-IDF and HorizonOS do not support `futimens` at all and the behavior for those OS is therefore
                 // the same as for Redox.
-                drop(times);
+                let _ = times;
                 Err(io::const_io_error!(
                     io::ErrorKind::Unsupported,
                     "setting file times not supported",
                 ))
-            } else if #[cfg(any(target_os = "android", target_os = "macos"))] {
+            } else if #[cfg(any(target_os = "macos", target_os = "ios", target_os = "watchos"))] {
+                let mut buf = [mem::MaybeUninit::<libc::timespec>::uninit(); 3];
+                let mut num_times = 0;
+                let mut attrlist: libc::attrlist = unsafe { mem::zeroed() };
+                attrlist.bitmapcount = libc::ATTR_BIT_MAP_COUNT;
+                if times.created.is_some() {
+                    buf[num_times].write(to_timespec(times.created)?);
+                    num_times += 1;
+                    attrlist.commonattr |= libc::ATTR_CMN_CRTIME;
+                }
+                if times.modified.is_some() {
+                    buf[num_times].write(to_timespec(times.modified)?);
+                    num_times += 1;
+                    attrlist.commonattr |= libc::ATTR_CMN_MODTIME;
+                }
+                if times.accessed.is_some() {
+                    buf[num_times].write(to_timespec(times.accessed)?);
+                    num_times += 1;
+                    attrlist.commonattr |= libc::ATTR_CMN_ACCTIME;
+                }
+                cvt(unsafe { libc::fsetattrlist(
+                    self.as_raw_fd(),
+                    (&attrlist as *const libc::attrlist).cast::<libc::c_void>().cast_mut(),
+                    buf.as_ptr().cast::<libc::c_void>().cast_mut(),
+                    num_times * mem::size_of::<libc::timespec>(),
+                    0
+                ) })?;
+                Ok(())
+            } else if #[cfg(target_os = "android")] {
                 let times = [to_timespec(times.accessed)?, to_timespec(times.modified)?];
-                // futimens requires macOS 10.13, and Android API level 19
+                // futimens requires Android API level 19
                 cvt(unsafe {
                     weak!(fn futimens(c_int, *const libc::timespec) -> c_int);
                     match futimens.get() {
                         Some(futimens) => futimens(self.as_raw_fd(), times.as_ptr()),
-                        #[cfg(target_os = "macos")]
-                        None => {
-                            fn ts_to_tv(ts: &libc::timespec) -> libc::timeval {
-                                libc::timeval {
-                                    tv_sec: ts.tv_sec,
-                                    tv_usec: (ts.tv_nsec / 1000) as _
-                                }
-                            }
-                            let timevals = [ts_to_tv(&times[0]), ts_to_tv(&times[1])];
-                            libc::futimes(self.as_raw_fd(), timevals.as_ptr())
-                        }
-                        // futimes requires even newer Android.
-                        #[cfg(target_os = "android")]
                         None => return Err(io::const_io_error!(
                             io::ErrorKind::Unsupported,
                             "setting file times requires Android API level >= 19",

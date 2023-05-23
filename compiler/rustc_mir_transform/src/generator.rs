@@ -51,6 +51,7 @@
 //! Otherwise it drops all the values in scope at the last suspension point.
 
 use crate::deref_separator::deref_finder;
+use crate::errors;
 use crate::simplify;
 use crate::MirPass;
 use rustc_data_structures::fx::{FxHashMap, FxHashSet};
@@ -1396,7 +1397,7 @@ fn create_cases<'tcx>(
 pub(crate) fn mir_generator_witnesses<'tcx>(
     tcx: TyCtxt<'tcx>,
     def_id: LocalDefId,
-) -> GeneratorLayout<'tcx> {
+) -> Option<GeneratorLayout<'tcx>> {
     assert!(tcx.sess.opts.unstable_opts.drop_tracking_mir);
 
     let (body, _) = tcx.mir_promoted(def_id);
@@ -1409,6 +1410,7 @@ pub(crate) fn mir_generator_witnesses<'tcx>(
     // Get the interior types and substs which typeck computed
     let movable = match *gen_ty.kind() {
         ty::Generator(_, _, movability) => movability == hir::Movability::Movable,
+        ty::Error(_) => return None,
         _ => span_bug!(body.span, "unexpected generator type {}", gen_ty),
     };
 
@@ -1424,7 +1426,7 @@ pub(crate) fn mir_generator_witnesses<'tcx>(
 
     check_suspend_tys(tcx, &generator_layout, &body);
 
-    generator_layout
+    Some(generator_layout)
 }
 
 impl<'tcx> MirPass<'tcx> for StateTransform {
@@ -1891,36 +1893,21 @@ fn check_must_not_suspend_def(
     data: SuspendCheckData<'_>,
 ) -> bool {
     if let Some(attr) = tcx.get_attr(def_id, sym::must_not_suspend) {
-        let msg = rustc_errors::DelayDm(|| {
-            format!(
-                "{}`{}`{} held across a suspend point, but should not be",
-                data.descr_pre,
-                tcx.def_path_str(def_id),
-                data.descr_post,
-            )
+        let reason = attr.value_str().map(|s| errors::MustNotSuspendReason {
+            span: data.source_span,
+            reason: s.as_str().to_string(),
         });
-        tcx.struct_span_lint_hir(
+        tcx.emit_spanned_lint(
             rustc_session::lint::builtin::MUST_NOT_SUSPEND,
             hir_id,
             data.source_span,
-            msg,
-            |lint| {
-                // add span pointing to the offending yield/await
-                lint.span_label(data.yield_span, "the value is held across this suspend point");
-
-                // Add optional reason note
-                if let Some(note) = attr.value_str() {
-                    // FIXME(guswynn): consider formatting this better
-                    lint.span_note(data.source_span, note.as_str());
-                }
-
-                // Add some quick suggestions on what to do
-                // FIXME: can `drop` work as a suggestion here as well?
-                lint.span_help(
-                    data.source_span,
-                    "consider using a block (`{ ... }`) \
-                    to shrink the value's scope, ending before the suspend point",
-                )
+            errors::MustNotSupend {
+                yield_sp: data.yield_span,
+                reason,
+                src_sp: data.source_span,
+                pre: data.descr_pre,
+                def_path: tcx.def_path_str(def_id),
+                post: data.descr_post,
             },
         );
 

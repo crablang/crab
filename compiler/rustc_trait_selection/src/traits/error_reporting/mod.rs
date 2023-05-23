@@ -28,6 +28,7 @@ use rustc_hir::{GenericParam, Item, Node};
 use rustc_infer::infer::error_reporting::TypeErrCtxt;
 use rustc_infer::infer::{InferOk, TypeTrace};
 use rustc_middle::traits::select::OverflowError;
+use rustc_middle::traits::SelectionOutputTypeParameterMismatch;
 use rustc_middle::ty::abstract_const::NotConstEvaluatable;
 use rustc_middle::ty::error::{ExpectedFound, TypeError};
 use rustc_middle::ty::fold::{TypeFolder, TypeSuperFoldable};
@@ -796,9 +797,17 @@ impl<'tcx> TypeErrCtxtExt<'tcx> for TypeErrCtxt<'_, 'tcx> {
                             err.span_label(span, explanation);
                         }
 
-                        if let ObligationCauseCode::ObjectCastObligation(concrete_ty, obj_ty) = obligation.cause.code().peel_derives() &&
-                            Some(trait_ref.def_id()) == self.tcx.lang_items().sized_trait() {
-                            self.suggest_borrowing_for_object_cast(&mut err, &root_obligation, *concrete_ty, *obj_ty);
+                        if let ObligationCauseCode::Coercion { source, target } =
+                            *obligation.cause.code().peel_derives()
+                        {
+                            if Some(trait_ref.def_id()) == self.tcx.lang_items().sized_trait() {
+                                self.suggest_borrowing_for_object_cast(
+                                    &mut err,
+                                    &root_obligation,
+                                    source,
+                                    target,
+                                );
+                            }
                         }
 
                         let UnsatisfiedConst(unsatisfied_const) = self
@@ -876,7 +885,7 @@ impl<'tcx> TypeErrCtxtExt<'tcx> for TypeErrCtxt<'_, 'tcx> {
                             return;
                         }
 
-                        if self.suggest_impl_trait(&mut err, span, &obligation, trait_predicate) {
+                        if self.suggest_impl_trait(&mut err, &obligation, trait_predicate) {
                             err.emit();
                             return;
                         }
@@ -1087,17 +1096,21 @@ impl<'tcx> TypeErrCtxtExt<'tcx> for TypeErrCtxt<'_, 'tcx> {
                 }
             }
 
-            OutputTypeParameterMismatch(
+            OutputTypeParameterMismatch(box SelectionOutputTypeParameterMismatch {
                 found_trait_ref,
                 expected_trait_ref,
-                terr @ TypeError::CyclicTy(_),
-            ) => self.report_type_parameter_mismatch_cyclic_type_error(
+                terr: terr @ TypeError::CyclicTy(_),
+            }) => self.report_type_parameter_mismatch_cyclic_type_error(
                 &obligation,
                 found_trait_ref,
                 expected_trait_ref,
                 terr,
             ),
-            OutputTypeParameterMismatch(found_trait_ref, expected_trait_ref, _) => {
+            OutputTypeParameterMismatch(box SelectionOutputTypeParameterMismatch {
+                found_trait_ref,
+                expected_trait_ref,
+                terr: _,
+            }) => {
                 match self.report_type_parameter_mismatch_error(
                     &obligation,
                     span,
@@ -1505,7 +1518,7 @@ impl<'tcx> InferCtxtPrivExt<'tcx> for TypeErrCtxt<'_, 'tcx> {
                         | ObligationCauseCode::BindingObligation(_, _)
                         | ObligationCauseCode::ExprItemObligation(..)
                         | ObligationCauseCode::ExprBindingObligation(..)
-                        | ObligationCauseCode::ObjectCastObligation(..)
+                        | ObligationCauseCode::Coercion { .. }
                         | ObligationCauseCode::OpaqueType
                 );
 
@@ -1687,13 +1700,14 @@ impl<'tcx> InferCtxtPrivExt<'tcx> for TypeErrCtxt<'_, 'tcx> {
                 ty::Tuple(..) => Some(10),
                 ty::Param(..) => Some(11),
                 ty::Alias(ty::Projection, ..) => Some(12),
-                ty::Alias(ty::Opaque, ..) => Some(13),
-                ty::Never => Some(14),
-                ty::Adt(..) => Some(15),
-                ty::Generator(..) => Some(16),
-                ty::Foreign(..) => Some(17),
-                ty::GeneratorWitness(..) => Some(18),
-                ty::GeneratorWitnessMIR(..) => Some(19),
+                ty::Alias(ty::Inherent, ..) => Some(13),
+                ty::Alias(ty::Opaque, ..) => Some(14),
+                ty::Never => Some(15),
+                ty::Adt(..) => Some(16),
+                ty::Generator(..) => Some(17),
+                ty::Foreign(..) => Some(18),
+                ty::GeneratorWitness(..) => Some(19),
+                ty::GeneratorWitnessMIR(..) => Some(20),
                 ty::Placeholder(..) | ty::Bound(..) | ty::Infer(..) | ty::Error(_) => None,
             }
         }

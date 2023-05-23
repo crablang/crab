@@ -313,12 +313,16 @@ declare_features! (
     (active, async_closure, "1.37.0", Some(62290), None),
     /// Allows async functions to be declared, implemented, and used in traits.
     (active, async_fn_in_trait, "1.66.0", Some(91611), None),
+    /// Allows builtin # foo() syntax
+    (active, builtin_syntax, "CURRENT_RUSTC_VERSION", Some(110680), None),
     /// Allows `c"foo"` literals.
     (active, c_str_literals, "CURRENT_RUSTC_VERSION", Some(105723), None),
     /// Treat `extern "C"` function as nounwind.
     (active, c_unwind, "1.52.0", Some(74990), None),
     /// Allows using C-variadics.
     (active, c_variadic, "1.34.0", Some(44930), None),
+    /// Allows the use of `#[cfg(overflow_checks)` to check if integer overflow behaviour.
+    (active, cfg_overflow_checks, "CURRENT_RUSTC_VERSION", Some(111466), None),
     /// Allows the use of `#[cfg(sanitize = "option")]`; set when -Zsanitizer is used.
     (active, cfg_sanitize, "1.41.0", Some(39699), None),
     /// Allows `cfg(target_abi = "...")`.
@@ -334,7 +338,7 @@ declare_features! (
     /// Allow conditional compilation depending on rust version
     (active, cfg_version, "1.45.0", Some(64796), None),
     /// Allows to use the `#[cfi_encoding = ""]` attribute.
-    (active, cfi_encoding, "1.69.0", Some(89653), None),
+    (active, cfi_encoding, "CURRENT_RUSTC_VERSION", Some(89653), None),
     /// Allows `for<...>` on closures and generators.
     (active, closure_lifetime_binder, "1.64.0", Some(97362), None),
     /// Allows `#[track_caller]` on closures and generators.

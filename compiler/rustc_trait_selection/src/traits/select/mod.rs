@@ -537,14 +537,22 @@ impl<'cx, 'tcx> SelectionContext<'cx, 'tcx> {
         obligation: &PredicateObligation<'tcx>,
     ) -> Result<EvaluationResult, OverflowError> {
         self.evaluation_probe(|this| {
-            if this.tcx().trait_solver_next() {
-                this.evaluate_predicates_recursively_in_new_solver([obligation.clone()])
+            let goal =
+                this.infcx.resolve_vars_if_possible((obligation.predicate, obligation.param_env));
+            let mut result = if this.tcx().trait_solver_next() {
+                this.evaluate_predicates_recursively_in_new_solver([obligation.clone()])?
             } else {
                 this.evaluate_predicate_recursively(
                     TraitObligationStackList::empty(&ProvisionalEvaluationCache::default()),
                     obligation.clone(),
-                )
+                )?
+            };
+            // If the predicate has done any inference, then downgrade the
+            // result to ambiguous.
+            if this.infcx.shallow_resolve(goal) != goal {
+                result = result.max(EvaluatedToAmbig);
             }
+            Ok(result)
         })
     }
 
@@ -1645,7 +1653,9 @@ impl<'cx, 'tcx> SelectionContext<'cx, 'tcx> {
 
         let tcx = self.infcx.tcx;
         let (def_id, substs) = match *placeholder_trait_predicate.trait_ref.self_ty().kind() {
-            ty::Alias(_, ty::AliasTy { def_id, substs, .. }) => (def_id, substs),
+            ty::Alias(ty::Projection | ty::Opaque, ty::AliasTy { def_id, substs, .. }) => {
+                (def_id, substs)
+            }
             _ => {
                 span_bug!(
                     obligation.cause.span,
@@ -2315,7 +2325,7 @@ impl<'tcx> SelectionContext<'_, 'tcx> {
             | ty::Dynamic(..)
             | ty::Param(..)
             | ty::Foreign(..)
-            | ty::Alias(ty::Projection, ..)
+            | ty::Alias(ty::Projection | ty::Inherent, ..)
             | ty::Bound(..)
             | ty::Infer(ty::TyVar(_) | ty::FreshTy(_) | ty::FreshIntTy(_) | ty::FreshFloatTy(_)) => {
                 bug!("asked to assemble constituent types of unexpected type: {:?}", t);
@@ -2647,14 +2657,19 @@ impl<'tcx> SelectionContext<'_, 'tcx> {
         let predicates = predicates.instantiate_own(tcx, substs);
         let mut obligations = Vec::with_capacity(predicates.len());
         for (index, (predicate, span)) in predicates.into_iter().enumerate() {
-            let cause = cause.clone().derived_cause(parent_trait_pred, |derived| {
-                ImplDerivedObligation(Box::new(ImplDerivedObligationCause {
-                    derived,
-                    impl_or_alias_def_id: def_id,
-                    impl_def_predicate_index: Some(index),
-                    span,
-                }))
-            });
+            let cause =
+                if Some(parent_trait_pred.def_id()) == tcx.lang_items().coerce_unsized_trait() {
+                    cause.clone()
+                } else {
+                    cause.clone().derived_cause(parent_trait_pred, |derived| {
+                        ImplDerivedObligation(Box::new(ImplDerivedObligationCause {
+                            derived,
+                            impl_or_alias_def_id: def_id,
+                            impl_def_predicate_index: Some(index),
+                            span,
+                        }))
+                    })
+                };
             let predicate = normalize_with_depth_to(
                 self,
                 param_env,

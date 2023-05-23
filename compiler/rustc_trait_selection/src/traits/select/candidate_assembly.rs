@@ -143,7 +143,8 @@ impl<'cx, 'tcx> SelectionContext<'cx, 'tcx> {
         // Before we go into the whole placeholder thing, just
         // quickly check if the self-type is a projection at all.
         match obligation.predicate.skip_binder().trait_ref.self_ty().kind() {
-            ty::Alias(..) => {}
+            // Excluding IATs here as they don't have meaningful item bounds.
+            ty::Alias(ty::Projection | ty::Opaque, _) => {}
             ty::Infer(ty::TyVar(_)) => {
                 span_bug!(
                     obligation.cause.span,
@@ -498,7 +499,7 @@ impl<'cx, 'tcx> SelectionContext<'cx, 'tcx> {
                     // this trait and type.
                 }
                 ty::Param(..)
-                | ty::Alias(ty::Projection, ..)
+                | ty::Alias(ty::Projection | ty::Inherent, ..)
                 | ty::Placeholder(..)
                 | ty::Bound(..) => {
                     // In these cases, we don't know what the actual

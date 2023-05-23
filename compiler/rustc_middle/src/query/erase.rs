@@ -28,7 +28,7 @@ pub fn erase<T: EraseType>(src: T) -> Erase<T> {
     };
 
     Erased::<<T as EraseType>::Result> {
-        // SAFETY: Is it safe to transmute to MaybeUninit for types with the same sizes.
+        // SAFETY: It is safe to transmute to MaybeUninit for types with the same sizes.
         data: unsafe { transmute_copy(&src) },
     }
 }
@@ -82,9 +82,10 @@ impl EraseType for Result<Option<ty::Instance<'_>>, rustc_errors::ErrorGuarantee
         [u8; size_of::<Result<Option<ty::Instance<'static>>, rustc_errors::ErrorGuaranteed>>()];
 }
 
-impl EraseType for Result<Option<ty::Const<'_>>, rustc_errors::ErrorGuaranteed> {
-    type Result =
-        [u8; size_of::<Result<Option<ty::Const<'static>>, rustc_errors::ErrorGuaranteed>>()];
+impl EraseType for Result<Option<ty::EarlyBinder<ty::Const<'_>>>, rustc_errors::ErrorGuaranteed> {
+    type Result = [u8; size_of::<
+        Result<Option<ty::EarlyBinder<ty::Const<'static>>>, rustc_errors::ErrorGuaranteed>,
+    >()];
 }
 
 impl EraseType for Result<ty::GenericArg<'_>, traits::query::NoSolution> {
@@ -169,6 +170,10 @@ impl<T: EraseType> EraseType for ty::EarlyBinder<T> {
 
 impl EraseType for ty::Binder<'_, ty::FnSig<'_>> {
     type Result = [u8; size_of::<ty::Binder<'static, ty::FnSig<'static>>>()];
+}
+
+impl EraseType for ty::Binder<'_, &'_ ty::List<Ty<'_>>> {
+    type Result = [u8; size_of::<ty::Binder<'static, &'static ty::List<Ty<'static>>>>()];
 }
 
 impl<T0, T1> EraseType for (&'_ T0, &'_ T1) {

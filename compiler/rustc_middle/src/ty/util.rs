@@ -2,6 +2,7 @@
 
 use crate::middle::codegen_fn_attrs::CodegenFnAttrFlags;
 use crate::mir;
+use crate::query::Providers;
 use crate::ty::layout::IntegerExt;
 use crate::ty::{
     self, FallibleTypeFolder, ToPredicate, Ty, TyCtxt, TypeFoldable, TypeFolder, TypeSuperFoldable,
@@ -34,9 +35,14 @@ pub struct Discr<'tcx> {
 
 /// Used as an input to [`TyCtxt::uses_unique_generic_params`].
 #[derive(Copy, Clone, Debug, PartialEq, Eq)]
-pub enum IgnoreRegions {
-    Yes,
+pub enum CheckRegions {
     No,
+    /// Only permit early bound regions. This is useful for Adts which
+    /// can never have late bound regions.
+    OnlyEarlyBound,
+    /// Permit both late bound and early bound regions. Use this for functions,
+    /// which frequently have late bound regions.
+    Bound,
 }
 
 #[derive(Copy, Clone, Debug)]
@@ -468,21 +474,28 @@ impl<'tcx> TyCtxt<'tcx> {
     pub fn uses_unique_generic_params(
         self,
         substs: SubstsRef<'tcx>,
-        ignore_regions: IgnoreRegions,
+        ignore_regions: CheckRegions,
     ) -> Result<(), NotUniqueParam<'tcx>> {
         let mut seen = GrowableBitSet::default();
+        let mut seen_late = FxHashSet::default();
         for arg in substs {
             match arg.unpack() {
-                GenericArgKind::Lifetime(lt) => {
-                    if ignore_regions == IgnoreRegions::No {
-                        let ty::ReEarlyBound(p) = lt.kind() else {
-                            return Err(NotUniqueParam::NotParam(lt.into()))
-                        };
+                GenericArgKind::Lifetime(lt) => match (ignore_regions, lt.kind()) {
+                    (CheckRegions::Bound, ty::ReLateBound(di, reg)) => {
+                        if !seen_late.insert((di, reg)) {
+                            return Err(NotUniqueParam::DuplicateParam(lt.into()));
+                        }
+                    }
+                    (CheckRegions::OnlyEarlyBound | CheckRegions::Bound, ty::ReEarlyBound(p)) => {
                         if !seen.insert(p.index) {
                             return Err(NotUniqueParam::DuplicateParam(lt.into()));
                         }
                     }
-                }
+                    (CheckRegions::OnlyEarlyBound | CheckRegions::Bound, _) => {
+                        return Err(NotUniqueParam::NotParam(lt.into()));
+                    }
+                    (CheckRegions::No, _) => {}
+                },
                 GenericArgKind::Type(t) => match t.kind() {
                     ty::Param(p) => {
                         if !seen.insert(p.index) {
@@ -655,10 +668,10 @@ impl<'tcx> TyCtxt<'tcx> {
         self,
         def_id: DefId,
     ) -> impl Iterator<Item = ty::EarlyBinder<Ty<'tcx>>> {
-        let generator_layout = &self.mir_generator_witnesses(def_id);
+        let generator_layout = self.mir_generator_witnesses(def_id);
         generator_layout
-            .field_tys
-            .iter()
+            .as_ref()
+            .map_or_else(|| [].iter(), |l| l.field_tys.iter())
             .filter(|decl| !decl.ignore_for_traits)
             .map(|decl| ty::EarlyBinder(decl.ty))
     }
@@ -1253,7 +1266,7 @@ pub enum ExplicitSelf<'tcx> {
 
 impl<'tcx> ExplicitSelf<'tcx> {
     /// Categorizes an explicit self declaration like `self: SomeType`
-    /// into either `self`, `&self`, `&mut self`, `Box<self>`, or
+    /// into either `self`, `&self`, `&mut self`, `Box<Self>`, or
     /// `Other`.
     /// This is mainly used to require the arbitrary_self_types feature
     /// in the case of `Other`, to improve error messages in the common cases,
@@ -1472,8 +1485,8 @@ pub fn is_intrinsic(tcx: TyCtxt<'_>, def_id: LocalDefId) -> bool {
     matches!(tcx.fn_sig(def_id).skip_binder().abi(), Abi::RustIntrinsic | Abi::PlatformIntrinsic)
 }
 
-pub fn provide(providers: &mut ty::query::Providers) {
-    *providers = ty::query::Providers {
+pub fn provide(providers: &mut Providers) {
+    *providers = Providers {
         reveal_opaque_types_in_bounds,
         is_doc_hidden,
         is_doc_notable_trait,

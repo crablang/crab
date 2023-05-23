@@ -119,7 +119,39 @@ pub(crate) fn clean_doc_module<'tcx>(doc: &DocModule<'tcx>, cx: &mut DocContext<
     });
 
     let kind = ModuleItem(Module { items, span });
-    Item::from_def_id_and_parts(doc.def_id.to_def_id(), Some(doc.name), kind, cx)
+    generate_item_with_correct_attrs(cx, kind, doc.def_id, doc.name, doc.import_id, doc.renamed)
+}
+
+fn generate_item_with_correct_attrs(
+    cx: &mut DocContext<'_>,
+    kind: ItemKind,
+    local_def_id: LocalDefId,
+    name: Symbol,
+    import_id: Option<LocalDefId>,
+    renamed: Option<Symbol>,
+) -> Item {
+    let def_id = local_def_id.to_def_id();
+    let target_attrs = inline::load_attrs(cx, def_id);
+    let attrs = if let Some(import_id) = import_id {
+        let is_inline = inline::load_attrs(cx, import_id.to_def_id())
+            .lists(sym::doc)
+            .get_word_attr(sym::inline)
+            .is_some();
+        let mut attrs = get_all_import_attributes(cx, import_id, local_def_id, is_inline);
+        add_without_unwanted_attributes(&mut attrs, target_attrs, is_inline, None);
+        attrs
+    } else {
+        // We only keep the item's attributes.
+        target_attrs.iter().map(|attr| (Cow::Borrowed(attr), None)).collect()
+    };
+
+    let cfg = attrs.cfg(cx.tcx, &cx.cache.hidden_cfg);
+    let attrs = Attributes::from_ast_iter(attrs.iter().map(|(attr, did)| (&**attr, *did)), false);
+
+    let name = renamed.or(Some(name));
+    let mut item = Item::from_def_id_and_attrs_and_parts(def_id, name, kind, Box::new(attrs), cfg);
+    item.inline_stmt_id = import_id.map(|local| local.to_def_id());
+    item
 }
 
 fn clean_generic_bound<'tcx>(
@@ -441,7 +473,7 @@ fn clean_projection<'tcx>(
         assoc: projection_to_path_segment(ty, cx),
         should_show_cast,
         self_type,
-        trait_,
+        trait_: Some(trait_),
     }))
 }
 
@@ -1330,7 +1362,13 @@ pub(crate) fn clean_middle_assoc_item<'tcx>(
                 let mut bounds: Vec<GenericBound> = Vec::new();
                 generics.where_predicates.retain_mut(|pred| match *pred {
                     WherePredicate::BoundPredicate {
-                        ty: QPath(box QPathData { ref assoc, ref self_type, ref trait_, .. }),
+                        ty:
+                            QPath(box QPathData {
+                                ref assoc,
+                                ref self_type,
+                                trait_: Some(ref trait_),
+                                ..
+                            }),
                         bounds: ref mut pred_bounds,
                         ..
                     } => {
@@ -1492,25 +1530,30 @@ fn clean_qpath<'tcx>(hir_ty: &hir::Ty<'tcx>, cx: &mut DocContext<'tcx>) -> Type 
                 assoc: clean_path_segment(p.segments.last().expect("segments were empty"), cx),
                 should_show_cast,
                 self_type,
-                trait_,
+                trait_: Some(trait_),
             }))
         }
         hir::QPath::TypeRelative(qself, segment) => {
             let ty = hir_ty_to_ty(cx.tcx, hir_ty);
-            let res = match ty.kind() {
+            let self_type = clean_ty(qself, cx);
+
+            let (trait_, should_show_cast) = match ty.kind() {
                 ty::Alias(ty::Projection, proj) => {
-                    Res::Def(DefKind::Trait, proj.trait_ref(cx.tcx).def_id)
+                    let res = Res::Def(DefKind::Trait, proj.trait_ref(cx.tcx).def_id);
+                    let trait_ = clean_path(&hir::Path { span, res, segments: &[] }, cx);
+                    register_res(cx, trait_.res);
+                    let self_def_id = res.opt_def_id();
+                    let should_show_cast =
+                        compute_should_show_cast(self_def_id, &trait_, &self_type);
+
+                    (Some(trait_), should_show_cast)
                 }
+                ty::Alias(ty::Inherent, _) => (None, false),
                 // Rustdoc handles `ty::Error`s by turning them into `Type::Infer`s.
                 ty::Error(_) => return Type::Infer,
-                // Otherwise, this is an inherent associated type.
-                _ => return clean_middle_ty(ty::Binder::dummy(ty), cx, None),
+                _ => bug!("clean: expected associated type, found `{ty:?}`"),
             };
-            let trait_ = clean_path(&hir::Path { span, res, segments: &[] }, cx);
-            register_res(cx, trait_.res);
-            let self_def_id = res.opt_def_id();
-            let self_type = clean_ty(qself, cx);
-            let should_show_cast = compute_should_show_cast(self_def_id, &trait_, &self_type);
+
             Type::QPath(Box::new(QPathData {
                 assoc: clean_path_segment(segment, cx),
                 should_show_cast,
@@ -1834,6 +1877,29 @@ pub(crate) fn clean_middle_ty<'tcx>(
 
         ty::Alias(ty::Projection, ref data) => {
             clean_projection(bound_ty.rebind(*data), cx, parent_def_id)
+        }
+
+        ty::Alias(ty::Inherent, alias_ty) => {
+            let alias_ty = bound_ty.rebind(alias_ty);
+            let self_type = clean_middle_ty(alias_ty.map_bound(|ty| ty.self_ty()), cx, None);
+
+            Type::QPath(Box::new(QPathData {
+                assoc: PathSegment {
+                    name: cx.tcx.associated_item(alias_ty.skip_binder().def_id).name,
+                    args: GenericArgs::AngleBracketed {
+                        args: substs_to_args(
+                            cx,
+                            alias_ty.map_bound(|ty| ty.substs.as_slice()),
+                            true,
+                        )
+                        .into(),
+                        bindings: Default::default(),
+                    },
+                },
+                should_show_cast: false,
+                self_type,
+                trait_: None,
+            }))
         }
 
         ty::Param(ref p) => {
@@ -2311,29 +2377,14 @@ fn clean_maybe_renamed_item<'tcx>(
             _ => unreachable!("not yet converted"),
         };
 
-        let target_attrs = inline::load_attrs(cx, def_id);
-        let attrs = if let Some(import_id) = import_id {
-            let is_inline = inline::load_attrs(cx, import_id.to_def_id())
-                .lists(sym::doc)
-                .get_word_attr(sym::inline)
-                .is_some();
-            let mut attrs =
-                get_all_import_attributes(cx, import_id, item.owner_id.def_id, is_inline);
-            add_without_unwanted_attributes(&mut attrs, target_attrs, is_inline, None);
-            attrs
-        } else {
-            // We only keep the item's attributes.
-            target_attrs.iter().map(|attr| (Cow::Borrowed(attr), None)).collect()
-        };
-
-        let cfg = attrs.cfg(cx.tcx, &cx.cache.hidden_cfg);
-        let attrs =
-            Attributes::from_ast_iter(attrs.iter().map(|(attr, did)| (&**attr, *did)), false);
-
-        let mut item =
-            Item::from_def_id_and_attrs_and_parts(def_id, Some(name), kind, Box::new(attrs), cfg);
-        item.inline_stmt_id = import_id.map(|local| local.to_def_id());
-        vec![item]
+        vec![generate_item_with_correct_attrs(
+            cx,
+            kind,
+            item.owner_id.def_id,
+            name,
+            import_id,
+            renamed,
+        )]
     })
 }
 
@@ -2363,14 +2414,15 @@ fn clean_impl<'tcx>(
     }
 
     let for_ = clean_ty(impl_.self_ty, cx);
-    let type_alias = for_.def_id(&cx.cache).and_then(|did| match tcx.def_kind(did) {
-        DefKind::TyAlias => Some(clean_middle_ty(
-            ty::Binder::dummy(tcx.type_of(did).subst_identity()),
-            cx,
-            Some(did),
-        )),
-        _ => None,
-    });
+    let type_alias =
+        for_.def_id(&cx.cache).and_then(|alias_def_id: DefId| match tcx.def_kind(alias_def_id) {
+            DefKind::TyAlias => Some(clean_middle_ty(
+                ty::Binder::dummy(tcx.type_of(def_id).subst_identity()),
+                cx,
+                Some(def_id.to_def_id()),
+            )),
+            _ => None,
+        });
     let mut make_item = |trait_: Option<Path>, for_: Type, items: Vec<Item>| {
         let kind = ImplItem(Box::new(Impl {
             unsafety: impl_.unsafety,

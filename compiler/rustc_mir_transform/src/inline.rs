@@ -7,6 +7,7 @@ use rustc_index::Idx;
 use rustc_middle::middle::codegen_fn_attrs::{CodegenFnAttrFlags, CodegenFnAttrs};
 use rustc_middle::mir::visit::*;
 use rustc_middle::mir::*;
+use rustc_middle::ty::TypeVisitableExt;
 use rustc_middle::ty::{self, Instance, InstanceDef, ParamEnv, Ty, TyCtxt};
 use rustc_session::config::OptLevel;
 use rustc_span::{hygiene::ExpnKind, ExpnData, LocalExpnId, Span};
@@ -167,8 +168,20 @@ impl<'tcx> Inliner<'tcx> {
     ) -> Result<std::ops::Range<BasicBlock>, &'static str> {
         let callee_attrs = self.tcx.codegen_fn_attrs(callsite.callee.def_id());
         self.check_codegen_attributes(callsite, callee_attrs)?;
+
+        let terminator = caller_body[callsite.block].terminator.as_ref().unwrap();
+        let TerminatorKind::Call { args, destination, .. } = &terminator.kind else { bug!() };
+        let destination_ty = destination.ty(&caller_body.local_decls, self.tcx).ty;
+        for arg in args {
+            if !arg.ty(&caller_body.local_decls, self.tcx).is_sized(self.tcx, self.param_env) {
+                // We do not allow inlining functions with unsized params. Inlining these functions
+                // could create unsized locals, which are unsound and being phased out.
+                return Err("Call has unsized argument");
+            }
+        }
+
         self.check_mir_is_available(caller_body, &callsite.callee)?;
-        let callee_body = self.tcx.instance_mir(callsite.callee.def);
+        let callee_body = try_instance_mir(self.tcx, callsite.callee.def)?;
         self.check_mir_body(callsite, callee_body, callee_attrs)?;
 
         if !self.tcx.consider_optimizing(|| {
@@ -180,7 +193,7 @@ impl<'tcx> Inliner<'tcx> {
         let Ok(callee_body) = callsite.callee.try_subst_mir_and_normalize_erasing_regions(
             self.tcx,
             self.param_env,
-            callee_body.clone(),
+            ty::EarlyBinder(callee_body.clone()),
         ) else {
             return Err("failed to normalize callee body");
         };
@@ -188,9 +201,6 @@ impl<'tcx> Inliner<'tcx> {
         // Check call signature compatibility.
         // Normally, this shouldn't be required, but trait normalization failure can create a
         // validation ICE.
-        let terminator = caller_body[callsite.block].terminator.as_ref().unwrap();
-        let TerminatorKind::Call { args, destination, .. } = &terminator.kind else { bug!() };
-        let destination_ty = destination.ty(&caller_body.local_decls, self.tcx).ty;
         let output_type = callee_body.return_ty();
         if !util::is_subtype(self.tcx, self.param_env, output_type, destination_ty) {
             trace!(?output_type, ?destination_ty);
@@ -444,7 +454,9 @@ impl<'tcx> Inliner<'tcx> {
                 work_list.push(target);
 
                 // If the place doesn't actually need dropping, treat it like a regular goto.
-                let ty = callsite.callee.subst_mir(self.tcx, &place.ty(callee_body, tcx).ty);
+                let ty = callsite
+                    .callee
+                    .subst_mir(self.tcx, ty::EarlyBinder(&place.ty(callee_body, tcx).ty));
                 if ty.needs_drop(tcx, self.param_env) && let UnwindAction::Cleanup(unwind) = unwind {
                         work_list.push(unwind);
                     }
@@ -788,7 +800,9 @@ impl<'tcx> Visitor<'tcx> for CostChecker<'_, 'tcx> {
         match terminator.kind {
             TerminatorKind::Drop { ref place, unwind, .. } => {
                 // If the place doesn't actually need dropping, treat it like a regular goto.
-                let ty = self.instance.subst_mir(tcx, &place.ty(self.callee_body, tcx).ty);
+                let ty = self
+                    .instance
+                    .subst_mir(tcx, ty::EarlyBinder(&place.ty(self.callee_body, tcx).ty));
                 if ty.needs_drop(tcx, self.param_env) {
                     self.cost += CALL_PENALTY;
                     if let UnwindAction::Cleanup(_) = unwind {
@@ -799,7 +813,7 @@ impl<'tcx> Visitor<'tcx> for CostChecker<'_, 'tcx> {
                 }
             }
             TerminatorKind::Call { func: Operand::Constant(ref f), unwind, .. } => {
-                let fn_ty = self.instance.subst_mir(tcx, &f.literal.ty());
+                let fn_ty = self.instance.subst_mir(tcx, ty::EarlyBinder(&f.literal.ty()));
                 self.cost += if let ty::FnDef(def_id, _) = *fn_ty.kind() && tcx.is_intrinsic(def_id) {
                     // Don't give intrinsics the extra penalty for calls
                     INSTR_COST
@@ -1122,5 +1136,29 @@ impl<'tcx> MutVisitor<'tcx> for Integrator<'_, 'tcx> {
                 *unwind = self.map_unwind(*unwind);
             }
         }
+    }
+}
+
+#[instrument(skip(tcx), level = "debug")]
+fn try_instance_mir<'tcx>(
+    tcx: TyCtxt<'tcx>,
+    instance: InstanceDef<'tcx>,
+) -> Result<&'tcx Body<'tcx>, &'static str> {
+    match instance {
+        ty::InstanceDef::DropGlue(_, Some(ty)) => match ty.kind() {
+            ty::Adt(def, substs) => {
+                let fields = def.all_fields();
+                for field in fields {
+                    let field_ty = field.ty(tcx, substs);
+                    if field_ty.has_param() && field_ty.has_projections() {
+                        return Err("cannot build drop shim for polymorphic type");
+                    }
+                }
+
+                Ok(tcx.instance_mir(instance))
+            }
+            _ => Ok(tcx.instance_mir(instance)),
+        },
+        _ => Ok(tcx.instance_mir(instance)),
     }
 }

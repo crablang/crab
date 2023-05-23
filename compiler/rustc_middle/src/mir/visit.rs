@@ -64,7 +64,7 @@
 
 use crate::mir::*;
 use crate::ty::subst::SubstsRef;
-use crate::ty::{CanonicalUserTypeAnnotation, Ty};
+use crate::ty::{self, CanonicalUserTypeAnnotation, Ty};
 use rustc_span::Span;
 
 macro_rules! make_mir_visitor {
@@ -782,12 +782,12 @@ macro_rules! make_mir_visitor {
 
             fn super_ascribe_user_ty(&mut self,
                                      place: & $($mutability)? Place<'tcx>,
-                                     _variance: $(& $mutability)? ty::Variance,
+                                     variance: $(& $mutability)? ty::Variance,
                                      user_ty: & $($mutability)? UserTypeProjection,
                                      location: Location) {
                 self.visit_place(
                     place,
-                    PlaceContext::NonUse(NonUseContext::AscribeUserTy),
+                    PlaceContext::NonUse(NonUseContext::AscribeUserTy($(* &$mutability *)? variance)),
                     location
                 );
                 self.visit_user_type_projection(user_ty);
@@ -842,6 +842,7 @@ macro_rules! make_mir_visitor {
                     source_info,
                     value,
                     argument_index: _,
+                    references: _,
                 } = var_debug_info;
 
                 self.visit_source_info(source_info);
@@ -880,12 +881,11 @@ macro_rules! make_mir_visitor {
             ) {
                 let Constant {
                     span,
-                    user_ty,
+                    user_ty: _, // no visit method for this
                     literal,
                 } = constant;
 
                 self.visit_span($(& $mutability)? *span);
-                drop(user_ty); // no visit method for this
                 match literal {
                     ConstantKind::Ty(ct) => self.visit_ty_const($(&$mutability)? *ct, location),
                     ConstantKind::Val(_, ty) => self.visit_ty($(& $mutability)? *ty, TyContext::Location(location)),
@@ -1320,7 +1320,7 @@ pub enum NonUseContext {
     /// Ending a storage live range.
     StorageDead,
     /// User type annotation assertions for NLL.
-    AscribeUserTy,
+    AscribeUserTy(ty::Variance),
     /// The data of a user variable, for debug info.
     VarDebugInfo,
 }

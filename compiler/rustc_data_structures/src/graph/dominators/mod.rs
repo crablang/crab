@@ -109,28 +109,27 @@ pub fn dominators<G: ControlFlowGraph>(graph: G) -> Dominators<G::Node> {
         // they have been placed in the bucket.
         //
         // We compute a partial set of immediate dominators here.
-        let z = parent[w];
-        for &v in bucket[z].iter() {
+        for &v in bucket[w].iter() {
             // This uses the result of Lemma 5 from section 2 from the original
             // 1979 paper, to compute either the immediate or relative dominator
             // for a given vertex v.
             //
             // eval returns a vertex y, for which semi[y] is minimum among
-            // vertices semi[v] +> y *> v. Note that semi[v] = z as we're in the
-            // z bucket.
+            // vertices semi[v] +> y *> v. Note that semi[v] = w as we're in the
+            // w bucket.
             //
             // Given such a vertex y, semi[y] <= semi[v] and idom[y] = idom[v].
             // If semi[y] = semi[v], though, idom[v] = semi[v].
             //
             // Using this, we can either set idom[v] to be:
-            //  * semi[v] (i.e. z), if semi[y] is z
+            //  * semi[v] (i.e. w), if semi[y] is w
             //  * idom[y], otherwise
             //
             // We don't directly set to idom[y] though as it's not necessarily
             // known yet. The second preorder traversal will cleanup by updating
             // the idom for any that were missed in this pass.
             let y = eval(&mut parent, lastlinked, &semi, &mut label, v);
-            idom[v] = if semi[y] < z { y } else { z };
+            idom[v] = if semi[y] < w { y } else { w };
         }
 
         // This loop computes the semi[w] for w.
@@ -213,10 +212,11 @@ pub fn dominators<G: ControlFlowGraph>(graph: G) -> Dominators<G::Node> {
         // If we don't yet know the idom directly, then push this vertex into
         // our semidominator's bucket, where it will get processed at a later
         // stage to compute its immediate dominator.
-        if parent[w] != semi[w] {
+        let z = parent[w];
+        if z != semi[w] {
             bucket[semi[w]].push(w);
         } else {
-            idom[w] = parent[w];
+            idom[w] = z;
         }
 
         // Optimization: We share the parent array between processed and not
@@ -242,7 +242,9 @@ pub fn dominators<G: ControlFlowGraph>(graph: G) -> Dominators<G::Node> {
         immediate_dominators[*node] = Some(pre_order_to_real[idom[idx]]);
     }
 
-    Dominators { post_order_rank, immediate_dominators }
+    let start_node = graph.start_node();
+    immediate_dominators[start_node] = None;
+    Dominators { start_node, post_order_rank, immediate_dominators }
 }
 
 /// Evaluate the link-eval virtual forest, providing the currently minimum semi
@@ -308,6 +310,7 @@ fn compress(
 /// Tracks the list of dominators for each node.
 #[derive(Clone, Debug)]
 pub struct Dominators<N: Idx> {
+    start_node: N,
     post_order_rank: IndexVec<N, usize>,
     // Even though we track only the immediate dominator of each node, it's
     // possible to get its full list of dominators by looking up the dominator
@@ -316,14 +319,14 @@ pub struct Dominators<N: Idx> {
 }
 
 impl<Node: Idx> Dominators<Node> {
-    /// Whether the given Node has an immediate dominator.
+    /// Returns true if node is reachable from the start node.
     pub fn is_reachable(&self, node: Node) -> bool {
-        self.immediate_dominators[node].is_some()
+        node == self.start_node || self.immediate_dominators[node].is_some()
     }
 
-    pub fn immediate_dominator(&self, node: Node) -> Node {
-        assert!(self.is_reachable(node), "node {node:?} is not reachable");
-        self.immediate_dominators[node].unwrap()
+    /// Returns the immediate dominator of node, if any.
+    pub fn immediate_dominator(&self, node: Node) -> Option<Node> {
+        self.immediate_dominators[node]
     }
 
     /// Provides an iterator over each dominator up the CFG, for the given Node.
@@ -357,12 +360,7 @@ impl<'dom, Node: Idx> Iterator for Iter<'dom, Node> {
 
     fn next(&mut self) -> Option<Self::Item> {
         if let Some(node) = self.node {
-            let dom = self.dominators.immediate_dominator(node);
-            if dom == node {
-                self.node = None; // reached the root
-            } else {
-                self.node = Some(dom);
-            }
+            self.node = self.dominators.immediate_dominator(node);
             Some(node)
         } else {
             None

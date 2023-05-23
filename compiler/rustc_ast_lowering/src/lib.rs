@@ -58,7 +58,7 @@ use rustc_errors::{
 use rustc_fluent_macro::fluent_messages;
 use rustc_hir as hir;
 use rustc_hir::def::{DefKind, LifetimeRes, Namespace, PartialRes, PerNS, Res};
-use rustc_hir::def_id::{LocalDefId, CRATE_DEF_ID};
+use rustc_hir::def_id::{LocalDefId, CRATE_DEF_ID, LOCAL_CRATE};
 use rustc_hir::definitions::DefPathData;
 use rustc_hir::{ConstArg, GenericArg, ItemLocalId, ParamName, TraitCandidate};
 use rustc_index::{Idx, IndexSlice, IndexVec};
@@ -247,7 +247,7 @@ enum ImplTraitContext {
         in_trait: bool,
     },
     /// Impl trait in type aliases.
-    TypeAliasesOpaqueTy,
+    TypeAliasesOpaqueTy { in_assoc_ty: bool },
     /// `impl Trait` is unstably accepted in this position.
     FeatureGated(ImplTraitPosition, Symbol),
     /// `impl Trait` is not accepted in this position.
@@ -435,6 +435,7 @@ pub fn lower_to_hir(tcx: TyCtxt<'_>, (): ()) -> hir::Crate<'_> {
     // Queries that borrow `resolver_for_lowering`.
     tcx.ensure_with_value().output_filenames(());
     tcx.ensure_with_value().early_lint_checks(());
+    tcx.ensure_with_value().debugger_visualizers(LOCAL_CRATE);
     let (mut resolver, krate) = tcx.resolver_for_lowering(()).steal();
 
     let ast_index = index_crate(&resolver.node_id_to_def_id, &krate);
@@ -1190,13 +1191,15 @@ impl<'a, 'hir> LoweringContext<'a, 'hir> {
                     // parsing. We try to resolve that ambiguity by attempting resolution in both the
                     // type and value namespaces. If we resolved the path in the value namespace, we
                     // transform it into a generic const argument.
-                    TyKind::Path(qself, path) => {
+                    TyKind::Path(None, path) => {
                         if let Some(res) = self
                             .resolver
                             .get_partial_res(ty.id)
                             .and_then(|partial_res| partial_res.full_res())
                         {
-                            if !res.matches_ns(Namespace::TypeNS) {
+                            if !res.matches_ns(Namespace::TypeNS)
+                                && path.is_potential_trivial_const_arg()
+                            {
                                 debug!(
                                     "lower_generic_arg: Lowering type argument as const argument: {:?}",
                                     ty,
@@ -1218,7 +1221,7 @@ impl<'a, 'hir> LoweringContext<'a, 'hir> {
 
                                 let path_expr = Expr {
                                     id: ty.id,
-                                    kind: ExprKind::Path(qself.clone(), path.clone()),
+                                    kind: ExprKind::Path(None, path.clone()),
                                     span,
                                     attrs: AttrVec::new(),
                                     tokens: None,
@@ -1405,14 +1408,15 @@ impl<'a, 'hir> LoweringContext<'a, 'hir> {
                             *in_trait,
                             itctx,
                         ),
-                    ImplTraitContext::TypeAliasesOpaqueTy => self.lower_opaque_impl_trait(
-                        span,
-                        hir::OpaqueTyOrigin::TyAlias,
-                        *def_node_id,
-                        bounds,
-                        false,
-                        itctx,
-                    ),
+                    &ImplTraitContext::TypeAliasesOpaqueTy { in_assoc_ty } => self
+                        .lower_opaque_impl_trait(
+                            span,
+                            hir::OpaqueTyOrigin::TyAlias { in_assoc_ty },
+                            *def_node_id,
+                            bounds,
+                            false,
+                            itctx,
+                        ),
                     ImplTraitContext::Universal => {
                         let span = t.span;
                         self.create_def(
@@ -1477,6 +1481,8 @@ impl<'a, 'hir> LoweringContext<'a, 'hir> {
     /// Given a function definition like:
     ///
     /// ```rust
+    /// use std::fmt::Debug;
+    ///
     /// fn test<'a, T: Debug>(x: &'a T) -> impl Debug + 'a {
     ///     x
     /// }
@@ -1484,13 +1490,13 @@ impl<'a, 'hir> LoweringContext<'a, 'hir> {
     ///
     /// we will create a TAIT definition in the HIR like
     ///
-    /// ```
+    /// ```rust,ignore (pseudo-Rust)
     /// type TestReturn<'a, T, 'x> = impl Debug + 'x
     /// ```
     ///
     /// and return a type like `TestReturn<'static, T, 'a>`, so that the function looks like:
     ///
-    /// ```rust
+    /// ```rust,ignore (pseudo-Rust)
     /// fn test<'a, T: Debug>(x: &'a T) -> TestReturn<'static, T, 'a>
     /// ```
     ///
@@ -1530,13 +1536,16 @@ impl<'a, 'hir> LoweringContext<'a, 'hir> {
         // If this came from a TAIT (as opposed to a function that returns an RPIT), we only want
         // to capture the lifetimes that appear in the bounds. So visit the bounds to find out
         // exactly which ones those are.
-        let lifetimes_to_remap = if origin == hir::OpaqueTyOrigin::TyAlias {
-            // in a TAIT like `type Foo<'a> = impl Foo<'a>`, we don't keep all the lifetime parameters
-            Vec::new()
-        } else {
-            // in fn return position, like the `fn test<'a>() -> impl Debug + 'a` example,
-            // we only keep the lifetimes that appear in the `impl Debug` itself:
-            lifetime_collector::lifetimes_in_bounds(&self.resolver, bounds)
+        let lifetimes_to_remap = match origin {
+            hir::OpaqueTyOrigin::TyAlias { .. } => {
+                // in a TAIT like `type Foo<'a> = impl Foo<'a>`, we don't keep all the lifetime parameters
+                Vec::new()
+            }
+            hir::OpaqueTyOrigin::AsyncFn(..) | hir::OpaqueTyOrigin::FnReturn(..) => {
+                // in fn return position, like the `fn test<'a>() -> impl Debug + 'a` example,
+                // we only keep the lifetimes that appear in the `impl Debug` itself:
+                lifetime_collector::lifetimes_in_bounds(&self.resolver, bounds)
+            }
         };
         debug!(?lifetimes_to_remap);
 

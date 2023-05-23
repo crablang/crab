@@ -2,12 +2,12 @@ use crate::creader::CrateMetadataRef;
 use decoder::Metadata;
 use def_path_hash_map::DefPathHashMapRef;
 use rustc_data_structures::fx::FxHashMap;
+use rustc_middle::middle::debugger_visualizer::DebuggerVisualizerFile;
 use table::TableBuilder;
 
 use rustc_ast as ast;
 use rustc_attr as attr;
 use rustc_data_structures::svh::Svh;
-use rustc_data_structures::sync::MetadataRef;
 use rustc_hir as hir;
 use rustc_hir::def::{CtorKind, DefKind, DocLinkResMap};
 use rustc_hir::def_id::{CrateNum, DefId, DefIndex, DefPathHash, StableCrateId};
@@ -20,8 +20,8 @@ use rustc_middle::middle::codegen_fn_attrs::CodegenFnAttrs;
 use rustc_middle::middle::exported_symbols::{ExportedSymbol, SymbolExportInfo};
 use rustc_middle::middle::resolve_bound_vars::ObjectLifetimeDefault;
 use rustc_middle::mir;
+use rustc_middle::query::Providers;
 use rustc_middle::ty::fast_reject::SimplifiedType;
-use rustc_middle::ty::query::Providers;
 use rustc_middle::ty::{self, ReprOptions, Ty, UnusedGenericParams};
 use rustc_middle::ty::{DeducedParamAttrs, GeneratorDiagnosticData, ParameterizedOverTcx, TyCtxt};
 use rustc_serialize::opaque::FileEncoder;
@@ -31,6 +31,7 @@ use rustc_span::edition::Edition;
 use rustc_span::hygiene::{ExpnIndex, MacroKind};
 use rustc_span::symbol::{Ident, Symbol};
 use rustc_span::{self, ExpnData, ExpnHash, ExpnId, Span};
+use rustc_target::abi::VariantIdx;
 use rustc_target::spec::{PanicStrategy, TargetTriple};
 
 use std::marker::PhantomData;
@@ -48,8 +49,8 @@ mod def_path_hash_map;
 mod encoder;
 mod table;
 
-pub(crate) fn rustc_version() -> String {
-    format!("rustc {}", option_env!("CFG_VERSION").unwrap_or("unknown version"))
+pub(crate) fn rustc_version(cfg_version: &'static str) -> String {
+    format!("rustc {}", cfg_version)
 }
 
 /// Metadata encoding version.
@@ -245,7 +246,7 @@ pub(crate) struct CrateRoot {
     proc_macro_data: Option<ProcMacroData>,
 
     tables: LazyTables,
-    debugger_visualizers: LazyArray<rustc_span::DebuggerVisualizerFile>,
+    debugger_visualizers: LazyArray<DebuggerVisualizerFile>,
 
     exported_symbols: LazyArray<(ExportedSymbol<'static>, SymbolExportInfo)>,
 
@@ -394,7 +395,7 @@ define_tables! {
     mir_for_ctfe: Table<DefIndex, LazyValue<mir::Body<'static>>>,
     mir_generator_witnesses: Table<DefIndex, LazyValue<mir::GeneratorLayout<'static>>>,
     promoted_mir: Table<DefIndex, LazyValue<IndexVec<mir::Promoted, mir::Body<'static>>>>,
-    thir_abstract_const: Table<DefIndex, LazyValue<ty::Const<'static>>>,
+    thir_abstract_const: Table<DefIndex, LazyValue<ty::EarlyBinder<ty::Const<'static>>>>,
     impl_parent: Table<DefIndex, RawDefId>,
     impl_polarity: Table<DefIndex, ty::ImplPolarity>,
     constness: Table<DefIndex, hir::Constness>,
@@ -430,6 +431,7 @@ define_tables! {
 
 #[derive(TyEncodable, TyDecodable)]
 struct VariantData {
+    idx: VariantIdx,
     discr: ty::VariantDiscr,
     /// If this is unit or tuple-variant/struct, then this is the index of the ctor id.
     ctor: Option<(CtorKind, DefIndex)>,

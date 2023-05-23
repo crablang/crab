@@ -2,6 +2,7 @@ use super::TypeErrCtxt;
 use rustc_errors::Applicability::{MachineApplicable, MaybeIncorrect};
 use rustc_errors::{pluralize, Diagnostic, MultiSpan};
 use rustc_hir as hir;
+use rustc_hir::def::DefKind;
 use rustc_middle::traits::ObligationCauseCode;
 use rustc_middle::ty::error::ExpectedFound;
 use rustc_middle::ty::print::Printer;
@@ -71,9 +72,10 @@ impl<'tcx> TypeErrCtxt<'_, 'tcx> {
                              #traits-as-parameters",
                         );
                     }
-                    (ty::Alias(ty::Projection, _), ty::Alias(ty::Projection, _)) => {
+                    (ty::Alias(ty::Projection | ty::Inherent, _), ty::Alias(ty::Projection | ty::Inherent, _)) => {
                         diag.note("an associated type was expected, but a different one was found");
                     }
+                    // FIXME(inherent_associated_types): Extend this to support `ty::Inherent`, too.
                     (ty::Param(p), ty::Alias(ty::Projection, proj)) | (ty::Alias(ty::Projection, proj), ty::Param(p))
                         if !tcx.is_impl_trait_in_trait(proj.def_id) =>
                     {
@@ -222,7 +224,7 @@ impl<T> Trait<T> for X {
                             diag.span_label(p_span, "this type parameter");
                         }
                     }
-                    (ty::Alias(ty::Projection, proj_ty), _) if !tcx.is_impl_trait_in_trait(proj_ty.def_id) => {
+                    (ty::Alias(ty::Projection | ty::Inherent, proj_ty), _) if !tcx.is_impl_trait_in_trait(proj_ty.def_id) => {
                         self.expected_projection(
                             diag,
                             proj_ty,
@@ -231,7 +233,7 @@ impl<T> Trait<T> for X {
                             cause.code(),
                         );
                     }
-                    (_, ty::Alias(ty::Projection, proj_ty)) if !tcx.is_impl_trait_in_trait(proj_ty.def_id) => {
+                    (_, ty::Alias(ty::Projection | ty::Inherent, proj_ty)) if !tcx.is_impl_trait_in_trait(proj_ty.def_id) => {
                         let msg = format!(
                             "consider constraining the associated type `{}` to `{}`",
                             values.found, values.expected,
@@ -253,6 +255,15 @@ impl<T> Trait<T> for X {
                                 "for more information, visit \
                                 https://doc.rust-lang.org/book/ch19-03-advanced-traits.html",
                             );
+                        }
+                    }
+                    (ty::Alias(ty::Opaque, alias), _) | (_, ty::Alias(ty::Opaque, alias)) if alias.def_id.is_local() && matches!(tcx.def_kind(body_owner_def_id), DefKind::AssocFn | DefKind::AssocConst) => {
+                        if tcx.is_type_alias_impl_trait(alias.def_id) {
+                            if !tcx.opaque_types_defined_by(body_owner_def_id.expect_local()).contains(&alias.def_id.expect_local()) {
+                                diag.span_note(tcx.def_span(body_owner_def_id), "\
+                                    this item must have the opaque type in its signature \
+                                    in order to be able to register hidden types");
+                            }
                         }
                     }
                     (ty::FnPtr(_), ty::FnDef(def, _))

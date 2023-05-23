@@ -329,21 +329,21 @@ fn build_options<O: Default>(
                     match value {
                         None => early_error(
                             error_format,
-                            &format!(
+                            format!(
                                 "{0} option `{1}` requires {2} ({3} {1}=<value>)",
                                 outputname, key, type_desc, prefix
                             ),
                         ),
                         Some(value) => early_error(
                             error_format,
-                            &format!(
+                            format!(
                                 "incorrect value `{value}` for {outputname} option `{key}` - {type_desc} was expected"
                             ),
                         ),
                     }
                 }
             }
-            None => early_error(error_format, &format!("unknown {outputname} option: `{key}`")),
+            None => early_error(error_format, format!("unknown {outputname} option: `{key}`")),
         }
     }
     return op;
@@ -1555,7 +1555,7 @@ options! {
         "emit Retagging MIR statements, interpreted e.g., by miri; implies -Zmir-opt-level=0 \
         (default: no)"),
     mir_enable_passes: Vec<(String, bool)> = (Vec::new(), parse_list_with_polarity, [TRACKED],
-        "use like `-Zmir-enable-passes=+DestProp,-InstCombine`. Forces the specified passes to be \
+        "use like `-Zmir-enable-passes=+DestinationPropagation,-InstSimplify`. Forces the specified passes to be \
         enabled, overriding all other checks. Passes that are not specified are enabled or \
         disabled by other flags as usual."),
     mir_keep_place_mention: bool = (false, parse_bool, [TRACKED],
@@ -1720,6 +1720,10 @@ options! {
     #[rustc_lint_opt_deny_field_access("use `Session::stack_protector` instead of this field")]
     stack_protector: StackProtector = (StackProtector::None, parse_stack_protector, [TRACKED],
         "control stack smash protection strategy (`rustc --print stack-protector-strategies` for details)"),
+    staticlib_allow_rdylib_deps: bool = (false, parse_bool, [TRACKED],
+        "allow staticlibs to have rust dylib dependencies"),
+    staticlib_prefer_dynamic: bool = (false, parse_bool, [TRACKED],
+        "prefer dynamic linking to static linking for staticlibs (default: no)"),
     strict_init_checks: bool = (false, parse_bool, [TRACKED],
         "control if mem::uninitialized and mem::zeroed panic on more UB"),
     strip: Strip = (Strip::None, parse_strip, [UNTRACKED],

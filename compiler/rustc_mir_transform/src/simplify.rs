@@ -74,7 +74,7 @@ pub fn simplify_cfg<'tcx>(tcx: TyCtxt<'tcx>, body: &mut Body<'tcx>) {
 }
 
 impl<'tcx> MirPass<'tcx> for SimplifyCfg {
-    fn name(&self) -> &str {
+    fn name(&self) -> &'static str {
         &self.name()
     }
 
@@ -278,7 +278,7 @@ impl<'a, 'tcx> CfgSimplifier<'a, 'tcx> {
     }
 }
 
-pub fn combine_duplicate_switch_targets(terminator: &mut Terminator<'_>) {
+pub fn simplify_duplicate_switch_targets(terminator: &mut Terminator<'_>) {
     if let TerminatorKind::SwitchInt { targets, .. } = &mut terminator.kind {
         let otherwise = targets.otherwise();
         if targets.iter().any(|t| t.1 == otherwise) {
@@ -310,7 +310,7 @@ pub fn remove_duplicate_unreachable_blocks<'tcx>(tcx: TyCtxt<'tcx>, body: &mut B
                 }
             }
 
-            combine_duplicate_switch_targets(terminator);
+            simplify_duplicate_switch_targets(terminator);
 
             self.super_terminator(terminator, location);
         }

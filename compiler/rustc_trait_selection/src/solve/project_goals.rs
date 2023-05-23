@@ -56,11 +56,11 @@ impl<'tcx> assembly::GoalKind<'tcx> for ProjectionPredicate<'tcx> {
         self.trait_def_id(tcx)
     }
 
-    fn consider_implied_clause(
+    fn probe_and_match_goal_against_assumption(
         ecx: &mut EvalCtxt<'_, 'tcx>,
         goal: Goal<'tcx, Self>,
         assumption: ty::Predicate<'tcx>,
-        requirements: impl IntoIterator<Item = Goal<'tcx, ty::Predicate<'tcx>>>,
+        then: impl FnOnce(&mut EvalCtxt<'_, 'tcx>) -> QueryResult<'tcx>,
     ) -> QueryResult<'tcx> {
         if let Some(poly_projection_pred) = assumption.to_opt_poly_projection_pred()
             && poly_projection_pred.projection_def_id() == goal.predicate.def_id()
@@ -75,49 +75,7 @@ impl<'tcx> assembly::GoalKind<'tcx> for ProjectionPredicate<'tcx> {
                 )?;
                 ecx.eq(goal.param_env, goal.predicate.term, assumption_projection_pred.term)
                     .expect("expected goal term to be fully unconstrained");
-                ecx.add_goals(requirements);
-                ecx.evaluate_added_goals_and_make_canonical_response(Certainty::Yes)
-            })
-        } else {
-            Err(NoSolution)
-        }
-    }
-
-    fn consider_object_bound_candidate(
-        ecx: &mut EvalCtxt<'_, 'tcx>,
-        goal: Goal<'tcx, Self>,
-        assumption: ty::Predicate<'tcx>,
-    ) -> QueryResult<'tcx> {
-        if let Some(poly_projection_pred) = assumption.to_opt_poly_projection_pred()
-            && poly_projection_pred.projection_def_id() == goal.predicate.def_id()
-        {
-            ecx.probe(|ecx| {
-                let tcx = ecx.tcx();
-
-                let assumption_projection_pred =
-                    ecx.instantiate_binder_with_infer(poly_projection_pred);
-                ecx.eq(
-                    goal.param_env,
-                    goal.predicate.projection_ty,
-                    assumption_projection_pred.projection_ty,
-                )?;
-
-                let ty::Dynamic(bounds, _, _) = *goal.predicate.self_ty().kind() else {
-                    bug!("expected object type in `consider_object_bound_candidate`");
-                };
-                ecx.add_goals(
-                    structural_traits::predicates_for_object_candidate(
-                        &ecx,
-                        goal.param_env,
-                        goal.predicate.projection_ty.trait_ref(tcx),
-                        bounds,
-                    )
-                    .into_iter()
-                    .map(|pred| goal.with(tcx, pred)),
-                );
-                ecx.eq(goal.param_env, goal.predicate.term, assumption_projection_pred.term)
-                    .expect("expected goal term to be fully unconstrained");
-                ecx.evaluate_added_goals_and_make_canonical_response(Certainty::Yes)
+                then(ecx)
             })
         } else {
             Err(NoSolution)
@@ -166,10 +124,24 @@ impl<'tcx> assembly::GoalKind<'tcx> for ProjectionPredicate<'tcx> {
             };
 
             if !assoc_def.item.defaultness(tcx).has_value() {
-                tcx.sess.delay_span_bug(
+                let guar = tcx.sess.delay_span_bug(
                     tcx.def_span(assoc_def.item.def_id),
                     "missing value for assoc item in impl",
                 );
+                let error_term = match assoc_def.item.kind {
+                    ty::AssocKind::Const => tcx
+                        .const_error(
+                            tcx.type_of(goal.predicate.def_id())
+                                .subst(tcx, goal.predicate.projection_ty.substs),
+                            guar,
+                        )
+                        .into(),
+                    ty::AssocKind::Type => tcx.ty_error(guar).into(),
+                    ty::AssocKind::Fn => unreachable!(),
+                };
+                ecx.eq(goal.param_env, goal.predicate.term, error_term)
+                    .expect("expected goal term to be fully unconstrained");
+                return ecx.evaluate_added_goals_and_make_canonical_response(Certainty::Yes);
             }
 
             // Getting the right substitutions here is complex, e.g. given:

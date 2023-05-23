@@ -28,8 +28,8 @@ use rustc_middle::{
     middle::exported_symbols::{
         ExportedSymbol, SymbolExportInfo, SymbolExportKind, SymbolExportLevel,
     },
-    query::LocalCrate,
-    ty::{query::ExternProviders, TyCtxt},
+    query::{ExternProviders, LocalCrate},
+    ty::TyCtxt,
 };
 use rustc_session::config::OptLevel;
 
@@ -63,7 +63,9 @@ impl rustc_driver::Callbacks for MiriCompilerCalls {
         queries: &'tcx rustc_interface::Queries<'tcx>,
     ) -> Compilation {
         queries.global_ctxt().unwrap().enter(|tcx| {
-            tcx.sess.abort_if_errors();
+            if tcx.sess.compile_status().is_err() {
+                tcx.sess.fatal("miri cannot be run on programs that fail compilation");
+            }
 
             init_late_loggers(tcx);
             if !tcx.sess.crate_types().contains(&CrateType::Executable) {

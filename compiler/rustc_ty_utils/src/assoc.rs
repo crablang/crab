@@ -4,11 +4,12 @@ use rustc_hir::def::DefKind;
 use rustc_hir::def_id::{DefId, DefIdMap, LocalDefId};
 use rustc_hir::definitions::DefPathData;
 use rustc_hir::intravisit::{self, Visitor};
+use rustc_middle::query::Providers;
 use rustc_middle::ty::{self, ImplTraitInTraitData, InternalSubsts, TyCtxt};
 use rustc_span::symbol::kw;
 
-pub fn provide(providers: &mut ty::query::Providers) {
-    *providers = ty::query::Providers {
+pub fn provide(providers: &mut Providers) {
+    *providers = Providers {
         associated_item,
         associated_item_def_ids,
         associated_items,
@@ -334,7 +335,7 @@ fn associated_type_for_impl_trait_in_trait(
             parent_count,
             params,
             param_def_id_to_index,
-            has_self: false,
+            has_self: opaque_ty_generics.has_self,
             has_late_bound_regions: opaque_ty_generics.has_late_bound_regions,
         }
     });

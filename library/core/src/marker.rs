@@ -43,27 +43,17 @@ use crate::hash::Hasher;
 /// ```
 #[unstable(feature = "internal_impls_macro", issue = "none")]
 macro marker_impls {
-    ( $(#[$($meta:tt)*])* $Trait:ident for $( $({$($bounds:tt)*})? $T:ty ),+ $(,)?) => {
-        // This inner macro is needed because... idk macros are weird.
-        // It allows repeating `meta` on all impls.
-        #[unstable(feature = "internal_impls_macro", issue = "none")]
-        macro _impl {
-            ( $$({$$($$bounds_:tt)*})? $$T_:ty ) => {
-                $(#[$($meta)*])* impl<$$($$($$bounds_)*)?> $Trait for $$T_ {}
-            }
-        }
-        $( _impl! { $({$($bounds)*})? $T } )+
+    ( $(#[$($meta:tt)*])* $Trait:ident for $({$($bounds:tt)*})? $T:ty $(, $($rest:tt)*)? ) => {
+        $(#[$($meta)*])* impl< $($($bounds)*)? > $Trait for $T {}
+        marker_impls! { $(#[$($meta)*])* $Trait for $($($rest)*)? }
     },
-    ( $(#[$($meta:tt)*])* unsafe $Trait:ident for $( $({$($bounds:tt)*})? $T:ty ),+ $(,)?) => {
-        #[unstable(feature = "internal_impls_macro", issue = "none")]
-        macro _impl {
-            ( $$({$$($$bounds_:tt)*})? $$T_:ty ) => {
-                $(#[$($meta)*])* unsafe impl<$$($$($$bounds_)*)?> $Trait for $$T_ {}
-            }
-        }
+    ( $(#[$($meta:tt)*])* $Trait:ident for ) => {},
 
-        $( _impl! { $({$($bounds)*})? $T } )+
+    ( $(#[$($meta:tt)*])* unsafe $Trait:ident for $({$($bounds:tt)*})? $T:ty $(, $($rest:tt)*)? ) => {
+        $(#[$($meta)*])* unsafe impl< $($($bounds)*)? > $Trait for $T {}
+        marker_impls! { $(#[$($meta)*])* unsafe $Trait for $($($rest)*)? }
     },
+    ( $(#[$($meta:tt)*])* unsafe $Trait:ident for ) => {},
 }
 
 /// Types that can be transferred across thread boundaries.
@@ -688,14 +678,14 @@ impl<T: ?Sized> !Sync for *mut T {}
 /// use std::marker::PhantomData;
 ///
 /// # #[allow(dead_code)]
-/// struct Slice<'a, T: 'a> {
+/// struct Slice<'a, T> {
 ///     start: *const T,
 ///     end: *const T,
 ///     phantom: PhantomData<&'a T>,
 /// }
 /// ```
 ///
-/// This also in turn requires the annotation `T: 'a`, indicating
+/// This also in turn infers the lifetime bound `T: 'a`, indicating
 /// that any references in `T` are valid over the lifetime `'a`.
 ///
 /// When initializing a `Slice` you simply provide the value
@@ -704,7 +694,7 @@ impl<T: ?Sized> !Sync for *mut T {}
 /// ```
 /// # #![allow(dead_code)]
 /// # use std::marker::PhantomData;
-/// # struct Slice<'a, T: 'a> {
+/// # struct Slice<'a, T> {
 /// #     start: *const T,
 /// #     end: *const T,
 /// #     phantom: PhantomData<&'a T>,
@@ -766,16 +756,11 @@ impl<T: ?Sized> !Sync for *mut T {}
 ///
 /// ## Ownership and the drop check
 ///
-/// Adding a field of type `PhantomData<T>` indicates that your
-/// type owns data of type `T`. This in turn implies that when your
-/// type is dropped, it may drop one or more instances of the type
-/// `T`. This has bearing on the Rust compiler's [drop check]
-/// analysis.
+/// The exact interaction of `PhantomData` with drop check **may change in the future**.
 ///
-/// If your struct does not in fact *own* the data of type `T`, it is
-/// better to use a reference type, like `PhantomData<&'a T>`
-/// (ideally) or `PhantomData<*const T>` (if no lifetime applies), so
-/// as not to indicate ownership.
+/// Currently, adding a field of type `PhantomData<T>` indicates that your type *owns* data of type
+/// `T` in very rare circumstances. This in turn has effects on the Rust compiler's [drop check]
+/// analysis. For the exact rules, see the [drop check] documentation.
 ///
 /// ## Layout
 ///
@@ -783,7 +768,7 @@ impl<T: ?Sized> !Sync for *mut T {}
 /// * `size_of::<PhantomData<T>>() == 0`
 /// * `align_of::<PhantomData<T>>() == 1`
 ///
-/// [drop check]: ../../nomicon/dropck.html
+/// [drop check]: Drop#drop-check
 #[lang = "phantom_data"]
 #[stable(feature = "rust1", since = "1.0.0")]
 pub struct PhantomData<T: ?Sized>;
@@ -990,6 +975,14 @@ pub trait PointerLike {}
 #[unstable(feature = "adt_const_params", issue = "95174")]
 #[rustc_on_unimplemented(message = "`{Self}` can't be used as a const parameter type")]
 pub trait ConstParamTy: StructuralEq {}
+
+/// Derive macro generating an impl of the trait `ConstParamTy`.
+#[rustc_builtin_macro]
+#[unstable(feature = "adt_const_params", issue = "95174")]
+#[cfg(not(bootstrap))]
+pub macro ConstParamTy($item:item) {
+    /* compiler built-in */
+}
 
 // FIXME(generic_const_parameter_types): handle `ty::FnDef`/`ty::Closure`
 // FIXME(generic_const_parameter_types): handle `ty::Tuple`

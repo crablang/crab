@@ -8,7 +8,7 @@ use rustc_data_structures::fingerprint::Fingerprint;
 use rustc_data_structures::fx::{FxHashMap, FxIndexSet};
 use rustc_data_structures::memmap::{Mmap, MmapMut};
 use rustc_data_structures::stable_hasher::{Hash128, HashStable, StableHasher};
-use rustc_data_structures::sync::{join, par_iter, Lrc, ParallelIterator};
+use rustc_data_structures::sync::{join, par_for_each_in, Lrc};
 use rustc_data_structures::temp_dir::MaybeTempDir;
 use rustc_hir as hir;
 use rustc_hir::def::DefKind;
@@ -19,16 +19,17 @@ use rustc_hir::definitions::DefPathData;
 use rustc_hir::intravisit::{self, Visitor};
 use rustc_hir::lang_items::LangItem;
 use rustc_middle::hir::nested_filter;
+use rustc_middle::middle::debugger_visualizer::DebuggerVisualizerFile;
 use rustc_middle::middle::dependency_format::Linkage;
 use rustc_middle::middle::exported_symbols::{
     metadata_symbol_name, ExportedSymbol, SymbolExportInfo,
 };
 use rustc_middle::mir::interpret;
 use rustc_middle::query::LocalCrate;
+use rustc_middle::query::Providers;
 use rustc_middle::traits::specialization_graph;
 use rustc_middle::ty::codec::TyEncoder;
 use rustc_middle::ty::fast_reject::{self, SimplifiedType, TreatParams};
-use rustc_middle::ty::query::Providers;
 use rustc_middle::ty::{self, SymbolName, Ty, TyCtxt};
 use rustc_middle::util::common::to_readable_str;
 use rustc_serialize::{opaque, Decodable, Decoder, Encodable, Encoder};
@@ -36,9 +37,7 @@ use rustc_session::config::{CrateType, OptLevel};
 use rustc_session::cstore::{ForeignModule, LinkagePreference, NativeLib};
 use rustc_span::hygiene::{ExpnIndex, HygieneEncodeContext, MacroKind};
 use rustc_span::symbol::{sym, Symbol};
-use rustc_span::{
-    self, DebuggerVisualizerFile, ExternalSource, FileName, SourceFile, Span, SyntaxContext,
-};
+use rustc_span::{self, ExternalSource, FileName, SourceFile, Span, SyntaxContext};
 use std::borrow::Borrow;
 use std::collections::hash_map::Entry;
 use std::hash::Hash;
@@ -862,6 +861,11 @@ fn should_encode_attrs(def_kind: DefKind) -> bool {
         | DefKind::Macro(_)
         | DefKind::Field
         | DefKind::Impl { .. } => true,
+        // Tools may want to be able to detect their tool lints on
+        // closures from upstream crates, too. This is used by
+        // https://github.com/model-checking/kani and is not a performance
+        // or maintenance issue for us.
+        DefKind::Closure => true,
         DefKind::TyParam
         | DefKind::ConstParam
         | DefKind::Ctor(..)
@@ -874,7 +878,6 @@ fn should_encode_attrs(def_kind: DefKind) -> bool {
         | DefKind::ImplTraitPlaceholder
         | DefKind::LifetimeParam
         | DefKind::GlobalAsm
-        | DefKind::Closure
         | DefKind::Generator => false,
     }
 }
@@ -1371,9 +1374,10 @@ impl<'a, 'tcx> EncodeContext<'a, 'tcx> {
             // Therefore, the loop over variants will encode its fields as the adt's children.
         }
 
-        for variant in adt_def.variants().iter() {
+        for (idx, variant) in adt_def.variants().iter_enumerated() {
             let data = VariantData {
                 discr: variant.discr,
+                idx,
                 ctor: variant.ctor.map(|(kind, def_id)| (kind, def_id.index)),
                 is_non_exhaustive: variant.is_field_list_non_exhaustive(),
             };
@@ -1511,8 +1515,11 @@ impl<'a, 'tcx> EncodeContext<'a, 'tcx> {
             if encode_opt {
                 record!(self.tables.optimized_mir[def_id.to_def_id()] <- tcx.optimized_mir(def_id));
 
-                if tcx.sess.opts.unstable_opts.drop_tracking_mir && let DefKind::Generator = self.tcx.def_kind(def_id) {
-                    record!(self.tables.mir_generator_witnesses[def_id.to_def_id()] <- tcx.mir_generator_witnesses(def_id));
+                if tcx.sess.opts.unstable_opts.drop_tracking_mir
+                    && let DefKind::Generator = self.tcx.def_kind(def_id)
+                    && let Some(witnesses) = tcx.mir_generator_witnesses(def_id)
+                {
+                    record!(self.tables.mir_generator_witnesses[def_id.to_def_id()] <- witnesses);
                 }
             }
             if encode_const {
@@ -1637,9 +1644,10 @@ impl<'a, 'tcx> EncodeContext<'a, 'tcx> {
             }
             hir::ItemKind::OpaqueTy(ref opaque) => {
                 self.encode_explicit_item_bounds(def_id);
-                self.tables
-                    .is_type_alias_impl_trait
-                    .set(def_id.index, matches!(opaque.origin, hir::OpaqueTyOrigin::TyAlias));
+                self.tables.is_type_alias_impl_trait.set(
+                    def_id.index,
+                    matches!(opaque.origin, hir::OpaqueTyOrigin::TyAlias { .. }),
+                );
             }
             hir::ItemKind::Impl(hir::Impl { defaultness, constness, .. }) => {
                 self.tables.impl_defaultness.set_some(def_id.index, *defaultness);
@@ -1846,7 +1854,16 @@ impl<'a, 'tcx> EncodeContext<'a, 'tcx> {
 
     fn encode_debugger_visualizers(&mut self) -> LazyArray<DebuggerVisualizerFile> {
         empty_proc_macro!(self);
-        self.lazy_array(self.tcx.debugger_visualizers(LOCAL_CRATE).iter())
+        self.lazy_array(
+            self.tcx
+                .debugger_visualizers(LOCAL_CRATE)
+                .iter()
+                // Erase the path since it may contain privacy sensitive data
+                // that we don't want to end up in crate metadata.
+                // The path is only needed for the local crate because of
+                // `--emit dep-info`.
+                .map(DebuggerVisualizerFile::path_erased),
+        )
     }
 
     fn encode_crate_deps(&mut self) -> LazyArray<CrateDep> {
@@ -2125,7 +2142,7 @@ fn prefetch_mir(tcx: TyCtxt<'_>) {
         return;
     }
 
-    par_iter(tcx.mir_keys(())).for_each(|&def_id| {
+    par_for_each_in(tcx.mir_keys(()), |&def_id| {
         let (encode_const, encode_opt) = should_encode_mir(tcx, def_id);
 
         if encode_const {
@@ -2267,7 +2284,7 @@ fn encode_metadata_impl(tcx: TyCtxt<'_>, path: &Path) {
     };
 
     // Encode the rustc version string in a predictable location.
-    rustc_version().encode(&mut ecx);
+    rustc_version(tcx.sess.cfg_version).encode(&mut ecx);
 
     // Encode all the entries and extra information in the crate,
     // culminating in the `CrateRoot` which points to all of it.

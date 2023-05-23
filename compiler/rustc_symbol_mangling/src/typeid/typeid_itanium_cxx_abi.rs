@@ -14,8 +14,8 @@ use rustc_errors::DiagnosticMessage;
 use rustc_hir as hir;
 use rustc_middle::ty::subst::{GenericArg, GenericArgKind, SubstsRef};
 use rustc_middle::ty::{
-    self, Const, ExistentialPredicate, FloatTy, FnSig, IntTy, List, Region, RegionKind, TermKind,
-    Ty, TyCtxt, UintTy,
+    self, Const, ExistentialPredicate, FloatTy, FnSig, Instance, IntTy, List, Region, RegionKind,
+    TermKind, Ty, TyCtxt, UintTy,
 };
 use rustc_span::def_id::DefId;
 use rustc_span::sym;
@@ -673,6 +673,14 @@ fn encode_ty<'tcx>(
             typeid.push_str(&s);
         }
 
+        // Type parameters
+        ty::Param(..) => {
+            // u5param as vendor extended type
+            let mut s = String::from("u5param");
+            compress(dict, DictKey::Ty(ty, TyQ::None), &mut s);
+            typeid.push_str(&s);
+        }
+
         // Unexpected types
         ty::Bound(..)
         | ty::Error(..)
@@ -680,13 +688,47 @@ fn encode_ty<'tcx>(
         | ty::GeneratorWitnessMIR(..)
         | ty::Infer(..)
         | ty::Alias(..)
-        | ty::Param(..)
         | ty::Placeholder(..) => {
             bug!("encode_ty: unexpected `{:?}`", ty.kind());
         }
     };
 
     typeid
+}
+
+/// Transforms predicates for being encoded and used in the substitution dictionary.
+fn transform_predicates<'tcx>(
+    tcx: TyCtxt<'tcx>,
+    predicates: &List<ty::PolyExistentialPredicate<'tcx>>,
+    _options: EncodeTyOptions,
+) -> &'tcx List<ty::PolyExistentialPredicate<'tcx>> {
+    let predicates: Vec<ty::PolyExistentialPredicate<'tcx>> = predicates
+        .iter()
+        .map(|predicate| match predicate.skip_binder() {
+            ty::ExistentialPredicate::Trait(trait_ref) => {
+                let trait_ref = ty::TraitRef::identity(tcx, trait_ref.def_id);
+                ty::Binder::dummy(ty::ExistentialPredicate::Trait(
+                    ty::ExistentialTraitRef::erase_self_ty(tcx, trait_ref),
+                ))
+            }
+            _ => predicate,
+        })
+        .collect();
+    tcx.mk_poly_existential_predicates(&predicates)
+}
+
+/// Transforms substs for being encoded and used in the substitution dictionary.
+fn transform_substs<'tcx>(
+    tcx: TyCtxt<'tcx>,
+    substs: SubstsRef<'tcx>,
+    options: TransformTyOptions,
+) -> SubstsRef<'tcx> {
+    let substs = substs.iter().map(|subst| match subst.unpack() {
+        GenericArgKind::Type(ty) if ty.is_c_void(tcx) => tcx.mk_unit().into(),
+        GenericArgKind::Type(ty) => transform_ty(tcx, ty, options).into(),
+        _ => subst,
+    });
+    tcx.mk_substs_from_iter(substs)
 }
 
 // Transforms a ty:Ty for being encoded and used in the substitution dictionary. It transforms all
@@ -697,7 +739,7 @@ fn transform_ty<'tcx>(tcx: TyCtxt<'tcx>, ty: Ty<'tcx>, options: TransformTyOptio
     let mut ty = ty;
 
     match ty.kind() {
-        ty::Float(..) | ty::Char | ty::Str | ty::Never | ty::Foreign(..) | ty::Dynamic(..) => {}
+        ty::Float(..) | ty::Char | ty::Str | ty::Never | ty::Foreign(..) => {}
 
         ty::Bool => {
             if options.contains(EncodeTyOptions::NORMALIZE_INTEGERS) {
@@ -870,6 +912,14 @@ fn transform_ty<'tcx>(tcx: TyCtxt<'tcx>, ty: Ty<'tcx>, options: TransformTyOptio
             }
         }
 
+        ty::Dynamic(predicates, _region, kind) => {
+            ty = tcx.mk_dynamic(
+                transform_predicates(tcx, predicates, options),
+                tcx.lifetimes.re_erased,
+                *kind,
+            );
+        }
+
         ty::Bound(..)
         | ty::Error(..)
         | ty::GeneratorWitness(..)
@@ -883,20 +933,6 @@ fn transform_ty<'tcx>(tcx: TyCtxt<'tcx>, ty: Ty<'tcx>, options: TransformTyOptio
     }
 
     ty
-}
-
-/// Transforms substs for being encoded and used in the substitution dictionary.
-fn transform_substs<'tcx>(
-    tcx: TyCtxt<'tcx>,
-    substs: SubstsRef<'tcx>,
-    options: TransformTyOptions,
-) -> SubstsRef<'tcx> {
-    let substs = substs.iter().map(|subst| match subst.unpack() {
-        GenericArgKind::Type(ty) if ty.is_c_void(tcx) => tcx.mk_unit().into(),
-        GenericArgKind::Type(ty) => transform_ty(tcx, ty, options).into(),
-        _ => subst,
-    });
-    tcx.mk_substs_from_iter(substs)
 }
 
 /// Returns a type metadata identifier for the specified FnAbi using the Itanium C++ ABI with vendor
@@ -1009,4 +1045,57 @@ pub fn typeid_for_fnsig<'tcx>(
     }
 
     typeid
+}
+
+/// Returns a type metadata identifier for the specified Instance using the Itanium C++ ABI with
+/// vendor extended type qualifiers and types for Rust types that are not used at the FFI boundary.
+pub fn typeid_for_instance<'tcx>(
+    tcx: TyCtxt<'tcx>,
+    instance: &Instance<'tcx>,
+    options: TypeIdOptions,
+) -> String {
+    let fn_abi = tcx
+        .fn_abi_of_instance(tcx.param_env(instance.def_id()).and((*instance, ty::List::empty())))
+        .unwrap_or_else(|instance| {
+            bug!("typeid_for_instance: couldn't get fn_abi of instance {:?}", instance)
+        });
+
+    // If this instance is a method and self is a reference, get the impl it belongs to
+    let impl_def_id = tcx.impl_of_method(instance.def_id());
+    if impl_def_id.is_some() && !fn_abi.args.is_empty() && fn_abi.args[0].layout.ty.is_ref() {
+        // If this impl is not an inherent impl, get the trait it implements
+        if let Some(trait_ref) = tcx.impl_trait_ref(impl_def_id.unwrap()) {
+            // Transform the concrete self into a reference to a trait object
+            let existential_predicate = trait_ref.map_bound(|trait_ref| {
+                ty::ExistentialPredicate::Trait(ty::ExistentialTraitRef::erase_self_ty(
+                    tcx, trait_ref,
+                ))
+            });
+            let existential_predicates = tcx.mk_poly_existential_predicates(&[ty::Binder::dummy(
+                existential_predicate.skip_binder(),
+            )]);
+            // Is the concrete self mutable?
+            let self_ty = if fn_abi.args[0].layout.ty.is_mutable_ptr() {
+                tcx.mk_mut_ref(
+                    tcx.lifetimes.re_erased,
+                    tcx.mk_dynamic(existential_predicates, tcx.lifetimes.re_erased, ty::Dyn),
+                )
+            } else {
+                tcx.mk_imm_ref(
+                    tcx.lifetimes.re_erased,
+                    tcx.mk_dynamic(existential_predicates, tcx.lifetimes.re_erased, ty::Dyn),
+                )
+            };
+
+            // Replace the concrete self in an fn_abi clone by the reference to a trait object
+            let mut fn_abi = fn_abi.clone();
+            // HACK(rcvalle): It is okay to not replace or update the entire ArgAbi here because the
+            //   other fields are never used.
+            fn_abi.args[0].layout.ty = self_ty;
+
+            return typeid_for_fnabi(tcx, &fn_abi, options);
+        }
+    }
+
+    typeid_for_fnabi(tcx, &fn_abi, options)
 }

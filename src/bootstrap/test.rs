@@ -10,6 +10,8 @@ use std::iter;
 use std::path::{Path, PathBuf};
 use std::process::{Command, Stdio};
 
+use clap_complete::shells;
+
 use crate::builder::crate_description;
 use crate::builder::{Builder, Compiler, Kind, RunConfig, ShouldRun, Step};
 use crate::cache::Interned;
@@ -613,6 +615,23 @@ impl Step for Miri {
             builder.run(&mut cargo);
         }
 
+        // Run it again for mir-opt-level 4 to catch some miscompilations.
+        if builder.config.test_args().is_empty() {
+            cargo.env("MIRIFLAGS", "-O -Zmir-opt-level=4 -Cdebug-assertions=yes");
+            // Optimizations can change backtraces
+            cargo.env("MIRI_SKIP_UI_CHECKS", "1");
+            // `MIRI_SKIP_UI_CHECKS` and `MIRI_BLESS` are incompatible
+            cargo.env_remove("MIRI_BLESS");
+            // Optimizations can change error locations and remove UB so don't run `fail` tests.
+            cargo.args(&["tests/pass", "tests/panic"]);
+
+            let mut cargo = prepare_cargo_test(cargo, &[], &[], "miri", compiler, target, builder);
+            {
+                let _time = util::timeit(&builder);
+                builder.run(&mut cargo);
+            }
+        }
+
         // # Run `cargo miri test`.
         // This is just a smoke test (Miri's own CI invokes this in a bunch of different ways and ensures
         // that we get the desired output), but that is sufficient to make sure that the libtest harness
@@ -644,8 +663,10 @@ impl Step for Miri {
         cargo.env("RUST_BACKTRACE", "1");
 
         let mut cargo = Command::from(cargo);
-        let _time = util::timeit(&builder);
-        builder.run(&mut cargo);
+        {
+            let _time = util::timeit(&builder);
+            builder.run(&mut cargo);
+        }
     }
 }
 
@@ -1121,7 +1142,24 @@ help: to skip test's attempt to check tidiness, pass `--exclude src/tools/tidy` 
         builder.info("tidy check");
         try_run(builder, &mut cmd);
 
-        builder.ensure(ExpandYamlAnchors {});
+        builder.ensure(ExpandYamlAnchors);
+
+        builder.info("x.py completions check");
+        let [bash, fish, powershell] = ["x.py.sh", "x.py.fish", "x.py.ps1"]
+            .map(|filename| builder.src.join("src/etc/completions").join(filename));
+        if builder.config.cmd.bless() {
+            builder.ensure(crate::run::GenerateCompletions);
+        } else {
+            if crate::flags::get_completion(shells::Bash, &bash).is_some()
+                || crate::flags::get_completion(shells::Fish, &fish).is_some()
+                || crate::flags::get_completion(shells::PowerShell, &powershell).is_some()
+            {
+                eprintln!(
+                    "x.py completions were changed; run `x.py run generate-completions` to update them"
+                );
+                crate::detail_exit(1);
+            }
+        }
     }
 
     fn should_run(run: ShouldRun<'_>) -> ShouldRun<'_> {

@@ -2354,7 +2354,9 @@ impl<'tcx> TypeErrCtxt<'_, 'tcx> {
         let labeled_user_string = match bound_kind {
             GenericKind::Param(ref p) => format!("the parameter type `{}`", p),
             GenericKind::Alias(ref p) => match p.kind(self.tcx) {
-                ty::AliasKind::Projection => format!("the associated type `{}`", p),
+                ty::AliasKind::Projection | ty::AliasKind::Inherent => {
+                    format!("the associated type `{}`", p)
+                }
                 ty::AliasKind::Opaque => format!("the opaque type `{}`", p),
             },
         };
@@ -2721,7 +2723,7 @@ impl<'tcx> TypeRelation<'tcx> for SameTypeModuloInfer<'_, 'tcx> {
             | (ty::Infer(ty::InferTy::TyVar(_)), _)
             | (_, ty::Infer(ty::InferTy::TyVar(_))) => Ok(a),
             (ty::Infer(_), _) | (_, ty::Infer(_)) => Err(TypeError::Mismatch),
-            _ => relate::super_relate_tys(self, a, b),
+            _ => relate::structurally_relate_tys(self, a, b),
         }
     }
 

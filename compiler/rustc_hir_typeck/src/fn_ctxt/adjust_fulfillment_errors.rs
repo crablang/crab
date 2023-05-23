@@ -278,9 +278,11 @@ impl<'a, 'tcx> FnCtxt<'a, 'tcx> {
         span: Span,
     ) -> bool {
         if let traits::FulfillmentErrorCode::CodeSelectionError(
-            traits::SelectionError::OutputTypeParameterMismatch(_, expected, _),
+            traits::SelectionError::OutputTypeParameterMismatch(box traits::SelectionOutputTypeParameterMismatch{
+                expected_trait_ref, ..
+            }),
         ) = error.code
-            && let ty::Closure(def_id, _) | ty::Generator(def_id, ..) = expected.skip_binder().self_ty().kind()
+            && let ty::Closure(def_id, _) | ty::Generator(def_id, ..) = expected_trait_ref.skip_binder().self_ty().kind()
             && span.overlaps(self.tcx.def_span(*def_id))
         {
             true
@@ -843,7 +845,7 @@ fn find_param_in_ty<'tcx>(
             return true;
         }
         if let ty::GenericArgKind::Type(ty) = arg.unpack()
-                && let ty::Alias(ty::Projection, ..) = ty.kind()
+                && let ty::Alias(ty::Projection | ty::Inherent, ..) = ty.kind()
             {
                 // This logic may seem a bit strange, but typically when
                 // we have a projection type in a function signature, the

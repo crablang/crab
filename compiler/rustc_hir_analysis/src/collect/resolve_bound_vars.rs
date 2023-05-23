@@ -17,6 +17,7 @@ use rustc_hir::{GenericArg, GenericParam, GenericParamKind, HirIdMap, LifetimeNa
 use rustc_middle::bug;
 use rustc_middle::hir::nested_filter;
 use rustc_middle::middle::resolve_bound_vars::*;
+use rustc_middle::query::Providers;
 use rustc_middle::ty::{self, TyCtxt, TypeSuperVisitable, TypeVisitor};
 use rustc_session::lint;
 use rustc_span::def_id::DefId;
@@ -232,8 +233,8 @@ impl<'a> fmt::Debug for TruncatedScopeDebug<'a> {
 
 type ScopeRef<'a> = &'a Scope<'a>;
 
-pub(crate) fn provide(providers: &mut ty::query::Providers) {
-    *providers = ty::query::Providers {
+pub(crate) fn provide(providers: &mut Providers) {
+    *providers = Providers {
         resolve_bound_vars,
 
         named_variable_map: |tcx, id| tcx.resolve_bound_vars(id).defs.get(&id),
@@ -526,7 +527,8 @@ impl<'a, 'tcx> Visitor<'tcx> for BoundVarContext<'a, 'tcx> {
                 });
             }
             hir::ItemKind::OpaqueTy(hir::OpaqueTy {
-                origin: hir::OpaqueTyOrigin::TyAlias, ..
+                origin: hir::OpaqueTyOrigin::TyAlias { .. },
+                ..
             }) => {
                 // Opaque types are visited when we visit the
                 // `TyKind::OpaqueDef`, so that they have the lifetimes from
@@ -707,7 +709,7 @@ impl<'a, 'tcx> Visitor<'tcx> for BoundVarContext<'a, 'tcx> {
                 let opaque_ty = self.tcx.hir().item(item_id);
                 match &opaque_ty.kind {
                     hir::ItemKind::OpaqueTy(hir::OpaqueTy {
-                        origin: hir::OpaqueTyOrigin::TyAlias,
+                        origin: hir::OpaqueTyOrigin::TyAlias { .. },
                         ..
                     }) => {
                         intravisit::walk_ty(self, ty);
@@ -1923,7 +1925,7 @@ fn is_late_bound_map(
     /// handles cycle detection as we go through the query system.
     ///
     /// This is necessary in the first place for the following case:
-    /// ```
+    /// ```rust,ignore (pseudo-Rust)
     /// type Alias<'a, T> = <T as Trait<'a>>::Assoc;
     /// fn foo<'a>(_: Alias<'a, ()>) -> Alias<'a, ()> { ... }
     /// ```
@@ -1948,7 +1950,7 @@ fn is_late_bound_map(
                 ty::Param(param_ty) => {
                     self.arg_is_constrained[param_ty.index as usize] = true;
                 }
-                ty::Alias(ty::Projection, _) => return ControlFlow::Continue(()),
+                ty::Alias(ty::Projection | ty::Inherent, _) => return ControlFlow::Continue(()),
                 _ => (),
             }
             t.super_visit_with(self)

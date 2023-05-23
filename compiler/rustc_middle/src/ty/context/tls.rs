@@ -1,7 +1,7 @@
 use super::{GlobalCtxt, TyCtxt};
 
 use crate::dep_graph::TaskDepsRef;
-use crate::ty::query;
+use crate::query::plumbing::QueryJobId;
 use rustc_data_structures::sync::{self, Lock};
 use rustc_errors::Diagnostic;
 #[cfg(not(parallel_compiler))]
@@ -22,7 +22,7 @@ pub struct ImplicitCtxt<'a, 'tcx> {
 
     /// The current query job, if any. This is updated by `JobOwner::start` in
     /// `ty::query::plumbing` when executing a query.
-    pub query: Option<query::QueryJobId>,
+    pub query: Option<QueryJobId>,
 
     /// Where to store diagnostics for the current query job, if any.
     /// This is updated by `JobOwner::start` in `ty::query::plumbing` when executing a query.
@@ -94,8 +94,8 @@ where
         f(None)
     } else {
         // We could get an `ImplicitCtxt` pointer from another thread.
-        // Ensure that `ImplicitCtxt` is `Sync`.
-        sync::assert_sync::<ImplicitCtxt<'_, '_>>();
+        // Ensure that `ImplicitCtxt` is `DynSync`.
+        sync::assert_dyn_sync::<ImplicitCtxt<'_, '_>>();
 
         unsafe { f(Some(downcast(context))) }
     }

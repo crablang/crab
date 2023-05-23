@@ -149,7 +149,7 @@ impl<'tcx> InferCtxt<'tcx> {
                     // no one encounters it in practice.
                     // It does occur however in `fn fut() -> impl Future<Output = i32> { async { 42 } }`,
                     // where it is of no concern, so we only check for TAITs.
-                    if let Some(OpaqueTyOrigin::TyAlias) =
+                    if let Some(OpaqueTyOrigin::TyAlias { .. }) =
                         b_def_id.as_local().and_then(|b_def_id| self.opaque_type_origin(b_def_id))
                     {
                         self.tcx.sess.emit_err(OpaqueHiddenTypeDiag {
@@ -381,8 +381,12 @@ impl<'tcx> InferCtxt<'tcx> {
             // Anonymous `impl Trait`
             hir::OpaqueTyOrigin::FnReturn(parent) => parent == parent_def_id,
             // Named `type Foo = impl Bar;`
-            hir::OpaqueTyOrigin::TyAlias => {
-                may_define_opaque_type(self.tcx, parent_def_id, opaque_hir_id)
+            hir::OpaqueTyOrigin::TyAlias { in_assoc_ty } => {
+                if in_assoc_ty {
+                    self.tcx.opaque_types_defined_by(parent_def_id).contains(&def_id)
+                } else {
+                    may_define_opaque_type(self.tcx, parent_def_id, opaque_hir_id)
+                }
             }
         };
         in_definition_scope.then_some(origin)
@@ -526,19 +530,18 @@ impl<'tcx> InferCtxt<'tcx> {
         // these are the same span, but not in cases like `-> (impl
         // Foo, impl Bar)`.
         let span = cause.span;
-
-        let mut obligations = vec![];
         let prev = self.inner.borrow_mut().opaque_types().register(
             OpaqueTypeKey { def_id, substs },
             OpaqueHiddenType { ty: hidden_ty, span },
             origin,
         );
-        if let Some(prev) = prev {
-            obligations = self
-                .at(&cause, param_env)
+        let mut obligations = if let Some(prev) = prev {
+            self.at(&cause, param_env)
                 .eq_exp(DefineOpaqueTypes::Yes, a_is_expected, prev, hidden_ty)?
-                .obligations;
-        }
+                .obligations
+        } else {
+            Vec::new()
+        };
 
         let item_bounds = tcx.explicit_item_bounds(def_id);
 
@@ -549,6 +552,7 @@ impl<'tcx> InferCtxt<'tcx> {
                     // We can't normalize associated types from `rustc_infer`,
                     // but we can eagerly register inference variables for them.
                     // FIXME(RPITIT): Don't replace RPITITs with inference vars.
+                    // FIXME(inherent_associated_types): Extend this to support `ty::Inherent`, too.
                     ty::Alias(ty::Projection, projection_ty)
                         if !projection_ty.has_escaping_bound_vars()
                             && !tcx.is_impl_trait_in_trait(projection_ty.def_id) =>
@@ -569,6 +573,7 @@ impl<'tcx> InferCtxt<'tcx> {
                         hidden_ty
                     }
                     // FIXME(RPITIT): This can go away when we move to associated types
+                    // FIXME(inherent_associated_types): Extend this to support `ty::Inherent`, too.
                     ty::Alias(
                         ty::Projection,
                         ty::AliasTy { def_id: def_id2, substs: substs2, .. },

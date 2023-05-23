@@ -101,7 +101,7 @@ use parking_lot::RwLock;
 use smallvec::SmallVec;
 
 bitflags::bitflags! {
-    struct EventFilter: u32 {
+    struct EventFilter: u16 {
         const GENERIC_ACTIVITIES  = 1 << 0;
         const QUERY_PROVIDERS     = 1 << 1;
         const QUERY_CACHE_HITS    = 1 << 2;
@@ -865,14 +865,16 @@ cfg_if! {
             use std::mem;
 
             use windows::{
-                Win32::System::ProcessStatus::{K32GetProcessMemoryInfo, PROCESS_MEMORY_COUNTERS},
+                // FIXME: change back to K32GetProcessMemoryInfo when windows crate
+                // updated to 0.49.0+ to drop dependency on psapi.dll
+                Win32::System::ProcessStatus::{GetProcessMemoryInfo, PROCESS_MEMORY_COUNTERS},
                 Win32::System::Threading::GetCurrentProcess,
             };
 
             let mut pmc = PROCESS_MEMORY_COUNTERS::default();
             let pmc_size = mem::size_of_val(&pmc);
             unsafe {
-                K32GetProcessMemoryInfo(
+                GetProcessMemoryInfo(
                     GetCurrentProcess(),
                     &mut pmc,
                     pmc_size as u32,

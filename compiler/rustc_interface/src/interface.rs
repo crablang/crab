@@ -9,6 +9,7 @@ use rustc_data_structures::OnDrop;
 use rustc_errors::registry::Registry;
 use rustc_errors::{ErrorGuaranteed, Handler};
 use rustc_lint::LintStore;
+use rustc_middle::query::{ExternProviders, Providers};
 use rustc_middle::{bug, ty};
 use rustc_parse::maybe_new_parser_from_source_str;
 use rustc_query_impl::QueryCtxt;
@@ -37,8 +38,7 @@ pub struct Compiler {
     pub(crate) sess: Lrc<Session>,
     codegen_backend: Lrc<Box<dyn CodegenBackend>>,
     pub(crate) register_lints: Option<Box<dyn Fn(&Session, &mut LintStore) + Send + Sync>>,
-    pub(crate) override_queries:
-        Option<fn(&Session, &mut ty::query::Providers, &mut ty::query::ExternProviders)>,
+    pub(crate) override_queries: Option<fn(&Session, &mut Providers, &mut ExternProviders)>,
 }
 
 impl Compiler {
@@ -60,6 +60,11 @@ impl Compiler {
     }
 }
 
+#[allow(rustc::bad_opt_access)]
+pub fn set_thread_safe_mode(sopts: &config::UnstableOptions) {
+    rustc_data_structures::sync::set_dyn_thread_safe_mode(sopts.threads > 1);
+}
+
 /// Converts strings provided as `--cfg [cfgspec]` into a `crate_cfg`.
 pub fn parse_cfgspecs(cfgspecs: Vec<String>) -> FxHashSet<(String, Option<String>)> {
     rustc_span::create_default_session_if_not_set_then(move |_| {
@@ -75,7 +80,7 @@ pub fn parse_cfgspecs(cfgspecs: Vec<String>) -> FxHashSet<(String, Option<String
                     ($reason: expr) => {
                         early_error(
                             ErrorOutputType::default(),
-                            &format!(concat!("invalid `--cfg` argument: `{}` (", $reason, ")"), s),
+                            format!(concat!("invalid `--cfg` argument: `{}` (", $reason, ")"), s),
                         );
                     };
                 }
@@ -134,10 +139,7 @@ pub fn parse_check_cfg(specs: Vec<String>) -> CheckCfg {
                 ($reason: expr) => {
                     early_error(
                         ErrorOutputType::default(),
-                        &format!(
-                            concat!("invalid `--check-cfg` argument: `{}` (", $reason, ")"),
-                            s
-                        ),
+                        format!(concat!("invalid `--check-cfg` argument: `{}` (", $reason, ")"), s),
                     )
                 };
             }
@@ -173,12 +175,21 @@ pub fn parse_check_cfg(specs: Vec<String>) -> CheckCfg {
                                         let expected_values = check_cfg
                                             .expecteds
                                             .entry(ident.name.to_string())
+                                            .and_modify(|expected_values| match expected_values {
+                                                ExpectedValues::Some(_) => {}
+                                                ExpectedValues::Any => {
+                                                    // handle the case where names(...) was done
+                                                    // before values by changing to a list
+                                                    *expected_values =
+                                                        ExpectedValues::Some(FxHashSet::default());
+                                                }
+                                            })
                                             .or_insert_with(|| {
                                                 ExpectedValues::Some(FxHashSet::default())
                                             });
 
                                         let ExpectedValues::Some(expected_values) = expected_values else {
-                                            bug!("shoudn't be possible")
+                                            bug!("`expected_values` should be a list a values")
                                         };
 
                                         for val in values {
@@ -261,8 +272,7 @@ pub struct Config {
     /// the list of queries.
     ///
     /// The second parameter is local providers and the third parameter is external providers.
-    pub override_queries:
-        Option<fn(&Session, &mut ty::query::Providers, &mut ty::query::ExternProviders)>,
+    pub override_queries: Option<fn(&Session, &mut Providers, &mut ExternProviders)>,
 
     /// This is a callback from the driver that is called to create a codegen backend.
     pub make_codegen_backend:
@@ -338,7 +348,7 @@ pub fn try_print_query_stack(handler: &Handler, num_frames: Option<usize>) {
     // state if it was responsible for triggering the panic.
     let i = ty::tls::with_context_opt(|icx| {
         if let Some(icx) = icx {
-            print_query_stack(QueryCtxt { tcx: icx.tcx }, icx.query, handler, num_frames)
+            print_query_stack(QueryCtxt::new(icx.tcx), icx.query, handler, num_frames)
         } else {
             0
         }

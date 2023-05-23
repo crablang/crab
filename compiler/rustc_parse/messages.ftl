@@ -257,6 +257,10 @@ parse_invalid_literal_suffix_on_tuple_index = suffixes on a tuple index are inva
     .tuple_exception_line_2 = on proc macros, you'll want to use `syn::Index::from` or `proc_macro::Literal::*_unsuffixed` for code that will desugar to tuple field access
     .tuple_exception_line_3 = see issue #60210 <https://github.com/rust-lang/rust/issues/60210> for more information
 
+parse_expected_builtin_ident = expected identifier after `builtin #`
+
+parse_unknown_builtin_construct = unknown `builtin #` construct `{$name}`
+
 parse_non_string_abi_literal = non-string ABI literal
     .suggestion = specify the ABI with a string literal
 
@@ -339,6 +343,7 @@ parse_expected_identifier = expected identifier
 parse_sugg_escape_identifier = escape `{$ident_name}` to use it as an identifier
 
 parse_sugg_remove_comma = remove this comma
+parse_sugg_add_let_for_stmt = you might have meant to introduce a new binding
 
 parse_expected_semi_found_reserved_identifier_str = expected `;`, found reserved identifier `{$token}`
 parse_expected_semi_found_keyword_str = expected `;`, found keyword `{$token}`
@@ -472,6 +477,11 @@ parse_missing_for_in_trait_impl = missing `for` in a trait impl
     .suggestion = add `for` here
 
 parse_expected_trait_in_trait_impl_found_type = expected a trait, found type
+
+parse_extra_impl_keyword_in_trait_impl = unexpected `impl` keyword
+    .suggestion = remove the extra `impl`
+    .note = this is parsed as an `impl Trait` type, but a trait is expected at this position
+
 
 parse_non_item_in_item_list = non-item in item list
     .suggestion_use_const_not_let = consider using `const` instead of `let` for associated const

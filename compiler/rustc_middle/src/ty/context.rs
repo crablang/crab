@@ -14,15 +14,14 @@ use crate::middle::resolve_bound_vars;
 use crate::middle::stability;
 use crate::mir::interpret::{self, Allocation, ConstAllocation};
 use crate::mir::{Body, Local, Place, PlaceElem, ProjectionKind, Promoted};
-use crate::query::on_disk_cache::OnDiskCache;
+use crate::query::plumbing::QuerySystem;
 use crate::query::LocalCrate;
+use crate::query::Providers;
+use crate::query::{IntoQueryParam, TyCtxtAt};
 use crate::thir::Thir;
 use crate::traits;
 use crate::traits::solve;
 use crate::traits::solve::{ExternalConstraints, ExternalConstraintsData};
-use crate::ty::query::QuerySystem;
-use crate::ty::query::QuerySystemFns;
-use crate::ty::query::{self, TyCtxtAt};
 use crate::ty::{
     self, AdtDef, AdtDefData, AdtKind, Binder, Const, ConstData, FloatTy, FloatVar, FloatVid,
     GenericParamDefKind, ImplPolarity, InferTy, IntTy, IntVar, IntVid, List, ParamConst, ParamTy,
@@ -80,8 +79,6 @@ use std::hash::{Hash, Hasher};
 use std::iter;
 use std::mem;
 use std::ops::{Bound, Deref};
-
-use super::query::IntoQueryParam;
 
 const TINY_CONST_EVAL_LIMIT: Limit = Limit(20);
 
@@ -496,7 +493,7 @@ pub struct GlobalCtxt<'tcx> {
     ///
     /// FIXME(Centril): consider `dyn LintStoreMarker` once
     /// we can upcast to `Any` for some additional type safety.
-    pub lint_store: Lrc<dyn Any + sync::Sync + sync::Send>,
+    pub lint_store: Lrc<dyn Any + sync::DynSync + sync::DynSend>,
 
     pub dep_graph: DepGraph,
 
@@ -513,7 +510,7 @@ pub struct GlobalCtxt<'tcx> {
 
     untracked: Untracked,
 
-    pub query_system: query::QuerySystem<'tcx>,
+    pub query_system: QuerySystem<'tcx>,
     pub(crate) query_kinds: &'tcx [DepKindStruct<'tcx>],
 
     // Internal caches for metadata decoding. No need to track deps on this.
@@ -648,14 +645,13 @@ impl<'tcx> TyCtxt<'tcx> {
     /// reference to the context, to allow formatting values that need it.
     pub fn create_global_ctxt(
         s: &'tcx Session,
-        lint_store: Lrc<dyn Any + sync::Send + sync::Sync>,
+        lint_store: Lrc<dyn Any + sync::DynSend + sync::DynSync>,
         arena: &'tcx WorkerLocal<Arena<'tcx>>,
         hir_arena: &'tcx WorkerLocal<hir::Arena<'tcx>>,
         untracked: Untracked,
         dep_graph: DepGraph,
-        on_disk_cache: Option<OnDiskCache<'tcx>>,
         query_kinds: &'tcx [DepKindStruct<'tcx>],
-        query_system_fns: QuerySystemFns<'tcx>,
+        query_system: QuerySystem<'tcx>,
     ) -> GlobalCtxt<'tcx> {
         let data_layout = s.target.parse_data_layout().unwrap_or_else(|err| {
             s.emit_fatal(err);
@@ -677,7 +673,7 @@ impl<'tcx> TyCtxt<'tcx> {
             lifetimes: common_lifetimes,
             consts: common_consts,
             untracked,
-            query_system: QuerySystem::new(query_system_fns, on_disk_cache),
+            query_system,
             query_kinds,
             ty_rcache: Default::default(),
             pred_rcache: Default::default(),
@@ -704,7 +700,11 @@ impl<'tcx> TyCtxt<'tcx> {
     /// Constructs a `TyKind::Error` type and registers a `delay_span_bug` with the given `msg` to
     /// ensure it gets used.
     #[track_caller]
-    pub fn ty_error_with_message<S: Into<MultiSpan>>(self, span: S, msg: &str) -> Ty<'tcx> {
+    pub fn ty_error_with_message<S: Into<MultiSpan>>(
+        self,
+        span: S,
+        msg: impl Into<DiagnosticMessage>,
+    ) -> Ty<'tcx> {
         let reported = self.sess.delay_span_bug(span, msg);
         self.mk_ty_from_kind(Error(reported))
     }
@@ -735,17 +735,13 @@ impl<'tcx> TyCtxt<'tcx> {
 
     /// Like [TyCtxt::ty_error] but for constants, with current `ErrorGuaranteed`
     #[track_caller]
-    pub fn const_error_with_guaranteed(
-        self,
-        ty: Ty<'tcx>,
-        reported: ErrorGuaranteed,
-    ) -> Const<'tcx> {
+    pub fn const_error(self, ty: Ty<'tcx>, reported: ErrorGuaranteed) -> Const<'tcx> {
         self.mk_const(ty::ConstKind::Error(reported), ty)
     }
 
     /// Like [TyCtxt::ty_error] but for constants.
     #[track_caller]
-    pub fn const_error(self, ty: Ty<'tcx>) -> Const<'tcx> {
+    pub fn const_error_misc(self, ty: Ty<'tcx>) -> Const<'tcx> {
         self.const_error_with_message(
             ty,
             DUMMY_SP,
@@ -1093,11 +1089,13 @@ impl<'tcx> TyCtxt<'tcx> {
         v.0
     }
 
-    /// Given a `DefId` for an `fn`, return all the `dyn` and `impl` traits in its return type and associated alias span when type alias is used
+    /// Given a `DefId` for an `fn`, return all the `dyn` and `impl` traits in
+    /// its return type, and the associated alias span when type alias is used,
+    /// along with a span for lifetime suggestion (if there are existing generics).
     pub fn return_type_impl_or_dyn_traits_with_type_alias(
         self,
         scope_def_id: LocalDefId,
-    ) -> Option<(Vec<&'tcx hir::Ty<'tcx>>, Span)> {
+    ) -> Option<(Vec<&'tcx hir::Ty<'tcx>>, Span, Option<Span>)> {
         let hir_id = self.hir().local_def_id_to_hir_id(scope_def_id);
         let mut v = TraitObjectVisitor(vec![], self.hir());
         // when the return type is a type alias
@@ -1111,7 +1109,7 @@ impl<'tcx> TyCtxt<'tcx> {
         {
             v.visit_ty(alias_ty);
             if !v.0.is_empty() {
-                return Some((v.0, alias_generics.span));
+                return Some((v.0, alias_generics.span, alias_generics.span_for_lifetime_suggestion()));
             }
         }
         return None;
@@ -1846,7 +1844,17 @@ impl<'tcx> TyCtxt<'tcx> {
         let substs = substs.into_iter().map(Into::into);
         #[cfg(debug_assertions)]
         {
-            let n = self.generics_of(_def_id).count();
+            let generics = self.generics_of(_def_id);
+
+            let n = if let DefKind::AssocTy = self.def_kind(_def_id)
+                && let DefKind::Impl { of_trait: false } = self.def_kind(self.parent(_def_id))
+            {
+                // If this is an inherent projection.
+
+                generics.params.len() + 1
+            } else {
+                generics.count()
+            };
             assert_eq!(
                 (n, Some(n)),
                 substs.size_hint(),
@@ -2007,7 +2015,7 @@ impl<'tcx> TyCtxt<'tcx> {
         debug_assert_matches!(
             (kind, self.def_kind(alias_ty.def_id)),
             (ty::Opaque, DefKind::OpaqueTy)
-                | (ty::Projection, DefKind::AssocTy)
+                | (ty::Projection | ty::Inherent, DefKind::AssocTy)
                 | (ty::Opaque | ty::Projection, DefKind::ImplTraitPlaceholder)
         );
         self.mk_ty_from_kind(Alias(kind, alias_ty))
@@ -2429,7 +2437,7 @@ impl<'tcx> TyCtxtAt<'tcx> {
     /// Constructs a `TyKind::Error` type and registers a `delay_span_bug` with the given `msg` to
     /// ensure it gets used.
     #[track_caller]
-    pub fn ty_error_with_message(self, msg: &str) -> Ty<'tcx> {
+    pub fn ty_error_with_message(self, msg: impl Into<DiagnosticMessage>) -> Ty<'tcx> {
         self.tcx.ty_error_with_message(self.span, msg)
     }
 }
@@ -2449,7 +2457,7 @@ pub struct DeducedParamAttrs {
     pub read_only: bool,
 }
 
-pub fn provide(providers: &mut ty::query::Providers) {
+pub fn provide(providers: &mut Providers) {
     providers.maybe_unused_trait_imports =
         |tcx, ()| &tcx.resolutions(()).maybe_unused_trait_imports;
     providers.names_imported_by_glob_use = |tcx, id| {

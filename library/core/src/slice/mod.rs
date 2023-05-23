@@ -995,7 +995,7 @@ impl<T> [T] {
     #[unstable(feature = "slice_as_chunks", issue = "74985")]
     #[inline]
     #[must_use]
-    pub unsafe fn as_chunks_unchecked<const N: usize>(&self) -> &[[T; N]] {
+    pub const unsafe fn as_chunks_unchecked<const N: usize>(&self) -> &[[T; N]] {
         let this = self;
         // SAFETY: Caller must guarantee that `N` is nonzero and exactly divides the slice length
         let new_len = unsafe {
@@ -1043,7 +1043,7 @@ impl<T> [T] {
     #[inline]
     #[track_caller]
     #[must_use]
-    pub fn as_chunks<const N: usize>(&self) -> (&[[T; N]], &[T]) {
+    pub const fn as_chunks<const N: usize>(&self) -> (&[[T; N]], &[T]) {
         assert!(N != 0, "chunk size must be non-zero");
         let len = self.len() / N;
         let (multiple_of_n, remainder) = self.split_at(len * N);
@@ -1075,7 +1075,7 @@ impl<T> [T] {
     #[inline]
     #[track_caller]
     #[must_use]
-    pub fn as_rchunks<const N: usize>(&self) -> (&[T], &[[T; N]]) {
+    pub const fn as_rchunks<const N: usize>(&self) -> (&[T], &[[T; N]]) {
         assert!(N != 0, "chunk size must be non-zero");
         let len = self.len() / N;
         let (remainder, multiple_of_n) = self.split_at(self.len() - len * N);
@@ -1152,7 +1152,7 @@ impl<T> [T] {
     #[unstable(feature = "slice_as_chunks", issue = "74985")]
     #[inline]
     #[must_use]
-    pub unsafe fn as_chunks_unchecked_mut<const N: usize>(&mut self) -> &mut [[T; N]] {
+    pub const unsafe fn as_chunks_unchecked_mut<const N: usize>(&mut self) -> &mut [[T; N]] {
         let this = &*self;
         // SAFETY: Caller must guarantee that `N` is nonzero and exactly divides the slice length
         let new_len = unsafe {
@@ -1195,7 +1195,7 @@ impl<T> [T] {
     #[inline]
     #[track_caller]
     #[must_use]
-    pub fn as_chunks_mut<const N: usize>(&mut self) -> (&mut [[T; N]], &mut [T]) {
+    pub const fn as_chunks_mut<const N: usize>(&mut self) -> (&mut [[T; N]], &mut [T]) {
         assert!(N != 0, "chunk size must be non-zero");
         let len = self.len() / N;
         let (multiple_of_n, remainder) = self.split_at_mut(len * N);
@@ -1233,7 +1233,7 @@ impl<T> [T] {
     #[inline]
     #[track_caller]
     #[must_use]
-    pub fn as_rchunks_mut<const N: usize>(&mut self) -> (&mut [T], &mut [[T; N]]) {
+    pub const fn as_rchunks_mut<const N: usize>(&mut self) -> (&mut [T], &mut [[T; N]]) {
         assert!(N != 0, "chunk size must be non-zero");
         let len = self.len() / N;
         let (remainder, multiple_of_n) = self.split_at_mut(self.len() - len * N);
@@ -1595,7 +1595,8 @@ impl<T> [T] {
     /// }
     /// ```
     #[stable(feature = "rust1", since = "1.0.0")]
-    #[rustc_const_unstable(feature = "const_slice_split_at_not_mut", issue = "101158")]
+    #[rustc_const_stable(feature = "const_slice_split_at_not_mut", since = "CURRENT_RUSTC_VERSION")]
+    #[rustc_allow_const_fn_unstable(slice_split_at_unchecked)]
     #[inline]
     #[track_caller]
     #[must_use]
@@ -3478,44 +3479,13 @@ impl<T> [T] {
         // Ts = size_of::<U> / gcd(size_of::<T>, size_of::<U>)
         //
         // Luckily since all this is constant-evaluated... performance here matters not!
-        #[inline]
-        fn gcd(a: usize, b: usize) -> usize {
-            use crate::intrinsics;
-            // iterative stein’s algorithm
-            // We should still make this `const fn` (and revert to recursive algorithm if we do)
-            // because relying on llvm to consteval all this is… well, it makes me uncomfortable.
-
-            // SAFETY: `a` and `b` are checked to be non-zero values.
-            let (ctz_a, mut ctz_b) = unsafe {
-                if a == 0 {
-                    return b;
-                }
-                if b == 0 {
-                    return a;
-                }
-                (intrinsics::cttz_nonzero(a), intrinsics::cttz_nonzero(b))
-            };
-            let k = ctz_a.min(ctz_b);
-            let mut a = a >> ctz_a;
-            let mut b = b;
-            loop {
-                // remove all factors of 2 from b
-                b >>= ctz_b;
-                if a > b {
-                    mem::swap(&mut a, &mut b);
-                }
-                b = b - a;
-                // SAFETY: `b` is checked to be non-zero.
-                unsafe {
-                    if b == 0 {
-                        break;
-                    }
-                    ctz_b = intrinsics::cttz_nonzero(b);
-                }
-            }
-            a << k
+        const fn gcd(a: usize, b: usize) -> usize {
+            if b == 0 { a } else { gcd(b, a % b) }
         }
-        let gcd: usize = gcd(mem::size_of::<T>(), mem::size_of::<U>());
+
+        // Explicitly wrap the function call in a const block so it gets
+        // constant-evaluated even in debug mode.
+        let gcd: usize = const { gcd(mem::size_of::<T>(), mem::size_of::<U>()) };
         let ts: usize = mem::size_of::<U>() / gcd;
         let us: usize = mem::size_of::<T>() / gcd;
 

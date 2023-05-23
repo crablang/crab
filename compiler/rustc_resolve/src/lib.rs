@@ -21,6 +21,9 @@
 #[macro_use]
 extern crate tracing;
 
+use errors::{
+    ParamKindInEnumDiscriminant, ParamKindInNonTrivialAnonConst, ParamKindInTyOfConstParam,
+};
 use rustc_arena::{DroplessArena, TypedArena};
 use rustc_ast::node_id::NodeMap;
 use rustc_ast::{self as ast, attr, NodeId, CRATE_NODE_ID};
@@ -44,6 +47,7 @@ use rustc_index::IndexVec;
 use rustc_metadata::creader::{CStore, CrateLoader};
 use rustc_middle::metadata::ModChild;
 use rustc_middle::middle::privacy::EffectiveVisibilities;
+use rustc_middle::query::Providers;
 use rustc_middle::span_bug;
 use rustc_middle::ty::{self, MainDefinition, RegisteredTools, TyCtxt};
 use rustc_middle::ty::{ResolverGlobalCtxt, ResolverOutputs};
@@ -81,6 +85,7 @@ pub mod rustdoc;
 
 fluent_messages! { "../messages.ftl" }
 
+#[derive(Debug)]
 enum Weak {
     Yes,
     No,
@@ -223,11 +228,15 @@ enum ResolutionError<'a> {
     /// Error E0128: generic parameters with a default cannot use forward-declared identifiers.
     ForwardDeclaredGenericParam,
     /// ERROR E0770: the type of const parameters must not depend on other generic parameters.
-    ParamInTyOfConstParam(Symbol),
+    ParamInTyOfConstParam { name: Symbol, param_kind: Option<ParamKindInTyOfConstParam> },
     /// generic parameters must not be used inside const evaluations.
     ///
     /// This error is only emitted when using `min_const_generics`.
-    ParamInNonTrivialAnonConst { name: Symbol, is_type: bool },
+    ParamInNonTrivialAnonConst { name: Symbol, param_kind: ParamKindInNonTrivialAnonConst },
+    /// generic parameters must not be used inside enum discriminants.
+    ///
+    /// This error is emitted even with `generic_const_exprs`.
+    ParamInEnumDiscriminant { name: Symbol, param_kind: ParamKindInEnumDiscriminant },
     /// Error E0735: generic parameters with a default cannot use `Self`
     SelfInGenericParamDefault,
     /// Error E0767: use of unreachable label
@@ -244,6 +253,8 @@ enum ResolutionError<'a> {
     TraitImplDuplicate { name: Symbol, trait_item_span: Span, old_span: Span },
     /// Inline asm `sym` operand must refer to a `fn` or `static`.
     InvalidAsmSym,
+    /// `self` used instead of `Self` in a generic parameter
+    LowercaseSelf,
 }
 
 enum VisResolutionError<'a> {
@@ -457,6 +468,13 @@ struct BindingKey {
     /// 0 if ident is not `_`, otherwise a value that's unique to the specific
     /// `_` in the expanded AST that introduced this binding.
     disambiguator: u32,
+}
+
+impl BindingKey {
+    fn new(ident: Ident, ns: Namespace) -> Self {
+        let ident = ident.normalize_to_macros_2_0();
+        BindingKey { ident, ns, disambiguator: 0 }
+    }
 }
 
 type Resolutions<'a> = RefCell<FxIndexMap<BindingKey, &'a RefCell<NameResolution<'a>>>>;
@@ -933,6 +951,7 @@ pub struct Resolver<'a, 'tcx> {
     empty_module: Module<'a>,
     module_map: FxHashMap<DefId, Module<'a>>,
     binding_parent_modules: FxHashMap<Interned<'a, NameBinding<'a>>, Module<'a>>,
+
     underscore_disambiguator: u32,
 
     /// Maps glob imports to the names of items actually imported.
@@ -1585,7 +1604,7 @@ impl<'a, 'tcx> Resolver<'a, 'tcx> {
         import_ids
     }
 
-    fn new_key(&mut self, ident: Ident, ns: Namespace) -> BindingKey {
+    fn new_disambiguated_key(&mut self, ident: Ident, ns: Namespace) -> BindingKey {
         let ident = ident.normalize_to_macros_2_0();
         let disambiguator = if ident.name == kw::Underscore {
             self.underscore_disambiguator += 1;
@@ -2017,6 +2036,6 @@ impl Finalize {
     }
 }
 
-pub fn provide(providers: &mut ty::query::Providers) {
+pub fn provide(providers: &mut Providers) {
     providers.registered_tools = macros::registered_tools;
 }

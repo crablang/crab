@@ -26,8 +26,8 @@ use rustc_hir::{AssocItemKind, HirIdSet, ItemId, Node, PatKind};
 use rustc_middle::bug;
 use rustc_middle::hir::nested_filter;
 use rustc_middle::middle::privacy::{EffectiveVisibilities, EffectiveVisibility, Level};
+use rustc_middle::query::Providers;
 use rustc_middle::span_bug;
-use rustc_middle::ty::query::Providers;
 use rustc_middle::ty::subst::InternalSubsts;
 use rustc_middle::ty::{self, Const, GenericParamDefKind};
 use rustc_middle::ty::{TraitRef, Ty, TyCtxt, TypeSuperVisitable, TypeVisitable, TypeVisitor};
@@ -242,6 +242,39 @@ where
                 }
                 // This will also visit substs if necessary, so we don't need to recurse.
                 return self.visit_projection_ty(proj);
+            }
+            ty::Alias(ty::Inherent, data) => {
+                if self.def_id_visitor.skip_assoc_tys() {
+                    // Visitors searching for minimal visibility/reachability want to
+                    // conservatively approximate associated types like `Type::Alias`
+                    // as visible/reachable even if `Type` is private.
+                    // Ideally, associated types should be substituted in the same way as
+                    // free type aliases, but this isn't done yet.
+                    return ControlFlow::Continue(());
+                }
+
+                self.def_id_visitor.visit_def_id(
+                    data.def_id,
+                    "associated type",
+                    &LazyDefPathStr { def_id: data.def_id, tcx },
+                )?;
+
+                struct LazyDefPathStr<'tcx> {
+                    def_id: DefId,
+                    tcx: TyCtxt<'tcx>,
+                }
+                impl<'tcx> fmt::Display for LazyDefPathStr<'tcx> {
+                    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+                        write!(f, "{}", self.tcx.def_path_str(self.def_id))
+                    }
+                }
+
+                // This will also visit substs if necessary, so we don't need to recurse.
+                return if self.def_id_visitor.shallow() {
+                    ControlFlow::Continue(())
+                } else {
+                    data.substs.iter().try_for_each(|subst| subst.visit_with(self))
+                };
             }
             ty::Dynamic(predicates, ..) => {
                 // All traits in the list are considered the "primary" part of the type
@@ -706,7 +739,10 @@ impl<'tcx> Visitor<'tcx> for EmbargoVisitor<'tcx> {
             }
             hir::ItemKind::Impl(ref impl_) => {
                 for impl_item_ref in impl_.items {
-                    self.update(impl_item_ref.id.owner_id.def_id, item_ev, Level::Direct);
+                    let def_id = impl_item_ref.id.owner_id.def_id;
+                    let nominal_vis =
+                        impl_.of_trait.is_none().then(|| self.tcx.local_visibility(def_id));
+                    self.update_eff_vis(def_id, item_ev, nominal_vis, Level::Direct);
                 }
             }
             hir::ItemKind::Trait(.., trait_item_refs) => {

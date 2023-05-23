@@ -1,5 +1,6 @@
 use crate::mir::interpret::{AllocRange, GlobalAlloc, Pointer, Provenance, Scalar};
-use crate::ty::query::IntoQueryParam;
+use crate::query::IntoQueryParam;
+use crate::query::Providers;
 use crate::ty::{
     self, ConstInt, ParamConst, ScalarInt, Term, TermKind, Ty, TyCtxt, TypeFoldable,
     TypeSuperFoldable, TypeSuperVisitable, TypeVisitable, TypeVisitableExt,
@@ -702,7 +703,7 @@ pub trait PrettyPrinter<'tcx>:
             ty::Error(_) => p!("[type error]"),
             ty::Param(ref param_ty) => p!(print(param_ty)),
             ty::Bound(debruijn, bound_ty) => match bound_ty.kind {
-                ty::BoundTyKind::Anon => self.pretty_print_bound_var(debruijn, bound_ty.var)?,
+                ty::BoundTyKind::Anon => debug_bound_var(&mut self, debruijn, bound_ty.var)?,
                 ty::BoundTyKind::Param(_, s) => match self.should_print_verbose() {
                     true if debruijn == ty::INNERMOST => p!(write("^{}", s)),
                     true => p!(write("^{}_{}", debruijn.index(), s)),
@@ -729,7 +730,7 @@ pub trait PrettyPrinter<'tcx>:
             ty::Foreign(def_id) => {
                 p!(print_def_path(def_id, &[]));
             }
-            ty::Alias(ty::Projection, ref data) => {
+            ty::Alias(ty::Projection | ty::Inherent, ref data) => {
                 if !(self.should_print_verbose() || NO_QUERIES.with(|q| q.get()))
                     && self.tcx().is_impl_trait_in_trait(data.def_id)
                 {
@@ -740,7 +741,7 @@ pub trait PrettyPrinter<'tcx>:
             }
             ty::Placeholder(placeholder) => match placeholder.bound.kind {
                 ty::BoundTyKind::Anon => {
-                    self.pretty_print_placeholder_var(placeholder.universe, placeholder.bound.var)?
+                    debug_placeholder_var(&mut self, placeholder.universe, placeholder.bound.var)?;
                 }
                 ty::BoundTyKind::Param(_, name) => p!(write("{}", name)),
             },
@@ -1163,30 +1164,6 @@ pub trait PrettyPrinter<'tcx>:
         traits.entry(trait_ref).or_default().extend(proj_ty);
     }
 
-    fn pretty_print_bound_var(
-        &mut self,
-        debruijn: ty::DebruijnIndex,
-        var: ty::BoundVar,
-    ) -> Result<(), Self::Error> {
-        if debruijn == ty::INNERMOST {
-            write!(self, "^{}", var.index())
-        } else {
-            write!(self, "^{}_{}", debruijn.index(), var.index())
-        }
-    }
-
-    fn pretty_print_placeholder_var(
-        &mut self,
-        ui: ty::UniverseIndex,
-        var: ty::BoundVar,
-    ) -> Result<(), Self::Error> {
-        if ui == ty::UniverseIndex::ROOT {
-            write!(self, "!{}", var.index())
-        } else {
-            write!(self, "!{}_{}", ui.index(), var.index())
-        }
-    }
-
     fn ty_infer_name(&self, _: ty::TyVid) -> Option<Symbol> {
         None
     }
@@ -1320,7 +1297,7 @@ pub trait PrettyPrinter<'tcx>:
         define_scoped_cx!(self);
 
         if self.should_print_verbose() {
-            p!(write("Const({:?}: {:?})", ct.kind(), ct.ty()));
+            p!(write("{:?}", ct));
             return Ok(self);
         }
 
@@ -1379,9 +1356,11 @@ pub trait PrettyPrinter<'tcx>:
             }
 
             ty::ConstKind::Bound(debruijn, bound_var) => {
-                self.pretty_print_bound_var(debruijn, bound_var)?
+                debug_bound_var(&mut self, debruijn, bound_var)?
             }
-            ty::ConstKind::Placeholder(placeholder) => p!(write("Placeholder({:?})", placeholder)),
+            ty::ConstKind::Placeholder(placeholder) => {
+                debug_placeholder_var(&mut self, placeholder.universe, placeholder.bound)?;
+            },
             // FIXME(generic_const_exprs):
             // write out some legible representation of an abstract const?
             ty::ConstKind::Expr(_) => p!("[const expr]"),
@@ -3054,8 +3033,8 @@ fn trimmed_def_paths(tcx: TyCtxt<'_>, (): ()) -> FxHashMap<DefId, Symbol> {
     map
 }
 
-pub fn provide(providers: &mut ty::query::Providers) {
-    *providers = ty::query::Providers { trimmed_def_paths, ..*providers };
+pub fn provide(providers: &mut Providers) {
+    *providers = Providers { trimmed_def_paths, ..*providers };
 }
 
 #[derive(Default)]
@@ -3065,4 +3044,28 @@ pub struct OpaqueFnEntry<'tcx> {
     fn_mut_trait_ref: Option<ty::PolyTraitRef<'tcx>>,
     fn_trait_ref: Option<ty::PolyTraitRef<'tcx>>,
     return_ty: Option<ty::Binder<'tcx, Term<'tcx>>>,
+}
+
+pub fn debug_bound_var<T: std::fmt::Write>(
+    fmt: &mut T,
+    debruijn: ty::DebruijnIndex,
+    var: ty::BoundVar,
+) -> Result<(), std::fmt::Error> {
+    if debruijn == ty::INNERMOST {
+        write!(fmt, "^{}", var.index())
+    } else {
+        write!(fmt, "^{}_{}", debruijn.index(), var.index())
+    }
+}
+
+pub fn debug_placeholder_var<T: std::fmt::Write>(
+    fmt: &mut T,
+    universe: ty::UniverseIndex,
+    bound: ty::BoundVar,
+) -> Result<(), std::fmt::Error> {
+    if universe == ty::UniverseIndex::ROOT {
+        write!(fmt, "!{}", bound.index())
+    } else {
+        write!(fmt, "!{}_{}", universe.index(), bound.index())
+    }
 }

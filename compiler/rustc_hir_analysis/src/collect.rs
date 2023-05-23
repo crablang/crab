@@ -28,7 +28,7 @@ use rustc_hir::{GenericParamKind, Node};
 use rustc_infer::infer::{InferCtxt, TyCtxtInferExt};
 use rustc_infer::traits::ObligationCause;
 use rustc_middle::hir::nested_filter;
-use rustc_middle::ty::query::Providers;
+use rustc_middle::query::Providers;
 use rustc_middle::ty::util::{Discr, IntTypeExt};
 use rustc_middle::ty::{self, AdtKind, Const, IsSuggestable, ToPredicate, Ty, TyCtxt};
 use rustc_span::symbol::{kw, sym, Ident, Symbol};
@@ -73,7 +73,6 @@ pub fn provide(providers: &mut Providers) {
         fn_sig,
         impl_trait_ref,
         impl_polarity,
-        is_foreign_item,
         generator_kind,
         collect_mod_item_types,
         is_type_alias_impl_trait,
@@ -1466,10 +1465,6 @@ fn compute_sig_of_foreign_fn_decl<'tcx>(
     fty
 }
 
-fn is_foreign_item(tcx: TyCtxt<'_>, def_id: LocalDefId) -> bool {
-    matches!(tcx.hir().get_by_def_id(def_id), Node::ForeignItem(..))
-}
-
 fn generator_kind(tcx: TyCtxt<'_>, def_id: LocalDefId) -> Option<hir::GeneratorKind> {
     match tcx.hir().get_by_def_id(def_id) {
         Node::Expr(&rustc_hir::Expr {
@@ -1483,7 +1478,7 @@ fn generator_kind(tcx: TyCtxt<'_>, def_id: LocalDefId) -> Option<hir::GeneratorK
 fn is_type_alias_impl_trait<'tcx>(tcx: TyCtxt<'tcx>, def_id: LocalDefId) -> bool {
     match tcx.hir().get_by_def_id(def_id) {
         Node::Item(hir::Item { kind: hir::ItemKind::OpaqueTy(opaque), .. }) => {
-            matches!(opaque.origin, hir::OpaqueTyOrigin::TyAlias)
+            matches!(opaque.origin, hir::OpaqueTyOrigin::TyAlias { .. })
         }
         _ => bug!("tried getting opaque_ty_origin for non-opaque: {:?}", def_id),
     }
