@@ -11,10 +11,11 @@ git fetch upstream
 git reset --hard upstream/master
 
 # copy the README.md file from the local master branch
-git checkout master -- README.md
+git checkout master -- README.md CODE_OF_CONDUCT.md CONTRIBUTING.md
 
 # add it to git in the current branch and create a commit
-git add README.md
-git commit -m "use crablang readme"
+git add --all
+git commit -m "incorporate stable changes"
 
 # git push git paid
+
