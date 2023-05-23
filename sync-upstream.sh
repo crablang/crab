@@ -6,6 +6,12 @@ if [ "$current_branch" != "current" ]; then
   git checkout current
 fi
 
+# add the remote "upstream" if it doesn't exist
+git remote | grep -q upstream
+if [ $? -ne 0 ]; then
+  git remote add upstream https://github.com/rust-lang/rust.git
+fi
+
 # hard reset to the remote "upstream" and branch "master"
 git fetch upstream
 git reset --hard upstream/master
@@ -18,4 +24,3 @@ git add --all
 git commit -m "incorporate stable changes"
 
 # git push git paid
-
