@@ -106,7 +106,7 @@ impl Determinacy {
 /// A specific scope in which a name can be looked up.
 /// This enum is currently used only for early resolution (imports and macros),
 /// but not for late resolution yet.
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, Debug)]
 enum Scope<'a> {
     DeriveHelpers(LocalExpnId),
     DeriveHelpersCompat,
@@ -1477,7 +1477,7 @@ impl<'a, 'tcx> Resolver<'a, 'tcx> {
     }
 
     fn is_builtin_macro(&mut self, res: Res) -> bool {
-        self.get_macro(res).map_or(false, |macro_data| macro_data.ext.builtin_name.is_some())
+        self.get_macro(res).is_some_and(|macro_data| macro_data.ext.builtin_name.is_some())
     }
 
     fn macro_def(&self, mut ctxt: SyntaxContext) -> DefId {
@@ -1496,8 +1496,8 @@ impl<'a, 'tcx> Resolver<'a, 'tcx> {
             let exported_ambiguities = self.tcx.sess.time("compute_effective_visibilities", || {
                 EffectiveVisibilitiesVisitor::compute_effective_visibilities(self, krate)
             });
-            self.tcx.sess.time("check_reexport_ambiguities", || {
-                self.check_reexport_ambiguities(exported_ambiguities)
+            self.tcx.sess.time("check_hidden_glob_reexports", || {
+                self.check_hidden_glob_reexports(exported_ambiguities)
             });
             self.tcx.sess.time("finalize_macro_resolutions", || self.finalize_macro_resolutions());
             self.tcx.sess.time("late_resolve_crate", || self.late_resolve_crate(krate));

@@ -10,7 +10,6 @@
 use core::fmt::Display;
 use rustc_data_structures::base_n;
 use rustc_data_structures::fx::FxHashMap;
-use rustc_errors::DiagnosticMessage;
 use rustc_hir as hir;
 use rustc_middle::ty::subst::{GenericArg, GenericArgKind, SubstsRef};
 use rustc_middle::ty::{
@@ -272,12 +271,11 @@ fn encode_region<'tcx>(
             s.push('E');
             compress(dict, DictKey::Region(region), &mut s);
         }
-        RegionKind::ReErased => {
+        RegionKind::ReEarlyBound(..) | RegionKind::ReErased => {
             s.push_str("u6region");
             compress(dict, DictKey::Region(region), &mut s);
         }
-        RegionKind::ReEarlyBound(..)
-        | RegionKind::ReFree(..)
+        RegionKind::ReFree(..)
         | RegionKind::ReStatic
         | RegionKind::ReError(_)
         | RegionKind::ReVar(..)
@@ -535,10 +533,7 @@ fn encode_ty<'tcx>(
                         tcx.sess
                             .struct_span_err(
                                 cfi_encoding.span,
-                                DiagnosticMessage::Str(format!(
-                                    "invalid `cfi_encoding` for `{:?}`",
-                                    ty.kind()
-                                )),
+                                format!("invalid `cfi_encoding` for `{:?}`", ty.kind()),
                             )
                             .emit();
                     }
@@ -590,10 +585,7 @@ fn encode_ty<'tcx>(
                         tcx.sess
                             .struct_span_err(
                                 cfi_encoding.span,
-                                DiagnosticMessage::Str(format!(
-                                    "invalid `cfi_encoding` for `{:?}`",
-                                    ty.kind()
-                                )),
+                                format!("invalid `cfi_encoding` for `{:?}`", ty.kind()),
                             )
                             .emit();
                     }
@@ -704,14 +696,15 @@ fn transform_predicates<'tcx>(
 ) -> &'tcx List<ty::PolyExistentialPredicate<'tcx>> {
     let predicates: Vec<ty::PolyExistentialPredicate<'tcx>> = predicates
         .iter()
-        .map(|predicate| match predicate.skip_binder() {
+        .filter_map(|predicate| match predicate.skip_binder() {
             ty::ExistentialPredicate::Trait(trait_ref) => {
                 let trait_ref = ty::TraitRef::identity(tcx, trait_ref.def_id);
-                ty::Binder::dummy(ty::ExistentialPredicate::Trait(
+                Some(ty::Binder::dummy(ty::ExistentialPredicate::Trait(
                     ty::ExistentialTraitRef::erase_self_ty(tcx, trait_ref),
-                ))
+                )))
             }
-            _ => predicate,
+            ty::ExistentialPredicate::Projection(..) => None,
+            ty::ExistentialPredicate::AutoTrait(..) => Some(predicate),
         })
         .collect();
     tcx.mk_poly_existential_predicates(&predicates)
@@ -818,7 +811,7 @@ fn transform_ty<'tcx>(tcx: TyCtxt<'tcx>, ty: Ty<'tcx>, options: TransformTyOptio
                 let field = variant.fields.iter().find(|field| {
                     let ty = tcx.type_of(field.did).subst_identity();
                     let is_zst =
-                        tcx.layout_of(param_env.and(ty)).map_or(false, |layout| layout.is_zst());
+                        tcx.layout_of(param_env.and(ty)).is_ok_and(|layout| layout.is_zst());
                     !is_zst
                 });
                 if let Some(field) = field {

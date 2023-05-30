@@ -10,7 +10,6 @@ use rustc_middle::mir::*;
 use rustc_middle::ty::TypeVisitableExt;
 use rustc_middle::ty::{self, Instance, InstanceDef, ParamEnv, Ty, TyCtxt};
 use rustc_session::config::OptLevel;
-use rustc_span::{hygiene::ExpnKind, ExpnData, LocalExpnId, Span};
 use rustc_target::abi::{FieldIdx, FIRST_VARIANT};
 use rustc_target::spec::abi::Abi;
 
@@ -193,7 +192,7 @@ impl<'tcx> Inliner<'tcx> {
         let Ok(callee_body) = callsite.callee.try_subst_mir_and_normalize_erasing_regions(
             self.tcx,
             self.param_env,
-            ty::EarlyBinder(callee_body.clone()),
+            ty::EarlyBinder::new(callee_body.clone()),
         ) else {
             return Err("failed to normalize callee body");
         };
@@ -450,16 +449,16 @@ impl<'tcx> Inliner<'tcx> {
             checker.visit_basic_block_data(bb, blk);
 
             let term = blk.terminator();
-            if let TerminatorKind::Drop { ref place, target, unwind } = term.kind {
+            if let TerminatorKind::Drop { ref place, target, unwind, replace: _ } = term.kind {
                 work_list.push(target);
 
                 // If the place doesn't actually need dropping, treat it like a regular goto.
                 let ty = callsite
                     .callee
-                    .subst_mir(self.tcx, ty::EarlyBinder(&place.ty(callee_body, tcx).ty));
+                    .subst_mir(self.tcx, ty::EarlyBinder::new(&place.ty(callee_body, tcx).ty));
                 if ty.needs_drop(tcx, self.param_env) && let UnwindAction::Cleanup(unwind) = unwind {
-                        work_list.push(unwind);
-                    }
+                    work_list.push(unwind);
+                }
             } else if callee_attrs.instruction_set != self.codegen_fn_attrs.instruction_set
                 && matches!(term.kind, TerminatorKind::InlineAsm { .. })
             {
@@ -551,16 +550,6 @@ impl<'tcx> Inliner<'tcx> {
                 // Copy the arguments if needed.
                 let args: Vec<_> = self.make_call_args(args, &callsite, caller_body, &callee_body);
 
-                let mut expn_data = ExpnData::default(
-                    ExpnKind::Inlined,
-                    callsite.source_info.span,
-                    self.tcx.sess.edition(),
-                    None,
-                    None,
-                );
-                expn_data.def_site = callee_body.span;
-                let expn_data =
-                    self.tcx.with_stable_hashing_context(|hcx| LocalExpnId::fresh(expn_data, hcx));
                 let mut integrator = Integrator {
                     args: &args,
                     new_locals: Local::new(caller_body.local_decls.len())..,
@@ -572,7 +561,6 @@ impl<'tcx> Inliner<'tcx> {
                     cleanup_block: unwind,
                     in_cleanup_block: false,
                     tcx: self.tcx,
-                    expn_data,
                     always_live_locals: BitSet::new_filled(callee_body.local_decls.len()),
                 };
 
@@ -802,7 +790,7 @@ impl<'tcx> Visitor<'tcx> for CostChecker<'_, 'tcx> {
                 // If the place doesn't actually need dropping, treat it like a regular goto.
                 let ty = self
                     .instance
-                    .subst_mir(tcx, ty::EarlyBinder(&place.ty(self.callee_body, tcx).ty));
+                    .subst_mir(tcx, ty::EarlyBinder::new(&place.ty(self.callee_body, tcx).ty));
                 if ty.needs_drop(tcx, self.param_env) {
                     self.cost += CALL_PENALTY;
                     if let UnwindAction::Cleanup(_) = unwind {
@@ -813,7 +801,7 @@ impl<'tcx> Visitor<'tcx> for CostChecker<'_, 'tcx> {
                 }
             }
             TerminatorKind::Call { func: Operand::Constant(ref f), unwind, .. } => {
-                let fn_ty = self.instance.subst_mir(tcx, ty::EarlyBinder(&f.literal.ty()));
+                let fn_ty = self.instance.subst_mir(tcx, ty::EarlyBinder::new(&f.literal.ty()));
                 self.cost += if let ty::FnDef(def_id, _) = *fn_ty.kind() && tcx.is_intrinsic(def_id) {
                     // Don't give intrinsics the extra penalty for calls
                     INSTR_COST
@@ -956,7 +944,6 @@ struct Integrator<'a, 'tcx> {
     cleanup_block: UnwindAction,
     in_cleanup_block: bool,
     tcx: TyCtxt<'tcx>,
-    expn_data: LocalExpnId,
     always_live_locals: BitSet<Local>,
 }
 
@@ -1040,11 +1027,6 @@ impl<'tcx> MutVisitor<'tcx> for Integrator<'_, 'tcx> {
 
     fn visit_source_scope(&mut self, scope: &mut SourceScope) {
         *scope = self.map_scope(*scope);
-    }
-
-    fn visit_span(&mut self, span: &mut Span) {
-        // Make sure that all spans track the fact that they were inlined.
-        *span = span.fresh_expansion(self.expn_data);
     }
 
     fn visit_basic_block_data(&mut self, block: BasicBlock, data: &mut BasicBlockData<'tcx>) {

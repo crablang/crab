@@ -91,7 +91,7 @@ use rustc_middle::middle::region;
 use rustc_middle::mir::*;
 use rustc_middle::thir::{Expr, LintLevel};
 
-use rustc_span::{DesugaringKind, Span, DUMMY_SP};
+use rustc_span::{Span, DUMMY_SP};
 
 #[derive(Debug)]
 pub struct Scopes<'tcx> {
@@ -325,10 +325,10 @@ impl DropTree {
         entry_points.sort();
 
         for (drop_idx, drop_data) in self.drops.iter_enumerated().rev() {
-            if entry_points.last().map_or(false, |entry_point| entry_point.0 == drop_idx) {
+            if entry_points.last().is_some_and(|entry_point| entry_point.0 == drop_idx) {
                 let block = *blocks[drop_idx].get_or_insert_with(|| T::make_block(cfg));
                 needs_block[drop_idx] = Block::Own;
-                while entry_points.last().map_or(false, |entry_point| entry_point.0 == drop_idx) {
+                while entry_points.last().is_some_and(|entry_point| entry_point.0 == drop_idx) {
                     let entry_block = entry_points.pop().unwrap().1;
                     T::add_entry(cfg, entry_block, block);
                 }
@@ -371,6 +371,7 @@ impl DropTree {
                         // The caller will handle this if needed.
                         unwind: UnwindAction::Terminate,
                         place: drop_data.0.local.into(),
+                        replace: false,
                     };
                     cfg.terminate(block, drop_data.0.source_info, terminator);
                 }
@@ -731,7 +732,7 @@ impl<'a, 'tcx> Builder<'a, 'tcx> {
     fn leave_top_scope(&mut self, block: BasicBlock) -> BasicBlock {
         // If we are emitting a `drop` statement, we need to have the cached
         // diverge cleanup pads ready in case that drop panics.
-        let needs_cleanup = self.scopes.scopes.last().map_or(false, |scope| scope.needs_cleanup());
+        let needs_cleanup = self.scopes.scopes.last().is_some_and(|scope| scope.needs_cleanup());
         let is_generator = self.generator_kind.is_some();
         let unwind_to = if needs_cleanup { self.diverge_cleanup() } else { DropIdx::MAX };
 
@@ -1128,9 +1129,6 @@ impl<'a, 'tcx> Builder<'a, 'tcx> {
         place: Place<'tcx>,
         value: Rvalue<'tcx>,
     ) -> BlockAnd<()> {
-        let span = self.tcx.with_stable_hashing_context(|hcx| {
-            span.mark_with_reason(None, DesugaringKind::Replace, self.tcx.sess.edition(), hcx)
-        });
         let source_info = self.source_info(span);
 
         // create the new block for the assignment
@@ -1148,6 +1146,7 @@ impl<'a, 'tcx> Builder<'a, 'tcx> {
                 place,
                 target: assign,
                 unwind: UnwindAction::Cleanup(assign_unwind),
+                replace: true,
             },
         );
         self.diverge_from(block);
@@ -1261,6 +1260,7 @@ fn build_scope_drops<'tcx>(
                         place: local.into(),
                         target: next,
                         unwind: UnwindAction::Continue,
+                        replace: false,
                     },
                 );
                 block = next;

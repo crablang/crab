@@ -1793,12 +1793,12 @@ impl<'cx, 'tcx> SelectionContext<'cx, 'tcx> {
             .infcx
             .at(&obligation.cause, obligation.param_env)
             .sup(DefineOpaqueTypes::No, obligation.predicate, infer_projection)
-            .map_or(false, |InferOk { obligations, value: () }| {
+            .is_ok_and(|InferOk { obligations, value: () }| {
                 self.evaluate_predicates_recursively(
                     TraitObligationStackList::empty(&ProvisionalEvaluationCache::default()),
                     nested_obligations.into_iter().chain(obligations),
                 )
-                .map_or(false, |res| res.may_apply())
+                .is_ok_and(|res| res.may_apply())
             });
 
         if is_match {
@@ -2149,13 +2149,11 @@ impl<'tcx> SelectionContext<'_, 'tcx> {
             ty::Adt(def, substs) => {
                 let sized_crit = def.sized_constraint(self.tcx());
                 // (*) binder moved here
-                Where(obligation.predicate.rebind({
-                    sized_crit
-                        .0
-                        .iter()
-                        .map(|ty| sized_crit.rebind(*ty).subst(self.tcx(), substs))
-                        .collect()
-                }))
+                Where(
+                    obligation
+                        .predicate
+                        .rebind(sized_crit.subst_iter_copied(self.tcx(), substs).collect()),
+                )
             }
 
             ty::Alias(..) | ty::Param(_) | ty::Placeholder(..) => None,

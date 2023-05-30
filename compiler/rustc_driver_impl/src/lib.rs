@@ -250,6 +250,16 @@ fn run_compiler(
         Box<dyn FnOnce(&config::Options) -> Box<dyn CodegenBackend> + Send>,
     >,
 ) -> interface::Result<()> {
+    // Throw away the first argument, the name of the binary.
+    // In case of at_args being empty, as might be the case by
+    // passing empty argument array to execve under some platforms,
+    // just use an empty slice.
+    //
+    // This situation was possible before due to arg_expand_all being
+    // called before removing the argument, enabling a crash by calling
+    // the compiler with @empty_file as argv[0] and no more arguments.
+    let at_args = at_args.get(1..).unwrap_or_default();
+
     let args = args::arg_expand_all(at_args);
 
     let Some(matches) = handle_options(&args) else { return Ok(()) };
@@ -1074,9 +1084,6 @@ fn print_flag_list<T>(
 /// So with all that in mind, the comments below have some more detail about the
 /// contortions done here to get things to work out correctly.
 pub fn handle_options(args: &[String]) -> Option<getopts::Matches> {
-    // Throw away the first argument, the name of the binary
-    let args = &args[1..];
-
     if args.is_empty() {
         // user did not write `-v` nor `-Z unstable-options`, so do not
         // include that extra information.
@@ -1251,7 +1258,7 @@ pub fn install_ice_hook(bug_report_url: &'static str, extra_info: fn(&Handler)) 
         if let Some(msg) = info.payload().downcast_ref::<String>() {
             if msg.starts_with("failed printing to stdout: ") && msg.ends_with("(os error 232)") {
                 // the error code is already going to be reported when the panic unwinds up the stack
-                let _ = early_error_no_abort(ErrorOutputType::default(), msg.as_str());
+                let _ = early_error_no_abort(ErrorOutputType::default(), msg.clone());
                 return;
             }
         };
@@ -1315,7 +1322,7 @@ pub fn report_ice(info: &panic::PanicInfo<'_>, bug_report_url: &str, extra_info:
     }
 
     // If backtraces are enabled, also print the query stack
-    let backtrace = env::var_os("RUST_BACKTRACE").map_or(false, |x| &x != "0");
+    let backtrace = env::var_os("RUST_BACKTRACE").is_some_and(|x| &x != "0");
 
     let num_frames = if backtrace { None } else { Some(2) };
 

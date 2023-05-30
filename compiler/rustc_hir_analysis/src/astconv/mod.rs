@@ -1159,7 +1159,7 @@ impl<'o, 'tcx> dyn AstConv<'tcx> + 'o {
             // those that do.
             self.one_bound_for_assoc_type(
                 || traits::supertraits(tcx, trait_ref),
-                trait_ref.print_only_trait_path(),
+                trait_ref.skip_binder().print_only_trait_name(),
                 binding.item_name,
                 path_span,
                 match binding.kind {
@@ -1278,7 +1278,7 @@ impl<'o, 'tcx> dyn AstConv<'tcx> + 'o {
             // params (and trait ref's late bound params). This logic is very similar to
             // `Predicate::subst_supertrait`, and it's no coincidence why.
             let shifted_output = tcx.shift_bound_var_indices(num_bound_vars, output);
-            let subst_output = ty::EarlyBinder(shifted_output).subst(tcx, substs);
+            let subst_output = ty::EarlyBinder::new(shifted_output).subst(tcx, substs);
 
             let bound_vars = tcx.late_bound_vars(binding.hir_id);
             ty::Binder::bind_with_vars(subst_output, bound_vars)
@@ -2625,7 +2625,7 @@ impl<'o, 'tcx> dyn AstConv<'tcx> + 'o {
                     && tcx.all_impls(*trait_def_id)
                         .any(|impl_def_id| {
                             let trait_ref = tcx.impl_trait_ref(impl_def_id);
-                            trait_ref.map_or(false, |trait_ref| {
+                            trait_ref.is_some_and(|trait_ref| {
                                 let impl_ = trait_ref.subst(
                                     tcx,
                                     infcx.fresh_substs_for_item(DUMMY_SP, impl_def_id),
@@ -3654,7 +3654,7 @@ impl<'o, 'tcx> dyn AstConv<'tcx> + 'o {
             ..
         }) = tcx.hir().get_by_def_id(parent_id) && self_ty.hir_id == impl_self_ty.hir_id
         {
-            if !of_trait_ref.trait_def_id().map_or(false, |def_id| def_id.is_local()) {
+            if !of_trait_ref.trait_def_id().is_some_and(|def_id| def_id.is_local()) {
                 return;
             }
             let of_trait_span = of_trait_ref.path.span;
@@ -3693,7 +3693,7 @@ impl<'o, 'tcx> dyn AstConv<'tcx> + 'o {
                     .source_map()
                     .span_to_prev_source(self_ty.span)
                     .ok()
-                    .map_or(false, |s| s.trim_end().ends_with('<'));
+                    .is_some_and(|s| s.trim_end().ends_with('<'));
 
             let is_global = poly_trait_ref.trait_ref.path.is_global();
 

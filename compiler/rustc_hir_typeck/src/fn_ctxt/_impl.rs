@@ -1,4 +1,5 @@
 use crate::callee::{self, DeferredCallResolution};
+use crate::errors::CtorIsPrivate;
 use crate::method::{self, MethodCallee, SelfSource};
 use crate::rvalue_scopes;
 use crate::{BreakableCtxt, Diverges, Expectation, FnCtxt, LocalTy, RawTy};
@@ -1017,8 +1018,8 @@ impl<'a, 'tcx> FnCtxt<'a, 'tcx> {
             .typeck_results
             .borrow()
             .expr_ty_adjusted_opt(rcvr)
-            .and_then(|ty| expected.map(|expected_ty| expected_ty.peel_refs() == ty.peel_refs()))
-            .unwrap_or(false);
+            .zip(expected)
+            .is_some_and(|(ty, expected_ty)| expected_ty.peel_refs() == ty.peel_refs());
 
         let prev_call_mutates_and_returns_unit = || {
             self.typeck_results
@@ -1026,14 +1027,13 @@ impl<'a, 'tcx> FnCtxt<'a, 'tcx> {
                 .type_dependent_def_id(expr.hir_id)
                 .map(|def_id| self.tcx.fn_sig(def_id).skip_binder().skip_binder())
                 .and_then(|sig| sig.inputs_and_output.split_last())
-                .map(|(output, inputs)| {
+                .is_some_and(|(output, inputs)| {
                     output.is_unit()
                         && inputs
                             .get(0)
                             .and_then(|self_ty| self_ty.ref_mutability())
-                            .map_or(false, rustc_ast::Mutability::is_mut)
+                            .is_some_and(rustc_ast::Mutability::is_mut)
                 })
-                .unwrap_or(false)
         };
 
         if !(rcvr_has_the_expected_type || prev_call_mutates_and_returns_unit()) {
@@ -1200,16 +1200,20 @@ impl<'a, 'tcx> FnCtxt<'a, 'tcx> {
             }
         }
 
-        let has_self = path_segs
-            .last()
-            .map(|PathSeg(def_id, _)| tcx.generics_of(*def_id).has_self)
-            .unwrap_or(false);
+        let has_self =
+            path_segs.last().is_some_and(|PathSeg(def_id, _)| tcx.generics_of(*def_id).has_self);
 
         let (res, self_ctor_substs) = if let Res::SelfCtor(impl_def_id) = res {
             let ty = self.handle_raw_ty(span, tcx.at(span).type_of(impl_def_id).subst_identity());
             match ty.normalized.ty_adt_def() {
                 Some(adt_def) if adt_def.has_ctor() => {
                     let (ctor_kind, ctor_def_id) = adt_def.non_enum_variant().ctor.unwrap();
+                    // Check the visibility of the ctor.
+                    let vis = tcx.visibility(ctor_def_id);
+                    if !vis.is_accessible_from(tcx.parent_module(hir_id).to_def_id(), tcx) {
+                        tcx.sess
+                            .emit_err(CtorIsPrivate { span, def: tcx.def_path_str(adt_def.did()) });
+                    }
                     let new_res = Res::Def(DefKind::Ctor(CtorOf::Struct, ctor_kind), ctor_def_id);
                     let user_substs = Self::user_substs_for_adt(ty);
                     user_self_ty = user_substs.user_self_ty;
@@ -1382,7 +1386,7 @@ impl<'a, 'tcx> FnCtxt<'a, 'tcx> {
         // the referenced item.
         let ty = tcx.type_of(def_id);
         assert!(!substs.has_escaping_bound_vars());
-        assert!(!ty.0.has_escaping_bound_vars());
+        assert!(!ty.skip_binder().has_escaping_bound_vars());
         let ty_substituted = self.normalize(span, ty.subst(tcx, substs));
 
         if let Some(UserSelfTy { impl_def_id, self_ty }) = user_self_ty {

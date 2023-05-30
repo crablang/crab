@@ -893,7 +893,7 @@ fn link_natively<'a>(
                     linker_path: &linker_path,
                     exit_status: prog.status,
                     command: &cmd,
-                    escaped_output: &escaped_output,
+                    escaped_output,
                 };
                 sess.diagnostic().emit_err(err);
                 // If MSVC's `link.exe` was expected but the return code
@@ -1187,6 +1187,9 @@ fn add_sanitizer_libraries(sess: &Session, crate_type: CrateType, linker: &mut d
     }
     if sanitizer.contains(SanitizerSet::HWADDRESS) {
         link_sanitizer_runtime(sess, linker, "hwasan");
+    }
+    if sanitizer.contains(SanitizerSet::SAFESTACK) {
+        link_sanitizer_runtime(sess, linker, "safestack");
     }
 }
 

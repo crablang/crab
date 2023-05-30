@@ -3,7 +3,7 @@ use super::CandidateSource;
 use super::MethodError;
 use super::NoMatchData;
 
-use crate::errors::MethodCallOnUnknownType;
+use crate::errors::MethodCallOnUnknownRawPointee;
 use crate::FnCtxt;
 use rustc_data_structures::fx::FxHashSet;
 use rustc_errors::Applicability;
@@ -438,7 +438,7 @@ impl<'a, 'tcx> FnCtxt<'a, 'tcx> {
                 // so we do a future-compat lint here for the 2015 edition
                 // (see https://github.com/rust-lang/rust/issues/46906)
                 if self.tcx.sess.rust_2018() {
-                    self.tcx.sess.emit_err(MethodCallOnUnknownType { span });
+                    self.tcx.sess.emit_err(MethodCallOnUnknownRawPointee { span });
                 } else {
                     self.tcx.struct_span_lint_hir(
                         lint::builtin::TYVAR_BEHIND_RAW_POINTER,
@@ -1194,7 +1194,7 @@ impl<'a, 'tcx> ProbeContext<'a, 'tcx> {
                     pick.autoderefs += 1;
                     pick.autoref_or_ptr_adjustment = Some(AutorefOrPtrAdjustment::Autoref {
                         mutbl,
-                        unsize: pick.autoref_or_ptr_adjustment.map_or(false, |a| a.get_unsize()),
+                        unsize: pick.autoref_or_ptr_adjustment.is_some_and(|a| a.get_unsize()),
                     })
                 }
 
