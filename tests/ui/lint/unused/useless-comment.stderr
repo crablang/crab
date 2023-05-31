@@ -25,7 +25,7 @@ error: unused doc comment
 LL |     /// a
    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 LL |     let x = 12;
-   |     ----------- rustdoc does not generate documentation for statements
+   |     ----------- crabdoc does not generate documentation for statements
    |
    = help: use `//` for a plain comment
 
@@ -41,7 +41,7 @@ LL | |         /// c
 LL | |         1 => {},
 LL | |         _ => {}
 LL | |     }
-   | |_____- rustdoc does not generate documentation for expressions
+   | |_____- crabdoc does not generate documentation for expressions
    |
    = help: use `//` for a plain comment
 
@@ -51,7 +51,7 @@ error: unused doc comment
 LL |         /// c
    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 LL |         1 => {},
-   |         ------- rustdoc does not generate documentation for match arms
+   |         ------- crabdoc does not generate documentation for match arms
    |
    = help: use `//` for a plain comment
 
@@ -61,7 +61,7 @@ error: unused doc comment
 LL |     /// foo
    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 LL |     unsafe {}
-   |     --------- rustdoc does not generate documentation for expressions
+   |     --------- crabdoc does not generate documentation for expressions
    |
    = help: use `//` for a plain comment
 
@@ -72,7 +72,7 @@ LL |     #[doc = "foo"]
    |     ^^^^^^^^^^^^^^
 LL |     #[doc = "bar"]
 LL |     3;
-   |     - rustdoc does not generate documentation for expressions
+   |     - crabdoc does not generate documentation for expressions
    |
    = help: use `//` for a plain comment
 
@@ -82,7 +82,7 @@ error: unused doc comment
 LL |     #[doc = "bar"]
    |     ^^^^^^^^^^^^^^
 LL |     3;
-   |     - rustdoc does not generate documentation for expressions
+   |     - crabdoc does not generate documentation for expressions
    |
    = help: use `//` for a plain comment
 
@@ -90,7 +90,7 @@ error: unused doc comment
   --> $DIR/useless-comment.rs:35:13
    |
 LL |     let x = /** comment */ 47;
-   |             ^^^^^^^^^^^^^^ -- rustdoc does not generate documentation for expressions
+   |             ^^^^^^^^^^^^^^ -- crabdoc does not generate documentation for expressions
    |
    = help: use `/* */` for a plain comment
 
@@ -102,7 +102,7 @@ LL |       /// dox
 LL | /     {
 LL | |
 LL | |     }
-   | |_____- rustdoc does not generate documentation for expressions
+   | |_____- crabdoc does not generate documentation for expressions
    |
    = help: use `//` for a plain comment
 

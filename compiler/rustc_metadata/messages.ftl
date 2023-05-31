@@ -23,10 +23,10 @@ metadata_conflicting_global_alloc =
     the `#[global_allocator]` in {$other_crate_name} conflicts with global allocator in: {$crate_name}
 
 metadata_consider_building_std =
-    consider building the standard library from source with `cargo build -Zbuild-std`
+    consider building the standard library from source with `crabgo build -Zbuild-std`
 
 metadata_consider_downloading_target =
-    consider downloading the target with `rustup target add {$locator_triple}`
+    consider downloading the target with `crabup target add {$locator_triple}`
 
 metadata_crate_dep_multiple =
     cannot satisfy dependencies so `{$crate_name}` only shows up once
@@ -101,14 +101,14 @@ metadata_incompatible_panic_in_drop_strategy =
     the crate `{$crate_name}` is compiled with the panic-in-drop strategy `{$found_strategy}` which is incompatible with this crate's strategy of `{$desired_strategy}`
 
 metadata_incompatible_rustc =
-    found crate `{$crate_name}` compiled by an incompatible version of rustc{$add_info}
-    .help = please recompile that crate using this compiler ({$rustc_version}) (consider running `cargo clean` first)
+    found crate `{$crate_name}` compiled by an incompatible version of crabc{$add_info}
+    .help = please recompile that crate using this compiler ({$rustc_version}) (consider running `crabgo clean` first)
 
 metadata_incompatible_wasm_link =
     `wasm_import_module` is incompatible with other arguments in `#[link]` attributes
 
 metadata_install_missing_components =
-    maybe you need to install the missing components with: `rustup component add rust-src rustc-dev llvm-tools-preview`
+    maybe you need to install the missing components with: `crabup component add rust-src rustc-dev llvm-tools-preview`
 
 metadata_invalid_link_modifier =
     invalid linking modifier syntax, expected '+' or '-' prefix before one of: bundle, verbatim, whole-archive, as-needed
