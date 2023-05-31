@@ -7,7 +7,7 @@ hir_typeck_add_return_type_missing_here = a return type might be missing here
 hir_typeck_address_of_temporary_taken = cannot take address of a temporary
     .label = temporary value
 
-hir_typeck_arg_mismatch_indeterminate = argument type mismatch was detected, but rustc had trouble determining where
+hir_typeck_arg_mismatch_indeterminate = argument type mismatch was detected, but crabc had trouble determining where
     .note = we would appreciate a bug report: https://github.com/rust-lang/rust/issues/new
 
 hir_typeck_candidate_trait_note = `{$trait_name}` defines an item `{$item_name}`{$action_or_ty ->
@@ -51,7 +51,7 @@ hir_typeck_functional_record_update_on_non_struct =
     functional record update syntax requires a struct
 
 hir_typeck_help_set_edition_cargo = set `edition = "{$edition}"` in `Cargo.toml`
-hir_typeck_help_set_edition_standalone = pass `--edition {$edition}` to `rustc`
+hir_typeck_help_set_edition_standalone = pass `--edition {$edition}` to `crabc`
 hir_typeck_lang_start_expected_sig_note = the `start` lang item should have the signature `fn(fn() -> T, isize, *const *const u8, u8) -> isize`
 
 hir_typeck_lang_start_incorrect_number_params = incorrect number of parameters for the `start` lang item
