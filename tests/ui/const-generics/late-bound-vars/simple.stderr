@@ -1,4 +1,6 @@
-error: query stack during panic:
+error: note: crabc 1.72.0-dev running on aarch64-apple-darwin
+
+query stack during panic:
 #0 [mir_borrowck] borrow-checking `test::{constant#1}`
 #1 [mir_drops_elaborated_and_const_checked] elaborating drops for `test::{constant#1}`
 #2 [mir_for_ctfe] caching mir of `test::{constant#1}` for CTFE
