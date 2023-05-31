@@ -846,7 +846,7 @@ fn usage(verbose: bool, include_unstable_options: bool, nightly_build: bool) {
     for option in groups.iter().filter(|x| include_unstable_options || x.is_stable()) {
         (option.apply)(&mut options);
     }
-    let message = "Usage: rustc [OPTIONS] INPUT";
+    let message = "Usage: crabc [OPTIONS] INPUT";
     let nightly_help = if nightly_build {
         "\n    -Z help             Print unstable compiler options"
     } else {
@@ -855,7 +855,7 @@ fn usage(verbose: bool, include_unstable_options: bool, nightly_build: bool) {
     let verbose_help = if verbose {
         ""
     } else {
-        "\n    --help -v           Print the full set of options rustc accepts"
+        "\n    --help -v           Print the full set of options crabc accepts"
     };
     let at_path = if verbose {
         "    @path               Read newline separated options from `path`\n"
@@ -877,8 +877,8 @@ fn usage(verbose: bool, include_unstable_options: bool, nightly_build: bool) {
 fn print_wall_help() {
     safe_println!(
         "
-The flag `-Wall` does not exist in `rustc`. Most useful lints are enabled by
-default. Use `rustc -W help` to see all available lints. It's more common to put
+The flag `-Wall` does not exist in `crabc`. Most useful lints are enabled by
+default. Use `crabc -W help` to see all available lints. It's more common to put
 warning settings in the crate root using `#![warn(LINT_NAME)]` instead of using
 the command line flag directly.
 "
@@ -932,7 +932,7 @@ Available lint options:
         s
     };
 
-    safe_println!("Lint checks provided by rustc:\n");
+    safe_println!("Lint checks provided by crabc:\n");
 
     let print_lints = |lints: Vec<&Lint>| {
         safe_println!("    {}  {:7.7}  {}", padded("name"), "default", "meaning");
@@ -967,7 +967,7 @@ Available lint options:
         s
     };
 
-    safe_println!("Lint groups provided by rustc:\n");
+    safe_println!("Lint groups provided by crabc:\n");
 
     let print_lint_groups = |lints: Vec<(&'static str, Vec<LintId>)>, all_warnings| {
         safe_println!("    {}  sub-lints", padded("name"));
