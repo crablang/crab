@@ -4,7 +4,7 @@ error: environment variable `CARGO__HOPEFULLY_NOT_DEFINED__` not defined at comp
 LL |     env!("CARGO__HOPEFULLY_NOT_DEFINED__");
    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
    |
-   = help: Cargo sets build script variables at run time. Use `std::env::var("CARGO__HOPEFULLY_NOT_DEFINED__")` instead
+   = help: Crabgo sets build script variables at run time. Use `std::env::var("CARGO__HOPEFULLY_NOT_DEFINED__")` instead
    = note: this error originates in the macro `env` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error: aborting due to previous error

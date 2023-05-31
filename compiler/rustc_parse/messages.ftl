@@ -276,7 +276,7 @@ parse_generic_parameters_without_angle_brackets = generic parameters without sur
 parse_generics_in_path = unexpected generic arguments in path
 
 parse_help_set_edition_cargo = set `edition = "{$edition}"` in `Cargo.toml`
-parse_help_set_edition_standalone = pass `--edition {$edition}` to `rustc`
+parse_help_set_edition_standalone = pass `--edition {$edition}` to `crabc`
 parse_hexadecimal_float_literal_not_supported = hexadecimal float literal is not supported
 parse_if_expression_missing_condition = missing condition for `if` expression
     .condition_label = expected condition here
