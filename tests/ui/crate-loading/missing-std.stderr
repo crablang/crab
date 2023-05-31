@@ -5,8 +5,8 @@ LL | extern crate core;
    | ^^^^^^^^^^^^^^^^^^ can't find crate
    |
    = note: the `x86_64-unknown-uefi` target may not be installed
-   = help: consider downloading the target with `rustup target add x86_64-unknown-uefi`
-   = help: consider building the standard library from source with `cargo build -Zbuild-std`
+   = help: consider downloading the target with `crabup target add x86_64-unknown-uefi`
+   = help: consider building the standard library from source with `crabgo build -Zbuild-std`
 
 error: requires `sized` lang_item
 

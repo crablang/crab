@@ -1,5 +1,5 @@
 lint_array_into_iter =
-    this method call resolves to `<&{$target} as IntoIterator>::into_iter` (due to backwards compatibility), but will resolve to <{$target} as IntoIterator>::into_iter in Rust 2021
+    this method call resolves to `<&{$target} as IntoIterator>::into_iter` (due to backwards compatibility), but will resolve to <{$target} as IntoIterator>::into_iter in Crab 2021
     .use_iter_suggestion = use `.iter()` instead of `.into_iter()` to avoid ambiguity
     .remove_into_iter_suggestion = or remove `.into_iter()` to iterate by value
     .use_explicit_into_iter_suggestion =
@@ -99,10 +99,10 @@ lint_builtin_non_shorthand_field_patterns = the `{$ident}:` in this pattern is r
     .suggestion = use shorthand field pattern
 
 lint_builtin_overridden_symbol_name =
-    the linker's behavior with multiple libraries exporting duplicate symbol names is undefined and Rust cannot provide guarantees when you manually override them
+    the linker's behavior with multiple libraries exporting duplicate symbol names is undefined and Crab cannot provide guarantees when you manually override them
 
 lint_builtin_overridden_symbol_section =
-    the program's behavior with overridden link sections on items is unpredictable and Rust cannot provide guarantees when you manually override them
+    the program's behavior with overridden link sections on items is unpredictable and Crab cannot provide guarantees when you manually override them
 
 lint_builtin_special_module_name_used_lib = found module declaration for lib.rs
     .note = lib.rs is the root of this crate's library target
@@ -148,7 +148,7 @@ lint_builtin_unsafe_trait = declaration of an `unsafe` trait
 lint_builtin_unstable_features = unstable feature
 
 lint_builtin_unused_doc_comment = unused doc comment
-    .label = rustdoc does not generate documentation for {$kind}
+    .label = crabdoc does not generate documentation for {$kind}
     .plain_help = use `//` for a plain comment
     .block_help = use `/* */` for a plain comment
 
@@ -272,7 +272,7 @@ lint_improper_ctypes_enum_repr_help =
 lint_improper_ctypes_enum_repr_reason = enum has no representation hint
 lint_improper_ctypes_fnptr_help = consider using an `extern fn(...) -> ...` function pointer instead
 
-lint_improper_ctypes_fnptr_reason = this function pointer has Rust-specific calling convention
+lint_improper_ctypes_fnptr_reason = this function pointer has Crab-specific calling convention
 lint_improper_ctypes_non_exhaustive = this enum is non-exhaustive
 lint_improper_ctypes_non_exhaustive_variant = this enum has non-exhaustive variants
 
@@ -361,7 +361,7 @@ lint_non_existent_doc_keyword = found non-existing keyword `{$keyword}` used in 
     .help = only existing keywords are allowed in core/std
 
 lint_non_fmt_panic = panic message is not a string literal
-    .note = this usage of `{$name}!()` is deprecated; it will be a hard error in Rust 2021
+    .note = this usage of `{$name}!()` is deprecated; it will be a hard error in Crab 2021
     .more_info_note = for more information, see <https://doc.rust-lang.org/nightly/edition-guide/rust-2021/panic-macro-consistency.html>
     .supports_fmt_note = the `{$name}!()` macro supports formatting, so there's no need for the `format!()` macro here
     .supports_fmt_suggestion = remove the `format!(..)` macro call
@@ -378,7 +378,7 @@ lint_non_fmt_panic_braces =
         [one] a brace
         *[other] braces
     }
-    .note = this message is not used as a format string, but will be in Rust 2021
+    .note = this message is not used as a format string, but will be in Crab 2021
     .suggestion = add a "{"{"}{"}"}" format string to use the message literally
 
 lint_non_fmt_panic_unused =
@@ -389,7 +389,7 @@ lint_non_fmt_panic_unused =
         [one] placeholder
         *[other] placeholders
     }
-    .note = this message is not used as a format string when given without arguments, but will be in Rust 2021
+    .note = this message is not used as a format string when given without arguments, but will be in Crab 2021
     .add_args_suggestion = add the missing {$count ->
         [one] argument
         *[other] arguments
