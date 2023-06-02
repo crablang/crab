@@ -16,6 +16,11 @@ if ! git remote | grep -q upstream; then
     git remote add upstream https://github.com/rust-lang/rust.git || echo "Failed to add upstream remote" && exit 1
 fi
 
+# add the remote "origin" if it doesn't exist
+if ! git remote | grep -q origin; then
+    git remote add origin https://github.com/crablang/crab.git || echo "Failed to add origin remote" && exit 1
+fi
+
 # hard reset to the remote "upstream" and branch "master"
 git fetch upstream || echo "Failed to fetch upstream" && exit 1
 git reset --hard upstream/master || echo "Failed to reset to upstream/master" && exit 1
@@ -31,18 +36,10 @@ if [ "$current_branch" != "current" ]; then
     fi
 fi
 
-git reset --hard master || echo "Failed to reset \"current\" to local \"master\"" && exit 1
+git reset --hard origin/master || echo "Failed to reset local \"current\" to remote crab \"master\"" && exit 1
 
 # rebase the local "current" branch to the local "upstream" branch, favoring the "current" branch
 git rebase -Xtheirs upstream || echo "Failed to rebase \"current\" with \"upstream\"" && exit 1
-
-
-# make sure we are on the "current" branch
-current_branch=$(git rev-parse --abbrev-ref HEAD)
-if [ "$current_branch" != "current" ]; then
-    echo "Not on \"current\" branch, aborting"
-    exit 1
-fi
 
 # push the changes to the remote "current" branch
 git push --force origin current || echo "Failed to push \"current\" to remote" && exit 1
