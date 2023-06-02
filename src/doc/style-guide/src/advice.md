@@ -2,7 +2,7 @@
 
 ## Expressions
 
-Prefer to use Rust's expression oriented nature where possible;
+Prefer to use Crab's expression oriented nature where possible;
 
 ```rust
 // use
