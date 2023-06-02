@@ -1,8 +1,8 @@
 error[E0463]: can't find crate for `core`
    |
    = note: the `thumbv7em-none-eabihf` target may not be installed
-   = help: consider downloading the target with `rustup target add thumbv7em-none-eabihf`
-   = help: consider building the standard library from source with `cargo build -Zbuild-std`
+   = help: consider downloading the target with `crabup target add thumbv7em-none-eabihf`
+   = help: consider building the standard library from source with `crabgo build -Zbuild-std`
 
 error[E0463]: can't find crate for `compiler_builtins`
 
