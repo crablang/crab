@@ -7,5 +7,5 @@
 - [Expressions](expressions.md)
 - [Types](types.md)
 - [Non-formatting conventions](advice.md)
-- [`Cargo.toml` conventions](cargo.md)
+- [`Crabgo.toml` conventions](crabgo.md)
 - [Principles used for deciding these guidelines](principles.md)
