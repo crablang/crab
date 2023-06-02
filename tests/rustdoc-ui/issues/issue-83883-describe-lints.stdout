@@ -6,11 +6,11 @@ Available lint options:
     -F <foo>           Forbid <foo> (deny <foo> and all attempts to override)
 
 
-Lint checks provided by rustc:
+Lint checks provided by crabc:
 
     $NAMES  $LEVELS  $MEANINGS
 
-Lint groups provided by rustc:
+Lint groups provided by crabc:
 
     $NAMES  $SUB_LINTS
 
