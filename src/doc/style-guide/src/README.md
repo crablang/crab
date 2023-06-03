@@ -1,4 +1,4 @@
-# Rust Style Guide
+# Crab Style Guide
 
 ## Motivation - why use a formatting tool?
 
@@ -12,7 +12,7 @@ debate with other programmers what style rules should be used, saving time,
 communication overhead, and mental energy.
 
 Humans comprehend information through pattern matching. By ensuring that all
-Rust code has similar formatting, less mental effort is required to comprehend a
+Crab code has similar formatting, less mental effort is required to comprehend a
 new project, lowering the barrier to entry for new developers.
 
 Thus, there are productivity benefits to using a formatting tool (such as
@@ -185,6 +185,6 @@ the normal formatting.
 
 ## [Non-formatting conventions](advice.md)
 
-## [Cargo.toml conventions](cargo.md)
+## [Crabgo.toml conventions](crabgo.md)
 
 ## [Principles used for deciding these guidelines](principles.md)
