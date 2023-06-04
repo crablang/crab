@@ -74,6 +74,8 @@
                 ! -path "*/.github/workflows/*" \
                 ! -name ".gitignore" \
                 ! -name "README.md" \
+                ! -name "CONTRIBUTING.md" \
+                ! -name "CODE_OF_CONDUCT.md" \
                 -type f \
                 -print)"
               for _file in ${_files}; do
