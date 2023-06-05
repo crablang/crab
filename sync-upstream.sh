@@ -1,46 +1,50 @@
 #!/usr/bin/env bash
 
+fail() {
+    printf '%s\n' "$1" >&2
+    exit "${2-1}"
+}
+
 # check if we're on the "upstream" branch, and if not, switch to it
 current_branch=$(git rev-parse --abbrev-ref HEAD)
 if [ "$current_branch" != "upstream" ]; then
     # check if the branch already exists locally
     if ! git branch | grep -q upstream; then
-        git checkout -b upstream || echo "Failed to create and checkout upstream" && exit 1
+        git checkout -b upstream || fail "Failed to create and checkout upstream"
     else
-        git checkout upstream || echo "Failed to checkout upstream" && exit 1
+        git checkout upstream || fail "Failed to checkout upstream"
     fi
 fi
 
 # add the remote "upstream" if it doesn't exist
 if ! git remote | grep -q upstream; then
-    git remote add upstream https://github.com/rust-lang/rust.git || echo "Failed to add upstream remote" && exit 1
+    git remote add upstream https://github.com/rust-lang/rust.git || fail "Failed to add upstream remote"
 fi
 
 # add the remote "origin" if it doesn't exist
 if ! git remote | grep -q origin; then
-    git remote add origin https://github.com/crablang/crab.git || echo "Failed to add origin remote" && exit 1
+    git remote add origin https://github.com/crablang/crab.git || fail "Failed to add origin remote"
 fi
 
 # hard reset to the remote "upstream" and branch "master"
-git fetch upstream || echo "Failed to fetch upstream" && exit 1
-git reset --hard upstream/master || echo "Failed to reset to upstream/master" && exit 1
+git fetch upstream || fail "Failed to fetch upstream"
+git reset --hard upstream/master || fail "Failed to reset to upstream/master"
 
 # check if we're on the "current" branch, and if not, switch to it
 current_branch=$(git rev-parse --abbrev-ref HEAD)
 if [ "$current_branch" != "current" ]; then
     # check if the branch already exists locally
     if ! git branch | grep -q current; then
-        git checkout -b current || echo "Failed to create and checkout current" && exit 1
+        git checkout -b current || fail "Failed to create and checkout current"
     else
-        git checkout current || echo "Failed to checkout current" && exit 1
+        git checkout current || fail "Failed to checkout current"
     fi
 fi
 
-git reset --hard origin/master || echo "Failed to reset local \"current\" to remote crab \"master\"" && exit 1
+git reset --hard origin/master || fail "Failed to reset local \"current\" to remote crab \"master\""
 
 # rebase the local "current" branch to the local "upstream" branch, favoring the "current" branch
-git rebase -Xtheirs upstream || echo "Failed to rebase \"current\" with \"upstream\"" && exit 1
+git rebase -Xtheirs upstream || fail "Failed to rebase \"current\" with \"upstream\""
 
 # push the changes to the remote "current" branch
-git push --force origin current || echo "Failed to push \"current\" to remote" && exit 1
-
+git push --force origin current || fail "Failed to push \"current\" to remote"
