@@ -220,6 +220,11 @@ pub enum BorrowKind {
     /// immutable, but not aliasable. This solves the problem. For
     /// simplicity, we don't give users the way to express this
     /// borrow, it's just used when translating closures.
+    ///
+    // FIXME(#112072): This is wrong. Unique borrows are mutable borrows except
+    // that they do not require their pointee to be marked as a mutable.
+    // They should still be treated as mutable borrows in every other way,
+    // e.g. for variance or overlap checking.
     Unique,
 
     /// Data is mutable and not aliasable.
@@ -796,7 +801,8 @@ pub enum UnwindAction {
 }
 
 /// Information about an assertion failure.
-#[derive(Clone, TyEncodable, TyDecodable, Hash, HashStable, PartialEq, TypeFoldable, TypeVisitable)]
+#[derive(Clone, Hash, HashStable, PartialEq, Debug)]
+#[derive(TyEncodable, TyDecodable, TypeFoldable, TypeVisitable)]
 pub enum AssertKind<O> {
     BoundsCheck { len: O, index: O },
     Overflow(BinOp, O, O),
@@ -1267,13 +1273,18 @@ pub enum BinOp {
     Mul,
     /// The `/` operator (division)
     ///
-    /// Division by zero is UB, because the compiler should have inserted checks
-    /// prior to this.
+    /// For integer types, division by zero is UB, as is `MIN / -1` for signed.
+    /// The compiler should have inserted checks prior to this.
+    ///
+    /// Floating-point division by zero is safe, and does not need guards.
     Div,
     /// The `%` operator (modulus)
     ///
-    /// Using zero as the modulus (second operand) is UB, because the compiler
-    /// should have inserted checks prior to this.
+    /// For integer types, using zero as the modulus (second operand) is UB,
+    /// as is `MIN % -1` for signed.
+    /// The compiler should have inserted checks prior to this.
+    ///
+    /// Floating-point remainder by zero is safe, and does not need guards.
     Rem,
     /// The `^` operator (bitwise xor)
     BitXor,

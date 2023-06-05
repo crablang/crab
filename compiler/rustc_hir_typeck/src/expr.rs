@@ -348,9 +348,7 @@ impl<'a, 'tcx> FnCtxt<'a, 'tcx> {
             }
             ExprKind::DropTemps(e) => self.check_expr_with_expectation(e, expected),
             ExprKind::Array(args) => self.check_expr_array(args, expected, expr),
-            ExprKind::ConstBlock(ref anon_const) => {
-                self.check_expr_const_block(anon_const, expected, expr)
-            }
+            ExprKind::ConstBlock(ref block) => self.check_expr_const_block(block, expected, expr),
             ExprKind::Repeat(element, ref count) => {
                 self.check_expr_repeat(element, count, expected, expr)
             }
@@ -1368,20 +1366,20 @@ impl<'a, 'tcx> FnCtxt<'a, 'tcx> {
 
     fn check_expr_const_block(
         &self,
-        anon_const: &'tcx hir::AnonConst,
+        block: &'tcx hir::ConstBlock,
         expected: Expectation<'tcx>,
         _expr: &'tcx hir::Expr<'tcx>,
     ) -> Ty<'tcx> {
-        let body = self.tcx.hir().body(anon_const.body);
+        let body = self.tcx.hir().body(block.body);
 
         // Create a new function context.
-        let def_id = anon_const.def_id;
+        let def_id = block.def_id;
         let fcx = FnCtxt::new(self, self.param_env.with_const(), def_id);
         crate::GatherLocalsVisitor::new(&fcx).visit_body(body);
 
         let ty = fcx.check_expr_with_expectation(&body.value, expected);
         fcx.require_type_is_sized(ty, body.value.span, traits::ConstSized);
-        fcx.write_ty(anon_const.hir_id, ty);
+        fcx.write_ty(block.hir_id, ty);
         ty
     }
 
@@ -3117,16 +3115,17 @@ impl<'a, 'tcx> FnCtxt<'a, 'tcx> {
                     }
                 }
                 ty::Tuple(tys) => {
-                    let fstr = field.as_str();
+                    if let Ok(index) = field.as_str().parse::<usize>()
+                        && field.name == sym::integer(index)
+                    {
+                        for ty in tys.iter().take(index + 1) {
+                            self.require_type_is_sized(ty, expr.span, traits::MiscObligation);
+                        }
+                        if let Some(&field_ty) = tys.get(index) {
+                            field_indices.push(index.into());
+                            current_container = field_ty;
 
-                    if let Ok(index) = fstr.parse::<usize>() {
-                        if fstr == index.to_string() {
-                            if let Some(&field_ty) = tys.get(index) {
-                                field_indices.push(index.into());
-                                current_container = field_ty;
-
-                                continue;
-                            }
+                            continue;
                         }
                     }
                 }

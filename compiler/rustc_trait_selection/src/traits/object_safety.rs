@@ -526,7 +526,7 @@ fn virtual_call_violation_for_method<'tcx>(
                         // #78372
                         tcx.sess.delay_span_bug(
                             tcx.def_span(method.def_id),
-                            format!("error: {}\n while computing layout for type {:?}", err, ty),
+                            format!("error: {err}\n while computing layout for type {ty:?}"),
                         );
                         None
                     }
@@ -642,7 +642,7 @@ fn receiver_for_self_ty<'tcx>(
         if param.index == 0 { self_ty.into() } else { tcx.mk_param_from_def(param) }
     });
 
-    let result = EarlyBinder::new(receiver_ty).subst(tcx, substs);
+    let result = EarlyBinder::bind(receiver_ty).subst(tcx, substs);
     debug!(
         "receiver_for_self_ty({:?}, {:?}, {:?}) = {:?}",
         receiver_ty, self_ty, method_def_id, result

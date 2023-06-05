@@ -155,6 +155,8 @@ lint_builtin_unused_doc_comment = unused doc comment
 lint_builtin_while_true = denote infinite loops with `loop {"{"} ... {"}"}`
     .suggestion = use `loop`
 
+lint_cast_ref_to_mut = casting `&T` to `&mut T` is undefined behavior, even if the reference is unused, consider instead using an `UnsafeCell`
+
 lint_check_name_deprecated = lint name `{$lint_name}` is deprecated and does not have an effect anymore. Use: {$new_name}
 
 lint_check_name_unknown = unknown lint: `{$lint_name}`
@@ -303,6 +305,14 @@ lint_improper_ctypes_union_layout_help = consider adding a `#[repr(C)]` or `#[re
 
 lint_improper_ctypes_union_layout_reason = this union has unspecified layout
 lint_improper_ctypes_union_non_exhaustive = this union is non-exhaustive
+
+# FIXME: we should ordinalize $valid_up_to when we add support for doing so
+lint_invalid_from_utf8_checked = calls to `{$method}` with a invalid literal always return an error
+    .label = the literal was valid UTF-8 up to the {$valid_up_to} bytes
+
+# FIXME: we should ordinalize $valid_up_to when we add support for doing so
+lint_invalid_from_utf8_unchecked = calls to `{$method}` with a invalid literal are undefined behavior
+    .label = the literal was valid UTF-8 up to the {$valid_up_to} bytes
 
 lint_lintpass_by_hand = implementing `LintPass` by hand
     .help = try using `declare_lint_pass!` or `impl_lint_pass!` instead

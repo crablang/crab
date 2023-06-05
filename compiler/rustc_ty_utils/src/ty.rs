@@ -75,13 +75,13 @@ fn sized_constraint_for_ty<'tcx>(
     result
 }
 
-fn impl_defaultness(tcx: TyCtxt<'_>, def_id: LocalDefId) -> hir::Defaultness {
+fn defaultness(tcx: TyCtxt<'_>, def_id: LocalDefId) -> hir::Defaultness {
     match tcx.hir().get_by_def_id(def_id) {
         hir::Node::Item(hir::Item { kind: hir::ItemKind::Impl(impl_), .. }) => impl_.defaultness,
         hir::Node::ImplItem(hir::ImplItem { defaultness, .. })
         | hir::Node::TraitItem(hir::TraitItem { defaultness, .. }) => *defaultness,
         node => {
-            bug!("`impl_defaultness` called on {:?}", node);
+            bug!("`defaultness` called on {:?}", node);
         }
     }
 }
@@ -186,6 +186,7 @@ fn param_env(tcx: TyCtxt<'_>, def_id: DefId) -> ty::ParamEnv<'_> {
                 kind: hir::TraitItemKind::Const(..), ..
             })
             | hir::Node::AnonConst(_)
+            | hir::Node::ConstBlock(_)
             | hir::Node::ImplItem(hir::ImplItem { kind: hir::ImplItemKind::Const(..), .. })
             | hir::Node::ImplItem(hir::ImplItem {
                 kind:
@@ -287,12 +288,13 @@ impl<'tcx> TypeVisitor<TyCtxt<'tcx>> for ImplTraitInTraitFinder<'_, 'tcx> {
             let shifted_alias_ty = self.tcx.fold_regions(unshifted_alias_ty, |re, depth| {
                 if let ty::ReLateBound(index, bv) = re.kind() {
                     if depth != ty::INNERMOST {
-                        return self.tcx.mk_re_error_with_message(
+                        return ty::Region::new_error_with_message(
+                            self.tcx,
                             DUMMY_SP,
                             "we shouldn't walk non-predicate binders with `impl Trait`...",
                         );
                     }
-                    self.tcx.mk_re_late_bound(index.shifted_out_to_binder(self.depth), bv)
+                    ty::Region::new_late_bound(self.tcx, index.shifted_out_to_binder(self.depth), bv)
                 } else {
                     re
                 }
@@ -506,7 +508,7 @@ fn issue33140_self_ty(tcx: TyCtxt<'_>, def_id: DefId) -> Option<EarlyBinder<Ty<'
 
     if self_ty_matches {
         debug!("issue33140_self_ty - MATCHES!");
-        Some(EarlyBinder::new(self_ty))
+        Some(EarlyBinder::bind(self_ty))
     } else {
         debug!("issue33140_self_ty - non-matching self type");
         None
@@ -573,7 +575,7 @@ pub fn provide(providers: &mut Providers) {
         param_env_reveal_all_normalized,
         instance_def_size_estimate,
         issue33140_self_ty,
-        impl_defaultness,
+        defaultness,
         unsizing_params_for_adt,
         ..*providers
     };

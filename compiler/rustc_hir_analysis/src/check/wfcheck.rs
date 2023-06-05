@@ -556,11 +556,14 @@ fn gather_gat_bounds<'tcx, T: TypeFoldable<TyCtxt<'tcx>>>(
                 // Same for the region. In our example, 'a corresponds
                 // to the 'me parameter.
                 let region_param = gat_generics.param_at(*region_a_idx, tcx);
-                let region_param = tcx.mk_re_early_bound(ty::EarlyBoundRegion {
-                    def_id: region_param.def_id,
-                    index: region_param.index,
-                    name: region_param.name,
-                });
+                let region_param = ty::Region::new_early_bound(
+                    tcx,
+                    ty::EarlyBoundRegion {
+                        def_id: region_param.def_id,
+                        index: region_param.index,
+                        name: region_param.name,
+                    },
+                );
                 // The predicate we expect to see. (In our example,
                 // `Self: 'me`.)
                 let clause = ty::PredicateKind::Clause(ty::Clause::TypeOutlives(
@@ -593,18 +596,24 @@ fn gather_gat_bounds<'tcx, T: TypeFoldable<TyCtxt<'tcx>>>(
                 debug!("required clause: {region_a} must outlive {region_b}");
                 // Translate into the generic parameters of the GAT.
                 let region_a_param = gat_generics.param_at(*region_a_idx, tcx);
-                let region_a_param = tcx.mk_re_early_bound(ty::EarlyBoundRegion {
-                    def_id: region_a_param.def_id,
-                    index: region_a_param.index,
-                    name: region_a_param.name,
-                });
+                let region_a_param = ty::Region::new_early_bound(
+                    tcx,
+                    ty::EarlyBoundRegion {
+                        def_id: region_a_param.def_id,
+                        index: region_a_param.index,
+                        name: region_a_param.name,
+                    },
+                );
                 // Same for the region.
                 let region_b_param = gat_generics.param_at(*region_b_idx, tcx);
-                let region_b_param = tcx.mk_re_early_bound(ty::EarlyBoundRegion {
-                    def_id: region_b_param.def_id,
-                    index: region_b_param.index,
-                    name: region_b_param.name,
-                });
+                let region_b_param = ty::Region::new_early_bound(
+                    tcx,
+                    ty::EarlyBoundRegion {
+                        def_id: region_b_param.def_id,
+                        index: region_b_param.index,
+                        name: region_b_param.name,
+                    },
+                );
                 // The predicate we expect to see.
                 let clause = ty::PredicateKind::Clause(ty::Clause::RegionOutlives(
                     ty::OutlivesPredicate(region_a_param, region_b_param),
@@ -820,83 +829,20 @@ fn check_param_wf(tcx: TyCtxt<'_>, param: &hir::GenericParam<'_>) {
             let ty = tcx.type_of(param.def_id).subst_identity();
 
             if tcx.features().adt_const_params {
-                if let Some(non_structural_match_ty) =
-                    traits::search_for_adt_const_param_violation(param.span, tcx, ty)
-                {
-                    // We use the same error code in both branches, because this is really the same
-                    // issue: we just special-case the message for type parameters to make it
-                    // clearer.
-                    match non_structural_match_ty.kind() {
-                        ty::Param(_) => {
-                            // Const parameters may not have type parameters as their types,
-                            // because we cannot be sure that the type parameter derives `PartialEq`
-                            // and `Eq` (just implementing them is not enough for `structural_match`).
-                            struct_span_err!(
-                                tcx.sess,
-                                hir_ty.span,
-                                E0741,
-                                "`{ty}` is not guaranteed to `#[derive(PartialEq, Eq)]`, so may not be \
-                                used as the type of a const parameter",
-                            )
-                            .span_label(
-                                hir_ty.span,
-                                format!("`{ty}` may not derive both `PartialEq` and `Eq`"),
-                            )
-                            .note(
-                                "it is not currently possible to use a type parameter as the type of a \
-                                const parameter",
-                            )
-                            .emit();
-                        }
-                        ty::Float(_) => {
-                            struct_span_err!(
-                                tcx.sess,
-                                hir_ty.span,
-                                E0741,
-                                "`{ty}` is forbidden as the type of a const generic parameter",
-                            )
-                            .note("floats do not derive `Eq` or `Ord`, which are required for const parameters")
-                            .emit();
-                        }
-                        ty::FnPtr(_) => {
-                            struct_span_err!(
-                                tcx.sess,
-                                hir_ty.span,
-                                E0741,
-                                "using function pointers as const generic parameters is forbidden",
-                            )
-                            .emit();
-                        }
-                        ty::RawPtr(_) => {
-                            struct_span_err!(
-                                tcx.sess,
-                                hir_ty.span,
-                                E0741,
-                                "using raw pointers as const generic parameters is forbidden",
-                            )
-                            .emit();
-                        }
-                        _ => {
-                            let mut diag = struct_span_err!(
-                                tcx.sess,
-                                hir_ty.span,
-                                E0741,
-                                "`{}` must be annotated with `#[derive(PartialEq, Eq)]` to be used as \
-                                the type of a const parameter",
-                                non_structural_match_ty,
-                            );
-
-                            if ty == non_structural_match_ty {
-                                diag.span_label(
-                                    hir_ty.span,
-                                    format!("`{ty}` doesn't derive both `PartialEq` and `Eq`"),
-                                );
-                            }
-
-                            diag.emit();
-                        }
-                    }
-                }
+                enter_wf_checking_ctxt(tcx, hir_ty.span, param.def_id, |wfcx| {
+                    let trait_def_id =
+                        tcx.require_lang_item(LangItem::ConstParamTy, Some(hir_ty.span));
+                    wfcx.register_bound(
+                        ObligationCause::new(
+                            hir_ty.span,
+                            param.def_id,
+                            ObligationCauseCode::ConstParam(ty),
+                        ),
+                        wfcx.param_env,
+                        ty,
+                        trait_def_id,
+                    );
+                });
             } else {
                 let err_ty_str;
                 let mut is_ptr = true;
@@ -1398,7 +1344,7 @@ fn check_where_clauses<'tcx>(wfcx: &WfCheckingCtxt<'_, 'tcx>, span: Span, def_id
             }
             let mut param_count = CountParams::default();
             let has_region = pred.visit_with(&mut param_count).is_break();
-            let substituted_pred = ty::EarlyBinder::new(pred).subst(tcx, substs);
+            let substituted_pred = ty::EarlyBinder::bind(pred).subst(tcx, substs);
             // Don't check non-defaulted params, dependent defaults (including lifetimes)
             // or preds with multiple params.
             if substituted_pred.has_non_region_param() || param_count.params.len() > 1 || has_region

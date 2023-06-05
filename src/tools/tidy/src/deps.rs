@@ -38,7 +38,6 @@ const LICENSES: &[&str] = &[
 const EXCEPTIONS: &[(&str, &str)] = &[
     // tidy-alphabetical-start
     ("ar_archive_writer", "Apache-2.0 WITH LLVM-exception"), // rustc
-    ("codespan-reporting", "Apache-2.0"),                    // cxx via iana-time-zone-haiku via time, only on haiku
     ("colored", "MPL-2.0"),                                  // rustfmt
     ("dissimilar", "Apache-2.0"),                            // rustdoc, rustc_lexer (few tests) via expect-test, (dev deps)
     ("fluent-langneg", "Apache-2.0"),                        // rustc (fluent translations)
@@ -133,7 +132,6 @@ const PERMITTED_RUSTC_DEPENDENCIES: &[&str] = &[
     "crossbeam-epoch",
     "crossbeam-utils",
     "crypto-common",
-    "cstr",
     "datafrog",
     "derive_more",
     "digest",
@@ -169,12 +167,14 @@ const PERMITTED_RUSTC_DEPENDENCIES: &[&str] = &[
     "instant",
     "intl-memoizer",
     "intl_pluralrules",
+    "io-lifetimes",
     "itertools",
     "itoa",
     "jobserver",
     "lazy_static",
     "libc",
     "libloading",
+    "linux-raw-sys",
     "litemap",
     "lock_api",
     "log",
@@ -212,12 +212,12 @@ const PERMITTED_RUSTC_DEPENDENCIES: &[&str] = &[
     "regex",
     "regex-automata",
     "regex-syntax",
-    "remove_dir_all",
     "rustc-demangle",
     "rustc-hash",
     "rustc-rayon",
     "rustc-rayon-core",
     "rustc_version",
+    "rustix",
     "ruzstd", // via object in thorin-dwp
     "ryu",
     "scoped-tls",
@@ -281,6 +281,7 @@ const PERMITTED_RUSTC_DEPENDENCIES: &[&str] = &[
     "winapi-util",
     "winapi-x86_64-pc-windows-gnu",
     "windows",
+    "windows-sys",
     "windows-targets",
     "windows_aarch64_gnullvm",
     "windows_aarch64_msvc",

@@ -106,11 +106,7 @@ impl Step for JsonDocs {
     /// Builds the `rust-docs-json` installer component.
     fn run(self, builder: &Builder<'_>) -> Option<GeneratedTarball> {
         let host = self.host;
-        builder.ensure(crate::doc::Std {
-            stage: builder.top_stage,
-            target: host,
-            format: DocumentationFormat::JSON,
-        });
+        builder.ensure(crate::doc::Std::new(builder.top_stage, host, DocumentationFormat::JSON));
 
         let dest = "share/doc/rust/json";
 
@@ -1013,6 +1009,9 @@ impl Step for PlainSourceTarball {
                 .arg(builder.src.join("./compiler/rustc_codegen_cranelift/Cargo.toml"))
                 .arg("--sync")
                 .arg(builder.src.join("./src/bootstrap/Cargo.toml"))
+                // Will read the libstd Cargo.toml
+                // which uses the unstable `public-dependency` feature.
+                .env("RUSTC_BOOTSTRAP", "1")
                 .current_dir(&plain_dst_src);
 
             let config = if !builder.config.dry_run() {

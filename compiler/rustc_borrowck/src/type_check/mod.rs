@@ -139,7 +139,7 @@ pub(crate) fn type_check<'mir, 'tcx>(
     upvars: &[Upvar<'tcx>],
     use_polonius: bool,
 ) -> MirTypeckResults<'tcx> {
-    let implicit_region_bound = infcx.tcx.mk_re_var(universal_regions.fr_fn_body);
+    let implicit_region_bound = ty::Region::new_var(infcx.tcx, universal_regions.fr_fn_body);
     let mut constraints = MirTypeckRegionConstraints {
         placeholder_indices: PlaceholderIndices::default(),
         placeholder_index_to_region: IndexVec::default(),
@@ -188,9 +188,6 @@ pub(crate) fn type_check<'mir, 'tcx>(
 
     // FIXME(-Ztrait-solver=next): A bit dubious that we're only registering
     // predefined opaques in the typeck root.
-    // FIXME(-Ztrait-solver=next): This is also totally wrong for TAITs, since
-    // the HIR typeck map defining usages back to their definition params,
-    // they won't actually match up with the usages in this body...
     if infcx.tcx.trait_solver_next() && !infcx.tcx.is_typeck_child(body.source.def_id()) {
         checker.register_predefined_opaques_in_new_solver();
     }
@@ -766,8 +763,8 @@ impl<'a, 'b, 'tcx> TypeVerifier<'a, 'b, 'tcx> {
             PlaceContext::MutatingUse(_) => ty::Invariant,
             PlaceContext::NonUse(StorageDead | StorageLive | VarDebugInfo) => ty::Invariant,
             PlaceContext::NonMutatingUse(
-                Inspect | Copy | Move | PlaceMention | SharedBorrow | ShallowBorrow | UniqueBorrow
-                | AddressOf | Projection,
+                Inspect | Copy | Move | PlaceMention | SharedBorrow | ShallowBorrow | AddressOf
+                | Projection,
             ) => ty::Covariant,
             PlaceContext::NonUse(AscribeUserTy(variance)) => variance,
         }
@@ -1042,10 +1039,7 @@ impl<'a, 'tcx> TypeChecker<'a, 'tcx> {
             .typeck(self.body.source.def_id().expect_local())
             .concrete_opaque_types
             .iter()
-            .map(|(&def_id, &hidden_ty)| {
-                let substs = ty::InternalSubsts::identity_for_item(self.infcx.tcx, def_id);
-                (ty::OpaqueTypeKey { def_id, substs }, hidden_ty)
-            })
+            .map(|(k, v)| (*k, *v))
             .collect();
 
         let renumbered_opaques = self.infcx.tcx.fold_regions(opaques, |_, _| {

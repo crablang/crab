@@ -30,7 +30,7 @@ pub(crate) fn try_run_tests(builder: &Builder<'_>, cmd: &mut Command) -> bool {
 
     if !run_tests(builder, cmd) {
         if builder.fail_fast {
-            crate::detail_exit(1);
+            crate::detail_exit_macro!(1);
         } else {
             let mut failures = builder.delayed_failures.borrow_mut();
             failures.push(format!("{cmd:?}"));
@@ -88,10 +88,10 @@ impl<'a> Renderer<'a> {
     }
 
     fn render_all(mut self) {
-        let mut line = String::new();
+        let mut line = Vec::new();
         loop {
             line.clear();
-            match self.stdout.read_line(&mut line) {
+            match self.stdout.read_until(b'\n', &mut line) {
                 Ok(_) => {}
                 Err(err) if err.kind() == std::io::ErrorKind::UnexpectedEof => break,
                 Err(err) => panic!("failed to read output of test runner: {err}"),
@@ -100,12 +100,13 @@ impl<'a> Renderer<'a> {
                 break;
             }
 
-            match serde_json::from_str(&line) {
+            match serde_json::from_slice(&line) {
                 Ok(parsed) => self.render_message(parsed),
                 Err(_err) => {
                     // Handle non-JSON output, for example when --nocapture is passed.
-                    print!("{line}");
-                    let _ = std::io::stdout().flush();
+                    let mut stdout = std::io::stdout();
+                    stdout.write_all(&line).unwrap();
+                    let _ = stdout.flush();
                 }
             }
         }

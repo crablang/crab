@@ -101,7 +101,7 @@ impl Step for CrateBootstrap {
         );
         builder.info(&format!(
             "{} {} stage0 ({})",
-            builder.kind.test_description(),
+            builder.kind.description(),
             path,
             bootstrap_host,
         ));
@@ -220,7 +220,7 @@ impl Step for HtmlCheck {
         }
         // Ensure that a few different kinds of documentation are available.
         builder.default_doc(&[]);
-        builder.ensure(crate::doc::Rustc { target: self.target, stage: builder.top_stage });
+        builder.ensure(crate::doc::Rustc::new(builder.top_stage, self.target, builder));
 
         try_run(builder, builder.tool_cmd(Tool::HtmlChecker).arg(builder.doc_out(self.target)));
     }
@@ -773,7 +773,7 @@ impl Step for Clippy {
         }
 
         if !builder.config.cmd.bless() {
-            crate::detail_exit(1);
+            crate::detail_exit_macro!(1);
         }
 
         let mut cargo = builder.cargo(compiler, Mode::ToolRustc, SourceType::InTree, host, "run");
@@ -886,11 +886,11 @@ impl Step for RustdocJSStd {
                     command.arg("--test-file").arg(path);
                 }
             }
-            builder.ensure(crate::doc::Std {
-                target: self.target,
-                stage: builder.top_stage,
-                format: DocumentationFormat::HTML,
-            });
+            builder.ensure(crate::doc::Std::new(
+                builder.top_stage,
+                self.target,
+                DocumentationFormat::HTML,
+            ));
             builder.run(&mut command);
         } else {
             builder.info("No nodejs found, skipping \"tests/rustdoc-js-std\" tests");
@@ -1085,7 +1085,7 @@ help: to skip test's attempt to check tidiness, pass `--exclude src/tools/tidy` 
                     PATH = inferred_rustfmt_dir.display(),
                     CHAN = builder.config.channel,
                 );
-                crate::detail_exit(1);
+                crate::detail_exit_macro!(1);
             }
             crate::format::format(&builder, !builder.config.cmd.bless(), &[]);
         }
@@ -1108,7 +1108,7 @@ help: to skip test's attempt to check tidiness, pass `--exclude src/tools/tidy` 
                 eprintln!(
                     "x.py completions were changed; run `x.py run generate-completions` to update them"
                 );
-                crate::detail_exit(1);
+                crate::detail_exit_macro!(1);
             }
         }
     }
@@ -1329,7 +1329,7 @@ help: to test the compiler, use `--stage 1` instead
 help: to test the standard library, use `--stage 0 library/std` instead
 note: if you're sure you want to do this, please open an issue as to why. In the meantime, you can override this with `COMPILETEST_FORCE_STAGE0=1`."
             );
-            crate::detail_exit(1);
+            crate::detail_exit_macro!(1);
         }
 
         let mut compiler = self.compiler;
@@ -1704,10 +1704,6 @@ note: if you're sure you want to do this, please open an issue as to why. In the
             cmd.arg("--git-hash");
         }
 
-        if let Some(commit) = builder.config.download_rustc_commit() {
-            cmd.env("FAKE_DOWNLOAD_RUSTC_PREFIX", format!("/rustc/{commit}"));
-        }
-
         builder.ci_env.force_coloring_in_ci(&mut cmd);
 
         #[cfg(feature = "build-metrics")]
@@ -1776,6 +1772,14 @@ impl Step for BookTest {
     ///
     /// This uses the `rustdoc` that sits next to `compiler`.
     fn run(self, builder: &Builder<'_>) {
+        let host = self.compiler.host;
+        let _guard = builder.msg(
+            Kind::Test,
+            self.compiler.stage,
+            &format!("book {}", self.name),
+            host,
+            host,
+        );
         // External docs are different from local because:
         // - Some books need pre-processing by mdbook before being tested.
         // - They need to save their state to toolstate.
@@ -1967,7 +1971,7 @@ fn markdown_test(builder: &Builder<'_>, compiler: Compiler, markdown: &Path) -> 
         }
     }
 
-    builder.info(&format!("doc tests for: {}", markdown.display()));
+    builder.verbose(&format!("doc tests for: {}", markdown.display()));
     let mut cmd = builder.rustdoc_cmd(compiler);
     builder.add_rust_test_threads(&mut cmd);
     // allow for unstable options such as new editions
@@ -2200,7 +2204,8 @@ impl Step for Crate {
         let target = self.target;
         let mode = self.mode;
 
-        builder.ensure(compile::Std::new(compiler, target));
+        // See [field@compile::Std::force_recompile].
+        builder.ensure(compile::Std::force_recompile(compiler, target));
         builder.ensure(RemoteCopyLibs { compiler, target });
 
         // If we're not doing a full bootstrap but we're testing a stage2
@@ -2214,6 +2219,16 @@ impl Step for Crate {
         match mode {
             Mode::Std => {
                 compile::std_cargo(builder, target, compiler.stage, &mut cargo);
+                // `std_cargo` actually does the wrong thing: it passes `--sysroot build/host/stage2`,
+                // but we want to use the force-recompile std we just built in `build/host/stage2-test-sysroot`.
+                // Override it.
+                if builder.download_rustc() {
+                    let sysroot = builder
+                        .out
+                        .join(compiler.host.triple)
+                        .join(format!("stage{}-test-sysroot", compiler.stage));
+                    cargo.env("RUSTC_SYSROOT", sysroot);
+                }
             }
             Mode::Rustc => {
                 compile::rustc_cargo(builder, &mut cargo, target, compiler.stage);
@@ -2265,6 +2280,11 @@ impl Step for CrateRustdoc {
             // isn't really necessary.
             builder.compiler_for(builder.top_stage, target, target)
         };
+        // NOTE: normally `ensure(Rustc)` automatically runs `ensure(Std)` for us. However, when
+        // using `download-rustc`, the rustc_private artifacts may be in a *different sysroot* from
+        // the target rustdoc (`ci-rustc-sysroot` vs `stage2`). In that case, we need to ensure this
+        // explicitly to make sure it ends up in the stage2 sysroot.
+        builder.ensure(compile::Std::new(compiler, target));
         builder.ensure(compile::Rustc::new(compiler, target));
 
         let mut cargo = tool::prepare_tool_cargo(
@@ -2316,7 +2336,13 @@ impl Step for CrateRustdoc {
         dylib_path.insert(0, PathBuf::from(&*libdir));
         cargo.env(dylib_path_var(), env::join_paths(&dylib_path).unwrap());
 
-        let _guard = builder.msg(builder.kind, compiler.stage, "rustdoc", compiler.host, target);
+        let _guard = builder.msg_sysroot_tool(
+            builder.kind,
+            compiler.stage,
+            "rustdoc",
+            compiler.host,
+            target,
+        );
         run_cargo_test(
             cargo,
             &[],
@@ -2503,6 +2529,9 @@ impl Step for Distcheck {
         let toml = dir.join("rust-src/lib/rustlib/src/rust/library/std/Cargo.toml");
         builder.run(
             Command::new(&builder.initial_cargo)
+                // Will read the libstd Cargo.toml
+                // which uses the unstable `public-dependency` feature.
+                .env("RUSTC_BOOTSTRAP", "1")
                 .arg("generate-lockfile")
                 .arg("--manifest-path")
                 .arg(&toml)

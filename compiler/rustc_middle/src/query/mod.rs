@@ -1081,14 +1081,6 @@ rustc_queries! {
         desc { "destructuring MIR constant"}
     }
 
-    /// Dereference a constant reference or raw pointer and turn the result into a constant
-    /// again.
-    query deref_mir_constant(
-        key: ty::ParamEnvAnd<'tcx, mir::ConstantKind<'tcx>>
-    ) -> mir::ConstantKind<'tcx> {
-        desc { "dereferencing MIR constant" }
-    }
-
     query const_caller_location(key: (rustc_span::Symbol, u32, u32)) -> ConstValue<'tcx> {
         desc { "getting a &core::panic::Location referring to a span" }
     }
@@ -1098,10 +1090,6 @@ rustc_queries! {
         key: LitToConstInput<'tcx>
     ) -> Result<ty::Const<'tcx>, LitToConstError> {
         desc { "converting literal to const" }
-    }
-
-    query lit_to_mir_constant(key: LitToConstInput<'tcx>) -> Result<mir::ConstantKind<'tcx>, LitToConstError> {
-        desc { "converting literal to mir constant" }
     }
 
     query check_match(key: LocalDefId) -> Result<(), rustc_errors::ErrorGuaranteed> {
@@ -1487,8 +1475,9 @@ rustc_queries! {
         desc { "getting traits in scope at a block" }
     }
 
-    query impl_defaultness(def_id: DefId) -> hir::Defaultness {
-        desc { |tcx| "looking up whether `{}` is a default impl", tcx.def_path_str(def_id) }
+    /// Returns whether the impl or associated function has the `default` keyword.
+    query defaultness(def_id: DefId) -> hir::Defaultness {
+        desc { |tcx| "looking up whether `{}` has `default`", tcx.def_path_str(def_id) }
         separate_provide_extern
         feedable
     }

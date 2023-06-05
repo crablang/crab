@@ -1191,7 +1191,7 @@ fn should_encode_type(tcx: TyCtxt<'_>, def_id: LocalDefId, def_kind: DefKind) ->
 
 fn should_encode_const(def_kind: DefKind) -> bool {
     match def_kind {
-        DefKind::Const | DefKind::AssocConst | DefKind::AnonConst => true,
+        DefKind::Const | DefKind::AssocConst | DefKind::AnonConst | DefKind::InlineConst => true,
 
         DefKind::Struct
         | DefKind::Union
@@ -1210,7 +1210,6 @@ fn should_encode_const(def_kind: DefKind) -> bool {
         | DefKind::Closure
         | DefKind::Generator
         | DefKind::ConstParam
-        | DefKind::InlineConst
         | DefKind::AssocTy
         | DefKind::TyParam
         | DefKind::Trait
@@ -1437,8 +1436,8 @@ impl<'a, 'tcx> EncodeContext<'a, 'tcx> {
         debug!("EncodeContext::encode_info_for_trait_item({:?})", def_id);
         let tcx = self.tcx;
 
-        let impl_defaultness = tcx.impl_defaultness(def_id.expect_local());
-        self.tables.impl_defaultness.set_some(def_id.index, impl_defaultness);
+        let defaultness = tcx.defaultness(def_id.expect_local());
+        self.tables.defaultness.set_some(def_id.index, defaultness);
         let trait_item = tcx.associated_item(def_id);
         self.tables.assoc_container.set_some(def_id.index, trait_item.container);
 
@@ -1466,8 +1465,8 @@ impl<'a, 'tcx> EncodeContext<'a, 'tcx> {
         debug!("EncodeContext::encode_info_for_impl_item({:?})", def_id);
         let tcx = self.tcx;
 
-        let defaultness = self.tcx.impl_defaultness(def_id.expect_local());
-        self.tables.impl_defaultness.set_some(def_id.index, defaultness);
+        let defaultness = self.tcx.defaultness(def_id.expect_local());
+        self.tables.defaultness.set_some(def_id.index, defaultness);
         let impl_item = self.tcx.associated_item(def_id);
         self.tables.assoc_container.set_some(def_id.index, impl_item.container);
 
@@ -1653,7 +1652,7 @@ impl<'a, 'tcx> EncodeContext<'a, 'tcx> {
                 );
             }
             hir::ItemKind::Impl(hir::Impl { defaultness, constness, .. }) => {
-                self.tables.impl_defaultness.set_some(def_id.index, *defaultness);
+                self.tables.defaultness.set_some(def_id.index, *defaultness);
                 self.tables.constness.set_some(def_id.index, *constness);
                 self.tables.impl_polarity.set_some(def_id.index, self.tcx.impl_polarity(def_id));
 
@@ -1730,7 +1729,7 @@ impl<'a, 'tcx> EncodeContext<'a, 'tcx> {
             ty::Closure(_, substs) => {
                 let constness = self.tcx.constness(def_id.to_def_id());
                 self.tables.constness.set_some(def_id.to_def_id().index, constness);
-                record!(self.tables.fn_sig[def_id.to_def_id()] <- ty::EarlyBinder::new(substs.as_closure().sig()));
+                record!(self.tables.fn_sig[def_id.to_def_id()] <- ty::EarlyBinder::bind(substs.as_closure().sig()));
             }
 
             _ => bug!("closure that is neither generator nor closure"),
@@ -1883,6 +1882,7 @@ impl<'a, 'tcx> EncodeContext<'a, 'tcx> {
                     host_hash: self.tcx.crate_host_hash(cnum),
                     kind: self.tcx.dep_kind(cnum),
                     extra_filename: self.tcx.extra_filename(cnum).clone(),
+                    is_private: self.tcx.is_private_dep(cnum),
                 };
                 (cnum, dep)
             })
