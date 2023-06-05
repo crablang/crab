@@ -1,0 +1,28 @@
+name: Update Upstream Branch
+
+permissions:
+    contents: write
+
+on:
+    workflow_dispatch:
+    schedule:
+        - cron: "0 0/4 * * *" # Every 4 hours
+
+jobs:
+    update-versions:
+        name: Upstream Upstream Branch
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v3
+              with:
+                  ref: upstream
+            - name: Add remote and fetch
+              run: |
+                  git remote add upstream https://github.com/rust-lang/rust.git
+                  git fetch upstream master
+            - name: Reset to upstream/master
+              run: |
+                  git reset upstream/master --hard
+            - name: Push to local
+              run: |
+                  git push -f -u origin upstream
