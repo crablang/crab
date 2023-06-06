@@ -1103,7 +1103,7 @@ impl<'a> Builder<'a> {
         if compiler.is_snapshot(self) {
             self.initial_rustc.clone()
         } else {
-            self.sysroot(compiler).join("bin").join(exe("rustc", compiler.host))
+            self.sysroot(compiler).join("bin").join(exe("crabc", compiler.host))
         }
     }
 
