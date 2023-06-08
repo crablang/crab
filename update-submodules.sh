@@ -16,19 +16,17 @@ cwd=$(pwd)
 git submodule update --init --recursive
 
 # array of submodule paths and their corresponding branch names
-submodules=(
-    "src/doc/nomicon:master"
-    "src/tools/cargo:master"
-    "src/doc/reference:master"
-    "src/doc/book:main"
-    "src/doc/rust-by-example:master"
-    "library/stdarch:master"
-    "src/doc/rustc-dev-guide:master"
-    "src/doc/edition-guide:master"
-    "src/llvm-project:rustc/16.0-2023-04-05"
-    "src/doc/embedded-book:master"
-    "library/backtrace:master"
-)
+submodules=()
+
+# get the path and the branch name from the .gitmodules file
+while IFS=$'\n' read -r line; do
+    if [[ "$line" =~ ^.*path\ =.*$ ]]; then
+        path=${line#*= }
+    elif [[ "$line" =~ ^.*branch\ =.*$ ]]; then
+        branch=${line#*= }
+        submodules+=("$path:$branch")
+    fi
+done < .gitmodules
 
 # iterate over the array and update each submodule
 for i in "${submodules[@]}"; do
