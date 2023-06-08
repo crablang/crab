@@ -1,34 +1,44 @@
 [submodule "src/doc/nomicon"]
 	path = src/doc/nomicon
-	url = https://github.com/rust-lang/nomicon.git
+	url = https://github.com/crablang/nomicon.git
+    branch = master
 [submodule "src/tools/cargo"]
 	path = src/tools/cargo
 	url = https://github.com/crablang/crabgo.git
+    branch = master
 [submodule "src/doc/reference"]
 	path = src/doc/reference
-	url = https://github.com/rust-lang/reference.git
+	url = https://github.com/crablang/reference.git
+    branch = master
 [submodule "src/doc/book"]
 	path = src/doc/book
-	url = https://github.com/rust-lang/book.git
+	url = https://github.com/crablang/book.git
+    branch = master
 [submodule "src/doc/rust-by-example"]
 	path = src/doc/rust-by-example
-	url = https://github.com/rust-lang/rust-by-example.git
+	url = https://github.com/crablang/crab-by-example.git
+    branch = master
 [submodule "library/stdarch"]
 	path = library/stdarch
-	url = https://github.com/rust-lang/stdarch.git
+	url = https://github.com/crablang/stdarch.git
+    branch = master
 [submodule "src/doc/rustc-dev-guide"]
 	path = src/doc/rustc-dev-guide
-	url = https://github.com/rust-lang/rustc-dev-guide.git
+	url = https://github.com/crablang/crabc-dev-guide.git
+    branch = master
 [submodule "src/doc/edition-guide"]
 	path = src/doc/edition-guide
-	url = https://github.com/rust-lang/edition-guide.git
+	url = https://github.com/crablang/edition-guide.git
+    branch = master
 [submodule "src/llvm-project"]
 	path = src/llvm-project
 	url = https://github.com/rust-lang/llvm-project.git
 	branch = rustc/16.0-2023-04-05
 [submodule "src/doc/embedded-book"]
 	path = src/doc/embedded-book
-	url = https://github.com/rust-embedded/book.git
+	url = https://github.com/crablang/embedded-book.git
+    branch = master
 [submodule "library/backtrace"]
 	path = library/backtrace
-	url = https://github.com/rust-lang/backtrace-rs.git
+	url = https://github.com/crablang/backtrace.git
+    branch = master
