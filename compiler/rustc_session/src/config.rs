@@ -311,7 +311,9 @@ pub enum OutputType {
 }
 
 // Safety: Trivial C-Style enums have a stable sort order across compilation sessions.
-unsafe impl StableOrd for OutputType {}
+unsafe impl StableOrd for OutputType {
+    const CAN_USE_UNSTABLE_SORT: bool = true;
+}
 
 impl<HCX: HashStableContext> ToStableHashKey<HCX> for OutputType {
     type KeyType = Self;
@@ -610,6 +612,8 @@ pub enum TraitSolver {
     Chalk,
     /// Experimental trait solver in `rustc_trait_selection::solve`
     Next,
+    /// Use the new trait solver during coherence
+    NextCoherence,
 }
 
 pub enum Input {

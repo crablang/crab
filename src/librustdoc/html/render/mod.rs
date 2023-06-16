@@ -787,10 +787,12 @@ fn assoc_type(
     indent: usize,
     cx: &Context<'_>,
 ) {
+    let tcx = cx.tcx();
     write!(
         w,
-        "{indent}type <a{href} class=\"associatedtype\">{name}</a>{generics}",
+        "{indent}{vis}type <a{href} class=\"associatedtype\">{name}</a>{generics}",
         indent = " ".repeat(indent),
+        vis = visibility_print_with_space(it.visibility(tcx), it.item_id, cx),
         href = assoc_href_attr(it, link, cx),
         name = it.name.as_ref().unwrap(),
         generics = generics.print(cx),
@@ -1038,9 +1040,9 @@ fn render_attributes_in_pre<'a, 'b: 'a>(
 
 // When an attribute is rendered inside a <code> tag, it is formatted using
 // a div to produce a newline after it.
-fn render_attributes_in_code(w: &mut Buffer, it: &clean::Item, tcx: TyCtxt<'_>) {
-    for a in it.attributes(tcx, false) {
-        write!(w, "<div class=\"code-attribute\">{}</div>", a);
+fn render_attributes_in_code(w: &mut impl fmt::Write, it: &clean::Item, tcx: TyCtxt<'_>) {
+    for attr in it.attributes(tcx, false) {
+        write!(w, "<div class=\"code-attribute\">{attr}</div>").unwrap();
     }
 }
 
