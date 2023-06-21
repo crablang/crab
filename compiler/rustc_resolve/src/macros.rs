@@ -1,13 +1,15 @@
 //! A bunch of methods and structures more or less related to resolving macros and
 //! interface provided by `Resolver` to macro expander.
 
-use crate::errors::{self, AddAsNonDerive, MacroExpectedFound, RemoveSurroundingDerive};
+use crate::errors::{
+    self, AddAsNonDerive, CannotFindIdentInThisScope, MacroExpectedFound, RemoveSurroundingDerive,
+};
 use crate::Namespace::*;
 use crate::{BuiltinMacroState, Determinacy};
 use crate::{DeriveData, Finalize, ParentScope, ResolutionError, Resolver, ScopeSet};
 use crate::{ModuleKind, ModuleOrUniformRoot, NameBinding, PathResult, Segment};
 use rustc_ast::expand::StrippedCfgItem;
-use rustc_ast::{self as ast, attr, Inline, ItemKind, ModKind, NodeId};
+use rustc_ast::{self as ast, attr, Crate, Inline, ItemKind, ModKind, NodeId};
 use rustc_ast_pretty::pprust;
 use rustc_attr::StabilityLevel;
 use rustc_data_structures::intern::Interned;
@@ -674,7 +676,7 @@ impl<'a, 'tcx> Resolver<'a, 'tcx> {
         res.map(|res| (self.get_macro(res).map(|macro_data| macro_data.ext), res))
     }
 
-    pub(crate) fn finalize_macro_resolutions(&mut self) {
+    pub(crate) fn finalize_macro_resolutions(&mut self, krate: &Crate) {
         let check_consistency = |this: &mut Self,
                                  path: &[Segment],
                                  span,
@@ -793,9 +795,14 @@ impl<'a, 'tcx> Resolver<'a, 'tcx> {
                 }
                 Err(..) => {
                     let expected = kind.descr_expected();
-                    let msg = format!("cannot find {} `{}` in this scope", expected, ident);
-                    let mut err = self.tcx.sess.struct_span_err(ident.span, msg);
-                    self.unresolved_macro_suggestions(&mut err, kind, &parent_scope, ident);
+
+                    let mut err = self.tcx.sess.create_err(CannotFindIdentInThisScope {
+                        span: ident.span,
+                        expected,
+                        ident,
+                    });
+
+                    self.unresolved_macro_suggestions(&mut err, kind, &parent_scope, ident, krate);
                     err.emit();
                 }
             }

@@ -7,7 +7,6 @@ use std::{fmt, iter, mem};
 
 use either::Either;
 
-use hir::OpaqueTyOrigin;
 use rustc_data_structures::frozen::Frozen;
 use rustc_data_structures::fx::{FxIndexMap, FxIndexSet};
 use rustc_errors::ErrorGuaranteed;
@@ -28,6 +27,7 @@ use rustc_middle::mir::visit::{NonMutatingUseContext, PlaceContext, Visitor};
 use rustc_middle::mir::AssertKind;
 use rustc_middle::mir::*;
 use rustc_middle::traits::query::NoSolution;
+use rustc_middle::traits::ObligationCause;
 use rustc_middle::ty::adjustment::PointerCast;
 use rustc_middle::ty::cast::CastTy;
 use rustc_middle::ty::subst::{SubstsRef, UserSubsts};
@@ -241,7 +241,7 @@ pub(crate) fn type_check<'mir, 'tcx>(
                 hidden_type.ty = infcx.tcx.ty_error(reported);
             }
 
-            (opaque_type_key, (hidden_type, decl.origin))
+            (opaque_type_key, hidden_type)
         })
         .collect();
 
@@ -878,8 +878,7 @@ struct BorrowCheckContext<'a, 'tcx> {
 pub(crate) struct MirTypeckResults<'tcx> {
     pub(crate) constraints: MirTypeckRegionConstraints<'tcx>,
     pub(crate) universal_region_relations: Frozen<UniversalRegionRelations<'tcx>>,
-    pub(crate) opaque_type_values:
-        FxIndexMap<OpaqueTypeKey<'tcx>, (OpaqueHiddenType<'tcx>, OpaqueTyOrigin)>,
+    pub(crate) opaque_type_values: FxIndexMap<OpaqueTypeKey<'tcx>, OpaqueHiddenType<'tcx>>,
 }
 
 /// A collection of region constraints that must be satisfied for the
@@ -1053,15 +1052,29 @@ impl<'a, 'tcx> TypeChecker<'a, 'tcx> {
             ConstraintCategory::OpaqueType,
             CustomTypeOp::new(
                 |ocx| {
-                    for (key, hidden_ty) in renumbered_opaques {
-                        ocx.register_infer_ok_obligations(
-                            ocx.infcx.register_hidden_type_in_new_solver(
-                                key,
-                                param_env,
-                                hidden_ty.ty,
-                            )?,
+                    let mut obligations = Vec::new();
+                    for (opaque_type_key, hidden_ty) in renumbered_opaques {
+                        let cause = ObligationCause::dummy();
+                        ocx.infcx.insert_hidden_type(
+                            opaque_type_key,
+                            &cause,
+                            param_env,
+                            hidden_ty.ty,
+                            true,
+                            &mut obligations,
+                        )?;
+
+                        ocx.infcx.add_item_bounds_for_hidden_type(
+                            opaque_type_key.def_id.to_def_id(),
+                            opaque_type_key.substs,
+                            cause,
+                            param_env,
+                            hidden_ty.ty,
+                            &mut obligations,
                         );
                     }
+
+                    ocx.register_obligations(obligations);
                     Ok(())
                 },
                 "register pre-defined opaques",
@@ -1358,7 +1371,7 @@ impl<'a, 'tcx> TypeChecker<'a, 'tcx> {
                 }
                 // FIXME: check the values
             }
-            TerminatorKind::Call { func, args, destination, from_hir_call, target, .. } => {
+            TerminatorKind::Call { func, args, destination, call_source, target, .. } => {
                 self.check_operand(func, term_location);
                 for arg in args {
                     self.check_operand(arg, term_location);
@@ -1407,9 +1420,11 @@ impl<'a, 'tcx> TypeChecker<'a, 'tcx> {
                 //
                 // See #91068 for an example.
                 self.prove_predicates(
-                    sig.inputs_and_output
-                        .iter()
-                        .map(|ty| ty::Binder::dummy(ty::PredicateKind::WellFormed(ty.into()))),
+                    sig.inputs_and_output.iter().map(|ty| {
+                        ty::Binder::dummy(ty::PredicateKind::Clause(ty::Clause::WellFormed(
+                            ty.into(),
+                        )))
+                    }),
                     term_location.to_locations(),
                     ConstraintCategory::Boring,
                 );
@@ -1432,7 +1447,7 @@ impl<'a, 'tcx> TypeChecker<'a, 'tcx> {
                         .add_element(region_vid, term_location);
                 }
 
-                self.check_call_inputs(body, term, &sig, args, term_location, *from_hir_call);
+                self.check_call_inputs(body, term, &sig, args, term_location, *call_source);
             }
             TerminatorKind::Assert { cond, msg, .. } => {
                 self.check_operand(cond, term_location);
@@ -1559,7 +1574,7 @@ impl<'a, 'tcx> TypeChecker<'a, 'tcx> {
         sig: &ty::FnSig<'tcx>,
         args: &[Operand<'tcx>],
         term_location: Location,
-        from_hir_call: bool,
+        call_source: CallSource,
     ) {
         debug!("check_call_inputs({:?}, {:?})", sig, args);
         if args.len() < sig.inputs().len() || (args.len() > sig.inputs().len() && !sig.c_variadic) {
@@ -1577,7 +1592,7 @@ impl<'a, 'tcx> TypeChecker<'a, 'tcx> {
             let op_arg_ty = op_arg.ty(body, self.tcx());
 
             let op_arg_ty = self.normalize(op_arg_ty, term_location);
-            let category = if from_hir_call {
+            let category = if call_source.from_hir_call() {
                 ConstraintCategory::CallArgument(self.infcx.tcx.erase_regions(func_ty))
             } else {
                 ConstraintCategory::Boring
@@ -1838,7 +1853,7 @@ impl<'a, 'tcx> TypeChecker<'a, 'tcx> {
 
                 let array_ty = rvalue.ty(body.local_decls(), tcx);
                 self.prove_predicate(
-                    ty::PredicateKind::WellFormed(array_ty.into()),
+                    ty::PredicateKind::Clause(ty::Clause::WellFormed(array_ty.into())),
                     Locations::Single(location),
                     ConstraintCategory::Boring,
                 );

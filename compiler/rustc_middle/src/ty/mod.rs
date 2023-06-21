@@ -523,7 +523,7 @@ impl<'tcx> Predicate<'tcx> {
             ty::PredicateKind::Clause(ty::Clause::Trait(data)) => {
                 tcx.trait_is_coinductive(data.def_id())
             }
-            ty::PredicateKind::WellFormed(_) => true,
+            ty::PredicateKind::Clause(ty::Clause::WellFormed(_)) => true,
             _ => false,
         }
     }
@@ -536,7 +536,7 @@ impl<'tcx> Predicate<'tcx> {
     #[inline]
     pub fn allow_normalization(self) -> bool {
         match self.kind().skip_binder() {
-            PredicateKind::WellFormed(_) => false,
+            PredicateKind::Clause(Clause::WellFormed(_)) => false,
             PredicateKind::Clause(Clause::Trait(_))
             | PredicateKind::Clause(Clause::RegionOutlives(_))
             | PredicateKind::Clause(Clause::TypeOutlives(_))
@@ -547,7 +547,7 @@ impl<'tcx> Predicate<'tcx> {
             | PredicateKind::ClosureKind(_, _, _)
             | PredicateKind::Subtype(_)
             | PredicateKind::Coerce(_)
-            | PredicateKind::ConstEvaluatable(_)
+            | PredicateKind::Clause(Clause::ConstEvaluatable(_))
             | PredicateKind::ConstEquate(_, _)
             | PredicateKind::Ambiguous
             | PredicateKind::TypeWellFormedFromEnv(_) => true,
@@ -584,6 +584,30 @@ pub enum Clause<'tcx> {
     /// Ensures that a const generic argument to a parameter `const N: u8`
     /// is of type `u8`.
     ConstArgHasType(Const<'tcx>, Ty<'tcx>),
+
+    /// No syntax: `T` well-formed.
+    WellFormed(GenericArg<'tcx>),
+
+    /// Constant initializer must evaluate successfully.
+    ConstEvaluatable(ty::Const<'tcx>),
+}
+
+impl<'tcx> Binder<'tcx, Clause<'tcx>> {
+    pub fn as_trait_clause(self) -> Option<Binder<'tcx, TraitPredicate<'tcx>>> {
+        if let ty::Clause::Trait(trait_clause) = self.skip_binder() {
+            Some(self.rebind(trait_clause))
+        } else {
+            None
+        }
+    }
+
+    pub fn as_projection_clause(self) -> Option<Binder<'tcx, ProjectionPredicate<'tcx>>> {
+        if let ty::Clause::Projection(projection_clause) = self.skip_binder() {
+            Some(self.rebind(projection_clause))
+        } else {
+            None
+        }
+    }
 }
 
 #[derive(Clone, Copy, PartialEq, Eq, Hash, TyEncodable, TyDecodable)]
@@ -591,9 +615,6 @@ pub enum Clause<'tcx> {
 pub enum PredicateKind<'tcx> {
     /// Prove a clause
     Clause(Clause<'tcx>),
-
-    /// No syntax: `T` well-formed.
-    WellFormed(GenericArg<'tcx>),
 
     /// Trait must be object-safe.
     ObjectSafe(DefId),
@@ -619,9 +640,6 @@ pub enum PredicateKind<'tcx> {
     /// very much like subtyping and don't handle the full coercion
     /// logic.
     Coerce(CoercePredicate<'tcx>),
-
-    /// Constant initializer must evaluate successfully.
-    ConstEvaluatable(ty::Const<'tcx>),
 
     /// Constants must be equal. The first component is the const that is expected.
     ConstEquate(Const<'tcx>, Const<'tcx>),
@@ -1196,6 +1214,13 @@ impl<'tcx> ToPredicate<'tcx> for Clause<'tcx> {
     }
 }
 
+impl<'tcx> ToPredicate<'tcx> for Binder<'tcx, Clause<'tcx>> {
+    #[inline(always)]
+    fn to_predicate(self, tcx: TyCtxt<'tcx>) -> Predicate<'tcx> {
+        tcx.mk_predicate(self.map_bound(|clause| ty::PredicateKind::Clause(clause)))
+    }
+}
+
 impl<'tcx> ToPredicate<'tcx> for TraitRef<'tcx> {
     #[inline(always)]
     fn to_predicate(self, tcx: TyCtxt<'tcx>) -> Predicate<'tcx> {
@@ -1203,9 +1228,28 @@ impl<'tcx> ToPredicate<'tcx> for TraitRef<'tcx> {
     }
 }
 
+impl<'tcx> ToPredicate<'tcx, Binder<'tcx, Clause<'tcx>>> for TraitRef<'tcx> {
+    #[inline(always)]
+    fn to_predicate(self, _tcx: TyCtxt<'tcx>) -> Binder<'tcx, Clause<'tcx>> {
+        Binder::dummy(Clause::Trait(TraitPredicate {
+            trait_ref: self,
+            constness: ty::BoundConstness::NotConst,
+            polarity: ty::ImplPolarity::Positive,
+        }))
+    }
+}
+
 impl<'tcx> ToPredicate<'tcx> for Binder<'tcx, TraitRef<'tcx>> {
     #[inline(always)]
     fn to_predicate(self, tcx: TyCtxt<'tcx>) -> Predicate<'tcx> {
+        let pred: PolyTraitPredicate<'tcx> = self.to_predicate(tcx);
+        pred.to_predicate(tcx)
+    }
+}
+
+impl<'tcx> ToPredicate<'tcx, Binder<'tcx, Clause<'tcx>>> for Binder<'tcx, TraitRef<'tcx>> {
+    #[inline(always)]
+    fn to_predicate(self, tcx: TyCtxt<'tcx>) -> Binder<'tcx, Clause<'tcx>> {
         let pred: PolyTraitPredicate<'tcx> = self.to_predicate(tcx);
         pred.to_predicate(tcx)
     }
@@ -1240,6 +1284,12 @@ impl<'tcx> ToPredicate<'tcx> for PolyTraitPredicate<'tcx> {
     }
 }
 
+impl<'tcx> ToPredicate<'tcx, Binder<'tcx, Clause<'tcx>>> for PolyTraitPredicate<'tcx> {
+    fn to_predicate(self, _tcx: TyCtxt<'tcx>) -> Binder<'tcx, Clause<'tcx>> {
+        self.map_bound(|p| Clause::Trait(p))
+    }
+}
+
 impl<'tcx> ToPredicate<'tcx> for PolyRegionOutlivesPredicate<'tcx> {
     fn to_predicate(self, tcx: TyCtxt<'tcx>) -> Predicate<'tcx> {
         self.map_bound(|p| PredicateKind::Clause(Clause::RegionOutlives(p))).to_predicate(tcx)
@@ -1255,6 +1305,12 @@ impl<'tcx> ToPredicate<'tcx> for PolyTypeOutlivesPredicate<'tcx> {
 impl<'tcx> ToPredicate<'tcx> for PolyProjectionPredicate<'tcx> {
     fn to_predicate(self, tcx: TyCtxt<'tcx>) -> Predicate<'tcx> {
         self.map_bound(|p| PredicateKind::Clause(Clause::Projection(p))).to_predicate(tcx)
+    }
+}
+
+impl<'tcx> ToPredicate<'tcx, Binder<'tcx, Clause<'tcx>>> for PolyProjectionPredicate<'tcx> {
+    fn to_predicate(self, _tcx: TyCtxt<'tcx>) -> Binder<'tcx, Clause<'tcx>> {
+        self.map_bound(|p| Clause::Projection(p))
     }
 }
 
@@ -1275,11 +1331,11 @@ impl<'tcx> Predicate<'tcx> {
             | PredicateKind::Subtype(..)
             | PredicateKind::Coerce(..)
             | PredicateKind::Clause(Clause::RegionOutlives(..))
-            | PredicateKind::WellFormed(..)
+            | PredicateKind::Clause(Clause::WellFormed(..))
             | PredicateKind::ObjectSafe(..)
             | PredicateKind::ClosureKind(..)
             | PredicateKind::Clause(Clause::TypeOutlives(..))
-            | PredicateKind::ConstEvaluatable(..)
+            | PredicateKind::Clause(Clause::ConstEvaluatable(..))
             | PredicateKind::ConstEquate(..)
             | PredicateKind::Ambiguous
             | PredicateKind::TypeWellFormedFromEnv(..) => None,
@@ -1296,11 +1352,11 @@ impl<'tcx> Predicate<'tcx> {
             | PredicateKind::Subtype(..)
             | PredicateKind::Coerce(..)
             | PredicateKind::Clause(Clause::RegionOutlives(..))
-            | PredicateKind::WellFormed(..)
+            | PredicateKind::Clause(Clause::WellFormed(..))
             | PredicateKind::ObjectSafe(..)
             | PredicateKind::ClosureKind(..)
             | PredicateKind::Clause(Clause::TypeOutlives(..))
-            | PredicateKind::ConstEvaluatable(..)
+            | PredicateKind::Clause(Clause::ConstEvaluatable(..))
             | PredicateKind::ConstEquate(..)
             | PredicateKind::Ambiguous
             | PredicateKind::TypeWellFormedFromEnv(..) => None,
@@ -1318,10 +1374,25 @@ impl<'tcx> Predicate<'tcx> {
             | PredicateKind::Subtype(..)
             | PredicateKind::Coerce(..)
             | PredicateKind::Clause(Clause::RegionOutlives(..))
-            | PredicateKind::WellFormed(..)
+            | PredicateKind::Clause(Clause::WellFormed(..))
             | PredicateKind::ObjectSafe(..)
             | PredicateKind::ClosureKind(..)
-            | PredicateKind::ConstEvaluatable(..)
+            | PredicateKind::Clause(Clause::ConstEvaluatable(..))
+            | PredicateKind::ConstEquate(..)
+            | PredicateKind::Ambiguous
+            | PredicateKind::TypeWellFormedFromEnv(..) => None,
+        }
+    }
+
+    pub fn as_clause(self) -> Option<Binder<'tcx, Clause<'tcx>>> {
+        let predicate = self.kind();
+        match predicate.skip_binder() {
+            PredicateKind::Clause(clause) => Some(predicate.rebind(clause)),
+            PredicateKind::AliasRelate(..)
+            | PredicateKind::Subtype(..)
+            | PredicateKind::Coerce(..)
+            | PredicateKind::ObjectSafe(..)
+            | PredicateKind::ClosureKind(..)
             | PredicateKind::ConstEquate(..)
             | PredicateKind::Ambiguous
             | PredicateKind::TypeWellFormedFromEnv(..) => None,

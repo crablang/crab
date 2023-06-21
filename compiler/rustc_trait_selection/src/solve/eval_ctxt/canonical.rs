@@ -11,11 +11,11 @@
 use super::{CanonicalInput, Certainty, EvalCtxt, Goal};
 use crate::solve::canonicalize::{CanonicalizeMode, Canonicalizer};
 use crate::solve::{CanonicalResponse, QueryResult, Response};
+use rustc_data_structures::fx::FxHashSet;
 use rustc_index::IndexVec;
 use rustc_infer::infer::canonical::query_response::make_query_region_constraints;
 use rustc_infer::infer::canonical::CanonicalVarValues;
 use rustc_infer::infer::canonical::{CanonicalExt, QueryRegionConstraints};
-use rustc_infer::infer::InferOk;
 use rustc_middle::traits::query::NoSolution;
 use rustc_middle::traits::solve::{
     ExternalConstraints, ExternalConstraintsData, MaybeCause, PredefinedOpaquesData, QueryInput,
@@ -147,7 +147,7 @@ impl<'tcx> EvalCtxt<'_, 'tcx> {
         // Cannot use `take_registered_region_obligations` as we may compute the response
         // inside of a `probe` whenever we have multiple choices inside of the solver.
         let region_obligations = self.infcx.inner.borrow().region_obligations().to_owned();
-        let region_constraints = self.infcx.with_region_constraints(|region_constraints| {
+        let mut region_constraints = self.infcx.with_region_constraints(|region_constraints| {
             make_query_region_constraints(
                 self.tcx(),
                 region_obligations
@@ -156,6 +156,9 @@ impl<'tcx> EvalCtxt<'_, 'tcx> {
                 region_constraints,
             )
         });
+
+        let mut seen = FxHashSet::default();
+        region_constraints.outlives.retain(|outlives| seen.insert(*outlives));
 
         let mut opaque_types = self.infcx.clone_opaque_types_for_query_response();
         // Only return opaque type keys for newly-defined opaques
@@ -317,12 +320,8 @@ impl<'tcx> EvalCtxt<'_, 'tcx> {
         param_env: ty::ParamEnv<'tcx>,
         opaque_types: &[(ty::OpaqueTypeKey<'tcx>, Ty<'tcx>)],
     ) -> Result<(), NoSolution> {
-        for &(a, b) in opaque_types {
-            let InferOk { value: (), obligations } =
-                self.infcx.register_hidden_type_in_new_solver(a, param_env, b)?;
-            // It's sound to drop these obligations, since the normalizes-to goal
-            // is responsible for proving these obligations.
-            let _ = obligations;
+        for &(key, ty) in opaque_types {
+            self.insert_hidden_type(key, param_env, ty)?;
         }
         Ok(())
     }

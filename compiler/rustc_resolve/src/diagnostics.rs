@@ -30,6 +30,10 @@ use rustc_span::symbol::{kw, sym, Ident, Symbol};
 use rustc_span::{BytePos, Span, SyntaxContext};
 use thin_vec::ThinVec;
 
+use crate::errors::{
+    AddedMacroUse, ChangeImportBinding, ChangeImportBindingSuggestion, ConsiderAddingADerive,
+    ExplicitUnsafeTraits,
+};
 use crate::imports::{Import, ImportKind};
 use crate::late::{PatternSource, Rib};
 use crate::path_names_to_string;
@@ -376,16 +380,10 @@ impl<'a, 'tcx> Resolver<'a, 'tcx> {
             _ => unreachable!(),
         }
 
-        let rename_msg = "you can use `as` to change the binding name of the import";
         if let Some(suggestion) = suggestion {
-            err.span_suggestion(
-                binding_span,
-                rename_msg,
-                suggestion,
-                Applicability::MaybeIncorrect,
-            );
+            err.subdiagnostic(ChangeImportBindingSuggestion { span: binding_span, suggestion });
         } else {
-            err.span_label(binding_span, rename_msg);
+            err.subdiagnostic(ChangeImportBinding { span: binding_span });
         }
     }
 
@@ -1352,6 +1350,7 @@ impl<'a, 'tcx> Resolver<'a, 'tcx> {
         macro_kind: MacroKind,
         parent_scope: &ParentScope<'a>,
         ident: Ident,
+        krate: &Crate,
     ) {
         let is_expected = &|res: Res| res.macro_kind() == Some(macro_kind);
         let suggestion = self.early_lookup_typo_candidate(
@@ -1364,25 +1363,28 @@ impl<'a, 'tcx> Resolver<'a, 'tcx> {
 
         let import_suggestions =
             self.lookup_import_candidates(ident, Namespace::MacroNS, parent_scope, is_expected);
+        let (span, found_use) = match parent_scope.module.nearest_parent_mod().as_local() {
+            Some(def_id) => UsePlacementFinder::check(krate, self.def_id_to_node_id[def_id]),
+            None => (None, FoundUse::No),
+        };
         show_candidates(
             self.tcx,
             err,
-            None,
+            span,
             &import_suggestions,
             Instead::No,
-            FoundUse::Yes,
+            found_use,
             DiagnosticMode::Normal,
             vec![],
             "",
         );
 
         if macro_kind == MacroKind::Derive && (ident.name == sym::Send || ident.name == sym::Sync) {
-            let msg = format!("unsafe traits like `{}` should be implemented explicitly", ident);
-            err.span_note(ident.span, msg);
+            err.subdiagnostic(ExplicitUnsafeTraits { span: ident.span, ident });
             return;
         }
         if self.macro_names.contains(&ident.normalize_to_macros_2_0()) {
-            err.help("have you added the `#[macro_use]` on the module/import?");
+            err.subdiagnostic(AddedMacroUse);
             return;
         }
         if ident.name == kw::Default
@@ -1391,14 +1393,10 @@ impl<'a, 'tcx> Resolver<'a, 'tcx> {
             let span = self.def_span(def_id);
             let source_map = self.tcx.sess.source_map();
             let head_span = source_map.guess_head_span(span);
-            if let Ok(head) = source_map.span_to_snippet(head_span) {
-                err.span_suggestion(head_span, "consider adding a derive", format!("#[derive(Default)]\n{head}"), Applicability::MaybeIncorrect);
-            } else {
-                err.span_help(
-                    head_span,
-                    "consider adding `#[derive(Default)]` to this enum",
-                );
-            }
+            err.subdiagnostic(ConsiderAddingADerive {
+                span: head_span.shrink_to_lo(),
+                suggestion: format!("#[derive(Default)]\n")
+            });
         }
         for ns in [Namespace::MacroNS, Namespace::TypeNS, Namespace::ValueNS] {
             if let Ok(binding) = self.early_resolve_ident_in_lexical_scope(
@@ -2489,7 +2487,7 @@ fn show_candidates(
     for path_strings in [&mut accessible_path_strings, &mut inaccessible_path_strings] {
         path_strings.sort_by(|a, b| a.0.cmp(&b.0));
         let core_path_strings =
-            path_strings.drain_filter(|p| p.0.starts_with("core::")).collect::<Vec<_>>();
+            path_strings.extract_if(|p| p.0.starts_with("core::")).collect::<Vec<_>>();
         path_strings.extend(core_path_strings);
         path_strings.dedup_by(|a, b| a.0 == b.0);
     }

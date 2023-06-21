@@ -378,7 +378,7 @@ Portable SIMD is developed in its own repository. If possible, consider \
 making this change to [rust-lang/portable-simd](https://github.com/rust-lang/portable-simd) \
 instead.
 """
-cc = ["@calebzulawski"]
+cc = ["@calebzulawski", "@programmerjake"]
 
 [mentions."src/librustdoc/clean/types.rs"]
 cc = ["@camelid"]
@@ -476,6 +476,13 @@ message = "`src/tools/x` was changed. Bump version of Cargo.toml in `src/tools/x
 message = "This PR changes src/bootstrap/defaults/config.compiler.toml. If appropriate, please also update `config.codegen.toml` so the defaults are in sync."
 [mentions."src/bootstrap/defaults/config.codegen.toml"]
 message = "This PR changes src/bootstrap/defaults/config.codegen.toml. If appropriate, please also update `config.compiler.toml` so the defaults are in sync."
+
+[mentions."src/bootstrap/llvm.rs"]
+message = "This PR changes how LLVM is built. Consider updating src/bootstrap/download-ci-llvm-stamp."
+[mentions."compiler/rustc_llvm/build.rs"]
+message = "This PR changes how LLVM is built. Consider updating src/bootstrap/download-ci-llvm-stamp."
+[mentions."compiler/rustc_llvm/llvm-wrapper"]
+message = "This PR changes how LLVM is built. Consider updating src/bootstrap/download-ci-llvm-stamp."
 
 [mentions."tests/ui/deriving/deriving-all-codegen.stdout"]
 message = "Changes to the code generated for builtin derived traits."

@@ -731,7 +731,7 @@ pub trait PrettyPrinter<'tcx>:
             ty::Foreign(def_id) => {
                 p!(print_def_path(def_id, &[]));
             }
-            ty::Alias(ty::Projection | ty::Inherent, ref data) => {
+            ty::Alias(ty::Projection | ty::Inherent | ty::Weak, ref data) => {
                 if !(self.should_print_verbose() || NO_QUERIES.with(|q| q.get()))
                     && self.tcx().is_impl_trait_in_trait(data.def_id)
                 {
@@ -2877,7 +2877,7 @@ define_print_and_forward_display! {
             ty::PredicateKind::Clause(ty::Clause::ConstArgHasType(ct, ty)) => {
                 p!("the constant `", print(ct), "` has type `", print(ty), "`")
             },
-            ty::PredicateKind::WellFormed(arg) => p!(print(arg), " well-formed"),
+            ty::PredicateKind::Clause(ty::Clause::WellFormed(arg)) => p!(print(arg), " well-formed"),
             ty::PredicateKind::ObjectSafe(trait_def_id) => {
                 p!("the trait `", print_def_path(trait_def_id, &[]), "` is object-safe")
             }
@@ -2886,7 +2886,7 @@ define_print_and_forward_display! {
                 print_value_path(closure_def_id, &[]),
                 write("` implements the trait `{}`", kind)
             ),
-            ty::PredicateKind::ConstEvaluatable(ct) => {
+            ty::PredicateKind::Clause(ty::Clause::ConstEvaluatable(ct)) => {
                 p!("the constant `", print(ct), "` can be evaluated")
             }
             ty::PredicateKind::ConstEquate(c1, c2) => {

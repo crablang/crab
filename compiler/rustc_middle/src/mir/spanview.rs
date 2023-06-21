@@ -3,7 +3,7 @@ use rustc_middle::hir;
 use rustc_middle::mir::*;
 use rustc_middle::ty::TyCtxt;
 use rustc_session::config::MirSpanview;
-use rustc_span::{BytePos, Pos, Span, SyntaxContext};
+use rustc_span::{BytePos, Pos, Span};
 
 use std::cmp;
 use std::io::{self, Write};
@@ -15,8 +15,9 @@ const ANNOTATION_LEFT_BRACKET: char = '\u{298a}'; // Unicode `Z NOTATION RIGHT B
 const ANNOTATION_RIGHT_BRACKET: char = '\u{2989}'; // Unicode `Z NOTATION LEFT BINDING BRACKET`
 const NEW_LINE_SPAN: &str = "</span>\n<span class=\"line\">";
 const HEADER: &str = r#"<!DOCTYPE html>
-<html>
-<head>"#;
+<html lang="en">
+<head>
+<meta charset="utf-8">"#;
 const START_BODY: &str = r#"</head>
 <body>"#;
 const FOOTER: &str = r#"</body>
@@ -327,7 +328,7 @@ fn compute_block_span(data: &BasicBlockData<'_>, body_span: Span) -> Span {
     let mut span = data.terminator().source_info.span;
     for statement_span in data.statements.iter().map(|statement| statement.source_info.span) {
         // Only combine Spans from the root context, and within the function's body_span.
-        if statement_span.ctxt() == SyntaxContext::root() && body_span.contains(statement_span) {
+        if statement_span.ctxt().is_root() && body_span.contains(statement_span) {
             span = span.to(statement_span);
         }
     }

@@ -143,7 +143,7 @@ impl<'cx, 'tcx> SelectionContext<'cx, 'tcx> {
         // Before we go into the whole placeholder thing, just
         // quickly check if the self-type is a projection at all.
         match obligation.predicate.skip_binder().trait_ref.self_ty().kind() {
-            // Excluding IATs here as they don't have meaningful item bounds.
+            // Excluding IATs and type aliases here as they don't have meaningful item bounds.
             ty::Alias(ty::Projection | ty::Opaque, _) => {}
             ty::Infer(ty::TyVar(_)) => {
                 span_bug!(
@@ -417,17 +417,15 @@ impl<'cx, 'tcx> SelectionContext<'cx, 'tcx> {
                 // Fast path to avoid evaluating an obligation that trivially holds.
                 // There may be more bounds, but these are checked by the regular path.
                 ty::FnPtr(..) => return false,
+
                 // These may potentially implement `FnPtr`
                 ty::Placeholder(..)
                 | ty::Dynamic(_, _, _)
                 | ty::Alias(_, _)
                 | ty::Infer(_)
-                | ty::Param(..) => {}
+                | ty::Param(..)
+                | ty::Bound(_, _) => {}
 
-                ty::Bound(_, _) => span_bug!(
-                    obligation.cause.span(),
-                    "cannot have escaping bound var in self type of {obligation:#?}"
-                ),
                 // These can't possibly implement `FnPtr` as they are concrete types
                 // and not `FnPtr`
                 ty::Bool
@@ -553,6 +551,10 @@ impl<'cx, 'tcx> SelectionContext<'cx, 'tcx> {
             self_ty = ?obligation.self_ty().skip_binder(),
             "assemble_candidates_from_object_ty",
         );
+
+        if !self.tcx().trait_def(obligation.predicate.def_id()).implement_via_object {
+            return;
+        }
 
         self.infcx.probe(|_snapshot| {
             if obligation.has_non_region_late_bound() {

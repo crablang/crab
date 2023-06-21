@@ -847,7 +847,25 @@ impl<'tcx> TypeErrCtxt<'_, 'tcx> {
                 ) {
                     err.subdiagnostic(subdiag);
                 }
-                if let Some(ret_sp) = opt_suggest_box_span {
+                // don't suggest wrapping either blocks in `if .. {} else {}`
+                let is_empty_arm = |id| {
+                    let hir::Node::Block(blk) = self.tcx.hir().get(id)
+                    else {
+                        return false;
+                    };
+                    if blk.expr.is_some() || !blk.stmts.is_empty() {
+                        return false;
+                    }
+                    let Some((_, hir::Node::Expr(expr))) = self.tcx.hir().parent_iter(id).nth(1)
+                    else {
+                        return false;
+                    };
+                    matches!(expr.kind, hir::ExprKind::If(..))
+                };
+                if let Some(ret_sp) = opt_suggest_box_span
+                    && !is_empty_arm(then_id)
+                    && !is_empty_arm(else_id)
+                {
                     self.suggest_boxing_for_return_impl_trait(
                         err,
                         ret_sp,
@@ -1897,7 +1915,6 @@ impl<'tcx> TypeErrCtxt<'_, 'tcx> {
 
             if should_suggest_fixes {
                 self.suggest_tuple_pattern(cause, &exp_found, diag);
-                self.suggest_as_ref_where_appropriate(span, &exp_found, diag);
                 self.suggest_accessing_field_where_appropriate(cause, &exp_found, diag);
                 self.suggest_await_on_expect_found(cause, span, &exp_found, diag);
                 self.suggest_function_pointers(cause, span, &exp_found, diag);
@@ -2358,6 +2375,7 @@ impl<'tcx> TypeErrCtxt<'_, 'tcx> {
                 ty::AliasKind::Projection | ty::AliasKind::Inherent => {
                     format!("the associated type `{}`", p)
                 }
+                ty::AliasKind::Weak => format!("the type alias `{}`", p),
                 ty::AliasKind::Opaque => format!("the opaque type `{}`", p),
             },
         };

@@ -156,6 +156,7 @@ pub(crate) fn compile_fn(
             write!(clif, " {}", isa_flag).unwrap();
         }
         writeln!(clif, "\n").unwrap();
+        writeln!(clif, "; symbol {}", codegened_func.symbol_name).unwrap();
         crate::PrintOnPanic(move || {
             let mut clif = clif.clone();
             ::cranelift_codegen::write::decorate_function(
@@ -420,7 +421,7 @@ fn codegen_fn_body(fx: &mut FunctionCx<'_, '_, '_>, start_block: Block) {
                 target,
                 fn_span,
                 unwind: _,
-                from_hir_call: _,
+                call_source: _,
             } => {
                 fx.tcx.prof.generic_activity("codegen call").run(|| {
                     crate::abi::codegen_terminator_call(

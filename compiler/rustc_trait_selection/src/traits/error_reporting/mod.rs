@@ -66,6 +66,11 @@ pub struct ImplCandidate<'tcx> {
     pub similarity: CandidateSimilarity,
 }
 
+enum GetSafeTransmuteErrorAndReason {
+    Silent,
+    Error { err_msg: String, safe_transmute_explanation: String },
+}
+
 pub trait InferCtxtExt<'tcx> {
     /// Given some node representing a fn-like thing in the HIR map,
     /// returns a span and `ArgKind` information that describes the
@@ -739,11 +744,17 @@ impl<'tcx> TypeErrCtxtExt<'tcx> for TypeErrCtxt<'_, 'tcx> {
                             == self.tcx.lang_items().transmute_trait()
                         {
                             // Recompute the safe transmute reason and use that for the error reporting
-                            self.get_safe_transmute_error_and_reason(
+                            match self.get_safe_transmute_error_and_reason(
                                 obligation.clone(),
                                 trait_ref,
                                 span,
-                            )
+                            ) {
+                                GetSafeTransmuteErrorAndReason::Silent => return,
+                                GetSafeTransmuteErrorAndReason::Error {
+                                    err_msg,
+                                    safe_transmute_explanation,
+                                } => (err_msg, Some(safe_transmute_explanation)),
+                            }
                         } else {
                             (err_msg, None)
                         };
@@ -1037,7 +1048,7 @@ impl<'tcx> TypeErrCtxtExt<'tcx> for TypeErrCtxt<'_, 'tcx> {
                         self.report_closure_error(&obligation, closure_def_id, found_kind, kind)
                     }
 
-                    ty::PredicateKind::WellFormed(ty) => {
+                    ty::PredicateKind::Clause(ty::Clause::WellFormed(ty)) => {
                         match self.tcx.sess.opts.unstable_opts.trait_solver {
                             TraitSolver::Classic => {
                                 // WF predicates cannot themselves make
@@ -1058,7 +1069,7 @@ impl<'tcx> TypeErrCtxtExt<'tcx> for TypeErrCtxt<'_, 'tcx> {
                         }
                     }
 
-                    ty::PredicateKind::ConstEvaluatable(..) => {
+                    ty::PredicateKind::Clause(ty::Clause::ConstEvaluatable(..)) => {
                         // Errors for `ConstEvaluatable` predicates show up as
                         // `SelectionError::ConstEvalFailure`,
                         // not `Unimplemented`.
@@ -1403,7 +1414,7 @@ trait InferCtxtPrivExt<'tcx> {
         obligation: PredicateObligation<'tcx>,
         trait_ref: ty::PolyTraitRef<'tcx>,
         span: Span,
-    ) -> (String, Option<String>);
+    ) -> GetSafeTransmuteErrorAndReason;
 
     fn add_tuple_trait_message(
         &self,
@@ -1813,12 +1824,13 @@ impl<'tcx> InferCtxtPrivExt<'tcx> for TypeErrCtxt<'_, 'tcx> {
                 ty::Alias(ty::Projection, ..) => Some(12),
                 ty::Alias(ty::Inherent, ..) => Some(13),
                 ty::Alias(ty::Opaque, ..) => Some(14),
-                ty::Never => Some(15),
-                ty::Adt(..) => Some(16),
-                ty::Generator(..) => Some(17),
-                ty::Foreign(..) => Some(18),
-                ty::GeneratorWitness(..) => Some(19),
-                ty::GeneratorWitnessMIR(..) => Some(20),
+                ty::Alias(ty::Weak, ..) => Some(15),
+                ty::Never => Some(16),
+                ty::Adt(..) => Some(17),
+                ty::Generator(..) => Some(18),
+                ty::Foreign(..) => Some(19),
+                ty::GeneratorWitness(..) => Some(20),
+                ty::GeneratorWitnessMIR(..) => Some(21),
                 ty::Placeholder(..) | ty::Bound(..) | ty::Infer(..) | ty::Error(_) => None,
             }
         }
@@ -2403,7 +2415,7 @@ impl<'tcx> InferCtxtPrivExt<'tcx> for TypeErrCtxt<'_, 'tcx> {
                 err
             }
 
-            ty::PredicateKind::WellFormed(arg) => {
+            ty::PredicateKind::Clause(ty::Clause::WellFormed(arg)) => {
                 // Same hacky approach as above to avoid deluging user
                 // with error messages.
                 if arg.references_error()
@@ -2475,7 +2487,7 @@ impl<'tcx> InferCtxtPrivExt<'tcx> for TypeErrCtxt<'_, 'tcx> {
                 }
             }
 
-            ty::PredicateKind::ConstEvaluatable(data) => {
+            ty::PredicateKind::Clause(ty::Clause::ConstEvaluatable(data)) => {
                 if predicate.references_error() || self.tainted_by_errors().is_some() {
                     return;
                 }
@@ -2850,7 +2862,9 @@ impl<'tcx> InferCtxtPrivExt<'tcx> for TypeErrCtxt<'_, 'tcx> {
         obligation: PredicateObligation<'tcx>,
         trait_ref: ty::PolyTraitRef<'tcx>,
         span: Span,
-    ) -> (String, Option<String>) {
+    ) -> GetSafeTransmuteErrorAndReason {
+        use rustc_transmute::Answer;
+
         // Erase regions because layout code doesn't particularly care about regions.
         let trait_ref = self.tcx.erase_regions(self.tcx.erase_late_bound_regions(trait_ref));
 
@@ -2863,19 +2877,20 @@ impl<'tcx> InferCtxtPrivExt<'tcx> for TypeErrCtxt<'_, 'tcx> {
             rustc_transmute::Assume::from_const(self.infcx.tcx, obligation.param_env, trait_ref.substs.const_at(3)) else {
                 span_bug!(span, "Unable to construct rustc_transmute::Assume where it was previously possible");
             };
+
         match rustc_transmute::TransmuteTypeEnv::new(self.infcx).is_transmutable(
             obligation.cause,
             src_and_dst,
             scope,
             assume,
         ) {
-            rustc_transmute::Answer::No(reason) => {
+            Answer::No(reason) => {
                 let dst = trait_ref.substs.type_at(0);
                 let src = trait_ref.substs.type_at(1);
-                let custom_err_msg = format!(
+                let err_msg = format!(
                     "`{src}` cannot be safely transmuted into `{dst}` in the defining scope of `{scope}`"
                 );
-                let reason_msg = match reason {
+                let safe_transmute_explanation = match reason {
                     rustc_transmute::Reason::SrcIsUnspecified => {
                         format!("`{src}` does not have a well-specified layout")
                     }
@@ -2891,19 +2906,39 @@ impl<'tcx> InferCtxtPrivExt<'tcx> for TypeErrCtxt<'_, 'tcx> {
                     rustc_transmute::Reason::DstIsPrivate => format!(
                         "`{dst}` is or contains a type or field that is not visible in that scope"
                     ),
-                    // FIXME(bryangarza): Include the number of bytes of src and dst
                     rustc_transmute::Reason::DstIsTooBig => {
                         format!("The size of `{src}` is smaller than the size of `{dst}`")
                     }
+                    rustc_transmute::Reason::DstHasStricterAlignment {
+                        src_min_align,
+                        dst_min_align,
+                    } => {
+                        format!(
+                            "The minimum alignment of `{src}` ({src_min_align}) should be greater than that of `{dst}` ({dst_min_align})"
+                        )
+                    }
+                    rustc_transmute::Reason::DstIsMoreUnique => {
+                        format!("`{src}` is a shared reference, but `{dst}` is a unique reference")
+                    }
+                    // Already reported by rustc
+                    rustc_transmute::Reason::TypeError => {
+                        return GetSafeTransmuteErrorAndReason::Silent;
+                    }
+                    rustc_transmute::Reason::SrcLayoutUnknown => {
+                        format!("`{src}` has an unknown layout")
+                    }
+                    rustc_transmute::Reason::DstLayoutUnknown => {
+                        format!("`{dst}` has an unknown layout")
+                    }
                 };
-                (custom_err_msg, Some(reason_msg))
+                GetSafeTransmuteErrorAndReason::Error { err_msg, safe_transmute_explanation }
             }
             // Should never get a Yes at this point! We already ran it before, and did not get a Yes.
-            rustc_transmute::Answer::Yes => span_bug!(
+            Answer::Yes => span_bug!(
                 span,
                 "Inconsistent rustc_transmute::is_transmutable(...) result, got Yes",
             ),
-            _ => span_bug!(span, "Unsupported rustc_transmute::Reason variant"),
+            other => span_bug!(span, "Unsupported rustc_transmute::Answer variant: `{other:?}`"),
         }
     }
 
@@ -3290,7 +3325,7 @@ impl<'tcx> InferCtxtPrivExt<'tcx> for TypeErrCtxt<'_, 'tcx> {
         }
 
         match obligation.predicate.kind().skip_binder() {
-            ty::PredicateKind::ConstEvaluatable(ct) => {
+            ty::PredicateKind::Clause(ty::Clause::ConstEvaluatable(ct)) => {
                 let ty::ConstKind::Unevaluated(uv) = ct.kind() else {
                     bug!("const evaluatable failed for non-unevaluated const `{ct:?}`");
                 };

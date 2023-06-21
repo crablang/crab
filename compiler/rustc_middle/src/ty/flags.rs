@@ -178,7 +178,7 @@ impl FlagComputation {
 
             &ty::Alias(kind, data) => {
                 self.add_flags(match kind {
-                    ty::Projection => TypeFlags::HAS_TY_PROJECTION,
+                    ty::Weak | ty::Projection => TypeFlags::HAS_TY_PROJECTION,
                     ty::Inherent => TypeFlags::HAS_TY_INHERENT,
                     ty::Opaque => TypeFlags::HAS_TY_OPAQUE,
                 });
@@ -270,14 +270,14 @@ impl FlagComputation {
                 self.add_alias_ty(projection_ty);
                 self.add_term(term);
             }
-            ty::PredicateKind::WellFormed(arg) => {
+            ty::PredicateKind::Clause(ty::Clause::WellFormed(arg)) => {
                 self.add_substs(slice::from_ref(&arg));
             }
             ty::PredicateKind::ObjectSafe(_def_id) => {}
             ty::PredicateKind::ClosureKind(_def_id, substs, _kind) => {
                 self.add_substs(substs);
             }
-            ty::PredicateKind::ConstEvaluatable(uv) => {
+            ty::PredicateKind::Clause(ty::Clause::ConstEvaluatable(uv)) => {
                 self.add_const(uv);
             }
             ty::PredicateKind::ConstEquate(expected, found) => {

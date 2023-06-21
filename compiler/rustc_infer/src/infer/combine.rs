@@ -34,7 +34,7 @@ use rustc_middle::infer::unify_key::{ConstVarValue, ConstVariableValue};
 use rustc_middle::infer::unify_key::{ConstVariableOrigin, ConstVariableOriginKind};
 use rustc_middle::ty::error::{ExpectedFound, TypeError};
 use rustc_middle::ty::relate::{RelateResult, TypeRelation};
-use rustc_middle::ty::{self, AliasKind, InferConst, ToPredicate, Ty, TyCtxt, TypeVisitableExt};
+use rustc_middle::ty::{self, InferConst, ToPredicate, Ty, TyCtxt, TypeVisitableExt};
 use rustc_middle::ty::{IntType, UintType};
 use rustc_span::DUMMY_SP;
 
@@ -103,12 +103,12 @@ impl<'tcx> InferCtxt<'tcx> {
 
             // We don't expect `TyVar` or `Fresh*` vars at this point with lazy norm.
             (
-                ty::Alias(AliasKind::Projection, _),
+                ty::Alias(..),
                 ty::Infer(ty::TyVar(_) | ty::FreshTy(_) | ty::FreshIntTy(_) | ty::FreshFloatTy(_)),
             )
             | (
                 ty::Infer(ty::TyVar(_) | ty::FreshTy(_) | ty::FreshIntTy(_) | ty::FreshFloatTy(_)),
-                ty::Alias(AliasKind::Projection, _),
+                ty::Alias(..),
             ) if self.next_trait_solver() => {
                 bug!()
             }
@@ -124,13 +124,10 @@ impl<'tcx> InferCtxt<'tcx> {
             }
 
             // During coherence, opaque types should be treated as *possibly*
-            // equal to each other, even if their generic params differ, as
-            // they could resolve to the same hidden type, even for different
-            // generic params.
-            (
-                &ty::Alias(ty::Opaque, ty::AliasTy { def_id: a_def_id, .. }),
-                &ty::Alias(ty::Opaque, ty::AliasTy { def_id: b_def_id, .. }),
-            ) if self.intercrate && a_def_id == b_def_id => {
+            // equal to any other type (except for possibly itself). This is an
+            // extremely heavy hammer, but can be relaxed in a fowards-compatible
+            // way later.
+            (&ty::Alias(ty::Opaque, _), _) | (_, &ty::Alias(ty::Opaque, _)) if self.intercrate => {
                 relation.register_predicates([ty::Binder::dummy(ty::PredicateKind::Ambiguous)]);
                 Ok(a)
             }
@@ -417,7 +414,7 @@ impl<'infcx, 'tcx> CombineFields<'infcx, 'tcx> {
                 self.tcx(),
                 self.trace.cause.clone(),
                 self.param_env,
-                ty::Binder::dummy(ty::PredicateKind::WellFormed(b_ty.into())),
+                ty::Binder::dummy(ty::PredicateKind::Clause(ty::Clause::WellFormed(b_ty.into()))),
             ));
         }
 

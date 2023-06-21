@@ -365,7 +365,9 @@ impl<'cx, 'tcx> SelectionContext<'cx, 'tcx> {
                     }
 
                     if !candidate_set.ambiguous && no_candidates_apply {
-                        let trait_ref = stack.obligation.predicate.skip_binder().trait_ref;
+                        let trait_ref = self.infcx.resolve_vars_if_possible(
+                            stack.obligation.predicate.skip_binder().trait_ref,
+                        );
                         if !trait_ref.references_error() {
                             let self_ty = trait_ref.self_ty();
                             let (trait_desc, self_desc) = with_no_trimmed_paths!({
@@ -515,19 +517,6 @@ impl<'cx, 'tcx> SelectionContext<'cx, 'tcx> {
     //
     // The result is "true" if the obligation *may* hold and "false" if
     // we can be sure it does not.
-
-    /// Evaluates whether the obligation `obligation` can be satisfied (by any means).
-    pub fn predicate_may_hold_fatal(&mut self, obligation: &PredicateObligation<'tcx>) -> bool {
-        debug!(?obligation, "predicate_may_hold_fatal");
-
-        // This fatal query is a stopgap that should only be used in standard mode,
-        // where we do not expect overflow to be propagated.
-        assert!(self.query_mode == TraitQueryMode::Standard);
-
-        self.evaluate_root_obligation(obligation)
-            .expect("Overflow should be caught earlier in standard query mode")
-            .may_apply()
-    }
 
     /// Evaluates whether the obligation `obligation` can be satisfied
     /// and returns an `EvaluationResult`. This is meant for the
@@ -685,7 +674,7 @@ impl<'cx, 'tcx> SelectionContext<'cx, 'tcx> {
                     }
                 }
 
-                ty::PredicateKind::WellFormed(arg) => {
+                ty::PredicateKind::Clause(ty::Clause::WellFormed(arg)) => {
                     // So, there is a bit going on here. First, `WellFormed` predicates
                     // are coinductive, like trait predicates with auto traits.
                     // This means that we need to detect if we have recursively
@@ -873,7 +862,7 @@ impl<'cx, 'tcx> SelectionContext<'cx, 'tcx> {
                     }
                 }
 
-                ty::PredicateKind::ConstEvaluatable(uv) => {
+                ty::PredicateKind::Clause(ty::Clause::ConstEvaluatable(uv)) => {
                     match const_evaluatable::is_const_evaluatable(
                         self.infcx,
                         uv,
@@ -2325,7 +2314,7 @@ impl<'tcx> SelectionContext<'_, 'tcx> {
             | ty::Dynamic(..)
             | ty::Param(..)
             | ty::Foreign(..)
-            | ty::Alias(ty::Projection | ty::Inherent, ..)
+            | ty::Alias(ty::Projection | ty::Inherent | ty::Weak, ..)
             | ty::Bound(..)
             | ty::Infer(ty::TyVar(_) | ty::FreshTy(_) | ty::FreshIntTy(_) | ty::FreshFloatTy(_)) => {
                 bug!("asked to assemble constituent types of unexpected type: {:?}", t);

@@ -314,6 +314,11 @@ lint_invalid_from_utf8_checked = calls to `{$method}` with a invalid literal alw
 lint_invalid_from_utf8_unchecked = calls to `{$method}` with a invalid literal are undefined behavior
     .label = the literal was valid UTF-8 up to the {$valid_up_to} bytes
 
+lint_invalid_nan_comparisons_eq_ne = incorrect NaN comparison, NaN cannot be directly compared to itself
+    .suggestion = use `f32::is_nan()` or `f64::is_nan()` instead
+
+lint_invalid_nan_comparisons_lt_le_gt_ge = incorrect NaN comparison, NaN is not orderable
+
 lint_lintpass_by_hand = implementing `LintPass` by hand
     .help = try using `declare_lint_pass!` or `impl_lint_pass!` instead
 
@@ -420,6 +425,7 @@ lint_overflowing_bin_hex = literal out of range for `{$ty}`
     .negative_becomes_note = and the value `-{$lit}` will become `{$actually}{$ty}`
     .positive_note = the literal `{$lit}` (decimal `{$dec}`) does not fit into the type `{$ty}` and will become `{$actually}{$ty}`
     .suggestion = consider using the type `{$suggestion_ty}` instead
+    .sign_bit_suggestion = to use as a negative number (decimal `{$negative_val}`), consider using the type `{$uint_ty}` for the literal and cast it to `{$int_ty}`
     .help = consider using the type `{$suggestion_ty}` instead
 
 lint_overflowing_int = literal out of range for `{$ty}`
@@ -473,13 +479,11 @@ lint_requested_level = requested on the command line with `{$level} {$lint_name}
 lint_supertrait_as_deref_target = `{$t}` implements `Deref` with supertrait `{$target_principal}` as target
     .label = target type is set here
 
-lint_suspicious_double_ref_op =
-    using `.{$call}()` on a double reference, which returns `{$ty}` instead of {$op ->
-        *[should_not_happen] [{$op}]
-        [deref] dereferencing
-        [borrow] borrowing
-        [clone] cloning
-    } the inner type
+lint_suspicious_double_ref_clone =
+    using `.clone()` on a double reference, which returns `{$ty}` instead of cloning the inner type
+
+lint_suspicious_double_ref_deref =
+    using `.deref()` on a double reference, which returns `{$ty}` instead of dereferencing the inner type
 
 lint_trivial_untranslatable_diag = diagnostic with static strings only
 
@@ -491,6 +495,10 @@ lint_tykind = usage of `ty::TyKind`
 
 lint_tykind_kind = usage of `ty::TyKind::<kind>`
     .suggestion = try using `ty::<kind>` directly
+
+lint_undropped_manually_drops = calls to `std::mem::drop` with `std::mem::ManuallyDrop` instead of the inner value does nothing
+    .label = argument has type `{$arg_ty}`
+    .suggestion = use `std::mem::ManuallyDrop::into_inner` to get the inner value
 
 lint_ungated_async_fn_track_caller = `#[track_caller]` on async functions is a no-op
      .label = this function will not propagate the caller location

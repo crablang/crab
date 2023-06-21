@@ -11,7 +11,7 @@ use rustc_session::config::InstrumentXRay;
 use rustc_session::config::TraitSolver;
 use rustc_session::config::{build_configuration, build_session_options, to_crate_config};
 use rustc_session::config::{
-    BranchProtection, Externs, OomStrategy, OutputType, OutputTypes, PAuthKey, PacRet,
+    BranchProtection, Externs, OomStrategy, OutFileName, OutputType, OutputTypes, PAuthKey, PacRet,
     ProcMacroExecutionStrategy, SymbolManglingVersion, WasiExecModel,
 };
 use rustc_session::config::{CFGuard, ExternEntry, LinkerPluginLto, LtoCli, SwitchWithOptPath};
@@ -167,8 +167,14 @@ fn test_output_types_tracking_hash_different_paths() {
     let mut v2 = Options::default();
     let mut v3 = Options::default();
 
-    v1.output_types = OutputTypes::new(&[(OutputType::Exe, Some(PathBuf::from("./some/thing")))]);
-    v2.output_types = OutputTypes::new(&[(OutputType::Exe, Some(PathBuf::from("/some/thing")))]);
+    v1.output_types = OutputTypes::new(&[(
+        OutputType::Exe,
+        Some(OutFileName::Real(PathBuf::from("./some/thing"))),
+    )]);
+    v2.output_types = OutputTypes::new(&[(
+        OutputType::Exe,
+        Some(OutFileName::Real(PathBuf::from("/some/thing"))),
+    )]);
     v3.output_types = OutputTypes::new(&[(OutputType::Exe, None)]);
 
     assert_non_crate_hash_different(&v1, &v2);
@@ -182,13 +188,13 @@ fn test_output_types_tracking_hash_different_construction_order() {
     let mut v2 = Options::default();
 
     v1.output_types = OutputTypes::new(&[
-        (OutputType::Exe, Some(PathBuf::from("./some/thing"))),
-        (OutputType::Bitcode, Some(PathBuf::from("./some/thing.bc"))),
+        (OutputType::Exe, Some(OutFileName::Real(PathBuf::from("./some/thing")))),
+        (OutputType::Bitcode, Some(OutFileName::Real(PathBuf::from("./some/thing.bc")))),
     ]);
 
     v2.output_types = OutputTypes::new(&[
-        (OutputType::Bitcode, Some(PathBuf::from("./some/thing.bc"))),
-        (OutputType::Exe, Some(PathBuf::from("./some/thing"))),
+        (OutputType::Bitcode, Some(OutFileName::Real(PathBuf::from("./some/thing.bc")))),
+        (OutputType::Exe, Some(OutFileName::Real(PathBuf::from("./some/thing")))),
     ]);
 
     assert_same_hash(&v1, &v2);
@@ -679,7 +685,7 @@ fn test_unstable_options_tracking_hash() {
     untracked!(ls, true);
     untracked!(macro_backtrace, true);
     untracked!(meta_stats, true);
-    untracked!(mir_pretty_relative_line_numbers, true);
+    untracked!(mir_include_spans, true);
     untracked!(nll_facts, true);
     untracked!(no_analysis, true);
     untracked!(no_leak_check, true);

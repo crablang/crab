@@ -298,6 +298,17 @@ pub enum SuggestBoxing {
     },
 }
 
+#[derive(Subdiagnostic)]
+#[suggestion(
+    hir_typeck_suggest_ptr_null_mut,
+    applicability = "maybe-incorrect",
+    code = "core::ptr::null_mut()"
+)]
+pub struct SuggestPtrNullMut {
+    #[primary_span]
+    pub span: Span,
+}
+
 #[derive(Diagnostic)]
 #[diag(hir_typeck_no_associated_item, code = "E0599")]
 pub struct NoAssociatedItem {
@@ -326,4 +337,20 @@ pub struct CtorIsPrivate {
     #[primary_span]
     pub span: Span,
     pub def: String,
+}
+
+#[derive(Subdiagnostic)]
+#[multipart_suggestion(
+    hir_typeck_convert_using_method,
+    applicability = "machine-applicable",
+    style = "verbose"
+)]
+pub struct SuggestConvertViaMethod<'tcx> {
+    #[suggestion_part(code = "{sugg}")]
+    pub span: Span,
+    #[suggestion_part(code = "")]
+    pub borrow_removal_span: Option<Span>,
+    pub sugg: &'static str,
+    pub expected: Ty<'tcx>,
+    pub found: Ty<'tcx>,
 }

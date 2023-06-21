@@ -1,0 +1,25 @@
+- // MIR for `f` before CopyProp
++ // MIR for `f` after CopyProp
+  
+  fn f(_1: NotCopy) -> () {
+      let mut _0: ();
+      let mut _2: NotCopy;
+      let mut _3: NotCopy;
+  
+      bb0: {
+-         _2 = _1;
+-         _0 = opaque::<NotCopy>(move _1) -> bb1;
++         _0 = opaque::<NotCopy>(_1) -> bb1;
+      }
+  
+      bb1: {
+-         _3 = move _2;
+-         _0 = opaque::<NotCopy>(_3) -> bb2;
++         _0 = opaque::<NotCopy>(_1) -> bb2;
+      }
+  
+      bb2: {
+          return;
+      }
+  }
+  

@@ -666,17 +666,15 @@ fn convert_trait_item(tcx: TyCtxt<'_>, trait_item_id: hir::TraitItemId) {
             tcx.ensure().fn_sig(def_id);
         }
 
-        hir::TraitItemKind::Const(.., Some(_)) => {
+        hir::TraitItemKind::Const(ty, body_id) => {
             tcx.ensure().type_of(def_id);
-        }
-
-        hir::TraitItemKind::Const(hir_ty, _) => {
-            tcx.ensure().type_of(def_id);
-            // Account for `const C: _;`.
-            let mut visitor = HirPlaceholderCollector::default();
-            visitor.visit_trait_item(trait_item);
-            if !tcx.sess.diagnostic().has_stashed_diagnostic(hir_ty.span, StashKey::ItemNoType) {
-                placeholder_type_error(tcx, None, visitor.0, false, None, "constant");
+            if !tcx.sess.diagnostic().has_stashed_diagnostic(ty.span, StashKey::ItemNoType)
+                && !(is_suggestable_infer_ty(ty) && body_id.is_some())
+            {
+                // Account for `const C: _;`.
+                let mut visitor = HirPlaceholderCollector::default();
+                visitor.visit_trait_item(trait_item);
+                placeholder_type_error(tcx, None, visitor.0, false, None, "associated constant");
             }
         }
 
@@ -721,7 +719,14 @@ fn convert_impl_item(tcx: TyCtxt<'_>, impl_item_id: hir::ImplItemId) {
 
             placeholder_type_error(tcx, None, visitor.0, false, None, "associated type");
         }
-        hir::ImplItemKind::Const(..) => {}
+        hir::ImplItemKind::Const(ty, _) => {
+            // Account for `const T: _ = ..;`
+            if !is_suggestable_infer_ty(ty) {
+                let mut visitor = HirPlaceholderCollector::default();
+                visitor.visit_impl_item(impl_item);
+                placeholder_type_error(tcx, None, visitor.0, false, None, "associated constant");
+            }
+        }
     }
 }
 
@@ -986,6 +991,50 @@ fn trait_def(tcx: TyCtxt<'_>, def_id: LocalDefId) -> ty::TraitDef {
             no_dups.then_some(list)
         });
 
+    let mut deny_explicit_impl = false;
+    let mut implement_via_object = true;
+    if let Some(attr) = tcx.get_attr(def_id, sym::rustc_deny_explicit_impl) {
+        deny_explicit_impl = true;
+        let mut seen_attr = false;
+        for meta in attr.meta_item_list().iter().flatten() {
+            if let Some(meta) = meta.meta_item()
+                && meta.name_or_empty() == sym::implement_via_object
+                && let Some(lit) = meta.name_value_literal()
+            {
+                if seen_attr {
+                    tcx.sess.span_err(
+                        meta.span,
+                        "duplicated `implement_via_object` meta item",
+                    );
+                }
+                seen_attr = true;
+
+                match lit.symbol {
+                    kw::True => {
+                        implement_via_object = true;
+                    }
+                    kw::False => {
+                        implement_via_object = false;
+                    }
+                    _ => {
+                        tcx.sess.span_err(
+                            meta.span,
+                            format!("unknown literal passed to `implement_via_object` attribute: {}", lit.symbol),
+                        );
+                    }
+                }
+            } else {
+                tcx.sess.span_err(
+                    meta.span(),
+                    format!("unknown meta item passed to `rustc_deny_explicit_impl` {:?}", meta),
+                );
+            }
+        }
+        if !seen_attr {
+            tcx.sess.span_err(attr.span, "missing `implement_via_object` meta item");
+        }
+    }
+
     ty::TraitDef {
         def_id: def_id.to_def_id(),
         unsafety,
@@ -996,6 +1045,8 @@ fn trait_def(tcx: TyCtxt<'_>, def_id: LocalDefId) -> ty::TraitDef {
         skip_array_during_method_dispatch,
         specialization_kind,
         must_implement_one_of,
+        implement_via_object,
+        deny_explicit_impl,
     }
 }
 

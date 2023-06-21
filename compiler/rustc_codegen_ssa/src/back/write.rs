@@ -23,12 +23,13 @@ use rustc_hir::def_id::{CrateNum, LOCAL_CRATE};
 use rustc_incremental::{
     copy_cgu_workproduct_to_incr_comp_cache_dir, in_incr_comp_dir, in_incr_comp_dir_sess,
 };
+use rustc_metadata::fs::copy_to_stdout;
 use rustc_metadata::EncodedMetadata;
 use rustc_middle::dep_graph::{WorkProduct, WorkProductId};
 use rustc_middle::middle::exported_symbols::SymbolExportInfo;
 use rustc_middle::ty::TyCtxt;
 use rustc_session::cgu_reuse_tracker::CguReuseTracker;
-use rustc_session::config::{self, CrateType, Lto, OutputFilenames, OutputType};
+use rustc_session::config::{self, CrateType, Lto, OutFileName, OutputFilenames, OutputType};
 use rustc_session::config::{Passes, SwitchWithOptPath};
 use rustc_session::Session;
 use rustc_span::source_map::SourceMap;
@@ -535,9 +536,16 @@ fn produce_final_output_artifacts(
     let mut user_wants_objects = false;
 
     // Produce final compile outputs.
-    let copy_gracefully = |from: &Path, to: &Path| {
-        if let Err(e) = fs::copy(from, to) {
-            sess.emit_err(errors::CopyPath::new(from, to, e));
+    let copy_gracefully = |from: &Path, to: &OutFileName| match to {
+        OutFileName::Stdout => {
+            if let Err(e) = copy_to_stdout(from) {
+                sess.emit_err(errors::CopyPath::new(from, to.as_path(), e));
+            }
+        }
+        OutFileName::Real(path) => {
+            if let Err(e) = fs::copy(from, path) {
+                sess.emit_err(errors::CopyPath::new(from, path, e));
+            }
         }
     };
 
@@ -547,7 +555,12 @@ fn produce_final_output_artifacts(
             //    to copy `foo.0.x` to `foo.x`.
             let module_name = Some(&compiled_modules.modules[0].name[..]);
             let path = crate_output.temp_path(output_type, module_name);
-            copy_gracefully(&path, &crate_output.path(output_type));
+            let output = crate_output.path(output_type);
+            if !output_type.is_text_output() && output.is_tty() {
+                sess.emit_err(errors::BinaryOutputToTty { shorthand: output_type.shorthand() });
+            } else {
+                copy_gracefully(&path, &output);
+            }
             if !sess.opts.cg.save_temps && !keep_numbered {
                 // The user just wants `foo.x`, not `foo.#module-name#.x`.
                 ensure_removed(sess.diagnostic(), &path);
@@ -633,10 +646,10 @@ fn produce_final_output_artifacts(
         // rlib.
         let needs_crate_object = crate_output.outputs.contains_key(&OutputType::Exe);
 
-        let keep_numbered_bitcode = user_wants_bitcode && sess.codegen_units() > 1;
+        let keep_numbered_bitcode = user_wants_bitcode && sess.codegen_units().as_usize() > 1;
 
         let keep_numbered_objects =
-            needs_crate_object || (user_wants_objects && sess.codegen_units() > 1);
+            needs_crate_object || (user_wants_objects && sess.codegen_units().as_usize() > 1);
 
         for module in compiled_modules.modules.iter() {
             if let Some(ref path) = module.object {
@@ -1910,7 +1923,7 @@ impl<B: ExtraBackendMethods> OngoingCodegen<B> {
 
         // FIXME: time_llvm_passes support - does this use a global context or
         // something?
-        if sess.codegen_units() == 1 && sess.opts.unstable_opts.time_llvm_passes {
+        if sess.codegen_units().as_usize() == 1 && sess.opts.unstable_opts.time_llvm_passes {
             self.backend.print_pass_timings()
         }
 

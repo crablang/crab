@@ -25,6 +25,8 @@ hir_typeck_const_select_must_be_fn = this argument must be a function item
 
 hir_typeck_convert_to_str = try converting the passed type into a `&str`
 
+hir_typeck_convert_using_method = try using `{$sugg}` to convert `{$found}` to `{$expected}`
+
 hir_typeck_ctor_is_private = tuple struct constructor `{$def}` is private
 
 hir_typeck_expected_default_return_type = expected `()` because of default return type
@@ -86,6 +88,8 @@ hir_typeck_struct_expr_non_exhaustive =
 hir_typeck_suggest_boxing_note = for more on the distinction between the stack and the heap, read https://doc.rust-lang.org/book/ch15-01-box.html, https://doc.rust-lang.org/rust-by-example/std/box.html, and https://doc.rust-lang.org/std/boxed/index.html
 
 hir_typeck_suggest_boxing_when_appropriate = store this in the heap by calling `Box::new`
+
+hir_typeck_suggest_ptr_null_mut = consider using `core::ptr::null_mut` instead
 
 hir_typeck_union_pat_dotdot = `..` cannot be used in union patterns
 

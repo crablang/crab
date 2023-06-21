@@ -1,5 +1,5 @@
 // unit-test: LowerIntrinsics
-// ignore-wasm32 compiled with panic=abort by default
+// EMIT_MIR_FOR_EACH_PANIC_STRATEGY
 
 #![feature(core_intrinsics, intrinsics, rustc_attrs)]
 #![crate_type = "lib"]
@@ -13,8 +13,13 @@ pub fn wrapping(a: i32, b: i32) {
 
 // EMIT_MIR lower_intrinsics.unchecked.LowerIntrinsics.diff
 pub unsafe fn unchecked(a: i32, b: i32) {
+    let _a = core::intrinsics::unchecked_add(a, b);
+    let _b = core::intrinsics::unchecked_sub(a, b);
+    let _c = core::intrinsics::unchecked_mul(a, b);
     let _x = core::intrinsics::unchecked_div(a, b);
     let _y = core::intrinsics::unchecked_rem(a, b);
+    let _i = core::intrinsics::unchecked_shl(a, b);
+    let _j = core::intrinsics::unchecked_shr(a, b);
 }
 
 // EMIT_MIR lower_intrinsics.size_of.LowerIntrinsics.diff

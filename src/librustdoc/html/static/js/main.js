@@ -277,13 +277,17 @@ function preLoadCss(cssUrl) {
             searchState.mouseMovedAfterSearch = false;
             document.title = searchState.title;
         },
-        hideResults: () => {
-            switchDisplayedElement(null);
+        removeQueryParameters: () => {
+            // We change the document title.
             document.title = searchState.titleBeforeSearch;
-            // We also remove the query parameter from the URL.
             if (browserSupportsHistoryApi()) {
                 history.replaceState(null, "", getNakedUrl() + window.location.hash);
             }
+        },
+        hideResults: () => {
+            switchDisplayedElement(null);
+            // We also remove the query parameter from the URL.
+            searchState.removeQueryParameters();
         },
         getQueryStringParams: () => {
             const params = {};
@@ -1077,6 +1081,10 @@ function preLoadCss(cssUrl) {
              <code>-&gt; vec</code> or <code>String, enum:Cow -&gt; bool</code>)",
             "You can look for items with an exact name by putting double quotes around \
              your request: <code>\"string\"</code>",
+             "Look for functions that accept or return \
+              <a href=\"https://doc.rust-lang.org/std/primitive.slice.html\">slices</a> and \
+              <a href=\"https://doc.rust-lang.org/std/primitive.array.html\">arrays</a> by writing \
+              square brackets (e.g., <code>-&gt; [u8]</code> or <code>[] -&gt; Option</code>)",
             "Look for items inside another one by searching for a path: <code>vec::Vec</code>",
         ].map(x => "<p>" + x + "</p>").join("");
         const div_infos = document.createElement("div");

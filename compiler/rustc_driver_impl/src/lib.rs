@@ -34,7 +34,9 @@ use rustc_interface::{interface, Queries};
 use rustc_lint::LintStore;
 use rustc_metadata::locator;
 use rustc_session::config::{nightly_options, CG_OPTIONS, Z_OPTIONS};
-use rustc_session::config::{ErrorOutputType, Input, OutputType, PrintRequest, TrimmedDefPaths};
+use rustc_session::config::{
+    ErrorOutputType, Input, OutFileName, OutputType, PrintRequest, TrimmedDefPaths,
+};
 use rustc_session::cstore::MetadataLoader;
 use rustc_session::getopts::{self, Matches};
 use rustc_session::lint::{Lint, LintId};
@@ -428,6 +430,13 @@ fn run_compiler(
                 sess.code_stats.print_type_sizes();
             }
 
+            if sess.opts.unstable_opts.print_vtable_sizes {
+                let crate_name =
+                    compiler.session().opts.crate_name.as_deref().unwrap_or("<UNKNOWN_CRATE>");
+
+                sess.code_stats.print_vtable_sizes(crate_name);
+            }
+
             let linker = queries.linker()?;
             Ok(Some(linker))
         })?;
@@ -454,9 +463,12 @@ fn run_compiler(
 }
 
 // Extract output directory and file from matches.
-fn make_output(matches: &getopts::Matches) -> (Option<PathBuf>, Option<PathBuf>) {
+fn make_output(matches: &getopts::Matches) -> (Option<PathBuf>, Option<OutFileName>) {
     let odir = matches.opt_str("out-dir").map(|o| PathBuf::from(&o));
-    let ofile = matches.opt_str("o").map(|o| PathBuf::from(&o));
+    let ofile = matches.opt_str("o").map(|o| match o.as_str() {
+        "-" => OutFileName::Stdout,
+        path => OutFileName::Real(PathBuf::from(path)),
+    });
     (odir, ofile)
 }
 
@@ -702,7 +714,7 @@ fn print_crate_info(
                 for &style in &crate_types {
                     let fname =
                         rustc_session::output::filename_for_input(sess, style, id, &t_outputs);
-                    safe_println!("{}", fname.file_name().unwrap().to_string_lossy());
+                    safe_println!("{}", fname.as_path().file_name().unwrap().to_string_lossy());
                 }
             }
             Cfg => {
@@ -759,9 +771,7 @@ fn print_crate_info(
                 use rustc_target::spec::SplitDebuginfo::{Off, Packed, Unpacked};
 
                 for split in &[Off, Packed, Unpacked] {
-                    let stable = sess.target.options.supported_split_debuginfo.contains(split);
-                    let unstable_ok = sess.unstable_options();
-                    if stable || unstable_ok {
+                    if sess.target.options.supported_split_debuginfo.contains(split) {
                         safe_println!("{split}");
                     }
                 }

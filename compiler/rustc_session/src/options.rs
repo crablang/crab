@@ -1436,6 +1436,8 @@ options! {
         "output statistics about monomorphization collection"),
     dump_mono_stats_format: DumpMonoStatsFormat = (DumpMonoStatsFormat::Markdown, parse_dump_mono_stats, [UNTRACKED],
         "the format to use for -Z dump-mono-stats (`markdown` (default) or `json`)"),
+    dump_solver_proof_tree: bool = (false, parse_bool, [UNTRACKED],
+        "dump a proof tree for every goal evaluated by the new trait solver"),
     dwarf_version: Option<u32> = (None, parse_opt_number, [TRACKED],
         "version of DWARF debug information to emit (default: 2 or 4, depending on platform)"),
     dylib_lto: bool = (false, parse_bool, [UNTRACKED],
@@ -1558,14 +1560,14 @@ options! {
         "use like `-Zmir-enable-passes=+DestinationPropagation,-InstSimplify`. Forces the specified passes to be \
         enabled, overriding all other checks. Passes that are not specified are enabled or \
         disabled by other flags as usual."),
+    mir_include_spans: bool = (false, parse_bool, [UNTRACKED],
+        "use line numbers relative to the function in mir pretty printing"),
     mir_keep_place_mention: bool = (false, parse_bool, [TRACKED],
         "keep place mention MIR statements, interpreted e.g., by miri; implies -Zmir-opt-level=0 \
         (default: no)"),
     #[rustc_lint_opt_deny_field_access("use `Session::mir_opt_level` instead of this field")]
     mir_opt_level: Option<usize> = (None, parse_opt_number, [TRACKED],
         "MIR optimization level (0-4; default: 1 in non optimized builds and 2 in optimized builds)"),
-    mir_pretty_relative_line_numbers: bool = (false, parse_bool, [UNTRACKED],
-        "use line numbers relative to the function in mir pretty printing"),
     move_size_limit: Option<usize> = (None, parse_opt_number, [TRACKED],
         "the size at which the `large_assignments` lint starts to be emitted"),
     mutable_noalias: bool = (true, parse_bool, [TRACKED],
@@ -1632,6 +1634,8 @@ options! {
         "print the result of the monomorphization collection pass"),
     print_type_sizes: bool = (false, parse_bool, [UNTRACKED],
         "print layout information for each type encountered (default: no)"),
+    print_vtable_sizes: bool = (false, parse_bool, [UNTRACKED],
+        "print size comparison between old and new vtable layouts (default: no)"),
     proc_macro_backtrace: bool = (false, parse_bool, [UNTRACKED],
          "show backtraces for panics during proc-macro execution (default: no)"),
     proc_macro_execution_strategy: ProcMacroExecutionStrategy = (ProcMacroExecutionStrategy::SameThread,

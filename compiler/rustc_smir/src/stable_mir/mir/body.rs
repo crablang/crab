@@ -46,6 +46,23 @@ pub enum Terminator {
         unwind: UnwindAction,
     },
     GeneratorDrop,
+    InlineAsm {
+        template: String,
+        operands: Vec<InlineAsmOperand>,
+        options: String,
+        line_spans: String,
+        destination: Option<usize>,
+        unwind: UnwindAction,
+    },
+}
+
+#[derive(Clone, Debug)]
+pub struct InlineAsmOperand {
+    pub in_value: Option<Operand>,
+    pub out_place: Option<Place>,
+    // This field has a raw debug representation of MIR's InlineAsmOperand.
+    // For now we care about place/operand + the rest in a debug format.
+    pub raw_rpr: String,
 }
 
 #[derive(Clone, Debug)]
@@ -71,15 +88,20 @@ pub enum AssertMessage {
 #[derive(Clone, Debug)]
 pub enum BinOp {
     Add,
+    AddUnchecked,
     Sub,
+    SubUnchecked,
     Mul,
+    MulUnchecked,
     Div,
     Rem,
     BitXor,
     BitAnd,
     BitOr,
     Shl,
+    ShlUnchecked,
     Shr,
+    ShrUnchecked,
     Eq,
     Lt,
     Le,

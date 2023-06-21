@@ -286,7 +286,9 @@ impl<'tcx> LateLintPass<'tcx> for NonShorthandFieldPatterns {
 }
 
 declare_lint! {
-    /// The `unsafe_code` lint catches usage of `unsafe` code.
+    /// The `unsafe_code` lint catches usage of `unsafe` code and other
+    /// potentially unsound constructs like `no_mangle`, `export_name`,
+    /// and `link_section`.
     ///
     /// ### Example
     ///
@@ -297,17 +299,29 @@ declare_lint! {
     ///
     ///     }
     /// }
+    ///
+    /// #[no_mangle]
+    /// fn func_0() { }
+    ///
+    /// #[export_name = "exported_symbol_name"]
+    /// pub fn name_in_rust() { }
+    ///
+    /// #[no_mangle]
+    /// #[link_section = ".example_section"]
+    /// pub static VAR1: u32 = 1;
     /// ```
     ///
     /// {{produces}}
     ///
     /// ### Explanation
     ///
-    /// This lint is intended to restrict the usage of `unsafe`, which can be
-    /// difficult to use correctly.
+    /// This lint is intended to restrict the usage of `unsafe` blocks and other
+    /// constructs (including, but not limited to `no_mangle`, `link_section`
+    /// and `export_name` attributes) wrong usage of which causes undefined
+    /// behavior.
     UNSAFE_CODE,
     Allow,
-    "usage of `unsafe` code"
+    "usage of `unsafe` code and other potentially unsound constructs"
 }
 
 declare_lint_pass!(UnsafeCode => [UNSAFE_CODE]);
@@ -1451,8 +1465,8 @@ impl<'tcx> LateLintPass<'tcx> for TypeAliasBounds {
         let hir::ItemKind::TyAlias(ty, type_alias_generics) = &item.kind else {
             return
         };
-        if let hir::TyKind::OpaqueDef(..) = ty.kind {
-            // Bounds are respected for `type X = impl Trait`
+        if cx.tcx.type_of(item.owner_id.def_id).skip_binder().has_opaque_types() {
+            // Bounds are respected for `type X = impl Trait` and `type X = (impl Trait, Y);`
             return;
         }
         if cx.tcx.type_of(item.owner_id).skip_binder().has_inherent_projections() {
@@ -1596,13 +1610,13 @@ impl<'tcx> LateLintPass<'tcx> for TrivialConstraints {
                     Clause(Clause::Projection(..)) |
                     AliasRelate(..) |
                     // Ignore bounds that a user can't type
-                    WellFormed(..) |
+                    Clause(Clause::WellFormed(..)) |
+                    // FIXME(generic_const_exprs): `ConstEvaluatable` can be written
+                    Clause(Clause::ConstEvaluatable(..)) |
                     ObjectSafe(..) |
                     ClosureKind(..) |
                     Subtype(..) |
                     Coerce(..) |
-                    // FIXME(generic_const_exprs): `ConstEvaluatable` can be written
-                    ConstEvaluatable(..) |
                     ConstEquate(..) |
                     Ambiguous |
                     TypeWellFormedFromEnv(..) => continue,
@@ -2110,12 +2124,16 @@ impl<'tcx> LateLintPass<'tcx> for ExplicitOutlivesRequirements {
             }
 
             let ty_generics = cx.tcx.generics_of(def_id);
+            let num_where_predicates = hir_generics
+                .predicates
+                .iter()
+                .filter(|predicate| predicate.in_where_clause())
+                .count();
 
             let mut bound_count = 0;
             let mut lint_spans = Vec::new();
             let mut where_lint_spans = Vec::new();
-            let mut dropped_predicate_count = 0;
-            let num_predicates = hir_generics.predicates.len();
+            let mut dropped_where_predicate_count = 0;
             for (i, where_predicate) in hir_generics.predicates.iter().enumerate() {
                 let (relevant_lifetimes, bounds, predicate_span, in_where_clause) =
                     match where_predicate {
@@ -2172,8 +2190,8 @@ impl<'tcx> LateLintPass<'tcx> for ExplicitOutlivesRequirements {
                 bound_count += bound_spans.len();
 
                 let drop_predicate = bound_spans.len() == bounds.len();
-                if drop_predicate {
-                    dropped_predicate_count += 1;
+                if drop_predicate && in_where_clause {
+                    dropped_where_predicate_count += 1;
                 }
 
                 if drop_predicate {
@@ -2182,7 +2200,7 @@ impl<'tcx> LateLintPass<'tcx> for ExplicitOutlivesRequirements {
                     } else if predicate_span.from_expansion() {
                         // Don't try to extend the span if it comes from a macro expansion.
                         where_lint_spans.push(predicate_span);
-                    } else if i + 1 < num_predicates {
+                    } else if i + 1 < num_where_predicates {
                         // If all the bounds on a predicate were inferable and there are
                         // further predicates, we want to eat the trailing comma.
                         let next_predicate_span = hir_generics.predicates[i + 1].span();
@@ -2210,9 +2228,10 @@ impl<'tcx> LateLintPass<'tcx> for ExplicitOutlivesRequirements {
                 }
             }
 
-            // If all predicates are inferable, drop the entire clause
+            // If all predicates in where clause are inferable, drop the entire clause
             // (including the `where`)
-            if hir_generics.has_where_clause_predicates && dropped_predicate_count == num_predicates
+            if hir_generics.has_where_clause_predicates
+                && dropped_where_predicate_count == num_where_predicates
             {
                 let where_span = hir_generics.where_clause_span;
                 // Extend the where clause back to the closing `>` of the
