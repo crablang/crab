@@ -288,7 +288,8 @@ and other assignment operators such as `+=` or `*=`).
 
 For comparison operators, because for `T op U`, `&T op &U` is also implemented:
 if you have `t: &T`, and `u: U`, prefer `*t op u` to `t op &u`. In general,
-within expressions, prefer dereferencing to taking references.
+within expressions, prefer dereferencing to taking references, unless necessary
+(e.g. to avoid an unnecessarily expensive operation).
 
 Use parentheses liberally, do not necessarily elide them due to precedence.
 Tools should not automatically insert or remove parentheses. Do not use spaces
@@ -690,7 +691,7 @@ Where it is possible to use a block form on the right-hand side and avoid
 breaking the left-hand side, do that. E.g.
 
 ```rust
-    // Assuming the following line does done fit in the max width
+    // Assuming the following line does not fit in the max width
     a_very_long_pattern | another_pattern => ALongStructName {
         ...
     },

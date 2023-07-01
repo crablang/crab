@@ -254,7 +254,7 @@ impl<'a, 'tcx> Visitor<'a, 'tcx> for UnsafetyVisitor<'a, 'tcx> {
                         );
                     };
                     match borrow_kind {
-                        BorrowKind::Shallow | BorrowKind::Shared | BorrowKind::Unique => {
+                        BorrowKind::Shallow | BorrowKind::Shared => {
                             if !ty.is_freeze(self.tcx, self.param_env) {
                                 self.requires_unsafe(pat.span, BorrowOfLayoutConstrainedField);
                             }
@@ -316,6 +316,7 @@ impl<'a, 'tcx> Visitor<'a, 'tcx> for UnsafetyVisitor<'a, 'tcx> {
             | ExprKind::Closure { .. }
             | ExprKind::Continue { .. }
             | ExprKind::Return { .. }
+            | ExprKind::Become { .. }
             | ExprKind::Yield { .. }
             | ExprKind::Loop { .. }
             | ExprKind::Let { .. }
@@ -440,7 +441,7 @@ impl<'a, 'tcx> Visitor<'a, 'tcx> for UnsafetyVisitor<'a, 'tcx> {
                 visit::walk_expr(&mut visitor, expr);
                 if visitor.found {
                     match borrow_kind {
-                        BorrowKind::Shallow | BorrowKind::Shared | BorrowKind::Unique
+                        BorrowKind::Shallow | BorrowKind::Shared
                             if !self.thir[arg].ty.is_freeze(self.tcx, self.param_env) =>
                         {
                             self.requires_unsafe(expr.span, BorrowOfLayoutConstrainedField)
@@ -448,7 +449,7 @@ impl<'a, 'tcx> Visitor<'a, 'tcx> for UnsafetyVisitor<'a, 'tcx> {
                         BorrowKind::Mut { .. } => {
                             self.requires_unsafe(expr.span, MutationOfLayoutConstrainedField)
                         }
-                        BorrowKind::Shallow | BorrowKind::Shared | BorrowKind::Unique => {}
+                        BorrowKind::Shallow | BorrowKind::Shared => {}
                     }
                 }
             }

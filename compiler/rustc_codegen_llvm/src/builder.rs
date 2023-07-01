@@ -23,6 +23,7 @@ use rustc_span::Span;
 use rustc_symbol_mangling::typeid::{kcfi_typeid_for_fnabi, typeid_for_fnabi, TypeIdOptions};
 use rustc_target::abi::{self, call::FnAbi, Align, Size, WrappingRange};
 use rustc_target::spec::{HasTargetSpec, SanitizerSet, Target};
+use smallvec::SmallVec;
 use std::borrow::Cow;
 use std::iter;
 use std::ops::Deref;
@@ -225,7 +226,10 @@ impl<'a, 'll, 'tcx> BuilderMethods<'a, 'tcx> for Builder<'a, 'll, 'tcx> {
         let args = self.check_call("invoke", llty, llfn, args);
         let funclet_bundle = funclet.map(|funclet| funclet.bundle());
         let funclet_bundle = funclet_bundle.as_ref().map(|b| &*b.raw);
-        let mut bundles = vec![funclet_bundle];
+        let mut bundles: SmallVec<[_; 2]> = SmallVec::new();
+        if let Some(funclet_bundle) = funclet_bundle {
+            bundles.push(funclet_bundle);
+        }
 
         // Emit CFI pointer type membership test
         self.cfi_type_test(fn_attrs, fn_abi, llfn);
@@ -233,9 +237,10 @@ impl<'a, 'll, 'tcx> BuilderMethods<'a, 'tcx> for Builder<'a, 'll, 'tcx> {
         // Emit KCFI operand bundle
         let kcfi_bundle = self.kcfi_operand_bundle(fn_attrs, fn_abi, llfn);
         let kcfi_bundle = kcfi_bundle.as_ref().map(|b| &*b.raw);
-        bundles.push(kcfi_bundle);
+        if let Some(kcfi_bundle) = kcfi_bundle {
+            bundles.push(kcfi_bundle);
+        }
 
-        bundles.retain(|bundle| bundle.is_some());
         let invoke = unsafe {
             llvm::LLVMRustBuildInvoke(
                 self.llbuilder,
@@ -572,8 +577,6 @@ impl<'a, 'll, 'tcx> BuilderMethods<'a, 'tcx> for Builder<'a, 'll, 'tcx> {
     ) {
         let zero = self.const_usize(0);
         let count = self.const_usize(count);
-        let start = dest.project_index(self, zero).llval;
-        let end = dest.project_index(self, count).llval;
 
         let header_bb = self.append_sibling_block("repeat_loop_header");
         let body_bb = self.append_sibling_block("repeat_loop_body");
@@ -582,24 +585,18 @@ impl<'a, 'll, 'tcx> BuilderMethods<'a, 'tcx> for Builder<'a, 'll, 'tcx> {
         self.br(header_bb);
 
         let mut header_bx = Self::build(self.cx, header_bb);
-        let current = header_bx.phi(self.val_ty(start), &[start], &[self.llbb()]);
+        let i = header_bx.phi(self.val_ty(zero), &[zero], &[self.llbb()]);
 
-        let keep_going = header_bx.icmp(IntPredicate::IntNE, current, end);
+        let keep_going = header_bx.icmp(IntPredicate::IntULT, i, count);
         header_bx.cond_br(keep_going, body_bb, next_bb);
 
         let mut body_bx = Self::build(self.cx, body_bb);
-        let align = dest.align.restrict_for_offset(dest.layout.field(self.cx(), 0).size);
-        cg_elem
-            .val
-            .store(&mut body_bx, PlaceRef::new_sized_aligned(current, cg_elem.layout, align));
+        let dest_elem = dest.project_index(&mut body_bx, i);
+        cg_elem.val.store(&mut body_bx, dest_elem);
 
-        let next = body_bx.inbounds_gep(
-            self.backend_type(cg_elem.layout),
-            current,
-            &[self.const_usize(1)],
-        );
+        let next = body_bx.unchecked_uadd(i, self.const_usize(1));
         body_bx.br(header_bb);
-        header_bx.add_incoming_to_phi(current, next, body_bb);
+        header_bx.add_incoming_to_phi(i, next, body_bb);
 
         *self = Self::build(self.cx, next_bb);
     }
@@ -1189,7 +1186,10 @@ impl<'a, 'll, 'tcx> BuilderMethods<'a, 'tcx> for Builder<'a, 'll, 'tcx> {
         let args = self.check_call("call", llty, llfn, args);
         let funclet_bundle = funclet.map(|funclet| funclet.bundle());
         let funclet_bundle = funclet_bundle.as_ref().map(|b| &*b.raw);
-        let mut bundles = vec![funclet_bundle];
+        let mut bundles: SmallVec<[_; 2]> = SmallVec::new();
+        if let Some(funclet_bundle) = funclet_bundle {
+            bundles.push(funclet_bundle);
+        }
 
         // Emit CFI pointer type membership test
         self.cfi_type_test(fn_attrs, fn_abi, llfn);
@@ -1197,9 +1197,10 @@ impl<'a, 'll, 'tcx> BuilderMethods<'a, 'tcx> for Builder<'a, 'll, 'tcx> {
         // Emit KCFI operand bundle
         let kcfi_bundle = self.kcfi_operand_bundle(fn_attrs, fn_abi, llfn);
         let kcfi_bundle = kcfi_bundle.as_ref().map(|b| &*b.raw);
-        bundles.push(kcfi_bundle);
+        if let Some(kcfi_bundle) = kcfi_bundle {
+            bundles.push(kcfi_bundle);
+        }
 
-        bundles.retain(|bundle| bundle.is_some());
         let call = unsafe {
             llvm::LLVMRustBuildCall(
                 self.llbuilder,

@@ -442,7 +442,7 @@ impl<'a, 'tcx> Builder<'a, 'tcx> {
                                 match upvar.kind {
                                     ExprKind::Borrow {
                                         borrow_kind:
-                                            BorrowKind::Mut { allow_two_phase_borrow: false },
+                                            BorrowKind::Mut { kind: MutBorrowKind::Default },
                                         arg,
                                     } => unpack!(
                                         block = this.limit_capture_mutability(
@@ -532,6 +532,7 @@ impl<'a, 'tcx> Builder<'a, 'tcx> {
             | ExprKind::Break { .. }
             | ExprKind::Continue { .. }
             | ExprKind::Return { .. }
+            | ExprKind::Become { .. }
             | ExprKind::InlineAsm { .. }
             | ExprKind::PlaceTypeAscription { .. }
             | ExprKind::ValueTypeAscription { .. } => {
@@ -795,8 +796,8 @@ impl<'a, 'tcx> Builder<'a, 'tcx> {
         };
 
         let borrow_kind = match mutability {
-            Mutability::Not => BorrowKind::Unique,
-            Mutability::Mut => BorrowKind::Mut { allow_two_phase_borrow: false },
+            Mutability::Not => BorrowKind::Mut { kind: MutBorrowKind::ClosureCapture },
+            Mutability::Mut => BorrowKind::Mut { kind: MutBorrowKind::Default },
         };
 
         let arg_place = arg_place_builder.to_place(this);

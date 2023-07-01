@@ -9,11 +9,11 @@ use rustc_span::symbol::Ident;
 use rustc_span::{ErrorGuaranteed, Span};
 use rustc_trait_selection::traits;
 
-use crate::astconv::{AstConv, ConvertedBinding, ConvertedBindingKind};
+use crate::astconv::{
+    AstConv, ConvertedBinding, ConvertedBindingKind, OnlySelfBounds, PredicateFilter,
+};
 use crate::bounds::Bounds;
 use crate::errors::{MultipleRelaxedDefaultBounds, ValueOfAssociatedStructAlreadySpecified};
-
-use super::OnlySelfBounds;
 
 impl<'tcx> dyn AstConv<'tcx> + '_ {
     /// Sets `implicitly_sized` to true on `Bounds` if necessary
@@ -176,47 +176,39 @@ impl<'tcx> dyn AstConv<'tcx> + '_ {
         &self,
         param_ty: Ty<'tcx>,
         ast_bounds: &[hir::GenericBound<'_>],
-        only_self_bounds: OnlySelfBounds,
+        filter: PredicateFilter,
     ) -> Bounds<'tcx> {
         let mut bounds = Bounds::default();
+
+        let only_self_bounds = match filter {
+            PredicateFilter::All | PredicateFilter::SelfAndAssociatedTypeBounds => {
+                OnlySelfBounds(false)
+            }
+            PredicateFilter::SelfOnly | PredicateFilter::SelfThatDefines(_) => OnlySelfBounds(true),
+        };
+
         self.add_bounds(
             param_ty,
-            ast_bounds.iter(),
+            ast_bounds.iter().filter(|bound| {
+                match filter {
+                PredicateFilter::All
+                | PredicateFilter::SelfOnly
+                | PredicateFilter::SelfAndAssociatedTypeBounds => true,
+                PredicateFilter::SelfThatDefines(assoc_name) => {
+                    if let Some(trait_ref) = bound.trait_ref()
+                        && let Some(trait_did) = trait_ref.trait_def_id()
+                        && self.tcx().trait_may_define_assoc_item(trait_did, assoc_name)
+                    {
+                        true
+                    } else {
+                        false
+                    }
+                }
+            }
+            }),
             &mut bounds,
             ty::List::empty(),
             only_self_bounds,
-        );
-        debug!(?bounds);
-
-        bounds
-    }
-
-    /// Convert the bounds in `ast_bounds` that refer to traits which define an associated type
-    /// named `assoc_name` into ty::Bounds. Ignore the rest.
-    pub(crate) fn compute_bounds_that_match_assoc_item(
-        &self,
-        param_ty: Ty<'tcx>,
-        ast_bounds: &[hir::GenericBound<'_>],
-        assoc_name: Ident,
-    ) -> Bounds<'tcx> {
-        let mut result = Vec::new();
-
-        for ast_bound in ast_bounds {
-            if let Some(trait_ref) = ast_bound.trait_ref()
-                && let Some(trait_did) = trait_ref.trait_def_id()
-                && self.tcx().trait_may_define_assoc_item(trait_did, assoc_name)
-            {
-                result.push(ast_bound.clone());
-            }
-        }
-
-        let mut bounds = Bounds::default();
-        self.add_bounds(
-            param_ty,
-            result.iter(),
-            &mut bounds,
-            ty::List::empty(),
-            OnlySelfBounds(true),
         );
         debug!(?bounds);
 
@@ -412,7 +404,7 @@ impl<'tcx> dyn AstConv<'tcx> + '_ {
             // an RPITIT (return-position impl trait in trait) or AFIT (async fn in trait).
             let output = tcx.fn_sig(assoc_item.def_id).skip_binder().output();
             let output = if let ty::Alias(ty::Projection, alias_ty) = *output.skip_binder().kind()
-                && tcx.def_kind(alias_ty.def_id) == DefKind::ImplTraitPlaceholder
+                && tcx.is_impl_trait_in_trait(alias_ty.def_id)
             {
                 alias_ty
             } else {

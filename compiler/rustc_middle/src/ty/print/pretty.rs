@@ -94,6 +94,10 @@ macro_rules! define_helper {
                     $tl.with(|c| c.set(self.0))
                 }
             }
+
+            pub fn $name() -> bool {
+                $tl.with(|c| c.get())
+            }
         )+
     }
 }
@@ -676,7 +680,7 @@ pub trait PrettyPrinter<'tcx>:
                 p!(")")
             }
             ty::FnDef(def_id, substs) => {
-                if NO_QUERIES.with(|q| q.get()) {
+                if with_no_queries() {
                     p!(print_def_path(def_id, substs));
                 } else {
                     let sig = self.tcx().fn_sig(def_id).subst(self.tcx(), substs);
@@ -732,7 +736,7 @@ pub trait PrettyPrinter<'tcx>:
                 p!(print_def_path(def_id, &[]));
             }
             ty::Alias(ty::Projection | ty::Inherent | ty::Weak, ref data) => {
-                if !(self.should_print_verbose() || NO_QUERIES.with(|q| q.get()))
+                if !(self.should_print_verbose() || with_no_queries())
                     && self.tcx().is_impl_trait_in_trait(data.def_id)
                 {
                     return self.pretty_print_opaque_impl_type(data.def_id, data.substs);
@@ -779,7 +783,7 @@ pub trait PrettyPrinter<'tcx>:
                         return Ok(self);
                     }
                     _ => {
-                        if NO_QUERIES.with(|q| q.get()) {
+                        if with_no_queries() {
                             p!(print_def_path(def_id, &[]));
                             return Ok(self);
                         } else {
@@ -928,7 +932,7 @@ pub trait PrettyPrinter<'tcx>:
             let bound_predicate = predicate.kind();
 
             match bound_predicate.skip_binder() {
-                ty::PredicateKind::Clause(ty::Clause::Trait(pred)) => {
+                ty::ClauseKind::Trait(pred) => {
                     let trait_ref = bound_predicate.rebind(pred.trait_ref);
 
                     // Don't print + Sized, but rather + ?Sized if absent.
@@ -939,7 +943,7 @@ pub trait PrettyPrinter<'tcx>:
 
                     self.insert_trait_and_projection(trait_ref, None, &mut traits, &mut fn_traits);
                 }
-                ty::PredicateKind::Clause(ty::Clause::Projection(pred)) => {
+                ty::ClauseKind::Projection(pred) => {
                     let proj_ref = bound_predicate.rebind(pred);
                     let trait_ref = proj_ref.required_poly_trait_ref(tcx);
 
@@ -953,7 +957,7 @@ pub trait PrettyPrinter<'tcx>:
                         &mut fn_traits,
                     );
                 }
-                ty::PredicateKind::Clause(ty::Clause::TypeOutlives(outlives)) => {
+                ty::ClauseKind::TypeOutlives(outlives) => {
                     lifetimes.push(outlives.1);
                 }
                 _ => {}
@@ -1746,7 +1750,8 @@ impl DerefMut for FmtPrinter<'_, '_> {
 
 impl<'a, 'tcx> FmtPrinter<'a, 'tcx> {
     pub fn new(tcx: TyCtxt<'tcx>, ns: Namespace) -> Self {
-        Self::new_with_limit(tcx, ns, tcx.type_length_limit())
+        let limit = if with_no_queries() { Limit::new(1048576) } else { tcx.type_length_limit() };
+        Self::new_with_limit(tcx, ns, limit)
     }
 
     pub fn new_with_limit(tcx: TyCtxt<'tcx>, ns: Namespace, type_length_limit: Limit) -> Self {
@@ -2864,20 +2869,38 @@ define_print_and_forward_display! {
         p!(print(binder))
     }
 
+    ty::Clause<'tcx> {
+        p!(print(self.kind()))
+    }
+
+    ty::ClauseKind<'tcx> {
+        match *self {
+            ty::ClauseKind::Trait(ref data) => {
+                p!(print(data))
+            }
+            ty::ClauseKind::RegionOutlives(predicate) => p!(print(predicate)),
+            ty::ClauseKind::TypeOutlives(predicate) => p!(print(predicate)),
+            ty::ClauseKind::Projection(predicate) => p!(print(predicate)),
+            ty::ClauseKind::ConstArgHasType(ct, ty) => {
+                p!("the constant `", print(ct), "` has type `", print(ty), "`")
+            },
+            ty::ClauseKind::WellFormed(arg) => p!(print(arg), " well-formed"),
+            ty::ClauseKind::ConstEvaluatable(ct) => {
+                p!("the constant `", print(ct), "` can be evaluated")
+            }
+            ty::ClauseKind::TypeWellFormedFromEnv(ty) => {
+                p!("the type `", print(ty), "` is found in the environment")
+            }
+        }
+    }
+
     ty::PredicateKind<'tcx> {
         match *self {
-            ty::PredicateKind::Clause(ty::Clause::Trait(ref data)) => {
+            ty::PredicateKind::Clause(data) => {
                 p!(print(data))
             }
             ty::PredicateKind::Subtype(predicate) => p!(print(predicate)),
             ty::PredicateKind::Coerce(predicate) => p!(print(predicate)),
-            ty::PredicateKind::Clause(ty::Clause::RegionOutlives(predicate)) => p!(print(predicate)),
-            ty::PredicateKind::Clause(ty::Clause::TypeOutlives(predicate)) => p!(print(predicate)),
-            ty::PredicateKind::Clause(ty::Clause::Projection(predicate)) => p!(print(predicate)),
-            ty::PredicateKind::Clause(ty::Clause::ConstArgHasType(ct, ty)) => {
-                p!("the constant `", print(ct), "` has type `", print(ty), "`")
-            },
-            ty::PredicateKind::Clause(ty::Clause::WellFormed(arg)) => p!(print(arg), " well-formed"),
             ty::PredicateKind::ObjectSafe(trait_def_id) => {
                 p!("the trait `", print_def_path(trait_def_id, &[]), "` is object-safe")
             }
@@ -2886,14 +2909,8 @@ define_print_and_forward_display! {
                 print_value_path(closure_def_id, &[]),
                 write("` implements the trait `{}`", kind)
             ),
-            ty::PredicateKind::Clause(ty::Clause::ConstEvaluatable(ct)) => {
-                p!("the constant `", print(ct), "` can be evaluated")
-            }
             ty::PredicateKind::ConstEquate(c1, c2) => {
                 p!("the constant `", print(c1), "` equals `", print(c2), "`")
-            }
-            ty::PredicateKind::TypeWellFormedFromEnv(ty) => {
-                p!("the type `", print(ty), "` is found in the environment")
             }
             ty::PredicateKind::Ambiguous => p!("ambiguous"),
             ty::PredicateKind::AliasRelate(t1, t2, dir) => p!(print(t1), write(" {} ", dir), print(t2)),
@@ -2987,7 +3004,7 @@ fn for_each_def(tcx: TyCtxt<'_>, mut collect_fn: impl for<'b> FnMut(&'b Ident, N
 ///
 /// The implementation uses similar import discovery logic to that of 'use' suggestions.
 ///
-/// See also [`DelayDm`](rustc_error_messages::DelayDm) and [`with_no_trimmed_paths`].
+/// See also [`DelayDm`](rustc_error_messages::DelayDm) and [`with_no_trimmed_paths!`].
 fn trimmed_def_paths(tcx: TyCtxt<'_>, (): ()) -> FxHashMap<DefId, Symbol> {
     let mut map: FxHashMap<DefId, Symbol> = FxHashMap::default();
 

@@ -26,20 +26,27 @@ use super::{Certainty, InferCtxtEvalExt};
 /// here as this will have to deal with far more root goals than `evaluate_all`.
 pub struct FulfillmentCtxt<'tcx> {
     obligations: Vec<PredicateObligation<'tcx>>,
+
+    /// The snapshot in which this context was created. Using the context
+    /// outside of this snapshot leads to subtle bugs if the snapshot
+    /// gets rolled back. Because of this we explicitly check that we only
+    /// use the context in exactly this snapshot.
+    usable_in_snapshot: usize,
 }
 
 impl<'tcx> FulfillmentCtxt<'tcx> {
-    pub fn new() -> FulfillmentCtxt<'tcx> {
-        FulfillmentCtxt { obligations: Vec::new() }
+    pub fn new(infcx: &InferCtxt<'tcx>) -> FulfillmentCtxt<'tcx> {
+        FulfillmentCtxt { obligations: Vec::new(), usable_in_snapshot: infcx.num_open_snapshots() }
     }
 }
 
 impl<'tcx> TraitEngine<'tcx> for FulfillmentCtxt<'tcx> {
     fn register_predicate_obligation(
         &mut self,
-        _infcx: &InferCtxt<'tcx>,
+        infcx: &InferCtxt<'tcx>,
         obligation: PredicateObligation<'tcx>,
     ) {
+        assert_eq!(self.usable_in_snapshot, infcx.num_open_snapshots());
         self.obligations.push(obligation);
     }
 
@@ -77,6 +84,7 @@ impl<'tcx> TraitEngine<'tcx> for FulfillmentCtxt<'tcx> {
     }
 
     fn select_where_possible(&mut self, infcx: &InferCtxt<'tcx>) -> Vec<FulfillmentError<'tcx>> {
+        assert_eq!(self.usable_in_snapshot, infcx.num_open_snapshots());
         let mut errors = Vec::new();
         for i in 0.. {
             if !infcx.tcx.recursion_limit().value_within_limit(i) {
@@ -93,7 +101,7 @@ impl<'tcx> TraitEngine<'tcx> for FulfillmentCtxt<'tcx> {
                             errors.push(FulfillmentError {
                                 obligation: obligation.clone(),
                                 code: match goal.predicate.kind().skip_binder() {
-                                    ty::PredicateKind::Clause(ty::Clause::Projection(_)) => {
+                                    ty::PredicateKind::Clause(ty::ClauseKind::Projection(_)) => {
                                         FulfillmentErrorCode::CodeProjectionError(
                                             // FIXME: This could be a `Sorts` if the term is a type
                                             MismatchedProjectionTypes { err: TypeError::Mismatch },
@@ -132,8 +140,7 @@ impl<'tcx> TraitEngine<'tcx> for FulfillmentCtxt<'tcx> {
                                             SelectionError::Unimplemented,
                                         )
                                     }
-                                    ty::PredicateKind::ConstEquate(..)
-                                    | ty::PredicateKind::TypeWellFormedFromEnv(_) => {
+                                    ty::PredicateKind::ConstEquate(..) => {
                                         bug!("unexpected goal: {goal:?}")
                                     }
                                 },

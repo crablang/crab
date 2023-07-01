@@ -363,7 +363,6 @@ dependencies = [
  "cargo_metadata",
  "directories",
  "rustc-build-sysroot",
- "rustc-workspace-hack",
  "rustc_tools_util",
  "rustc_version",
  "serde",
@@ -482,29 +481,12 @@ dependencies = [
 
 [[package]]
 name = "clap"
-version = "3.2.20"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "23b71c3ce99b7611011217b366d923f1d0a7e07a92bb2dbf1e84508c673ca3bd"
-dependencies = [
- "atty",
- "bitflags",
- "clap_derive 3.2.18",
- "clap_lex 0.2.2",
- "indexmap",
- "once_cell",
- "strsim",
- "termcolor",
- "textwrap",
-]
-
-[[package]]
-name = "clap"
 version = "4.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "046ae530c528f252094e4a77886ee1374437744b2bff1497aa898bbddbbb29b3"
 dependencies = [
  "clap_builder",
- "clap_derive 4.2.0",
+ "clap_derive",
  "once_cell",
 ]
 
@@ -517,7 +499,7 @@ dependencies = [
  "anstream",
  "anstyle",
  "bitflags",
- "clap_lex 0.4.1",
+ "clap_lex",
  "once_cell",
  "strsim",
  "terminal_size",
@@ -529,20 +511,7 @@ version = "4.0.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "10861370d2ba66b0f5989f83ebf35db6421713fd92351790e7fdd6c36774c56b"
 dependencies = [
- "clap 4.2.1",
-]
-
-[[package]]
-name = "clap_derive"
-version = "3.2.18"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ea0c8bce528c4be4da13ea6fead8965e95b6073585a2f05204bd8f4119f82a65"
-dependencies = [
- "heck",
- "proc-macro-error",
- "proc-macro2",
- "quote",
- "syn 1.0.102",
+ "clap",
 ]
 
 [[package]]
@@ -559,15 +528,6 @@ dependencies = [
 
 [[package]]
 name = "clap_lex"
-version = "0.2.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5538cd660450ebeb4234cfecf8f2284b844ffc4c50531e66d584ad5b91293613"
-dependencies = [
- "os_str_bytes",
-]
-
-[[package]]
-name = "clap_lex"
 version = "0.4.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "8a2dd5a6fe8c6e3502f568a6353e5273bbb15193ad9a89e457b9970798efbea1"
@@ -576,7 +536,7 @@ checksum = "8a2dd5a6fe8c6e3502f568a6353e5273bbb15193ad9a89e457b9970798efbea1"
 name = "clippy"
 version = "0.1.72"
 dependencies = [
- "clap 4.2.1",
+ "clap",
  "clippy_lints",
  "clippy_utils",
  "compiletest_rs",
@@ -605,7 +565,7 @@ name = "clippy_dev"
 version = "0.0.1"
 dependencies = [
  "aho-corasick",
- "clap 4.2.1",
+ "clap",
  "indoc",
  "itertools",
  "opener",
@@ -697,9 +657,9 @@ dependencies = [
 
 [[package]]
 name = "compiler_builtins"
-version = "0.1.92"
+version = "0.1.93"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "64518f1ae689f74db058bbfb3238dfe6eb53f59f4ae712f1ff4348628522e190"
+checksum = "76630810d973ecea3dbf611e1b7aecfb1012751ef1ff8de3998f89014a166781"
 dependencies = [
  "cc",
  "rustc-std-workspace-core",
@@ -1749,7 +1709,7 @@ name = "installer"
 version = "0.0.0"
 dependencies = [
  "anyhow",
- "clap 3.2.20",
+ "clap",
  "flate2",
  "num_cpus",
  "rayon",
@@ -1869,7 +1829,7 @@ name = "jsondoclint"
 version = "0.1.0"
 dependencies = [
  "anyhow",
- "clap 4.2.1",
+ "clap",
  "fs-err",
  "rustc-hash",
  "rustdoc-json-types",
@@ -2086,7 +2046,7 @@ dependencies = [
  "ammonia",
  "anyhow",
  "chrono",
- "clap 4.2.1",
+ "clap",
  "clap_complete",
  "elasticlunr-rs",
  "env_logger 0.10.0",
@@ -2230,7 +2190,6 @@ dependencies = [
  "measureme",
  "rand",
  "regex",
- "rustc-workspace-hack",
  "rustc_version",
  "smallvec",
  "ui_test",
@@ -2369,12 +2328,6 @@ dependencies = [
  "pkg-config",
  "vcpkg",
 ]
-
-[[package]]
-name = "os_str_bytes"
-version = "6.0.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8e22443d1643a904602595ba1cd8f7d896afe56d26712531c5ff73a15b2fbf64"
 
 [[package]]
 name = "owo-colors"
@@ -2618,30 +2571,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "925383efa346730478fb4838dbe9137d2a47675ad789c546d150a6e1dd4ab31c"
 
 [[package]]
-name = "proc-macro-error"
-version = "1.0.4"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "da25490ff9892aab3fcf7c36f08cfb902dd3e71ca0f9f9517bea02a73a5ce38c"
-dependencies = [
- "proc-macro-error-attr",
- "proc-macro2",
- "quote",
- "syn 1.0.102",
- "version_check",
-]
-
-[[package]]
-name = "proc-macro-error-attr"
-version = "1.0.4"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a1be40180e52ecc98ad80b184934baf3d0d29f979574e439af5a55274b35f869"
-dependencies = [
- "proc-macro2",
- "quote",
- "version_check",
-]
-
-[[package]]
 name = "proc-macro-hack"
 version = "0.5.19"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2649,9 +2578,9 @@ checksum = "dbf0c48bc1d91375ae5c3cd81e3722dff1abcf81a30960240640d223f59fe0e5"
 
 [[package]]
 name = "proc-macro2"
-version = "1.0.56"
+version = "1.0.60"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2b63bdb0cd06f1f4dedf69b254734f9b45af66e4a031e42a7480257d9898b435"
+checksum = "dec2b086b7a862cf4de201096214fa870344cf922b2b30c167badb3af3195406"
 dependencies = [
  "unicode-ident",
 ]
@@ -2897,7 +2826,7 @@ dependencies = [
 name = "rustbook"
 version = "0.1.0"
 dependencies = [
- "clap 4.2.1",
+ "clap",
  "env_logger 0.10.0",
  "mdbook",
 ]
@@ -2988,12 +2917,6 @@ version = "1.99.0"
 dependencies = [
  "std",
 ]
-
-[[package]]
-name = "rustc-workspace-hack"
-version = "1.0.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "fc71d2faa173b74b232dedc235e3ee1696581bb132fc116fa3626d6151a1a8fb"
 
 [[package]]
 name = "rustc_abi"
@@ -4146,6 +4069,7 @@ name = "rustc_target"
 version = "0.0.0"
 dependencies = [
  "bitflags",
+ "object 0.31.1",
  "rustc_abi",
  "rustc_data_structures",
  "rustc_feature",
@@ -4346,7 +4270,7 @@ dependencies = [
  "anyhow",
  "bytecount",
  "cargo_metadata",
- "clap 4.2.1",
+ "clap",
  "diff",
  "dirs",
  "env_logger 0.10.0",
@@ -4875,12 +4799,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "textwrap"
-version = "0.15.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b1141d4d61095b28419e22cb0bbf02755f5e54e0526f97f1e3d1d160e60885fb"
-
-[[package]]
 name = "thin-vec"
 version = "0.2.12"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -5171,9 +5089,9 @@ checksum = "9e79c4d996edb816c91e4308506774452e55e95c3c9de07b6729e17e15a5ef81"
 
 [[package]]
 name = "ui_test"
-version = "0.10.0"
+version = "0.11.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "191a442639ea102fa62671026047e51d574bfda44b7fdf32151d7314624c1cd2"
+checksum = "24a2e70adc9d18b9b4dd80ea57aeec447103c6fbb354a07c080adad451c645e1"
 dependencies = [
  "bstr",
  "cargo-platform",

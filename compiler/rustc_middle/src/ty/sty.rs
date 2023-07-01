@@ -715,7 +715,7 @@ impl<'tcx> PolyExistentialPredicate<'tcx> {
     /// Given an existential predicate like `?Self: PartialEq<u32>` (e.g., derived from `dyn PartialEq<u32>`),
     /// and a concrete type `self_ty`, returns a full predicate where the existentially quantified variable `?Self`
     /// has been replaced with `self_ty` (e.g., `self_ty: PartialEq<u32>`, in our example).
-    pub fn with_self_ty(&self, tcx: TyCtxt<'tcx>, self_ty: Ty<'tcx>) -> ty::Predicate<'tcx> {
+    pub fn with_self_ty(&self, tcx: TyCtxt<'tcx>, self_ty: Ty<'tcx>) -> ty::Clause<'tcx> {
         use crate::ty::ToPredicate;
         match self.skip_binder() {
             ExistentialPredicate::Trait(tr) => {
@@ -1584,7 +1584,7 @@ pub struct EarlyBoundRegion {
 
 impl fmt::Debug for EarlyBoundRegion {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "{}, {}", self.index, self.name)
+        write!(f, "{:?}, {}, {}", self.def_id, self.index, self.name)
     }
 }
 

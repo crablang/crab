@@ -395,6 +395,8 @@ declare_features! (
     (active, exclusive_range_pattern, "1.11.0", Some(37854), None),
     /// Allows exhaustive pattern matching on types that contain uninhabited types.
     (active, exhaustive_patterns, "1.13.0", Some(51085), None),
+    /// Allows explicit tail calls via `become` expression.
+    (incomplete, explicit_tail_calls, "CURRENT_RUSTC_VERSION", Some(112788), None),
     /// Allows using `efiapi`, `sysv64` and `win64` as calling convention
     /// for functions with varargs.
     (active, extended_varargs_abi_support, "1.65.0", Some(100189), None),
@@ -440,6 +442,8 @@ declare_features! (
     (active, intra_doc_pointers, "1.51.0", Some(80896), None),
     // Allows setting the threshold for the `large_assignments` lint.
     (active, large_assignments, "1.52.0", Some(83518), None),
+    /// Allow to have type alias types for inter-crate use.
+    (active, lazy_type_alias, "CURRENT_RUSTC_VERSION", Some(112792), None),
     /// Allows `if/while p && let q = r && ...` chains.
     (active, let_chains, "1.37.0", Some(53667), None),
     /// Allows using `reason` in lint attributes and the `#[expect(lint)]` lint check.
@@ -539,6 +543,8 @@ declare_features! (
     /// Allows creation of instances of a struct by moving fields that have
     /// not changed from prior instances of the same struct (RFC #2528)
     (active, type_changing_struct_update, "1.58.0", Some(86555), None),
+    /// Allows using type privacy lints (`private_interfaces`, `private_bounds`, `unnameable_types`).
+    (active, type_privacy_lints, "CURRENT_RUSTC_VERSION", Some(48054), None),
     /// Enables rustc to generate code that instructs libstd to NOT ignore SIGPIPE.
     (active, unix_sigpipe, "1.65.0", Some(97889), None),
     /// Allows unsized fn parameters.

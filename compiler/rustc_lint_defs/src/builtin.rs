@@ -3464,7 +3464,8 @@ declare_lint! {
     /// out an update in your own time.
     pub LONG_RUNNING_CONST_EVAL,
     Deny,
-    "detects long const eval operations"
+    "detects long const eval operations",
+    report_in_external_macro
 }
 
 declare_lint! {
@@ -4263,6 +4264,7 @@ declare_lint! {
     /// ### Example
     ///
     /// ```rust,compile_fail
+    /// # #![feature(type_privacy_lints)]
     /// # #![allow(unused)]
     /// # #![allow(private_in_public)]
     /// #![deny(private_interfaces)]
@@ -4287,6 +4289,7 @@ declare_lint! {
     pub PRIVATE_INTERFACES,
     Allow,
     "private type in primary interface of an item",
+    @feature_gate = sym::type_privacy_lints;
 }
 
 declare_lint! {
@@ -4297,6 +4300,7 @@ declare_lint! {
     /// ### Example
     ///
     /// ```rust,compile_fail
+    /// # #![feature(type_privacy_lints)]
     /// # #![allow(private_in_public)]
     /// # #![allow(unused)]
     /// #![deny(private_bounds)]
@@ -4316,7 +4320,8 @@ declare_lint! {
     /// the item actually provides.
     pub PRIVATE_BOUNDS,
     Allow,
-    "private type in secondary interface of an item"
+    "private type in secondary interface of an item",
+    @feature_gate = sym::type_privacy_lints;
 }
 
 declare_lint! {
@@ -4326,6 +4331,7 @@ declare_lint! {
     /// ### Example
     ///
     /// ```rust,compile_fail
+    /// # #![feature(type_privacy_lints)]
     /// # #![allow(unused)]
     /// #![deny(unnameable_types)]
     /// mod m {
@@ -4344,5 +4350,6 @@ declare_lint! {
     /// you can name the type `T` as well, this lint attempts to enforce this rule.
     pub UNNAMEABLE_TYPES,
     Allow,
-    "effective visibility of a type is larger than the area in which it can be named"
+    "effective visibility of a type is larger than the area in which it can be named",
+    @feature_gate = sym::type_privacy_lints;
 }

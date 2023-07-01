@@ -50,20 +50,15 @@ impl<'tcx> ForestObligation for PendingPredicateObligation<'tcx> {
 /// method `select_all_or_error` can be used to report any remaining
 /// ambiguous cases as errors.
 pub struct FulfillmentContext<'tcx> {
-    // A list of all obligations that have been registered with this
-    // fulfillment context.
+    /// A list of all obligations that have been registered with this
+    /// fulfillment context.
     predicates: ObligationForest<PendingPredicateObligation<'tcx>>,
 
-    // Is it OK to register obligations into this infcx inside
-    // an infcx snapshot?
-    //
-    // The "primary fulfillment" in many cases in typeck lives
-    // outside of any snapshot, so any use of it inside a snapshot
-    // will lead to trouble and therefore is checked against, but
-    // other fulfillment contexts sometimes do live inside of
-    // a snapshot (they don't *straddle* a snapshot, so there
-    // is no trouble there).
-    usable_in_snapshot: bool,
+    /// The snapshot in which this context was created. Using the context
+    /// outside of this snapshot leads to subtle bugs if the snapshot
+    /// gets rolled back. Because of this we explicitly check that we only
+    /// use the context in exactly this snapshot.
+    usable_in_snapshot: usize,
 }
 
 #[derive(Clone, Debug)]
@@ -80,18 +75,17 @@ pub struct PendingPredicateObligation<'tcx> {
 #[cfg(all(target_arch = "x86_64", target_pointer_width = "64"))]
 static_assert_size!(PendingPredicateObligation<'_>, 72);
 
-impl<'a, 'tcx> FulfillmentContext<'tcx> {
+impl<'tcx> FulfillmentContext<'tcx> {
     /// Creates a new fulfillment context.
-    pub(super) fn new() -> FulfillmentContext<'tcx> {
-        FulfillmentContext { predicates: ObligationForest::new(), usable_in_snapshot: false }
-    }
-
-    pub(super) fn new_in_snapshot() -> FulfillmentContext<'tcx> {
-        FulfillmentContext { predicates: ObligationForest::new(), usable_in_snapshot: true }
+    pub(super) fn new(infcx: &InferCtxt<'tcx>) -> FulfillmentContext<'tcx> {
+        FulfillmentContext {
+            predicates: ObligationForest::new(),
+            usable_in_snapshot: infcx.num_open_snapshots(),
+        }
     }
 
     /// Attempts to select obligations using `selcx`.
-    fn select(&mut self, selcx: SelectionContext<'a, 'tcx>) -> Vec<FulfillmentError<'tcx>> {
+    fn select(&mut self, selcx: SelectionContext<'_, 'tcx>) -> Vec<FulfillmentError<'tcx>> {
         let span = debug_span!("select", obligation_forest_size = ?self.predicates.len());
         let _enter = span.enter();
 
@@ -122,13 +116,12 @@ impl<'tcx> TraitEngine<'tcx> for FulfillmentContext<'tcx> {
         infcx: &InferCtxt<'tcx>,
         obligation: PredicateObligation<'tcx>,
     ) {
+        assert_eq!(self.usable_in_snapshot, infcx.num_open_snapshots());
         // this helps to reduce duplicate errors, as well as making
         // debug output much nicer to read and so on.
         let obligation = infcx.resolve_vars_if_possible(obligation);
 
         debug!(?obligation, "register_predicate_obligation");
-
-        assert!(!infcx.is_in_snapshot() || self.usable_in_snapshot);
 
         self.predicates
             .register_obligation(PendingPredicateObligation { obligation, stalled_on: vec![] });
@@ -333,7 +326,7 @@ impl<'a, 'tcx> ObligationProcessor for FulfillProcessor<'a, 'tcx> {
                 // Evaluation will discard candidates using the leak check.
                 // This means we need to pass it the bound version of our
                 // predicate.
-                ty::PredicateKind::Clause(ty::Clause::Trait(trait_ref)) => {
+                ty::PredicateKind::Clause(ty::ClauseKind::Trait(trait_ref)) => {
                     let trait_obligation = obligation.with(infcx.tcx, binder.rebind(trait_ref));
 
                     self.process_trait_obligation(
@@ -342,7 +335,7 @@ impl<'a, 'tcx> ObligationProcessor for FulfillProcessor<'a, 'tcx> {
                         &mut pending_obligation.stalled_on,
                     )
                 }
-                ty::PredicateKind::Clause(ty::Clause::Projection(data)) => {
+                ty::PredicateKind::Clause(ty::ClauseKind::Projection(data)) => {
                     let project_obligation = obligation.with(infcx.tcx, binder.rebind(data));
 
                     self.process_projection_obligation(
@@ -351,22 +344,22 @@ impl<'a, 'tcx> ObligationProcessor for FulfillProcessor<'a, 'tcx> {
                         &mut pending_obligation.stalled_on,
                     )
                 }
-                ty::PredicateKind::Clause(ty::Clause::RegionOutlives(_))
-                | ty::PredicateKind::Clause(ty::Clause::TypeOutlives(_))
-                | ty::PredicateKind::Clause(ty::Clause::ConstArgHasType(..))
-                | ty::PredicateKind::Clause(ty::Clause::WellFormed(_))
+                ty::PredicateKind::Clause(ty::ClauseKind::RegionOutlives(_))
+                | ty::PredicateKind::Clause(ty::ClauseKind::TypeOutlives(_))
+                | ty::PredicateKind::Clause(ty::ClauseKind::ConstArgHasType(..))
+                | ty::PredicateKind::Clause(ty::ClauseKind::WellFormed(_))
                 | ty::PredicateKind::ObjectSafe(_)
                 | ty::PredicateKind::ClosureKind(..)
                 | ty::PredicateKind::Subtype(_)
                 | ty::PredicateKind::Coerce(_)
-                | ty::PredicateKind::Clause(ty::Clause::ConstEvaluatable(..))
+                | ty::PredicateKind::Clause(ty::ClauseKind::ConstEvaluatable(..))
                 | ty::PredicateKind::ConstEquate(..) => {
                     let pred =
                         ty::Binder::dummy(infcx.instantiate_binder_with_placeholders(binder));
                     ProcessResult::Changed(mk_pending(vec![obligation.with(infcx.tcx, pred)]))
                 }
                 ty::PredicateKind::Ambiguous => ProcessResult::Unchanged,
-                ty::PredicateKind::TypeWellFormedFromEnv(..) => {
+                ty::PredicateKind::Clause(ty::ClauseKind::TypeWellFormedFromEnv(..)) => {
                     bug!("TypeWellFormedFromEnv is only used for Chalk")
                 }
                 ty::PredicateKind::AliasRelate(..) => {
@@ -374,7 +367,7 @@ impl<'a, 'tcx> ObligationProcessor for FulfillProcessor<'a, 'tcx> {
                 }
             },
             Some(pred) => match pred {
-                ty::PredicateKind::Clause(ty::Clause::Trait(data)) => {
+                ty::PredicateKind::Clause(ty::ClauseKind::Trait(data)) => {
                     let trait_obligation = obligation.with(infcx.tcx, Binder::dummy(data));
 
                     self.process_trait_obligation(
@@ -384,7 +377,7 @@ impl<'a, 'tcx> ObligationProcessor for FulfillProcessor<'a, 'tcx> {
                     )
                 }
 
-                ty::PredicateKind::Clause(ty::Clause::RegionOutlives(data)) => {
+                ty::PredicateKind::Clause(ty::ClauseKind::RegionOutlives(data)) => {
                     if infcx.considering_regions {
                         infcx.region_outlives_predicate(&obligation.cause, Binder::dummy(data));
                     }
@@ -392,7 +385,7 @@ impl<'a, 'tcx> ObligationProcessor for FulfillProcessor<'a, 'tcx> {
                     ProcessResult::Changed(vec![])
                 }
 
-                ty::PredicateKind::Clause(ty::Clause::TypeOutlives(ty::OutlivesPredicate(
+                ty::PredicateKind::Clause(ty::ClauseKind::TypeOutlives(ty::OutlivesPredicate(
                     t_a,
                     r_b,
                 ))) => {
@@ -402,7 +395,7 @@ impl<'a, 'tcx> ObligationProcessor for FulfillProcessor<'a, 'tcx> {
                     ProcessResult::Changed(vec![])
                 }
 
-                ty::PredicateKind::Clause(ty::Clause::Projection(ref data)) => {
+                ty::PredicateKind::Clause(ty::ClauseKind::Projection(ref data)) => {
                     let project_obligation = obligation.with(infcx.tcx, Binder::dummy(*data));
 
                     self.process_projection_obligation(
@@ -433,7 +426,7 @@ impl<'a, 'tcx> ObligationProcessor for FulfillProcessor<'a, 'tcx> {
                     }
                 }
 
-                ty::PredicateKind::Clause(ty::Clause::WellFormed(arg)) => {
+                ty::PredicateKind::Clause(ty::ClauseKind::WellFormed(arg)) => {
                     match wf::obligations(
                         self.selcx.infcx,
                         obligation.param_env,
@@ -498,7 +491,7 @@ impl<'a, 'tcx> ObligationProcessor for FulfillProcessor<'a, 'tcx> {
                     }
                 }
 
-                ty::PredicateKind::Clause(ty::Clause::ConstEvaluatable(uv)) => {
+                ty::PredicateKind::Clause(ty::ClauseKind::ConstEvaluatable(uv)) => {
                     match const_evaluatable::is_const_evaluatable(
                         self.selcx.infcx,
                         uv,
@@ -634,13 +627,13 @@ impl<'a, 'tcx> ObligationProcessor for FulfillProcessor<'a, 'tcx> {
                     }
                 }
                 ty::PredicateKind::Ambiguous => ProcessResult::Unchanged,
-                ty::PredicateKind::TypeWellFormedFromEnv(..) => {
+                ty::PredicateKind::Clause(ty::ClauseKind::TypeWellFormedFromEnv(..)) => {
                     bug!("TypeWellFormedFromEnv is only used for Chalk")
                 }
                 ty::PredicateKind::AliasRelate(..) => {
                     bug!("AliasRelate is only used for new solver")
                 }
-                ty::PredicateKind::Clause(ty::Clause::ConstArgHasType(ct, ty)) => {
+                ty::PredicateKind::Clause(ty::ClauseKind::ConstArgHasType(ct, ty)) => {
                     match self.selcx.infcx.at(&obligation.cause, obligation.param_env).eq(
                         DefineOpaqueTypes::No,
                         ct.ty(),

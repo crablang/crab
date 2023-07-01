@@ -6,8 +6,7 @@ use crate::method::MethodCallee;
 use crate::TupleArgumentsFlag::*;
 use crate::{errors, Expectation::*};
 use crate::{
-    struct_span_err, BreakableCtxt, Diverges, Expectation, FnCtxt, LocalTy, Needs, RawTy,
-    TupleArgumentsFlag,
+    struct_span_err, BreakableCtxt, Diverges, Expectation, FnCtxt, Needs, RawTy, TupleArgumentsFlag,
 };
 use rustc_ast as ast;
 use rustc_data_structures::fx::FxIndexSet;
@@ -955,9 +954,9 @@ impl<'a, 'tcx> FnCtxt<'a, 'tcx> {
                         //   - f(0, 1,)
                         //   + f()
                         if only_extras_so_far
-                            && errors
+                            && !errors
                                 .peek()
-                                .map_or(true, |next_error| !matches!(next_error, Error::Extra(_)))
+                                .is_some_and(|next_error| matches!(next_error, Error::Extra(_)))
                         {
                             let next = provided_arg_tys
                                 .get(arg_idx + 1)
@@ -1423,7 +1422,7 @@ impl<'a, 'tcx> FnCtxt<'a, 'tcx> {
         // See #44848.
         let ref_bindings = pat.contains_explicit_ref_binding();
 
-        let local_ty = self.local_ty(init.span, hir_id).revealed_ty;
+        let local_ty = self.local_ty(init.span, hir_id);
         if let Some(m) = ref_bindings {
             // Somewhat subtle: if we have a `ref` binding in the pattern,
             // we want to avoid introducing coercions for the RHS. This is
@@ -1453,7 +1452,7 @@ impl<'a, 'tcx> FnCtxt<'a, 'tcx> {
 
     pub(in super::super) fn check_decl(&self, decl: Declaration<'tcx>) {
         // Determine and write the type which we'll check the pattern against.
-        let decl_ty = self.local_ty(decl.span, decl.hir_id).decl_ty;
+        let decl_ty = self.local_ty(decl.span, decl.hir_id);
         self.write_ty(decl.hir_id, decl_ty);
 
         // Type check the initializer.
@@ -1799,9 +1798,8 @@ impl<'a, 'tcx> FnCtxt<'a, 'tcx> {
             let err = self.tcx.ty_error(guar);
             self.write_ty(hir_id, err);
             self.write_ty(pat.hir_id, err);
-            let local_ty = LocalTy { decl_ty: err, revealed_ty: err };
-            self.locals.borrow_mut().insert(hir_id, local_ty);
-            self.locals.borrow_mut().insert(pat.hir_id, local_ty);
+            self.locals.borrow_mut().insert(hir_id, err);
+            self.locals.borrow_mut().insert(pat.hir_id, err);
         }
     }
 
@@ -1948,7 +1946,7 @@ impl<'a, 'tcx> FnCtxt<'a, 'tcx> {
                         // do that, so it's OK.
                         for (predicate, span) in instantiated
                         {
-                            if let ty::PredicateKind::Clause(ty::Clause::Trait(pred)) = predicate.kind().skip_binder()
+                            if let ty::ClauseKind::Trait(pred) = predicate.kind().skip_binder()
                                 && pred.self_ty().peel_refs() == callee_ty
                                 && self.tcx.is_fn_trait(pred.def_id())
                             {

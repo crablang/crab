@@ -357,6 +357,13 @@ pub fn cast_shift_expr_rhs<'a, 'tcx, Bx: BuilderMethods<'a, 'tcx>>(
     }
 }
 
+// Returns `true` if this session's target will use native wasm
+// exceptions. This means that the VM does the unwinding for
+// us
+pub fn wants_wasm_eh(sess: &Session) -> bool {
+    sess.target.is_like_wasm && sess.target.os != "emscripten"
+}
+
 /// Returns `true` if this session's target will use SEH-based unwinding.
 ///
 /// This is only true for MSVC targets, and even then the 64-bit MSVC target
@@ -364,6 +371,13 @@ pub fn cast_shift_expr_rhs<'a, 'tcx, Bx: BuilderMethods<'a, 'tcx>>(
 /// 64-bit MinGW) instead of "full SEH".
 pub fn wants_msvc_seh(sess: &Session) -> bool {
     sess.target.is_like_msvc
+}
+
+/// Returns `true` if this session's target requires the new exception
+/// handling LLVM IR instructions (catchpad / cleanuppad / ... instead
+/// of landingpad)
+pub fn wants_new_eh_instructions(sess: &Session) -> bool {
+    wants_wasm_eh(sess) || wants_msvc_seh(sess)
 }
 
 pub fn memcpy_ty<'a, 'tcx, Bx: BuilderMethods<'a, 'tcx>>(
@@ -580,7 +594,7 @@ pub fn codegen_crate<B: ExtraBackendMethods>(
 ) -> OngoingCodegen<B> {
     // Skip crate items and just output metadata in -Z no-codegen mode.
     if tcx.sess.opts.unstable_opts.no_codegen || !tcx.sess.opts.output_types.should_codegen() {
-        let ongoing_codegen = start_async_codegen(backend, tcx, target_cpu, metadata, None, 1);
+        let ongoing_codegen = start_async_codegen(backend, tcx, target_cpu, metadata, None);
 
         ongoing_codegen.codegen_finished(tcx);
 
@@ -631,14 +645,8 @@ pub fn codegen_crate<B: ExtraBackendMethods>(
         })
     });
 
-    let ongoing_codegen = start_async_codegen(
-        backend.clone(),
-        tcx,
-        target_cpu,
-        metadata,
-        metadata_module,
-        codegen_units.len(),
-    );
+    let ongoing_codegen =
+        start_async_codegen(backend.clone(), tcx, target_cpu, metadata, metadata_module);
 
     // Codegen an allocator shim, if necessary.
     if let Some(kind) = allocator_kind_for_codegen(tcx) {

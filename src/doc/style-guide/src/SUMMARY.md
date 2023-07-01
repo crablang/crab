@@ -2,7 +2,7 @@
 
 [Introduction](README.md)
 
-- [Module-level items](items.md)
+- [Items](items.md)
 - [Statements](statements.md)
 - [Expressions](expressions.md)
 - [Types](types.md)

@@ -15,7 +15,7 @@ use rustc_middle::mir::ConstraintCategory;
 use rustc_middle::query::Providers;
 use rustc_middle::ty::trait_def::TraitSpecializationKind;
 use rustc_middle::ty::{
-    self, AdtKind, GenericParamDefKind, Ty, TyCtxt, TypeFoldable, TypeSuperVisitable,
+    self, AdtKind, GenericParamDefKind, ToPredicate, Ty, TyCtxt, TypeFoldable, TypeSuperVisitable,
     TypeVisitable, TypeVisitableExt, TypeVisitor,
 };
 use rustc_middle::ty::{GenericArgKind, InternalSubsts};
@@ -81,7 +81,7 @@ impl<'tcx> WfCheckingCtxt<'_, 'tcx> {
             self.tcx(),
             cause,
             param_env,
-            ty::Binder::dummy(ty::PredicateKind::Clause(ty::Clause::WellFormed(arg))),
+            ty::Binder::dummy(ty::PredicateKind::Clause(ty::ClauseKind::WellFormed(arg))),
         ));
     }
 }
@@ -322,7 +322,7 @@ fn check_gat_where_clauses(tcx: TyCtxt<'_>, associated_items: &[hir::TraitItemRe
             // Gather the bounds with which all other items inside of this trait constrain the GAT.
             // This is calculated by taking the intersection of the bounds that each item
             // constrains the GAT with individually.
-            let mut new_required_bounds: Option<FxHashSet<ty::Predicate<'_>>> = None;
+            let mut new_required_bounds: Option<FxHashSet<ty::Clause<'_>>> = None;
             for item in associated_items {
                 let item_def_id = item.id.owner_id;
                 // Skip our own GAT, since it does not constrain itself at all.
@@ -419,10 +419,17 @@ fn check_gat_where_clauses(tcx: TyCtxt<'_>, associated_items: &[hir::TraitItemRe
         let mut unsatisfied_bounds: Vec<_> = required_bounds
             .into_iter()
             .filter(|clause| match clause.kind().skip_binder() {
-                ty::PredicateKind::Clause(ty::Clause::RegionOutlives(ty::OutlivesPredicate(
-                    a,
-                    b,
-                ))) => !region_known_to_outlive(
+                ty::ClauseKind::RegionOutlives(ty::OutlivesPredicate(a, b)) => {
+                    !region_known_to_outlive(
+                        tcx,
+                        gat_def_id.def_id,
+                        param_env,
+                        &FxIndexSet::default(),
+                        a,
+                        b,
+                    )
+                }
+                ty::ClauseKind::TypeOutlives(ty::OutlivesPredicate(a, b)) => !ty_known_to_outlive(
                     tcx,
                     gat_def_id.def_id,
                     param_env,
@@ -430,18 +437,7 @@ fn check_gat_where_clauses(tcx: TyCtxt<'_>, associated_items: &[hir::TraitItemRe
                     a,
                     b,
                 ),
-                ty::PredicateKind::Clause(ty::Clause::TypeOutlives(ty::OutlivesPredicate(
-                    a,
-                    b,
-                ))) => !ty_known_to_outlive(
-                    tcx,
-                    gat_def_id.def_id,
-                    param_env,
-                    &FxIndexSet::default(),
-                    a,
-                    b,
-                ),
-                _ => bug!("Unexpected PredicateKind"),
+                _ => bug!("Unexpected ClauseKind"),
             })
             .map(|clause| clause.to_string())
             .collect();
@@ -489,7 +485,7 @@ fn check_gat_where_clauses(tcx: TyCtxt<'_>, associated_items: &[hir::TraitItemRe
 fn augment_param_env<'tcx>(
     tcx: TyCtxt<'tcx>,
     param_env: ty::ParamEnv<'tcx>,
-    new_predicates: Option<&FxHashSet<ty::Predicate<'tcx>>>,
+    new_predicates: Option<&FxHashSet<ty::Clause<'tcx>>>,
 ) -> ty::ParamEnv<'tcx> {
     let Some(new_predicates) = new_predicates else {
         return param_env;
@@ -499,7 +495,7 @@ fn augment_param_env<'tcx>(
         return param_env;
     }
 
-    let bounds = tcx.mk_predicates_from_iter(
+    let bounds = tcx.mk_clauses_from_iter(
         param_env.caller_bounds().iter().chain(new_predicates.iter().cloned()),
     );
     // FIXME(compiler-errors): Perhaps there is a case where we need to normalize this
@@ -525,7 +521,7 @@ fn gather_gat_bounds<'tcx, T: TypeFoldable<TyCtxt<'tcx>>>(
     wf_tys: &FxIndexSet<Ty<'tcx>>,
     gat_def_id: LocalDefId,
     gat_generics: &'tcx ty::Generics,
-) -> Option<FxHashSet<ty::Predicate<'tcx>>> {
+) -> Option<FxHashSet<ty::Clause<'tcx>>> {
     // The bounds we that we would require from `to_check`
     let mut bounds = FxHashSet::default();
 
@@ -574,11 +570,10 @@ fn gather_gat_bounds<'tcx, T: TypeFoldable<TyCtxt<'tcx>>>(
                 );
                 // The predicate we expect to see. (In our example,
                 // `Self: 'me`.)
-                let clause = ty::PredicateKind::Clause(ty::Clause::TypeOutlives(
-                    ty::OutlivesPredicate(ty_param, region_param),
-                ));
-                let clause = tcx.mk_predicate(ty::Binder::dummy(clause));
-                bounds.insert(clause);
+                bounds.insert(
+                    ty::ClauseKind::TypeOutlives(ty::OutlivesPredicate(ty_param, region_param))
+                        .to_predicate(tcx),
+                );
             }
         }
 
@@ -623,11 +618,13 @@ fn gather_gat_bounds<'tcx, T: TypeFoldable<TyCtxt<'tcx>>>(
                     },
                 );
                 // The predicate we expect to see.
-                let clause = ty::PredicateKind::Clause(ty::Clause::RegionOutlives(
-                    ty::OutlivesPredicate(region_a_param, region_b_param),
-                ));
-                let clause = tcx.mk_predicate(ty::Binder::dummy(clause));
-                bounds.insert(clause);
+                bounds.insert(
+                    ty::ClauseKind::RegionOutlives(ty::OutlivesPredicate(
+                        region_a_param,
+                        region_b_param,
+                    ))
+                    .to_predicate(tcx),
+                );
             }
         }
     }
@@ -1032,7 +1029,7 @@ fn check_type_defn<'tcx>(tcx: TyCtxt<'tcx>, item: &hir::Item<'tcx>, all_sized: b
                     tcx,
                     cause,
                     wfcx.param_env,
-                    ty::Binder::dummy(ty::PredicateKind::Clause(ty::Clause::ConstEvaluatable(
+                    ty::Binder::dummy(ty::PredicateKind::Clause(ty::ClauseKind::ConstEvaluatable(
                         ty::Const::from_anon_const(tcx, discr_def_id.expect_local()),
                     ))),
                 ));
@@ -1087,7 +1084,7 @@ fn check_associated_type_bounds(wfcx: &WfCheckingCtxt<'_, '_>, item: ty::AssocIt
             wfcx.infcx,
             wfcx.param_env,
             wfcx.body_def_id,
-            normalized_bound,
+            normalized_bound.as_predicate(),
             bound_span,
         )
     });
@@ -1407,7 +1404,7 @@ fn check_where_clauses<'tcx>(wfcx: &WfCheckingCtxt<'_, 'tcx>, span: Span, def_id
             infcx,
             wfcx.param_env.without_const(),
             wfcx.body_def_id,
-            p,
+            p.as_predicate(),
             sp,
         )
     });
@@ -1544,13 +1541,13 @@ impl<'tcx> TypeVisitor<TyCtxt<'tcx>> for ImplTraitInTraitFinder<'_, 'tcx> {
         if let ty::Alias(ty::Opaque, unshifted_opaque_ty) = *ty.kind()
             && self.seen.insert(unshifted_opaque_ty.def_id)
             && let Some(opaque_def_id) = unshifted_opaque_ty.def_id.as_local()
-            && let opaque = tcx.hir().expect_item(opaque_def_id).expect_opaque_ty()
-            && let hir::OpaqueTyOrigin::FnReturn(source) | hir::OpaqueTyOrigin::AsyncFn(source) = opaque.origin
+            && let origin = tcx.opaque_type_origin(opaque_def_id)
+            && let hir::OpaqueTyOrigin::FnReturn(source) | hir::OpaqueTyOrigin::AsyncFn(source) = origin
             && source == self.fn_def_id
         {
             let opaque_ty = tcx.fold_regions(unshifted_opaque_ty, |re, _depth| {
                 match re.kind() {
-                    ty::ReEarlyBound(_) | ty::ReFree(_) | ty::ReError(_) => re,
+                    ty::ReEarlyBound(_) | ty::ReFree(_) | ty::ReError(_) | ty::ReStatic => re,
                     r => bug!("unexpected region: {r:?}"),
                 }
             });
@@ -1563,7 +1560,7 @@ impl<'tcx> TypeVisitor<TyCtxt<'tcx>> for ImplTraitInTraitFinder<'_, 'tcx> {
                     self.wfcx.infcx,
                     self.wfcx.param_env,
                     self.wfcx.body_def_id,
-                    bound,
+                    bound.as_predicate(),
                     bound_span,
                 ));
                 // Set the debruijn index back to innermost here, since we already eagerly
@@ -1876,8 +1873,7 @@ impl<'tcx> WfCheckingCtxt<'_, 'tcx> {
             // We lower empty bounds like `Vec<dyn Copy>:` as
             // `WellFormed(Vec<dyn Copy>)`, which will later get checked by
             // regular WF checking
-            if let ty::PredicateKind::Clause(ty::Clause::WellFormed(..)) = pred.kind().skip_binder()
-            {
+            if let ty::ClauseKind::WellFormed(..) = pred.kind().skip_binder() {
                 continue;
             }
             // Match the existing behavior.

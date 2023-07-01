@@ -20,7 +20,7 @@ pub fn recompute_applicable_impls<'tcx>(
     let param_env = obligation.param_env;
 
     let impl_may_apply = |impl_def_id| {
-        let ocx = ObligationCtxt::new_in_snapshot(infcx);
+        let ocx = ObligationCtxt::new(infcx);
         let placeholder_obligation =
             infcx.instantiate_binder_with_placeholders(obligation.predicate);
         let obligation_trait_ref =
@@ -45,7 +45,7 @@ pub fn recompute_applicable_impls<'tcx>(
     };
 
     let param_env_candidate_may_apply = |poly_trait_predicate: ty::PolyTraitPredicate<'tcx>| {
-        let ocx = ObligationCtxt::new_in_snapshot(infcx);
+        let ocx = ObligationCtxt::new(infcx);
         let placeholder_obligation =
             infcx.instantiate_binder_with_placeholders(obligation.predicate);
         let obligation_trait_ref =
@@ -84,7 +84,7 @@ pub fn recompute_applicable_impls<'tcx>(
         tcx.predicates_of(obligation.cause.body_id.to_def_id()).instantiate_identity(tcx);
     for (pred, span) in elaborate(tcx, predicates.into_iter()) {
         let kind = pred.kind();
-        if let ty::PredicateKind::Clause(ty::Clause::Trait(trait_pred)) = kind.skip_binder()
+        if let ty::ClauseKind::Trait(trait_pred) = kind.skip_binder()
             && param_env_candidate_may_apply(kind.rebind(trait_pred))
         {
             if kind.rebind(trait_pred.trait_ref) == ty::Binder::dummy(ty::TraitRef::identity(tcx, trait_pred.def_id())) {

@@ -58,6 +58,24 @@ pub struct PathSeg(pub DefId, pub usize);
 #[derive(Copy, Clone, Debug)]
 pub struct OnlySelfBounds(pub bool);
 
+#[derive(Copy, Clone, Debug)]
+pub enum PredicateFilter {
+    /// All predicates may be implied by the trait.
+    All,
+
+    /// Only traits that reference `Self: ..` are implied by the trait.
+    SelfOnly,
+
+    /// Only traits that reference `Self: ..` and define an associated type
+    /// with the given ident are implied by the trait.
+    SelfThatDefines(Ident),
+
+    /// Only traits that reference `Self: ..` and their associated type bounds.
+    /// For example, given `Self: Tr<A: B>`, this would expand to `Self: Tr`
+    /// and `<Self as Tr>::A: B`.
+    SelfAndAssociatedTypeBounds,
+}
+
 pub trait AstConv<'tcx> {
     fn tcx(&self) -> TyCtxt<'tcx>;
 
@@ -896,7 +914,7 @@ impl<'o, 'tcx> dyn AstConv<'tcx> + 'o {
         let ty = self.tcx().at(span).type_of(did);
 
         if matches!(self.tcx().def_kind(did), DefKind::TyAlias)
-            && ty.skip_binder().has_opaque_types()
+            && (ty.skip_binder().has_opaque_types() || self.tcx().features().lazy_type_alias)
         {
             // Type aliases referring to types that contain opaque types (but aren't just directly
             // referencing a single opaque type) get encoded as a type alias that normalization will
@@ -945,38 +963,30 @@ impl<'o, 'tcx> dyn AstConv<'tcx> + 'o {
 
         let mut trait_bounds = vec![];
         let mut projection_bounds = vec![];
-        for (clause, span) in bounds.predicates() {
-            let pred: ty::Predicate<'tcx> = clause.to_predicate(tcx);
+        for (pred, span) in bounds.clauses() {
             let bound_pred = pred.kind();
             match bound_pred.skip_binder() {
-                ty::PredicateKind::Clause(clause) => match clause {
-                    ty::Clause::Trait(trait_pred) => {
-                        assert_eq!(trait_pred.polarity, ty::ImplPolarity::Positive);
-                        trait_bounds.push((
-                            bound_pred.rebind(trait_pred.trait_ref),
-                            span,
-                            trait_pred.constness,
-                        ));
-                    }
-                    ty::Clause::Projection(proj) => {
-                        projection_bounds.push((bound_pred.rebind(proj), span));
-                    }
-                    ty::Clause::TypeOutlives(_) => {
-                        // Do nothing, we deal with regions separately
-                    }
-                    ty::Clause::RegionOutlives(_)
-                    | ty::Clause::ConstArgHasType(..)
-                    | ty::Clause::WellFormed(_)
-                    | ty::Clause::ConstEvaluatable(_) => bug!(),
-                },
-                ty::PredicateKind::AliasRelate(..)
-                | ty::PredicateKind::ObjectSafe(_)
-                | ty::PredicateKind::ClosureKind(_, _, _)
-                | ty::PredicateKind::Subtype(_)
-                | ty::PredicateKind::Coerce(_)
-                | ty::PredicateKind::ConstEquate(_, _)
-                | ty::PredicateKind::TypeWellFormedFromEnv(_)
-                | ty::PredicateKind::Ambiguous => bug!(),
+                ty::ClauseKind::Trait(trait_pred) => {
+                    assert_eq!(trait_pred.polarity, ty::ImplPolarity::Positive);
+                    trait_bounds.push((
+                        bound_pred.rebind(trait_pred.trait_ref),
+                        span,
+                        trait_pred.constness,
+                    ));
+                }
+                ty::ClauseKind::Projection(proj) => {
+                    projection_bounds.push((bound_pred.rebind(proj), span));
+                }
+                ty::ClauseKind::TypeOutlives(_) => {
+                    // Do nothing, we deal with regions separately
+                }
+                ty::ClauseKind::RegionOutlives(_)
+                | ty::ClauseKind::ConstArgHasType(..)
+                | ty::ClauseKind::WellFormed(_)
+                | ty::ClauseKind::ConstEvaluatable(_)
+                | ty::ClauseKind::TypeWellFormedFromEnv(_) => {
+                    bug!()
+                }
             }
         }
 
@@ -1064,7 +1074,7 @@ impl<'o, 'tcx> dyn AstConv<'tcx> + 'o {
 
                 let bound_predicate = pred.kind();
                 match bound_predicate.skip_binder() {
-                    ty::PredicateKind::Clause(ty::Clause::Trait(pred)) => {
+                    ty::PredicateKind::Clause(ty::ClauseKind::Trait(pred)) => {
                         let pred = bound_predicate.rebind(pred);
                         associated_types.entry(span).or_default().extend(
                             tcx.associated_items(pred.def_id())
@@ -1074,7 +1084,7 @@ impl<'o, 'tcx> dyn AstConv<'tcx> + 'o {
                                 .map(|item| item.def_id),
                         );
                     }
-                    ty::PredicateKind::Clause(ty::Clause::Projection(pred)) => {
+                    ty::PredicateKind::Clause(ty::ClauseKind::Projection(pred)) => {
                         let pred = bound_predicate.rebind(pred);
                         // A `Self` within the original bound will be substituted with a
                         // `trait_object_dummy_self`, so check for that.
@@ -1423,9 +1433,9 @@ impl<'o, 'tcx> dyn AstConv<'tcx> + 'o {
             || {
                 traits::transitive_bounds_that_define_assoc_item(
                     tcx,
-                    predicates.iter().filter_map(|(p, _)| {
-                        Some(p.to_opt_poly_trait_pred()?.map_bound(|t| t.trait_ref))
-                    }),
+                    predicates
+                        .iter()
+                        .filter_map(|(p, _)| Some(p.as_trait_clause()?.map_bound(|t| t.trait_ref))),
                     assoc_name,
                 )
             },
@@ -1974,7 +1984,7 @@ impl<'o, 'tcx> dyn AstConv<'tcx> + 'o {
                 .copied()
                 .filter(|&(impl_, _)| {
                     infcx.probe(|_| {
-                        let ocx = ObligationCtxt::new_in_snapshot(&infcx);
+                        let ocx = ObligationCtxt::new(&infcx);
                         ocx.register_obligations(obligations.clone());
 
                         let impl_substs = infcx.fresh_substs_for_item(span, impl_);
@@ -2799,7 +2809,7 @@ impl<'o, 'tcx> dyn AstConv<'tcx> + 'o {
                 let opaque_ty = tcx.hir().item(item_id);
 
                 match opaque_ty.kind {
-                    hir::ItemKind::OpaqueTy(hir::OpaqueTy { origin, .. }) => {
+                    hir::ItemKind::OpaqueTy(&hir::OpaqueTy { origin, .. }) => {
                         let local_def_id = item_id.owner_id.def_id;
                         // If this is an RPITIT and we are using the new RPITIT lowering scheme, we
                         // generate the def_id of an associated type for the trait and return as

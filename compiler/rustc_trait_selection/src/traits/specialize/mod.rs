@@ -238,7 +238,7 @@ fn fulfill_implication<'tcx>(
 
     // Needs to be `in_snapshot` because this function is used to rebase
     // substitutions, which may happen inside of a select within a probe.
-    let ocx = ObligationCtxt::new_in_snapshot(infcx);
+    let ocx = ObligationCtxt::new(infcx);
     // attempt to prove all of the predicates for impl2 given those for impl1
     // (which are packed up in penv)
     ocx.register_obligations(obligations.chain(more_obligations));
@@ -508,21 +508,14 @@ pub(crate) fn to_pretty_impl_header(tcx: TyCtxt<'_>, impl_def_id: DefId) -> Opti
         Vec::with_capacity(predicates.len() + types_without_default_bounds.len());
 
     for (mut p, _) in predicates {
-        if let Some(poly_trait_ref) = p.to_opt_poly_trait_pred() {
+        if let Some(poly_trait_ref) = p.as_trait_clause() {
             if Some(poly_trait_ref.def_id()) == sized_trait {
                 types_without_default_bounds.remove(&poly_trait_ref.self_ty().skip_binder());
                 continue;
             }
 
             if ty::BoundConstness::ConstIfConst == poly_trait_ref.skip_binder().constness {
-                let new_trait_pred = poly_trait_ref.map_bound(|mut trait_pred| {
-                    trait_pred.constness = ty::BoundConstness::NotConst;
-                    trait_pred
-                });
-
-                p = tcx.mk_predicate(
-                    new_trait_pred.map_bound(|p| ty::PredicateKind::Clause(ty::Clause::Trait(p))),
-                )
+                p = p.without_const(tcx);
             }
         }
         pretty_predicates.push(p.to_string());

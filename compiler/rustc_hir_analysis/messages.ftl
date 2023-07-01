@@ -99,6 +99,15 @@ hir_analysis_invalid_union_field =
 hir_analysis_invalid_union_field_sugg =
     wrap the field type in `ManuallyDrop<...>`
 
+hir_analysis_late_bound_const_in_apit = `impl Trait` can only mention const parameters from an fn or impl
+    .label = const parameter declared here
+
+hir_analysis_late_bound_lifetime_in_apit = `impl Trait` can only mention lifetimes from an fn or impl
+    .label = lifetime declared here
+
+hir_analysis_late_bound_type_in_apit = `impl Trait` can only mention type parameters from an fn or impl
+    .label = type parameter declared here
+
 hir_analysis_lifetimes_or_bounds_mismatch_on_trait =
     lifetime parameters or bounds on {$item_kind} `{$ident}` do not match the trait declaration
     .label = lifetimes do not match {$item_kind} in trait
@@ -137,7 +146,7 @@ hir_analysis_missing_trait_item_suggestion = implement the missing item: `{$snip
 
 hir_analysis_missing_trait_item_unstable = not all trait items implemented, missing: `{$missing_item_name}`
     .note = default implementation of `{$missing_item_name}` is unstable
-    .some_note = use of unstable library feature '{$feature}': {$r}
+    .some_note = use of unstable library feature '{$feature}': {$reason}
     .none_note = use of unstable library feature '{$feature}'
 
 hir_analysis_missing_type_params =

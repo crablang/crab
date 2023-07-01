@@ -665,9 +665,7 @@ declare_lint_pass!(MissingCopyImplementations => [MISSING_COPY_IMPLEMENTATIONS])
 
 impl<'tcx> LateLintPass<'tcx> for MissingCopyImplementations {
     fn check_item(&mut self, cx: &LateContext<'_>, item: &hir::Item<'_>) {
-        if !(cx.effective_visibilities.is_reachable(item.owner_id.def_id)
-            && cx.tcx.local_visibility(item.owner_id.def_id).is_public())
-        {
+        if !cx.effective_visibilities.is_reachable(item.owner_id.def_id) {
             return;
         }
         let (def, ty) = match item.kind {
@@ -786,9 +784,7 @@ impl_lint_pass!(MissingDebugImplementations => [MISSING_DEBUG_IMPLEMENTATIONS]);
 
 impl<'tcx> LateLintPass<'tcx> for MissingDebugImplementations {
     fn check_item(&mut self, cx: &LateContext<'_>, item: &hir::Item<'_>) {
-        if !(cx.effective_visibilities.is_reachable(item.owner_id.def_id)
-            && cx.tcx.local_visibility(item.owner_id.def_id).is_public())
-        {
+        if !cx.effective_visibilities.is_reachable(item.owner_id.def_id) {
             return;
         }
 
@@ -1592,34 +1588,26 @@ declare_lint_pass!(
 
 impl<'tcx> LateLintPass<'tcx> for TrivialConstraints {
     fn check_item(&mut self, cx: &LateContext<'tcx>, item: &'tcx hir::Item<'tcx>) {
-        use rustc_middle::ty::Clause;
-        use rustc_middle::ty::PredicateKind::*;
+        use rustc_middle::ty::ClauseKind;
 
         if cx.tcx.features().trivial_bounds {
             let predicates = cx.tcx.predicates_of(item.owner_id);
             for &(predicate, span) in predicates.predicates {
                 let predicate_kind_name = match predicate.kind().skip_binder() {
-                    Clause(Clause::Trait(..)) => "trait",
-                    Clause(Clause::TypeOutlives(..)) |
-                    Clause(Clause::RegionOutlives(..)) => "lifetime",
+                    ClauseKind::Trait(..) => "trait",
+                    ClauseKind::TypeOutlives(..) |
+                    ClauseKind::RegionOutlives(..) => "lifetime",
 
                     // `ConstArgHasType` is never global as `ct` is always a param
-                    Clause(Clause::ConstArgHasType(..)) |
+                    ClauseKind::ConstArgHasType(..)
                     // Ignore projections, as they can only be global
                     // if the trait bound is global
-                    Clause(Clause::Projection(..)) |
-                    AliasRelate(..) |
+                    | ClauseKind::Projection(..)
                     // Ignore bounds that a user can't type
-                    Clause(Clause::WellFormed(..)) |
+                    | ClauseKind::WellFormed(..)
                     // FIXME(generic_const_exprs): `ConstEvaluatable` can be written
-                    Clause(Clause::ConstEvaluatable(..)) |
-                    ObjectSafe(..) |
-                    ClosureKind(..) |
-                    Subtype(..) |
-                    Coerce(..) |
-                    ConstEquate(..) |
-                    Ambiguous |
-                    TypeWellFormedFromEnv(..) => continue,
+                    | ClauseKind::ConstEvaluatable(..)
+                    | ClauseKind::TypeWellFormedFromEnv(_)  => continue,
                 };
                 if predicate.is_global() {
                     cx.emit_spanned_lint(
@@ -1989,8 +1977,8 @@ impl ExplicitOutlivesRequirements {
     ) -> Vec<ty::Region<'tcx>> {
         inferred_outlives
             .iter()
-            .filter_map(|(clause, _)| match *clause {
-                ty::Clause::RegionOutlives(ty::OutlivesPredicate(a, b)) => match *a {
+            .filter_map(|(clause, _)| match clause.kind().skip_binder() {
+                ty::ClauseKind::RegionOutlives(ty::OutlivesPredicate(a, b)) => match *a {
                     ty::ReEarlyBound(ebr) if ebr.def_id == def_id => Some(b),
                     _ => None,
                 },
@@ -2005,8 +1993,8 @@ impl ExplicitOutlivesRequirements {
     ) -> Vec<ty::Region<'tcx>> {
         inferred_outlives
             .iter()
-            .filter_map(|(clause, _)| match *clause {
-                ty::Clause::TypeOutlives(ty::OutlivesPredicate(a, b)) => {
+            .filter_map(|(clause, _)| match clause.kind().skip_binder() {
+                ty::ClauseKind::TypeOutlives(ty::OutlivesPredicate(a, b)) => {
                     a.is_param(index).then_some(b)
                 }
                 _ => None,

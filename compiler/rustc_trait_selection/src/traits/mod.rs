@@ -65,12 +65,12 @@ pub use self::specialize::{
 pub use self::structural_match::search_for_structural_match_violation;
 pub use self::structural_normalize::StructurallyNormalizeExt;
 pub use self::util::elaborate;
+pub use self::util::{
+    check_substs_compatible, supertrait_def_ids, supertraits, transitive_bounds,
+    transitive_bounds_that_define_assoc_item, SupertraitDefIds,
+};
 pub use self::util::{expand_trait_aliases, TraitAliasExpander};
 pub use self::util::{get_vtable_index_of_object_method, impl_item_is_final, upcast_choices};
-pub use self::util::{
-    supertrait_def_ids, supertraits, transitive_bounds, transitive_bounds_that_define_assoc_item,
-    SupertraitDefIds,
-};
 
 pub use self::chalk_fulfill::FulfillmentContext as ChalkFulfillmentContext;
 
@@ -114,11 +114,11 @@ pub fn predicates_for_generics<'tcx>(
     param_env: ty::ParamEnv<'tcx>,
     generic_bounds: ty::InstantiatedPredicates<'tcx>,
 ) -> impl Iterator<Item = PredicateObligation<'tcx>> {
-    generic_bounds.into_iter().enumerate().map(move |(idx, (predicate, span))| Obligation {
+    generic_bounds.into_iter().enumerate().map(move |(idx, (clause, span))| Obligation {
         cause: cause(idx, span),
         recursion_depth: 0,
         param_env,
-        predicate,
+        predicate: clause.as_predicate(),
     })
 }
 
@@ -161,7 +161,7 @@ fn pred_known_to_hold_modulo_regions<'tcx>(
         // the we do no inference in the process of checking this obligation.
         let goal = infcx.resolve_vars_if_possible((obligation.predicate, obligation.param_env));
         infcx.probe(|_| {
-            let ocx = ObligationCtxt::new_in_snapshot(infcx);
+            let ocx = ObligationCtxt::new(infcx);
             ocx.register_obligation(obligation);
 
             let errors = ocx.select_all_or_error();
@@ -185,8 +185,8 @@ fn do_normalize_predicates<'tcx>(
     tcx: TyCtxt<'tcx>,
     cause: ObligationCause<'tcx>,
     elaborated_env: ty::ParamEnv<'tcx>,
-    predicates: Vec<ty::Predicate<'tcx>>,
-) -> Result<Vec<ty::Predicate<'tcx>>, ErrorGuaranteed> {
+    predicates: Vec<ty::Clause<'tcx>>,
+) -> Result<Vec<ty::Clause<'tcx>>, ErrorGuaranteed> {
     let span = cause.span;
     // FIXME. We should really... do something with these region
     // obligations. But this call just continues the older
@@ -330,7 +330,7 @@ pub fn normalize_param_env_or_error<'tcx>(
     debug!("normalize_param_env_or_error: elaborated-predicates={:?}", predicates);
 
     let elaborated_env = ty::ParamEnv::new(
-        tcx.mk_predicates(&predicates),
+        tcx.mk_clauses(&predicates),
         unnormalized_env.reveal(),
         unnormalized_env.constness(),
     );
@@ -355,10 +355,7 @@ pub fn normalize_param_env_or_error<'tcx>(
     // TypeOutlives predicates - these are normally used by regionck.
     let outlives_predicates: Vec<_> = predicates
         .extract_if(|predicate| {
-            matches!(
-                predicate.kind().skip_binder(),
-                ty::PredicateKind::Clause(ty::Clause::TypeOutlives(..))
-            )
+            matches!(predicate.kind().skip_binder(), ty::ClauseKind::TypeOutlives(..))
         })
         .collect();
 
@@ -384,7 +381,7 @@ pub fn normalize_param_env_or_error<'tcx>(
     // predicates here anyway. Keeping them here anyway because it seems safer.
     let outlives_env = non_outlives_predicates.iter().chain(&outlives_predicates).cloned();
     let outlives_env = ty::ParamEnv::new(
-        tcx.mk_predicates_from_iter(outlives_env),
+        tcx.mk_clauses_from_iter(outlives_env),
         unnormalized_env.reveal(),
         unnormalized_env.constness(),
     );
@@ -404,7 +401,7 @@ pub fn normalize_param_env_or_error<'tcx>(
     predicates.extend(outlives_predicates);
     debug!("normalize_param_env_or_error: final predicates={:?}", predicates);
     ty::ParamEnv::new(
-        tcx.mk_predicates(&predicates),
+        tcx.mk_clauses(&predicates),
         unnormalized_env.reveal(),
         unnormalized_env.constness(),
     )
@@ -439,10 +436,7 @@ where
 /// Normalizes the predicates and checks whether they hold in an empty environment. If this
 /// returns true, then either normalize encountered an error or one of the predicates did not
 /// hold. Used when creating vtables to check for unsatisfiable methods.
-pub fn impossible_predicates<'tcx>(
-    tcx: TyCtxt<'tcx>,
-    predicates: Vec<ty::Predicate<'tcx>>,
-) -> bool {
+pub fn impossible_predicates<'tcx>(tcx: TyCtxt<'tcx>, predicates: Vec<ty::Clause<'tcx>>) -> bool {
     debug!("impossible_predicates(predicates={:?})", predicates);
 
     let infcx = tcx.infer_ctxt().build();

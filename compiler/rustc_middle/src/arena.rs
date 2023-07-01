@@ -27,6 +27,11 @@ macro_rules! arena_types {
                     rustc_middle::mir::Promoted,
                     rustc_middle::mir::Body<'tcx>
                 >,
+            [decode] closure_debuginfo:
+                rustc_index::IndexVec<
+                    rustc_target::abi::FieldIdx,
+                    rustc_span::symbol::Symbol,
+                >,
             [decode] typeck_results: rustc_middle::ty::TypeckResults<'tcx>,
             [decode] borrowck_result:
                 rustc_middle::mir::BorrowCheckResult<'tcx>,
@@ -78,9 +83,9 @@ macro_rules! arena_types {
                 rustc_middle::infer::canonical::Canonical<'tcx,
                     rustc_middle::infer::canonical::QueryResponse<'tcx, rustc_middle::ty::FnSig<'tcx>>
                 >,
-            [] type_op_normalize_predicate:
+            [] type_op_normalize_clause:
                 rustc_middle::infer::canonical::Canonical<'tcx,
-                    rustc_middle::infer::canonical::QueryResponse<'tcx, rustc_middle::ty::Predicate<'tcx>>
+                    rustc_middle::infer::canonical::QueryResponse<'tcx, rustc_middle::ty::Clause<'tcx>>
                 >,
             [] type_op_normalize_ty:
                 rustc_middle::infer::canonical::Canonical<'tcx,

@@ -147,13 +147,6 @@ x--expand-yaml-anchors--remove:
         run: src/ci/scripts/verify-channel.sh
         <<: *step
 
-      - name: configure GitHub Actions to kill the build when outdated
-        uses: rust-lang/simpleinfra/github-actions/cancel-outdated-builds@master
-        with:
-          github_token: "${{ secrets.github_token }}"
-        if: success() && !env.SKIP_JOB && github.ref != 'refs/heads/try' && github.ref != 'refs/heads/try-perf'
-        <<: *step
-
       - name: collect CPU statistics
         run: src/ci/scripts/collect-cpu-stats.sh
         <<: *step
@@ -305,10 +298,15 @@ defaults:
     # shell is PowerShell.)
     shell: bash
 
+concurrency:
+  # For a given workflow, if we push to the same branch, cancel all previous builds on that branch.
+  # We add an exception for try builds (try branch) and unrolled rollup builds (try-perf), which
+  # are all triggered on the same branch, but which should be able to run concurrently.
+  group: ${{ ((github.ref == 'refs/heads/try' || github.ref == 'refs/heads/try-perf') && github.sha) || github.ref }}
+  cancel-in-progress: true
+
 jobs:
   pr:
-    permissions:
-      actions: write # for rust-lang/simpleinfra/github-actions/cancel-outdated-builds
     <<: *base-ci-job
     name: PR - ${{ matrix.name }}
     env:
@@ -331,8 +329,6 @@ jobs:
             <<: *job-linux-16c
 
   auto:
-    permissions:
-      actions: write # for rust-lang/simpleinfra/github-actions/cancel-outdated-builds
     <<: *base-ci-job
     name: auto - ${{ matrix.name }}
     env:
@@ -734,8 +730,6 @@ jobs:
             <<: *job-windows-8c
 
   try:
-    permissions:
-      actions: write # for rust-lang/simpleinfra/github-actions/cancel-outdated-builds
     <<: *base-ci-job
     name: try - ${{ matrix.name }}
     env:

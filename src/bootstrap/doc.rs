@@ -222,7 +222,7 @@ impl Step for TheBook {
         let shared_assets = builder.ensure(SharedAssets { target });
 
         // build the redirect pages
-        builder.info(&format!("Documenting book redirect pages ({})", target));
+        builder.msg_doc(compiler, "book redirect pages", target);
         for file in t!(fs::read_dir(builder.src.join(&relative_path).join("redirects"))) {
             let file = t!(file);
             let path = file.path();
@@ -306,7 +306,7 @@ impl Step for Standalone {
     fn run(self, builder: &Builder<'_>) {
         let target = self.target;
         let compiler = self.compiler;
-        builder.info(&format!("Documenting standalone ({})", target));
+        builder.msg_doc(compiler, "standalone", target);
         let out = builder.doc_out(target);
         t!(fs::create_dir_all(&out));
 
@@ -562,7 +562,7 @@ fn doc_std(
 
     let description =
         format!("library{} in {} format", crate_description(&requested_crates), format.as_str());
-    let _guard = builder.msg(Kind::Doc, stage, &description, compiler.host, target);
+    let _guard = builder.msg_doc(compiler, &description, target);
 
     let target_doc_dir_name = if format == DocumentationFormat::JSON { "json-doc" } else { "doc" };
     let target_dir =
@@ -751,7 +751,15 @@ impl Step for Rustc {
 }
 
 macro_rules! tool_doc {
-    ($tool: ident, $should_run: literal, $path: literal, $(rustc_tool = $rustc_tool:literal, )? $(in_tree = $in_tree:literal, )? [$($krate: literal),+ $(,)?] $(,)?) => {
+    (
+        $tool: ident,
+        $should_run: literal,
+        $path: literal,
+        $(rustc_tool = $rustc_tool:literal, )?
+        $(in_tree = $in_tree:literal, )?
+        [$($extra_arg: literal),+ $(,)?]
+        $(,)?
+    ) => {
         #[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
         pub struct $tool {
             target: TargetSelection,
@@ -804,14 +812,7 @@ macro_rules! tool_doc {
                     SourceType::Submodule
                 };
 
-                builder.info(
-                    &format!(
-                        "Documenting stage{} {} ({})",
-                        stage,
-                        stringify!($tool).to_lowercase(),
-                        target,
-                    ),
-                );
+                builder.msg_doc(compiler, stringify!($tool).to_lowercase(), target);
 
                 // Symlink compiler docs to the output directory of rustdoc documentation.
                 let out_dirs = [
@@ -839,9 +840,9 @@ macro_rules! tool_doc {
                 cargo.arg("-Zskip-rustdoc-fingerprint");
                 // Only include compiler crates, no dependencies of those, such as `libc`.
                 cargo.arg("--no-deps");
-                cargo.arg("--lib");
+
                 $(
-                    cargo.arg("-p").arg($krate);
+                    cargo.arg($extra_arg);
                 )+
 
                 cargo.rustdocflag("--document-private-items");
@@ -857,15 +858,20 @@ macro_rules! tool_doc {
     }
 }
 
-tool_doc!(Rustdoc, "rustdoc-tool", "src/tools/rustdoc", ["rustdoc", "rustdoc-json-types"],);
+tool_doc!(
+    Rustdoc,
+    "rustdoc-tool",
+    "src/tools/rustdoc",
+    ["-p", "rustdoc", "-p", "rustdoc-json-types"]
+);
 tool_doc!(
     Rustfmt,
     "rustfmt-nightly",
     "src/tools/rustfmt",
-    ["rustfmt-nightly", "rustfmt-config_proc_macro"],
+    ["-p", "rustfmt-nightly", "-p", "rustfmt-config_proc_macro"],
 );
-tool_doc!(Clippy, "clippy", "src/tools/clippy", ["clippy_utils"]);
-tool_doc!(Miri, "miri", "src/tools/miri", ["miri"]);
+tool_doc!(Clippy, "clippy", "src/tools/clippy", ["-p", "clippy_utils"]);
+tool_doc!(Miri, "miri", "src/tools/miri", ["-p", "miri"]);
 tool_doc!(
     Cargo,
     "cargo",
@@ -873,25 +879,44 @@ tool_doc!(
     rustc_tool = false,
     in_tree = false,
     [
+        "-p",
         "cargo",
+        "-p",
         "cargo-platform",
+        "-p",
         "cargo-util",
+        "-p",
         "crates-io",
+        "-p",
         "cargo-test-macro",
+        "-p",
         "cargo-test-support",
+        "-p",
         "cargo-credential",
+        "-p",
         "cargo-credential-1password",
+        "-p",
         "mdman",
         // FIXME: this trips a license check in tidy.
+        // "-p",
         // "resolver-tests",
         // FIXME: we should probably document these, but they're different per-platform so we can't use `tool_doc`.
+        // "-p",
         // "cargo-credential-gnome-secret",
+        // "-p",
         // "cargo-credential-macos-keychain",
+        // "-p",
         // "cargo-credential-wincred",
     ]
 );
-tool_doc!(Tidy, "tidy", "src/tools/tidy", rustc_tool = false, ["tidy"]);
-tool_doc!(Bootstrap, "bootstrap", "src/bootstrap", rustc_tool = false, ["bootstrap"]);
+tool_doc!(Tidy, "tidy", "src/tools/tidy", rustc_tool = false, ["-p", "tidy"]);
+tool_doc!(
+    Bootstrap,
+    "bootstrap",
+    "src/bootstrap",
+    rustc_tool = false,
+    ["--lib", "-p", "bootstrap"]
+);
 
 #[derive(Ord, PartialOrd, Debug, Copy, Clone, Hash, PartialEq, Eq)]
 pub struct ErrorIndex {

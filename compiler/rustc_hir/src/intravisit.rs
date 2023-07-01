@@ -502,7 +502,7 @@ pub fn walk_item<'v, V: Visitor<'v>>(visitor: &mut V, item: &'v Item<'v>) {
             visitor.visit_ty(ty);
             visitor.visit_generics(generics)
         }
-        ItemKind::OpaqueTy(OpaqueTy { ref generics, bounds, .. }) => {
+        ItemKind::OpaqueTy(&OpaqueTy { generics, bounds, .. }) => {
             visitor.visit_id(item.hir_id());
             walk_generics(visitor, generics);
             walk_list!(visitor, visit_param_bound, bounds);
@@ -791,6 +791,7 @@ pub fn walk_expr<'v, V: Visitor<'v>>(visitor: &mut V, expression: &'v Expr<'v>) 
         ExprKind::Ret(ref optional_expression) => {
             walk_list!(visitor, visit_expr, optional_expression);
         }
+        ExprKind::Become(ref expr) => visitor.visit_expr(expr),
         ExprKind::InlineAsm(ref asm) => {
             visitor.visit_inline_asm(asm, expression.hir_id);
         }

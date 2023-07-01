@@ -25,10 +25,10 @@ use crate::traits::solve::{
     ExternalConstraints, ExternalConstraintsData, PredefinedOpaques, PredefinedOpaquesData,
 };
 use crate::ty::{
-    self, AdtDef, AdtDefData, AdtKind, Binder, Const, ConstData, FloatTy, FloatVar, FloatVid,
-    GenericParamDefKind, ImplPolarity, InferTy, IntTy, IntVar, IntVid, List, ParamConst, ParamTy,
-    PolyExistentialPredicate, PolyFnSig, Predicate, PredicateKind, Region, RegionKind, ReprOptions,
-    TraitObjectVisitor, Ty, TyKind, TyVar, TyVid, TypeAndMut, UintTy, Visibility,
+    self, AdtDef, AdtDefData, AdtKind, Binder, Clause, Const, ConstData, FloatTy, FloatVar,
+    FloatVid, GenericParamDefKind, ImplPolarity, InferTy, IntTy, IntVar, IntVid, List, ParamConst,
+    ParamTy, PolyExistentialPredicate, PolyFnSig, Predicate, PredicateKind, Region, RegionKind,
+    ReprOptions, TraitObjectVisitor, Ty, TyKind, TyVar, TyVid, TypeAndMut, UintTy, Visibility,
 };
 use crate::ty::{GenericArg, InternalSubsts, SubstsRef};
 use rustc_ast::{self as ast, attr};
@@ -141,7 +141,7 @@ pub struct CtxtInterners<'tcx> {
     region: InternedSet<'tcx, RegionKind<'tcx>>,
     poly_existential_predicates: InternedSet<'tcx, List<PolyExistentialPredicate<'tcx>>>,
     predicate: InternedSet<'tcx, WithCachedTypeInfo<ty::Binder<'tcx, PredicateKind<'tcx>>>>,
-    predicates: InternedSet<'tcx, List<Predicate<'tcx>>>,
+    clauses: InternedSet<'tcx, List<Clause<'tcx>>>,
     projs: InternedSet<'tcx, List<ProjectionKind>>,
     place_elems: InternedSet<'tcx, List<PlaceElem<'tcx>>>,
     const_: InternedSet<'tcx, ConstData<'tcx>>,
@@ -166,7 +166,7 @@ impl<'tcx> CtxtInterners<'tcx> {
             poly_existential_predicates: Default::default(),
             canonical_var_infos: Default::default(),
             predicate: Default::default(),
-            predicates: Default::default(),
+            clauses: Default::default(),
             projs: Default::default(),
             place_elems: Default::default(),
             const_: Default::default(),
@@ -1189,6 +1189,12 @@ impl<'tcx> TyCtxt<'tcx> {
     pub fn local_visibility(self, def_id: LocalDefId) -> Visibility {
         self.visibility(def_id).expect_local()
     }
+
+    /// Returns the origin of the opaque type `def_id`.
+    #[instrument(skip(self), level = "trace", ret)]
+    pub fn opaque_type_origin(self, def_id: LocalDefId) -> hir::OpaqueTyOrigin {
+        self.hir().expect_item(def_id).expect_opaque_ty().origin
+    }
 }
 
 /// A trait implemented for all `X<'a>` types that can be safely and
@@ -1251,10 +1257,11 @@ nop_lift! {region; Region<'a> => Region<'tcx>}
 nop_lift! {const_; Const<'a> => Const<'tcx>}
 nop_lift! {const_allocation; ConstAllocation<'a> => ConstAllocation<'tcx>}
 nop_lift! {predicate; Predicate<'a> => Predicate<'tcx>}
+nop_lift! {predicate; Clause<'a> => Clause<'tcx>}
 
 nop_list_lift! {type_lists; Ty<'a> => Ty<'tcx>}
 nop_list_lift! {poly_existential_predicates; PolyExistentialPredicate<'a> => PolyExistentialPredicate<'tcx>}
-nop_list_lift! {predicates; Predicate<'a> => Predicate<'tcx>}
+nop_list_lift! {clauses; Clause<'a> => Clause<'tcx>}
 nop_list_lift! {canonical_var_infos; CanonicalVarInfo<'a> => CanonicalVarInfo<'tcx>}
 nop_list_lift! {projs; ProjectionKind => ProjectionKind}
 nop_list_lift! {bound_variable_kinds; ty::BoundVariableKind => ty::BoundVariableKind}
@@ -1532,7 +1539,7 @@ slice_interners!(
     type_lists: pub mk_type_list(Ty<'tcx>),
     canonical_var_infos: pub mk_canonical_var_infos(CanonicalVarInfo<'tcx>),
     poly_existential_predicates: intern_poly_existential_predicates(PolyExistentialPredicate<'tcx>),
-    predicates: intern_predicates(Predicate<'tcx>),
+    clauses: intern_clauses(Clause<'tcx>),
     projs: pub mk_projs(ProjectionKind),
     place_elems: pub mk_place_elems(PlaceElem<'tcx>),
     bound_variable_kinds: pub mk_bound_variable_kinds(ty::BoundVariableKind),
@@ -1564,7 +1571,7 @@ impl<'tcx> TyCtxt<'tcx> {
         let future_trait = self.require_lang_item(LangItem::Future, None);
 
         self.explicit_item_bounds(def_id).skip_binder().iter().any(|&(predicate, _)| {
-            let ty::PredicateKind::Clause(ty::Clause::Trait(trait_predicate)) = predicate.kind().skip_binder() else {
+            let ty::ClauseKind::Trait(trait_predicate) = predicate.kind().skip_binder() else {
                 return false;
             };
             trait_predicate.trait_ref.def_id == future_trait
@@ -1587,9 +1594,7 @@ impl<'tcx> TyCtxt<'tcx> {
             let generic_predicates = self.super_predicates_of(trait_did);
 
             for (predicate, _) in generic_predicates.predicates {
-                if let ty::PredicateKind::Clause(ty::Clause::Trait(data)) =
-                    predicate.kind().skip_binder()
-                {
+                if let ty::ClauseKind::Trait(data) = predicate.kind().skip_binder() {
                     if set.insert(data.def_id()) {
                         stack.push(data.def_id());
                     }
@@ -2077,11 +2082,11 @@ impl<'tcx> TyCtxt<'tcx> {
         self.intern_poly_existential_predicates(eps)
     }
 
-    pub fn mk_predicates(self, preds: &[Predicate<'tcx>]) -> &'tcx List<Predicate<'tcx>> {
+    pub fn mk_clauses(self, clauses: &[Clause<'tcx>]) -> &'tcx List<Clause<'tcx>> {
         // FIXME consider asking the input slice to be sorted to avoid
         // re-interning permutations, in which case that would be asserted
         // here.
-        self.intern_predicates(preds)
+        self.intern_clauses(clauses)
     }
 
     pub fn mk_const_list_from_iter<I, T>(self, iter: I) -> T::Output
@@ -2127,12 +2132,12 @@ impl<'tcx> TyCtxt<'tcx> {
         T::collect_and_apply(iter, |xs| self.mk_poly_existential_predicates(xs))
     }
 
-    pub fn mk_predicates_from_iter<I, T>(self, iter: I) -> T::Output
+    pub fn mk_clauses_from_iter<I, T>(self, iter: I) -> T::Output
     where
         I: Iterator<Item = T>,
-        T: CollectAndApply<Predicate<'tcx>, &'tcx List<Predicate<'tcx>>>,
+        T: CollectAndApply<Clause<'tcx>, &'tcx List<Clause<'tcx>>>,
     {
-        T::collect_and_apply(iter, |xs| self.mk_predicates(xs))
+        T::collect_and_apply(iter, |xs| self.mk_clauses(xs))
     }
 
     pub fn mk_type_list_from_iter<I, T>(self, iter: I) -> T::Output

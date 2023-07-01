@@ -694,7 +694,8 @@ impl<'tcx> Cx<'tcx> {
 
                 ExprKind::Repeat { value: self.mirror_expr(v), count: *count }
             }
-            hir::ExprKind::Ret(ref v) => ExprKind::Return { value: v.map(|v| self.mirror_expr(v)) },
+            hir::ExprKind::Ret(v) => ExprKind::Return { value: v.map(|v| self.mirror_expr(v)) },
+            hir::ExprKind::Become(call) => ExprKind::Become { value: self.mirror_expr(call) },
             hir::ExprKind::Break(dest, ref value) => match dest.target_id {
                 Ok(target_id) => ExprKind::Break {
                     label: region::Scope { id: target_id.local_id, data: region::ScopeData::Node },
@@ -1095,8 +1096,12 @@ impl<'tcx> Cx<'tcx> {
             ty::UpvarCapture::ByRef(upvar_borrow) => {
                 let borrow_kind = match upvar_borrow {
                     ty::BorrowKind::ImmBorrow => BorrowKind::Shared,
-                    ty::BorrowKind::UniqueImmBorrow => BorrowKind::Unique,
-                    ty::BorrowKind::MutBorrow => BorrowKind::Mut { allow_two_phase_borrow: false },
+                    ty::BorrowKind::UniqueImmBorrow => {
+                        BorrowKind::Mut { kind: mir::MutBorrowKind::ClosureCapture }
+                    }
+                    ty::BorrowKind::MutBorrow => {
+                        BorrowKind::Mut { kind: mir::MutBorrowKind::Default }
+                    }
                 };
                 Expr {
                     temp_lifetime,
@@ -1132,9 +1137,9 @@ impl ToBorrowKind for AutoBorrowMutability {
         use rustc_middle::ty::adjustment::AllowTwoPhase;
         match *self {
             AutoBorrowMutability::Mut { allow_two_phase_borrow } => BorrowKind::Mut {
-                allow_two_phase_borrow: match allow_two_phase_borrow {
-                    AllowTwoPhase::Yes => true,
-                    AllowTwoPhase::No => false,
+                kind: match allow_two_phase_borrow {
+                    AllowTwoPhase::Yes => mir::MutBorrowKind::TwoPhaseBorrow,
+                    AllowTwoPhase::No => mir::MutBorrowKind::Default,
                 },
             },
             AutoBorrowMutability::Not => BorrowKind::Shared,
@@ -1145,7 +1150,7 @@ impl ToBorrowKind for AutoBorrowMutability {
 impl ToBorrowKind for hir::Mutability {
     fn to_borrow_kind(&self) -> BorrowKind {
         match *self {
-            hir::Mutability::Mut => BorrowKind::Mut { allow_two_phase_borrow: false },
+            hir::Mutability::Mut => BorrowKind::Mut { kind: mir::MutBorrowKind::Default },
             hir::Mutability::Not => BorrowKind::Shared,
         }
     }

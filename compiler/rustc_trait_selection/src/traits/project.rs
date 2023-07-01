@@ -1,5 +1,6 @@
 //! Code for projecting associated types out of trait references.
 
+use super::check_substs_compatible;
 use super::specialization_graph;
 use super::translate_substs;
 use super::util;
@@ -499,10 +500,7 @@ impl<'a, 'b, 'tcx> TypeFolder<TyCtxt<'tcx>> for AssocTypeNormalizer<'a, 'b, 'tcx
         // to make sure we don't forget to fold the substs regardless.
 
         match kind {
-            // This is really important. While we *can* handle this, this has
-            // severe performance implications for large opaque types with
-            // late-bound regions. See `issue-88862` benchmark.
-            ty::Opaque if !data.substs.has_escaping_bound_vars() => {
+            ty::Opaque => {
                 // Only normalize `impl Trait` outside of type inference, usually in codegen.
                 match self.param_env.reveal() {
                     Reveal::UserFacing => ty.super_fold_with(self),
@@ -528,7 +526,6 @@ impl<'a, 'b, 'tcx> TypeFolder<TyCtxt<'tcx>> for AssocTypeNormalizer<'a, 'b, 'tcx
                     }
                 }
             }
-            ty::Opaque => ty.super_fold_with(self),
 
             ty::Projection if !data.has_escaping_bound_vars() => {
                 // This branch is *mostly* just an optimization: when we don't
@@ -1647,15 +1644,13 @@ fn assemble_candidates_from_predicates<'cx, 'tcx>(
     obligation: &ProjectionTyObligation<'tcx>,
     candidate_set: &mut ProjectionCandidateSet<'tcx>,
     ctor: fn(ty::PolyProjectionPredicate<'tcx>) -> ProjectionCandidate<'tcx>,
-    env_predicates: impl Iterator<Item = ty::Predicate<'tcx>>,
+    env_predicates: impl Iterator<Item = ty::Clause<'tcx>>,
     potentially_unnormalized_candidates: bool,
 ) {
     let infcx = selcx.infcx;
     for predicate in env_predicates {
         let bound_predicate = predicate.kind();
-        if let ty::PredicateKind::Clause(ty::Clause::Projection(data)) =
-            predicate.kind().skip_binder()
-        {
+        if let ty::ClauseKind::Projection(data) = predicate.kind().skip_binder() {
             let data = bound_predicate.rebind(data);
             if data.projection_def_id() != obligation.predicate.def_id {
                 continue;
@@ -1721,7 +1716,6 @@ fn assemble_candidates_from_impls<'cx, 'tcx>(
         };
 
         let eligible = match &impl_source {
-            super::ImplSource::TraitAlias(_) => true,
             super::ImplSource::UserDefined(impl_data) => {
                 // We have to be careful when projecting out of an
                 // impl because of specialization. If we are not in
@@ -2013,8 +2007,7 @@ fn confirm_select_candidate<'cx, 'tcx>(
         }
         super::ImplSource::Object(_)
         | super::ImplSource::Param(..)
-        | super::ImplSource::TraitUpcasting(_)
-        | super::ImplSource::TraitAlias(..) => {
+        | super::ImplSource::TraitUpcasting(_) => {
             // we don't create Select candidates with this kind of resolution
             span_bug!(
                 obligation.cause.span,
@@ -2376,47 +2369,6 @@ fn confirm_impl_candidate<'cx, 'tcx>(
         assoc_ty_own_obligations(selcx, obligation, &mut nested);
         Progress { term: term.subst(tcx, substs), obligations: nested }
     }
-}
-
-// Verify that the trait item and its implementation have compatible substs lists
-fn check_substs_compatible<'tcx>(
-    tcx: TyCtxt<'tcx>,
-    assoc_item: ty::AssocItem,
-    substs: ty::SubstsRef<'tcx>,
-) -> bool {
-    fn check_substs_compatible_inner<'tcx>(
-        tcx: TyCtxt<'tcx>,
-        generics: &'tcx ty::Generics,
-        args: &'tcx [ty::GenericArg<'tcx>],
-    ) -> bool {
-        if generics.count() != args.len() {
-            return false;
-        }
-
-        let (parent_args, own_args) = args.split_at(generics.parent_count);
-
-        if let Some(parent) = generics.parent
-            && let parent_generics = tcx.generics_of(parent)
-            && !check_substs_compatible_inner(tcx, parent_generics, parent_args) {
-            return false;
-        }
-
-        for (param, arg) in std::iter::zip(&generics.params, own_args) {
-            match (&param.kind, arg.unpack()) {
-                (ty::GenericParamDefKind::Type { .. }, ty::GenericArgKind::Type(_))
-                | (ty::GenericParamDefKind::Lifetime, ty::GenericArgKind::Lifetime(_))
-                | (ty::GenericParamDefKind::Const { .. }, ty::GenericArgKind::Const(_)) => {}
-                _ => return false,
-            }
-        }
-
-        true
-    }
-
-    let generics = tcx.generics_of(assoc_item.def_id);
-    // Chop off any additional substs (RPITIT) substs
-    let substs = &substs[0..generics.count().min(substs.len())];
-    check_substs_compatible_inner(tcx, generics, substs)
 }
 
 fn confirm_impl_trait_in_trait_candidate<'tcx>(

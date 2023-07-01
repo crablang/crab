@@ -67,7 +67,7 @@ impl<'tcx> InferCtxtExt<'tcx> for InferCtxt<'tcx> {
         let mut _orig_values = OriginalQueryValues::default();
 
         let param_env = match obligation.predicate.kind().skip_binder() {
-            ty::PredicateKind::Clause(ty::Clause::Trait(pred)) => {
+            ty::PredicateKind::Clause(ty::ClauseKind::Trait(pred)) => {
                 // we ignore the value set to it.
                 let mut _constness = pred.constness;
                 obligation
@@ -80,7 +80,7 @@ impl<'tcx> InferCtxtExt<'tcx> for InferCtxt<'tcx> {
 
         if self.next_trait_solver() {
             self.probe(|snapshot| {
-                let mut fulfill_cx = crate::solve::FulfillmentCtxt::new();
+                let mut fulfill_cx = crate::solve::FulfillmentCtxt::new(self);
                 fulfill_cx.register_predicate_obligation(self, obligation.clone());
                 // True errors
                 // FIXME(-Ztrait-solver=next): Overflows are reported as ambig here, is that OK?

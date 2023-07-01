@@ -18,7 +18,7 @@ panic_unwind = { path = "../panic_unwind", optional = true }
 panic_abort = { path = "../panic_abort" }
 core = { path = "../core", public = true }
 libc = { version = "0.2.146", default-features = false, features = ['rustc-dep-of-std'], public = true }
-compiler_builtins = { version = "0.1.92" }
+compiler_builtins = { version = "0.1.93" }
 profiler_builtins = { path = "../profiler_builtins", optional = true }
 unwind = { path = "../unwind" }
 hashbrown = { version = "0.14", default-features = false, features = ['rustc-dep-of-std'] }
@@ -65,6 +65,7 @@ compiler-builtins-c = ["alloc/compiler-builtins-c"]
 compiler-builtins-mem = ["alloc/compiler-builtins-mem"]
 compiler-builtins-no-asm = ["alloc/compiler-builtins-no-asm"]
 compiler-builtins-mangled-names = ["alloc/compiler-builtins-mangled-names"]
+compiler-builtins-weak-intrinsics = ["alloc/compiler-builtins-weak-intrinsics"]
 llvm-libunwind = ["unwind/llvm-libunwind"]
 system-llvm-libunwind = ["unwind/system-llvm-libunwind"]
 

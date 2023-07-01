@@ -393,8 +393,9 @@ impl<'a, 'tcx> FnCtxt<'a, 'tcx> {
         // They can denote both statically and dynamically-sized byte arrays.
         let mut pat_ty = ty;
         if let hir::ExprKind::Lit(Spanned { node: ast::LitKind::ByteStr(..), .. }) = lt.kind {
-            if let ty::Ref(_, inner_ty, _) = *self.structurally_resolved_type(span, expected).kind()
-                && self.structurally_resolved_type(span, inner_ty).is_slice()
+            let expected = self.structurally_resolved_type(span, expected);
+            if let ty::Ref(_, inner_ty, _) = expected.kind()
+                && matches!(inner_ty.kind(), ty::Slice(_))
             {
                 let tcx = self.tcx;
                 trace!(?lt.hir_id.local_id, "polymorphic byte string lit");
@@ -593,7 +594,7 @@ impl<'a, 'tcx> FnCtxt<'a, 'tcx> {
 
         debug!("check_pat_ident: pat.hir_id={:?} bm={:?}", pat.hir_id, bm);
 
-        let local_ty = self.local_ty(pat.span, pat.hir_id).decl_ty;
+        let local_ty = self.local_ty(pat.span, pat.hir_id);
         let eq_ty = match bm {
             ty::BindByReference(mutbl) => {
                 // If the binding is like `ref x | ref mut x`,
@@ -634,7 +635,7 @@ impl<'a, 'tcx> FnCtxt<'a, 'tcx> {
         ty: Ty<'tcx>,
         ti: TopInfo<'tcx>,
     ) {
-        let var_ty = self.local_ty(span, var_id).decl_ty;
+        let var_ty = self.local_ty(span, var_id);
         if let Some(mut err) = self.demand_eqtype_pat_diag(span, var_ty, ty, ti) {
             let hir = self.tcx.hir();
             let var_ty = self.resolve_vars_with_obligations(var_ty);

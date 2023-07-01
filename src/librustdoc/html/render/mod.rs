@@ -421,11 +421,10 @@ fn document<'a, 'cx: 'a>(
     display_fn(move |f| {
         document_item_info(cx, item, parent).render_into(f).unwrap();
         if parent.is_none() {
-            write!(f, "{}", document_full_collapsible(item, cx, heading_offset))?;
+            write!(f, "{}", document_full_collapsible(item, cx, heading_offset))
         } else {
-            write!(f, "{}", document_full(item, cx, heading_offset))?;
+            write!(f, "{}", document_full(item, cx, heading_offset))
         }
-        Ok(())
     })
 }
 
@@ -800,10 +799,11 @@ fn assoc_type(
     if !bounds.is_empty() {
         write!(w, ": {}", print_generic_bounds(bounds, cx))
     }
-    write!(w, "{}", print_where_clause(generics, cx, indent, Ending::NoNewline));
+    // Render the default before the where-clause which aligns with the new recommended style. See #89122.
     if let Some(default) = default {
         write!(w, " = {}", default.print(cx))
     }
+    write!(w, "{}", print_where_clause(generics, cx, indent, Ending::NoNewline));
 }
 
 fn assoc_method(
@@ -860,8 +860,8 @@ fn assoc_method(
     w.reserve(header_len + "<a href=\"\" class=\"fn\">{".len() + "</a>".len());
     write!(
         w,
-        "{indent}{vis}{constness}{asyncness}{unsafety}{defaultness}{abi}fn <a{href} class=\"fn\">{name}</a>\
-         {generics}{decl}{notable_traits}{where_clause}",
+        "{indent}{vis}{constness}{asyncness}{unsafety}{defaultness}{abi}fn \
+         <a{href} class=\"fn\">{name}</a>{generics}{decl}{notable_traits}{where_clause}",
         indent = indent_str,
         vis = vis,
         constness = constness,

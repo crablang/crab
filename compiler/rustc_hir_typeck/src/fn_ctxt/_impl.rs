@@ -2,7 +2,7 @@ use crate::callee::{self, DeferredCallResolution};
 use crate::errors::CtorIsPrivate;
 use crate::method::{self, MethodCallee, SelfSource};
 use crate::rvalue_scopes;
-use crate::{BreakableCtxt, Diverges, Expectation, FnCtxt, LocalTy, RawTy};
+use crate::{BreakableCtxt, Diverges, Expectation, FnCtxt, RawTy};
 use rustc_data_structures::captures::Captures;
 use rustc_data_structures::fx::FxHashSet;
 use rustc_errors::{Applicability, Diagnostic, ErrorGuaranteed, MultiSpan, StashKey};
@@ -135,7 +135,7 @@ impl<'a, 'tcx> FnCtxt<'a, 'tcx> {
         format!("{:p}", self)
     }
 
-    pub fn local_ty(&self, span: Span, nid: hir::HirId) -> LocalTy<'tcx> {
+    pub fn local_ty(&self, span: Span, nid: hir::HirId) -> Ty<'tcx> {
         self.locals.borrow().get(&nid).cloned().unwrap_or_else(|| {
             span_bug!(span, "no type for local variable {}", self.tcx.hir().node_to_string(nid))
         })
@@ -483,7 +483,7 @@ impl<'a, 'tcx> FnCtxt<'a, 'tcx> {
             self.tcx,
             cause,
             self.param_env,
-            ty::Binder::dummy(ty::PredicateKind::Clause(ty::Clause::WellFormed(arg))),
+            ty::Binder::dummy(ty::PredicateKind::Clause(ty::ClauseKind::WellFormed(arg))),
         ));
     }
 
@@ -647,7 +647,7 @@ impl<'a, 'tcx> FnCtxt<'a, 'tcx> {
 
         self.fulfillment_cx.borrow().pending_obligations().into_iter().filter_map(
             move |obligation| match &obligation.predicate.kind().skip_binder() {
-                ty::PredicateKind::Clause(ty::Clause::Projection(data))
+                ty::PredicateKind::Clause(ty::ClauseKind::Projection(data))
                     if self.self_type_matches_expected_vid(
                         data.projection_ty.self_ty(),
                         ty_var_root,
@@ -655,23 +655,23 @@ impl<'a, 'tcx> FnCtxt<'a, 'tcx> {
                 {
                     Some(obligation)
                 }
-                ty::PredicateKind::Clause(ty::Clause::Trait(data))
+                ty::PredicateKind::Clause(ty::ClauseKind::Trait(data))
                     if self.self_type_matches_expected_vid(data.self_ty(), ty_var_root) =>
                 {
                     Some(obligation)
                 }
 
-                ty::PredicateKind::Clause(ty::Clause::Trait(..))
-                | ty::PredicateKind::Clause(ty::Clause::Projection(..))
-                | ty::PredicateKind::Clause(ty::Clause::ConstArgHasType(..))
+                ty::PredicateKind::Clause(ty::ClauseKind::Trait(..))
+                | ty::PredicateKind::Clause(ty::ClauseKind::Projection(..))
+                | ty::PredicateKind::Clause(ty::ClauseKind::ConstArgHasType(..))
                 | ty::PredicateKind::Subtype(..)
                 | ty::PredicateKind::Coerce(..)
-                | ty::PredicateKind::Clause(ty::Clause::RegionOutlives(..))
-                | ty::PredicateKind::Clause(ty::Clause::TypeOutlives(..))
-                | ty::PredicateKind::Clause(ty::Clause::WellFormed(..))
+                | ty::PredicateKind::Clause(ty::ClauseKind::RegionOutlives(..))
+                | ty::PredicateKind::Clause(ty::ClauseKind::TypeOutlives(..))
+                | ty::PredicateKind::Clause(ty::ClauseKind::WellFormed(..))
                 | ty::PredicateKind::ObjectSafe(..)
                 | ty::PredicateKind::AliasRelate(..)
-                | ty::PredicateKind::Clause(ty::Clause::ConstEvaluatable(..))
+                | ty::PredicateKind::Clause(ty::ClauseKind::ConstEvaluatable(..))
                 | ty::PredicateKind::ConstEquate(..)
                 // N.B., this predicate is created by breaking down a
                 // `ClosureType: FnFoo()` predicate, where
@@ -683,7 +683,7 @@ impl<'a, 'tcx> FnCtxt<'a, 'tcx> {
                 // inference variable.
                 | ty::PredicateKind::ClosureKind(..)
                 | ty::PredicateKind::Ambiguous
-                | ty::PredicateKind::TypeWellFormedFromEnv(..) => None,
+                | ty::PredicateKind::Clause(ty::ClauseKind::TypeWellFormedFromEnv(..)) => None,
             },
         )
     }
@@ -692,7 +692,7 @@ impl<'a, 'tcx> FnCtxt<'a, 'tcx> {
         let sized_did = self.tcx.lang_items().sized_trait();
         self.obligations_for_self_ty(self_ty).any(|obligation| {
             match obligation.predicate.kind().skip_binder() {
-                ty::PredicateKind::Clause(ty::Clause::Trait(data)) => {
+                ty::PredicateKind::Clause(ty::ClauseKind::Trait(data)) => {
                     Some(data.def_id()) == sized_did
                 }
                 _ => false,
@@ -746,7 +746,7 @@ impl<'a, 'tcx> FnCtxt<'a, 'tcx> {
 
         let expect_args = self
             .fudge_inference_if_ok(|| {
-                let ocx = ObligationCtxt::new_in_snapshot(self);
+                let ocx = ObligationCtxt::new(self);
 
                 // Attempt to apply a subtyping relationship between the formal
                 // return type (likely containing type variables if the function
@@ -1152,7 +1152,7 @@ impl<'a, 'tcx> FnCtxt<'a, 'tcx> {
         );
 
         if let Res::Local(hid) = res {
-            let ty = self.local_ty(span, hid).decl_ty;
+            let ty = self.local_ty(span, hid);
             let ty = self.normalize(span, ty);
             self.write_ty(hir_id, ty);
             return (ty, res);

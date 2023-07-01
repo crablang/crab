@@ -77,11 +77,18 @@ pub fn unnormalized_obligations<'tcx>(
     param_env: ty::ParamEnv<'tcx>,
     arg: GenericArg<'tcx>,
 ) -> Option<Vec<traits::PredicateObligation<'tcx>>> {
+    debug_assert_eq!(arg, infcx.resolve_vars_if_possible(arg));
+
+    // However, if `arg` IS an unresolved inference variable, returns `None`,
+    // because we are not able to make any progress at all. This is to prevent
+    // "livelock" where we say "$0 is WF if $0 is WF".
+    if arg.is_non_region_infer() {
+        return None;
+    }
+
     if let ty::GenericArgKind::Lifetime(..) = arg.unpack() {
         return Some(vec![]);
     }
-
-    debug_assert_eq!(arg, infcx.resolve_vars_if_possible(arg));
 
     let mut wf = WfPredicates {
         infcx,
@@ -142,29 +149,32 @@ pub fn predicate_obligations<'tcx>(
 
     // It's ok to skip the binder here because wf code is prepared for it
     match predicate.kind().skip_binder() {
-        ty::PredicateKind::Clause(ty::Clause::Trait(t)) => {
+        ty::PredicateKind::Clause(ty::ClauseKind::Trait(t)) => {
             wf.compute_trait_pred(&t, Elaborate::None);
         }
-        ty::PredicateKind::Clause(ty::Clause::RegionOutlives(..)) => {}
-        ty::PredicateKind::Clause(ty::Clause::TypeOutlives(ty::OutlivesPredicate(ty, _reg))) => {
+        ty::PredicateKind::Clause(ty::ClauseKind::RegionOutlives(..)) => {}
+        ty::PredicateKind::Clause(ty::ClauseKind::TypeOutlives(ty::OutlivesPredicate(
+            ty,
+            _reg,
+        ))) => {
             wf.compute(ty.into());
         }
-        ty::PredicateKind::Clause(ty::Clause::Projection(t)) => {
+        ty::PredicateKind::Clause(ty::ClauseKind::Projection(t)) => {
             wf.compute_projection(t.projection_ty);
             wf.compute(match t.term.unpack() {
                 ty::TermKind::Ty(ty) => ty.into(),
                 ty::TermKind::Const(c) => c.into(),
             })
         }
-        ty::PredicateKind::Clause(ty::Clause::ConstArgHasType(ct, ty)) => {
+        ty::PredicateKind::Clause(ty::ClauseKind::ConstArgHasType(ct, ty)) => {
             wf.compute(ct.into());
             wf.compute(ty.into());
         }
-        ty::PredicateKind::Clause(ty::Clause::WellFormed(arg)) => {
+        ty::PredicateKind::Clause(ty::ClauseKind::WellFormed(arg)) => {
             wf.compute(arg);
         }
 
-        ty::PredicateKind::Clause(ty::Clause::ConstEvaluatable(ct)) => {
+        ty::PredicateKind::Clause(ty::ClauseKind::ConstEvaluatable(ct)) => {
             wf.compute(ct.into());
         }
 
@@ -175,7 +185,7 @@ pub fn predicate_obligations<'tcx>(
         | ty::PredicateKind::ConstEquate(..)
         | ty::PredicateKind::Ambiguous
         | ty::PredicateKind::AliasRelate(..)
-        | ty::PredicateKind::TypeWellFormedFromEnv(..) => {
+        | ty::PredicateKind::Clause(ty::ClauseKind::TypeWellFormedFromEnv(..)) => {
             bug!("We should only wf check where clauses, unexpected predicate: {predicate:?}")
         }
     }
@@ -247,7 +257,7 @@ fn extend_cause_with_original_assoc_item_obligation<'tcx>(
 
     // It is fine to skip the binder as we don't care about regions here.
     match pred.kind().skip_binder() {
-        ty::PredicateKind::Clause(ty::Clause::Projection(proj)) => {
+        ty::PredicateKind::Clause(ty::ClauseKind::Projection(proj)) => {
             // The obligation comes not from the current `impl` nor the `trait` being implemented,
             // but rather from a "second order" obligation, where an associated type has a
             // projection coming from another associated type. See
@@ -264,7 +274,7 @@ fn extend_cause_with_original_assoc_item_obligation<'tcx>(
                 cause.span = impl_item_span;
             }
         }
-        ty::PredicateKind::Clause(ty::Clause::Trait(pred)) => {
+        ty::PredicateKind::Clause(ty::ClauseKind::Trait(pred)) => {
             // An associated item obligation born out of the `trait` failed to be met. An example
             // can be seen in `ui/associated-types/point-at-type-on-obligation-failure-2.rs`.
             debug!("extended_cause_with_original_assoc_item_obligation trait proj {:?}", pred);
@@ -386,7 +396,9 @@ impl<'a, 'tcx> WfPredicates<'a, 'tcx> {
                         cause,
                         depth,
                         param_env,
-                        ty::Binder::dummy(ty::PredicateKind::Clause(ty::Clause::WellFormed(arg))),
+                        ty::Binder::dummy(ty::PredicateKind::Clause(ty::ClauseKind::WellFormed(
+                            arg,
+                        ))),
                     )
                 }),
         );
@@ -478,7 +490,9 @@ impl<'a, 'tcx> WfPredicates<'a, 'tcx> {
                         cause.clone(),
                         depth,
                         param_env,
-                        ty::Binder::dummy(ty::PredicateKind::Clause(ty::Clause::WellFormed(arg))),
+                        ty::Binder::dummy(ty::PredicateKind::Clause(ty::ClauseKind::WellFormed(
+                            arg,
+                        ))),
                     )
                 }),
         );
@@ -522,7 +536,7 @@ impl<'a, 'tcx> WfPredicates<'a, 'tcx> {
                                 self.out.extend(obligations);
 
                                 let predicate = ty::Binder::dummy(ty::PredicateKind::Clause(
-                                    ty::Clause::ConstEvaluatable(ct),
+                                    ty::ClauseKind::ConstEvaluatable(ct),
                                 ));
                                 let cause = self.cause(traits::WellFormed(None));
                                 self.out.push(traits::Obligation::with_depth(
@@ -543,7 +557,7 @@ impl<'a, 'tcx> WfPredicates<'a, 'tcx> {
                                 self.recursion_depth,
                                 self.param_env,
                                 ty::Binder::dummy(ty::PredicateKind::Clause(
-                                    ty::Clause::WellFormed(ct.into()),
+                                    ty::ClauseKind::WellFormed(ct.into()),
                                 )),
                             ));
                         }
@@ -556,7 +570,7 @@ impl<'a, 'tcx> WfPredicates<'a, 'tcx> {
                             // we would not be proving bounds we should.
 
                             let predicate = ty::Binder::dummy(ty::PredicateKind::Clause(
-                                ty::Clause::ConstEvaluatable(ct),
+                                ty::ClauseKind::ConstEvaluatable(ct),
                             ));
                             let cause = self.cause(traits::WellFormed(None));
                             self.out.push(traits::Obligation::with_depth(
@@ -658,9 +672,9 @@ impl<'a, 'tcx> WfPredicates<'a, 'tcx> {
                             cause,
                             depth,
                             param_env,
-                            ty::Binder::dummy(ty::PredicateKind::Clause(ty::Clause::TypeOutlives(
-                                ty::OutlivesPredicate(rty, r),
-                            ))),
+                            ty::Binder::dummy(ty::PredicateKind::Clause(
+                                ty::ClauseKind::TypeOutlives(ty::OutlivesPredicate(rty, r)),
+                            )),
                         ));
                     }
                 }
@@ -788,7 +802,7 @@ impl<'a, 'tcx> WfPredicates<'a, 'tcx> {
                         cause,
                         self.recursion_depth,
                         param_env,
-                        ty::Binder::dummy(ty::PredicateKind::Clause(ty::Clause::WellFormed(
+                        ty::Binder::dummy(ty::PredicateKind::Clause(ty::ClauseKind::WellFormed(
                             ty.into(),
                         ))),
                     ));
@@ -962,7 +976,7 @@ pub fn object_region_bounds<'tcx>(
 pub(crate) fn required_region_bounds<'tcx>(
     tcx: TyCtxt<'tcx>,
     erased_self_ty: Ty<'tcx>,
-    predicates: impl Iterator<Item = ty::Predicate<'tcx>>,
+    predicates: impl Iterator<Item = ty::Clause<'tcx>>,
 ) -> Vec<ty::Region<'tcx>> {
     assert!(!erased_self_ty.has_escaping_bound_vars());
 
@@ -970,24 +984,7 @@ pub(crate) fn required_region_bounds<'tcx>(
         .filter_map(|pred| {
             debug!(?pred);
             match pred.kind().skip_binder() {
-                ty::PredicateKind::Clause(ty::Clause::Projection(..))
-                | ty::PredicateKind::Clause(ty::Clause::Trait(..))
-                | ty::PredicateKind::Clause(ty::Clause::ConstArgHasType(..))
-                | ty::PredicateKind::Subtype(..)
-                | ty::PredicateKind::Coerce(..)
-                | ty::PredicateKind::Clause(ty::Clause::WellFormed(..))
-                | ty::PredicateKind::ObjectSafe(..)
-                | ty::PredicateKind::ClosureKind(..)
-                | ty::PredicateKind::Clause(ty::Clause::RegionOutlives(..))
-                | ty::PredicateKind::Clause(ty::Clause::ConstEvaluatable(..))
-                | ty::PredicateKind::ConstEquate(..)
-                | ty::PredicateKind::Ambiguous
-                | ty::PredicateKind::AliasRelate(..)
-                | ty::PredicateKind::TypeWellFormedFromEnv(..) => None,
-                ty::PredicateKind::Clause(ty::Clause::TypeOutlives(ty::OutlivesPredicate(
-                    ref t,
-                    ref r,
-                ))) => {
+                ty::ClauseKind::TypeOutlives(ty::OutlivesPredicate(ref t, ref r)) => {
                     // Search for a bound of the form `erased_self_ty
                     // : 'a`, but be wary of something like `for<'a>
                     // erased_self_ty : 'a` (we interpret a
@@ -1003,6 +1000,13 @@ pub(crate) fn required_region_bounds<'tcx>(
                         None
                     }
                 }
+                ty::ClauseKind::Trait(_)
+                | ty::ClauseKind::RegionOutlives(_)
+                | ty::ClauseKind::Projection(_)
+                | ty::ClauseKind::ConstArgHasType(_, _)
+                | ty::ClauseKind::WellFormed(_)
+                | ty::ClauseKind::ConstEvaluatable(_)
+                | ty::ClauseKind::TypeWellFormedFromEnv(_) => None,
             }
         })
         .collect()
