@@ -16,7 +16,7 @@ use rustc_middle::mir::*;
 use rustc_middle::thir::*;
 use rustc_middle::ty::util::IntTypeExt;
 use rustc_middle::ty::GenericArg;
-use rustc_middle::ty::{self, adjustment::PointerCast, Ty, TyCtxt};
+use rustc_middle::ty::{self, adjustment::PointerCoercion, Ty, TyCtxt};
 use rustc_span::def_id::DefId;
 use rustc_span::symbol::{sym, Symbol};
 use rustc_span::Span;
@@ -244,8 +244,8 @@ impl<'a, 'tcx> Builder<'a, 'tcx> {
                         bug!("matching on `String` went through without enabling string_deref_patterns");
                     }
                     let re_erased = tcx.lifetimes.re_erased;
-                    let ref_string = self.temp(tcx.mk_imm_ref(re_erased, ty), test.span);
-                    let ref_str_ty = tcx.mk_imm_ref(re_erased, tcx.types.str_);
+                    let ref_string = self.temp(Ty::new_imm_ref(tcx,re_erased, ty), test.span);
+                    let ref_str_ty = Ty::new_imm_ref(tcx,re_erased, tcx.types.str_);
                     let ref_str = self.temp(ref_str_ty, test.span);
                     let deref = tcx.require_lang_item(LangItem::Deref, None);
                     let method = trait_method(tcx, deref, sym::deref, [ty]);
@@ -415,7 +415,7 @@ impl<'a, 'tcx> Builder<'a, 'tcx> {
             (Some((region, elem_ty, _)), _) | (None, Some((region, elem_ty, _))) => {
                 let tcx = self.tcx;
                 // make both a slice
-                ty = tcx.mk_imm_ref(*region, tcx.mk_slice(*elem_ty));
+                ty = Ty::new_imm_ref(tcx, *region, Ty::new_slice(tcx, *elem_ty));
                 if opt_ref_ty.is_some() {
                     let temp = self.temp(ty, source_info.span);
                     self.cfg.push_assign(
@@ -423,7 +423,7 @@ impl<'a, 'tcx> Builder<'a, 'tcx> {
                         source_info,
                         temp,
                         Rvalue::Cast(
-                            CastKind::Pointer(PointerCast::Unsize),
+                            CastKind::PointerCoercion(PointerCoercion::Unsize),
                             Operand::Copy(val),
                             ty,
                         ),
@@ -436,7 +436,11 @@ impl<'a, 'tcx> Builder<'a, 'tcx> {
                         block,
                         source_info,
                         slice,
-                        Rvalue::Cast(CastKind::Pointer(PointerCast::Unsize), expect, ty),
+                        Rvalue::Cast(
+                            CastKind::PointerCoercion(PointerCoercion::Unsize),
+                            expect,
+                            ty,
+                        ),
                     );
                     expect = Operand::Move(slice);
                 }
@@ -449,7 +453,7 @@ impl<'a, 'tcx> Builder<'a, 'tcx> {
                 // non_scalar_compare called on non-reference type
                 let temp = self.temp(ty, source_info.span);
                 self.cfg.push_assign(block, source_info, temp, Rvalue::Use(expect));
-                let ref_ty = self.tcx.mk_imm_ref(self.tcx.lifetimes.re_erased, ty);
+                let ref_ty = Ty::new_imm_ref(self.tcx, self.tcx.lifetimes.re_erased, ty);
                 let ref_temp = self.temp(ref_ty, source_info.span);
 
                 self.cfg.push_assign(
@@ -871,7 +875,7 @@ fn trait_method<'tcx>(
         .find(|item| item.kind == ty::AssocKind::Fn)
         .expect("trait method not found");
 
-    let method_ty = tcx.mk_fn_def(item.def_id, substs);
+    let method_ty = Ty::new_fn_def(tcx, item.def_id, substs);
 
     ConstantKind::zero_sized(method_ty)
 }

@@ -13,7 +13,7 @@ use rustc_middle::middle::region;
 use rustc_middle::mir::{self, BinOp, BorrowKind, UnOp};
 use rustc_middle::thir::*;
 use rustc_middle::ty::adjustment::{
-    Adjust, Adjustment, AutoBorrow, AutoBorrowMutability, PointerCast,
+    Adjust, Adjustment, AutoBorrow, AutoBorrowMutability, PointerCoercion,
 };
 use rustc_middle::ty::subst::InternalSubsts;
 use rustc_middle::ty::{
@@ -125,11 +125,16 @@ impl<'tcx> Cx<'tcx> {
         };
 
         let kind = match adjustment.kind {
-            Adjust::Pointer(PointerCast::Unsize) => {
+            Adjust::Pointer(PointerCoercion::Unsize) => {
                 adjust_span(&mut expr);
-                ExprKind::Pointer { cast: PointerCast::Unsize, source: self.thir.exprs.push(expr) }
+                ExprKind::PointerCoercion {
+                    cast: PointerCoercion::Unsize,
+                    source: self.thir.exprs.push(expr),
+                }
             }
-            Adjust::Pointer(cast) => ExprKind::Pointer { cast, source: self.thir.exprs.push(expr) },
+            Adjust::Pointer(cast) => {
+                ExprKind::PointerCoercion { cast, source: self.thir.exprs.push(expr) }
+            }
             Adjust::NeverToAny if adjustment.target.is_never() => return expr,
             Adjust::NeverToAny => ExprKind::NeverToAny { source: self.thir.exprs.push(expr) },
             Adjust::Deref(None) => {
@@ -143,9 +148,11 @@ impl<'tcx> Cx<'tcx> {
 
                 expr = Expr {
                     temp_lifetime,
-                    ty: self
-                        .tcx
-                        .mk_ref(deref.region, ty::TypeAndMut { ty: expr.ty, mutbl: deref.mutbl }),
+                    ty: Ty::new_ref(
+                        self.tcx,
+                        deref.region,
+                        ty::TypeAndMut { ty: expr.ty, mutbl: deref.mutbl },
+                    ),
                     span,
                     kind: ExprKind::Borrow {
                         borrow_kind: deref.mutbl.to_borrow_kind(),
@@ -190,9 +197,9 @@ impl<'tcx> Cx<'tcx> {
             // Special cased so that we can type check that the element
             // type of the source matches the pointed to type of the
             // destination.
-            ExprKind::Pointer {
+            ExprKind::PointerCoercion {
                 source: self.mirror_expr(source),
-                cast: PointerCast::ArrayToPointer,
+                cast: PointerCoercion::ArrayToPointer,
             }
         } else {
             // check whether this is casting an enum variant discriminant
@@ -208,17 +215,18 @@ impl<'tcx> Cx<'tcx> {
             // so we wouldn't have to compute and store the actual value
 
             let hir::ExprKind::Path(ref qpath) = source.kind else {
-                return ExprKind::Cast { source: self.mirror_expr(source)};
+                return ExprKind::Cast { source: self.mirror_expr(source) };
             };
 
             let res = self.typeck_results().qpath_res(qpath, source.hir_id);
             let ty = self.typeck_results().node_type(source.hir_id);
             let ty::Adt(adt_def, substs) = ty.kind() else {
-                return ExprKind::Cast { source: self.mirror_expr(source)};
+                return ExprKind::Cast { source: self.mirror_expr(source) };
             };
 
-            let Res::Def(DefKind::Ctor(CtorOf::Variant, CtorKind::Const), variant_ctor_id) = res else {
-                return ExprKind::Cast { source: self.mirror_expr(source)};
+            let Res::Def(DefKind::Ctor(CtorOf::Variant, CtorKind::Const), variant_ctor_id) = res
+            else {
+                return ExprKind::Cast { source: self.mirror_expr(source) };
             };
 
             let idx = adt_def.variant_index_with_ctor_id(variant_ctor_id);
@@ -308,7 +316,7 @@ impl<'tcx> Cx<'tcx> {
 
                     let arg_tys = args.iter().map(|e| self.typeck_results().expr_ty_adjusted(e));
                     let tupled_args = Expr {
-                        ty: tcx.mk_tup_from_iter(arg_tys),
+                        ty: Ty::new_tup_from_iter(tcx, arg_tys),
                         temp_lifetime,
                         span: expr.span,
                         kind: ExprKind::Tuple { fields: self.mirror_exprs(args) },
@@ -351,19 +359,35 @@ impl<'tcx> Cx<'tcx> {
                             });
                         }
                     }
-                    let adt_data =
-                        if let hir::ExprKind::Path(hir::QPath::Resolved(_, ref path)) = fun.kind {
-                            // Tuple-like ADTs are represented as ExprKind::Call. We convert them here.
-                            expr_ty.ty_adt_def().and_then(|adt_def| match path.res {
-                                Res::Def(DefKind::Ctor(_, CtorKind::Fn), ctor_id) => {
-                                    Some((adt_def, adt_def.variant_index_with_ctor_id(ctor_id)))
+
+                    // Tuple-like ADTs are represented as ExprKind::Call. We convert them here.
+                    let adt_data = if let hir::ExprKind::Path(ref qpath) = fun.kind
+                    && let Some(adt_def) = expr_ty.ty_adt_def() {
+                        match qpath {
+                            hir::QPath::Resolved(_, ref path) => {
+                                match path.res {
+                                    Res::Def(DefKind::Ctor(_, CtorKind::Fn), ctor_id) => {
+                                        Some((adt_def, adt_def.variant_index_with_ctor_id(ctor_id)))
+                                    }
+                                    Res::SelfCtor(..) => Some((adt_def, FIRST_VARIANT)),
+                                    _ => None,
                                 }
-                                Res::SelfCtor(..) => Some((adt_def, FIRST_VARIANT)),
-                                _ => None,
-                            })
-                        } else {
-                            None
-                        };
+                            }
+                            hir::QPath::TypeRelative(_ty, _) => {
+                                if let Some((DefKind::Ctor(_, CtorKind::Fn), ctor_id)) =
+                                    self.typeck_results().type_dependent_def(fun.hir_id)
+                                {
+                                    Some((adt_def, adt_def.variant_index_with_ctor_id(ctor_id)))
+                                } else {
+                                    None
+                                }
+
+                            }
+                            _ => None,
+                        }
+                    } else {
+                        None
+                    };
                     if let Some((adt_def, index)) = adt_data {
                         let substs = self.typeck_results().node_substs(fun.hir_id);
                         let user_provided_types = self.typeck_results().user_provided_types();
@@ -855,7 +879,11 @@ impl<'tcx> Cx<'tcx> {
                 let user_ty = self.user_substs_applied_to_res(expr.hir_id, Res::Def(kind, def_id));
                 debug!("method_callee: user_ty={:?}", user_ty);
                 (
-                    self.tcx().mk_fn_def(def_id, self.typeck_results().node_substs(expr.hir_id)),
+                    Ty::new_fn_def(
+                        self.tcx(),
+                        def_id,
+                        self.typeck_results().node_substs(expr.hir_id),
+                    ),
                     user_ty,
                 )
             }
@@ -1008,7 +1036,7 @@ impl<'tcx> Cx<'tcx> {
         let ty::Ref(region, _, mutbl) = *self.thir[args[0]].ty.kind() else {
             span_bug!(span, "overloaded_place: receiver is not a reference");
         };
-        let ref_ty = self.tcx.mk_ref(region, ty::TypeAndMut { ty: place_ty, mutbl });
+        let ref_ty = Ty::new_ref(self.tcx, region, ty::TypeAndMut { ty: place_ty, mutbl });
 
         // construct the complete expression `foo()` for the overloaded call,
         // which will yield the &T type

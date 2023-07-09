@@ -31,7 +31,7 @@ pub fn provide(providers: &mut Providers) {
 fn layout_of<'tcx>(
     tcx: TyCtxt<'tcx>,
     query: ty::ParamEnvAnd<'tcx, Ty<'tcx>>,
-) -> Result<TyAndLayout<'tcx>, LayoutError<'tcx>> {
+) -> Result<TyAndLayout<'tcx>, &'tcx LayoutError<'tcx>> {
     let (param_env, ty) = query.into_parts();
     debug!(?ty);
 
@@ -45,7 +45,9 @@ fn layout_of<'tcx>(
     let ty = match tcx.try_normalize_erasing_regions(param_env, ty) {
         Ok(t) => t,
         Err(normalization_error) => {
-            return Err(LayoutError::NormalizationFailure(ty, normalization_error));
+            return Err(tcx
+                .arena
+                .alloc(LayoutError::NormalizationFailure(ty, normalization_error)));
         }
     };
 
@@ -66,27 +68,34 @@ fn layout_of<'tcx>(
     Ok(layout)
 }
 
+fn error<'tcx>(
+    cx: &LayoutCx<'tcx, TyCtxt<'tcx>>,
+    err: LayoutError<'tcx>,
+) -> &'tcx LayoutError<'tcx> {
+    cx.tcx.arena.alloc(err)
+}
+
 fn univariant_uninterned<'tcx>(
     cx: &LayoutCx<'tcx, TyCtxt<'tcx>>,
     ty: Ty<'tcx>,
     fields: &IndexSlice<FieldIdx, Layout<'_>>,
     repr: &ReprOptions,
     kind: StructKind,
-) -> Result<LayoutS, LayoutError<'tcx>> {
+) -> Result<LayoutS, &'tcx LayoutError<'tcx>> {
     let dl = cx.data_layout();
     let pack = repr.pack;
     if pack.is_some() && repr.align.is_some() {
         cx.tcx.sess.delay_span_bug(DUMMY_SP, "struct cannot be packed and aligned");
-        return Err(LayoutError::Unknown(ty));
+        return Err(cx.tcx.arena.alloc(LayoutError::Unknown(ty)));
     }
 
-    cx.univariant(dl, fields, repr, kind).ok_or(LayoutError::SizeOverflow(ty))
+    cx.univariant(dl, fields, repr, kind).ok_or_else(|| error(cx, LayoutError::SizeOverflow(ty)))
 }
 
 fn layout_of_uncached<'tcx>(
     cx: &LayoutCx<'tcx, TyCtxt<'tcx>>,
     ty: Ty<'tcx>,
-) -> Result<Layout<'tcx>, LayoutError<'tcx>> {
+) -> Result<Layout<'tcx>, &'tcx LayoutError<'tcx>> {
     let tcx = cx.tcx;
     let param_env = cx.param_env;
     let dl = cx.data_layout();
@@ -150,7 +159,7 @@ fn layout_of_uncached<'tcx>(
                 // fall back to structurally deducing metadata.
                 && !pointee.references_error()
             {
-                let pointee_metadata = tcx.mk_projection(metadata_def_id, [pointee]);
+                let pointee_metadata = Ty::new_projection(tcx,metadata_def_id, [pointee]);
                 let metadata_ty = match tcx.try_normalize_erasing_regions(
                     param_env,
                     pointee_metadata,
@@ -170,7 +179,7 @@ fn layout_of_uncached<'tcx>(
                                 err = better_err;
                             }
                         }
-                        return Err(LayoutError::NormalizationFailure(pointee, err));
+                        return Err(error(cx, LayoutError::NormalizationFailure(pointee, err)));
                     },
                 };
 
@@ -181,7 +190,7 @@ fn layout_of_uncached<'tcx>(
                 }
 
                 let Abi::Scalar(metadata) = metadata_layout.abi else {
-                    return Err(LayoutError::Unknown(pointee));
+                    return Err(error(cx, LayoutError::Unknown(pointee)));
                 };
 
                 metadata
@@ -199,7 +208,7 @@ fn layout_of_uncached<'tcx>(
                         vtable
                     }
                     _ => {
-                        return Err(LayoutError::Unknown(pointee));
+                        return Err(error(cx, LayoutError::Unknown(pointee)));
                     }
                 }
             };
@@ -221,14 +230,18 @@ fn layout_of_uncached<'tcx>(
             if count.has_projections() {
                 count = tcx.normalize_erasing_regions(param_env, count);
                 if count.has_projections() {
-                    return Err(LayoutError::Unknown(ty));
+                    return Err(error(cx, LayoutError::Unknown(ty)));
                 }
             }
 
-            let count =
-                count.try_eval_target_usize(tcx, param_env).ok_or(LayoutError::Unknown(ty))?;
+            let count = count
+                .try_eval_target_usize(tcx, param_env)
+                .ok_or_else(|| error(cx, LayoutError::Unknown(ty)))?;
             let element = cx.layout_of(element)?;
-            let size = element.size.checked_mul(count, dl).ok_or(LayoutError::SizeOverflow(ty))?;
+            let size = element
+                .size
+                .checked_mul(count, dl)
+                .ok_or_else(|| error(cx, LayoutError::SizeOverflow(ty)))?;
 
             let abi = if count != 0 && ty.is_privately_uninhabited(tcx, param_env) {
                 Abi::Uninhabited
@@ -316,7 +329,7 @@ fn layout_of_uncached<'tcx>(
                     DUMMY_SP,
                     "#[repr(simd)] was applied to an ADT that is not a struct",
                 );
-                return Err(LayoutError::Unknown(ty));
+                return Err(error(cx, LayoutError::Unknown(ty)));
             }
 
             let fields = &def.non_enum_variant().fields;
@@ -346,7 +359,7 @@ fn layout_of_uncached<'tcx>(
                         DUMMY_SP,
                         "#[repr(simd)] was applied to an ADT with heterogeneous field type",
                     );
-                    return Err(LayoutError::Unknown(ty));
+                    return Err(error(cx, LayoutError::Unknown(ty)));
                 }
             }
 
@@ -368,7 +381,7 @@ fn layout_of_uncached<'tcx>(
 
                 // Extract the number of elements from the layout of the array field:
                 let FieldsShape::Array { count, .. } = cx.layout_of(f0_ty)?.layout.fields() else {
-                    return Err(LayoutError::Unknown(ty));
+                    return Err(error(cx, LayoutError::Unknown(ty)));
                 };
 
                 (*e_ty, *count, true)
@@ -397,7 +410,10 @@ fn layout_of_uncached<'tcx>(
             };
 
             // Compute the size and alignment of the vector:
-            let size = e_ly.size.checked_mul(e_len, dl).ok_or(LayoutError::SizeOverflow(ty))?;
+            let size = e_ly
+                .size
+                .checked_mul(e_len, dl)
+                .ok_or_else(|| error(cx, LayoutError::SizeOverflow(ty)))?;
             let align = dl.vector_align(size);
             let size = size.align_to(align.abi);
 
@@ -438,53 +454,101 @@ fn layout_of_uncached<'tcx>(
                         tcx.def_span(def.did()),
                         "union cannot be packed and aligned",
                     );
-                    return Err(LayoutError::Unknown(ty));
+                    return Err(error(cx, LayoutError::Unknown(ty)));
                 }
 
                 return Ok(tcx.mk_layout(
-                    cx.layout_of_union(&def.repr(), &variants).ok_or(LayoutError::Unknown(ty))?,
+                    cx.layout_of_union(&def.repr(), &variants)
+                        .ok_or_else(|| error(cx, LayoutError::Unknown(ty)))?,
                 ));
             }
 
-            tcx.mk_layout(
-                cx.layout_of_struct_or_enum(
+            let get_discriminant_type =
+                |min, max| Integer::repr_discr(tcx, ty, &def.repr(), min, max);
+
+            let discriminants_iter = || {
+                def.is_enum()
+                    .then(|| def.discriminants(tcx).map(|(v, d)| (v, d.val as i128)))
+                    .into_iter()
+                    .flatten()
+            };
+
+            let dont_niche_optimize_enum = def.repr().inhibit_enum_layout_opt()
+                || def
+                    .variants()
+                    .iter_enumerated()
+                    .any(|(i, v)| v.discr != ty::VariantDiscr::Relative(i.as_u32()));
+
+            let maybe_unsized = def.is_struct()
+                && def.non_enum_variant().tail_opt().is_some_and(|last_field| {
+                    let param_env = tcx.param_env(def.did());
+                    !tcx.type_of(last_field.did).subst_identity().is_sized(tcx, param_env)
+                });
+
+            let Some(layout) = cx.layout_of_struct_or_enum(
+                &def.repr(),
+                &variants,
+                def.is_enum(),
+                def.is_unsafe_cell(),
+                tcx.layout_scalar_valid_range(def.did()),
+                get_discriminant_type,
+                discriminants_iter(),
+                dont_niche_optimize_enum,
+                !maybe_unsized,
+            ) else {
+                return Err(error(cx, LayoutError::SizeOverflow(ty)));
+            };
+
+            // If the struct tail is sized and can be unsized, check that unsizing doesn't move the fields around.
+            if cfg!(debug_assertions)
+                && maybe_unsized
+                && def.non_enum_variant().tail().ty(tcx, substs).is_sized(tcx, cx.param_env)
+            {
+                let mut variants = variants;
+                let tail_replacement = cx.layout_of(Ty::new_slice(tcx, tcx.types.u8)).unwrap();
+                *variants[FIRST_VARIANT].raw.last_mut().unwrap() = tail_replacement.layout;
+
+                let Some(unsized_layout) = cx.layout_of_struct_or_enum(
                     &def.repr(),
                     &variants,
                     def.is_enum(),
                     def.is_unsafe_cell(),
                     tcx.layout_scalar_valid_range(def.did()),
-                    |min, max| Integer::repr_discr(tcx, ty, &def.repr(), min, max),
-                    def.is_enum()
-                        .then(|| def.discriminants(tcx).map(|(v, d)| (v, d.val as i128)))
-                        .into_iter()
-                        .flatten(),
-                    def.repr().inhibit_enum_layout_opt()
-                        || def
-                            .variants()
-                            .iter_enumerated()
-                            .any(|(i, v)| v.discr != ty::VariantDiscr::Relative(i.as_u32())),
-                    {
-                        let param_env = tcx.param_env(def.did());
-                        def.is_struct()
-                            && match def.variants().iter().next().and_then(|x| x.fields.raw.last())
-                            {
-                                Some(last_field) => tcx
-                                    .type_of(last_field.did)
-                                    .subst_identity()
-                                    .is_sized(tcx, param_env),
-                                None => false,
-                            }
-                    },
-                )
-                .ok_or(LayoutError::SizeOverflow(ty))?,
-            )
+                    get_discriminant_type,
+                    discriminants_iter(),
+                    dont_niche_optimize_enum,
+                    !maybe_unsized,
+                ) else {
+                    bug!("failed to compute unsized layout of {ty:?}");
+                };
+
+                let FieldsShape::Arbitrary { offsets: sized_offsets, .. } = &layout.fields else {
+                    bug!("unexpected FieldsShape for sized layout of {ty:?}: {:?}", layout.fields);
+                };
+                let FieldsShape::Arbitrary { offsets: unsized_offsets, .. } = &unsized_layout.fields else {
+                    bug!("unexpected FieldsShape for unsized layout of {ty:?}: {:?}", unsized_layout.fields);
+                };
+
+                let (sized_tail, sized_fields) = sized_offsets.raw.split_last().unwrap();
+                let (unsized_tail, unsized_fields) = unsized_offsets.raw.split_last().unwrap();
+
+                if sized_fields != unsized_fields {
+                    bug!("unsizing {ty:?} changed field order!\n{layout:?}\n{unsized_layout:?}");
+                }
+
+                if sized_tail < unsized_tail {
+                    bug!("unsizing {ty:?} moved tail backwards!\n{layout:?}\n{unsized_layout:?}");
+                }
+            }
+
+            tcx.mk_layout(layout)
         }
 
         // Types with no meaningful known layout.
         ty::Alias(..) => {
             // NOTE(eddyb) `layout_of` query should've normalized these away,
             // if that was possible, so there's no reason to try again here.
-            return Err(LayoutError::Unknown(ty));
+            return Err(error(cx, LayoutError::Unknown(ty)));
         }
 
         ty::Bound(..) | ty::GeneratorWitness(..) | ty::GeneratorWitnessMIR(..) | ty::Infer(_) => {
@@ -492,7 +556,7 @@ fn layout_of_uncached<'tcx>(
         }
 
         ty::Placeholder(..) | ty::Param(_) | ty::Error(_) => {
-            return Err(LayoutError::Unknown(ty));
+            return Err(error(cx, LayoutError::Unknown(ty)));
         }
     })
 }
@@ -628,13 +692,13 @@ fn generator_layout<'tcx>(
     ty: Ty<'tcx>,
     def_id: hir::def_id::DefId,
     substs: SubstsRef<'tcx>,
-) -> Result<Layout<'tcx>, LayoutError<'tcx>> {
+) -> Result<Layout<'tcx>, &'tcx LayoutError<'tcx>> {
     use SavedLocalEligibility::*;
     let tcx = cx.tcx;
     let subst_field = |ty: Ty<'tcx>| EarlyBinder::bind(ty).subst(tcx, substs);
 
     let Some(info) = tcx.generator_layout(def_id) else {
-        return Err(LayoutError::Unknown(ty));
+        return Err(error(cx, LayoutError::Unknown(ty)));
     };
     let (ineligible_locals, assignments) = generator_saved_local_eligibility(&info);
 
@@ -655,7 +719,7 @@ fn generator_layout<'tcx>(
     let promoted_layouts = ineligible_locals
         .iter()
         .map(|local| subst_field(info.field_tys[local].ty))
-        .map(|ty| tcx.mk_maybe_uninit(ty))
+        .map(|ty| Ty::new_maybe_uninit(tcx, ty))
         .map(|ty| Ok(cx.layout_of(ty)?.layout));
     let prefix_layouts = substs
         .as_generator()

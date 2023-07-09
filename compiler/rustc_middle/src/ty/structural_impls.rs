@@ -11,6 +11,7 @@ use crate::ty::{self, AliasTy, InferConst, Lift, Term, TermKind, Ty, TyCtxt};
 use rustc_hir::def::Namespace;
 use rustc_index::{Idx, IndexVec};
 use rustc_target::abi::TyAndLayout;
+use rustc_type_ir::ConstKind;
 
 use std::fmt;
 use std::ops::ControlFlow;
@@ -244,24 +245,6 @@ impl<'tcx> fmt::Debug for ty::Const<'tcx> {
     }
 }
 
-impl<'tcx> fmt::Debug for ty::ConstKind<'tcx> {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        use ty::ConstKind::*;
-        match self {
-            Param(param) => write!(f, "{param:?}"),
-            Infer(var) => write!(f, "{var:?}"),
-            Bound(debruijn, var) => rustc_type_ir::debug_bound_var(f, *debruijn, *var),
-            Placeholder(placeholder) => write!(f, "{placeholder:?}"),
-            Unevaluated(uv) => {
-                f.debug_tuple("Unevaluated").field(&uv.substs).field(&uv.def).finish()
-            }
-            Value(valtree) => write!(f, "{valtree:?}"),
-            Error(_) => write!(f, "{{const error}}"),
-            Expr(expr) => write!(f, "{expr:?}"),
-        }
-    }
-}
-
 impl fmt::Debug for ty::BoundTy {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self.kind {
@@ -352,7 +335,7 @@ TrivialTypeTraversalAndLiftImpls! {
     crate::ty::IntVarValue,
     crate::ty::ParamConst,
     crate::ty::ParamTy,
-    crate::ty::adjustment::PointerCast,
+    crate::ty::adjustment::PointerCoercion,
     crate::ty::RegionVid,
     crate::ty::UniverseIndex,
     crate::ty::Variance,
@@ -731,9 +714,20 @@ impl<'tcx> TypeSuperFoldable<TyCtxt<'tcx>> for ty::Const<'tcx> {
         folder: &mut F,
     ) -> Result<Self, F::Error> {
         let ty = self.ty().try_fold_with(folder)?;
-        let kind = self.kind().try_fold_with(folder)?;
+        let kind = match self.kind() {
+            ConstKind::Param(p) => ConstKind::Param(p.try_fold_with(folder)?),
+            ConstKind::Infer(i) => ConstKind::Infer(i.try_fold_with(folder)?),
+            ConstKind::Bound(d, b) => {
+                ConstKind::Bound(d.try_fold_with(folder)?, b.try_fold_with(folder)?)
+            }
+            ConstKind::Placeholder(p) => ConstKind::Placeholder(p.try_fold_with(folder)?),
+            ConstKind::Unevaluated(uv) => ConstKind::Unevaluated(uv.try_fold_with(folder)?),
+            ConstKind::Value(v) => ConstKind::Value(v.try_fold_with(folder)?),
+            ConstKind::Error(e) => ConstKind::Error(e.try_fold_with(folder)?),
+            ConstKind::Expr(e) => ConstKind::Expr(e.try_fold_with(folder)?),
+        };
         if ty != self.ty() || kind != self.kind() {
-            Ok(folder.interner().mk_const(kind, ty))
+            Ok(folder.interner().mk_ct_from_kind(kind, ty))
         } else {
             Ok(self)
         }
@@ -746,7 +740,19 @@ impl<'tcx> TypeSuperVisitable<TyCtxt<'tcx>> for ty::Const<'tcx> {
         visitor: &mut V,
     ) -> ControlFlow<V::BreakTy> {
         self.ty().visit_with(visitor)?;
-        self.kind().visit_with(visitor)
+        match self.kind() {
+            ConstKind::Param(p) => p.visit_with(visitor),
+            ConstKind::Infer(i) => i.visit_with(visitor),
+            ConstKind::Bound(d, b) => {
+                d.visit_with(visitor)?;
+                b.visit_with(visitor)
+            }
+            ConstKind::Placeholder(p) => p.visit_with(visitor),
+            ConstKind::Unevaluated(uv) => uv.visit_with(visitor),
+            ConstKind::Value(v) => v.visit_with(visitor),
+            ConstKind::Error(e) => e.visit_with(visitor),
+            ConstKind::Expr(e) => e.visit_with(visitor),
+        }
     }
 }
 

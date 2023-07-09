@@ -379,7 +379,9 @@ impl Step for RustAnalyzer {
         let host = self.host;
         let compiler = builder.compiler(stage, host);
 
-        builder.ensure(tool::RustAnalyzer { compiler, target: self.host }).expect("in-tree tool");
+        // We don't need to build the whole Rust Analyzer for the proc-macro-srv test suite,
+        // but we do need the standard library to be present.
+        builder.ensure(compile::Std::new(compiler, host));
 
         let workspace_path = "src/tools/rust-analyzer";
         // until the whole RA test suite runs on `i686`, we only run
@@ -788,6 +790,11 @@ impl Step for Clippy {
         cargo.add_rustc_lib_path(builder, compiler);
         let mut cargo = prepare_cargo_test(cargo, &[], &[], "clippy", compiler, host, builder);
 
+        // propagate --bless
+        if builder.config.cmd.bless() {
+            cargo.env("BLESS", "Gesundheit");
+        }
+
         if builder.try_run(&mut cargo).is_ok() {
             // The tests succeeded; nothing to do.
             return;
@@ -796,19 +803,6 @@ impl Step for Clippy {
         if !builder.config.cmd.bless() {
             crate::detail_exit_macro!(1);
         }
-
-        let mut cargo = builder.cargo(compiler, Mode::ToolRustc, SourceType::InTree, host, "run");
-        cargo.arg("-p").arg("clippy_dev");
-        // clippy_dev gets confused if it can't find `clippy/Cargo.toml`
-        cargo.current_dir(&builder.src.join("src").join("tools").join("clippy"));
-        if builder.config.rust_optimize {
-            cargo.env("PROFILE", "release");
-        } else {
-            cargo.env("PROFILE", "debug");
-        }
-        cargo.arg("--");
-        cargo.arg("bless");
-        builder.run(&mut cargo.into());
     }
 }
 
@@ -2229,6 +2223,11 @@ fn prepare_cargo_test(
 ) -> Command {
     let mut cargo = cargo.into();
 
+    // If bless is passed, give downstream crates a way to use it
+    if builder.config.cmd.bless() {
+        cargo.env("RUSTC_BLESS", "1");
+    }
+
     // Pass in some standard flags then iterate over the graph we've discovered
     // in `cargo metadata` with the maps above and figure out what `-p`
     // arguments need to get passed.
@@ -2682,8 +2681,9 @@ impl Step for Bootstrap {
             .args(["-m", "unittest", "bootstrap_test.py"])
             .env("BUILD_DIR", &builder.out)
             .env("BUILD_PLATFORM", &builder.build.build.triple)
-            .current_dir(builder.src.join("src/bootstrap/"))
-            .args(builder.config.test_args());
+            .current_dir(builder.src.join("src/bootstrap/"));
+        // NOTE: we intentionally don't pass test_args here because the args for unittest and cargo test are mutually incompatible.
+        // Use `python -m unittest` manually if you want to pass arguments.
         try_run(builder, &mut check_bootstrap).unwrap();
 
         let host = builder.config.build;

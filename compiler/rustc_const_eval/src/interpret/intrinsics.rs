@@ -72,7 +72,7 @@ pub(crate) fn eval_nullary_intrinsic<'tcx>(
         }
         sym::pref_align_of => {
             // Correctly handles non-monomorphic calls, so there is no need for ensure_monomorphic_enough.
-            let layout = tcx.layout_of(param_env.and(tp_ty)).map_err(|e| err_inval!(Layout(e)))?;
+            let layout = tcx.layout_of(param_env.and(tp_ty)).map_err(|e| err_inval!(Layout(*e)))?;
             ConstValue::from_target_usize(layout.align.pref.bytes(), &tcx)
         }
         sym::type_id => {
@@ -170,7 +170,7 @@ impl<'mir, 'tcx: 'mir, M: Machine<'mir, 'tcx>> InterpCx<'mir, 'tcx, M> {
                     sym::pref_align_of | sym::variant_count => self.tcx.types.usize,
                     sym::needs_drop => self.tcx.types.bool,
                     sym::type_id => self.tcx.types.u128,
-                    sym::type_name => self.tcx.mk_static_str(),
+                    sym::type_name => Ty::new_static_str(self.tcx.tcx),
                     _ => bug!(),
                 };
                 let val = self.ctfe_query(None, |tcx| {

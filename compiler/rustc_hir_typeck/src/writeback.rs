@@ -11,7 +11,7 @@ use rustc_hir::intravisit::{self, Visitor};
 use rustc_infer::infer::error_reporting::TypeAnnotationNeeded::E0282;
 use rustc_middle::hir::place::Place as HirPlace;
 use rustc_middle::mir::FakeReadCause;
-use rustc_middle::ty::adjustment::{Adjust, Adjustment, PointerCast};
+use rustc_middle::ty::adjustment::{Adjust, Adjustment, PointerCoercion};
 use rustc_middle::ty::fold::{TypeFoldable, TypeFolder, TypeSuperFoldable};
 use rustc_middle::ty::visit::{TypeSuperVisitable, TypeVisitable, TypeVisitableExt};
 use rustc_middle::ty::{self, ClosureSizeProfileData, Ty, TyCtxt};
@@ -232,7 +232,8 @@ impl<'cx, 'tcx> WritebackCx<'cx, 'tcx> {
                         // to access an nonexistent index. We assume that more relevant errors will
                         // already have been emitted, so we only gate on this with an ICE if no
                         // error has been emitted. (#64638)
-                        self.fcx.tcx.ty_error_with_message(
+                        Ty::new_error_with_message(
+                            self.fcx.tcx,
                             e.span,
                             format!("bad index {:?} for base: `{:?}`", index, base),
                         )
@@ -250,7 +251,7 @@ impl<'cx, 'tcx> WritebackCx<'cx, 'tcx> {
                         // Since this is "after" the other adjustment to be
                         // discarded, we do an extra `pop()`
                         if let Some(Adjustment {
-                            kind: Adjust::Pointer(PointerCast::Unsize), ..
+                            kind: Adjust::Pointer(PointerCoercion::Unsize), ..
                         }) = a.pop()
                         {
                             // So the borrow discard actually happens here
@@ -823,7 +824,7 @@ impl<'cx, 'tcx> TypeFolder<TyCtxt<'tcx>> for Resolver<'cx, 'tcx> {
                 debug!("Resolver::fold_ty: input type `{:?}` not fully resolvable", t);
                 let e = self.report_error(t);
                 self.replaced_with_error = Some(e);
-                self.fcx.tcx.ty_error(e)
+                Ty::new_error(self.fcx.tcx, e)
             }
         }
     }
@@ -840,7 +841,7 @@ impl<'cx, 'tcx> TypeFolder<TyCtxt<'tcx>> for Resolver<'cx, 'tcx> {
                 debug!("Resolver::fold_const: input const `{:?}` not fully resolvable", ct);
                 let e = self.report_error(ct);
                 self.replaced_with_error = Some(e);
-                self.fcx.tcx.const_error(ct.ty(), e)
+                ty::Const::new_error(self.fcx.tcx, e, ct.ty())
             }
         }
     }

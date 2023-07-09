@@ -3,7 +3,6 @@
 //! [rustc dev guide]: https://rustc-dev-guide.rust-lang.org/traits/resolution.html
 
 pub mod auto_trait;
-mod chalk_fulfill;
 pub(crate) mod coherence;
 pub mod const_evaluatable;
 mod engine;
@@ -12,7 +11,7 @@ mod fulfill;
 pub mod misc;
 mod object_safety;
 pub mod outlives_bounds;
-mod project;
+pub mod project;
 pub mod query;
 #[cfg_attr(not(bootstrap), allow(hidden_glob_reexports))]
 mod select;
@@ -39,6 +38,8 @@ use rustc_span::Span;
 
 use std::fmt::Debug;
 use std::ops::ControlFlow;
+
+pub(crate) use self::project::{needs_normalization, BoundVarReplacer, PlaceholderReplacer};
 
 pub use self::FulfillmentErrorCode::*;
 pub use self::ImplSource::*;
@@ -71,8 +72,6 @@ pub use self::util::{
 };
 pub use self::util::{expand_trait_aliases, TraitAliasExpander};
 pub use self::util::{get_vtable_index_of_object_method, impl_item_is_final, upcast_choices};
-
-pub use self::chalk_fulfill::FulfillmentContext as ChalkFulfillmentContext;
 
 pub use rustc_infer::traits::*;
 
@@ -407,7 +406,12 @@ pub fn normalize_param_env_or_error<'tcx>(
     )
 }
 
-/// Normalize a type and process all resulting obligations, returning any errors
+/// Normalize a type and process all resulting obligations, returning any errors.
+///
+/// FIXME(-Ztrait-solver=next): This should be replaced by `At::deeply_normalize`
+/// which has the same behavior with the new solver. Because using a separate
+/// fulfillment context worsens caching in the old solver, `At::deeply_normalize`
+/// is still lazy with the old solver as it otherwise negatively impacts perf.
 #[instrument(skip_all)]
 pub fn fully_normalize<'tcx, T>(
     infcx: &InferCtxt<'tcx>,
