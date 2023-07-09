@@ -13,7 +13,7 @@
 [submodule "src/doc/book"]
 	path = src/doc/book
 	url = https://github.com/crablang/book.git
-    branch = master
+    branch = main
 [submodule "src/doc/rust-by-example"]
 	path = src/doc/rust-by-example
 	url = https://github.com/crablang/crab-by-example.git
