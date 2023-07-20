@@ -1,0 +1,8 @@
+[relabel]
+allow-unauthenticated = [
+    "S-*", "A-*", "New Content", "Language Cleanup", "Easy", "Formatting", "Enhancement", "Bug",
+]
+
+[assign]
+
+[shortcut]
