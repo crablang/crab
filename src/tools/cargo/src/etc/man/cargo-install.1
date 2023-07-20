@@ -1,0 +1,516 @@
+'\" t
+.TH "CARGO\-INSTALL" "1"
+.nh
+.ad l
+.ss \n[.ss] 0
+.SH "NAME"
+cargo\-install \[em] Build and install a Rust binary
+.SH "SYNOPSIS"
+\fBcargo install\fR [\fIoptions\fR] \fIcrate\fR[@\fIversion\fR]\[u2026]
+.br
+\fBcargo install\fR [\fIoptions\fR] \fB\-\-path\fR \fIpath\fR
+.br
+\fBcargo install\fR [\fIoptions\fR] \fB\-\-git\fR \fIurl\fR [\fIcrate\fR\[u2026]]
+.br
+\fBcargo install\fR [\fIoptions\fR] \fB\-\-list\fR
+.SH "DESCRIPTION"
+This command manages Cargo\[cq]s local set of installed binary crates. Only
+packages which have executable \fB[[bin]]\fR or \fB[[example]]\fR targets can be
+installed, and all executables are installed into the installation root\[cq]s
+\fBbin\fR folder. By default only binaries, not examples, are installed.
+.sp
+The installation root is determined, in order of precedence:
+.sp
+.RS 4
+\h'-04'\(bu\h'+02'\fB\-\-root\fR option
+.RE
+.sp
+.RS 4
+\h'-04'\(bu\h'+02'\fBCARGO_INSTALL_ROOT\fR environment variable
+.RE
+.sp
+.RS 4
+\h'-04'\(bu\h'+02'\fBinstall.root\fR Cargo \fIconfig value\fR <https://doc.rust\-lang.org/cargo/reference/config.html>
+.RE
+.sp
+.RS 4
+\h'-04'\(bu\h'+02'\fBCARGO_HOME\fR environment variable
+.RE
+.sp
+.RS 4
+\h'-04'\(bu\h'+02'\fB$HOME/.cargo\fR
+.RE
+.sp
+There are multiple sources from which a crate can be installed. The default
+location is crates.io but the \fB\-\-git\fR, \fB\-\-path\fR, and \fB\-\-registry\fR flags can
+change this source. If the source contains more than one package (such as
+crates.io or a git repository with multiple crates) the \fIcrate\fR argument is
+required to indicate which crate should be installed.
+.sp
+Crates from crates.io can optionally specify the version they wish to install
+via the \fB\-\-version\fR flags, and similarly packages from git repositories can
+optionally specify the branch, tag, or revision that should be installed. If a
+crate has multiple binaries, the \fB\-\-bin\fR argument can selectively install only
+one of them, and if you\[cq]d rather install examples the \fB\-\-example\fR argument can
+be used as well.
+.sp
+If the package is already installed, Cargo will reinstall it if the installed
+version does not appear to be up\-to\-date. If any of the following values
+change, then Cargo will reinstall the package:
+.sp
+.RS 4
+\h'-04'\(bu\h'+02'The package version and source.
+.RE
+.sp
+.RS 4
+\h'-04'\(bu\h'+02'The set of binary names installed.
+.RE
+.sp
+.RS 4
+\h'-04'\(bu\h'+02'The chosen features.
+.RE
+.sp
+.RS 4
+\h'-04'\(bu\h'+02'The profile (\fB\-\-profile\fR).
+.RE
+.sp
+.RS 4
+\h'-04'\(bu\h'+02'The target (\fB\-\-target\fR).
+.RE
+.sp
+Installing with \fB\-\-path\fR will always build and install, unless there are
+conflicting binaries from another package. The \fB\-\-force\fR flag may be used to
+force Cargo to always reinstall the package.
+.sp
+If the source is crates.io or \fB\-\-git\fR then by default the crate will be built
+in a temporary target directory. To avoid this, the target directory can be
+specified by setting the \fBCARGO_TARGET_DIR\fR environment variable to a relative
+path. In particular, this can be useful for caching build artifacts on
+continuous integration systems.
+.SS "Dealing with the Lockfile"
+By default, the \fBCargo.lock\fR file that is included with the package will be
+ignored. This means that Cargo will recompute which versions of dependencies
+to use, possibly using newer versions that have been released since the
+package was published. The \fB\-\-locked\fR flag can be used to force Cargo to use
+the packaged \fBCargo.lock\fR file if it is available. This may be useful for
+ensuring reproducible builds, to use the exact same set of dependencies that
+were available when the package was published. It may also be useful if a
+newer version of a dependency is published that no longer builds on your
+system, or has other problems. The downside to using \fB\-\-locked\fR is that you
+will not receive any fixes or updates to any dependency. Note that Cargo did
+not start publishing \fBCargo.lock\fR files until version 1.37, which means
+packages published with prior versions will not have a \fBCargo.lock\fR file
+available.
+.SS "Configuration Discovery"
+This command operates on system or user level, not project level.
+This means that the local \fIconfiguration discovery\fR <https://doc.rust\-lang.org/cargo/reference/config.html#hierarchical\-structure> is ignored.
+Instead, the configuration discovery begins at \fB$CARGO_HOME/config.toml\fR\&. 
+If the package is installed with \fB\-\-path $PATH\fR, the local configuration 
+will be used, beginning discovery at \fB$PATH/.cargo/config.toml\fR\&.
+.SH "OPTIONS"
+.SS "Install Options"
+.sp
+\fB\-\-vers\fR \fIversion\fR, 
+\fB\-\-version\fR \fIversion\fR
+.RS 4
+Specify a version to install. This may be a \fIversion
+requirement\fR <https://doc.rust\-lang.org/cargo/reference/specifying\-dependencies.md>, like \fB~1.2\fR, to have Cargo
+select the newest version from the given requirement. If the version does not
+have a requirement operator (such as \fB^\fR or \fB~\fR), then it must be in the form
+\fIMAJOR.MINOR.PATCH\fR, and will install exactly that version; it is \fInot\fR
+treated as a caret requirement like Cargo dependencies are.
+.RE
+.sp
+\fB\-\-git\fR \fIurl\fR
+.RS 4
+Git URL to install the specified crate from.
+.RE
+.sp
+\fB\-\-branch\fR \fIbranch\fR
+.RS 4
+Branch to use when installing from git.
+.RE
+.sp
+\fB\-\-tag\fR \fItag\fR
+.RS 4
+Tag to use when installing from git.
+.RE
+.sp
+\fB\-\-rev\fR \fIsha\fR
+.RS 4
+Specific commit to use when installing from git.
+.RE
+.sp
+\fB\-\-path\fR \fIpath\fR
+.RS 4
+Filesystem path to local crate to install.
+.RE
+.sp
+\fB\-\-list\fR
+.RS 4
+List all installed packages and their versions.
+.RE
+.sp
+\fB\-f\fR, 
+\fB\-\-force\fR
+.RS 4
+Force overwriting existing crates or binaries. This can be used if a package
+has installed a binary with the same name as another package. This is also
+useful if something has changed on the system that you want to rebuild with,
+such as a newer version of \fBrustc\fR\&.
+.RE
+.sp
+\fB\-\-no\-track\fR
+.RS 4
+By default, Cargo keeps track of the installed packages with a metadata file
+stored in the installation root directory. This flag tells Cargo not to use or
+create that file. With this flag, Cargo will refuse to overwrite any existing
+files unless the \fB\-\-force\fR flag is used. This also disables Cargo\[cq]s ability to
+protect against multiple concurrent invocations of Cargo installing at the
+same time.
+.RE
+.sp
+\fB\-\-bin\fR \fIname\fR\[u2026]
+.RS 4
+Install only the specified binary.
+.RE
+.sp
+\fB\-\-bins\fR
+.RS 4
+Install all binaries. This is the default behavior.
+.RE
+.sp
+\fB\-\-example\fR \fIname\fR\[u2026]
+.RS 4
+Install only the specified example.
+.RE
+.sp
+\fB\-\-examples\fR
+.RS 4
+Install all examples.
+.RE
+.sp
+\fB\-\-root\fR \fIdir\fR
+.RS 4
+Directory to install packages into.
+.RE
+.sp
+\fB\-\-registry\fR \fIregistry\fR
+.RS 4
+Name of the registry to use. Registry names are defined in \fICargo config
+files\fR <https://doc.rust\-lang.org/cargo/reference/config.html>\&. If not specified, the default registry is used,
+which is defined by the \fBregistry.default\fR config key which defaults to
+\fBcrates\-io\fR\&.
+.RE
+.sp
+\fB\-\-index\fR \fIindex\fR
+.RS 4
+The URL of the registry index to use.
+.RE
+.SS "Feature Selection"
+The feature flags allow you to control which features are enabled. When no
+feature options are given, the \fBdefault\fR feature is activated for every
+selected package.
+.sp
+See \fIthe features documentation\fR <https://doc.rust\-lang.org/cargo/reference/features.html#command\-line\-feature\-options>
+for more details.
+.sp
+\fB\-F\fR \fIfeatures\fR, 
+\fB\-\-features\fR \fIfeatures\fR
+.RS 4
+Space or comma separated list of features to activate. Features of workspace
+members may be enabled with \fBpackage\-name/feature\-name\fR syntax. This flag may
+be specified multiple times, which enables all specified features.
+.RE
+.sp
+\fB\-\-all\-features\fR
+.RS 4
+Activate all available features of all selected packages.
+.RE
+.sp
+\fB\-\-no\-default\-features\fR
+.RS 4
+Do not activate the \fBdefault\fR feature of the selected packages.
+.RE
+.SS "Compilation Options"
+.sp
+\fB\-\-target\fR \fItriple\fR
+.RS 4
+Install for the given architecture. The default is the host architecture. The general format of the triple is
+\fB<arch><sub>\-<vendor>\-<sys>\-<abi>\fR\&. Run \fBrustc \-\-print target\-list\fR for a
+list of supported targets.
+.sp
+This may also be specified with the \fBbuild.target\fR
+\fIconfig value\fR <https://doc.rust\-lang.org/cargo/reference/config.html>\&.
+.sp
+Note that specifying this flag makes Cargo run in a different mode where the
+target artifacts are placed in a separate directory. See the
+\fIbuild cache\fR <https://doc.rust\-lang.org/cargo/guide/build\-cache.html> documentation for more details.
+.RE
+.sp
+\fB\-\-target\-dir\fR \fIdirectory\fR
+.RS 4
+Directory for all generated artifacts and intermediate files. May also be
+specified with the \fBCARGO_TARGET_DIR\fR environment variable, or the
+\fBbuild.target\-dir\fR \fIconfig value\fR <https://doc.rust\-lang.org/cargo/reference/config.html>\&.
+Defaults to a new temporary folder located in the
+temporary directory of the platform. 
+.sp
+When using \fB\-\-path\fR, by default it will use \fBtarget\fR directory in the workspace
+of the local crate unless \fB\-\-target\-dir\fR
+is specified.
+.RE
+.sp
+\fB\-\-debug\fR
+.RS 4
+Build with the \fBdev\fR profile instead of the \fBrelease\fR profile.
+See also the \fB\-\-profile\fR option for choosing a specific profile by name.
+.RE
+.sp
+\fB\-\-profile\fR \fIname\fR
+.RS 4
+Install with the given profile.
+See the \fIthe reference\fR <https://doc.rust\-lang.org/cargo/reference/profiles.html> for more details on profiles.
+.RE
+.sp
+\fB\-\-ignore\-rust\-version\fR
+.RS 4
+Install the target even if the selected Rust compiler is older than the
+required Rust version as configured in the project\[cq]s \fBrust\-version\fR field.
+.RE
+.sp
+\fB\-\-timings=\fR\fIfmts\fR
+.RS 4
+Output information how long each compilation takes, and track concurrency
+information over time. Accepts an optional comma\-separated list of output
+formats; \fB\-\-timings\fR without an argument will default to \fB\-\-timings=html\fR\&.
+Specifying an output format (rather than the default) is unstable and requires
+\fB\-Zunstable\-options\fR\&. Valid output formats:
+.sp
+.RS 4
+\h'-04'\(bu\h'+02'\fBhtml\fR (unstable, requires \fB\-Zunstable\-options\fR): Write a human\-readable file \fBcargo\-timing.html\fR to the
+\fBtarget/cargo\-timings\fR directory with a report of the compilation. Also write
+a report to the same directory with a timestamp in the filename if you want
+to look at older runs. HTML output is suitable for human consumption only,
+and does not provide machine\-readable timing data.
+.RE
+.sp
+.RS 4
+\h'-04'\(bu\h'+02'\fBjson\fR (unstable, requires \fB\-Zunstable\-options\fR): Emit machine\-readable JSON
+information about timing information.
+.RE
+.RE
+.SS "Manifest Options"
+.sp
+\fB\-\-frozen\fR, 
+\fB\-\-locked\fR
+.RS 4
+Either of these flags requires that the \fBCargo.lock\fR file is
+up\-to\-date. If the lock file is missing, or it needs to be updated, Cargo will
+exit with an error. The \fB\-\-frozen\fR flag also prevents Cargo from
+attempting to access the network to determine if it is out\-of\-date.
+.sp
+These may be used in environments where you want to assert that the
+\fBCargo.lock\fR file is up\-to\-date (such as a CI build) or want to avoid network
+access.
+.RE
+.sp
+\fB\-\-offline\fR
+.RS 4
+Prevents Cargo from accessing the network for any reason. Without this
+flag, Cargo will stop with an error if it needs to access the network and
+the network is not available. With this flag, Cargo will attempt to
+proceed without the network if possible.
+.sp
+Beware that this may result in different dependency resolution than online
+mode. Cargo will restrict itself to crates that are downloaded locally, even
+if there might be a newer version as indicated in the local copy of the index.
+See the \fBcargo\-fetch\fR(1) command to download dependencies before going
+offline.
+.sp
+May also be specified with the \fBnet.offline\fR \fIconfig value\fR <https://doc.rust\-lang.org/cargo/reference/config.html>\&.
+.RE
+.SS "Miscellaneous Options"
+.sp
+\fB\-j\fR \fIN\fR, 
+\fB\-\-jobs\fR \fIN\fR
+.RS 4
+Number of parallel jobs to run. May also be specified with the
+\fBbuild.jobs\fR \fIconfig value\fR <https://doc.rust\-lang.org/cargo/reference/config.html>\&. Defaults to
+the number of logical CPUs. If negative, it sets the maximum number of
+parallel jobs to the number of logical CPUs plus provided value. If
+a string \fBdefault\fR is provided, it sets the value back to defaults.
+Should not be 0.
+.RE
+.sp
+\fB\-\-keep\-going\fR
+.RS 4
+Build as many crates in the dependency graph as possible, rather than aborting
+the build on the first one that fails to build. Unstable, requires
+\fB\-Zunstable\-options\fR\&.
+.RE
+.SS "Display Options"
+.sp
+\fB\-v\fR, 
+\fB\-\-verbose\fR
+.RS 4
+Use verbose output. May be specified twice for \[lq]very verbose\[rq] output which
+includes extra output such as dependency warnings and build script output.
+May also be specified with the \fBterm.verbose\fR
+\fIconfig value\fR <https://doc.rust\-lang.org/cargo/reference/config.html>\&.
+.RE
+.sp
+\fB\-q\fR, 
+\fB\-\-quiet\fR
+.RS 4
+Do not print cargo log messages.
+May also be specified with the \fBterm.quiet\fR
+\fIconfig value\fR <https://doc.rust\-lang.org/cargo/reference/config.html>\&.
+.RE
+.sp
+\fB\-\-color\fR \fIwhen\fR
+.RS 4
+Control when colored output is used. Valid values:
+.sp
+.RS 4
+\h'-04'\(bu\h'+02'\fBauto\fR (default): Automatically detect if color support is available on the
+terminal.
+.RE
+.sp
+.RS 4
+\h'-04'\(bu\h'+02'\fBalways\fR: Always display colors.
+.RE
+.sp
+.RS 4
+\h'-04'\(bu\h'+02'\fBnever\fR: Never display colors.
+.RE
+.sp
+May also be specified with the \fBterm.color\fR
+\fIconfig value\fR <https://doc.rust\-lang.org/cargo/reference/config.html>\&.
+.RE
+.sp
+\fB\-\-message\-format\fR \fIfmt\fR
+.RS 4
+The output format for diagnostic messages. Can be specified multiple times
+and consists of comma\-separated values. Valid values:
+.sp
+.RS 4
+\h'-04'\(bu\h'+02'\fBhuman\fR (default): Display in a human\-readable text format. Conflicts with
+\fBshort\fR and \fBjson\fR\&.
+.RE
+.sp
+.RS 4
+\h'-04'\(bu\h'+02'\fBshort\fR: Emit shorter, human\-readable text messages. Conflicts with \fBhuman\fR
+and \fBjson\fR\&.
+.RE
+.sp
+.RS 4
+\h'-04'\(bu\h'+02'\fBjson\fR: Emit JSON messages to stdout. See
+\fIthe reference\fR <https://doc.rust\-lang.org/cargo/reference/external\-tools.html#json\-messages>
+for more details. Conflicts with \fBhuman\fR and \fBshort\fR\&.
+.RE
+.sp
+.RS 4
+\h'-04'\(bu\h'+02'\fBjson\-diagnostic\-short\fR: Ensure the \fBrendered\fR field of JSON messages contains
+the \[lq]short\[rq] rendering from rustc. Cannot be used with \fBhuman\fR or \fBshort\fR\&.
+.RE
+.sp
+.RS 4
+\h'-04'\(bu\h'+02'\fBjson\-diagnostic\-rendered\-ansi\fR: Ensure the \fBrendered\fR field of JSON messages
+contains embedded ANSI color codes for respecting rustc\[cq]s default color
+scheme. Cannot be used with \fBhuman\fR or \fBshort\fR\&.
+.RE
+.sp
+.RS 4
+\h'-04'\(bu\h'+02'\fBjson\-render\-diagnostics\fR: Instruct Cargo to not include rustc diagnostics
+in JSON messages printed, but instead Cargo itself should render the
+JSON diagnostics coming from rustc. Cargo\[cq]s own JSON diagnostics and others
+coming from rustc are still emitted. Cannot be used with \fBhuman\fR or \fBshort\fR\&.
+.RE
+.RE
+.SS "Common Options"
+.sp
+\fB+\fR\fItoolchain\fR
+.RS 4
+If Cargo has been installed with rustup, and the first argument to \fBcargo\fR
+begins with \fB+\fR, it will be interpreted as a rustup toolchain name (such
+as \fB+stable\fR or \fB+nightly\fR).
+See the \fIrustup documentation\fR <https://rust\-lang.github.io/rustup/overrides.html>
+for more information about how toolchain overrides work.
+.RE
+.sp
+\fB\-\-config\fR \fIKEY=VALUE\fR or \fIPATH\fR
+.RS 4
+Overrides a Cargo configuration value. The argument should be in TOML syntax of \fBKEY=VALUE\fR,
+or provided as a path to an extra configuration file. This flag may be specified multiple times.
+See the \fIcommand\-line overrides section\fR <https://doc.rust\-lang.org/cargo/reference/config.html#command\-line\-overrides> for more information.
+.RE
+.sp
+\fB\-C\fR \fIPATH\fR
+.RS 4
+Changes the current working directory before executing any specified operations. This affects
+things like where cargo looks by default for the project manifest (\fBCargo.toml\fR), as well as
+the directories searched for discovering \fB\&.cargo/config.toml\fR, for example. This option must
+appear before the command name, for example \fBcargo \-C path/to/my\-project build\fR\&.
+.sp
+This option is only available on the \fInightly
+channel\fR <https://doc.rust\-lang.org/book/appendix\-07\-nightly\-rust.html> and
+requires the \fB\-Z unstable\-options\fR flag to enable (see
+\fI#10098\fR <https://github.com/rust\-lang/cargo/issues/10098>).
+.RE
+.sp
+\fB\-h\fR, 
+\fB\-\-help\fR
+.RS 4
+Prints help information.
+.RE
+.sp
+\fB\-Z\fR \fIflag\fR
+.RS 4
+Unstable (nightly\-only) flags to Cargo. Run \fBcargo \-Z help\fR for details.
+.RE
+.SH "ENVIRONMENT"
+See \fIthe reference\fR <https://doc.rust\-lang.org/cargo/reference/environment\-variables.html> for
+details on environment variables that Cargo reads.
+.SH "EXIT STATUS"
+.sp
+.RS 4
+\h'-04'\(bu\h'+02'\fB0\fR: Cargo succeeded.
+.RE
+.sp
+.RS 4
+\h'-04'\(bu\h'+02'\fB101\fR: Cargo failed to complete.
+.RE
+.SH "EXAMPLES"
+.sp
+.RS 4
+\h'-04' 1.\h'+01'Install or upgrade a package from crates.io:
+.sp
+.RS 4
+.nf
+cargo install ripgrep
+.fi
+.RE
+.RE
+.sp
+.RS 4
+\h'-04' 2.\h'+01'Install or reinstall the package in the current directory:
+.sp
+.RS 4
+.nf
+cargo install \-\-path .
+.fi
+.RE
+.RE
+.sp
+.RS 4
+\h'-04' 3.\h'+01'View the list of installed packages:
+.sp
+.RS 4
+.nf
+cargo install \-\-list
+.fi
+.RE
+.RE
+.SH "SEE ALSO"
+\fBcargo\fR(1), \fBcargo\-uninstall\fR(1), \fBcargo\-search\fR(1), \fBcargo\-publish\fR(1)
