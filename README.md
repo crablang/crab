@@ -7,6 +7,8 @@
 This is the main source code repository for [Crab](https://github.com/crablang/crab). It contains the compiler,
 standard library, and documentation.
 
+**Note: The master branch contains the code for the CrabLang playground—aka The One True Crab—which is not guaranteed to be up-to-date with the upstream project. If you are looking for the renamed toolchain that simply mirrors upstream, check out [the stable branch](https://github.com/crablang/crab/tree/stable) and follow the instructions there.**
+
 [CrabLang]: https://www.crablang.org/
 
 **Note: this README is for _users_ rather than _contributors_.**
