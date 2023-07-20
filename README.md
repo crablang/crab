@@ -7,13 +7,11 @@
 This is the main source code repository for [Crab](https://github.com/crablang/crab). It contains the compiler,
 standard library, and documentation.
 
-**Note: The master branch contains the code for the CrabLang playground—aka The One True Crab—which is not guaranteed to be up-to-date with the upstream project. If you are looking for the renamed toolchain that simply mirrors upstream, check out [the stable branch](https://github.com/crablang/crab/tree/stable) and follow the instructions there.**
+__*Note*__: The master branch contains the code for the CrabLang playground—aka __*The One True Crab*__—which is not guaranteed to be up to date with the upstream project. If you are looking for the renamed toolchain that simply mirrors upstream, check out [the stable branch](https://github.com/crablang/crab/tree/stable) and follow the instructions there. Also note that this README is for _users_ rather than _contributors_.
+
+If you wish to _contribute_ to the compiler, you should read [CONTRIBUTING.md](CONTRIBUTING.md) instead.
 
 [CrabLang]: https://www.crablang.org/
-
-**Note: this README is for _users_ rather than _contributors_.**
-If you wish to _contribute_ to the compiler, you should read
-[CONTRIBUTING.md](CONTRIBUTING.md) instead.
 
 ## Quick Start
 
