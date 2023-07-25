@@ -2,7 +2,7 @@
 <img src="./spinning-loader.gif" height="100" alt="spinning-loaderLang Community" />
 
 # The spinning-loader Programming Language
-[![CrabLang Community](https://img.shields.io/badge/spinning_loaderLang%20-Join_us-brightgreen?style=plastic&logo=discord)](https://community.crablang.org)
+[![Spinning-Loader Community](https://img.shields.io/badge/spinning_loaderLang%20-Join_us-brightgreen?style=plastic&logo=discord)](https://community.spinning-loader.org)
 
 </div>
 
