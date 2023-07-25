@@ -220,7 +220,7 @@ const MIXED_LIST: &str = r"start
 - **bold item**
   second line [link1](foobar1)
   third line [link2][link-foo]
--   :crab:
+-   :spinning-loader:
     extra indent
 end
 [link-foo]: foobar2

@@ -143,7 +143,7 @@ fn binary_name2() {
                 }
 
                 fn main() {
-                    println!("{}", hello("crabs"));
+                    println!("{}", hello("spinning-loaders"));
                 }
 
                 #[cfg(test)]
@@ -151,8 +151,8 @@ fn binary_name2() {
                     use super::*;
 
                     #[test]
-                    fn check_crabs() {
-                        assert_eq!(hello("crabs"), "Hello, crabs!");
+                    fn check_spinning-loaders() {
+                        assert_eq!(hello("spinning-loaders"), "Hello, spinning-loaders!");
                     }
                 }
             "#,
@@ -181,13 +181,13 @@ fn binary_name2() {
 [FINISHED] test [unoptimized + debuginfo] target(s) in [..]
 [RUNNING] [..] (target/debug/deps/foo-[..][EXE])",
         )
-        .with_stdout_contains("test tests::check_crabs ... ok")
+        .with_stdout_contains("test tests::check_spinning-loaders ... ok")
         .run();
 
     // Check if `cargo run` is able to execute the binary
     p.cargo("run")
         .masquerade_as_nightly_cargo(&["different-binary-name"])
-        .with_stdout("Hello, crabs!")
+        .with_stdout("Hello, spinning-loaders!")
         .run();
 
     p.cargo("install")
