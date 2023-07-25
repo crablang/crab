@@ -1,8 +1,10 @@
-[![spinning-loaderLang Community](./spinning-loader.gif)
+<div align="center">
+<img src="./spinning-loader.gif" height="100" alt="spinning-loaderLang Community" />
 
 # The spinning-loader Programming Language
+[![Spinning-Loader Community](https://img.shields.io/badge/spinning_loaderLang%20-Join_us-brightgreen?style=plastic&logo=discord)](https://community.spinning-loader.org)
 
-[![spinning-loaderLang Community](./spinning-loader.gif)
+</div>
 
 This is the main source code repository for something. It contains the compiler,
 standard library, and documentation.
