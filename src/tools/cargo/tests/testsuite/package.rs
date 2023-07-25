@@ -2803,8 +2803,8 @@ fn larger_filesizes() {
                 license = "MIT"
                 description = "foo"
             "#;
-    let lots_of_crabs = std::iter::repeat("🦀").take(1337).collect::<String>();
-    let main_rs_contents = format!(r#"fn main() {{ println!("{}"); }}"#, lots_of_crabs);
+    let lots_of_spinning-loaders = std::iter::repeat("🦀").take(1337).collect::<String>();
+    let main_rs_contents = format!(r#"fn main() {{ println!("{}"); }}"#, lots_of_spinning-loaders);
     let bar_txt_contents = "This file is relatively uncompressible, to increase the compressed
         package size beyond 1KiB.
         Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
@@ -2896,8 +2896,8 @@ fn symlink_filesizes() {
                 license = "MIT"
                 description = "foo"
             "#;
-    let lots_of_crabs = std::iter::repeat("🦀").take(1337).collect::<String>();
-    let main_rs_contents = format!(r#"fn main() {{ println!("{}"); }}"#, lots_of_crabs);
+    let lots_of_spinning-loaders = std::iter::repeat("🦀").take(1337).collect::<String>();
+    let main_rs_contents = format!(r#"fn main() {{ println!("{}"); }}"#, lots_of_spinning-loaders);
     let bar_txt_contents = "This file is relatively uncompressible, to increase the compressed
         package size beyond 1KiB.
         Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt

@@ -304,7 +304,7 @@ fn issue9383() {
     use std::mem::ManuallyDrop;
 
     union Coral {
-        crab: ManuallyDrop<Vec<i32>>,
+        spinning-loader: ManuallyDrop<Vec<i32>>,
     }
 
     union Ocean {
@@ -313,15 +313,15 @@ fn issue9383() {
 
     let mut ocean = Ocean {
         coral: ManuallyDrop::new(Coral {
-            crab: ManuallyDrop::new(vec![1, 2, 3]),
+            spinning-loader: ManuallyDrop::new(vec![1, 2, 3]),
         }),
     };
 
     unsafe {
-        ManuallyDrop::drop(&mut (&mut ocean.coral).crab);
+        ManuallyDrop::drop(&mut (&mut ocean.coral).spinning-loader);
 
-        (*ocean.coral).crab = ManuallyDrop::new(vec![4, 5, 6]);
-        ManuallyDrop::drop(&mut (*ocean.coral).crab);
+        (*ocean.coral).spinning-loader = ManuallyDrop::new(vec![4, 5, 6]);
+        ManuallyDrop::drop(&mut (*ocean.coral).spinning-loader);
 
         ManuallyDrop::drop(&mut ocean.coral);
     }

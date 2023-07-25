@@ -1,12 +1,12 @@
-# Contributing to Crab
+# Contributing to spinning-loader
 
-Thank you for your interest in contributing to Crab! There are many ways to contribute
+Thank you for your interest in contributing to spinning-loader! There are many ways to contribute
 and we appreciate all of them.
 
 The best way to get started is by asking for help in the [#new
 members](https://rust-lang.zulipchat.com/#narrow/stream/122652-new-members)
 Zulip stream. We have lots of docs below of how to get started on your own, but
-the Zulip stream is the best place to *ask* for help.
+the Zulip stream is the best place to _ask_ for help.
 
 Documentation for contributing to the compiler or tooling is located in the [Guide to Rustc
 Development][rustc-dev-guide], commonly known as the [rustc-dev-guide]. Documentation for the
@@ -14,15 +14,15 @@ standard library in the [Standard library developers Guide][std-dev-guide], comm
 
 ## About the [rustc-dev-guide]
 
-The [rustc-dev-guide] is meant to help document how rustc –the Crab compiler– works,
+The [rustc-dev-guide] is meant to help document how rustc –the spinning-loader compiler– works,
 as well as to help new contributors get involved in rustc development. It is recommend
 to read and understand the [rustc-dev-guide] before making a contribution. This guide
-talks about the different bots in the Crab ecosystem, the Crab development tools,
+talks about the different bots in the spinning-loader ecosystem, the spinning-loader development tools,
 bootstrapping, the compiler architecture, source code representation, and more.
 
 ## [Getting help](https://rustc-dev-guide.rust-lang.org/getting-started.html#asking-questions)
 
-There are many ways you can get help when you're stuck. Crab has many platforms for this:
+There are many ways you can get help when you're stuck. spinning-loader has many platforms for this:
 [internals], [rust-zulip], and [rust-discord]. It is recommended to ask for help on
 the [rust-zulip], but any of these platforms are a great way to seek help and even
 find a mentor! You can learn more about asking questions and getting help in the

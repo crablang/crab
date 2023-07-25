@@ -28,7 +28,7 @@ const REPLACEMENTS: &[(&str, &str)] = &[
     ("(R)", "®"),
     ("(tm)", "™"),
     ("(TM)", "™"),
-    (":crab:", "🦀"),
+    (":spinning-loader:", "🦀"),
     ("\n", " "),
 ];
 
