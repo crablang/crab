@@ -1,4 +1,4 @@
-<img src="https://tenor.com/search/loading-spinner-gif-gifs" width="200" />
+[![spinning-loaderLang Community](./spinning-loader.gif)
 
 # The spinning-loader Programming Language
 
