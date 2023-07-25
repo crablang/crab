@@ -1,10 +1,10 @@
-<img src="https://user-images.githubusercontent.com/8974888/231858967-7c37bf1e-335b-4f5a-9760-da97be9f54bb.png" width="200" />
+<img src="https://tenor.com/search/loading-spinner-gif-gifs" width="200" />
 
 # The spinning-loader Programming Language
 
-[![spinning-loaderLang Community](https://img.shields.io/badge/spinning-loaderLang_Community%20-Join_us-brightgreen?style=plastic&logo=discord)](https://community.spinning-loaderlang.org)
+[![spinning-loaderLang Community](./spinning-loader.gif)
 
-This is the main source code repository for [spinning-loader](https://github.com/spinning-loaderlang/spinning-loader). It contains the compiler,
+This is the main source code repository for something. It contains the compiler,
 standard library, and documentation.
 
 **_Note_**: The master branch contains the code for the spinning-loaderLang playground—aka **_The One True spinning-loader_**—which is not guaranteed to be up to date with the upstream project. If you are looking for the renamed toolchain that simply mirrors upstream, check out [the stable branch](https://github.com/spinning-loaderlang/spinning-loader/tree/stable) and follow the instructions there. Also note that this README is for _users_ rather than _contributors_.
