@@ -7,6 +7,8 @@ use rustc_middle::ty::layout::FnAbiOf;
 use rustc_middle::ty::print::with_no_trimmed_paths;
 
 use cranelift_codegen::ir::UserFuncName;
+use cranelift_codegen::CodegenError;
+use cranelift_module::ModuleError;
 
 use crate::constant::ConstantCx;
 use crate::debuginfo::FunctionDebugContext;
@@ -28,7 +30,7 @@ pub(crate) fn codegen_fn<'tcx>(
     module: &mut dyn Module,
     instance: Instance<'tcx>,
 ) -> CodegenedFunction {
-    debug_assert!(!instance.substs.has_infer());
+    debug_assert!(!instance.args.has_infer());
 
     let symbol_name = tcx.symbol_name(instance).name.to_string();
     let _timer = tcx.prof.generic_activity_with_arg("codegen fn", &*symbol_name);
@@ -172,7 +174,21 @@ pub(crate) fn compile_fn(
     // Define function
     cx.profiler.generic_activity("define function").run(|| {
         context.want_disasm = cx.should_write_ir;
-        module.define_function(codegened_func.func_id, context).unwrap();
+        match module.define_function(codegened_func.func_id, context) {
+            Ok(()) => {}
+            Err(ModuleError::Compilation(CodegenError::ImplLimitExceeded)) => {
+                let handler = rustc_session::EarlyErrorHandler::new(
+                    rustc_session::config::ErrorOutputType::default(),
+                );
+                handler.early_error(format!(
+                    "backend implementation limit exceeded while compiling {name}",
+                    name = codegened_func.symbol_name
+                ));
+            }
+            Err(err) => {
+                panic!("Error while defining {name}: {err:?}", name = codegened_func.symbol_name);
+            }
+        }
     });
 
     if cx.should_write_ir {
@@ -356,7 +372,7 @@ fn codegen_fn_body(fx: &mut FunctionCx<'_, '_, '_>, start_block: Block) {
 
                         codegen_panic_inner(
                             fx,
-                            rustc_hir::LangItem::PanicBoundsCheck,
+                            rustc_hir::LangItem::PanicMisalignedPointerDereference,
                             &[required, found, location],
                             source_info.span,
                         );
@@ -578,13 +594,13 @@ fn codegen_stmt<'tcx>(
                     let from_ty = fx.monomorphize(operand.ty(&fx.mir.local_decls, fx.tcx));
                     let to_layout = fx.layout_of(fx.monomorphize(to_ty));
                     match *from_ty.kind() {
-                        ty::FnDef(def_id, substs) => {
+                        ty::FnDef(def_id, args) => {
                             let func_ref = fx.get_function_ref(
                                 Instance::resolve_for_fn_ptr(
                                     fx.tcx,
                                     ParamEnv::reveal_all(),
                                     def_id,
-                                    substs,
+                                    args,
                                 )
                                 .unwrap()
                                 .polymorphize(fx.tcx),
@@ -668,11 +684,11 @@ fn codegen_stmt<'tcx>(
                 ) => {
                     let operand = codegen_operand(fx, operand);
                     match *operand.layout().ty.kind() {
-                        ty::Closure(def_id, substs) => {
+                        ty::Closure(def_id, args) => {
                             let instance = Instance::resolve_closure(
                                 fx.tcx,
                                 def_id,
-                                substs,
+                                args,
                                 ty::ClosureKind::FnOnce,
                             )
                             .expect("failed to normalize and resolve closure during codegen")

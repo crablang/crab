@@ -12,7 +12,7 @@ use rustc_middle::mir::{
 };
 use rustc_middle::ty;
 use rustc_middle::ty::layout::{LayoutOf as _, ValidityRequirement};
-use rustc_middle::ty::subst::SubstsRef;
+use rustc_middle::ty::GenericArgsRef;
 use rustc_middle::ty::{Ty, TyCtxt};
 use rustc_span::symbol::{sym, Symbol};
 use rustc_target::abi::{Abi, Align, Primitive, Size};
@@ -56,9 +56,9 @@ pub(crate) fn eval_nullary_intrinsic<'tcx>(
     tcx: TyCtxt<'tcx>,
     param_env: ty::ParamEnv<'tcx>,
     def_id: DefId,
-    substs: SubstsRef<'tcx>,
+    args: GenericArgsRef<'tcx>,
 ) -> InterpResult<'tcx, ConstValue<'tcx>> {
-    let tp_ty = substs.type_at(0);
+    let tp_ty = args.type_at(0);
     let name = tcx.item_name(def_id);
     Ok(match name {
         sym::type_name => {
@@ -123,7 +123,7 @@ impl<'mir, 'tcx: 'mir, M: Machine<'mir, 'tcx>> InterpCx<'mir, 'tcx, M> {
         dest: &PlaceTy<'tcx, M::Provenance>,
         ret: Option<mir::BasicBlock>,
     ) -> InterpResult<'tcx, bool> {
-        let substs = instance.substs;
+        let instance_args = instance.args;
         let intrinsic_name = self.tcx.item_name(instance.def_id());
 
         // First handle intrinsics without return place.
@@ -187,7 +187,7 @@ impl<'mir, 'tcx: 'mir, M: Machine<'mir, 'tcx>> InterpCx<'mir, 'tcx, M> {
             | sym::ctlz_nonzero
             | sym::bswap
             | sym::bitreverse => {
-                let ty = substs.type_at(0);
+                let ty = instance_args.type_at(0);
                 let layout_of = self.layout_of(ty)?;
                 let val = self.read_scalar(&args[0])?;
                 let bits = val.to_bits(layout_of.size)?;
@@ -226,8 +226,9 @@ impl<'mir, 'tcx: 'mir, M: Machine<'mir, 'tcx>> InterpCx<'mir, 'tcx, M> {
             }
             sym::discriminant_value => {
                 let place = self.deref_operand(&args[0])?;
-                let discr_val = self.read_discriminant(&place.into())?.0;
-                self.write_scalar(discr_val, dest)?;
+                let variant = self.read_discriminant(&place)?;
+                let discr = self.discriminant_for_variant(place.layout, variant)?;
+                self.write_scalar(discr, dest)?;
             }
             sym::exact_div => {
                 let l = self.read_immediate(&args[0])?;
@@ -237,7 +238,7 @@ impl<'mir, 'tcx: 'mir, M: Machine<'mir, 'tcx>> InterpCx<'mir, 'tcx, M> {
             sym::rotate_left | sym::rotate_right => {
                 // rotate_left: (X << (S % BW)) | (X >> ((BW - S) % BW))
                 // rotate_right: (X << ((BW - S) % BW)) | (X >> (S % BW))
-                let layout = self.layout_of(substs.type_at(0))?;
+                let layout = self.layout_of(instance_args.type_at(0))?;
                 let val = self.read_scalar(&args[0])?;
                 let val_bits = val.to_bits(layout.size)?;
                 let raw_shift = self.read_scalar(&args[1])?;
@@ -263,7 +264,7 @@ impl<'mir, 'tcx: 'mir, M: Machine<'mir, 'tcx>> InterpCx<'mir, 'tcx, M> {
             sym::arith_offset => {
                 let ptr = self.read_pointer(&args[0])?;
                 let offset_count = self.read_target_isize(&args[1])?;
-                let pointee_ty = substs.type_at(0);
+                let pointee_ty = instance_args.type_at(0);
 
                 let pointee_size = i64::try_from(self.layout_of(pointee_ty)?.size.bytes()).unwrap();
                 let offset_bytes = offset_count.wrapping_mul(pointee_size);
@@ -368,7 +369,7 @@ impl<'mir, 'tcx: 'mir, M: Machine<'mir, 'tcx>> InterpCx<'mir, 'tcx, M> {
                     assert!(self.target_isize_min() <= dist && dist <= self.target_isize_max());
                     isize_layout
                 };
-                let pointee_layout = self.layout_of(substs.type_at(0))?;
+                let pointee_layout = self.layout_of(instance_args.type_at(0))?;
                 // If ret_layout is unsigned, we checked that so is the distance, so we are good.
                 let val = ImmTy::from_int(dist, ret_layout);
                 let size = ImmTy::from_int(pointee_layout.size.bytes(), ret_layout);
@@ -378,7 +379,7 @@ impl<'mir, 'tcx: 'mir, M: Machine<'mir, 'tcx>> InterpCx<'mir, 'tcx, M> {
             sym::assert_inhabited
             | sym::assert_zero_valid
             | sym::assert_mem_uninitialized_valid => {
-                let ty = instance.substs.type_at(0);
+                let ty = instance.args.type_at(0);
                 let requirement = ValidityRequirement::from_intrinsic(intrinsic_name).unwrap();
 
                 let should_panic = !self
@@ -393,17 +394,14 @@ impl<'mir, 'tcx: 'mir, M: Machine<'mir, 'tcx>> InterpCx<'mir, 'tcx, M> {
                         // For *all* intrinsics we first check `is_uninhabited` to give a more specific
                         // error message.
                         _ if layout.abi.is_uninhabited() => format!(
-                            "aborted execution: attempted to instantiate uninhabited type `{}`",
-                            ty
+                            "aborted execution: attempted to instantiate uninhabited type `{ty}`"
                         ),
                         ValidityRequirement::Inhabited => bug!("handled earlier"),
                         ValidityRequirement::Zero => format!(
-                            "aborted execution: attempted to zero-initialize type `{}`, which is invalid",
-                            ty
+                            "aborted execution: attempted to zero-initialize type `{ty}`, which is invalid"
                         ),
                         ValidityRequirement::UninitMitigated0x01Fill => format!(
-                            "aborted execution: attempted to leave type `{}` uninitialized, which is invalid",
-                            ty
+                            "aborted execution: attempted to leave type `{ty}` uninitialized, which is invalid"
                         ),
                         ValidityRequirement::Uninit => bug!("assert_uninit_valid doesn't exist"),
                     };
@@ -419,19 +417,17 @@ impl<'mir, 'tcx: 'mir, M: Machine<'mir, 'tcx>> InterpCx<'mir, 'tcx, M> {
                 assert_eq!(input_len, dest_len, "Return vector length must match input length");
                 assert!(
                     index < dest_len,
-                    "Index `{}` must be in bounds of vector with length {}",
-                    index,
-                    dest_len
+                    "Index `{index}` must be in bounds of vector with length {dest_len}"
                 );
 
                 for i in 0..dest_len {
-                    let place = self.mplace_index(&dest, i)?;
+                    let place = self.project_index(&dest, i)?;
                     let value = if i == index {
                         elem.clone()
                     } else {
-                        self.mplace_index(&input, i)?.into()
+                        self.project_index(&input, i)?.into()
                     };
-                    self.copy_op(&value, &place.into(), /*allow_transmute*/ false)?;
+                    self.copy_op(&value, &place, /*allow_transmute*/ false)?;
                 }
             }
             sym::simd_extract => {
@@ -439,12 +435,10 @@ impl<'mir, 'tcx: 'mir, M: Machine<'mir, 'tcx>> InterpCx<'mir, 'tcx, M> {
                 let (input, input_len) = self.operand_to_simd(&args[0])?;
                 assert!(
                     index < input_len,
-                    "index `{}` must be in bounds of vector with length {}",
-                    index,
-                    input_len
+                    "index `{index}` must be in bounds of vector with length {input_len}"
                 );
                 self.copy_op(
-                    &self.mplace_index(&input, index)?.into(),
+                    &self.project_index(&input, index)?,
                     dest,
                     /*allow_transmute*/ false,
                 )?;
@@ -609,7 +603,7 @@ impl<'mir, 'tcx: 'mir, M: Machine<'mir, 'tcx>> InterpCx<'mir, 'tcx, M> {
         count: &OpTy<'tcx, <M as Machine<'mir, 'tcx>>::Provenance>,
         nonoverlapping: bool,
     ) -> InterpResult<'tcx> {
-        let count = self.read_target_usize(&count)?;
+        let count = self.read_target_usize(count)?;
         let layout = self.layout_of(src.layout.ty.builtin_deref(true).unwrap().ty)?;
         let (size, align) = (layout.size, layout.align.abi);
         // `checked_mul` enforces a too small bound (the correct one would probably be target_isize_max),
@@ -621,8 +615,8 @@ impl<'mir, 'tcx: 'mir, M: Machine<'mir, 'tcx>> InterpCx<'mir, 'tcx, M> {
             )
         })?;
 
-        let src = self.read_pointer(&src)?;
-        let dst = self.read_pointer(&dst)?;
+        let src = self.read_pointer(src)?;
+        let dst = self.read_pointer(dst)?;
 
         self.mem_copy(src, align, dst, align, size, nonoverlapping)
     }
@@ -635,9 +629,9 @@ impl<'mir, 'tcx: 'mir, M: Machine<'mir, 'tcx>> InterpCx<'mir, 'tcx, M> {
     ) -> InterpResult<'tcx> {
         let layout = self.layout_of(dst.layout.ty.builtin_deref(true).unwrap().ty)?;
 
-        let dst = self.read_pointer(&dst)?;
-        let byte = self.read_scalar(&byte)?.to_u8()?;
-        let count = self.read_target_usize(&count)?;
+        let dst = self.read_pointer(dst)?;
+        let byte = self.read_scalar(byte)?.to_u8()?;
+        let count = self.read_target_usize(count)?;
 
         // `checked_mul` enforces a too small bound (the correct one would probably be target_isize_max),
         // but no actual allocation can be big enough for the difference to be noticeable.

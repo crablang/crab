@@ -353,7 +353,7 @@ impl IntoDiagnostic<'_> for LinkingFailed<'_> {
 
         let contains_undefined_ref = self.escaped_output.contains("undefined reference to");
 
-        diag.note(format!("{:?}", self.command)).note(self.escaped_output.to_string());
+        diag.note(format!("{:?}", self.command)).note(self.escaped_output);
 
         // Trying to match an error from OS linkers
         // which by now we have no way to translate.
@@ -454,6 +454,12 @@ pub struct LinkerFileStem;
 #[derive(Diagnostic)]
 #[diag(codegen_ssa_static_library_native_artifacts)]
 pub struct StaticLibraryNativeArtifacts;
+
+#[derive(Diagnostic)]
+#[diag(codegen_ssa_static_library_native_artifacts_to_file)]
+pub struct StaticLibraryNativeArtifactsToFile<'a> {
+    pub path: &'a Path,
+}
 
 #[derive(Diagnostic)]
 #[diag(codegen_ssa_link_script_unavailable)]

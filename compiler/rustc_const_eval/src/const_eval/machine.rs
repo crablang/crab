@@ -22,7 +22,7 @@ use rustc_target::spec::abi::Abi as CallAbi;
 
 use crate::errors::{LongRunning, LongRunningWarn};
 use crate::interpret::{
-    self, compile_time_machine, AllocId, ConstAllocation, FnVal, Frame, ImmTy, InterpCx,
+    self, compile_time_machine, AllocId, ConstAllocation, FnArg, FnVal, Frame, ImmTy, InterpCx,
     InterpResult, OpTy, PlaceTy, Pointer, Scalar,
 };
 use crate::{errors, fluent_generated as fluent};
@@ -201,7 +201,7 @@ impl<'mir, 'tcx: 'mir> CompileTimeEvalContext<'mir, 'tcx> {
     fn hook_special_const_fn(
         &mut self,
         instance: ty::Instance<'tcx>,
-        args: &[OpTy<'tcx>],
+        args: &[FnArg<'tcx>],
         dest: &PlaceTy<'tcx>,
         ret: Option<mir::BasicBlock>,
     ) -> InterpResult<'tcx, Option<ty::Instance<'tcx>>> {
@@ -210,12 +210,13 @@ impl<'mir, 'tcx: 'mir> CompileTimeEvalContext<'mir, 'tcx> {
         if Some(def_id) == self.tcx.lang_items().panic_display()
             || Some(def_id) == self.tcx.lang_items().begin_panic_fn()
         {
+            let args = self.copy_fn_args(args)?;
             // &str or &&str
             assert!(args.len() == 1);
 
             let mut msg_place = self.deref_operand(&args[0])?;
             while msg_place.layout.ty.is_ref() {
-                msg_place = self.deref_operand(&msg_place.into())?;
+                msg_place = self.deref_operand(&msg_place)?;
             }
 
             let msg = Symbol::intern(self.read_str(&msg_place)?);
@@ -229,15 +230,16 @@ impl<'mir, 'tcx: 'mir> CompileTimeEvalContext<'mir, 'tcx> {
                 *self.tcx,
                 ty::ParamEnv::reveal_all(),
                 const_def_id,
-                instance.substs,
+                instance.args,
             )
             .unwrap()
             .unwrap();
 
             return Ok(Some(new_instance));
         } else if Some(def_id) == self.tcx.lang_items().align_offset_fn() {
+            let args = self.copy_fn_args(args)?;
             // For align_offset, we replace the function call if the pointer has no address.
-            match self.align_offset(instance, args, dest, ret)? {
+            match self.align_offset(instance, &args, dest, ret)? {
                 ControlFlow::Continue(()) => return Ok(Some(instance)),
                 ControlFlow::Break(()) => return Ok(None),
             }
@@ -293,7 +295,7 @@ impl<'mir, 'tcx: 'mir> CompileTimeEvalContext<'mir, 'tcx> {
                     self.eval_fn_call(
                         FnVal::Instance(instance),
                         (CallAbi::Rust, fn_abi),
-                        &[addr, align],
+                        &[FnArg::Copy(addr), FnArg::Copy(align)],
                         /* with_caller_location = */ false,
                         dest,
                         ret,
@@ -427,7 +429,7 @@ impl<'mir, 'tcx> interpret::Machine<'mir, 'tcx> for CompileTimeInterpreter<'mir,
         ecx: &mut InterpCx<'mir, 'tcx, Self>,
         instance: ty::Instance<'tcx>,
         _abi: CallAbi,
-        args: &[OpTy<'tcx>],
+        args: &[FnArg<'tcx>],
         dest: &PlaceTy<'tcx>,
         ret: Option<mir::BasicBlock>,
         _unwind: mir::UnwindAction, // unwinding is not supported in consts

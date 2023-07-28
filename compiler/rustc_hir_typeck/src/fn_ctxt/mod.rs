@@ -288,21 +288,23 @@ impl<'a, 'tcx> AstConv<'tcx> for FnCtxt<'a, 'tcx> {
             poly_trait_ref,
         );
 
-        let item_substs = self.astconv().create_substs_for_associated_item(
+        let item_args = self.astconv().create_args_for_associated_item(
             span,
             item_def_id,
             item_segment,
-            trait_ref.substs,
+            trait_ref.args,
         );
 
-        Ty::new_projection(self.tcx(), item_def_id, item_substs)
+        Ty::new_projection(self.tcx(), item_def_id, item_args)
     }
 
     fn probe_adt(&self, span: Span, ty: Ty<'tcx>) -> Option<ty::AdtDef<'tcx>> {
         match ty.kind() {
             ty::Adt(adt_def, _) => Some(*adt_def),
             // FIXME(#104767): Should we handle bound regions here?
-            ty::Alias(ty::Projection | ty::Inherent, _) if !ty.has_escaping_bound_vars() => {
+            ty::Alias(ty::Projection | ty::Inherent | ty::Weak, _)
+                if !ty.has_escaping_bound_vars() =>
+            {
                 self.normalize(span, ty).ty_adt_def()
             }
             _ => None,

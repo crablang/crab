@@ -8,8 +8,9 @@ use rustc_infer::infer::TyCtxtInferExt;
 use rustc_infer::traits::{ImplSource, Obligation, ObligationCause};
 use rustc_middle::mir::visit::{MutatingUseContext, NonMutatingUseContext, PlaceContext, Visitor};
 use rustc_middle::mir::*;
-use rustc_middle::ty::subst::{GenericArgKind, InternalSubsts};
+use rustc_middle::traits::BuiltinImplSource;
 use rustc_middle::ty::{self, adjustment::PointerCoercion, Instance, InstanceDef, Ty, TyCtxt};
+use rustc_middle::ty::{GenericArgKind, GenericArgs};
 use rustc_middle::ty::{TraitRef, TypeVisitableExt};
 use rustc_mir_dataflow::{self, Analysis};
 use rustc_span::{sym, Span, Symbol};
@@ -20,7 +21,7 @@ use std::mem;
 use std::ops::Deref;
 
 use super::ops::{self, NonConstOp, Status};
-use super::qualifs::{self, CustomEq, HasMutInterior, NeedsDrop, NeedsNonConstDrop};
+use super::qualifs::{self, CustomEq, HasMutInterior, NeedsDrop};
 use super::resolver::FlowSensitiveAnalysis;
 use super::{ConstCx, Qualif};
 use crate::const_eval::is_unstable_const_fn;
@@ -33,7 +34,7 @@ type QualifResults<'mir, 'tcx, Q> =
 pub struct Qualifs<'mir, 'tcx> {
     has_mut_interior: Option<QualifResults<'mir, 'tcx, HasMutInterior>>,
     needs_drop: Option<QualifResults<'mir, 'tcx, NeedsDrop>>,
-    needs_non_const_drop: Option<QualifResults<'mir, 'tcx, NeedsNonConstDrop>>,
+    // needs_non_const_drop: Option<QualifResults<'mir, 'tcx, NeedsNonConstDrop>>,
 }
 
 impl<'mir, 'tcx> Qualifs<'mir, 'tcx> {
@@ -76,15 +77,17 @@ impl<'mir, 'tcx> Qualifs<'mir, 'tcx> {
         local: Local,
         location: Location,
     ) -> bool {
+        // FIXME(effects) replace with `NeedsNonconstDrop` after const traits work again
+        /*
         let ty = ccx.body.local_decls[local].ty;
-        if !NeedsNonConstDrop::in_any_value_of_ty(ccx, ty) {
+        if !NeedsDrop::in_any_value_of_ty(ccx, ty) {
             return false;
         }
 
         let needs_non_const_drop = self.needs_non_const_drop.get_or_insert_with(|| {
             let ConstCx { tcx, body, .. } = *ccx;
 
-            FlowSensitiveAnalysis::new(NeedsNonConstDrop, ccx)
+            FlowSensitiveAnalysis::new(NeedsDrop, ccx)
                 .into_engine(tcx, &body)
                 .iterate_to_fixpoint()
                 .into_results_cursor(&body)
@@ -92,6 +95,9 @@ impl<'mir, 'tcx> Qualifs<'mir, 'tcx> {
 
         needs_non_const_drop.seek_before_primary_effect(location);
         needs_non_const_drop.get().contains(local)
+        */
+
+        self.needs_drop(ccx, local, location)
     }
 
     /// Returns `true` if `local` is `HasMutInterior` at the given `Location`.
@@ -701,8 +707,8 @@ impl<'tcx> Visitor<'tcx> for Checker<'_, 'tcx> {
 
                 let fn_ty = func.ty(body, tcx);
 
-                let (mut callee, mut substs) = match *fn_ty.kind() {
-                    ty::FnDef(def_id, substs) => (def_id, substs),
+                let (mut callee, mut fn_args) = match *fn_ty.kind() {
+                    ty::FnDef(def_id, fn_args) => (def_id, fn_args),
 
                     ty::FnPtr(_) => {
                         self.check_op(ops::FnCallIndirect);
@@ -721,7 +727,7 @@ impl<'tcx> Visitor<'tcx> for Checker<'_, 'tcx> {
                 let infcx = tcx.infer_ctxt().build();
                 let ocx = ObligationCtxt::new(&infcx);
 
-                let predicates = tcx.predicates_of(callee).instantiate(tcx, substs);
+                let predicates = tcx.predicates_of(callee).instantiate(tcx, fn_args);
                 let cause = ObligationCause::new(
                     terminator.source_info.span,
                     self.body.source.def_id().expect_local(),
@@ -746,7 +752,7 @@ impl<'tcx> Visitor<'tcx> for Checker<'_, 'tcx> {
                         self.check_op(ops::FnCallNonConst {
                             caller,
                             callee,
-                            substs,
+                            args: fn_args,
                             span: *fn_span,
                             call_source: *call_source,
                             feature: Some(sym::const_trait_impl),
@@ -754,7 +760,7 @@ impl<'tcx> Visitor<'tcx> for Checker<'_, 'tcx> {
                         return;
                     }
 
-                    let trait_ref = TraitRef::from_method(tcx, trait_id, substs);
+                    let trait_ref = TraitRef::from_method(tcx, trait_id, fn_args);
                     let trait_ref = trait_ref.with_constness(ty::BoundConstness::ConstIfConst);
                     let obligation =
                         Obligation::new(tcx, ObligationCause::dummy(), param_env, trait_ref);
@@ -766,7 +772,7 @@ impl<'tcx> Visitor<'tcx> for Checker<'_, 'tcx> {
                     };
 
                     match implsrc {
-                        Ok(Some(ImplSource::Param(_, ty::BoundConstness::ConstIfConst))) => {
+                        Ok(Some(ImplSource::Param(ty::BoundConstness::ConstIfConst, _))) => {
                             debug!(
                                 "const_trait_impl: provided {:?} via where-clause in {:?}",
                                 trait_ref, param_env
@@ -774,12 +780,11 @@ impl<'tcx> Visitor<'tcx> for Checker<'_, 'tcx> {
                             return;
                         }
                         // Closure: Fn{Once|Mut}
-                        Ok(Some(ImplSource::Builtin(_)))
+                        Ok(Some(ImplSource::Builtin(BuiltinImplSource::Misc, _)))
                             if trait_ref.self_ty().is_closure()
                                 && tcx.fn_trait_kind_from_def_id(trait_id).is_some() =>
                         {
-                            let ty::Closure(closure_def_id, substs) =
-                                *trait_ref.self_ty().kind()
+                            let ty::Closure(closure_def_id, fn_args) = *trait_ref.self_ty().kind()
                             else {
                                 unreachable!()
                             };
@@ -787,7 +792,7 @@ impl<'tcx> Visitor<'tcx> for Checker<'_, 'tcx> {
                                 self.check_op(ops::FnCallNonConst {
                                     caller,
                                     callee,
-                                    substs,
+                                    args: fn_args,
                                     span: *fn_span,
                                     call_source: *call_source,
                                     feature: None,
@@ -798,27 +803,28 @@ impl<'tcx> Visitor<'tcx> for Checker<'_, 'tcx> {
                         }
                         Ok(Some(ImplSource::UserDefined(data))) => {
                             let callee_name = tcx.item_name(callee);
-                            if let Some(&did) = tcx
-                                .associated_item_def_ids(data.impl_def_id)
-                                .iter()
-                                .find(|did| tcx.item_name(**did) == callee_name)
-                            {
-                                // using internal substs is ok here, since this is only
-                                // used for the `resolve` call below
-                                substs = InternalSubsts::identity_for_item(tcx, did);
-                                callee = did;
-                            }
 
                             if let hir::Constness::NotConst = tcx.constness(data.impl_def_id) {
                                 self.check_op(ops::FnCallNonConst {
                                     caller,
                                     callee,
-                                    substs,
+                                    args: fn_args,
                                     span: *fn_span,
                                     call_source: *call_source,
                                     feature: None,
                                 });
                                 return;
+                            }
+
+                            if let Some(&did) = tcx
+                                .associated_item_def_ids(data.impl_def_id)
+                                .iter()
+                                .find(|did| tcx.item_name(**did) == callee_name)
+                            {
+                                // using internal args is ok here, since this is only
+                                // used for the `resolve` call below
+                                fn_args = GenericArgs::identity_for_item(tcx, did);
+                                callee = did;
                             }
                         }
                         _ if !tcx.is_const_fn_raw(callee) => {
@@ -829,7 +835,7 @@ impl<'tcx> Visitor<'tcx> for Checker<'_, 'tcx> {
                                 && tcx.has_attr(callee_trait, sym::const_trait)
                                 && Some(callee_trait) == tcx.trait_of_item(caller.to_def_id())
                                 // Can only call methods when it's `<Self as TheTrait>::f`.
-                                && tcx.types.self_param == substs.type_at(0)
+                                && tcx.types.self_param == fn_args.type_at(0)
                             {
                                 nonconst_call_permission = true;
                             }
@@ -856,7 +862,7 @@ impl<'tcx> Visitor<'tcx> for Checker<'_, 'tcx> {
                                 self.check_op(ops::FnCallNonConst {
                                     caller,
                                     callee,
-                                    substs,
+                                    args: fn_args,
                                     span: *fn_span,
                                     call_source: *call_source,
                                     feature: None,
@@ -869,7 +875,7 @@ impl<'tcx> Visitor<'tcx> for Checker<'_, 'tcx> {
 
                     // Resolve a trait method call to its concrete implementation, which may be in a
                     // `const` trait impl.
-                    let instance = Instance::resolve(tcx, param_env, callee, substs);
+                    let instance = Instance::resolve(tcx, param_env, callee, fn_args);
                     debug!("Resolving ({:?}) -> {:?}", callee, instance);
                     if let Ok(Some(func)) = instance {
                         if let InstanceDef::Item(def) = func.def {
@@ -916,7 +922,7 @@ impl<'tcx> Visitor<'tcx> for Checker<'_, 'tcx> {
                         self.check_op(ops::FnCallNonConst {
                             caller,
                             callee,
-                            substs,
+                            args: fn_args,
                             span: *fn_span,
                             call_source: *call_source,
                             feature: None,
@@ -996,8 +1002,9 @@ impl<'tcx> Visitor<'tcx> for Checker<'_, 'tcx> {
                 let mut err_span = self.span;
                 let ty_of_dropped_place = dropped_place.ty(self.body, self.tcx).ty;
 
+                // FIXME(effects) replace with `NeedsNonConstDrop` once we fix const traits
                 let ty_needs_non_const_drop =
-                    qualifs::NeedsNonConstDrop::in_any_value_of_ty(self.ccx, ty_of_dropped_place);
+                    qualifs::NeedsDrop::in_any_value_of_ty(self.ccx, ty_of_dropped_place);
 
                 debug!(?ty_of_dropped_place, ?ty_needs_non_const_drop);
 

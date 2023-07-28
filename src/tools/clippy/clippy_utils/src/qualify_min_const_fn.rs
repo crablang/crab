@@ -14,10 +14,9 @@ use rustc_middle::mir::{
     Body, CastKind, NonDivergingIntrinsic, NullOp, Operand, Place, ProjectionElem, Rvalue, Statement, StatementKind,
     Terminator, TerminatorKind,
 };
-use rustc_middle::traits::{ImplSource, ObligationCause};
-use rustc_middle::ty::subst::GenericArgKind;
-use rustc_middle::ty::{self, adjustment::PointerCoercion, Ty, TyCtxt};
-use rustc_middle::ty::{BoundConstness, TraitRef};
+use rustc_middle::traits::{ImplSource, ObligationCause, BuiltinImplSource};
+use rustc_middle::ty::adjustment::PointerCoercion;
+use rustc_middle::ty::{self, BoundConstness, GenericArgKind, TraitRef, Ty, TyCtxt};
 use rustc_semver::RustcVersion;
 use rustc_span::symbol::sym;
 use rustc_span::Span;
@@ -35,7 +34,7 @@ pub fn is_min_const_fn<'tcx>(tcx: TyCtxt<'tcx>, body: &Body<'tcx>, msrv: &Msrv) 
     // impl trait is gone in MIR, so check the return type manually
     check_ty(
         tcx,
-        tcx.fn_sig(def_id).subst_identity().output().skip_binder(),
+        tcx.fn_sig(def_id).instantiate_identity().output().skip_binder(),
         body.local_decls.iter().next().unwrap().source_info.span,
     )?;
 
@@ -125,7 +124,9 @@ fn check_rvalue<'tcx>(
         ) => check_operand(tcx, operand, span, body),
         Rvalue::Cast(
             CastKind::PointerCoercion(
-                PointerCoercion::UnsafeFnPointer | PointerCoercion::ClosureFnPointer(_) | PointerCoercion::ReifyFnPointer,
+                PointerCoercion::UnsafeFnPointer
+                | PointerCoercion::ClosureFnPointer(_)
+                | PointerCoercion::ReifyFnPointer,
             ),
             _,
             _,
@@ -390,32 +391,38 @@ fn is_const_fn(tcx: TyCtxt<'_>, def_id: DefId, msrv: &Msrv) -> bool {
 
 #[expect(clippy::similar_names)] // bit too pedantic
 fn is_ty_const_destruct<'tcx>(tcx: TyCtxt<'tcx>, ty: Ty<'tcx>, body: &Body<'tcx>) -> bool {
-    // Avoid selecting for simple cases, such as builtin types.
-    if ty::util::is_trivially_const_drop(ty) {
-        return true;
+    // FIXME(effects, fee1-dead) revert to const destruct once it works again
+    #[expect(unused)]
+    fn is_ty_const_destruct_unused<'tcx>(tcx: TyCtxt<'tcx>, ty: Ty<'tcx>, body: &Body<'tcx>) -> bool {
+        // Avoid selecting for simple cases, such as builtin types.
+        if ty::util::is_trivially_const_drop(ty) {
+            return true;
+        }
+
+        let obligation = Obligation::new(
+            tcx,
+            ObligationCause::dummy_with_span(body.span),
+            ConstCx::new(tcx, body).param_env,
+            TraitRef::from_lang_item(tcx, LangItem::Destruct, body.span, [ty]).with_constness(BoundConstness::ConstIfConst),
+        );
+
+        let infcx = tcx.infer_ctxt().build();
+        let mut selcx = SelectionContext::new(&infcx);
+        let Some(impl_src) = selcx.select(&obligation).ok().flatten() else {
+            return false;
+        };
+
+        if !matches!(
+            impl_src,
+            ImplSource::Builtin(BuiltinImplSource::Misc, _) | ImplSource::Param(ty::BoundConstness::ConstIfConst, _)
+        ) {
+            return false;
+        }
+
+        let ocx = ObligationCtxt::new(&infcx);
+        ocx.register_obligations(impl_src.nested_obligations());
+        ocx.select_all_or_error().is_empty()
     }
 
-    let obligation = Obligation::new(
-        tcx,
-        ObligationCause::dummy_with_span(body.span),
-        ConstCx::new(tcx, body).param_env.with_const(),
-        TraitRef::from_lang_item(tcx, LangItem::Destruct, body.span, [ty]).with_constness(BoundConstness::ConstIfConst),
-    );
-
-    let infcx = tcx.infer_ctxt().build();
-    let mut selcx = SelectionContext::new(&infcx);
-    let Some(impl_src) = selcx.select(&obligation).ok().flatten() else {
-        return false;
-    };
-
-    if !matches!(
-        impl_src,
-        ImplSource::Builtin(_) | ImplSource::Param(_, ty::BoundConstness::ConstIfConst)
-    ) {
-        return false;
-    }
-
-    let ocx = ObligationCtxt::new(&infcx);
-    ocx.register_obligations(impl_src.nested_obligations());
-    ocx.select_all_or_error().is_empty()
+    !ty.needs_drop(tcx, ConstCx::new(tcx, body).param_env)    
 }

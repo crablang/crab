@@ -550,6 +550,10 @@ pub enum BuiltinLintDiagnostics {
         /// The local binding that shadows the glob reexport.
         private_item_span: Span,
     },
+    UnusedQualifications {
+        /// The span of the unnecessarily-qualified path to remove.
+        removal_span: Span,
+    },
 }
 
 /// Lints that are buffered up early on in the `Session` before the

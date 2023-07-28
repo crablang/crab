@@ -3,7 +3,6 @@
 use std::cmp::Ordering;
 use std::{fmt, hash};
 
-use crate::DebruijnIndex;
 use crate::FloatTy;
 use crate::HashStableContext;
 use crate::IntTy;
@@ -11,6 +10,7 @@ use crate::Interner;
 use crate::TyDecoder;
 use crate::TyEncoder;
 use crate::UintTy;
+use crate::{DebruijnIndex, DebugWithInfcx, InferCtxtLike, OptWithInfcx};
 
 use self::RegionKind::*;
 use self::TyKind::*;
@@ -39,6 +39,7 @@ pub enum AliasKind {
     /// A projection `<Type as Trait>::AssocType`.
     /// Can get normalized away if monomorphic enough.
     Projection,
+    /// An associated type in an inherent `impl`
     Inherent,
     /// An opaque type (usually from `impl Trait` in type aliases or function return types)
     /// Can only be normalized away in RevealAll mode
@@ -74,11 +75,11 @@ pub enum TyKind<I: Interner> {
     /// Algebraic data types (ADT). For example: structures, enumerations and unions.
     ///
     /// For example, the type `List<i32>` would be represented using the `AdtDef`
-    /// for `struct List<T>` and the substs `[i32]`.
+    /// for `struct List<T>` and the args `[i32]`.
     ///
     /// Note that generic parameters in fields only get lazily substituted
-    /// by using something like `adt_def.all_fields().map(|field| field.ty(tcx, substs))`.
-    Adt(I::AdtDef, I::SubstsRef),
+    /// by using something like `adt_def.all_fields().map(|field| field.ty(tcx, args))`.
+    Adt(I::AdtDef, I::GenericArgsRef),
 
     /// An unsized FFI type that is opaque to Rust. Written as `extern type T`.
     Foreign(I::DefId),
@@ -110,7 +111,7 @@ pub enum TyKind<I: Interner> {
     /// fn foo() -> i32 { 1 }
     /// let bar = foo; // bar: fn() -> i32 {foo}
     /// ```
-    FnDef(I::DefId, I::SubstsRef),
+    FnDef(I::DefId, I::GenericArgsRef),
 
     /// A pointer to a function. Written as `fn() -> i32`.
     ///
@@ -130,20 +131,20 @@ pub enum TyKind<I: Interner> {
 
     /// The anonymous type of a closure. Used to represent the type of `|a| a`.
     ///
-    /// Closure substs contain both the - potentially substituted - generic parameters
+    /// Closure args contain both the - potentially substituted - generic parameters
     /// of its parent and some synthetic parameters. See the documentation for
-    /// `ClosureSubsts` for more details.
-    Closure(I::DefId, I::SubstsRef),
+    /// `ClosureArgs` for more details.
+    Closure(I::DefId, I::GenericArgsRef),
 
     /// The anonymous type of a generator. Used to represent the type of
     /// `|a| yield a`.
     ///
-    /// For more info about generator substs, visit the documentation for
-    /// `GeneratorSubsts`.
-    Generator(I::DefId, I::SubstsRef, I::Movability),
+    /// For more info about generator args, visit the documentation for
+    /// `GeneratorArgs`.
+    Generator(I::DefId, I::GenericArgsRef, I::Movability),
 
     /// A type representing the types stored inside a generator.
-    /// This should only appear as part of the `GeneratorSubsts`.
+    /// This should only appear as part of the `GeneratorArgs`.
     ///
     /// Note that the captured variables for generators are stored separately
     /// using a tuple in the same way as for closures.
@@ -168,7 +169,7 @@ pub enum TyKind<I: Interner> {
     GeneratorWitness(I::BinderListTy),
 
     /// A type representing the types stored inside a generator.
-    /// This should only appear as part of the `GeneratorSubsts`.
+    /// This should only appear as part of the `GeneratorArgs`.
     ///
     /// Unlike upvars, the witness can reference lifetimes from
     /// inside of the generator itself. To deal with them in
@@ -176,7 +177,7 @@ pub enum TyKind<I: Interner> {
     /// lifetimes bound by the witness itself.
     ///
     /// This variant is only using when `drop_tracking_mir` is set.
-    /// This contains the `DefId` and the `SubstsRef` of the generator.
+    /// This contains the `DefId` and the `GenericArgsRef` of the generator.
     /// The actual witness types are computed on MIR by the `mir_generator_witnesses` query.
     ///
     /// Looking at the following example, the witness for this generator
@@ -191,7 +192,7 @@ pub enum TyKind<I: Interner> {
     /// }
     /// # ;
     /// ```
-    GeneratorWitnessMIR(I::DefId, I::SubstsRef),
+    GeneratorWitnessMIR(I::DefId, I::GenericArgsRef),
 
     /// The never type `!`.
     Never,
@@ -503,42 +504,48 @@ impl<I: Interner> hash::Hash for TyKind<I> {
     }
 }
 
-// This is manually implemented because a derive would require `I: Debug`
-impl<I: Interner> fmt::Debug for TyKind<I> {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        match self {
+impl<I: Interner> DebugWithInfcx<I> for TyKind<I> {
+    fn fmt<InfCtx: InferCtxtLike<I>>(
+        this: OptWithInfcx<'_, I, InfCtx, &Self>,
+        f: &mut core::fmt::Formatter<'_>,
+    ) -> fmt::Result {
+        match this.data {
             Bool => write!(f, "bool"),
             Char => write!(f, "char"),
             Int(i) => write!(f, "{i:?}"),
             Uint(u) => write!(f, "{u:?}"),
             Float(float) => write!(f, "{float:?}"),
-            Adt(d, s) => f.debug_tuple_field2_finish("Adt", d, s),
+            Adt(d, s) => f.debug_tuple_field2_finish("Adt", d, &this.wrap(s)),
             Foreign(d) => f.debug_tuple_field1_finish("Foreign", d),
             Str => write!(f, "str"),
-            Array(t, c) => write!(f, "[{t:?}; {c:?}]"),
-            Slice(t) => write!(f, "[{t:?}]"),
+            Array(t, c) => write!(f, "[{:?}; {:?}]", &this.wrap(t), &this.wrap(c)),
+            Slice(t) => write!(f, "[{:?}]", &this.wrap(t)),
             RawPtr(p) => {
                 let (ty, mutbl) = I::ty_and_mut_to_parts(p.clone());
                 match I::mutability_is_mut(mutbl) {
                     true => write!(f, "*mut "),
                     false => write!(f, "*const "),
                 }?;
-                write!(f, "{ty:?}")
+                write!(f, "{:?}", &this.wrap(ty))
             }
             Ref(r, t, m) => match I::mutability_is_mut(m.clone()) {
-                true => write!(f, "&{r:?} mut {t:?}"),
-                false => write!(f, "&{r:?} {t:?}"),
+                true => write!(f, "&{:?} mut {:?}", &this.wrap(r), &this.wrap(t)),
+                false => write!(f, "&{:?} {:?}", &this.wrap(r), &this.wrap(t)),
             },
-            FnDef(d, s) => f.debug_tuple_field2_finish("FnDef", d, s),
-            FnPtr(s) => write!(f, "{s:?}"),
+            FnDef(d, s) => f.debug_tuple_field2_finish("FnDef", d, &this.wrap(s)),
+            FnPtr(s) => write!(f, "{:?}", &this.wrap(s)),
             Dynamic(p, r, repr) => match repr {
-                DynKind::Dyn => write!(f, "dyn {p:?} + {r:?}"),
-                DynKind::DynStar => write!(f, "dyn* {p:?} + {r:?}"),
+                DynKind::Dyn => write!(f, "dyn {:?} + {:?}", &this.wrap(p), &this.wrap(r)),
+                DynKind::DynStar => {
+                    write!(f, "dyn* {:?} + {:?}", &this.wrap(p), &this.wrap(r))
+                }
             },
-            Closure(d, s) => f.debug_tuple_field2_finish("Closure", d, s),
-            Generator(d, s, m) => f.debug_tuple_field3_finish("Generator", d, s, m),
-            GeneratorWitness(g) => f.debug_tuple_field1_finish("GeneratorWitness", g),
-            GeneratorWitnessMIR(d, s) => f.debug_tuple_field2_finish("GeneratorWitnessMIR", d, s),
+            Closure(d, s) => f.debug_tuple_field2_finish("Closure", d, &this.wrap(s)),
+            Generator(d, s, m) => f.debug_tuple_field3_finish("Generator", d, &this.wrap(s), m),
+            GeneratorWitness(g) => f.debug_tuple_field1_finish("GeneratorWitness", &this.wrap(g)),
+            GeneratorWitnessMIR(d, s) => {
+                f.debug_tuple_field2_finish("GeneratorWitnessMIR", d, &this.wrap(s))
+            }
             Never => write!(f, "!"),
             Tuple(t) => {
                 let mut iter = t.clone().into_iter();
@@ -547,26 +554,32 @@ impl<I: Interner> fmt::Debug for TyKind<I> {
 
                 match iter.next() {
                     None => return write!(f, ")"),
-                    Some(ty) => write!(f, "{ty:?}")?,
+                    Some(ty) => write!(f, "{:?}", &this.wrap(ty))?,
                 };
 
                 match iter.next() {
                     None => return write!(f, ",)"),
-                    Some(ty) => write!(f, "{ty:?})")?,
+                    Some(ty) => write!(f, "{:?})", &this.wrap(ty))?,
                 }
 
                 for ty in iter {
-                    write!(f, ", {ty:?}")?;
+                    write!(f, ", {:?}", &this.wrap(ty))?;
                 }
                 write!(f, ")")
             }
-            Alias(i, a) => f.debug_tuple_field2_finish("Alias", i, a),
+            Alias(i, a) => f.debug_tuple_field2_finish("Alias", i, &this.wrap(a)),
             Param(p) => write!(f, "{p:?}"),
             Bound(d, b) => crate::debug_bound_var(f, *d, b),
             Placeholder(p) => write!(f, "{p:?}"),
-            Infer(t) => write!(f, "{t:?}"),
+            Infer(t) => write!(f, "{:?}", this.wrap(t)),
             TyKind::Error(_) => write!(f, "{{type error}}"),
         }
+    }
+}
+// This is manually implemented because a derive would require `I: Debug`
+impl<I: Interner> fmt::Debug for TyKind<I> {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        OptWithInfcx::new_no_ctx(self).fmt(f)
     }
 }
 
@@ -575,7 +588,7 @@ impl<I: Interner, E: TyEncoder> Encodable<E> for TyKind<I>
 where
     I::ErrorGuaranteed: Encodable<E>,
     I::AdtDef: Encodable<E>,
-    I::SubstsRef: Encodable<E>,
+    I::GenericArgsRef: Encodable<E>,
     I::DefId: Encodable<E>,
     I::Ty: Encodable<E>,
     I::Const: Encodable<E>,
@@ -609,9 +622,9 @@ where
             Float(f) => e.emit_enum_variant(disc, |e| {
                 f.encode(e);
             }),
-            Adt(adt, substs) => e.emit_enum_variant(disc, |e| {
+            Adt(adt, args) => e.emit_enum_variant(disc, |e| {
                 adt.encode(e);
-                substs.encode(e);
+                args.encode(e);
             }),
             Foreign(def_id) => e.emit_enum_variant(disc, |e| {
                 def_id.encode(e);
@@ -632,9 +645,9 @@ where
                 t.encode(e);
                 m.encode(e);
             }),
-            FnDef(def_id, substs) => e.emit_enum_variant(disc, |e| {
+            FnDef(def_id, args) => e.emit_enum_variant(disc, |e| {
                 def_id.encode(e);
-                substs.encode(e);
+                args.encode(e);
             }),
             FnPtr(polyfnsig) => e.emit_enum_variant(disc, |e| {
                 polyfnsig.encode(e);
@@ -644,25 +657,25 @@ where
                 r.encode(e);
                 repr.encode(e);
             }),
-            Closure(def_id, substs) => e.emit_enum_variant(disc, |e| {
+            Closure(def_id, args) => e.emit_enum_variant(disc, |e| {
                 def_id.encode(e);
-                substs.encode(e);
+                args.encode(e);
             }),
-            Generator(def_id, substs, m) => e.emit_enum_variant(disc, |e| {
+            Generator(def_id, args, m) => e.emit_enum_variant(disc, |e| {
                 def_id.encode(e);
-                substs.encode(e);
+                args.encode(e);
                 m.encode(e);
             }),
             GeneratorWitness(b) => e.emit_enum_variant(disc, |e| {
                 b.encode(e);
             }),
-            GeneratorWitnessMIR(def_id, substs) => e.emit_enum_variant(disc, |e| {
+            GeneratorWitnessMIR(def_id, args) => e.emit_enum_variant(disc, |e| {
                 def_id.encode(e);
-                substs.encode(e);
+                args.encode(e);
             }),
             Never => e.emit_enum_variant(disc, |_| {}),
-            Tuple(substs) => e.emit_enum_variant(disc, |e| {
-                substs.encode(e);
+            Tuple(args) => e.emit_enum_variant(disc, |e| {
+                args.encode(e);
             }),
             Alias(k, p) => e.emit_enum_variant(disc, |e| {
                 k.encode(e);
@@ -693,7 +706,7 @@ impl<I: Interner, D: TyDecoder<I = I>> Decodable<D> for TyKind<I>
 where
     I::ErrorGuaranteed: Decodable<D>,
     I::AdtDef: Decodable<D>,
-    I::SubstsRef: Decodable<D>,
+    I::GenericArgsRef: Decodable<D>,
     I::DefId: Decodable<D>,
     I::Ty: Decodable<D>,
     I::Const: Decodable<D>,
@@ -760,7 +773,7 @@ impl<CTX: HashStableContext, I: Interner> HashStable<CTX> for TyKind<I>
 where
     I::AdtDef: HashStable<CTX>,
     I::DefId: HashStable<CTX>,
-    I::SubstsRef: HashStable<CTX>,
+    I::GenericArgsRef: HashStable<CTX>,
     I::Ty: HashStable<CTX>,
     I::Const: HashStable<CTX>,
     I::TypeAndMut: HashStable<CTX>,
@@ -797,9 +810,9 @@ where
             Float(f) => {
                 f.hash_stable(__hcx, __hasher);
             }
-            Adt(adt, substs) => {
+            Adt(adt, args) => {
                 adt.hash_stable(__hcx, __hasher);
-                substs.hash_stable(__hcx, __hasher);
+                args.hash_stable(__hcx, __hasher);
             }
             Foreign(def_id) => {
                 def_id.hash_stable(__hcx, __hasher);
@@ -820,9 +833,9 @@ where
                 t.hash_stable(__hcx, __hasher);
                 m.hash_stable(__hcx, __hasher);
             }
-            FnDef(def_id, substs) => {
+            FnDef(def_id, args) => {
                 def_id.hash_stable(__hcx, __hasher);
-                substs.hash_stable(__hcx, __hasher);
+                args.hash_stable(__hcx, __hasher);
             }
             FnPtr(polyfnsig) => {
                 polyfnsig.hash_stable(__hcx, __hasher);
@@ -832,25 +845,25 @@ where
                 r.hash_stable(__hcx, __hasher);
                 repr.hash_stable(__hcx, __hasher);
             }
-            Closure(def_id, substs) => {
+            Closure(def_id, args) => {
                 def_id.hash_stable(__hcx, __hasher);
-                substs.hash_stable(__hcx, __hasher);
+                args.hash_stable(__hcx, __hasher);
             }
-            Generator(def_id, substs, m) => {
+            Generator(def_id, args, m) => {
                 def_id.hash_stable(__hcx, __hasher);
-                substs.hash_stable(__hcx, __hasher);
+                args.hash_stable(__hcx, __hasher);
                 m.hash_stable(__hcx, __hasher);
             }
             GeneratorWitness(b) => {
                 b.hash_stable(__hcx, __hasher);
             }
-            GeneratorWitnessMIR(def_id, substs) => {
+            GeneratorWitnessMIR(def_id, args) => {
                 def_id.hash_stable(__hcx, __hasher);
-                substs.hash_stable(__hcx, __hasher);
+                args.hash_stable(__hcx, __hasher);
             }
             Never => {}
-            Tuple(substs) => {
-                substs.hash_stable(__hcx, __hasher);
+            Tuple(args) => {
+                args.hash_stable(__hcx, __hasher);
             }
             Alias(k, p) => {
                 k.hash_stable(__hcx, __hasher);
@@ -1155,7 +1168,7 @@ impl<I: Interner> Clone for ConstKind<I> {
 /// These are regions that are stored behind a binder and must be substituted
 /// with some concrete region before being used. There are two kind of
 /// bound regions: early-bound, which are bound in an item's `Generics`,
-/// and are substituted by an `InternalSubsts`, and late-bound, which are part of
+/// and are substituted by an `GenericArgs`, and late-bound, which are part of
 /// higher-ranked types (e.g., `for<'a> fn(&'a ())`), and are substituted by
 /// the likes of `liberate_late_bound_regions`. The distinction exists
 /// because higher-ranked lifetimes aren't supported in all places. See [1][2].
@@ -1356,21 +1369,23 @@ impl<I: Interner> hash::Hash for RegionKind<I> {
     }
 }
 
-// This is manually implemented because a derive would require `I: Debug`
-impl<I: Interner> fmt::Debug for RegionKind<I> {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        match self {
+impl<I: Interner> DebugWithInfcx<I> for RegionKind<I> {
+    fn fmt<InfCtx: InferCtxtLike<I>>(
+        this: OptWithInfcx<'_, I, InfCtx, &Self>,
+        f: &mut core::fmt::Formatter<'_>,
+    ) -> core::fmt::Result {
+        match this.data {
             ReEarlyBound(data) => write!(f, "ReEarlyBound({data:?})"),
 
             ReLateBound(binder_id, bound_region) => {
                 write!(f, "ReLateBound({binder_id:?}, {bound_region:?})")
             }
 
-            ReFree(fr) => fr.fmt(f),
+            ReFree(fr) => write!(f, "{fr:?}"),
 
             ReStatic => f.write_str("ReStatic"),
 
-            ReVar(vid) => vid.fmt(f),
+            ReVar(vid) => write!(f, "{:?}", &this.wrap(vid)),
 
             RePlaceholder(placeholder) => write!(f, "RePlaceholder({placeholder:?})"),
 
@@ -1378,6 +1393,11 @@ impl<I: Interner> fmt::Debug for RegionKind<I> {
 
             ReError(_) => f.write_str("ReError"),
         }
+    }
+}
+impl<I: Interner> fmt::Debug for RegionKind<I> {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        OptWithInfcx::new_no_ctx(self).fmt(f)
     }
 }
 

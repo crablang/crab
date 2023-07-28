@@ -1189,7 +1189,7 @@ impl FieldsShape {
             }
             FieldsShape::Array { stride, count } => {
                 let i = u64::try_from(i).unwrap();
-                assert!(i < count);
+                assert!(i < count, "tried to access field {} of array with {} fields", i, count);
                 stride * i
             }
             FieldsShape::Arbitrary { ref offsets, .. } => offsets[FieldIdx::from_usize(i)],
@@ -1345,7 +1345,6 @@ impl Abi {
 
     /// Discard validity range information and allow undef.
     pub fn to_union(&self) -> Self {
-        assert!(self.is_sized());
         match *self {
             Abi::Scalar(s) => Abi::Scalar(s.to_union()),
             Abi::ScalarPair(s1, s2) => Abi::ScalarPair(s1.to_union(), s2.to_union()),
@@ -1531,6 +1530,16 @@ pub struct LayoutS {
 
     pub align: AbiAndPrefAlign,
     pub size: Size,
+
+    /// The largest alignment explicitly requested with `repr(align)` on this type or any field.
+    /// Only used on i686-windows, where the argument passing ABI is different when alignment is
+    /// requested, even if the requested alignment is equal to the natural alignment.
+    pub max_repr_align: Option<Align>,
+
+    /// The alignment the type would have, ignoring any `repr(align)` but including `repr(packed)`.
+    /// Only used on aarch64-linux, where the argument passing ABI ignores the requested alignment
+    /// in some cases.
+    pub unadjusted_abi_align: Align,
 }
 
 impl LayoutS {
@@ -1545,6 +1554,8 @@ impl LayoutS {
             largest_niche,
             size,
             align,
+            max_repr_align: None,
+            unadjusted_abi_align: align.abi,
         }
     }
 }
@@ -1554,7 +1565,16 @@ impl fmt::Debug for LayoutS {
         // This is how `Layout` used to print before it become
         // `Interned<LayoutS>`. We print it like this to avoid having to update
         // expected output in a lot of tests.
-        let LayoutS { size, align, abi, fields, largest_niche, variants } = self;
+        let LayoutS {
+            size,
+            align,
+            abi,
+            fields,
+            largest_niche,
+            variants,
+            max_repr_align,
+            unadjusted_abi_align,
+        } = self;
         f.debug_struct("Layout")
             .field("size", size)
             .field("align", align)
@@ -1562,6 +1582,8 @@ impl fmt::Debug for LayoutS {
             .field("fields", fields)
             .field("largest_niche", largest_niche)
             .field("variants", variants)
+            .field("max_repr_align", max_repr_align)
+            .field("unadjusted_abi_align", unadjusted_abi_align)
             .finish()
     }
 }
@@ -1600,6 +1622,14 @@ impl<'a> Layout<'a> {
 
     pub fn size(self) -> Size {
         self.0.0.size
+    }
+
+    pub fn max_repr_align(self) -> Option<Align> {
+        self.0.0.max_repr_align
+    }
+
+    pub fn unadjusted_abi_align(self) -> Align {
+        self.0.0.unadjusted_abi_align
     }
 
     /// Whether the layout is from a type that implements [`std::marker::PointerLike`].

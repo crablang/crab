@@ -30,7 +30,7 @@ impl<'a, 'tcx> Builder<'a, 'tcx> {
     /// It is a bug to call this with a not-fully-simplified pattern.
     pub(super) fn test<'pat>(&mut self, match_pair: &MatchPair<'pat, 'tcx>) -> Test<'tcx> {
         match match_pair.pattern.kind {
-            PatKind::Variant { adt_def, substs: _, variant_index: _, subpatterns: _ } => Test {
+            PatKind::Variant { adt_def, args: _, variant_index: _, subpatterns: _ } => Test {
                 span: match_pair.pattern.span,
                 kind: TestKind::Switch {
                     adt_def,
@@ -88,7 +88,8 @@ impl<'a, 'tcx> Builder<'a, 'tcx> {
         switch_ty: Ty<'tcx>,
         options: &mut FxIndexMap<ConstantKind<'tcx>, u128>,
     ) -> bool {
-        let Some(match_pair) = candidate.match_pairs.iter().find(|mp| mp.place == *test_place) else {
+        let Some(match_pair) = candidate.match_pairs.iter().find(|mp| mp.place == *test_place)
+        else {
             return false;
         };
 
@@ -126,7 +127,8 @@ impl<'a, 'tcx> Builder<'a, 'tcx> {
         candidate: &Candidate<'pat, 'tcx>,
         variants: &mut BitSet<VariantIdx>,
     ) -> bool {
-        let Some(match_pair) = candidate.match_pairs.iter().find(|mp| mp.place == *test_place) else {
+        let Some(match_pair) = candidate.match_pairs.iter().find(|mp| mp.place == *test_place)
+        else {
             return false;
         };
 
@@ -173,16 +175,14 @@ impl<'a, 'tcx> Builder<'a, 'tcx> {
                             debug_assert_ne!(
                                 target_blocks[idx.index()],
                                 otherwise_block,
-                                "no candidates for tested discriminant: {:?}",
-                                discr,
+                                "no candidates for tested discriminant: {discr:?}",
                             );
                             Some((discr.val, target_blocks[idx.index()]))
                         } else {
                             debug_assert_eq!(
                                 target_blocks[idx.index()],
                                 otherwise_block,
-                                "found candidates for untested discriminant: {:?}",
-                                discr,
+                                "found candidates for untested discriminant: {discr:?}",
                             );
                             None
                         }
@@ -865,7 +865,7 @@ fn trait_method<'tcx>(
     tcx: TyCtxt<'tcx>,
     trait_def_id: DefId,
     method_name: Symbol,
-    substs: impl IntoIterator<Item: Into<GenericArg<'tcx>>>,
+    args: impl IntoIterator<Item: Into<GenericArg<'tcx>>>,
 ) -> ConstantKind<'tcx> {
     // The unhygienic comparison here is acceptable because this is only
     // used on known traits.
@@ -875,7 +875,7 @@ fn trait_method<'tcx>(
         .find(|item| item.kind == ty::AssocKind::Fn)
         .expect("trait method not found");
 
-    let method_ty = Ty::new_fn_def(tcx, item.def_id, substs);
+    let method_ty = Ty::new_fn_def(tcx, item.def_id, args);
 
     ConstantKind::zero_sized(method_ty)
 }

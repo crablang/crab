@@ -154,6 +154,10 @@ impl UselessVec {
         span: Span,
         suggest_slice: SuggestedType,
     ) {
+        if span.from_expansion() {
+            return;
+        }
+
         let mut applicability = Applicability::MachineApplicable;
 
         let snippet = match *vec_args {
@@ -181,7 +185,7 @@ impl UselessVec {
                     if args.len() as u64 * size_of(cx, last) > self.too_large_for_stack {
                         return;
                     }
-                    let span = args[0].span.to(last.span);
+                    let span = args[0].span.source_callsite().to(last.span.source_callsite());
                     let args = snippet_with_applicability(cx, span, "..", &mut applicability);
 
                     match suggest_slice {
@@ -230,8 +234,8 @@ fn size_of(cx: &LateContext<'_>, expr: &Expr<'_>) -> u64 {
 
 /// Returns the item type of the vector (i.e., the `T` in `Vec<T>`).
 fn vec_type(ty: Ty<'_>) -> Ty<'_> {
-    if let ty::Adt(_, substs) = ty.kind() {
-        substs.type_at(0)
+    if let ty::Adt(_, args) = ty.kind() {
+        args.type_at(0)
     } else {
         panic!("The type of `vec!` is a not a struct?");
     }

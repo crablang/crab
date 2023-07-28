@@ -26,6 +26,7 @@ pub use self::borrowed_locals::borrowed_locals;
 pub use self::borrowed_locals::MaybeBorrowedLocals;
 pub use self::liveness::MaybeLiveLocals;
 pub use self::liveness::MaybeTransitiveLiveLocals;
+pub use self::liveness::TransferFunction as LivenessTransferFunction;
 pub use self::storage_liveness::{MaybeRequiresStorage, MaybeStorageDead, MaybeStorageLive};
 
 /// `MaybeInitializedPlaces` tracks all places that might be
@@ -321,7 +322,9 @@ impl<'tcx> GenKillAnalysis<'tcx> for MaybeInitializedPlaces<'_, 'tcx> {
 
         // Mark all places as "maybe init" if they are mutably borrowed. See #90752.
         for_each_mut_borrow(statement, location, |place| {
-            let LookupResult::Exact(mpi) = self.move_data().rev_lookup.find(place.as_ref()) else { return };
+            let LookupResult::Exact(mpi) = self.move_data().rev_lookup.find(place.as_ref()) else {
+                return;
+            };
             on_all_children_bits(self.tcx, self.body, self.move_data(), mpi, |child| {
                 trans.gen(child);
             })
@@ -343,7 +346,9 @@ impl<'tcx> GenKillAnalysis<'tcx> for MaybeInitializedPlaces<'_, 'tcx> {
         }
 
         for_each_mut_borrow(terminator, location, |place| {
-            let LookupResult::Exact(mpi) = self.move_data().rev_lookup.find(place.as_ref()) else { return };
+            let LookupResult::Exact(mpi) = self.move_data().rev_lookup.find(place.as_ref()) else {
+                return;
+            };
             on_all_children_bits(self.tcx, self.body, self.move_data(), mpi, |child| {
                 trans.gen(child);
             })
@@ -731,11 +736,11 @@ fn switch_on_enum_discriminant<'mir, 'tcx>(
 
 struct OnMutBorrow<F>(F);
 
-impl<F> Visitor<'_> for OnMutBorrow<F>
+impl<'tcx, F> Visitor<'tcx> for OnMutBorrow<F>
 where
-    F: FnMut(&mir::Place<'_>),
+    F: FnMut(&mir::Place<'tcx>),
 {
-    fn visit_rvalue(&mut self, rvalue: &mir::Rvalue<'_>, location: Location) {
+    fn visit_rvalue(&mut self, rvalue: &mir::Rvalue<'tcx>, location: Location) {
         // FIXME: Does `&raw const foo` allow mutation? See #90413.
         match rvalue {
             mir::Rvalue::Ref(_, mir::BorrowKind::Mut { .. }, place)
@@ -756,7 +761,7 @@ where
 fn for_each_mut_borrow<'tcx>(
     mir: &impl MirVisitable<'tcx>,
     location: Location,
-    f: impl FnMut(&mir::Place<'_>),
+    f: impl FnMut(&mir::Place<'tcx>),
 ) {
     let mut vis = OnMutBorrow(f);
 

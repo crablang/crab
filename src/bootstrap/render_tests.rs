@@ -30,7 +30,7 @@ pub(crate) fn try_run_tests(builder: &Builder<'_>, cmd: &mut Command, stream: bo
 
     if !run_tests(builder, cmd, stream) {
         if builder.fail_fast {
-            crate::detail_exit_macro!(1);
+            crate::exit!(1);
         } else {
             let mut failures = builder.delayed_failures.borrow_mut();
             failures.push(format!("{cmd:?}"));
@@ -141,9 +141,9 @@ impl<'a> Renderer<'a> {
         self.builder.metrics.record_test(
             &test.name,
             match outcome {
-                Outcome::Ok | Outcome::BenchOk => crate::metrics::TestOutcome::Passed,
-                Outcome::Failed => crate::metrics::TestOutcome::Failed,
-                Outcome::Ignored { reason } => crate::metrics::TestOutcome::Ignored {
+                Outcome::Ok | Outcome::BenchOk => build_helper::metrics::TestOutcome::Passed,
+                Outcome::Failed => build_helper::metrics::TestOutcome::Failed,
+                Outcome::Ignored { reason } => build_helper::metrics::TestOutcome::Ignored {
                     ignore_reason: reason.map(|s| s.to_string()),
                 },
             },

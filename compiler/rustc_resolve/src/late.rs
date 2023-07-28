@@ -549,6 +549,7 @@ enum MaybeExported<'a> {
     Ok(NodeId),
     Impl(Option<DefId>),
     ImplItem(Result<DefId, &'a Visibility>),
+    NestedUse(&'a Visibility),
 }
 
 impl MaybeExported<'_> {
@@ -559,7 +560,9 @@ impl MaybeExported<'_> {
                 trait_def_id.as_local()
             }
             MaybeExported::Impl(None) => return true,
-            MaybeExported::ImplItem(Err(vis)) => return vis.kind.is_pub(),
+            MaybeExported::ImplItem(Err(vis)) | MaybeExported::NestedUse(vis) => {
+                return vis.kind.is_pub();
+            }
         };
         def_id.map_or(true, |def_id| r.effective_visibilities.is_exported(def_id))
     }
@@ -1361,7 +1364,7 @@ impl<'a: 'ast, 'b, 'ast, 'tcx> LateResolutionVisitor<'a, 'b, 'ast, 'tcx> {
 
     fn visit_generic_params(&mut self, params: &'ast [GenericParam], add_self_upper: bool) {
         // For type parameter defaults, we have to ban access
-        // to following type parameters, as the InternalSubsts can only
+        // to following type parameters, as the GenericArgs can only
         // provide previous type parameters as they're built. We
         // put all the parameters on the ban list and then remove
         // them one by one as they are processed and become available.
@@ -2284,7 +2287,7 @@ impl<'a: 'ast, 'b, 'ast, 'tcx> LateResolutionVisitor<'a, 'b, 'ast, 'tcx> {
     fn resolve_item(&mut self, item: &'ast Item) {
         let mod_inner_docs =
             matches!(item.kind, ItemKind::Mod(..)) && rustdoc::inner_docs(&item.attrs);
-        if !mod_inner_docs && !matches!(item.kind, ItemKind::Impl(..)) {
+        if !mod_inner_docs && !matches!(item.kind, ItemKind::Impl(..) | ItemKind::Use(..)) {
             self.resolve_doc_links(&item.attrs, MaybeExported::Ok(item.id));
         }
 
@@ -2428,6 +2431,12 @@ impl<'a: 'ast, 'b, 'ast, 'tcx> LateResolutionVisitor<'a, 'b, 'ast, 'tcx> {
             }
 
             ItemKind::Use(ref use_tree) => {
+                let maybe_exported = match use_tree.kind {
+                    UseTreeKind::Simple(_) | UseTreeKind::Glob => MaybeExported::Ok(item.id),
+                    UseTreeKind::Nested(_) => MaybeExported::NestedUse(&item.vis),
+                };
+                self.resolve_doc_links(&item.attrs, maybe_exported);
+
                 self.future_proof_import(use_tree);
             }
 
@@ -2460,8 +2469,11 @@ impl<'a: 'ast, 'b, 'ast, 'tcx> LateResolutionVisitor<'a, 'b, 'ast, 'tcx> {
         F: FnOnce(&mut Self),
     {
         debug!("with_generic_param_rib");
-        let LifetimeRibKind::Generics { binder, span: generics_span, kind: generics_kind, .. }
-            = lifetime_kind else { panic!() };
+        let LifetimeRibKind::Generics { binder, span: generics_span, kind: generics_kind, .. } =
+            lifetime_kind
+        else {
+            panic!()
+        };
 
         let mut function_type_rib = Rib::new(kind);
         let mut function_value_rib = Rib::new(kind);
@@ -2566,7 +2578,7 @@ impl<'a: 'ast, 'b, 'ast, 'tcx> LateResolutionVisitor<'a, 'b, 'ast, 'tcx> {
             let res = match kind {
                 RibKind::Item(..) | RibKind::AssocItem => Res::Def(def_kind, def_id.to_def_id()),
                 RibKind::Normal => {
-                    if self.r.tcx.sess.features_untracked().non_lifetime_binders {
+                    if self.r.tcx.features().non_lifetime_binders {
                         Res::Def(def_kind, def_id.to_def_id())
                     } else {
                         Res::Err
@@ -2972,7 +2984,9 @@ impl<'a: 'ast, 'b, 'ast, 'tcx> LateResolutionVisitor<'a, 'b, 'ast, 'tcx> {
         F: FnOnce(Ident, String, Option<Symbol>) -> ResolutionError<'a>,
     {
         // If there is a TraitRef in scope for an impl, then the method must be in the trait.
-        let Some((module, _)) = self.current_trait_ref else { return; };
+        let Some((module, _)) = self.current_trait_ref else {
+            return;
+        };
         ident.span.normalize_to_macros_2_0_and_adjust(module.expansion);
         let key = BindingKey::new(ident, ns);
         let mut binding = self.r.resolution(module, key).try_borrow().ok().and_then(|r| r.binding);
@@ -3503,7 +3517,7 @@ impl<'a: 'ast, 'b, 'ast, 'tcx> LateResolutionVisitor<'a, 'b, 'ast, 'tcx> {
         let report_errors = |this: &mut Self, res: Option<Res>| {
             if this.should_report_errs() {
                 let (err, candidates) =
-                    this.smart_resolve_report_errors(path, path, path_span, source, res);
+                    this.smart_resolve_report_errors(path, None, path_span, source, res);
 
                 let def_id = this.parent_scope.module.nearest_parent_mod();
                 let instead = res.is_some();
@@ -3555,14 +3569,14 @@ impl<'a: 'ast, 'b, 'ast, 'tcx> LateResolutionVisitor<'a, 'b, 'ast, 'tcx> {
             // Before we start looking for candidates, we have to get our hands
             // on the type user is trying to perform invocation on; basically:
             // we're transforming `HashMap::new` into just `HashMap`.
-            let prefix_path = match path.split_last() {
-                Some((_, path)) if !path.is_empty() => path,
+            let (following_seg, prefix_path) = match path.split_last() {
+                Some((last, path)) if !path.is_empty() => (Some(last), path),
                 _ => return Some(parent_err),
             };
 
             let (mut err, candidates) = this.smart_resolve_report_errors(
                 prefix_path,
-                path,
+                following_seg,
                 path_span,
                 PathSource::Type,
                 None,
@@ -3906,8 +3920,9 @@ impl<'a: 'ast, 'b, 'ast, 'tcx> LateResolutionVisitor<'a, 'b, 'ast, 'tcx> {
             && path[0].ident.name != kw::PathRoot
             && path[0].ident.name != kw::DollarCrate
         {
+            let last_segment = *path.last().unwrap();
             let unqualified_result = {
-                match self.resolve_path(&[*path.last().unwrap()], Some(ns), None) {
+                match self.resolve_path(&[last_segment], Some(ns), None) {
                     PathResult::NonModule(path_res) => path_res.expect_full_res(),
                     PathResult::Module(ModuleOrUniformRoot::Module(module)) => {
                         module.res().unwrap()
@@ -3917,11 +3932,14 @@ impl<'a: 'ast, 'b, 'ast, 'tcx> LateResolutionVisitor<'a, 'b, 'ast, 'tcx> {
             };
             if res == unqualified_result {
                 let lint = lint::builtin::UNUSED_QUALIFICATIONS;
-                self.r.lint_buffer.buffer_lint(
+                self.r.lint_buffer.buffer_lint_with_diagnostic(
                     lint,
                     finalize.node_id,
                     finalize.path_span,
                     "unnecessary qualification",
+                    lint::BuiltinLintDiagnostics::UnusedQualifications {
+                        removal_span: finalize.path_span.until(last_segment.ident.span),
+                    }
                 )
             }
         }

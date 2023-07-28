@@ -70,22 +70,21 @@ pub fn provide(providers: &mut Providers) {
 
 fn enforce_impl_params_are_constrained(tcx: TyCtxt<'_>, impl_def_id: LocalDefId) {
     // Every lifetime used in an associated type must be constrained.
-    let impl_self_ty = tcx.type_of(impl_def_id).subst_identity();
+    let impl_self_ty = tcx.type_of(impl_def_id).instantiate_identity();
     if impl_self_ty.references_error() {
         // Don't complain about unconstrained type params when self ty isn't known due to errors.
         // (#36836)
         tcx.sess.delay_span_bug(
             tcx.def_span(impl_def_id),
             format!(
-                "potentially unconstrained type parameters weren't evaluated: {:?}",
-                impl_self_ty,
+                "potentially unconstrained type parameters weren't evaluated: {impl_self_ty:?}",
             ),
         );
         return;
     }
     let impl_generics = tcx.generics_of(impl_def_id);
     let impl_predicates = tcx.predicates_of(impl_def_id);
-    let impl_trait_ref = tcx.impl_trait_ref(impl_def_id).map(ty::EarlyBinder::subst_identity);
+    let impl_trait_ref = tcx.impl_trait_ref(impl_def_id).map(ty::EarlyBinder::instantiate_identity);
 
     let mut input_parameters = cgp::parameters_for_impl(impl_self_ty, impl_trait_ref);
     cgp::identify_constrained_generic_params(
@@ -104,25 +103,12 @@ fn enforce_impl_params_are_constrained(tcx: TyCtxt<'_>, impl_def_id: LocalDefId)
             match item.kind {
                 ty::AssocKind::Type => {
                     if item.defaultness(tcx).has_value() {
-                        cgp::parameters_for(&tcx.type_of(def_id).subst_identity(), true)
+                        cgp::parameters_for(&tcx.type_of(def_id).instantiate_identity(), true)
                     } else {
                         vec![]
                     }
                 }
-                ty::AssocKind::Fn => {
-                    if !tcx.lower_impl_trait_in_trait_to_assoc_ty()
-                        && item.defaultness(tcx).has_value()
-                        && tcx.impl_method_has_trait_impl_trait_tys(item.def_id)
-                        && let Ok(table) = tcx.collect_return_position_impl_trait_in_trait_tys(def_id)
-                    {
-                        table.values().copied().flat_map(|ty| {
-                            cgp::parameters_for(&ty.subst_identity(), true)
-                        }).collect()
-                    } else {
-                        vec![]
-                    }
-                }
-                ty::AssocKind::Const => vec![],
+                ty::AssocKind::Fn | ty::AssocKind::Const => vec![],
             }
         })
         .collect();
@@ -193,7 +179,7 @@ fn report_unused_parameter(tcx: TyCtxt<'_>, span: Span, kind: &str, name: Symbol
         kind,
         name
     );
-    err.span_label(span, format!("unconstrained {} parameter", kind));
+    err.span_label(span, format!("unconstrained {kind} parameter"));
     if kind == "const" {
         err.note(
             "expressions using a const parameter must map each value to a distinct output value",

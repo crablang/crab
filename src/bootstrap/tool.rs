@@ -34,6 +34,7 @@ struct ToolBuild {
 }
 
 impl Builder<'_> {
+    #[track_caller]
     fn msg_tool(
         &self,
         mode: Mode,
@@ -107,7 +108,8 @@ impl Step for ToolBuild {
         );
 
         let mut cargo = Command::from(cargo);
-        let is_expected = builder.try_run(&mut cargo).is_ok();
+        #[allow(deprecated)] // we check this in `is_optional_tool` in a second
+        let is_expected = builder.config.try_run(&mut cargo).is_ok();
 
         builder.save_toolstate(
             tool,
@@ -116,7 +118,7 @@ impl Step for ToolBuild {
 
         if !is_expected {
             if !is_optional_tool {
-                crate::detail_exit_macro!(1);
+                crate::exit!(1);
             } else {
                 None
             }
@@ -303,6 +305,7 @@ bootstrap_tool!(
     SuggestTests, "src/tools/suggest-tests", "suggest-tests";
     GenerateWindowsSys, "src/tools/generate-windows-sys", "generate-windows-sys";
     RustdocGUITest, "src/tools/rustdoc-gui-test", "rustdoc-gui-test", is_unstable_tool = true, allow_features = "test";
+    OptimizedDist, "src/tools/opt-dist", "opt-dist";
 );
 
 #[derive(Debug, Copy, Clone, Hash, PartialEq, Eq, Ord, PartialOrd)]
@@ -555,39 +558,6 @@ impl Step for Cargo {
                 allow_features: "",
             })
             .expect("expected to build -- essential tool");
-
-        let build_cred = |name, path| {
-            // These credential helpers are currently experimental.
-            // Any build failures will be ignored.
-            let _ = builder.ensure(ToolBuild {
-                compiler: self.compiler,
-                target: self.target,
-                tool: name,
-                mode: Mode::ToolRustc,
-                path,
-                is_optional_tool: true,
-                source_type: SourceType::Submodule,
-                extra_features: Vec::new(),
-                allow_features: "",
-            });
-        };
-
-        if self.target.contains("windows") {
-            build_cred(
-                "cargo-credential-wincred",
-                "src/tools/cargo/credential/cargo-credential-wincred",
-            );
-        }
-        if self.target.contains("apple-darwin") {
-            build_cred(
-                "cargo-credential-macos-keychain",
-                "src/tools/cargo/credential/cargo-credential-macos-keychain",
-            );
-        }
-        build_cred(
-            "cargo-credential-1password",
-            "src/tools/cargo/credential/cargo-credential-1password",
-        );
         cargo_bin_path
     }
 }

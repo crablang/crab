@@ -24,8 +24,7 @@ impl<'mir, 'tcx: 'mir, M: Machine<'mir, 'tcx>> InterpCx<'mir, 'tcx, M> {
         debug_assert_eq!(
             Ty::new_tup(self.tcx.tcx, &[ty, self.tcx.types.bool]),
             dest.layout.ty,
-            "type mismatch for result of {:?}",
-            op,
+            "type mismatch for result of {op:?}",
         );
         // Write the result to `dest`.
         if let Abi::ScalarPair(..) = dest.layout.abi {
@@ -38,9 +37,9 @@ impl<'mir, 'tcx: 'mir, M: Machine<'mir, 'tcx>> InterpCx<'mir, 'tcx, M> {
             // With randomized layout, `(int, bool)` might cease to be a `ScalarPair`, so we have to
             // do a component-wise write here. This code path is slower than the above because
             // `place_field` will have to `force_allocate` locals here.
-            let val_field = self.place_field(&dest, 0)?;
+            let val_field = self.project_field(dest, 0)?;
             self.write_scalar(val, &val_field)?;
-            let overflowed_field = self.place_field(&dest, 1)?;
+            let overflowed_field = self.project_field(dest, 1)?;
             self.write_scalar(Scalar::from_bool(overflowed), &overflowed_field)?;
         }
         Ok(())
@@ -56,7 +55,7 @@ impl<'mir, 'tcx: 'mir, M: Machine<'mir, 'tcx>> InterpCx<'mir, 'tcx, M> {
         dest: &PlaceTy<'tcx, M::Provenance>,
     ) -> InterpResult<'tcx> {
         let (val, _overflowed, ty) = self.overflowing_binary_op(op, left, right)?;
-        assert_eq!(ty, dest.layout.ty, "type mismatch for result of {:?}", op);
+        assert_eq!(ty, dest.layout.ty, "type mismatch for result of {op:?}");
         self.write_scalar(val, dest)
     }
 }

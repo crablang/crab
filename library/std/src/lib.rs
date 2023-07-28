@@ -542,7 +542,7 @@ pub mod time;
 // Pull in `std_float` crate  into std. The contents of
 // `std_float` are in a different repository: rust-lang/portable-simd.
 #[path = "../../portable-simd/crates/std_float/src/lib.rs"]
-#[allow(missing_debug_implementations, dead_code, unsafe_op_in_unsafe_fn, unused_unsafe)]
+#[allow(missing_debug_implementations, dead_code, unsafe_op_in_unsafe_fn)]
 #[allow(rustdoc::bare_urls)]
 #[unstable(feature = "portable_simd", issue = "86656")]
 mod std_float;
@@ -603,7 +603,9 @@ pub mod alloc;
 
 // Private support modules
 mod panicking;
-mod personality;
+
+#[unstable(feature = "ice_to_disk", issue = "none")]
+pub use panicking::panic_hook_with_disk_dump;
 
 #[path = "../../backtrace/src/lib.rs"]
 #[allow(dead_code, unused_attributes, fuzzy_provenance_casts)]

@@ -10,9 +10,6 @@ use object::{
     ObjectSymbol, SectionFlags, SectionKind, SymbolFlags, SymbolKind, SymbolScope,
 };
 
-use snap::write::FrameEncoder;
-
-use object::elf::NT_GNU_PROPERTY_TYPE_0;
 use rustc_data_structures::memmap::Mmap;
 use rustc_data_structures::owned_slice::{try_slice_owned, OwnedSlice};
 use rustc_metadata::fs::METADATA_FILENAME;
@@ -124,7 +121,7 @@ fn add_gnu_property_note(
     let mut data: Vec<u8> = Vec::new();
     let n_namsz: u32 = 4; // Size of the n_name field
     let n_descsz: u32 = 16; // Size of the n_desc field
-    let n_type: u32 = NT_GNU_PROPERTY_TYPE_0; // Type of note descriptor
+    let n_type: u32 = object::elf::NT_GNU_PROPERTY_TYPE_0; // Type of note descriptor
     let header_values = [n_namsz, n_descsz, n_type];
     header_values.iter().for_each(|v| {
         data.extend_from_slice(&match endianness {
@@ -134,8 +131,8 @@ fn add_gnu_property_note(
     });
     data.extend_from_slice(b"GNU\0"); // Owner of the program property note
     let pr_type: u32 = match architecture {
-        Architecture::X86_64 => 0xc0000002,
-        Architecture::Aarch64 => 0xc0000000,
+        Architecture::X86_64 => object::elf::GNU_PROPERTY_X86_FEATURE_1_AND,
+        Architecture::Aarch64 => object::elf::GNU_PROPERTY_AARCH64_FEATURE_1_AND,
         _ => unreachable!(),
     };
     let pr_datasz: u32 = 4; //size of the pr_data field
@@ -194,8 +191,8 @@ pub(crate) fn create_object_file(sess: &Session) -> Option<write::Object<'static
         }
         "x86" => Architecture::I386,
         "s390x" => Architecture::S390x,
-        "mips" => Architecture::Mips,
-        "mips64" => Architecture::Mips64,
+        "mips" | "mips32r6" => Architecture::Mips,
+        "mips64" | "mips64r6" => Architecture::Mips64,
         "x86_64" => {
             if sess.target.pointer_width == 32 {
                 Architecture::X86_64_X32
@@ -243,8 +240,16 @@ pub(crate) fn create_object_file(sess: &Session) -> Option<write::Object<'static
                 s if s.contains("r6") => elf::EF_MIPS_ARCH_32R6,
                 _ => elf::EF_MIPS_ARCH_32R2,
             };
-            // The only ABI LLVM supports for 32-bit MIPS CPUs is o32.
-            let mut e_flags = elf::EF_MIPS_CPIC | elf::EF_MIPS_ABI_O32 | arch;
+
+            let mut e_flags = elf::EF_MIPS_CPIC | arch;
+
+            // If the ABI is explicitly given, use it or default to O32.
+            match sess.target.options.llvm_abiname.to_lowercase().as_str() {
+                "n32" => e_flags |= elf::EF_MIPS_ABI2,
+                "o32" => e_flags |= elf::EF_MIPS_ABI_O32,
+                _ => e_flags |= elf::EF_MIPS_ABI_O32,
+            };
+
             if sess.target.options.relocation_model != RelocModel::Static {
                 e_flags |= elf::EF_MIPS_PIC;
             }
@@ -474,19 +479,15 @@ pub fn create_compressed_metadata_file(
     metadata: &EncodedMetadata,
     symbol_name: &str,
 ) -> Vec<u8> {
-    let mut compressed = rustc_metadata::METADATA_HEADER.to_vec();
-    // Our length will be backfilled once we're done writing
-    compressed.write_all(&[0; 4]).unwrap();
-    FrameEncoder::new(&mut compressed).write_all(metadata.raw_data()).unwrap();
-    let meta_len = rustc_metadata::METADATA_HEADER.len();
-    let data_len = (compressed.len() - meta_len - 4) as u32;
-    compressed[meta_len..meta_len + 4].copy_from_slice(&data_len.to_be_bytes());
+    let mut packed_metadata = rustc_metadata::METADATA_HEADER.to_vec();
+    packed_metadata.write_all(&(metadata.raw_data().len() as u32).to_be_bytes()).unwrap();
+    packed_metadata.extend(metadata.raw_data());
 
     let Some(mut file) = create_object_file(sess) else {
-        return compressed.to_vec();
+        return packed_metadata.to_vec();
     };
     if file.format() == BinaryFormat::Xcoff {
-        return create_compressed_metadata_file_for_xcoff(file, &compressed, symbol_name);
+        return create_compressed_metadata_file_for_xcoff(file, &packed_metadata, symbol_name);
     }
     let section = file.add_section(
         file.segment_name(StandardSegment::Data).to_vec(),
@@ -500,14 +501,14 @@ pub fn create_compressed_metadata_file(
         }
         _ => {}
     };
-    let offset = file.append_section_data(section, &compressed, 1);
+    let offset = file.append_section_data(section, &packed_metadata, 1);
 
     // For MachO and probably PE this is necessary to prevent the linker from throwing away the
     // .rustc section. For ELF this isn't necessary, but it also doesn't harm.
     file.add_symbol(Symbol {
         name: symbol_name.as_bytes().to_vec(),
         value: offset,
-        size: compressed.len() as u64,
+        size: packed_metadata.len() as u64,
         kind: SymbolKind::Data,
         scope: SymbolScope::Dynamic,
         weak: false,

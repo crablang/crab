@@ -1,3 +1,16 @@
+//! Implements the `AliasRelate` goal, which is used when unifying aliases.
+//! Doing this via a separate goal is called "deferred alias relation" and part
+//! of our more general approach to "lazy normalization".
+//!
+//! This goal, e.g. `A alias-relate B`, may be satisfied by one of three branches:
+//! * normalizes-to: If `A` is a projection, we can prove the equivalent
+//!   projection predicate with B as the right-hand side of the projection.
+//!   This goal is computed in both directions, if both are aliases.
+//! * subst-relate: Equate `A` and `B` by their substs, if they're both
+//!   aliases with the same def-id.
+//! * bidirectional-normalizes-to: If `A` and `B` are both projections, and both
+//!   may apply, then we can compute the "intersection" of both normalizes-to by
+//!   performing them together. This is used specifically to resolve ambiguities.
 use super::{EvalCtxt, SolverMode};
 use rustc_infer::traits::query::NoSolution;
 use rustc_middle::traits::solve::{Certainty, Goal, QueryResult};
@@ -65,25 +78,28 @@ impl<'tcx> EvalCtxt<'_, 'tcx> {
                     direction,
                     Invert::Yes,
                 ));
-                // Relate via substs
-                let subst_relate_response = self
-                    .assemble_subst_relate_candidate(param_env, alias_lhs, alias_rhs, direction);
-                candidates.extend(subst_relate_response);
+                // Relate via args
+                candidates.extend(
+                    self.assemble_subst_relate_candidate(
+                        param_env, alias_lhs, alias_rhs, direction,
+                    ),
+                );
                 debug!(?candidates);
 
                 if let Some(merged) = self.try_merge_responses(&candidates) {
                     Ok(merged)
                 } else {
-                    // When relating two aliases and we have ambiguity, we prefer
-                    // relating the generic arguments of the aliases over normalizing
-                    // them. This is necessary for inference during typeck.
+                    // When relating two aliases and we have ambiguity, if both
+                    // aliases can be normalized to something, we prefer
+                    // "bidirectionally normalizing" both of them within the same
+                    // candidate.
+                    //
+                    // See <https://github.com/rust-lang/trait-system-refactor-initiative/issues/25>.
                     //
                     // As this is incomplete, we must not do so during coherence.
                     match self.solver_mode() {
                         SolverMode::Normal => {
-                            if let Ok(subst_relate_response) = subst_relate_response {
-                                Ok(subst_relate_response)
-                            } else if let Ok(bidirectional_normalizes_to_response) = self
+                            if let Ok(bidirectional_normalizes_to_response) = self
                                 .assemble_bidirectional_normalizes_to_candidate(
                                     param_env, lhs, rhs, direction,
                                 )
@@ -115,6 +131,8 @@ impl<'tcx> EvalCtxt<'_, 'tcx> {
         })
     }
 
+    // Computes the normalizes-to branch, with side-effects. This must be performed
+    // in a probe in order to not taint the evaluation context.
     fn normalizes_to_inner(
         &mut self,
         param_env: ty::ParamEnv<'tcx>,
@@ -124,9 +142,13 @@ impl<'tcx> EvalCtxt<'_, 'tcx> {
         invert: Invert,
     ) -> Result<(), NoSolution> {
         let other = match direction {
-            // This is purely an optimization.
+            // This is purely an optimization. No need to instantiate a new
+            // infer var and equate the RHS to it.
             ty::AliasRelationDirection::Equate => other,
 
+            // Instantiate an infer var and subtype our RHS to it, so that we
+            // properly represent a subtype relation between the LHS and RHS
+            // of the goal.
             ty::AliasRelationDirection::Subtype => {
                 let fresh = self.next_term_infer_of_kind(other);
                 let (sub, sup) = match invert {
@@ -153,7 +175,7 @@ impl<'tcx> EvalCtxt<'_, 'tcx> {
         alias_rhs: ty::AliasTy<'tcx>,
         direction: ty::AliasRelationDirection,
     ) -> QueryResult<'tcx> {
-        self.probe_candidate("substs relate").enter(|ecx| {
+        self.probe_candidate("args relate").enter(|ecx| {
             match direction {
                 ty::AliasRelationDirection::Equate => {
                     ecx.eq(param_env, alias_lhs, alias_rhs)?;

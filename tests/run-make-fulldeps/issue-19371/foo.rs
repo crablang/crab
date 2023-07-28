@@ -52,6 +52,7 @@ fn compile(code: String, output: PathBuf, sysroot: PathBuf) {
         input,
         output_file: Some(OutFileName::Real(output)),
         output_dir: None,
+        ice_file: None,
         file_loader: None,
         locale_resources: &[],
         lint_caps: Default::default(),
@@ -68,6 +69,6 @@ fn compile(code: String, output: PathBuf, sysroot: PathBuf) {
             let ongoing_codegen = queries.ongoing_codegen()?;
             queries.linker(ongoing_codegen)
         });
-        linker.unwrap().link();
+        linker.unwrap().link().unwrap();
     });
 }

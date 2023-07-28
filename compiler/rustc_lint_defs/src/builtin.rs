@@ -3400,6 +3400,7 @@ declare_lint_pass! {
         UNFULFILLED_LINT_EXPECTATIONS,
         UNINHABITED_STATIC,
         UNKNOWN_CRATE_TYPES,
+        UNKNOWN_DIAGNOSTIC_ATTRIBUTES,
         UNKNOWN_LINTS,
         UNNAMEABLE_TYPES,
         UNREACHABLE_CODE,
@@ -4052,12 +4053,12 @@ declare_lint! {
     ///
     /// The compiler disables the automatic implementation if an explicit one
     /// exists for given type constructor. The exact rules governing this
-    /// are currently unsound, quite subtle, and will be modified in the future.
-    /// This change will cause the automatic implementation to be disabled in more
+    /// were previously unsound, quite subtle, and have been recently modified.
+    /// This change caused the automatic implementation to be disabled in more
     /// cases, potentially breaking some code.
     pub SUSPICIOUS_AUTO_TRAIT_IMPLS,
     Warn,
-    "the rules governing auto traits will change in the future",
+    "the rules governing auto traits have recently changed resulting in potential breakage",
     @future_incompatible = FutureIncompatibleInfo {
         reason: FutureIncompatibilityReason::FutureReleaseSemanticsChange,
         reference: "issue #93367 <https://github.com/rust-lang/rust/issues/93367>",
@@ -4084,7 +4085,7 @@ declare_lint! {
     ///
     /// ### Explanation
     ///
-    /// The preferred location for where clauses on associated types in impls
+    /// The preferred location for where clauses on associated types
     /// is after the type. However, for most of generic associated types development,
     /// it was only accepted before the equals. To provide a transition period and
     /// further evaluate this change, both are currently accepted. At some point in
@@ -4379,4 +4380,28 @@ declare_lint! {
     Allow,
     "effective visibility of a type is larger than the area in which it can be named",
     @feature_gate = sym::type_privacy_lints;
+}
+
+declare_lint! {
+    /// The `unknown_diagnostic_attributes` lint detects unrecognized diagnostic attributes.
+    ///
+    /// ### Example
+    ///
+    /// ```rust
+    /// #![feature(diagnostic_namespace)]
+    /// #[diagnostic::does_not_exist]
+    /// struct Foo;
+    /// ```
+    ///
+    /// {{produces}}
+    ///
+    /// ### Explanation
+    ///
+    /// It is usually a mistake to specify a diagnostic attribute that does not exist. Check
+    /// the spelling, and check the diagnostic attribute listing for the correct name. Also
+    /// consider if you are using an old version of the compiler, and the attribute
+    /// is only available in a newer version.
+    pub UNKNOWN_DIAGNOSTIC_ATTRIBUTES,
+    Warn,
+    "unrecognized diagnostic attribute"
 }

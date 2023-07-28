@@ -70,6 +70,7 @@ pub fn create_session(
         Box<dyn FnOnce(&config::Options) -> Box<dyn CodegenBackend> + Send>,
     >,
     descriptions: Registry,
+    ice_file: Option<PathBuf>,
 ) -> (Session, Box<dyn CodegenBackend>) {
     let codegen_backend = if let Some(make_codegen_backend) = make_codegen_backend {
         make_codegen_backend(&sopts)
@@ -111,6 +112,7 @@ pub fn create_session(
         file_loader,
         target_override,
         rustc_version_str().unwrap_or("unknown"),
+        ice_file,
     );
 
     codegen_backend.init(&sess);
@@ -517,7 +519,8 @@ fn multiple_output_types_to_stdout(
     output_types: &OutputTypes,
     single_output_file_is_stdout: bool,
 ) -> bool {
-    if atty::is(atty::Stream::Stdout) {
+    use std::io::IsTerminal;
+    if std::io::stdout().is_terminal() {
         // If stdout is a tty, check if multiple text output types are
         // specified by `--emit foo=- --emit bar=-` or `-o - --emit foo,bar`
         let named_text_types = output_types

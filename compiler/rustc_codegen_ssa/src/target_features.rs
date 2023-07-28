@@ -321,7 +321,7 @@ pub fn supported_target_features(sess: &Session) -> &'static [(&'static str, Opt
         "aarch64" => AARCH64_ALLOWED_FEATURES,
         "x86" | "x86_64" => X86_ALLOWED_FEATURES,
         "hexagon" => HEXAGON_ALLOWED_FEATURES,
-        "mips" | "mips64" => MIPS_ALLOWED_FEATURES,
+        "mips" | "mips32r6" | "mips64" | "mips64r6" => MIPS_ALLOWED_FEATURES,
         "powerpc" | "powerpc64" => POWERPC_ALLOWED_FEATURES,
         "riscv32" | "riscv64" => RISCV_ALLOWED_FEATURES,
         "wasm32" | "wasm64" => WASM_ALLOWED_FEATURES,
@@ -369,13 +369,9 @@ pub fn from_target_feature(
         // We allow comma separation to enable multiple features.
         target_features.extend(value.as_str().split(',').filter_map(|feature| {
             let Some(feature_gate) = supported_target_features.get(feature) else {
-                let msg =
-                    format!("the feature named `{}` is not valid for this target", feature);
+                let msg = format!("the feature named `{}` is not valid for this target", feature);
                 let mut err = tcx.sess.struct_span_err(item.span(), msg);
-                err.span_label(
-                    item.span(),
-                    format!("`{}` is not valid for this target", feature),
-                );
+                err.span_label(item.span(), format!("`{}` is not valid for this target", feature));
                 if let Some(stripped) = feature.strip_prefix('+') {
                     let valid = supported_target_features.contains_key(stripped);
                     if valid {

@@ -16,7 +16,6 @@ use rustc_hir::Node;
 use rustc_middle::middle::region;
 use rustc_middle::thir::*;
 use rustc_middle::ty::{self, RvalueScopes, Ty, TyCtxt};
-use rustc_span::Span;
 
 pub(crate) fn thir_body(
     tcx: TyCtxt<'_>,
@@ -62,14 +61,6 @@ struct Cx<'tcx> {
     typeck_results: &'tcx ty::TypeckResults<'tcx>,
     rvalue_scopes: &'tcx RvalueScopes,
 
-    /// When applying adjustments to the expression
-    /// with the given `HirId`, use the given `Span`,
-    /// instead of the usual span. This is used to
-    /// assign the span of an overall method call
-    /// (e.g. `my_val.foo()`) to the adjustment expressions
-    /// for the receiver.
-    adjustment_span: Option<(HirId, Span)>,
-
     /// False to indicate that adjustments should not be applied. Only used for `custom_mir`
     apply_adjustments: bool,
 
@@ -110,7 +101,6 @@ impl<'tcx> Cx<'tcx> {
             typeck_results,
             rvalue_scopes: &typeck_results.rvalue_scopes,
             body_owner: def.to_def_id(),
-            adjustment_span: None,
             apply_adjustments: hir
                 .attrs(hir_id)
                 .iter()
@@ -132,7 +122,7 @@ impl<'tcx> Cx<'tcx> {
             DefKind::Closure => {
                 let closure_ty = self.typeck_results.node_type(owner_id);
 
-                let ty::Closure(closure_def_id, closure_substs) = *closure_ty.kind() else {
+                let ty::Closure(closure_def_id, closure_args) = *closure_ty.kind() else {
                     bug!("closure expr does not have closure type: {:?}", closure_ty);
                 };
 
@@ -144,7 +134,7 @@ impl<'tcx> Cx<'tcx> {
                 };
                 let env_region = ty::Region::new_late_bound(self.tcx, ty::INNERMOST, br);
                 let closure_env_ty =
-                    self.tcx.closure_env_ty(closure_def_id, closure_substs, env_region).unwrap();
+                    self.tcx.closure_env_ty(closure_def_id, closure_args, env_region).unwrap();
                 let liberated_closure_env_ty = self.tcx.erase_late_bound_regions(
                     ty::Binder::bind_with_vars(closure_env_ty, bound_vars),
                 );
@@ -196,7 +186,7 @@ impl<'tcx> Cx<'tcx> {
 
                 self.tcx
                     .type_of(va_list_did)
-                    .subst(self.tcx, &[self.tcx.lifetimes.re_erased.into()])
+                    .instantiate(self.tcx, &[self.tcx.lifetimes.re_erased.into()])
             } else {
                 fn_sig.inputs()[index]
             };

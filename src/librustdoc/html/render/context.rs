@@ -798,15 +798,18 @@ impl<'tcx> FormatRenderer<'tcx> for Context<'tcx> {
             if let Some(def_id) = item.def_id() && self.cache().inlined_items.contains(&def_id) {
                 self.is_inside_inlined_module = true;
             }
-        } else if item.is_doc_hidden() {
+        } else if !self.cache().document_hidden && item.is_doc_hidden() {
             // We're not inside an inlined module anymore since this one cannot be re-exported.
             self.is_inside_inlined_module = false;
         }
 
         // Render sidebar-items.js used throughout this module.
         if !self.render_redirect_pages {
-            let (clean::StrippedItem(box clean::ModuleItem(ref module)) | clean::ModuleItem(ref module)) = *item.kind
-            else { unreachable!() };
+            let (clean::StrippedItem(box clean::ModuleItem(ref module))
+            | clean::ModuleItem(ref module)) = *item.kind
+            else {
+                unreachable!()
+            };
             let items = self.build_sidebar_items(module);
             let js_dst = self.dst.join(&format!("sidebar-items{}.js", self.shared.resource_suffix));
             let v = format!("window.SIDEBAR_ITEMS = {};", serde_json::to_string(&items).unwrap());

@@ -14,7 +14,7 @@ use rustc_hir::def::{DefKind, Namespace, PerNS};
 use rustc_hir::def_id::{DefId, CRATE_DEF_ID};
 use rustc_hir::Mutability;
 use rustc_middle::ty::{Ty, TyCtxt};
-use rustc_middle::{bug, ty};
+use rustc_middle::{bug, span_bug, ty};
 use rustc_resolve::rustdoc::{has_primitive_or_keyword_docs, prepare_to_doc_link_resolution};
 use rustc_resolve::rustdoc::{strip_generics_from_path, MalformedGenerics};
 use rustc_session::lint::Lint;
@@ -298,7 +298,7 @@ impl<'a, 'tcx> LinkCollector<'a, 'tcx> {
         let ty_res = self.resolve_path(&path, TypeNS, item_id, module_id).ok_or_else(no_res)?;
 
         match ty_res {
-            Res::Def(DefKind::Enum, did) => match tcx.type_of(did).subst_identity().kind() {
+            Res::Def(DefKind::Enum, did) => match tcx.type_of(did).instantiate_identity().kind() {
                 ty::Adt(def, _) if def.is_enum() => {
                     if let Some(variant) = def.variants().iter().find(|v| v.name == variant_name)
                         && let Some(field) = variant.fields.iter().find(|f| f.name == variant_field_name) {
@@ -402,7 +402,12 @@ impl<'a, 'tcx> LinkCollector<'a, 'tcx> {
             // `doc_link_resolutions` is missing a `path_str`, that means that there are valid links
             // that are being missed. To fix the ICE, change
             // `rustc_resolve::rustdoc::attrs_to_preprocessed_links` to cache the link.
-            .unwrap_or_else(|| panic!("no resolution for {:?} {:?} {:?}", path_str, ns, module_id))
+            .unwrap_or_else(|| {
+                span_bug!(
+                    self.cx.tcx.def_span(item_id),
+                    "no resolution for {path_str:?} {ns:?} {module_id:?}",
+                )
+            })
             .and_then(|res| res.try_into().ok())
             .or_else(|| resolve_primitive(path_str, ns));
         debug!("{} resolved to {:?} in namespace {:?}", path_str, result, ns);
@@ -493,7 +498,7 @@ impl<'a, 'tcx> LinkCollector<'a, 'tcx> {
     /// This is used for resolving type aliases.
     fn def_id_to_res(&self, ty_id: DefId) -> Option<Res> {
         use PrimitiveType::*;
-        Some(match *self.cx.tcx.type_of(ty_id).subst_identity().kind() {
+        Some(match *self.cx.tcx.type_of(ty_id).instantiate_identity().kind() {
             ty::Bool => Res::Primitive(Bool),
             ty::Char => Res::Primitive(Char),
             ty::Int(ity) => Res::Primitive(ity.into()),
@@ -601,7 +606,7 @@ impl<'a, 'tcx> LinkCollector<'a, 'tcx> {
                 debug!("looking for associated item named {} for item {:?}", item_name, did);
                 // Checks if item_name is a variant of the `SomeItem` enum
                 if ns == TypeNS && def_kind == DefKind::Enum {
-                    match tcx.type_of(did).subst_identity().kind() {
+                    match tcx.type_of(did).instantiate_identity().kind() {
                         ty::Adt(adt_def, _) => {
                             for variant in adt_def.variants() {
                                 if variant.name == item_name {
@@ -635,7 +640,7 @@ impl<'a, 'tcx> LinkCollector<'a, 'tcx> {
                     // To handle that properly resolve() would have to support
                     // something like [`ambi_fn`](<SomeStruct as SomeTrait>::ambi_fn)
                     assoc_items = resolve_associated_trait_item(
-                        tcx.type_of(did).subst_identity(),
+                        tcx.type_of(did).instantiate_identity(),
                         module_id,
                         item_name,
                         ns,
@@ -671,7 +676,7 @@ impl<'a, 'tcx> LinkCollector<'a, 'tcx> {
                 // they also look like associated items (`module::Type::Variant`),
                 // because they are real Rust syntax (unlike the intra-doc links
                 // field syntax) and are handled by the compiler's resolver.
-                let def = match tcx.type_of(did).subst_identity().kind() {
+                let def = match tcx.type_of(did).instantiate_identity().kind() {
                     ty::Adt(def, _) if !def.is_enum() => def,
                     _ => return Vec::new(),
                 };
@@ -963,6 +968,7 @@ fn preprocessed_markdown_links(s: &str) -> Vec<PreprocessedMarkdownLink> {
 }
 
 impl LinkCollector<'_, '_> {
+    #[instrument(level = "debug", skip_all)]
     fn resolve_links(&mut self, item: &Item) {
         if !self.cx.render_options.document_private
             && let Some(def_id) = item.item_id.as_def_id()
@@ -1610,8 +1616,7 @@ fn report_diagnostic(
     DiagnosticInfo { item, ori_link: _, dox, link_range }: &DiagnosticInfo<'_>,
     decorate: impl FnOnce(&mut Diagnostic, Option<rustc_span::Span>, MarkdownLinkRange),
 ) {
-    let Some(hir_id) = DocContext::as_local_hir_id(tcx, item.item_id)
-    else {
+    let Some(hir_id) = DocContext::as_local_hir_id(tcx, item.item_id) else {
         // If non-local, no need to check anything.
         info!("ignoring warning from parent crate: {}", msg);
         return;
@@ -1811,7 +1816,7 @@ fn resolution_failure(
                         Res::Primitive(_) => None,
                     };
                     let is_struct_variant = |did| {
-                        if let ty::Adt(def, _) = tcx.type_of(did).subst_identity().kind()
+                        if let ty::Adt(def, _) = tcx.type_of(did).instantiate_identity().kind()
                         && def.is_enum()
                         && let Some(variant) = def.variants().iter().find(|v| v.name == res.name(tcx)) {
                             // ctor is `None` if variant is a struct
@@ -1860,8 +1865,8 @@ fn resolution_failure(
                                 }
                                 return;
                             }
-                            Trait | TyAlias | ForeignTy | OpaqueTy | ImplTraitPlaceholder
-                            | TraitAlias | TyParam | Static(_) => "associated item",
+                            Trait | TyAlias | ForeignTy | OpaqueTy | TraitAlias | TyParam
+                            | Static(_) => "associated item",
                             Impl { .. } | GlobalAsm => unreachable!("not a path"),
                         }
                     } else {

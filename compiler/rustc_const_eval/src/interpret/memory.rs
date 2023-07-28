@@ -53,7 +53,7 @@ impl<T: fmt::Display> fmt::Display for MemoryKind<T> {
         match self {
             MemoryKind::Stack => write!(f, "stack variable"),
             MemoryKind::CallerLocation => write!(f, "caller location"),
-            MemoryKind::Machine(m) => write!(f, "{}", m),
+            MemoryKind::Machine(m) => write!(f, "{m}"),
         }
     }
 }
@@ -907,7 +907,7 @@ impl<'a, 'mir, 'tcx, M: Machine<'mir, 'tcx>> std::fmt::Debug for DumpAllocs<'a, 
             match self.ecx.memory.alloc_map.get(id) {
                 Some((kind, alloc)) => {
                     // normal alloc
-                    write!(fmt, " ({}, ", kind)?;
+                    write!(fmt, " ({kind}, ")?;
                     write_allocation_track_relocs(
                         &mut *fmt,
                         *self.ecx.tcx,
@@ -1060,11 +1060,7 @@ impl<'mir, 'tcx: 'mir, M: Machine<'mir, 'tcx>> InterpCx<'mir, 'tcx, M> {
         let size = Size::from_bytes(len);
         let Some(alloc_ref) = self.get_ptr_alloc_mut(ptr, size, Align::ONE)? else {
             // zero-sized access
-            assert_matches!(
-                src.next(),
-                None,
-                "iterator said it was empty but returned an element"
-            );
+            assert_matches!(src.next(), None, "iterator said it was empty but returned an element");
             return Ok(());
         };
 

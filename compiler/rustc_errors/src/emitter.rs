@@ -279,12 +279,12 @@ pub trait Emitter: Translate {
                 let msg = if substitution.is_empty() || sugg.style.hide_inline() {
                     // This substitution is only removal OR we explicitly don't want to show the
                     // code inline (`hide_inline`). Therefore, we don't show the substitution.
-                    format!("help: {}", &msg)
+                    format!("help: {msg}")
                 } else {
                     // Show the default suggestion text with the substitution
                     format!(
                         "help: {}{}: `{}`",
-                        &msg,
+                        msg,
                         if self.source_map().is_some_and(|sm| is_case_difference(
                             sm,
                             substitution,
@@ -1982,7 +1982,7 @@ impl EmitterWriter {
                 // We special case `#[derive(_)]\n` and other attribute suggestions, because those
                 // are the ones where context is most useful.
                 let file_lines = sm
-                    .span_to_lines(span.primary_span().unwrap().shrink_to_hi())
+                    .span_to_lines(parts[0].span.shrink_to_hi())
                     .expect("span_to_lines failed when emitting suggestion");
                 let line_num = sm.lookup_char_pos(parts[0].span.lo()).line;
                 if let Some(line) = file_lines.file.get_line(line_num - 1) {

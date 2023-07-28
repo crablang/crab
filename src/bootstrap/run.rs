@@ -24,11 +24,9 @@ impl Step for ExpandYamlAnchors {
     /// anchors in them, since GitHub Actions doesn't support them.
     fn run(self, builder: &Builder<'_>) {
         builder.info("Expanding YAML anchors in the GitHub Actions configuration");
-        try_run(
-            builder,
+        builder.run_delaying_failure(
             &mut builder.tool_cmd(Tool::ExpandYamlAnchors).arg("generate").arg(&builder.src),
-        )
-        .unwrap();
+        );
     }
 
     fn should_run(run: ShouldRun<'_>) -> ShouldRun<'_> {
@@ -38,19 +36,6 @@ impl Step for ExpandYamlAnchors {
     fn make_run(run: RunConfig<'_>) {
         run.builder.ensure(ExpandYamlAnchors);
     }
-}
-
-fn try_run(builder: &Builder<'_>, cmd: &mut Command) -> Result<(), ()> {
-    if !builder.fail_fast {
-        if let Err(e) = builder.try_run(cmd) {
-            let mut failures = builder.delayed_failures.borrow_mut();
-            failures.push(format!("{:?}", cmd));
-            return Err(e);
-        }
-    } else {
-        builder.run(cmd);
-    }
-    Ok(())
 }
 
 #[derive(Debug, PartialOrd, Ord, Copy, Clone, Hash, PartialEq, Eq)]

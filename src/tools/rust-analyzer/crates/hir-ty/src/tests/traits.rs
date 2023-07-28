@@ -4149,6 +4149,30 @@ where
 }
 
 #[test]
+fn gats_in_bounds_for_assoc() {
+    check_types(
+        r#"
+trait Trait {
+    type Assoc: Another<Gat<i32> = usize>;
+    type Assoc2<T>: Another<Gat<T> = T>;
+}
+trait Another {
+    type Gat<T>;
+    fn foo(&self) -> Self::Gat<i32>;
+    fn bar<T>(&self) -> Self::Gat<T>;
+}
+
+fn test<T: Trait>(a: T::Assoc, b: T::Assoc2<isize>) {
+    let v = a.foo();
+      //^ usize
+    let v = b.bar::<isize>();
+      //^ isize
+}
+"#,
+    );
+}
+
+#[test]
 fn bin_op_with_scalar_fallback() {
     // Extra impls are significant so that chalk doesn't give us definite guidances.
     check_types(
@@ -4408,5 +4432,49 @@ fn test(v: S<i32>) {
       //^^^ S<i32>
 }
 "#,
+    );
+}
+
+#[test]
+fn associated_type_in_argument() {
+    check(
+        r#"
+    trait A {
+        fn m(&self) -> i32;
+    }
+
+    fn x<T: B>(k: &<T as B>::Ty) {
+        k.m();
+    }
+
+    struct X;
+    struct Y;
+
+    impl A for X {
+        fn m(&self) -> i32 {
+            8
+        }
+    }
+
+    impl A for Y {
+        fn m(&self) -> i32 {
+            32
+        }
+    }
+
+    trait B {
+        type Ty: A;
+    }
+
+    impl B for u16 {
+        type Ty = X;
+    }
+
+    fn ttt() {
+        let inp = Y;
+        x::<u16>(&inp);
+               //^^^^ expected &X, got &Y
+    }
+    "#,
     );
 }

@@ -1,14 +1,19 @@
-//! The new trait solver, currently still WIP.
+//! The next-generation trait solver, currently still WIP.
 //!
-//! As a user of the trait system, you can use `TyCtxt::evaluate_goal` to
-//! interact with this solver.
+//! As a user of rust, you can use `-Ztrait-solver=next` or `next-coherence`
+//! to enable the new trait solver always, or just within coherence, respectively.
+//!
+//! As a developer of rustc, you shouldn't be using the new trait
+//! solver without asking the trait-system-refactor-initiative, but it can
+//! be enabled with `InferCtxtBuilder::with_next_trait_solver`. This will
+//! ensure that trait solving using that inference context will be routed
+//! to the new trait solver.
 //!
 //! For a high-level overview of how this solver works, check out the relevant
 //! section of the rustc-dev-guide.
 //!
 //! FIXME(@lcnr): Write that section. If you read this before then ask me
 //! about it on zulip.
-
 use rustc_hir::def_id::DefId;
 use rustc_infer::infer::canonical::{Canonical, CanonicalVarValues};
 use rustc_infer::traits::query::NoSolution;
@@ -25,6 +30,7 @@ mod assembly;
 mod canonicalize;
 mod eval_ctxt;
 mod fulfill;
+mod inherent_projection;
 pub mod inspect;
 mod normalize;
 mod opaques;
@@ -37,7 +43,7 @@ pub use eval_ctxt::{
     EvalCtxt, GenerateProofTree, InferCtxtEvalExt, InferCtxtSelectExt, UseGlobalCache,
 };
 pub use fulfill::FulfillmentCtxt;
-pub(crate) use normalize::deeply_normalize;
+pub(crate) use normalize::{deeply_normalize, deeply_normalize_with_skipped_universes};
 
 #[derive(Debug, Clone, Copy)]
 enum SolverMode {
@@ -123,10 +129,10 @@ impl<'a, 'tcx> EvalCtxt<'a, 'tcx> {
     #[instrument(level = "debug", skip(self))]
     fn compute_closure_kind_goal(
         &mut self,
-        goal: Goal<'tcx, (DefId, ty::SubstsRef<'tcx>, ty::ClosureKind)>,
+        goal: Goal<'tcx, (DefId, ty::GenericArgsRef<'tcx>, ty::ClosureKind)>,
     ) -> QueryResult<'tcx> {
-        let (_, substs, expected_kind) = goal.predicate;
-        let found_kind = substs.as_closure().kind_ty().to_opt_closure_kind();
+        let (_, args, expected_kind) = goal.predicate;
+        let found_kind = args.as_closure().kind_ty().to_opt_closure_kind();
 
         let Some(found_kind) = found_kind else {
             return self.evaluate_added_goals_and_make_canonical_response(Certainty::AMBIGUOUS);
@@ -266,12 +272,11 @@ impl<'tcx> EvalCtxt<'_, 'tcx> {
             return Err(NoSolution);
         }
 
-        let Certainty::Maybe(maybe_cause) = responses.iter().fold(
-            Certainty::AMBIGUOUS,
-            |certainty, response| {
+        let Certainty::Maybe(maybe_cause) =
+            responses.iter().fold(Certainty::AMBIGUOUS, |certainty, response| {
                 certainty.unify_with(response.value.certainty)
-            },
-        ) else {
+            })
+        else {
             bug!("expected flounder response to be ambiguous")
         };
 

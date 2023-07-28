@@ -67,6 +67,7 @@ fn mk_session(handler: &mut EarlyErrorHandler, matches: getopts::Matches) -> (Se
         None,
         None,
         "",
+        None,
     );
     (sess, cfg)
 }
@@ -714,6 +715,7 @@ fn test_unstable_options_tracking_hash() {
     untracked!(perf_stats, true);
     // `pre_link_arg` is omitted because it just forwards to `pre_link_args`.
     untracked!(pre_link_args, vec![String::from("abc"), String::from("def")]);
+    untracked!(print_codegen_stats, true);
     untracked!(print_llvm_passes, true);
     untracked!(print_mono_items, Some(String::from("abc")));
     untracked!(print_type_sizes, true);
@@ -738,6 +740,7 @@ fn test_unstable_options_tracking_hash() {
     untracked!(unstable_options, true);
     untracked!(validate_mir, true);
     untracked!(verbose, true);
+    untracked!(write_long_types_to_disk, false);
     // tidy-alphabetical-end
 
     macro_rules! tracked {

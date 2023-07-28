@@ -501,12 +501,12 @@ impl<'p, 'tcx> MatchVisitor<'_, 'p, 'tcx> {
         let witness_1_is_privately_uninhabited =
             if cx.tcx.features().exhaustive_patterns
                 && let Some(witness_1) = witnesses.get(0)
-                && let ty::Adt(adt, substs) = witness_1.ty().kind()
+                && let ty::Adt(adt, args) = witness_1.ty().kind()
                 && adt.is_enum()
                 && let Constructor::Variant(variant_index) = witness_1.ctor()
             {
                 let variant = adt.variant(*variant_index);
-                let inhabited = variant.inhabited_predicate(cx.tcx, *adt).subst(cx.tcx, substs);
+                let inhabited = variant.inhabited_predicate(cx.tcx, *adt).instantiate(cx.tcx, args);
                 assert!(inhabited.apply(cx.tcx, cx.param_env, cx.module));
                 !inhabited.apply_ignore_module(cx.tcx, cx.param_env)
             } else {
@@ -691,7 +691,7 @@ fn non_exhaustive_match<'p, 'tcx>(
         err = create_e0004(
             cx.tcx.sess,
             sp,
-            format!("non-exhaustive patterns: {} not covered", joined_patterns),
+            format!("non-exhaustive patterns: {joined_patterns} not covered"),
         );
         err.span_label(sp, pattern_not_covered_label(&witnesses, &joined_patterns));
         patterns_len = witnesses.len();
@@ -721,15 +721,13 @@ fn non_exhaustive_match<'p, 'tcx>(
         && matches!(witnesses[0].ctor(), Constructor::NonExhaustive)
     {
         err.note(format!(
-            "`{}` does not have a fixed maximum value, so a wildcard `_` is necessary to match \
+            "`{scrut_ty}` does not have a fixed maximum value, so a wildcard `_` is necessary to match \
              exhaustively",
-            scrut_ty,
         ));
         if cx.tcx.sess.is_nightly_build() {
             err.help(format!(
                 "add `#![feature(precise_pointer_size_matching)]` to the crate attributes to \
-                 enable precise `{}` matching",
-                scrut_ty,
+                 enable precise `{scrut_ty}` matching",
             ));
         }
     }
@@ -745,18 +743,13 @@ fn non_exhaustive_match<'p, 'tcx>(
         [] if sp.eq_ctxt(expr_span) => {
             // Get the span for the empty match body `{}`.
             let (indentation, more) = if let Some(snippet) = sm.indentation_before(sp) {
-                (format!("\n{}", snippet), "    ")
+                (format!("\n{snippet}"), "    ")
             } else {
                 (" ".to_string(), "")
             };
             suggestion = Some((
                 sp.shrink_to_hi().with_hi(expr_span.hi()),
-                format!(
-                    " {{{indentation}{more}{pattern} => todo!(),{indentation}}}",
-                    indentation = indentation,
-                    more = more,
-                    pattern = pattern,
-                ),
+                format!(" {{{indentation}{more}{pattern} => todo!(),{indentation}}}",),
             ));
         }
         [only] => {
@@ -765,7 +758,7 @@ fn non_exhaustive_match<'p, 'tcx>(
                 && let Ok(with_trailing) = sm.span_extend_while(only.span, |c| c.is_whitespace() || c == ',')
                 && sm.is_multiline(with_trailing)
             {
-                (format!("\n{}", snippet), true)
+                (format!("\n{snippet}"), true)
             } else {
                 (" ".to_string(), false)
             };
@@ -780,7 +773,7 @@ fn non_exhaustive_match<'p, 'tcx>(
             };
             suggestion = Some((
                 only.span.shrink_to_hi(),
-                format!("{}{}{} => todo!()", comma, pre_indentation, pattern),
+                format!("{comma}{pre_indentation}{pattern} => todo!()"),
             ));
         }
         [.., prev, last] => {
@@ -803,7 +796,7 @@ fn non_exhaustive_match<'p, 'tcx>(
                 if let Some(spacing) = spacing {
                     suggestion = Some((
                         last.span.shrink_to_hi(),
-                        format!("{}{}{} => todo!()", comma, spacing, pattern),
+                        format!("{comma}{spacing}{pattern} => todo!()"),
                     ));
                 }
             }
@@ -900,7 +893,7 @@ fn adt_defined_here<'p, 'tcx>(
         for pat in spans {
             span.push_span_label(pat, "not covered");
         }
-        err.span_note(span, format!("`{}` defined here", ty));
+        err.span_note(span, format!("`{ty}` defined here"));
     }
 }
 
@@ -942,7 +935,9 @@ fn maybe_point_at_variant<'a, 'p: 'a, 'tcx: 'a>(
 /// This analysis is *not* subsumed by NLL.
 fn check_borrow_conflicts_in_at_patterns<'tcx>(cx: &MatchVisitor<'_, '_, 'tcx>, pat: &Pat<'tcx>) {
     // Extract `sub` in `binding @ sub`.
-    let PatKind::Binding { name, mode, ty, subpattern: Some(box ref sub), .. } = pat.kind else { return };
+    let PatKind::Binding { name, mode, ty, subpattern: Some(box ref sub), .. } = pat.kind else {
+        return;
+    };
 
     let is_binding_by_move = |ty: Ty<'tcx>| !ty.is_copy_modulo_regions(cx.tcx, cx.param_env);
 

@@ -35,6 +35,8 @@ pub(crate) struct Module<'hir> {
         (LocalDefId, Option<Symbol>),
         (&'hir hir::Item<'hir>, Option<Symbol>, Option<LocalDefId>),
     >,
+    /// Same as for `items`.
+    pub(crate) inlined_foreigns: FxIndexMap<(DefId, Option<Symbol>), (Res, LocalDefId)>,
     pub(crate) foreigns: Vec<(&'hir hir::ForeignItem<'hir>, Option<Symbol>)>,
 }
 
@@ -54,6 +56,7 @@ impl Module<'_> {
             import_id,
             mods: Vec::new(),
             items: FxIndexMap::default(),
+            inlined_foreigns: FxIndexMap::default(),
             foreigns: Vec::new(),
         }
     }
@@ -262,34 +265,44 @@ impl<'a, 'tcx> RustdocVisitor<'a, 'tcx> {
             return false;
         };
 
+        let document_hidden = self.cx.render_options.document_hidden;
         let use_attrs = tcx.hir().attrs(tcx.hir().local_def_id_to_hir_id(def_id));
         // Don't inline `doc(hidden)` imports so they can be stripped at a later stage.
         let is_no_inline = use_attrs.lists(sym::doc).has_word(sym::no_inline)
-            || use_attrs.lists(sym::doc).has_word(sym::hidden);
+            || (document_hidden && use_attrs.lists(sym::doc).has_word(sym::hidden));
 
         if is_no_inline {
             return false;
         }
 
-        // For cross-crate impl inlining we need to know whether items are
-        // reachable in documentation -- a previously unreachable item can be
-        // made reachable by cross-crate inlining which we're checking here.
-        // (this is done here because we need to know this upfront).
-        if !ori_res_did.is_local() && !is_no_inline {
-            crate::visit_lib::lib_embargo_visit_item(self.cx, ori_res_did);
-            return false;
-        }
-
+        let is_hidden = !document_hidden && tcx.is_doc_hidden(ori_res_did);
         let Some(res_did) = ori_res_did.as_local() else {
-            return false;
+            // For cross-crate impl inlining we need to know whether items are
+            // reachable in documentation -- a previously unreachable item can be
+            // made reachable by cross-crate inlining which we're checking here.
+            // (this is done here because we need to know this upfront).
+            crate::visit_lib::lib_embargo_visit_item(self.cx, ori_res_did);
+            if is_hidden || glob {
+                return false;
+            }
+            // We store inlined foreign items otherwise, it'd mean that the `use` item would be kept
+            // around. It's not a problem unless this `use` imports both a local AND a foreign item.
+            // If a local item is inlined, its `use` is not supposed to still be around in `clean`,
+            // which would make appear the `use` in the generated documentation like the local item
+            // was not inlined even though it actually was.
+            self.modules
+                .last_mut()
+                .unwrap()
+                .inlined_foreigns
+                .insert((ori_res_did, renamed), (res, def_id));
+            return true;
         };
 
         let is_private = !self.cx.cache.effective_visibilities.is_directly_public(tcx, ori_res_did);
-        let is_hidden = tcx.is_doc_hidden(ori_res_did);
         let item = tcx.hir().get_by_def_id(res_did);
 
         if !please_inline {
-            let inherits_hidden = inherits_doc_hidden(tcx, res_did, None);
+            let inherits_hidden = !document_hidden && inherits_doc_hidden(tcx, res_did, None);
             // Only inline if requested or if the item would otherwise be stripped.
             if (!is_private && !inherits_hidden) || (
                 is_hidden &&
@@ -313,7 +326,7 @@ impl<'a, 'tcx> RustdocVisitor<'a, 'tcx> {
             return false;
         }
 
-        let inlined = match tcx.hir().get_by_def_id(res_did) {
+        let inlined = match item {
             // Bang macros are handled a bit on their because of how they are handled by the
             // compiler. If they have `#[doc(hidden)]` and the re-export doesn't have
             // `#[doc(inline)]`, then we don't inline it.
@@ -345,7 +358,7 @@ impl<'a, 'tcx> RustdocVisitor<'a, 'tcx> {
         };
         self.view_item_stack.remove(&res_did);
         if inlined {
-            self.cx.cache.inlined_items.insert(res_did.to_def_id());
+            self.cx.cache.inlined_items.insert(ori_res_did);
         }
         inlined
     }
@@ -359,8 +372,11 @@ impl<'a, 'tcx> RustdocVisitor<'a, 'tcx> {
         import_def_id: LocalDefId,
         target_def_id: LocalDefId,
     ) -> bool {
+        if self.cx.render_options.document_hidden {
+            return true;
+        }
         let tcx = self.cx.tcx;
-        let item_def_id = reexport_chain(tcx, import_def_id, target_def_id)
+        let item_def_id = reexport_chain(tcx, import_def_id, target_def_id.to_def_id())
             .iter()
             .flat_map(|reexport| reexport.id())
             .map(|id| id.expect_local())
@@ -479,7 +495,6 @@ impl<'a, 'tcx> RustdocVisitor<'a, 'tcx> {
                             continue;
                         }
                     }
-
                     self.add_to_current_mod(item, renamed, import_id);
                 }
             }

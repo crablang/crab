@@ -44,7 +44,6 @@ use crate::traits::{
 };
 use crate::ty::fast_reject::SimplifiedType;
 use crate::ty::layout::ValidityRequirement;
-use crate::ty::subst::{GenericArg, SubstsRef};
 use crate::ty::util::AlwaysRequiresDrop;
 use crate::ty::GeneratorDiagnosticData;
 use crate::ty::TyCtxtFeed;
@@ -52,6 +51,7 @@ use crate::ty::{
     self, print::describe_as_module, CrateInherentImpls, ParamEnvAnd, Ty, TyCtxt,
     UnusedGenericParams,
 };
+use crate::ty::{GenericArg, GenericArgsRef};
 use rustc_arena::TypedArena;
 use rustc_ast as ast;
 use rustc_ast::expand::{allocator::AllocatorKind, StrippedCfgItem};
@@ -898,6 +898,10 @@ rustc_queries! {
         desc { |tcx| "linting {}", describe_as_module(key, tcx) }
     }
 
+    query check_unused_traits(_: ()) -> () {
+        desc { "checking unused trait imports in crate" }
+    }
+
     /// Checks the attributes in the module.
     query check_mod_attrs(key: LocalDefId) -> () {
         desc { |tcx| "checking attributes in {}", describe_as_module(key, tcx) }
@@ -1032,7 +1036,7 @@ rustc_queries! {
     }
 
     /// Obtain all the calls into other local functions
-    query mir_inliner_callees(key: ty::InstanceDef<'tcx>) -> &'tcx [(DefId, SubstsRef<'tcx>)] {
+    query mir_inliner_callees(key: ty::InstanceDef<'tcx>) -> &'tcx [(DefId, GenericArgsRef<'tcx>)] {
         fatal_cycle
         desc { |tcx|
             "computing all local function calls in `{}`",
@@ -1537,7 +1541,7 @@ rustc_queries! {
     /// added or removed in any upstream crate. Instead use the narrower
     /// `upstream_monomorphizations_for`, `upstream_drop_glue_for`, or, even
     /// better, `Instance::upstream_monomorphization()`.
-    query upstream_monomorphizations(_: ()) -> &'tcx DefIdMap<FxHashMap<SubstsRef<'tcx>, CrateNum>> {
+    query upstream_monomorphizations(_: ()) -> &'tcx DefIdMap<FxHashMap<GenericArgsRef<'tcx>, CrateNum>> {
         arena_cache
         desc { "collecting available upstream monomorphizations" }
     }
@@ -1550,7 +1554,7 @@ rustc_queries! {
     /// You likely want to call `Instance::upstream_monomorphization()`
     /// instead of invoking this query directly.
     query upstream_monomorphizations_for(def_id: DefId)
-        -> Option<&'tcx FxHashMap<SubstsRef<'tcx>, CrateNum>>
+        -> Option<&'tcx FxHashMap<GenericArgsRef<'tcx>, CrateNum>>
     {
         desc { |tcx|
             "collecting available upstream monomorphizations for `{}`",
@@ -1560,7 +1564,7 @@ rustc_queries! {
     }
 
     /// Returns the upstream crate that exports drop-glue for the given
-    /// type (`substs` is expected to be a single-item list containing the
+    /// type (`args` is expected to be a single-item list containing the
     /// type one wants drop-glue for).
     ///
     /// This is a subset of `upstream_monomorphizations_for` in order to
@@ -1574,12 +1578,12 @@ rustc_queries! {
     /// NOTE: This query could easily be extended to also support other
     ///       common functions that have are large set of monomorphizations
     ///       (like `Clone::clone` for example).
-    query upstream_drop_glue_for(substs: SubstsRef<'tcx>) -> Option<CrateNum> {
-        desc { "available upstream drop-glue for `{:?}`", substs }
+    query upstream_drop_glue_for(args: GenericArgsRef<'tcx>) -> Option<CrateNum> {
+        desc { "available upstream drop-glue for `{:?}`", args }
     }
 
     /// Returns a list of all `extern` blocks of a crate.
-    query foreign_modules(_: CrateNum) -> &'tcx FxHashMap<DefId, ForeignModule> {
+    query foreign_modules(_: CrateNum) -> &'tcx FxIndexMap<DefId, ForeignModule> {
         arena_cache
         desc { "looking up the foreign modules of a linked crate" }
         separate_provide_extern
@@ -2053,16 +2057,16 @@ rustc_queries! {
         desc { "normalizing `{:?}`", goal.value.value.value }
     }
 
-    query subst_and_check_impossible_predicates(key: (DefId, SubstsRef<'tcx>)) -> bool {
+    query subst_and_check_impossible_predicates(key: (DefId, GenericArgsRef<'tcx>)) -> bool {
         desc { |tcx|
             "checking impossible substituted predicates: `{}`",
             tcx.def_path_str(key.0)
         }
     }
 
-    query is_impossible_method(key: (DefId, DefId)) -> bool {
+    query is_impossible_associated_item(key: (DefId, DefId)) -> bool {
         desc { |tcx|
-            "checking if `{}` is impossible to call within `{}`",
+            "checking if `{}` is impossible to reference within `{}`",
             tcx.def_path_str(key.1),
             tcx.def_path_str(key.0),
         }
@@ -2078,12 +2082,6 @@ rustc_queries! {
         arena_cache
         eval_always
         desc { "looking up supported target features" }
-    }
-
-    /// Get an estimate of the size of an InstanceDef based on its MIR for CGU partitioning.
-    query instance_def_size_estimate(def: ty::InstanceDef<'tcx>)
-        -> usize {
-        desc { |tcx| "estimating size for `{}`", tcx.def_path_str(def.def_id()) }
     }
 
     query features_query(_: ()) -> &'tcx rustc_feature::Features {
@@ -2104,16 +2102,16 @@ rustc_queries! {
     }
 
     /// Attempt to resolve the given `DefId` to an `Instance`, for the
-    /// given generics args (`SubstsRef`), returning one of:
+    /// given generics args (`GenericArgsRef`), returning one of:
     ///  * `Ok(Some(instance))` on success
-    ///  * `Ok(None)` when the `SubstsRef` are still too generic,
+    ///  * `Ok(None)` when the `GenericArgsRef` are still too generic,
     ///    and therefore don't allow finding the final `Instance`
     ///  * `Err(ErrorGuaranteed)` when the `Instance` resolution process
     ///    couldn't complete due to errors elsewhere - this is distinct
     ///    from `Ok(None)` to avoid misleading diagnostics when an error
     ///    has already been/will be emitted, for the original cause
     query resolve_instance(
-        key: ty::ParamEnvAnd<'tcx, (DefId, SubstsRef<'tcx>)>
+        key: ty::ParamEnvAnd<'tcx, (DefId, GenericArgsRef<'tcx>)>
     ) -> Result<Option<ty::Instance<'tcx>>, ErrorGuaranteed> {
         desc { "resolving instance `{}`", ty::Instance::new(key.value.0, key.value.1) }
     }

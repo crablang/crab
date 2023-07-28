@@ -138,7 +138,7 @@ use rustc_target::abi::{AddressSpace, Endian, HasDataLayout};
 
 use crate::mir;
 use crate::ty::codec::{TyDecoder, TyEncoder};
-use crate::ty::subst::GenericArgKind;
+use crate::ty::GenericArgKind;
 use crate::ty::{self, Instance, Ty, TyCtxt};
 
 pub use self::error::{
@@ -274,7 +274,7 @@ pub struct AllocDecodingState {
     // For each `AllocId`, we keep track of which decoding state it's currently in.
     decoding_state: Vec<Lock<State>>,
     // The offsets of each allocation in the data stream.
-    data_offsets: Vec<u32>,
+    data_offsets: Vec<u64>,
 }
 
 impl AllocDecodingState {
@@ -289,7 +289,7 @@ impl AllocDecodingState {
         AllocDecodingSession { state: self, session_id }
     }
 
-    pub fn new(data_offsets: Vec<u32>) -> Self {
+    pub fn new(data_offsets: Vec<u64>) -> Self {
         let decoding_state =
             std::iter::repeat_with(|| Lock::new(State::Empty)).take(data_offsets.len()).collect();
 
@@ -559,7 +559,7 @@ impl<'tcx> TyCtxt<'tcx> {
         // However, formatting code relies on function identity (see #58320), so we only do
         // this for generic functions. Lifetime parameters are ignored.
         let is_generic = instance
-            .substs
+            .args
             .into_iter()
             .any(|kind| !matches!(kind.unpack(), GenericArgKind::Lifetime(_)));
         if is_generic {

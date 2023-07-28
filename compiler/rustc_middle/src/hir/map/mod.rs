@@ -195,13 +195,7 @@ impl<'hir> Map<'hir> {
                 ItemKind::Fn(..) => DefKind::Fn,
                 ItemKind::Macro(_, macro_kind) => DefKind::Macro(macro_kind),
                 ItemKind::Mod(..) => DefKind::Mod,
-                ItemKind::OpaqueTy(ref opaque) => {
-                    if opaque.in_trait && !self.tcx.lower_impl_trait_in_trait_to_assoc_ty() {
-                        DefKind::ImplTraitPlaceholder
-                    } else {
-                        DefKind::OpaqueTy
-                    }
-                }
+                ItemKind::OpaqueTy(..) => DefKind::OpaqueTy,
                 ItemKind::TyAlias(..) => DefKind::TyAlias,
                 ItemKind::Enum(..) => DefKind::Enum,
                 ItemKind::Struct(..) => DefKind::Struct,
@@ -1108,6 +1102,33 @@ impl<'hir> Map<'hir> {
             }) => Some(*param_id),
             _ => None,
         }
+    }
+
+    pub fn maybe_get_struct_pattern_shorthand_field(&self, expr: &Expr<'_>) -> Option<Symbol> {
+        let local = match expr {
+            Expr {
+                kind:
+                    ExprKind::Path(QPath::Resolved(
+                        None,
+                        Path {
+                            res: def::Res::Local(_), segments: [PathSegment { ident, .. }], ..
+                        },
+                    )),
+                ..
+            } => Some(ident),
+            _ => None,
+        }?;
+
+        match self.find_parent(expr.hir_id)? {
+            Node::ExprField(field) => {
+                if field.ident.name == local.name && field.is_shorthand {
+                    return Some(local.name);
+                }
+            }
+            _ => {}
+        }
+
+        None
     }
 }
 

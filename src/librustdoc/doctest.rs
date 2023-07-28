@@ -108,6 +108,7 @@ pub(crate) fn run(options: RustdocOptions) -> Result<(), ErrorGuaranteed> {
         override_queries: None,
         make_codegen_backend: None,
         registry: rustc_driver::diagnostics_registry(),
+        ice_file: None,
     };
 
     let test_args = options.test_args.clone();
@@ -586,7 +587,7 @@ pub(crate) fn make_test(
             );
 
             // FIXME(misdreavus): pass `-Z treat-err-as-bug` to the doctest parser
-            let handler = Handler::with_emitter(false, None, Box::new(emitter));
+            let handler = Handler::with_emitter(Box::new(emitter)).disable_warnings();
             let sess = ParseSess::with_span_handler(handler, sm);
 
             let mut found_main = false;
@@ -653,8 +654,7 @@ pub(crate) fn make_test(
             (found_main, found_extern_crate, found_macro)
         })
     });
-    let Ok((already_has_main, already_has_extern_crate, found_macro)) = result
-    else {
+    let Ok((already_has_main, already_has_extern_crate, found_macro)) = result else {
         // If the parser panicked due to a fatal error, pass the test code through unchanged.
         // The error will be reported during compilation.
         return (s.to_owned(), 0, false);
@@ -774,7 +774,7 @@ fn check_if_attr_is_complete(source: &str, edition: Edition) -> bool {
                 TerminalUrl::No,
             );
 
-            let handler = Handler::with_emitter(false, None, Box::new(emitter));
+            let handler = Handler::with_emitter(Box::new(emitter)).disable_warnings();
             let sess = ParseSess::with_span_handler(handler, sm);
             let mut parser =
                 match maybe_new_parser_from_source_str(&sess, filename, source.to_owned()) {

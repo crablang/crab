@@ -1155,7 +1155,7 @@ extern "C" {
     pub fn LLVMConstVector(ScalarConstantVals: *const &Value, Size: c_uint) -> &Value;
 
     // Constant expressions
-    pub fn LLVMRustConstInBoundsGEP2<'a>(
+    pub fn LLVMConstInBoundsGEP2<'a>(
         ty: &'a Type,
         ConstantVal: &'a Value,
         ConstantIndices: *const &'a Value,
@@ -1868,7 +1868,10 @@ extern "C" {
     pub fn LLVMRustGetLastError() -> *const c_char;
 
     /// Print the pass timings since static dtors aren't picking them up.
-    pub fn LLVMRustPrintPassTimings();
+    pub fn LLVMRustPrintPassTimings(size: *const size_t) -> *const c_char;
+
+    /// Print the statistics since static dtors aren't picking them up.
+    pub fn LLVMRustPrintStatistics(size: *const size_t) -> *const c_char;
 
     pub fn LLVMStructCreateNamed(C: &Context, Name: *const c_char) -> &Type;
 
@@ -1916,7 +1919,6 @@ extern "C" {
     );
 
     pub fn LLVMRustCoverageCreatePGOFuncNameVar(F: &Value, FuncName: *const c_char) -> &Value;
-    pub fn LLVMRustCoverageHashCString(StrVal: *const c_char) -> u64;
     pub fn LLVMRustCoverageHashByteArray(Bytes: *const c_char, NumBytes: size_t) -> u64;
 
     #[allow(improper_ctypes)]
@@ -2281,7 +2283,12 @@ extern "C" {
 
     pub fn LLVMRustHasFeature(T: &TargetMachine, s: *const c_char) -> bool;
 
-    pub fn LLVMRustPrintTargetCPUs(T: &TargetMachine, cpu: *const c_char);
+    pub fn LLVMRustPrintTargetCPUs(
+        T: &TargetMachine,
+        cpu: *const c_char,
+        print: unsafe extern "C" fn(out: *mut c_void, string: *const c_char, len: usize),
+        out: *mut c_void,
+    );
     pub fn LLVMRustGetTargetFeaturesCount(T: &TargetMachine) -> size_t;
     pub fn LLVMRustGetTargetFeature(
         T: &TargetMachine,

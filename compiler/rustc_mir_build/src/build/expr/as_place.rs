@@ -175,11 +175,8 @@ fn to_upvars_resolved_place_builder<'tcx>(
     projection: &[PlaceElem<'tcx>],
 ) -> Option<PlaceBuilder<'tcx>> {
     let Some((capture_index, capture)) =
-        find_capture_matching_projections(
-            &cx.upvars,
-            var_hir_id,
-            &projection,
-        ) else {
+        find_capture_matching_projections(&cx.upvars, var_hir_id, &projection)
+    else {
         let closure_span = cx.tcx.def_span(closure_def_id);
         if !enable_precise_capture(closure_span) {
             bug!(
@@ -189,10 +186,7 @@ fn to_upvars_resolved_place_builder<'tcx>(
                 projection
             )
         } else {
-            debug!(
-                "No associated capture found for {:?}[{:#?}]",
-                var_hir_id, projection,
-            );
+            debug!("No associated capture found for {:?}[{:#?}]", var_hir_id, projection,);
         }
         return None;
     };
@@ -736,5 +730,5 @@ impl<'a, 'tcx> Builder<'a, 'tcx> {
 
 /// Precise capture is enabled if user is using Rust Edition 2021 or higher.
 fn enable_precise_capture(closure_span: Span) -> bool {
-    closure_span.rust_2021()
+    closure_span.at_least_rust_2021()
 }

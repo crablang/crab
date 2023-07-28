@@ -157,8 +157,7 @@ pub fn parse_asm_args<'a>(
         } else if p.eat_keyword(sym::sym) {
             let expr = p.parse_expr()?;
             let ast::ExprKind::Path(qself, path) = &expr.kind else {
-                let err = diag
-                    .create_err(errors::AsmSymNoPath { span: expr.span });
+                let err = diag.create_err(errors::AsmSymNoPath { span: expr.span });
                 return Err(err);
             };
             let sym = ast::InlineAsmSym {
@@ -402,7 +401,7 @@ fn parse_clobber_abi<'a>(p: &mut Parser<'a>, args: &mut AsmArgs) -> PResult<'a, 
         // should have errored above during parsing
         [] => unreachable!(),
         [(abi, _span)] => args.clobber_abis.push((*abi, full_span)),
-        [abis @ ..] => {
+        abis => {
             for (abi, span) in abis {
                 args.clobber_abis.push((*abi, *span));
             }

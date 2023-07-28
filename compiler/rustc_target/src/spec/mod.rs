@@ -74,6 +74,7 @@ mod l4re_base;
 mod linux_base;
 mod linux_gnu_base;
 mod linux_musl_base;
+mod linux_ohos_base;
 mod linux_uclibc_base;
 mod msvc_base;
 mod netbsd_base;
@@ -84,6 +85,7 @@ mod solaris_base;
 mod solid_base;
 mod thumb_base;
 mod uefi_msvc_base;
+mod unikraft_linux_musl_base;
 mod vxworks_base;
 mod wasm_base;
 mod windows_gnu_base;
@@ -1417,7 +1419,10 @@ supported_targets! {
     ("msp430-none-elf", msp430_none_elf),
 
     ("aarch64-unknown-hermit", aarch64_unknown_hermit),
+    ("riscv64gc-unknown-hermit", riscv64gc_unknown_hermit),
     ("x86_64-unknown-hermit", x86_64_unknown_hermit),
+
+    ("x86_64-unikraft-linux-musl", x86_64_unikraft_linux_musl),
 
     ("riscv32i-unknown-none-elf", riscv32i_unknown_none_elf),
     ("riscv32im-unknown-none-elf", riscv32im_unknown_none_elf),
@@ -1432,6 +1437,8 @@ supported_targets! {
     ("riscv64gc-unknown-none-elf", riscv64gc_unknown_none_elf),
     ("riscv64gc-unknown-linux-gnu", riscv64gc_unknown_linux_gnu),
     ("riscv64gc-unknown-linux-musl", riscv64gc_unknown_linux_musl),
+
+    ("sparc-unknown-none-elf", sparc_unknown_none_elf),
 
     ("loongarch64-unknown-none", loongarch64_unknown_none),
     ("loongarch64-unknown-none-softfloat", loongarch64_unknown_none_softfloat),
@@ -1493,6 +1500,7 @@ supported_targets! {
 
     ("aarch64-unknown-linux-ohos", aarch64_unknown_linux_ohos),
     ("armv7-unknown-linux-ohos", armv7_unknown_linux_ohos),
+    ("x86_64-unknown-linux-ohos", x86_64_unknown_linux_ohos),
 }
 
 /// Cow-Vec-Str: Cow<'static, [Cow<'static, str>]>

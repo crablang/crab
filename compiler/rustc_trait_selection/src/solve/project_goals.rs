@@ -2,7 +2,6 @@ use crate::traits::specialization_graph;
 
 use super::assembly::{self, structural_traits};
 use super::EvalCtxt;
-use rustc_errors::ErrorGuaranteed;
 use rustc_hir::def::DefKind;
 use rustc_hir::def_id::DefId;
 use rustc_hir::LangItem;
@@ -11,11 +10,12 @@ use rustc_infer::traits::specialization_graph::LeafDef;
 use rustc_infer::traits::Reveal;
 use rustc_middle::traits::solve::inspect::CandidateKind;
 use rustc_middle::traits::solve::{CanonicalResponse, Certainty, Goal, QueryResult};
+use rustc_middle::traits::BuiltinImplSource;
 use rustc_middle::ty::fast_reject::{DeepRejectCtxt, TreatParams};
 use rustc_middle::ty::ProjectionPredicate;
 use rustc_middle::ty::{self, Ty, TyCtxt};
 use rustc_middle::ty::{ToPredicate, TypeVisitableExt};
-use rustc_span::{sym, DUMMY_SP};
+use rustc_span::{sym, ErrorGuaranteed, DUMMY_SP};
 
 impl<'tcx> EvalCtxt<'_, 'tcx> {
     #[instrument(level = "debug", skip(self), ret)]
@@ -48,7 +48,7 @@ impl<'tcx> EvalCtxt<'_, 'tcx> {
                             self.merge_candidates(candidates)
                         }
                         ty::AssocItemContainer::ImplContainer => {
-                            bug!("IATs not supported here yet")
+                            self.normalize_inherent_associated_type(goal)
                         }
                     }
                 } else {
@@ -72,7 +72,7 @@ impl<'tcx> EvalCtxt<'_, 'tcx> {
             goal.param_env,
             ty::UnevaluatedConst::new(
                 goal.predicate.projection_ty.def_id,
-                goal.predicate.projection_ty.substs,
+                goal.predicate.projection_ty.args,
             ),
             self.tcx()
                 .type_of(goal.predicate.projection_ty.def_id)
@@ -112,6 +112,7 @@ impl<'tcx> assembly::GoalKind<'tcx> for ProjectionPredicate<'tcx> {
     ) -> QueryResult<'tcx> {
         if let Some(projection_pred) = assumption.as_projection_clause() {
             if projection_pred.projection_def_id() == goal.predicate.def_id() {
+                let tcx = ecx.tcx();
                 ecx.probe_candidate("assumption").enter(|ecx| {
                     let assumption_projection_pred =
                         ecx.instantiate_binder_with_infer(projection_pred);
@@ -122,6 +123,14 @@ impl<'tcx> assembly::GoalKind<'tcx> for ProjectionPredicate<'tcx> {
                     )?;
                     ecx.eq(goal.param_env, goal.predicate.term, assumption_projection_pred.term)
                         .expect("expected goal term to be fully unconstrained");
+
+                    // Add GAT where clauses from the trait's definition
+                    ecx.add_goals(
+                        tcx.predicates_of(goal.predicate.def_id())
+                            .instantiate_own(tcx, goal.predicate.projection_ty.args)
+                            .map(|(pred, _)| goal.with(tcx, pred)),
+                    );
+
                     then(ecx)
                 })
             } else {
@@ -142,93 +151,108 @@ impl<'tcx> assembly::GoalKind<'tcx> for ProjectionPredicate<'tcx> {
         let goal_trait_ref = goal.predicate.projection_ty.trait_ref(tcx);
         let impl_trait_ref = tcx.impl_trait_ref(impl_def_id).unwrap();
         let drcx = DeepRejectCtxt { treat_obligation_params: TreatParams::ForLookup };
-        if !drcx.substs_refs_may_unify(goal_trait_ref.substs, impl_trait_ref.skip_binder().substs) {
+        if !drcx.args_refs_may_unify(goal_trait_ref.args, impl_trait_ref.skip_binder().args) {
             return Err(NoSolution);
         }
 
-        ecx.probe(
-            |r| CandidateKind::Candidate { name: "impl".into(), result: *r }).enter(
-            |ecx| {
-                let impl_substs = ecx.fresh_substs_for_item(impl_def_id);
-                let impl_trait_ref = impl_trait_ref.subst(tcx, impl_substs);
+        ecx.probe(|r| CandidateKind::Candidate { name: "impl".into(), result: *r }).enter(|ecx| {
+            let impl_args = ecx.fresh_args_for_item(impl_def_id);
+            let impl_trait_ref = impl_trait_ref.instantiate(tcx, impl_args);
 
-                ecx.eq(goal.param_env, goal_trait_ref, impl_trait_ref)?;
+            ecx.eq(goal.param_env, goal_trait_ref, impl_trait_ref)?;
 
-                let where_clause_bounds = tcx
-                    .predicates_of(impl_def_id)
-                    .instantiate(tcx, impl_substs)
-                    .predicates
-                    .into_iter()
-                    .map(|pred| goal.with(tcx, pred));
-                ecx.add_goals(where_clause_bounds);
+            let where_clause_bounds = tcx
+                .predicates_of(impl_def_id)
+                .instantiate(tcx, impl_args)
+                .predicates
+                .into_iter()
+                .map(|pred| goal.with(tcx, pred));
+            ecx.add_goals(where_clause_bounds);
 
-                // In case the associated item is hidden due to specialization, we have to
-                // return ambiguity this would otherwise be incomplete, resulting in
-                // unsoundness during coherence (#105782).
-                let Some(assoc_def) = fetch_eligible_assoc_item_def(
-                    ecx,
-                    goal.param_env,
-                    goal_trait_ref,
-                    goal.predicate.def_id(),
-                    impl_def_id
-                )? else {
-                    return ecx.evaluate_added_goals_and_make_canonical_response(Certainty::AMBIGUOUS);
-                };
+            // Add GAT where clauses from the trait's definition
+            ecx.add_goals(
+                tcx.predicates_of(goal.predicate.def_id())
+                    .instantiate_own(tcx, goal.predicate.projection_ty.args)
+                    .map(|(pred, _)| goal.with(tcx, pred)),
+            );
 
-                if !assoc_def.item.defaultness(tcx).has_value() {
-                    let guar = tcx.sess.delay_span_bug(
-                        tcx.def_span(assoc_def.item.def_id),
-                        "missing value for assoc item in impl",
-                    );
-                    let error_term = match assoc_def.item.kind {
-                        ty::AssocKind::Const => ty::Const::new_error(tcx,
-                            guar,
-                            tcx.type_of(goal.predicate.def_id())
-                                .subst(tcx, goal.predicate.projection_ty.substs),
-                            )
-                            .into(),
-                        ty::AssocKind::Type => Ty::new_error(tcx,guar).into(),
-                        ty::AssocKind::Fn => unreachable!(),
-                    };
-                    ecx.eq(goal.param_env, goal.predicate.term, error_term)
-                        .expect("expected goal term to be fully unconstrained");
-                    return ecx.evaluate_added_goals_and_make_canonical_response(Certainty::Yes);
-                }
+            // In case the associated item is hidden due to specialization, we have to
+            // return ambiguity this would otherwise be incomplete, resulting in
+            // unsoundness during coherence (#105782).
+            let Some(assoc_def) = fetch_eligible_assoc_item_def(
+                ecx,
+                goal.param_env,
+                goal_trait_ref,
+                goal.predicate.def_id(),
+                impl_def_id,
+            )?
+            else {
+                return ecx.evaluate_added_goals_and_make_canonical_response(Certainty::AMBIGUOUS);
+            };
 
-                // Getting the right substitutions here is complex, e.g. given:
-                // - a goal `<Vec<u32> as Trait<i32>>::Assoc<u64>`
-                // - the applicable impl `impl<T> Trait<i32> for Vec<T>`
-                // - and the impl which defines `Assoc` being `impl<T, U> Trait<U> for Vec<T>`
-                //
-                // We first rebase the goal substs onto the impl, going from `[Vec<u32>, i32, u64]`
-                // to `[u32, u64]`.
-                //
-                // And then map these substs to the substs of the defining impl of `Assoc`, going
-                // from `[u32, u64]` to `[u32, i32, u64]`.
-                let impl_substs_with_gat = goal.predicate.projection_ty.substs.rebase_onto(
-                    tcx,
-                    goal_trait_ref.def_id,
-                    impl_substs,
+            if !assoc_def.item.defaultness(tcx).has_value() {
+                let guar = tcx.sess.delay_span_bug(
+                    tcx.def_span(assoc_def.item.def_id),
+                    "missing value for assoc item in impl",
                 );
-                let substs = ecx.translate_substs(
-                    goal.param_env,
-                    impl_def_id,
-                    impl_substs_with_gat,
-                    assoc_def.defining_node,
-                );
-
-                // Finally we construct the actual value of the associated type.
-                let term = match assoc_def.item.kind {
-                    ty::AssocKind::Type => tcx.type_of(assoc_def.item.def_id).map_bound(|ty| ty.into()),
-                    ty::AssocKind::Const => bug!("associated const projection is not supported yet"),
-                    ty::AssocKind::Fn => unreachable!("we should never project to a fn"),
+                let error_term = match assoc_def.item.kind {
+                    ty::AssocKind::Const => ty::Const::new_error(
+                        tcx,
+                        guar,
+                        tcx.type_of(goal.predicate.def_id())
+                            .instantiate(tcx, goal.predicate.projection_ty.args),
+                    )
+                    .into(),
+                    ty::AssocKind::Type => Ty::new_error(tcx, guar).into(),
+                    ty::AssocKind::Fn => unreachable!(),
                 };
-
-                ecx.eq(goal.param_env, goal.predicate.term, term.subst(tcx, substs))
+                ecx.eq(goal.param_env, goal.predicate.term, error_term)
                     .expect("expected goal term to be fully unconstrained");
-                ecx.evaluate_added_goals_and_make_canonical_response(Certainty::Yes)
-            },
-        )
+                return ecx.evaluate_added_goals_and_make_canonical_response(Certainty::Yes);
+            }
+
+            // Getting the right args here is complex, e.g. given:
+            // - a goal `<Vec<u32> as Trait<i32>>::Assoc<u64>`
+            // - the applicable impl `impl<T> Trait<i32> for Vec<T>`
+            // - and the impl which defines `Assoc` being `impl<T, U> Trait<U> for Vec<T>`
+            //
+            // We first rebase the goal args onto the impl, going from `[Vec<u32>, i32, u64]`
+            // to `[u32, u64]`.
+            //
+            // And then map these args to the args of the defining impl of `Assoc`, going
+            // from `[u32, u64]` to `[u32, i32, u64]`.
+            let impl_args_with_gat = goal.predicate.projection_ty.args.rebase_onto(
+                tcx,
+                goal_trait_ref.def_id,
+                impl_args,
+            );
+            let args = ecx.translate_args(
+                goal.param_env,
+                impl_def_id,
+                impl_args_with_gat,
+                assoc_def.defining_node,
+            );
+
+            // Finally we construct the actual value of the associated type.
+            let term = match assoc_def.item.kind {
+                ty::AssocKind::Type => tcx.type_of(assoc_def.item.def_id).map_bound(|ty| ty.into()),
+                ty::AssocKind::Const => bug!("associated const projection is not supported yet"),
+                ty::AssocKind::Fn => unreachable!("we should never project to a fn"),
+            };
+
+            ecx.eq(goal.param_env, goal.predicate.term, term.instantiate(tcx, args))
+                .expect("expected goal term to be fully unconstrained");
+            ecx.evaluate_added_goals_and_make_canonical_response(Certainty::Yes)
+        })
+    }
+
+    /// Fail to normalize if the predicate contains an error, alternatively, we could normalize to `ty::Error`
+    /// and succeed. Can experiment with this to figure out what results in better error messages.
+    fn consider_error_guaranteed_candidate(
+        _ecx: &mut EvalCtxt<'_, 'tcx>,
+        _guar: ErrorGuaranteed,
+    ) -> QueryResult<'tcx> {
+        Err(NoSolution)
     }
 
     fn consider_auto_trait_candidate(
@@ -350,7 +374,7 @@ impl<'tcx> assembly::GoalKind<'tcx> for ProjectionPredicate<'tcx> {
                 ty::Dynamic(_, _, _) => {
                     let dyn_metadata = tcx.require_lang_item(LangItem::DynMetadata, None);
                     tcx.type_of(dyn_metadata)
-                        .subst(tcx, &[ty::GenericArg::from(goal.predicate.self_ty())])
+                        .instantiate(tcx, &[ty::GenericArg::from(goal.predicate.self_ty())])
                 }
 
                 ty::Alias(_, _) | ty::Param(_) | ty::Placeholder(..) => {
@@ -365,20 +389,18 @@ impl<'tcx> assembly::GoalKind<'tcx> for ProjectionPredicate<'tcx> {
                     tcx.types.unit
                 }
 
-                ty::Adt(def, substs) if def.is_struct() => {
-                    match def.non_enum_variant().tail_opt() {
-                        None => tcx.types.unit,
-                        Some(field_def) => {
-                            let self_ty = field_def.ty(tcx, substs);
-                            ecx.add_goal(goal.with(
-                                tcx,
-                                ty::Binder::dummy(goal.predicate.with_self_ty(tcx, self_ty)),
-                            ));
-                            return ecx
-                                .evaluate_added_goals_and_make_canonical_response(Certainty::Yes);
-                        }
+                ty::Adt(def, args) if def.is_struct() => match def.non_enum_variant().tail_opt() {
+                    None => tcx.types.unit,
+                    Some(field_def) => {
+                        let self_ty = field_def.ty(tcx, args);
+                        ecx.add_goal(goal.with(
+                            tcx,
+                            ty::Binder::dummy(goal.predicate.with_self_ty(tcx, self_ty)),
+                        ));
+                        return ecx
+                            .evaluate_added_goals_and_make_canonical_response(Certainty::Yes);
                     }
-                }
+                },
                 ty::Adt(_, _) => tcx.types.unit,
 
                 ty::Tuple(elements) => match elements.last() {
@@ -413,7 +435,7 @@ impl<'tcx> assembly::GoalKind<'tcx> for ProjectionPredicate<'tcx> {
         goal: Goal<'tcx, Self>,
     ) -> QueryResult<'tcx> {
         let self_ty = goal.predicate.self_ty();
-        let ty::Generator(def_id, substs, _) = *self_ty.kind() else {
+        let ty::Generator(def_id, args, _) = *self_ty.kind() else {
             return Err(NoSolution);
         };
 
@@ -423,7 +445,7 @@ impl<'tcx> assembly::GoalKind<'tcx> for ProjectionPredicate<'tcx> {
             return Err(NoSolution);
         }
 
-        let term = substs.as_generator().return_ty().into();
+        let term = args.as_generator().return_ty().into();
 
         Self::consider_implied_clause(
             ecx,
@@ -444,7 +466,7 @@ impl<'tcx> assembly::GoalKind<'tcx> for ProjectionPredicate<'tcx> {
         goal: Goal<'tcx, Self>,
     ) -> QueryResult<'tcx> {
         let self_ty = goal.predicate.self_ty();
-        let ty::Generator(def_id, substs, _) = *self_ty.kind() else {
+        let ty::Generator(def_id, args, _) = *self_ty.kind() else {
             return Err(NoSolution);
         };
 
@@ -454,7 +476,7 @@ impl<'tcx> assembly::GoalKind<'tcx> for ProjectionPredicate<'tcx> {
             return Err(NoSolution);
         }
 
-        let generator = substs.as_generator();
+        let generator = args.as_generator();
 
         let name = tcx.associated_item(goal.predicate.def_id()).name;
         let term = if name == sym::Return {
@@ -481,17 +503,10 @@ impl<'tcx> assembly::GoalKind<'tcx> for ProjectionPredicate<'tcx> {
         )
     }
 
-    fn consider_builtin_unsize_candidate(
+    fn consider_builtin_unsize_and_upcast_candidates(
         _ecx: &mut EvalCtxt<'_, 'tcx>,
         goal: Goal<'tcx, Self>,
-    ) -> QueryResult<'tcx> {
-        bug!("`Unsize` does not have an associated type: {:?}", goal);
-    }
-
-    fn consider_builtin_dyn_upcast_candidates(
-        _ecx: &mut EvalCtxt<'_, 'tcx>,
-        goal: Goal<'tcx, Self>,
-    ) -> Vec<CanonicalResponse<'tcx>> {
+    ) -> Vec<(CanonicalResponse<'tcx>, BuiltinImplSource)> {
         bug!("`Unsize` does not have an associated type: {:?}", goal);
     }
 

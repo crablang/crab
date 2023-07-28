@@ -335,8 +335,7 @@ impl<'a, 'tcx> FnCtxt<'a, 'tcx> {
         expected: Ty<'tcx>,
         mut def_bm: BindingMode,
     ) -> (Ty<'tcx>, BindingMode) {
-        let mut expected = self.resolve_vars_with_obligations(expected);
-
+        let mut expected = self.try_structurally_resolve_type(pat.span, expected);
         // Peel off as many `&` or `&mut` from the scrutinee type as possible. For example,
         // for `match &&&mut Some(5)` the loop runs three times, aborting when it reaches
         // the `Some(5)` which is not of type Ref.
@@ -353,7 +352,7 @@ impl<'a, 'tcx> FnCtxt<'a, 'tcx> {
             // Preserve the reference type. We'll need it later during THIR lowering.
             pat_adjustments.push(expected);
 
-            expected = inner_ty;
+            expected = self.try_structurally_resolve_type(pat.span, inner_ty);
             def_bm = ty::BindByReference(match def_bm {
                 // If default binding mode is by value, make it `ref` or `ref mut`
                 // (depending on whether we observe `&` or `&mut`).
@@ -517,7 +516,7 @@ impl<'a, 'tcx> FnCtxt<'a, 'tcx> {
 
     fn endpoint_has_type(&self, err: &mut Diagnostic, span: Span, ty: Ty<'_>) {
         if !ty.references_error() {
-            err.span_label(span, format!("this is of type `{}`", ty));
+            err.span_label(span, format!("this is of type `{ty}`"));
         }
     }
 
@@ -541,7 +540,7 @@ impl<'a, 'tcx> FnCtxt<'a, 'tcx> {
         );
         let msg = |ty| {
             let ty = self.resolve_vars_if_possible(ty);
-            format!("this is of type `{}` but it should be `char` or numeric", ty)
+            format!("this is of type `{ty}` but it should be `char` or numeric")
         };
         let mut one_side_err = |first_span, first_ty, second: Option<(bool, Ty<'tcx>, Span)>| {
             err.span_label(first_span, msg(first_ty));
@@ -627,6 +626,9 @@ impl<'a, 'tcx> FnCtxt<'a, 'tcx> {
         local_ty
     }
 
+    /// When a variable is bound several times in a `PatKind::Or`, it'll resolve all of the
+    /// subsequent bindings of the same name to the first usage. Verify that all of these
+    /// bindings have the same type by comparing them all against the type of that first pat.
     fn check_binding_alt_eq_ty(
         &self,
         ba: hir::BindingAnnotation,
@@ -638,7 +640,7 @@ impl<'a, 'tcx> FnCtxt<'a, 'tcx> {
         let var_ty = self.local_ty(span, var_id);
         if let Some(mut err) = self.demand_eqtype_pat_diag(span, var_ty, ty, ti) {
             let hir = self.tcx.hir();
-            let var_ty = self.resolve_vars_with_obligations(var_ty);
+            let var_ty = self.resolve_vars_if_possible(var_ty);
             let msg = format!("first introduced with type `{var_ty}` here");
             err.span_label(hir.span(var_id), msg);
             let in_match = hir.parent_iter(var_id).any(|(_, n)| {
@@ -651,12 +653,12 @@ impl<'a, 'tcx> FnCtxt<'a, 'tcx> {
                 )
             });
             let pre = if in_match { "in the same arm, " } else { "" };
-            err.note(format!("{}a binding must have the same type in all alternatives", pre));
+            err.note(format!("{pre}a binding must have the same type in all alternatives"));
             self.suggest_adding_missing_ref_or_removing_ref(
                 &mut err,
                 span,
                 var_ty,
-                self.resolve_vars_with_obligations(ty),
+                self.resolve_vars_if_possible(ty),
                 ba,
             );
             err.emit();
@@ -1092,12 +1094,12 @@ impl<'a, 'tcx> FnCtxt<'a, 'tcx> {
         if subpats.len() == variant.fields.len()
             || subpats.len() < variant.fields.len() && ddpos.as_opt_usize().is_some()
         {
-            let ty::Adt(_, substs) = pat_ty.kind() else {
+            let ty::Adt(_, args) = pat_ty.kind() else {
                 bug!("unexpected pattern type {:?}", pat_ty);
             };
             for (i, subpat) in subpats.iter().enumerate_and_adjust(variant.fields.len(), ddpos) {
                 let field = &variant.fields[FieldIdx::from_usize(i)];
-                let field_ty = self.field_ty(subpat.span, field, substs);
+                let field_ty = self.field_ty(subpat.span, field, args);
                 self.check_pat(subpat, field_ty, def_bm, ti);
 
                 self.tcx.check_stability(
@@ -1180,10 +1182,10 @@ impl<'a, 'tcx> FnCtxt<'a, 'tcx> {
         // with the subpatterns directly in the tuple variant pattern, e.g., `V_i(p_0, .., p_N)`.
         let missing_parentheses = match (&expected.kind(), fields, had_err) {
             // #67037: only do this if we could successfully type-check the expected type against
-            // the tuple struct pattern. Otherwise the substs could get out of range on e.g.,
+            // the tuple struct pattern. Otherwise the args could get out of range on e.g.,
             // `let P() = U;` where `P != U` with `struct P<T>(T);`.
-            (ty::Adt(_, substs), [field], false) => {
-                let field_ty = self.field_ty(pat_span, field, substs);
+            (ty::Adt(_, args), [field], false) => {
+                let field_ty = self.field_ty(pat_span, field, args);
                 match field_ty.kind() {
                     ty::Tuple(fields) => fields.len() == subpats.len(),
                     _ => false,
@@ -1333,7 +1335,7 @@ impl<'a, 'tcx> FnCtxt<'a, 'tcx> {
     ) -> bool {
         let tcx = self.tcx;
 
-        let ty::Adt(adt, substs) = adt_ty.kind() else {
+        let ty::Adt(adt, args) = adt_ty.kind() else {
             span_bug!(pat.span, "struct pattern is not an ADT");
         };
 
@@ -1366,7 +1368,7 @@ impl<'a, 'tcx> FnCtxt<'a, 'tcx> {
                         .map(|(i, f)| {
                             self.write_field_index(field.hir_id, *i);
                             self.tcx.check_stability(f.did, Some(pat.hir_id), span, None);
-                            self.field_ty(span, f, substs)
+                            self.field_ty(span, f, args)
                         })
                         .unwrap_or_else(|| {
                             inexistent_fields.push(field);
@@ -1394,7 +1396,7 @@ impl<'a, 'tcx> FnCtxt<'a, 'tcx> {
                 &inexistent_fields,
                 &mut unmentioned_fields,
                 variant,
-                substs,
+                args,
             ))
         } else {
             None
@@ -1564,7 +1566,7 @@ impl<'a, 'tcx> FnCtxt<'a, 'tcx> {
         inexistent_fields: &[&hir::PatField<'tcx>],
         unmentioned_fields: &mut Vec<(&'tcx ty::FieldDef, Ident)>,
         variant: &ty::VariantDef,
-        substs: &'tcx ty::List<ty::subst::GenericArg<'tcx>>,
+        args: &'tcx ty::List<ty::GenericArg<'tcx>>,
     ) -> DiagnosticBuilder<'tcx, ErrorGuaranteed> {
         let tcx = self.tcx;
         let (field_names, t, plural) = if inexistent_fields.len() == 1 {
@@ -1634,7 +1636,7 @@ impl<'a, 'tcx> FnCtxt<'a, 'tcx> {
                                 self.field_ty(
                                     unmentioned_fields[0].1.span,
                                     unmentioned_fields[0].0,
-                                    substs,
+                                    args,
                                 ),
                             ) => {}
                         _ => {
@@ -1708,7 +1710,7 @@ impl<'a, 'tcx> FnCtxt<'a, 'tcx> {
             err.span_suggestion_verbose(
                 qpath.span().shrink_to_hi().to(pat.span.shrink_to_hi()),
                 "use the tuple variant pattern syntax instead",
-                format!("({})", sugg),
+                format!("({sugg})"),
                 appl,
             );
             return Some(err);
@@ -1810,7 +1812,7 @@ impl<'a, 'tcx> FnCtxt<'a, 'tcx> {
             const LIMIT: usize = 3;
             match witnesses {
                 [] => bug!(),
-                [witness] => format!("`{}`", witness),
+                [witness] => format!("`{witness}`"),
                 [head @ .., tail] if head.len() < LIMIT => {
                     let head: Vec<_> = head.iter().map(<_>::to_string).collect();
                     format!("`{}` and `{}`", head.join("`, `"), tail)
@@ -1832,8 +1834,7 @@ impl<'a, 'tcx> FnCtxt<'a, 'tcx> {
             "ensure that all fields are mentioned explicitly by adding the suggested fields",
         );
         lint.note(format!(
-            "the pattern is of type `{}` and the `non_exhaustive_omitted_patterns` attribute was found",
-            ty,
+            "the pattern is of type `{ty}` and the `non_exhaustive_omitted_patterns` attribute was found",
         ));
 
         lint
@@ -1862,10 +1863,10 @@ impl<'a, 'tcx> FnCtxt<'a, 'tcx> {
         } else {
             let fields = unmentioned_fields
                 .iter()
-                .map(|(_, name)| format!("`{}`", name))
+                .map(|(_, name)| format!("`{name}`"))
                 .collect::<Vec<String>>()
                 .join(", ");
-            format!("fields {}{}", fields, inaccessible)
+            format!("fields {fields}{inaccessible}")
         };
         let mut err = struct_span_err!(
             self.tcx.sess,
@@ -1874,7 +1875,7 @@ impl<'a, 'tcx> FnCtxt<'a, 'tcx> {
             "pattern does not mention {}",
             field_names
         );
-        err.span_label(pat.span, format!("missing {}", field_names));
+        err.span_label(pat.span, format!("missing {field_names}"));
         let len = unmentioned_fields.len();
         let (prefix, postfix, sp) = match fields {
             [] => match &pat.kind {
@@ -1907,11 +1908,7 @@ impl<'a, 'tcx> FnCtxt<'a, 'tcx> {
                     .iter()
                     .map(|(_, name)| {
                         let field_name = name.to_string();
-                        if is_number(&field_name) {
-                            format!("{}: _", field_name)
-                        } else {
-                            field_name
-                        }
+                        if is_number(&field_name) { format!("{field_name}: _") } else { field_name }
                     })
                     .collect::<Vec<_>>()
                     .join(", "),
@@ -1928,7 +1925,7 @@ impl<'a, 'tcx> FnCtxt<'a, 'tcx> {
                 s = pluralize!(len),
                 them = if len == 1 { "it" } else { "them" },
             ),
-            format!("{}..{}", prefix, postfix),
+            format!("{prefix}..{postfix}"),
             Applicability::MachineApplicable,
         );
         err

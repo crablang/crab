@@ -363,21 +363,12 @@ impl<'cx, 'tcx> MirBorrowckCtxt<'cx, 'tcx> {
             }
         }
         let hir = self.infcx.tcx.hir();
-        if let Some(hir::Node::Item(hir::Item {
-            kind: hir::ItemKind::Fn(_, _, body_id),
-            ..
-        })) = hir.find(self.mir_hir_id())
-            && let Some(hir::Node::Expr(expr)) = hir.find(body_id.hir_id)
-        {
+        if let Some(body_id) = hir.maybe_body_owned_by(self.mir_def_id()) {
+            let expr = hir.body(body_id).value;
             let place = &self.move_data.move_paths[mpi].place;
-            let span = place.as_local()
-                .map(|local| self.body.local_decls[local].source_info.span);
-            let mut finder = ExpressionFinder {
-                expr_span: move_span,
-                expr: None,
-                pat: None,
-                parent_pat: None,
-            };
+            let span = place.as_local().map(|local| self.body.local_decls[local].source_info.span);
+            let mut finder =
+                ExpressionFinder { expr_span: move_span, expr: None, pat: None, parent_pat: None };
             finder.visit_expr(expr);
             if let Some(span) = span && let Some(expr) = finder.expr {
                 for (_, expr) in hir.parent_iter(expr.hir_id) {
@@ -461,7 +452,7 @@ impl<'cx, 'tcx> MirBorrowckCtxt<'cx, 'tcx> {
                     } = move_spans {
                         // We already suggest cloning for these cases in `explain_captures`.
                     } else {
-                        self.suggest_cloning(err, ty, move_span);
+                        self.suggest_cloning(err, ty, expr, move_span);
                     }
                 }
             }
@@ -662,7 +653,7 @@ impl<'cx, 'tcx> MirBorrowckCtxt<'cx, 'tcx> {
             err.span_suggestion_verbose(
                 sugg_span.shrink_to_hi(),
                 "consider assigning a value",
-                format!(" = {}", assign_value),
+                format!(" = {assign_value}"),
                 Applicability::MaybeIncorrect,
             );
         }
@@ -702,11 +693,11 @@ impl<'cx, 'tcx> MirBorrowckCtxt<'cx, 'tcx> {
                 .iter()
                 .copied()
                 .find_map(find_fn_kind_from_did),
-            ty::Alias(ty::Opaque, ty::AliasTy { def_id, substs, .. }) => tcx
+            ty::Alias(ty::Opaque, ty::AliasTy { def_id, args, .. }) => tcx
                 .explicit_item_bounds(def_id)
-                .subst_iter_copied(tcx, substs)
+                .iter_instantiated_copied(tcx, args)
                 .find_map(|(clause, span)| find_fn_kind_from_did((clause, span))),
-            ty::Closure(_, substs) => match substs.as_closure().kind() {
+            ty::Closure(_, args) => match args.as_closure().kind() {
                 ty::ClosureKind::Fn => Some(hir::Mutability::Not),
                 ty::ClosureKind::FnMut => Some(hir::Mutability::Mut),
                 _ => None,
@@ -714,7 +705,9 @@ impl<'cx, 'tcx> MirBorrowckCtxt<'cx, 'tcx> {
             _ => None,
         };
 
-        let Some(borrow_level) = borrow_level else { return false; };
+        let Some(borrow_level) = borrow_level else {
+            return false;
+        };
         let sugg = move_sites
             .iter()
             .map(|move_site| {
@@ -734,9 +727,21 @@ impl<'cx, 'tcx> MirBorrowckCtxt<'cx, 'tcx> {
         true
     }
 
-    fn suggest_cloning(&self, err: &mut Diagnostic, ty: Ty<'tcx>, span: Span) {
+    fn suggest_cloning(
+        &self,
+        err: &mut Diagnostic,
+        ty: Ty<'tcx>,
+        expr: &hir::Expr<'_>,
+        span: Span,
+    ) {
         let tcx = self.infcx.tcx;
         // Try to find predicates on *generic params* that would allow copying `ty`
+        let suggestion =
+            if let Some(symbol) = tcx.hir().maybe_get_struct_pattern_shorthand_field(expr) {
+                format!(": {symbol}.clone()")
+            } else {
+                ".clone()".to_owned()
+            };
         if let Some(clone_trait_def) = tcx.lang_items().clone_trait()
             && self.infcx
                 .type_implements_trait(
@@ -749,7 +754,7 @@ impl<'cx, 'tcx> MirBorrowckCtxt<'cx, 'tcx> {
             err.span_suggestion_verbose(
                 span.shrink_to_hi(),
                 "consider cloning the value if the performance cost is acceptable",
-                ".clone()",
+                suggestion,
                 Applicability::MachineApplicable,
             );
         }
@@ -763,7 +768,9 @@ impl<'cx, 'tcx> MirBorrowckCtxt<'cx, 'tcx> {
             .typeck_root_def_id(self.mir_def_id().to_def_id())
             .as_local()
             .and_then(|def_id| tcx.hir().get_generics(def_id))
-        else { return; };
+        else {
+            return;
+        };
         // Try to find predicates on *generic params* that would allow copying `ty`
         let ocx = ObligationCtxt::new(&self.infcx);
         let copy_did = tcx.require_lang_item(LangItem::Copy, Some(span));
@@ -1155,8 +1162,7 @@ impl<'cx, 'tcx> MirBorrowckCtxt<'cx, 'tcx> {
 
         if union_type_name != "" {
             err.note(format!(
-                "{} is a field of the union `{}`, so it overlaps the field {}",
-                msg_place, union_type_name, msg_borrow,
+                "{msg_place} is a field of the union `{union_type_name}`, so it overlaps the field {msg_borrow}",
             ));
         }
 
@@ -1220,18 +1226,20 @@ impl<'cx, 'tcx> MirBorrowckCtxt<'cx, 'tcx> {
             return;
         };
         let inner_param_uses = find_all_local_uses::find(self.body, inner_param.local);
-        let Some((inner_call_loc, inner_call_term)) = inner_param_uses.into_iter().find_map(|loc| {
-            let Either::Right(term) = self.body.stmt_at(loc) else {
-                debug!("{:?} is a statement, so it can't be a call", loc);
-                return None;
-            };
-            let TerminatorKind::Call { args, .. } = &term.kind else {
-                debug!("not a call: {:?}", term);
-                return None;
-            };
-            debug!("checking call args for uses of inner_param: {:?}", args);
-            args.contains(&Operand::Move(inner_param)).then_some((loc, term))
-        }) else {
+        let Some((inner_call_loc, inner_call_term)) =
+            inner_param_uses.into_iter().find_map(|loc| {
+                let Either::Right(term) = self.body.stmt_at(loc) else {
+                    debug!("{:?} is a statement, so it can't be a call", loc);
+                    return None;
+                };
+                let TerminatorKind::Call { args, .. } = &term.kind else {
+                    debug!("not a call: {:?}", term);
+                    return None;
+                };
+                debug!("checking call args for uses of inner_param: {:?}", args);
+                args.contains(&Operand::Move(inner_param)).then_some((loc, term))
+            })
+        else {
             debug!("no uses of inner_param found as a by-move call arg");
             return;
         };
@@ -1344,8 +1352,7 @@ impl<'cx, 'tcx> MirBorrowckCtxt<'cx, 'tcx> {
                 let Some(trait_did) = tcx.trait_of_item(def_id) &&
                 tcx.is_diagnostic_item(sym::Iterator, trait_did) {
                     err.note(format!(
-                        "a for loop advances the iterator for you, the result is stored in `{}`.",
-                        loop_bind
+                        "a for loop advances the iterator for you, the result is stored in `{loop_bind}`."
                     ));
                     err.help("if you want to call `next` on a iterator within the loop, consider using `while let`.");
         }
@@ -1442,21 +1449,24 @@ impl<'cx, 'tcx> MirBorrowckCtxt<'cx, 'tcx> {
         }
 
         // Get closure's arguments
-        let ty::Closure(_, substs) = typeck_results.expr_ty(closure_expr).kind() else { /* hir::Closure can be a generator too */ return };
-        let sig = substs.as_closure().sig();
+        let ty::Closure(_, args) = typeck_results.expr_ty(closure_expr).kind() else {
+            /* hir::Closure can be a generator too */
+            return;
+        };
+        let sig = args.as_closure().sig();
         let tupled_params =
             tcx.erase_late_bound_regions(sig.inputs().iter().next().unwrap().map_bound(|&b| b));
         let ty::Tuple(params) = tupled_params.kind() else { return };
 
         // Find the first argument with a matching type, get its name
-        let Some((_, this_name)) = params
-            .iter()
-            .zip(hir.body_param_names(closure.body))
-            .find(|(param_ty, name)|{
+        let Some((_, this_name)) =
+            params.iter().zip(hir.body_param_names(closure.body)).find(|(param_ty, name)| {
                 // FIXME: also support deref for stuff like `Rc` arguments
                 param_ty.peel_refs() == local_ty && name != &Ident::empty()
             })
-            else { return };
+        else {
+            return;
+        };
 
         let spans;
         if let Some((_path_expr, qpath)) = finder.error_path
@@ -1813,7 +1823,7 @@ impl<'cx, 'tcx> MirBorrowckCtxt<'cx, 'tcx> {
                     },
                     ConstraintCategory::CallArgument(None),
                     var_or_use_span,
-                    &format!("`{}`", name),
+                    &format!("`{name}`"),
                     "block",
                 ),
             (
@@ -1835,7 +1845,7 @@ impl<'cx, 'tcx> MirBorrowckCtxt<'cx, 'tcx> {
                     region_name,
                     category,
                     span,
-                    &format!("`{}`", name),
+                    &format!("`{name}`"),
                     "function",
                 ),
             (
@@ -1909,14 +1919,14 @@ impl<'cx, 'tcx> MirBorrowckCtxt<'cx, 'tcx> {
             }
         }
 
-        let mut err = self.path_does_not_live_long_enough(borrow_span, &format!("`{}`", name));
+        let mut err = self.path_does_not_live_long_enough(borrow_span, &format!("`{name}`"));
 
         if let Some(annotation) = self.annotate_argument_and_return_for_borrow(borrow) {
             let region_name = annotation.emit(self, &mut err);
 
             err.span_label(
                 borrow_span,
-                format!("`{}` would have to be valid for `{}`...", name, region_name),
+                format!("`{name}` would have to be valid for `{region_name}`..."),
             );
 
             err.span_label(
@@ -1927,7 +1937,7 @@ impl<'cx, 'tcx> MirBorrowckCtxt<'cx, 'tcx> {
                     self.infcx
                         .tcx
                         .opt_item_name(self.mir_def_id().to_def_id())
-                        .map(|name| format!("function `{}`", name))
+                        .map(|name| format!("function `{name}`"))
                         .unwrap_or_else(|| {
                             match &self.infcx.tcx.def_kind(self.mir_def_id()) {
                                 DefKind::Closure => "enclosing closure",
@@ -1962,7 +1972,7 @@ impl<'cx, 'tcx> MirBorrowckCtxt<'cx, 'tcx> {
             }
         } else {
             err.span_label(borrow_span, "borrowed value does not live long enough");
-            err.span_label(drop_span, format!("`{}` dropped here while still borrowed", name));
+            err.span_label(drop_span, format!("`{name}` dropped here while still borrowed"));
 
             borrow_spans.args_subdiag(&mut err, |args_span| {
                 crate::session_diagnostics::CaptureArgLabel::Capture {
@@ -2006,22 +2016,17 @@ impl<'cx, 'tcx> MirBorrowckCtxt<'cx, 'tcx> {
         let mut err = self.cannot_borrow_across_destructor(borrow_span);
 
         let what_was_dropped = match self.describe_place(place.as_ref()) {
-            Some(name) => format!("`{}`", name),
+            Some(name) => format!("`{name}`"),
             None => String::from("temporary value"),
         };
 
         let label = match self.describe_place(borrow.borrowed_place.as_ref()) {
             Some(borrowed) => format!(
-                "here, drop of {D} needs exclusive access to `{B}`, \
-                 because the type `{T}` implements the `Drop` trait",
-                D = what_was_dropped,
-                T = dropped_ty,
-                B = borrowed
+                "here, drop of {what_was_dropped} needs exclusive access to `{borrowed}`, \
+                 because the type `{dropped_ty}` implements the `Drop` trait"
             ),
             None => format!(
-                "here is drop of {D}; whose type `{T}` implements the `Drop` trait",
-                D = what_was_dropped,
-                T = dropped_ty
+                "here is drop of {what_was_dropped}; whose type `{dropped_ty}` implements the `Drop` trait"
             ),
         };
         err.span_label(drop_span, label);
@@ -2233,10 +2238,7 @@ impl<'cx, 'tcx> MirBorrowckCtxt<'cx, 'tcx> {
             } else {
                 "local data "
             };
-            (
-                format!("{}`{}`", local_kind, place_desc),
-                format!("`{}` is borrowed here", place_desc),
-            )
+            (format!("{local_kind}`{place_desc}`"), format!("`{place_desc}` is borrowed here"))
         } else {
             let root_place =
                 self.prefixes(borrow.borrowed_place.as_ref(), PrefixSet::All).last().unwrap();
@@ -2338,9 +2340,8 @@ impl<'cx, 'tcx> MirBorrowckCtxt<'cx, 'tcx> {
         err.span_suggestion_verbose(
             sugg_span,
             format!(
-                "to force the {} to take ownership of {} (and any \
-                 other referenced variables), use the `move` keyword",
-                kind, captured_var
+                "to force the {kind} to take ownership of {captured_var} (and any \
+                 other referenced variables), use the `move` keyword"
             ),
             suggestion,
             Applicability::MachineApplicable,
@@ -2348,7 +2349,7 @@ impl<'cx, 'tcx> MirBorrowckCtxt<'cx, 'tcx> {
 
         match category {
             ConstraintCategory::Return(_) | ConstraintCategory::OpaqueType => {
-                let msg = format!("{} is returned here", kind);
+                let msg = format!("{kind} is returned here");
                 err.span_note(constraint_span, msg);
             }
             ConstraintCategory::CallArgument(_) => {
@@ -2390,21 +2391,18 @@ impl<'cx, 'tcx> MirBorrowckCtxt<'cx, 'tcx> {
 
         err.span_label(
             upvar_span,
-            format!("`{}` declared here, outside of the {} body", upvar_name, escapes_from),
+            format!("`{upvar_name}` declared here, outside of the {escapes_from} body"),
         );
 
-        err.span_label(borrow_span, format!("borrow is only valid in the {} body", escapes_from));
+        err.span_label(borrow_span, format!("borrow is only valid in the {escapes_from} body"));
 
         if let Some(name) = name {
             err.span_label(
                 escape_span,
-                format!("reference to `{}` escapes the {} body here", name, escapes_from),
+                format!("reference to `{name}` escapes the {escapes_from} body here"),
             );
         } else {
-            err.span_label(
-                escape_span,
-                format!("reference escapes the {} body here", escapes_from),
-            );
+            err.span_label(escape_span, format!("reference escapes the {escapes_from} body here"));
         }
 
         err
@@ -2667,7 +2665,7 @@ impl<'cx, 'tcx> MirBorrowckCtxt<'cx, 'tcx> {
                 kind: TerminatorKind::Call { call_source: CallSource::OverloadedOperator, .. },
                 ..
             }),
-            Some((method_did, method_substs)),
+            Some((method_did, method_args)),
         ) = (
             &self.body[loan.reserve_location.block].terminator,
             rustc_middle::util::find_self_call(
@@ -2680,15 +2678,12 @@ impl<'cx, 'tcx> MirBorrowckCtxt<'cx, 'tcx> {
             if tcx.is_diagnostic_item(sym::deref_method, method_did) {
                 let deref_target =
                     tcx.get_diagnostic_item(sym::deref_target).and_then(|deref_target| {
-                        Instance::resolve(tcx, self.param_env, deref_target, method_substs)
+                        Instance::resolve(tcx, self.param_env, deref_target, method_args)
                             .transpose()
                     });
                 if let Some(Ok(instance)) = deref_target {
                     let deref_target_ty = instance.ty(tcx, self.param_env);
-                    err.note(format!(
-                        "borrow occurs due to deref coercion to `{}`",
-                        deref_target_ty
-                    ));
+                    err.note(format!("borrow occurs due to deref coercion to `{deref_target_ty}`"));
                     err.span_note(tcx.def_span(instance.def_id()), "deref defined here");
                 }
             }
@@ -2744,7 +2739,7 @@ impl<'cx, 'tcx> MirBorrowckCtxt<'cx, 'tcx> {
             "cannot assign twice to immutable variable"
         };
         if span != assigned_span && !from_arg {
-            err.span_label(assigned_span, format!("first assignment to {}", place_description));
+            err.span_label(assigned_span, format!("first assignment to {place_description}"));
         }
         if let Some(decl) = local_decl
             && let Some(name) = local_name
@@ -2753,7 +2748,7 @@ impl<'cx, 'tcx> MirBorrowckCtxt<'cx, 'tcx> {
             err.span_suggestion(
                 decl.source_info.span,
                 "consider making this binding mutable",
-                format!("mut {}", name),
+                format!("mut {name}"),
                 Applicability::MachineApplicable,
             );
         }
@@ -2847,11 +2842,11 @@ impl<'cx, 'tcx> MirBorrowckCtxt<'cx, 'tcx> {
             if is_closure {
                 None
             } else {
-                let ty = self.infcx.tcx.type_of(self.mir_def_id()).subst_identity();
+                let ty = self.infcx.tcx.type_of(self.mir_def_id()).instantiate_identity();
                 match ty.kind() {
                     ty::FnDef(_, _) | ty::FnPtr(_) => self.annotate_fn_sig(
                         self.mir_def_id(),
-                        self.infcx.tcx.fn_sig(self.mir_def_id()).subst_identity(),
+                        self.infcx.tcx.fn_sig(self.mir_def_id()).instantiate_identity(),
                     ),
                     _ => None,
                 }
@@ -2893,13 +2888,15 @@ impl<'cx, 'tcx> MirBorrowckCtxt<'cx, 'tcx> {
                         );
                         // Check if our `target` was captured by a closure.
                         if let Rvalue::Aggregate(
-                            box AggregateKind::Closure(def_id, substs),
+                            box AggregateKind::Closure(def_id, args),
                             operands,
                         ) = rvalue
                         {
                             let def_id = def_id.expect_local();
                             for operand in operands {
-                                let (Operand::Copy(assigned_from) | Operand::Move(assigned_from)) = operand else {
+                                let (Operand::Copy(assigned_from) | Operand::Move(assigned_from)) =
+                                    operand
+                                else {
                                     continue;
                                 };
                                 debug!(
@@ -2908,7 +2905,9 @@ impl<'cx, 'tcx> MirBorrowckCtxt<'cx, 'tcx> {
                                 );
 
                                 // Find the local from the operand.
-                                let Some(assigned_from_local) = assigned_from.local_or_deref_local() else {
+                                let Some(assigned_from_local) =
+                                    assigned_from.local_or_deref_local()
+                                else {
                                     continue;
                                 };
 
@@ -2920,7 +2919,7 @@ impl<'cx, 'tcx> MirBorrowckCtxt<'cx, 'tcx> {
                                 // into a place then we should annotate the closure in
                                 // case it ends up being assigned into the return place.
                                 annotated_closure =
-                                    self.annotate_fn_sig(def_id, substs.as_closure().sig());
+                                    self.annotate_fn_sig(def_id, args.as_closure().sig());
                                 debug!(
                                     "annotate_argument_and_return_for_borrow: \
                                      annotated_closure={:?} assigned_from_local={:?} \
@@ -2961,7 +2960,9 @@ impl<'cx, 'tcx> MirBorrowckCtxt<'cx, 'tcx> {
                         );
 
                         // Find the local from the rvalue.
-                        let Some(assigned_from_local) = assigned_from.local_or_deref_local() else { continue };
+                        let Some(assigned_from_local) = assigned_from.local_or_deref_local() else {
+                            continue;
+                        };
                         debug!(
                             "annotate_argument_and_return_for_borrow: \
                              assigned_from_local={:?}",
@@ -3009,7 +3010,8 @@ impl<'cx, 'tcx> MirBorrowckCtxt<'cx, 'tcx> {
                         assigned_to, args
                     );
                     for operand in args {
-                        let (Operand::Copy(assigned_from) | Operand::Move(assigned_from)) = operand else {
+                        let (Operand::Copy(assigned_from) | Operand::Move(assigned_from)) = operand
+                        else {
                             continue;
                         };
                         debug!(
@@ -3207,7 +3209,7 @@ impl<'tcx> AnnotatedBorrowFnSignature<'tcx> {
                 return_span,
             } => {
                 let argument_ty_name = cx.get_name_for_ty(argument_ty, 0);
-                diag.span_label(argument_span, format!("has type `{}`", argument_ty_name));
+                diag.span_label(argument_span, format!("has type `{argument_ty_name}`"));
 
                 let return_ty_name = cx.get_name_for_ty(return_ty, 0);
                 let types_equal = return_ty_name == argument_ty_name;
@@ -3234,15 +3236,14 @@ impl<'tcx> AnnotatedBorrowFnSignature<'tcx> {
                 // Region of return type and arguments checked to be the same earlier.
                 let region_name = cx.get_region_name_for_ty(*return_ty, 0);
                 for (_, argument_span) in arguments {
-                    diag.span_label(*argument_span, format!("has lifetime `{}`", region_name));
+                    diag.span_label(*argument_span, format!("has lifetime `{region_name}`"));
                 }
 
-                diag.span_label(*return_span, format!("also has lifetime `{}`", region_name,));
+                diag.span_label(*return_span, format!("also has lifetime `{region_name}`",));
 
                 diag.help(format!(
-                    "use data from the highlighted arguments which match the `{}` lifetime of \
+                    "use data from the highlighted arguments which match the `{region_name}` lifetime of \
                      the return type",
-                    region_name,
                 ));
 
                 region_name

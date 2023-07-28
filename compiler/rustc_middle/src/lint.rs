@@ -169,26 +169,6 @@ impl TyCtxt<'_> {
     pub fn lint_level_at_node(self, lint: &'static Lint, id: HirId) -> (Level, LintLevelSource) {
         self.shallow_lint_levels_on(id.owner).lint_level_id_at_node(self, LintId::of(lint), id)
     }
-
-    /// Walks upwards from `id` to find a node which might change lint levels with attributes.
-    /// It stops at `bound` and just returns it if reached.
-    pub fn maybe_lint_level_root_bounded(self, mut id: HirId, bound: HirId) -> HirId {
-        let hir = self.hir();
-        loop {
-            if id == bound {
-                return bound;
-            }
-
-            if hir.attrs(id).iter().any(|attr| Level::from_attr(attr).is_some()) {
-                return id;
-            }
-            let next = hir.parent_id(id);
-            if next == id {
-                bug!("lint traversal reached the root of the crate");
-            }
-            id = next;
-        }
-    }
 }
 
 /// This struct represents a lint expectation and holds all required information
@@ -298,6 +278,7 @@ pub fn explain_lint_level_source(
 ///     //          ^^^^^^^^^^^^^^^^^^^^^ returns `&mut DiagnosticBuilder` by default
 /// )
 /// ```
+#[track_caller]
 pub fn struct_lint_level(
     sess: &Session,
     lint: &'static Lint,
@@ -311,6 +292,7 @@ pub fn struct_lint_level(
 ) {
     // Avoid codegen bloat from monomorphization by immediately doing dyn dispatch of `decorate` to
     // the "real" work.
+    #[track_caller]
     fn struct_lint_level_impl(
         sess: &Session,
         lint: &'static Lint,

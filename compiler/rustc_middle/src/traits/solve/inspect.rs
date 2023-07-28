@@ -32,7 +32,7 @@ pub enum GoalEvaluationKind<'tcx> {
 }
 impl Debug for GoalEvaluation<'_> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        ProofTreeFormatter { f, on_newline: true }.format_goal_evaluation(self)
+        ProofTreeFormatter::new(f).format_goal_evaluation(self)
     }
 }
 
@@ -43,7 +43,7 @@ pub struct AddedGoalsEvaluation<'tcx> {
 }
 impl Debug for AddedGoalsEvaluation<'_> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        ProofTreeFormatter { f, on_newline: true }.format_nested_goal_evaluation(self)
+        ProofTreeFormatter::new(f).format_nested_goal_evaluation(self)
     }
 }
 
@@ -58,7 +58,7 @@ pub struct GoalEvaluationStep<'tcx> {
 }
 impl Debug for GoalEvaluationStep<'_> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        ProofTreeFormatter { f, on_newline: true }.format_evaluation_step(self)
+        ProofTreeFormatter::new(f).format_evaluation_step(self)
     }
 }
 
@@ -73,11 +73,15 @@ pub struct GoalCandidate<'tcx> {
 pub enum CandidateKind<'tcx> {
     /// Probe entered when normalizing the self ty during candidate assembly
     NormalizedSelfTyAssembly,
+    DynUpcastingAssembly,
     /// A normal candidate for proving a goal
-    Candidate { name: String, result: QueryResult<'tcx> },
+    Candidate {
+        name: String,
+        result: QueryResult<'tcx>,
+    },
 }
 impl Debug for GoalCandidate<'_> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        ProofTreeFormatter { f, on_newline: true }.format_candidate(self)
+        ProofTreeFormatter::new(f).format_candidate(self)
     }
 }

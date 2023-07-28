@@ -13,7 +13,7 @@ use std::process::Command;
 use std::time::{Duration, Instant};
 
 use crate::cache::{Cache, Interned, INTERNER};
-use crate::config::{SplitDebuginfo, TargetSelection};
+use crate::config::{DryRun, SplitDebuginfo, TargetSelection};
 use crate::doc;
 use crate::flags::{Color, Subcommand};
 use crate::install;
@@ -114,6 +114,43 @@ impl RunConfig<'_> {
             crates.push(crate_name.to_string());
         }
         INTERNER.intern_list(crates)
+    }
+
+    /// Given an `alias` selected by the `Step` and the paths passed on the command line,
+    /// return a list of the crates that should be built.
+    ///
+    /// Normally, people will pass *just* `library` if they pass it.
+    /// But it's possible (although strange) to pass something like `library std core`.
+    /// Build all crates anyway, as if they hadn't passed the other args.
+    pub fn make_run_crates(&self, alias: Alias) -> Interned<Vec<String>> {
+        let has_alias =
+            self.paths.iter().any(|set| set.assert_single_path().path.ends_with(alias.as_str()));
+        if !has_alias {
+            return self.cargo_crates_in_set();
+        }
+
+        let crates = match alias {
+            Alias::Library => self.builder.in_tree_crates("sysroot", Some(self.target)),
+            Alias::Compiler => self.builder.in_tree_crates("rustc-main", Some(self.target)),
+        };
+
+        let crate_names = crates.into_iter().map(|krate| krate.name.to_string()).collect();
+        INTERNER.intern_list(crate_names)
+    }
+}
+
+#[derive(Debug, Copy, Clone)]
+pub enum Alias {
+    Library,
+    Compiler,
+}
+
+impl Alias {
+    fn as_str(self) -> &'static str {
+        match self {
+            Alias::Library => "library",
+            Alias::Compiler => "compiler",
+        }
     }
 }
 
@@ -281,11 +318,15 @@ impl StepDescription {
 
     fn is_excluded(&self, builder: &Builder<'_>, pathset: &PathSet) -> bool {
         if builder.config.exclude.iter().any(|e| pathset.has(&e, builder.kind)) {
-            println!("Skipping {:?} because it is excluded", pathset);
+            if !matches!(builder.config.dry_run, DryRun::SelfCheck) {
+                println!("Skipping {:?} because it is excluded", pathset);
+            }
             return true;
         }
 
-        if !builder.config.exclude.is_empty() {
+        if !builder.config.exclude.is_empty()
+            && !matches!(builder.config.dry_run, DryRun::SelfCheck)
+        {
             builder.verbose(&format!(
                 "{:?} not skipped for {:?} -- not in {:?}",
                 pathset, self.name, builder.config.exclude
@@ -354,7 +395,7 @@ impl StepDescription {
             eprintln!(
                 "note: if you are adding a new Step to bootstrap itself, make sure you register it with `describe!`"
             );
-            crate::detail_exit_macro!(1);
+            crate::exit!(1);
         }
     }
 }
@@ -665,6 +706,7 @@ impl<'a> Builder<'a> {
                 llvm::Lld,
                 llvm::CrtBeginEnd,
                 tool::RustdocGUITest,
+                tool::OptimizedDist
             ),
             Kind::Check | Kind::Clippy | Kind::Fix => describe!(
                 check::Std,
@@ -893,21 +935,6 @@ impl<'a> Builder<'a> {
                 path.as_ref().map_or([].as_slice(), |path| std::slice::from_ref(path)),
             ),
         };
-
-        Self::new_internal(build, kind, paths.to_owned())
-    }
-
-    /// Creates a new standalone builder for use outside of the normal process
-    pub fn new_standalone(
-        build: &mut Build,
-        kind: Kind,
-        paths: Vec<PathBuf>,
-        stage: Option<u32>,
-    ) -> Builder<'_> {
-        // FIXME: don't mutate `build`
-        if let Some(stage) = stage {
-            build.config.stage = stage;
-        }
 
         Self::new_internal(build, kind, paths.to_owned())
     }
@@ -1333,7 +1360,7 @@ impl<'a> Builder<'a> {
                         "error: `x.py clippy` requires a host `rustc` toolchain with the `clippy` component"
                     );
                     eprintln!("help: try `rustup component add clippy`");
-                    crate::detail_exit_macro!(1);
+                    crate::exit!(1);
                 });
                 if !t!(std::str::from_utf8(&output.stdout)).contains("nightly") {
                     rustflags.arg("--cfg=bootstrap");
@@ -1602,6 +1629,7 @@ impl<'a> Builder<'a> {
         // fun to pass a flag to a tool to pass a flag to pass a flag to a tool
         // to change a flag in a binary?
         if self.config.rpath_enabled(target) && util::use_host_linker(target) {
+            let libdir = self.sysroot_libdir_relative(compiler).to_str().unwrap();
             let rpath = if target.contains("apple") {
                 // Note that we need to take one extra step on macOS to also pass
                 // `-Wl,-instal_name,@rpath/...` to get things to work right. To
@@ -1609,10 +1637,10 @@ impl<'a> Builder<'a> {
                 // so. Note that this is definitely a hack, and we should likely
                 // flesh out rpath support more fully in the future.
                 rustflags.arg("-Zosx-rpath-install-name");
-                Some("-Wl,-rpath,@loader_path/../lib")
+                Some(format!("-Wl,-rpath,@loader_path/../{}", libdir))
             } else if !target.contains("windows") && !target.contains("aix") {
                 rustflags.arg("-Clink-args=-Wl,-z,origin");
-                Some("-Wl,-rpath,$ORIGIN/../lib")
+                Some(format!("-Wl,-rpath,$ORIGIN/../{}", libdir))
             } else {
                 None
             };
@@ -2013,6 +2041,13 @@ impl<'a> Builder<'a> {
             // break when incremental compilation is enabled. So this overrides the "no inlining
             // during incremental builds" heuristic for the standard library.
             rustflags.arg("-Zinline-mir");
+        }
+
+        // set rustc args passed from command line
+        let rustc_args =
+            self.config.cmd.rustc_args().iter().map(|s| s.to_string()).collect::<Vec<_>>();
+        if !rustc_args.is_empty() {
+            cargo.env("RUSTFLAGS", &rustc_args.join(" "));
         }
 
         Cargo { command: cargo, rustflags, rustdocflags, allow_features }

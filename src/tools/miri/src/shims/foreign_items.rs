@@ -45,8 +45,9 @@ pub trait EvalContextExt<'mir, 'tcx: 'mir>: crate::MiriInterpCxExt<'mir, 'tcx> {
         // List taken from `library/std/src/sys/common/alloc.rs`.
         // This list should be kept in sync with the one from libstd.
         let min_align = match this.tcx.sess.target.arch.as_ref() {
-            "x86" | "arm" | "mips" | "powerpc" | "powerpc64" | "asmjs" | "wasm32" => 8,
-            "x86_64" | "aarch64" | "mips64" | "s390x" | "sparc64" | "loongarch64" => 16,
+            "x86" | "arm" | "mips" | "mips32r6" | "powerpc" | "powerpc64" | "asmjs" | "wasm32" => 8,
+            "x86_64" | "aarch64" | "mips64" | "mips64r6" | "s390x" | "sparc64" | "loongarch64" =>
+                16,
             arch => bug!("unsupported target architecture for malloc: `{}`", arch),
         };
         // Windows always aligns, even small allocations.
@@ -763,6 +764,12 @@ pub trait EvalContextExt<'mir, 'tcx: 'mir>: crate::MiriInterpCxExt<'mir, 'tcx> {
                 let ptr_dest = this.read_pointer(ptr_dest)?;
                 let ptr_src = this.read_pointer(ptr_src)?;
                 let n = this.read_target_usize(n)?;
+
+                // C requires that this must always be a valid pointer, even if `n` is zero, so we better check that.
+                // (This is more than Rust requires, so `mem_copy` is not sufficient.)
+                this.ptr_get_alloc_id(ptr_dest)?;
+                this.ptr_get_alloc_id(ptr_src)?;
+
                 this.mem_copy(
                     ptr_src,
                     Align::ONE,
@@ -907,16 +914,6 @@ pub trait EvalContextExt<'mir, 'tcx: 'mir>: crate::MiriInterpCxExt<'mir, 'tcx> {
                 let x = this.read_scalar(x)?.to_f64()?;
                 let exp = this.read_scalar(exp)?.to_i32()?;
 
-                // Saturating cast to i16. Even those are outside the valid exponent range so
-                // `scalbn` below will do its over/underflow handling.
-                let exp = if exp > i32::from(i16::MAX) {
-                    i16::MAX
-                } else if exp < i32::from(i16::MIN) {
-                    i16::MIN
-                } else {
-                    exp.try_into().unwrap()
-                };
-
                 let res = x.scalbn(exp);
                 this.write_scalar(Scalar::from_f64(res), dest)?;
             }
@@ -935,9 +932,9 @@ pub trait EvalContextExt<'mir, 'tcx: 'mir>: crate::MiriInterpCxExt<'mir, 'tcx> {
                 #[allow(clippy::arithmetic_side_effects)] // it's a u128, we can shift by 64
                 let (c_out, sum) = ((wide_sum >> 64).truncate::<u8>(), wide_sum.truncate::<u64>());
 
-                let c_out_field = this.place_field(dest, 0)?;
+                let c_out_field = this.project_field(dest, 0)?;
                 this.write_scalar(Scalar::from_u8(c_out), &c_out_field)?;
-                let sum_field = this.place_field(dest, 1)?;
+                let sum_field = this.project_field(dest, 1)?;
                 this.write_scalar(Scalar::from_u64(sum), &sum_field)?;
             }
             "llvm.x86.sse2.pause"

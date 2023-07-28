@@ -86,6 +86,9 @@ pub(crate) struct Cache {
     /// Whether to document private items.
     /// This is stored in `Cache` so it doesn't need to be passed through all rustdoc functions.
     pub(crate) document_private: bool,
+    /// Whether to document hidden items.
+    /// This is stored in `Cache` so it doesn't need to be passed through all rustdoc functions.
+    pub(crate) document_hidden: bool,
 
     /// Crates marked with [`#[doc(masked)]`][doc_masked].
     ///
@@ -137,8 +140,8 @@ struct CacheBuilder<'a, 'tcx> {
 }
 
 impl Cache {
-    pub(crate) fn new(document_private: bool) -> Self {
-        Cache { document_private, ..Cache::default() }
+    pub(crate) fn new(document_private: bool, document_hidden: bool) -> Self {
+        Cache { document_private, document_hidden, ..Cache::default() }
     }
 
     /// Populates the `Cache` with more data. The returned `Crate` will be missing some data that was
@@ -473,7 +476,7 @@ impl<'a, 'tcx> DocFolder for CacheBuilder<'a, 'tcx> {
                 | clean::BorrowedRef { type_: box clean::Type::Path { ref path }, .. } => {
                     dids.insert(path.def_id());
                     if let Some(generics) = path.generics() &&
-                        let ty::Adt(adt, _) = self.tcx.type_of(path.def_id()).subst_identity().kind() &&
+                        let ty::Adt(adt, _) = self.tcx.type_of(path.def_id()).instantiate_identity().kind() &&
                         adt.is_fundamental() {
                         for ty in generics {
                             if let Some(did) = ty.def_id(self.cache) {

@@ -281,7 +281,7 @@ impl<'tcx> ValueAnalysis<'tcx> for ConstAnalysis<'_, 'tcx> {
 
             let FlatSet::Elem(choice) = discr_value else {
                 // Do nothing if we don't know which branch will be taken.
-                return
+                return;
             };
 
             if target.value.map(|n| n == choice).unwrap_or(!handled) {
@@ -532,7 +532,7 @@ impl<'tcx, 'map, 'a> Visitor<'tcx> for OperandCollector<'tcx, 'map, 'a> {
 
 struct DummyMachine;
 
-impl<'mir, 'tcx> rustc_const_eval::interpret::Machine<'mir, 'tcx> for DummyMachine {
+impl<'mir, 'tcx: 'mir> rustc_const_eval::interpret::Machine<'mir, 'tcx> for DummyMachine {
     rustc_const_eval::interpret::compile_time_machine!(<'mir, 'tcx>);
     type MemoryKind = !;
     const PANIC_ON_ALLOC_FAIL: bool = true;
@@ -557,7 +557,7 @@ impl<'mir, 'tcx> rustc_const_eval::interpret::Machine<'mir, 'tcx> for DummyMachi
         _ecx: &mut InterpCx<'mir, 'tcx, Self>,
         _instance: ty::Instance<'tcx>,
         _abi: rustc_target::spec::abi::Abi,
-        _args: &[rustc_const_eval::interpret::OpTy<'tcx, Self::Provenance>],
+        _args: &[rustc_const_eval::interpret::FnArg<'tcx, Self::Provenance>],
         _destination: &rustc_const_eval::interpret::PlaceTy<'tcx, Self::Provenance>,
         _target: Option<BasicBlock>,
         _unwind: UnwindAction,

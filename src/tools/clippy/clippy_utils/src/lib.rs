@@ -74,8 +74,7 @@ pub use self::hir_utils::{
 use core::ops::ControlFlow;
 use std::collections::hash_map::Entry;
 use std::hash::BuildHasherDefault;
-use std::sync::OnceLock;
-use std::sync::{Mutex, MutexGuard};
+use std::sync::{Mutex, MutexGuard, OnceLock};
 
 use if_chain::if_chain;
 use itertools::Itertools;
@@ -87,7 +86,7 @@ use rustc_hir::def::{DefKind, Res};
 use rustc_hir::def_id::{CrateNum, DefId, LocalDefId, LOCAL_CRATE};
 use rustc_hir::hir_id::{HirIdMap, HirIdSet};
 use rustc_hir::intravisit::{walk_expr, FnKind, Visitor};
-use rustc_hir::LangItem::{OptionNone, ResultErr, ResultOk};
+use rustc_hir::LangItem::{OptionNone, OptionSome, ResultErr, ResultOk};
 use rustc_hir::{
     self as hir, def, Arm, ArrayLen, BindingAnnotation, Block, BlockCheckMode, Body, Closure, Destination, Expr,
     ExprKind, FnDecl, HirId, Impl, ImplItem, ImplItemKind, ImplItemRef, IsAsync, Item, ItemKind, LangItem, Local,
@@ -101,19 +100,15 @@ use rustc_middle::mir::ConstantKind;
 use rustc_middle::ty as rustc_ty;
 use rustc_middle::ty::adjustment::{Adjust, Adjustment, AutoBorrow};
 use rustc_middle::ty::binding::BindingMode;
-use rustc_middle::ty::fast_reject::SimplifiedType::{
-    ArraySimplifiedType, BoolSimplifiedType, CharSimplifiedType, FloatSimplifiedType, IntSimplifiedType,
-    PtrSimplifiedType, SliceSimplifiedType, StrSimplifiedType, UintSimplifiedType,
-};
+use rustc_middle::ty::fast_reject::SimplifiedType;
+use rustc_middle::ty::layout::IntegerExt;
 use rustc_middle::ty::{
-    layout::IntegerExt, BorrowKind, ClosureKind, Ty, TyCtxt, TypeAndMut, TypeVisitableExt, UpvarCapture,
+    BorrowKind, ClosureKind, FloatTy, IntTy, Ty, TyCtxt, TypeAndMut, TypeVisitableExt, UintTy, UpvarCapture,
 };
-use rustc_middle::ty::{FloatTy, IntTy, UintTy};
 use rustc_span::hygiene::{ExpnKind, MacroKind};
 use rustc_span::source_map::SourceMap;
-use rustc_span::sym;
 use rustc_span::symbol::{kw, Ident, Symbol};
-use rustc_span::Span;
+use rustc_span::{sym, Span};
 use rustc_target::abi::Integer;
 
 use crate::consts::{constant, miri_to_const, Constant};
@@ -305,7 +300,7 @@ pub fn match_trait_method(cx: &LateContext<'_>, expr: &Expr<'_>, path: &[&str]) 
 /// Checks if a method is defined in an impl of a diagnostic item
 pub fn is_diag_item_method(cx: &LateContext<'_>, def_id: DefId, diag_item: Symbol) -> bool {
     if let Some(impl_did) = cx.tcx.impl_of_method(def_id) {
-        if let Some(adt) = cx.tcx.type_of(impl_did).subst_identity().ty_adt_def() {
+        if let Some(adt) = cx.tcx.type_of(impl_did).instantiate_identity().ty_adt_def() {
             return cx.tcx.is_diagnostic_item(diag_item, adt.did());
         }
     }
@@ -514,30 +509,30 @@ pub fn path_def_id<'tcx>(cx: &LateContext<'_>, maybe_path: &impl MaybePath<'tcx>
 
 fn find_primitive_impls<'tcx>(tcx: TyCtxt<'tcx>, name: &str) -> impl Iterator<Item = DefId> + 'tcx {
     let ty = match name {
-        "bool" => BoolSimplifiedType,
-        "char" => CharSimplifiedType,
-        "str" => StrSimplifiedType,
-        "array" => ArraySimplifiedType,
-        "slice" => SliceSimplifiedType,
+        "bool" => SimplifiedType::Bool,
+        "char" => SimplifiedType::Char,
+        "str" => SimplifiedType::Str,
+        "array" => SimplifiedType::Array,
+        "slice" => SimplifiedType::Slice,
         // FIXME: rustdoc documents these two using just `pointer`.
         //
         // Maybe this is something we should do here too.
-        "const_ptr" => PtrSimplifiedType(Mutability::Not),
-        "mut_ptr" => PtrSimplifiedType(Mutability::Mut),
-        "isize" => IntSimplifiedType(IntTy::Isize),
-        "i8" => IntSimplifiedType(IntTy::I8),
-        "i16" => IntSimplifiedType(IntTy::I16),
-        "i32" => IntSimplifiedType(IntTy::I32),
-        "i64" => IntSimplifiedType(IntTy::I64),
-        "i128" => IntSimplifiedType(IntTy::I128),
-        "usize" => UintSimplifiedType(UintTy::Usize),
-        "u8" => UintSimplifiedType(UintTy::U8),
-        "u16" => UintSimplifiedType(UintTy::U16),
-        "u32" => UintSimplifiedType(UintTy::U32),
-        "u64" => UintSimplifiedType(UintTy::U64),
-        "u128" => UintSimplifiedType(UintTy::U128),
-        "f32" => FloatSimplifiedType(FloatTy::F32),
-        "f64" => FloatSimplifiedType(FloatTy::F64),
+        "const_ptr" => SimplifiedType::Ptr(Mutability::Not),
+        "mut_ptr" => SimplifiedType::Ptr(Mutability::Mut),
+        "isize" => SimplifiedType::Int(IntTy::Isize),
+        "i8" => SimplifiedType::Int(IntTy::I8),
+        "i16" => SimplifiedType::Int(IntTy::I16),
+        "i32" => SimplifiedType::Int(IntTy::I32),
+        "i64" => SimplifiedType::Int(IntTy::I64),
+        "i128" => SimplifiedType::Int(IntTy::I128),
+        "usize" => SimplifiedType::Uint(UintTy::Usize),
+        "u8" => SimplifiedType::Uint(UintTy::U8),
+        "u16" => SimplifiedType::Uint(UintTy::U16),
+        "u32" => SimplifiedType::Uint(UintTy::U32),
+        "u64" => SimplifiedType::Uint(UintTy::U64),
+        "u128" => SimplifiedType::Uint(UintTy::U128),
+        "f32" => SimplifiedType::Float(FloatTy::F32),
+        "f64" => SimplifiedType::Float(FloatTy::F64),
         _ => return [].iter().copied(),
     };
 
@@ -812,7 +807,7 @@ fn is_default_equivalent_ctor(cx: &LateContext<'_>, def_id: DefId, path: &QPath<
     if let QPath::TypeRelative(_, method) = path {
         if method.ident.name == sym::new {
             if let Some(impl_did) = cx.tcx.impl_of_method(def_id) {
-                if let Some(adt) = cx.tcx.type_of(impl_did).subst_identity().ty_adt_def() {
+                if let Some(adt) = cx.tcx.type_of(impl_did).instantiate_identity().ty_adt_def() {
                     return std_types_symbols.iter().any(|&symbol| {
                         cx.tcx.is_diagnostic_item(symbol, adt.did()) || Some(adt.did()) == cx.tcx.lang_items().string()
                     });
@@ -823,7 +818,7 @@ fn is_default_equivalent_ctor(cx: &LateContext<'_>, def_id: DefId, path: &QPath<
     false
 }
 
-/// Return true if the expr is equal to `Default::default` when evaluated.
+/// Returns true if the expr is equal to `Default::default` when evaluated.
 pub fn is_default_equivalent_call(cx: &LateContext<'_>, repl_func: &Expr<'_>) -> bool {
     if_chain! {
         if let hir::ExprKind::Path(ref repl_func_qpath) = repl_func.kind;
@@ -1377,7 +1372,7 @@ pub fn get_enclosing_loop_or_multi_call_closure<'tcx>(
                                     .chain(args.iter())
                                     .position(|arg| arg.hir_id == id)?;
                                 let id = cx.typeck_results().type_dependent_def_id(e.hir_id)?;
-                                let ty = cx.tcx.fn_sig(id).subst_identity().skip_binder().inputs()[i];
+                                let ty = cx.tcx.fn_sig(id).instantiate_identity().skip_binder().inputs()[i];
                                 ty_is_fn_once_param(cx.tcx, ty, cx.tcx.param_env(id).caller_bounds()).then_some(())
                             },
                             _ => None,
@@ -1639,13 +1634,13 @@ pub fn is_direct_expn_of(span: Span, name: &str) -> Option<Span> {
 
 /// Convenience function to get the return type of a function.
 pub fn return_ty<'tcx>(cx: &LateContext<'tcx>, fn_def_id: hir::OwnerId) -> Ty<'tcx> {
-    let ret_ty = cx.tcx.fn_sig(fn_def_id).subst_identity().output();
+    let ret_ty = cx.tcx.fn_sig(fn_def_id).instantiate_identity().output();
     cx.tcx.erase_late_bound_regions(ret_ty)
 }
 
 /// Convenience function to get the nth argument type of a function.
 pub fn nth_arg<'tcx>(cx: &LateContext<'tcx>, fn_def_id: hir::OwnerId, nth: usize) -> Ty<'tcx> {
-    let arg = cx.tcx.fn_sig(fn_def_id).subst_identity().input(nth);
+    let arg = cx.tcx.fn_sig(fn_def_id).instantiate_identity().input(nth);
     cx.tcx.erase_late_bound_regions(arg)
 }
 
@@ -2518,7 +2513,9 @@ pub fn tokenize_with_text(s: &str) -> impl Iterator<Item = (TokenKind, &str)> {
 /// Checks whether a given span has any comment token
 /// This checks for all types of comment: line "//", block "/**", doc "///" "//!"
 pub fn span_contains_comment(sm: &SourceMap, span: Span) -> bool {
-    let Ok(snippet) = sm.span_to_snippet(span) else { return false };
+    let Ok(snippet) = sm.span_to_snippet(span) else {
+        return false;
+    };
     return tokenize(&snippet).any(|token| {
         matches!(
             token.kind,
@@ -2527,7 +2524,8 @@ pub fn span_contains_comment(sm: &SourceMap, span: Span) -> bool {
     });
 }
 
-/// Return all the comments a given span contains
+/// Returns all the comments a given span contains
+///
 /// Comments are returned wrapped with their relevant delimiters
 pub fn span_extract_comment(sm: &SourceMap, span: Span) -> String {
     let snippet = sm.span_to_snippet(span).unwrap_or_default();
@@ -2540,6 +2538,50 @@ pub fn span_extract_comment(sm: &SourceMap, span: Span) -> String {
 
 pub fn span_find_starting_semi(sm: &SourceMap, span: Span) -> Span {
     sm.span_take_while(span, |&ch| ch == ' ' || ch == ';')
+}
+
+/// Returns whether the given let pattern and else body can be turned into a question mark
+///
+/// For this example:
+/// ```ignore
+/// let FooBar { a, b } = if let Some(a) = ex { a } else { return None };
+/// ```
+/// We get as parameters:
+/// ```ignore
+/// pat: Some(a)
+/// else_body: return None
+/// ```
+
+/// And for this example:
+/// ```ignore
+/// let Some(FooBar { a, b }) = ex else { return None };
+/// ```
+/// We get as parameters:
+/// ```ignore
+/// pat: Some(FooBar { a, b })
+/// else_body: return None
+/// ```
+
+/// We output `Some(a)` in the first instance, and `Some(FooBar { a, b })` in the second, because
+/// the question mark operator is applicable here. Callers have to check whether we are in a
+/// constant or not.
+pub fn pat_and_expr_can_be_question_mark<'a, 'hir>(
+    cx: &LateContext<'_>,
+    pat: &'a Pat<'hir>,
+    else_body: &Expr<'_>,
+) -> Option<&'a Pat<'hir>> {
+    if let PatKind::TupleStruct(pat_path, [inner_pat], _) = pat.kind &&
+        is_res_lang_ctor(cx, cx.qpath_res(&pat_path, pat.hir_id), OptionSome) &&
+        !is_refutable(cx, inner_pat) &&
+        let else_body = peel_blocks(else_body) &&
+        let ExprKind::Ret(Some(ret_val)) = else_body.kind &&
+        let ExprKind::Path(ret_path) = ret_val.kind &&
+        is_res_lang_ctor(cx, cx.qpath_res(&ret_path, ret_val.hir_id), OptionNone)
+    {
+        Some(inner_pat)
+    } else {
+        None
+    }
 }
 
 macro_rules! op_utils {

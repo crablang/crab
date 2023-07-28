@@ -1,5 +1,5 @@
 use crate::dep_graph::{DepNode, WorkProduct, WorkProductId};
-use crate::ty::{subst::InternalSubsts, Instance, InstanceDef, SymbolName, TyCtxt};
+use crate::ty::{GenericArgs, Instance, InstanceDef, SymbolName, TyCtxt};
 use rustc_attr::InlineAttr;
 use rustc_data_structures::base_n;
 use rustc_data_structures::fingerprint::Fingerprint;
@@ -56,22 +56,31 @@ impl<'tcx> MonoItem<'tcx> {
         }
     }
 
+    // Note: if you change how item size estimates work, you might need to
+    // change NON_INCR_MIN_CGU_SIZE as well.
     pub fn size_estimate(&self, tcx: TyCtxt<'tcx>) -> usize {
         match *self {
             MonoItem::Fn(instance) => {
-                // Estimate the size of a function based on how many statements
-                // it contains.
-                tcx.instance_def_size_estimate(instance.def)
+                match instance.def {
+                    // "Normal" functions size estimate: the number of
+                    // statements, plus one for the terminator.
+                    InstanceDef::Item(..) | InstanceDef::DropGlue(..) => {
+                        let mir = tcx.instance_mir(instance.def);
+                        mir.basic_blocks.iter().map(|bb| bb.statements.len() + 1).sum()
+                    }
+                    // Other compiler-generated shims size estimate: 1
+                    _ => 1,
+                }
             }
-            // Conservatively estimate the size of a static declaration
-            // or assembly to be 1.
+            // Conservatively estimate the size of a static declaration or
+            // assembly item to be 1.
             MonoItem::Static(_) | MonoItem::GlobalAsm(_) => 1,
         }
     }
 
     pub fn is_generic_fn(&self) -> bool {
         match *self {
-            MonoItem::Fn(ref instance) => instance.substs.non_erasable_generics().next().is_some(),
+            MonoItem::Fn(ref instance) => instance.args.non_erasable_generics().next().is_some(),
             MonoItem::Static(..) | MonoItem::GlobalAsm(..) => false,
         }
     }
@@ -168,14 +177,14 @@ impl<'tcx> MonoItem<'tcx> {
     /// which will never be accessed) in its place.
     pub fn is_instantiable(&self, tcx: TyCtxt<'tcx>) -> bool {
         debug!("is_instantiable({:?})", self);
-        let (def_id, substs) = match *self {
-            MonoItem::Fn(ref instance) => (instance.def_id(), instance.substs),
-            MonoItem::Static(def_id) => (def_id, InternalSubsts::empty()),
+        let (def_id, args) = match *self {
+            MonoItem::Fn(ref instance) => (instance.def_id(), instance.args),
+            MonoItem::Static(def_id) => (def_id, GenericArgs::empty()),
             // global asm never has predicates
             MonoItem::GlobalAsm(..) => return true,
         };
 
-        !tcx.subst_and_check_impossible_predicates((def_id, &substs))
+        !tcx.subst_and_check_impossible_predicates((def_id, &args))
     }
 
     pub fn local_span(&self, tcx: TyCtxt<'tcx>) -> Option<Span> {
@@ -216,7 +225,7 @@ impl<'tcx> fmt::Display for MonoItem<'tcx> {
         match *self {
             MonoItem::Fn(instance) => write!(f, "fn {}", instance),
             MonoItem::Static(def_id) => {
-                write!(f, "static {}", Instance::new(def_id, InternalSubsts::empty()))
+                write!(f, "static {}", Instance::new(def_id, GenericArgs::empty()))
             }
             MonoItem::GlobalAsm(..) => write!(f, "global_asm"),
         }
@@ -230,12 +239,26 @@ pub struct CodegenUnit<'tcx> {
     /// contain something unique to this crate (e.g., a module path)
     /// as well as the crate name and disambiguator.
     name: Symbol,
-    items: FxHashMap<MonoItem<'tcx>, (Linkage, Visibility)>,
+    items: FxHashMap<MonoItem<'tcx>, MonoItemData>,
     size_estimate: usize,
     primary: bool,
     /// True if this is CGU is used to hold code coverage information for dead code,
     /// false otherwise.
     is_code_coverage_dead_code_cgu: bool,
+}
+
+/// Auxiliary info about a `MonoItem`.
+#[derive(Copy, Clone, PartialEq, Debug, HashStable)]
+pub struct MonoItemData {
+    /// A cached copy of the result of `MonoItem::instantiation_mode`, where
+    /// `GloballyShared` maps to `false` and `LocalCopy` maps to `true`.
+    pub inlined: bool,
+
+    pub linkage: Linkage,
+    pub visibility: Visibility,
+
+    /// A cached copy of the result of `MonoItem::size_estimate`.
+    pub size_estimate: usize,
 }
 
 /// Specifies the linkage type for a `MonoItem`.
@@ -292,12 +315,12 @@ impl<'tcx> CodegenUnit<'tcx> {
     }
 
     /// The order of these items is non-determinstic.
-    pub fn items(&self) -> &FxHashMap<MonoItem<'tcx>, (Linkage, Visibility)> {
+    pub fn items(&self) -> &FxHashMap<MonoItem<'tcx>, MonoItemData> {
         &self.items
     }
 
     /// The order of these items is non-determinstic.
-    pub fn items_mut(&mut self) -> &mut FxHashMap<MonoItem<'tcx>, (Linkage, Visibility)> {
+    pub fn items_mut(&mut self) -> &mut FxHashMap<MonoItem<'tcx>, MonoItemData> {
         &mut self.items
     }
 
@@ -320,16 +343,16 @@ impl<'tcx> CodegenUnit<'tcx> {
         base_n::encode(hash, base_n::CASE_INSENSITIVE)
     }
 
-    pub fn compute_size_estimate(&mut self, tcx: TyCtxt<'tcx>) {
-        // Estimate the size of a codegen unit as (approximately) the number of MIR
-        // statements it corresponds to.
-        self.size_estimate = self.items.keys().map(|mi| mi.size_estimate(tcx)).sum();
+    pub fn compute_size_estimate(&mut self) {
+        // The size of a codegen unit as the sum of the sizes of the items
+        // within it.
+        self.size_estimate = self.items.values().map(|data| data.size_estimate).sum();
     }
 
-    #[inline]
     /// Should only be called if [`compute_size_estimate`] has previously been called.
     ///
     /// [`compute_size_estimate`]: Self::compute_size_estimate
+    #[inline]
     pub fn size_estimate(&self) -> usize {
         // Items are never zero-sized, so if we have items the estimate must be
         // non-zero, unless we forgot to call `compute_size_estimate` first.
@@ -355,7 +378,7 @@ impl<'tcx> CodegenUnit<'tcx> {
     pub fn items_in_deterministic_order(
         &self,
         tcx: TyCtxt<'tcx>,
-    ) -> Vec<(MonoItem<'tcx>, (Linkage, Visibility))> {
+    ) -> Vec<(MonoItem<'tcx>, MonoItemData)> {
         // The codegen tests rely on items being process in the same order as
         // they appear in the file, so for local items, we sort by node_id first
         #[derive(PartialEq, Eq, PartialOrd, Ord)]
@@ -390,7 +413,7 @@ impl<'tcx> CodegenUnit<'tcx> {
             )
         }
 
-        let mut items: Vec<_> = self.items().iter().map(|(&i, &l)| (i, l)).collect();
+        let mut items: Vec<_> = self.items().iter().map(|(&i, &data)| (i, data)).collect();
         items.sort_by_cached_key(|&(i, _)| item_sort_key(tcx, i));
         items
     }

@@ -24,7 +24,7 @@ use syntax::{
 
 use crate::{
     syntax_highlighting::{
-        escape::{highlight_escape_char, highlight_escape_string},
+        escape::{highlight_escape_byte, highlight_escape_char, highlight_escape_string},
         format::highlight_format_string,
         highlights::Highlights,
         macro_::MacroHighlighter,
@@ -265,10 +265,14 @@ fn traverse(
 
         // set macro and attribute highlighting states
         match event.clone() {
-            Enter(NodeOrToken::Node(node)) if ast::TokenTree::can_cast(node.kind()) => {
+            Enter(NodeOrToken::Node(node))
+                if current_macro.is_none() && ast::TokenTree::can_cast(node.kind()) =>
+            {
                 tt_level += 1;
             }
-            Leave(NodeOrToken::Node(node)) if ast::TokenTree::can_cast(node.kind()) => {
+            Leave(NodeOrToken::Node(node))
+                if current_macro.is_none() && ast::TokenTree::can_cast(node.kind()) =>
+            {
                 tt_level -= 1;
             }
             Enter(NodeOrToken::Node(node)) if ast::Attr::can_cast(node.kind()) => {
@@ -387,7 +391,7 @@ fn traverse(
             };
         let descended_element = if in_macro {
             // Attempt to descend tokens into macro-calls.
-            match element {
+            let res = match element {
                 NodeOrToken::Token(token) if token.kind() != COMMENT => {
                     let token = match attr_or_derive_item {
                         Some(AttrOrDerive::Attr(_)) => {
@@ -412,7 +416,8 @@ fn traverse(
                     }
                 }
                 e => e,
-            }
+            };
+            res
         } else {
             element
         };
@@ -466,6 +471,14 @@ fn traverse(
                 };
 
                 highlight_escape_char(hl, &char, range.start())
+            } else if ast::Byte::can_cast(token.kind())
+                && ast::Byte::can_cast(descended_token.kind())
+            {
+                let Some(byte) = ast::Byte::cast(token) else {
+                    continue;
+                };
+
+                highlight_escape_byte(hl, &byte, range.start())
             }
         }
 

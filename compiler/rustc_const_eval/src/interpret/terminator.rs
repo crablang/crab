@@ -1,7 +1,8 @@
 use std::borrow::Cow;
 
+use either::Either;
 use rustc_ast::ast::InlineAsmOptions;
-use rustc_middle::ty::layout::{FnAbiOf, LayoutOf};
+use rustc_middle::ty::layout::{FnAbiOf, LayoutOf, TyAndLayout};
 use rustc_middle::ty::Instance;
 use rustc_middle::{
     mir,
@@ -12,12 +13,63 @@ use rustc_target::abi::call::{ArgAbi, ArgAttribute, ArgAttributes, FnAbi, PassMo
 use rustc_target::spec::abi::Abi;
 
 use super::{
-    FnVal, ImmTy, Immediate, InterpCx, InterpResult, MPlaceTy, Machine, MemoryKind, OpTy, Operand,
-    PlaceTy, Scalar, StackPopCleanup,
+    AllocId, FnVal, ImmTy, Immediate, InterpCx, InterpResult, MPlaceTy, Machine, MemoryKind, OpTy,
+    Operand, PlaceTy, Provenance, Scalar, StackPopCleanup,
 };
 use crate::fluent_generated as fluent;
 
+/// An argment passed to a function.
+#[derive(Clone, Debug)]
+pub enum FnArg<'tcx, Prov: Provenance = AllocId> {
+    /// Pass a copy of the given operand.
+    Copy(OpTy<'tcx, Prov>),
+    /// Allow for the argument to be passed in-place: destroy the value originally stored at that place and
+    /// make the place inaccessible for the duration of the function call.
+    InPlace(PlaceTy<'tcx, Prov>),
+}
+
+impl<'tcx, Prov: Provenance> FnArg<'tcx, Prov> {
+    pub fn layout(&self) -> &TyAndLayout<'tcx> {
+        match self {
+            FnArg::Copy(op) => &op.layout,
+            FnArg::InPlace(place) => &place.layout,
+        }
+    }
+}
+
 impl<'mir, 'tcx: 'mir, M: Machine<'mir, 'tcx>> InterpCx<'mir, 'tcx, M> {
+    /// Make a copy of the given fn_arg. Any `InPlace` are degenerated to copies, no protection of the
+    /// original memory occurs.
+    pub fn copy_fn_arg(
+        &self,
+        arg: &FnArg<'tcx, M::Provenance>,
+    ) -> InterpResult<'tcx, OpTy<'tcx, M::Provenance>> {
+        match arg {
+            FnArg::Copy(op) => Ok(op.clone()),
+            FnArg::InPlace(place) => self.place_to_op(&place),
+        }
+    }
+
+    /// Make a copy of the given fn_args. Any `InPlace` are degenerated to copies, no protection of the
+    /// original memory occurs.
+    pub fn copy_fn_args(
+        &self,
+        args: &[FnArg<'tcx, M::Provenance>],
+    ) -> InterpResult<'tcx, Vec<OpTy<'tcx, M::Provenance>>> {
+        args.iter().map(|fn_arg| self.copy_fn_arg(fn_arg)).collect()
+    }
+
+    pub fn fn_arg_field(
+        &self,
+        arg: &FnArg<'tcx, M::Provenance>,
+        field: usize,
+    ) -> InterpResult<'tcx, FnArg<'tcx, M::Provenance>> {
+        Ok(match arg {
+            FnArg::Copy(op) => FnArg::Copy(self.project_field(op, field)?),
+            FnArg::InPlace(place) => FnArg::InPlace(self.project_field(place, field)?),
+        })
+    }
+
     pub(super) fn eval_terminator(
         &mut self,
         terminator: &mir::Terminator<'tcx>,
@@ -68,14 +120,14 @@ impl<'mir, 'tcx: 'mir, M: Machine<'mir, 'tcx>> InterpCx<'mir, 'tcx, M> {
                 let old_stack = self.frame_idx();
                 let old_loc = self.frame().loc;
                 let func = self.eval_operand(func, None)?;
-                let args = self.eval_operands(args)?;
+                let args = self.eval_fn_call_arguments(args)?;
 
                 let fn_sig_binder = func.layout.ty.fn_sig(*self.tcx);
                 let fn_sig =
                     self.tcx.normalize_erasing_late_bound_regions(self.param_env, fn_sig_binder);
                 let extra_args = &args[fn_sig.inputs().len()..];
                 let extra_args =
-                    self.tcx.mk_type_list_from_iter(extra_args.iter().map(|arg| arg.layout.ty));
+                    self.tcx.mk_type_list_from_iter(extra_args.iter().map(|arg| arg.layout().ty));
 
                 let (fn_val, fn_abi, with_caller_location) = match *func.layout.ty.kind() {
                     ty::FnPtr(_sig) => {
@@ -83,8 +135,8 @@ impl<'mir, 'tcx: 'mir, M: Machine<'mir, 'tcx>> InterpCx<'mir, 'tcx, M> {
                         let fn_val = self.get_ptr_fn(fn_ptr)?;
                         (fn_val, self.fn_abi_of_fn_ptr(fn_sig_binder, extra_args)?, false)
                     }
-                    ty::FnDef(def_id, substs) => {
-                        let instance = self.resolve(def_id, substs)?;
+                    ty::FnDef(def_id, args) => {
+                        let instance = self.resolve(def_id, args)?;
                         (
                             FnVal::Instance(instance),
                             self.fn_abi_of_instance(instance, extra_args)?,
@@ -185,6 +237,21 @@ impl<'mir, 'tcx: 'mir, M: Machine<'mir, 'tcx>> InterpCx<'mir, 'tcx, M> {
         Ok(())
     }
 
+    /// Evaluate the arguments of a function call
+    pub(super) fn eval_fn_call_arguments(
+        &self,
+        ops: &[mir::Operand<'tcx>],
+    ) -> InterpResult<'tcx, Vec<FnArg<'tcx, M::Provenance>>> {
+        ops.iter()
+            .map(|op| {
+                Ok(match op {
+                    mir::Operand::Move(place) => FnArg::InPlace(self.eval_place(*place)?),
+                    _ => FnArg::Copy(self.eval_operand(op, None)?),
+                })
+            })
+            .collect()
+    }
+
     fn check_argument_compat(
         caller_abi: &ArgAbi<'tcx, Ty<'tcx>>,
         callee_abi: &ArgAbi<'tcx, Ty<'tcx>>,
@@ -275,7 +342,7 @@ impl<'mir, 'tcx: 'mir, M: Machine<'mir, 'tcx>> InterpCx<'mir, 'tcx, M> {
     fn pass_argument<'x, 'y>(
         &mut self,
         caller_args: &mut impl Iterator<
-            Item = (&'x OpTy<'tcx, M::Provenance>, &'y ArgAbi<'tcx, Ty<'tcx>>),
+            Item = (&'x FnArg<'tcx, M::Provenance>, &'y ArgAbi<'tcx, Ty<'tcx>>),
         >,
         callee_abi: &ArgAbi<'tcx, Ty<'tcx>>,
         callee_arg: &PlaceTy<'tcx, M::Provenance>,
@@ -295,31 +362,42 @@ impl<'mir, 'tcx: 'mir, M: Machine<'mir, 'tcx>> InterpCx<'mir, 'tcx, M> {
         // Now, check
         if !Self::check_argument_compat(caller_abi, callee_abi) {
             let callee_ty = format!("{}", callee_arg.layout.ty);
-            let caller_ty = format!("{}", caller_arg.layout.ty);
+            let caller_ty = format!("{}", caller_arg.layout().ty);
             throw_ub_custom!(
                 fluent::const_eval_incompatible_types,
                 callee_ty = callee_ty,
                 caller_ty = caller_ty,
             )
         }
+        // We work with a copy of the argument for now; if this is in-place argument passing, we
+        // will later protect the source it comes from. This means the callee cannot observe if we
+        // did in-place of by-copy argument passing, except for pointer equality tests.
+        let caller_arg_copy = self.copy_fn_arg(&caller_arg)?;
         // Special handling for unsized parameters.
-        if caller_arg.layout.is_unsized() {
+        if caller_arg_copy.layout.is_unsized() {
             // `check_argument_compat` ensures that both have the same type, so we know they will use the metadata the same way.
-            assert_eq!(caller_arg.layout.ty, callee_arg.layout.ty);
+            assert_eq!(caller_arg_copy.layout.ty, callee_arg.layout.ty);
             // We have to properly pre-allocate the memory for the callee.
-            // So let's tear down some wrappers.
+            // So let's tear down some abstractions.
             // This all has to be in memory, there are no immediate unsized values.
-            let src = caller_arg.assert_mem_place();
+            let src = caller_arg_copy.assert_mem_place();
             // The destination cannot be one of these "spread args".
-            let (dest_frame, dest_local) = callee_arg.assert_local();
+            let (dest_frame, dest_local, dest_offset) = callee_arg
+                .as_mplace_or_local()
+                .right()
+                .expect("callee fn arguments must be locals");
             // We are just initializing things, so there can't be anything here yet.
             assert!(matches!(
                 *self.local_to_op(&self.stack()[dest_frame], dest_local, None)?,
                 Operand::Immediate(Immediate::Uninit)
             ));
+            assert_eq!(dest_offset, None);
             // Allocate enough memory to hold `src`.
             let Some((size, align)) = self.size_and_align_of_mplace(&src)? else {
-                span_bug!(self.cur_span(), "unsized fn arg with `extern` type tail should not be allowed")
+                span_bug!(
+                    self.cur_span(),
+                    "unsized fn arg with `extern` type tail should not be allowed"
+                )
             };
             let ptr = self.allocate_ptr(size, align, MemoryKind::Stack)?;
             let dest_place =
@@ -331,7 +409,12 @@ impl<'mir, 'tcx: 'mir, M: Machine<'mir, 'tcx>> InterpCx<'mir, 'tcx, M> {
         // FIXME: Depending on the PassMode, this should reset some padding to uninitialized. (This
         // is true for all `copy_op`, but there are a lot of special cases for argument passing
         // specifically.)
-        self.copy_op(&caller_arg, callee_arg, /*allow_transmute*/ true)
+        self.copy_op(&caller_arg_copy, callee_arg, /*allow_transmute*/ true)?;
+        // If this was an in-place pass, protect the place it comes from for the duration of the call.
+        if let FnArg::InPlace(place) = caller_arg {
+            M::protect_in_place_function_argument(self, place)?;
+        }
+        Ok(())
     }
 
     /// Call this function -- pushing the stack frame and initializing the arguments.
@@ -346,7 +429,7 @@ impl<'mir, 'tcx: 'mir, M: Machine<'mir, 'tcx>> InterpCx<'mir, 'tcx, M> {
         &mut self,
         fn_val: FnVal<'tcx, M::ExtraFnVal>,
         (caller_abi, caller_fn_abi): (Abi, &FnAbi<'tcx, Ty<'tcx>>),
-        args: &[OpTy<'tcx, M::Provenance>],
+        args: &[FnArg<'tcx, M::Provenance>],
         with_caller_location: bool,
         destination: &PlaceTy<'tcx, M::Provenance>,
         target: Option<mir::BasicBlock>,
@@ -372,8 +455,15 @@ impl<'mir, 'tcx: 'mir, M: Machine<'mir, 'tcx>> InterpCx<'mir, 'tcx, M> {
         match instance.def {
             ty::InstanceDef::Intrinsic(def_id) => {
                 assert!(self.tcx.is_intrinsic(def_id));
-                // caller_fn_abi is not relevant here, we interpret the arguments directly for each intrinsic.
-                M::call_intrinsic(self, instance, args, destination, target, unwind)
+                // FIXME: Should `InPlace` arguments be reset to uninit?
+                M::call_intrinsic(
+                    self,
+                    instance,
+                    &self.copy_fn_args(args)?,
+                    destination,
+                    target,
+                    unwind,
+                )
             }
             ty::InstanceDef::VTableShim(..)
             | ty::InstanceDef::ReifyShim(..)
@@ -385,10 +475,18 @@ impl<'mir, 'tcx: 'mir, M: Machine<'mir, 'tcx>> InterpCx<'mir, 'tcx, M> {
             | ty::InstanceDef::ThreadLocalShim(..)
             | ty::InstanceDef::Item(_) => {
                 // We need MIR for this fn
-                let Some((body, instance)) =
-                    M::find_mir_or_eval_fn(self, instance, caller_abi, args, destination, target, unwind)? else {
-                        return Ok(());
-                    };
+                let Some((body, instance)) = M::find_mir_or_eval_fn(
+                    self,
+                    instance,
+                    caller_abi,
+                    args,
+                    destination,
+                    target,
+                    unwind,
+                )?
+                else {
+                    return Ok(());
+                };
 
                 // Compute callee information using the `instance` returned by
                 // `find_mir_or_eval_fn`.
@@ -409,6 +507,11 @@ impl<'mir, 'tcx: 'mir, M: Machine<'mir, 'tcx>> InterpCx<'mir, 'tcx, M> {
                     }
                 }
 
+                // Check that all target features required by the callee (i.e., from
+                // the attribute `#[target_feature(enable = ...)]`) are enabled at
+                // compile time.
+                self.check_fn_target_features(instance)?;
+
                 if !callee_fn_abi.can_unwind {
                     // The callee cannot unwind, so force the `Unreachable` unwind handling.
                     unwind = mir::UnwindAction::Unreachable;
@@ -428,7 +531,13 @@ impl<'mir, 'tcx: 'mir, M: Machine<'mir, 'tcx>> InterpCx<'mir, 'tcx, M> {
                         "caller ABI: {:?}, args: {:#?}",
                         caller_abi,
                         args.iter()
-                            .map(|arg| (arg.layout.ty, format!("{:?}", **arg)))
+                            .map(|arg| (
+                                arg.layout().ty,
+                                match arg {
+                                    FnArg::Copy(op) => format!("copy({:?})", *op),
+                                    FnArg::InPlace(place) => format!("in-place({:?})", *place),
+                                }
+                            ))
                             .collect::<Vec<_>>()
                     );
                     trace!(
@@ -449,7 +558,7 @@ impl<'mir, 'tcx: 'mir, M: Machine<'mir, 'tcx>> InterpCx<'mir, 'tcx, M> {
                     // last incoming argument. These two iterators do not have the same type,
                     // so to keep the code paths uniform we accept an allocation
                     // (for RustCall ABI only).
-                    let caller_args: Cow<'_, [OpTy<'tcx, M::Provenance>]> =
+                    let caller_args: Cow<'_, [FnArg<'tcx, M::Provenance>]> =
                         if caller_abi == Abi::RustCall && !args.is_empty() {
                             // Untuple
                             let (untuple_arg, args) = args.split_last().unwrap();
@@ -458,11 +567,10 @@ impl<'mir, 'tcx: 'mir, M: Machine<'mir, 'tcx>> InterpCx<'mir, 'tcx, M> {
                                 args.iter()
                                     .map(|a| Ok(a.clone()))
                                     .chain(
-                                        (0..untuple_arg.layout.fields.count())
-                                            .map(|i| self.operand_field(untuple_arg, i)),
+                                        (0..untuple_arg.layout().fields.count())
+                                            .map(|i| self.fn_arg_field(untuple_arg, i)),
                                     )
-                                    .collect::<InterpResult<'_, Vec<OpTy<'tcx, M::Provenance>>>>(
-                                    )?,
+                                    .collect::<InterpResult<'_, Vec<_>>>()?,
                             )
                         } else {
                             // Plain arg passing
@@ -491,7 +599,7 @@ impl<'mir, 'tcx: 'mir, M: Machine<'mir, 'tcx>> InterpCx<'mir, 'tcx, M> {
                         if Some(local) == body.spread_arg {
                             // Must be a tuple
                             for i in 0..dest.layout.fields.count() {
-                                let dest = self.place_field(&dest, i)?;
+                                let dest = self.project_field(&dest, i)?;
                                 let callee_abi = callee_args_abis.next().unwrap();
                                 self.pass_argument(&mut caller_args, callee_abi, &dest)?;
                             }
@@ -523,6 +631,14 @@ impl<'mir, 'tcx: 'mir, M: Machine<'mir, 'tcx>> InterpCx<'mir, 'tcx, M> {
                             caller_ty = caller_ty,
                         )
                     }
+                    // Ensure the return place is aligned and dereferenceable, and protect it for
+                    // in-place return value passing.
+                    if let Either::Left(mplace) = destination.as_mplace_or_local() {
+                        self.check_mplace(&mplace)?;
+                    } else {
+                        // Nothing to do for locals, they are always properly allocated and aligned.
+                    }
+                    M::protect_in_place_function_argument(self, destination)?;
                 };
                 match res {
                     Err(err) => {
@@ -538,7 +654,10 @@ impl<'mir, 'tcx: 'mir, M: Machine<'mir, 'tcx>> InterpCx<'mir, 'tcx, M> {
                 // We have to implement all "object safe receivers". So we have to go search for a
                 // pointer or `dyn Trait` type, but it could be wrapped in newtypes. So recursively
                 // unwrap those newtypes until we are there.
-                let mut receiver = args[0].clone();
+                // An `InPlace` does nothing here, we keep the original receiver intact. We can't
+                // really pass the argument in-place anyway, and we are constructing a new
+                // `Immediate` receiver.
+                let mut receiver = self.copy_fn_arg(&args[0])?;
                 let receiver_place = loop {
                     match receiver.layout.ty.kind() {
                         ty::Ref(..) | ty::RawPtr(..) => {
@@ -562,7 +681,7 @@ impl<'mir, 'tcx: 'mir, M: Machine<'mir, 'tcx>> InterpCx<'mir, 'tcx, M> {
                             // Not there yet, search for the only non-ZST field.
                             let mut non_zst_field = None;
                             for i in 0..receiver.layout.fields.count() {
-                                let field = self.operand_field(&receiver, i)?;
+                                let field = self.project_field(&receiver, i)?;
                                 let zst =
                                     field.layout.is_zst() && field.layout.align.abi.bytes() == 1;
                                 if !zst {
@@ -588,12 +707,11 @@ impl<'mir, 'tcx: 'mir, M: Machine<'mir, 'tcx>> InterpCx<'mir, 'tcx, M> {
                 let (vptr, dyn_ty, adjusted_receiver) = if let ty::Dynamic(data, _, ty::DynStar) =
                     receiver_place.layout.ty.kind()
                 {
-                    let (recv, vptr) = self.unpack_dyn_star(&receiver_place.into())?;
+                    let (recv, vptr) = self.unpack_dyn_star(&receiver_place)?;
                     let (dyn_ty, dyn_trait) = self.get_ptr_vtable(vptr)?;
                     if dyn_trait != data.principal() {
                         throw_ub_custom!(fluent::const_eval_dyn_star_call_vtable_mismatch);
                     }
-                    let recv = recv.assert_mem_place(); // we passed an MPlaceTy to `unpack_dyn_star` so we definitely still have one
 
                     (vptr, dyn_ty, recv.ptr)
                 } else {
@@ -603,8 +721,12 @@ impl<'mir, 'tcx: 'mir, M: Machine<'mir, 'tcx>> InterpCx<'mir, 'tcx, M> {
                         .tcx
                         .struct_tail_erasing_lifetimes(receiver_place.layout.ty, self.param_env);
                     let ty::Dynamic(data, _, ty::Dyn) = receiver_tail.kind() else {
-                            span_bug!(self.cur_span(), "dynamic call on non-`dyn` type {}", receiver_tail)
-                        };
+                        span_bug!(
+                            self.cur_span(),
+                            "dynamic call on non-`dyn` type {}",
+                            receiver_tail
+                        )
+                    };
                     assert!(receiver_place.layout.is_unsized());
 
                     // Get the required information from the vtable.
@@ -622,7 +744,9 @@ impl<'mir, 'tcx: 'mir, M: Machine<'mir, 'tcx>> InterpCx<'mir, 'tcx, M> {
 
                 // Now determine the actual method to call. We can do that in two different ways and
                 // compare them to ensure everything fits.
-                let Some(ty::VtblEntry::Method(fn_inst)) = self.get_vtable_entries(vptr)?.get(idx).copied() else {
+                let Some(ty::VtblEntry::Method(fn_inst)) =
+                    self.get_vtable_entries(vptr)?.get(idx).copied()
+                else {
                     // FIXME(fee1-dead) these could be variants of the UB info enum instead of this
                     throw_ub_custom!(fluent::const_eval_dyn_call_not_a_method);
                 };
@@ -632,7 +756,7 @@ impl<'mir, 'tcx: 'mir, M: Machine<'mir, 'tcx>> InterpCx<'mir, 'tcx, M> {
 
                     let trait_def_id = tcx.trait_of_item(def_id).unwrap();
                     let virtual_trait_ref =
-                        ty::TraitRef::from_method(tcx, trait_def_id, instance.substs);
+                        ty::TraitRef::from_method(tcx, trait_def_id, instance.args);
                     let existential_trait_ref =
                         ty::ExistentialTraitRef::erase_self_ty(tcx, virtual_trait_ref);
                     let concrete_trait_ref = existential_trait_ref.with_self_ty(tcx, dyn_ty);
@@ -641,18 +765,20 @@ impl<'mir, 'tcx: 'mir, M: Machine<'mir, 'tcx>> InterpCx<'mir, 'tcx, M> {
                         tcx,
                         self.param_env,
                         def_id,
-                        instance.substs.rebase_onto(tcx, trait_def_id, concrete_trait_ref.substs),
+                        instance.args.rebase_onto(tcx, trait_def_id, concrete_trait_ref.args),
                     )
                     .unwrap();
                     assert_eq!(fn_inst, concrete_method);
                 }
 
                 // Adjust receiver argument. Layout can be any (thin) ptr.
-                args[0] = ImmTy::from_immediate(
-                    Scalar::from_maybe_pointer(adjusted_receiver, self).into(),
-                    self.layout_of(Ty::new_mut_ptr(self.tcx.tcx, dyn_ty))?,
-                )
-                .into();
+                args[0] = FnArg::Copy(
+                    ImmTy::from_immediate(
+                        Scalar::from_maybe_pointer(adjusted_receiver, self).into(),
+                        self.layout_of(Ty::new_mut_ptr(self.tcx.tcx, dyn_ty))?,
+                    )
+                    .into(),
+                );
                 trace!("Patched receiver operand to {:#?}", args[0]);
                 // recurse with concrete function
                 self.eval_fn_call(
@@ -666,6 +792,31 @@ impl<'mir, 'tcx: 'mir, M: Machine<'mir, 'tcx>> InterpCx<'mir, 'tcx, M> {
                 )
             }
         }
+    }
+
+    fn check_fn_target_features(&self, instance: ty::Instance<'tcx>) -> InterpResult<'tcx, ()> {
+        let attrs = self.tcx.codegen_fn_attrs(instance.def_id());
+        if attrs
+            .target_features
+            .iter()
+            .any(|feature| !self.tcx.sess.target_features.contains(feature))
+        {
+            throw_ub_custom!(
+                fluent::const_eval_unavailable_target_features_for_fn,
+                unavailable_feats = attrs
+                    .target_features
+                    .iter()
+                    .filter(|&feature| !self.tcx.sess.target_features.contains(feature))
+                    .fold(String::new(), |mut s, feature| {
+                        if !s.is_empty() {
+                            s.push_str(", ");
+                        }
+                        s.push_str(feature.as_str());
+                        s
+                    }),
+            );
+        }
+        Ok(())
     }
 
     fn drop_in_place(
@@ -688,7 +839,7 @@ impl<'mir, 'tcx: 'mir, M: Machine<'mir, 'tcx>> InterpCx<'mir, 'tcx, M> {
             }
             ty::Dynamic(_, _, ty::DynStar) => {
                 // Dropping a `dyn*`. Need to find actual drop fn.
-                self.unpack_dyn_star(&place.into())?.0.assert_mem_place()
+                self.unpack_dyn_star(&place)?.0
             }
             _ => {
                 debug_assert_eq!(
@@ -710,7 +861,7 @@ impl<'mir, 'tcx: 'mir, M: Machine<'mir, 'tcx>> InterpCx<'mir, 'tcx, M> {
         self.eval_fn_call(
             FnVal::Instance(instance),
             (Abi::Rust, fn_abi),
-            &[arg.into()],
+            &[FnArg::Copy(arg.into())],
             false,
             &ret.into(),
             Some(target),

@@ -1,5 +1,4 @@
-use std::cmp;
-use std::iter;
+use std::{cmp, iter};
 
 use clippy_utils::diagnostics::span_lint_and_sugg;
 use clippy_utils::source::snippet;
@@ -143,7 +142,7 @@ impl<'tcx> PassByRefOrValue {
             return;
         }
 
-        let fn_sig = cx.tcx.fn_sig(def_id).subst_identity();
+        let fn_sig = cx.tcx.fn_sig(def_id).instantiate_identity();
         let fn_body = cx.enclosing_body.map(|id| cx.tcx.hir().body(id));
 
         // Gather all the lifetimes found in the output type which may affect whether

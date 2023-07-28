@@ -1057,23 +1057,6 @@ extern "rust-intrinsic" {
     #[rustc_const_unstable(feature = "const_type_id", issue = "77125")]
     #[rustc_safe_intrinsic]
     #[rustc_nounwind]
-    #[cfg(bootstrap)]
-    pub fn type_id<T: ?Sized + 'static>() -> u64;
-
-    /// Gets an identifier which is globally unique to the specified type. This
-    /// function will return the same value for a type regardless of whichever
-    /// crate it is invoked in.
-    ///
-    /// Note that, unlike most intrinsics, this is safe to call;
-    /// it does not require an `unsafe` block.
-    /// Therefore, implementations must not require the user to uphold
-    /// any safety invariants.
-    ///
-    /// The stabilized version of this intrinsic is [`core::any::TypeId::of`].
-    #[rustc_const_unstable(feature = "const_type_id", issue = "77125")]
-    #[rustc_safe_intrinsic]
-    #[rustc_nounwind]
-    #[cfg(not(bootstrap))]
     pub fn type_id<T: ?Sized + 'static>() -> u128;
 
     /// A guard for unsafe functions that cannot ever be executed if `T` is uninhabited:
@@ -2541,12 +2524,14 @@ pub(crate) use assert_unsafe_precondition;
 
 /// Checks whether `ptr` is properly aligned with respect to
 /// `align_of::<T>()`.
+#[inline]
 pub(crate) fn is_aligned_and_not_null<T>(ptr: *const T) -> bool {
     !ptr.is_null() && ptr.is_aligned()
 }
 
 /// Checks whether an allocation of `len` instances of `T` exceeds
 /// the maximum allowed allocation size.
+#[inline]
 pub(crate) fn is_valid_allocation_size<T>(len: usize) -> bool {
     let max_len = const {
         let size = crate::mem::size_of::<T>();
@@ -2557,6 +2542,7 @@ pub(crate) fn is_valid_allocation_size<T>(len: usize) -> bool {
 
 /// Checks whether the regions of memory starting at `src` and `dst` of size
 /// `count * size_of::<T>()` do *not* overlap.
+#[inline]
 pub(crate) fn is_nonoverlapping<T>(src: *const T, dst: *const T, count: usize) -> bool {
     let src_usize = src.addr();
     let dst_usize = dst.addr();

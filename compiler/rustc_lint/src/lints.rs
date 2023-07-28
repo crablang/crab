@@ -613,6 +613,12 @@ pub struct ExpectationNote {
     pub rationale: Symbol,
 }
 
+// fn_null_check.rs
+#[derive(LintDiagnostic)]
+#[diag(lint_fn_null_check)]
+#[help]
+pub struct FnNullCheckDiag;
+
 // for_loops_over_fallibles.rs
 #[derive(LintDiagnostic)]
 #[diag(lint_for_loops_over_fallibles)]
@@ -770,7 +776,7 @@ impl AddToDiagnostic for HiddenUnicodeCodepointsDiagLabels {
         ) -> rustc_errors::SubdiagnosticMessage,
     {
         for (c, span) in self.spans {
-            diag.span_label(span, format!("{:?}", c));
+            diag.span_label(span, format!("{c:?}"));
         }
     }
 }
@@ -802,7 +808,7 @@ impl AddToDiagnostic for HiddenUnicodeCodepointsDiagSub {
                     spans
                         .into_iter()
                         .map(|(c, span)| {
-                            let c = format!("{:?}", c);
+                            let c = format!("{c:?}");
                             (span, c[1..c.len() - 1].to_string())
                         })
                         .collect(),
@@ -817,7 +823,7 @@ impl AddToDiagnostic for HiddenUnicodeCodepointsDiagSub {
                     "escaped",
                     spans
                         .into_iter()
-                        .map(|(c, _)| format!("{:?}", c))
+                        .map(|(c, _)| format!("{c:?}"))
                         .collect::<Vec<String>>()
                         .join(", "),
                 );

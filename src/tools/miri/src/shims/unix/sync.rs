@@ -18,14 +18,14 @@ use crate::*;
 const PTHREAD_MUTEX_NORMAL_FLAG: i32 = 0x8000000;
 
 fn is_mutex_kind_default<'mir, 'tcx: 'mir>(
-    ecx: &mut MiriInterpCx<'mir, 'tcx>,
+    ecx: &MiriInterpCx<'mir, 'tcx>,
     kind: i32,
 ) -> InterpResult<'tcx, bool> {
     Ok(kind == ecx.eval_libc_i32("PTHREAD_MUTEX_DEFAULT"))
 }
 
 fn is_mutex_kind_normal<'mir, 'tcx: 'mir>(
-    ecx: &mut MiriInterpCx<'mir, 'tcx>,
+    ecx: &MiriInterpCx<'mir, 'tcx>,
     kind: i32,
 ) -> InterpResult<'tcx, bool> {
     let mutex_normal_kind = ecx.eval_libc_i32("PTHREAD_MUTEX_NORMAL");
@@ -346,7 +346,7 @@ pub trait EvalContextExt<'mir, 'tcx: 'mir>: crate::MiriInterpCxExt<'mir, 'tcx> {
         // This can always be revisited to have some external state to catch double-destroys
         // but not complain about the above code. See https://github.com/rust-lang/miri/pull/1933
         this.write_uninit(
-            &this.deref_operand_as(attr_op, this.libc_ty_layout("pthread_mutexattr_t"))?.into(),
+            &this.deref_operand_as(attr_op, this.libc_ty_layout("pthread_mutexattr_t"))?,
         )?;
 
         Ok(0)
@@ -500,7 +500,7 @@ pub trait EvalContextExt<'mir, 'tcx: 'mir>: crate::MiriInterpCxExt<'mir, 'tcx> {
 
         // This might lead to false positives, see comment in pthread_mutexattr_destroy
         this.write_uninit(
-            &this.deref_operand_as(mutex_op, this.libc_ty_layout("pthread_mutex_t"))?.into(),
+            &this.deref_operand_as(mutex_op, this.libc_ty_layout("pthread_mutex_t"))?,
         )?;
         // FIXME: delete interpreter state associated with this mutex.
 
@@ -625,7 +625,7 @@ pub trait EvalContextExt<'mir, 'tcx: 'mir>: crate::MiriInterpCxExt<'mir, 'tcx> {
 
         // This might lead to false positives, see comment in pthread_mutexattr_destroy
         this.write_uninit(
-            &this.deref_operand_as(rwlock_op, this.libc_ty_layout("pthread_rwlock_t"))?.into(),
+            &this.deref_operand_as(rwlock_op, this.libc_ty_layout("pthread_rwlock_t"))?,
         )?;
         // FIXME: delete interpreter state associated with this rwlock.
 
@@ -675,7 +675,7 @@ pub trait EvalContextExt<'mir, 'tcx: 'mir>: crate::MiriInterpCxExt<'mir, 'tcx> {
         let this = self.eval_context_mut();
 
         let clock_id = condattr_get_clock_id(this, attr_op)?;
-        this.write_scalar(Scalar::from_i32(clock_id), &this.deref_operand(clk_id_op)?.into())?;
+        this.write_scalar(Scalar::from_i32(clock_id), &this.deref_operand(clk_id_op)?)?;
 
         Ok(Scalar::from_i32(0))
     }
@@ -691,7 +691,7 @@ pub trait EvalContextExt<'mir, 'tcx: 'mir>: crate::MiriInterpCxExt<'mir, 'tcx> {
 
         // This might lead to false positives, see comment in pthread_mutexattr_destroy
         this.write_uninit(
-            &this.deref_operand_as(attr_op, this.libc_ty_layout("pthread_condattr_t"))?.into(),
+            &this.deref_operand_as(attr_op, this.libc_ty_layout("pthread_condattr_t"))?,
         )?;
 
         Ok(0)
@@ -868,7 +868,7 @@ pub trait EvalContextExt<'mir, 'tcx: 'mir>: crate::MiriInterpCxExt<'mir, 'tcx> {
 
         // This might lead to false positives, see comment in pthread_mutexattr_destroy
         this.write_uninit(
-            &this.deref_operand_as(cond_op, this.libc_ty_layout("pthread_cond_t"))?.into(),
+            &this.deref_operand_as(cond_op, this.libc_ty_layout("pthread_cond_t"))?,
         )?;
         // FIXME: delete interpreter state associated with this condvar.
 

@@ -42,9 +42,12 @@ code.
   All this also applies when values of these
   types are passed in a (nested) field of a compound type, but not behind
   pointer indirections.
-* Mutating immutable data. All data inside a [`const`] item is immutable. Moreover, all
-  data reached through a shared reference or data owned by an immutable binding
-  is immutable, unless that data is contained within an [`UnsafeCell<U>`].
+* Mutating immutable bytes. All bytes inside a [`const`] item are immutable.
+  The bytes owned by an immutable binding are immutable, unless those bytes are part of an [`UnsafeCell<U>`].
+
+  Moreover, the bytes [pointed to] by a shared reference, including transitively through other references (both shared and mutable) and `Box`es, are immutable; transitivity includes those references stored in fields of compound types.
+
+  A mutation is any write of more than 0 bytes which overlaps with any of the relevant bytes (even if that write does not change the memory contents).
 * Invoking undefined behavior via compiler intrinsics.
 * Executing code compiled with platform features that the current platform
   does not support (see [`target_feature`]), *except* if the platform explicitly documents this to be safe.
@@ -74,6 +77,11 @@ code.
     > `rustc_layout_scalar_valid_range_*` attributes.
 * Incorrect use of inline assembly. For more details, refer to the [rules] to
   follow when writing code that uses inline assembly.
+* **In [const context](const_eval.md#const-context)**: transmuting or otherwise
+  reinterpreting a pointer (reference, raw pointer, or function pointer) into
+  some allocated object as a non-pointer type (such as integers).
+  'Reinterpreting' refers to loading the pointer value at integer type without a
+  cast, e.g. by doing raw pointer casts or using a union.
 
 **Note:** Uninitialized memory is also implicitly invalid for any type that has
 a restricted set of valid values. In other words, the only cases in which
@@ -86,13 +94,16 @@ reading uninitialized memory is permitted are inside `union`s and in "padding"
 > vice versa, undefined behavior in Rust can cause adverse affects on code
 > executed by any FFI calls to other languages.
 
+### Pointed-to bytes
+
+The span of bytes a pointer or reference "points to" is determined by the pointer value and the size of the pointee type (using `size_of_val`).
+
 ### Dangling pointers
 [dangling]: #dangling-pointers
 
 A reference/pointer is "dangling" if it is null or not all of the bytes it
-points to are part of the same live allocation (so in particular they all have to be
-part of *some* allocation). The span of bytes it points to is determined by the
-pointer value and the size of the pointee type (using `size_of_val`).
+[points to] are part of the same live allocation (so in particular they all have to be
+part of *some* allocation).
 
 If the size is 0, then the pointer must either point inside of a live allocation
 (including pointing just after the last byte of the allocation), or it must be
@@ -116,3 +127,5 @@ must never exceed `isize::MAX`.
 [dereference expression]: expressions/operator-expr.md#the-dereference-operator
 [place expression context]: expressions.md#place-expressions-and-value-expressions
 [rules]: inline-assembly.md#rules-for-inline-assembly
+[points to]: #pointed-to-bytes
+[pointed to]: #pointed-to-bytes

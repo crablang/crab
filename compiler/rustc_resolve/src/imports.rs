@@ -989,14 +989,17 @@ impl<'a, 'tcx> Resolver<'a, 'tcx> {
                             initial_binding.res()
                         });
                         let res = binding.res();
+                        if res == Res::Err || !this.ambiguity_errors.is_empty() {
+                            this.tcx
+                                .sess
+                                .delay_span_bug(import.span, "some error happened for an import");
+                            return;
+                        }
                         if let Ok(initial_res) = initial_res {
-                            if res != initial_res && this.ambiguity_errors.is_empty() {
+                            if res != initial_res {
                                 span_bug!(import.span, "inconsistent resolution for an import");
                             }
-                        } else if res != Res::Err
-                            && this.ambiguity_errors.is_empty()
-                            && this.privacy_errors.is_empty()
-                        {
+                        } else if this.privacy_errors.is_empty() {
                             this.tcx
                                 .sess
                                 .create_err(CannotDetermineImportResolution { span: import.span })
@@ -1300,9 +1303,7 @@ impl<'a, 'tcx> Resolver<'a, 'tcx> {
         let ImportKind::Glob { id, is_prelude, .. } = import.kind else { unreachable!() };
 
         let ModuleOrUniformRoot::Module(module) = import.imported_module.get().unwrap() else {
-            self.tcx.sess.create_err(CannotGlobImportAllCrates {
-                span: import.span,
-            }).emit();
+            self.tcx.sess.create_err(CannotGlobImportAllCrates { span: import.span }).emit();
             return;
         };
 

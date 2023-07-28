@@ -4,10 +4,9 @@ use clippy_utils::source::{snippet, snippet_with_applicability};
 use clippy_utils::sugg::Sugg;
 use clippy_utils::ty::{is_type_diagnostic_item, make_normalized_projection, make_projection};
 use clippy_utils::{
-    can_move_expr_to_closure, get_enclosing_block, get_parent_node, is_trait_method, path_to_local, path_to_local_id,
-    CaptureKind,
+    can_move_expr_to_closure, fn_def_id, get_enclosing_block, get_parent_node, higher, is_trait_method, path_to_local,
+    path_to_local_id, CaptureKind,
 };
-use clippy_utils::{fn_def_id, higher};
 use rustc_data_structures::fx::FxHashMap;
 use rustc_errors::{Applicability, MultiSpan};
 use rustc_hir::intravisit::{walk_block, walk_expr, Visitor};
@@ -163,7 +162,7 @@ fn check_collect_into_intoiterator<'tcx>(
             // that contains `collect_expr`
             let inputs = cx
                 .tcx
-                .liberate_late_bound_regions(id, cx.tcx.fn_sig(id).subst_identity())
+                .liberate_late_bound_regions(id, cx.tcx.fn_sig(id).instantiate_identity())
                 .inputs();
 
             // map IntoIterator generic bounds to their signature
@@ -201,7 +200,7 @@ fn check_collect_into_intoiterator<'tcx>(
 /// Checks if the given method call matches the expected signature of `([&[mut]] self) -> bool`
 fn is_is_empty_sig(cx: &LateContext<'_>, call_id: HirId) -> bool {
     cx.typeck_results().type_dependent_def_id(call_id).map_or(false, |id| {
-        let sig = cx.tcx.fn_sig(id).subst_identity().skip_binder();
+        let sig = cx.tcx.fn_sig(id).instantiate_identity().skip_binder();
         sig.inputs().len() == 1 && sig.output().is_bool()
     })
 }
@@ -215,7 +214,7 @@ fn iterates_same_ty<'tcx>(cx: &LateContext<'tcx>, iter_ty: Ty<'tcx>, collect_ty:
         && let Some(into_iter_item_proj) = make_projection(cx.tcx, into_iter_trait, item, [collect_ty])
         && let Ok(into_iter_item_ty) = cx.tcx.try_normalize_erasing_regions(
             cx.param_env,
-            Ty::new_projection(cx.tcx,into_iter_item_proj.def_id, into_iter_item_proj.substs)
+            Ty::new_projection(cx.tcx,into_iter_item_proj.def_id, into_iter_item_proj.args)
         )
     {
         iter_item_ty == into_iter_item_ty
@@ -229,7 +228,7 @@ fn iterates_same_ty<'tcx>(cx: &LateContext<'tcx>, iter_ty: Ty<'tcx>, collect_ty:
 fn is_contains_sig(cx: &LateContext<'_>, call_id: HirId, iter_expr: &Expr<'_>) -> bool {
     let typeck = cx.typeck_results();
     if let Some(id) = typeck.type_dependent_def_id(call_id)
-        && let sig = cx.tcx.fn_sig(id).subst_identity()
+        && let sig = cx.tcx.fn_sig(id).instantiate_identity()
         && sig.skip_binder().output().is_bool()
         && let [_, search_ty] = *sig.skip_binder().inputs()
         && let ty::Ref(_, search_ty, Mutability::Not) = *cx.tcx.erase_late_bound_regions(sig.rebind(search_ty)).kind()
@@ -237,11 +236,11 @@ fn is_contains_sig(cx: &LateContext<'_>, call_id: HirId, iter_expr: &Expr<'_>) -
         && let Some(iter_item) = cx.tcx
             .associated_items(iter_trait)
             .find_by_name_and_kind(cx.tcx, Ident::with_dummy_span(Symbol::intern("Item")), AssocKind::Type, iter_trait)
-        && let substs = cx.tcx.mk_substs(&[GenericArg::from(typeck.expr_ty_adjusted(iter_expr))])
-        && let proj_ty = Ty::new_projection(cx.tcx,iter_item.def_id, substs)
+        && let args = cx.tcx.mk_args(&[GenericArg::from(typeck.expr_ty_adjusted(iter_expr))])
+        && let proj_ty = Ty::new_projection(cx.tcx,iter_item.def_id, args)
         && let Ok(item_ty) = cx.tcx.try_normalize_erasing_regions(cx.param_env, proj_ty)
     {
-        item_ty == EarlyBinder::bind(search_ty).subst(cx.tcx, cx.typeck_results().node_substs(call_id))
+        item_ty == EarlyBinder::bind(search_ty).instantiate(cx.tcx, cx.typeck_results().node_args(call_id))
     } else {
         false
     }

@@ -40,10 +40,13 @@ const EXCEPTIONS: &[(&str, &str)] = &[
     ("ar_archive_writer", "Apache-2.0 WITH LLVM-exception"), // rustc
     ("colored", "MPL-2.0"),                                  // rustfmt
     ("dissimilar", "Apache-2.0"),                            // rustdoc, rustc_lexer (few tests) via expect-test, (dev deps)
+    ("encoding_rs", "(Apache-2.0 OR MIT) AND BSD-3-Clause"), // opt-dist
     ("fluent-langneg", "Apache-2.0"),                        // rustc (fluent translations)
     ("fortanix-sgx-abi", "MPL-2.0"),                         // libstd but only for `sgx` target. FIXME: this dependency violates the documentation comment above.
     ("instant", "BSD-3-Clause"),                             // rustc_driver/tracing-subscriber/parking_lot
     ("mdbook", "MPL-2.0"),                                   // mdbook
+    ("openssl", "Apache-2.0"),                               // opt-dist
+    ("rustc_apfloat", "Apache-2.0 WITH LLVM-exception"),     // rustc (license is the same as LLVM uses)
     ("ryu", "Apache-2.0 OR BSL-1.0"),                        // cargo/... (because of serde)
     ("self_cell", "Apache-2.0"),                             // rustc (fluent translations)
     ("snap", "BSD-3-Clause"),                                // rustc
@@ -54,6 +57,9 @@ const EXCEPTIONS_CARGO: &[(&str, &str)] = &[
     // tidy-alphabetical-start
     ("bitmaps", "MPL-2.0+"),
     ("bytesize", "Apache-2.0"),
+    ("ciborium", "Apache-2.0"),
+    ("ciborium-io", "Apache-2.0"),
+    ("ciborium-ll", "Apache-2.0"),
     ("dunce", "CC0-1.0 OR MIT-0 OR Apache-2.0"),
     ("fiat-crypto", "MIT OR Apache-2.0 OR BSD-1-Clause"),
     ("im-rc", "MPL-2.0+"),
@@ -142,6 +148,8 @@ const PERMITTED_RUSTC_DEPENDENCIES: &[&str] = &[
     "elsa",
     "ena",
     "equivalent",
+    "errno",
+    "errno-dragonfly",
     "expect-test",
     "fallible-iterator", // dependency of `thorin`
     "fastrand",
@@ -217,6 +225,7 @@ const PERMITTED_RUSTC_DEPENDENCIES: &[&str] = &[
     "rustc-hash",
     "rustc-rayon",
     "rustc-rayon-core",
+    "rustc_apfloat",
     "rustc_version",
     "rustix",
     "ruzstd", // via object in thorin-dwp
@@ -246,6 +255,9 @@ const PERMITTED_RUSTC_DEPENDENCIES: &[&str] = &[
     "thiserror-impl",
     "thorin-dwp",
     "thread_local",
+    "time",
+    "time-core",
+    "time-macros",
     "tinystr",
     "tinyvec",
     "tinyvec_macros",
@@ -324,6 +336,7 @@ const PERMITTED_CRANELIFT_DEPENDENCIES: &[&str] = &[
     "cranelift-native",
     "cranelift-object",
     "crc32fast",
+    "equivalent",
     "fallible-iterator",
     "gimli",
     "hashbrown",

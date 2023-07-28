@@ -1,4 +1,5 @@
 #include "LLVMWrapper.h"
+#include "llvm/ADT/Statistic.h"
 #include "llvm/IR/DebugInfoMetadata.h"
 #include "llvm/IR/DiagnosticHandler.h"
 #include "llvm/IR/DiagnosticInfo.h"
@@ -111,9 +112,26 @@ extern "C" void LLVMRustSetNormalizedTarget(LLVMModuleRef M,
   unwrap(M)->setTargetTriple(Triple::normalize(Triple));
 }
 
-extern "C" void LLVMRustPrintPassTimings() {
-  raw_fd_ostream OS(2, false); // stderr.
-  TimerGroup::printAll(OS);
+extern "C" const char *LLVMRustPrintPassTimings(size_t *Len) {
+  std::string buf;
+  raw_string_ostream SS(buf);
+  TimerGroup::printAll(SS);
+  SS.flush();
+  *Len = buf.length();
+  char *CStr = (char *)malloc(*Len);
+  memcpy(CStr, buf.c_str(), *Len);
+  return CStr;
+}
+
+extern "C" const char *LLVMRustPrintStatistics(size_t *Len) {
+  std::string buf;
+  raw_string_ostream SS(buf);
+  llvm::PrintStatistics(SS);
+  SS.flush();
+  *Len = buf.length();
+  char *CStr = (char *)malloc(*Len);
+  memcpy(CStr, buf.c_str(), *Len);
+  return CStr;
 }
 
 extern "C" LLVMValueRef LLVMRustGetNamedValue(LLVMModuleRef M, const char *Name,
@@ -1614,17 +1632,6 @@ extern "C" LLVMRustLinkage LLVMRustGetLinkage(LLVMValueRef V) {
 extern "C" void LLVMRustSetLinkage(LLVMValueRef V,
                                    LLVMRustLinkage RustLinkage) {
   LLVMSetLinkage(V, fromRust(RustLinkage));
-}
-
-// FIXME: replace with LLVMConstInBoundsGEP2 when bumped minimal version to llvm-14
-extern "C" LLVMValueRef LLVMRustConstInBoundsGEP2(LLVMTypeRef Ty,
-                                                  LLVMValueRef ConstantVal,
-                                                  LLVMValueRef *ConstantIndices,
-                                                  unsigned NumIndices) {
-  ArrayRef<Constant *> IdxList(unwrap<Constant>(ConstantIndices, NumIndices),
-                               NumIndices);
-  Constant *Val = unwrap<Constant>(ConstantVal);
-  return wrap(ConstantExpr::getInBoundsGetElementPtr(unwrap(Ty), Val, IdxList));
 }
 
 extern "C" bool LLVMRustConstIntGetZExtValue(LLVMValueRef CV, uint64_t *value) {

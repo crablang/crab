@@ -12,8 +12,8 @@ use rustc_metadata::fs::{copy_to_stdout, emit_wrapper_file, METADATA_FILENAME};
 use rustc_middle::middle::debugger_visualizer::DebuggerVisualizerFile;
 use rustc_middle::middle::dependency_format::Linkage;
 use rustc_middle::middle::exported_symbols::SymbolExportKind;
-use rustc_session::config::{self, CFGuard, CrateType, DebugInfo, Strip};
-use rustc_session::config::{OutputFilenames, OutputType, PrintRequest, SplitDwarfKind};
+use rustc_session::config::{self, CFGuard, CrateType, DebugInfo, OutFileName, Strip};
+use rustc_session::config::{OutputFilenames, OutputType, PrintKind, SplitDwarfKind};
 use rustc_session::cstore::DllImport;
 use rustc_session::output::{check_file_is_writeable, invalid_output_for_target, out_filename};
 use rustc_session::search_paths::PathKind;
@@ -596,8 +596,10 @@ fn link_staticlib<'a>(
 
     all_native_libs.extend_from_slice(&codegen_results.crate_info.used_libraries);
 
-    if sess.opts.prints.contains(&PrintRequest::NativeStaticLibs) {
-        print_native_static_libs(sess, &all_native_libs, &all_rust_dylibs);
+    for print in &sess.opts.prints {
+        if print.kind == PrintKind::NativeStaticLibs {
+            print_native_static_libs(sess, &print.out, &all_native_libs, &all_rust_dylibs);
+        }
     }
 
     Ok(())
@@ -744,8 +746,11 @@ fn link_natively<'a>(
         cmd.env_remove(k.as_ref());
     }
 
-    if sess.opts.prints.contains(&PrintRequest::LinkArgs) {
-        println!("{:?}", &cmd);
+    for print in &sess.opts.prints {
+        if print.kind == PrintKind::LinkArgs {
+            let content = format!("{:?}", cmd);
+            print.out.overwrite(&content, sess);
+        }
     }
 
     // May have not found libraries in the right formats.
@@ -1386,12 +1391,18 @@ enum RlibFlavor {
 
 fn print_native_static_libs(
     sess: &Session,
+    out: &OutFileName,
     all_native_libs: &[NativeLib],
     all_rust_dylibs: &[&Path],
 ) {
     let mut lib_args: Vec<_> = all_native_libs
         .iter()
         .filter(|l| relevant_lib(sess, l))
+        // Deduplication of successive repeated libraries, see rust-lang/rust#113209
+        //
+        // note: we don't use PartialEq/Eq because NativeLib transitively depends on local
+        // elements like spans, which we don't care about and would make the deduplication impossible
+        .dedup_by(|l1, l2| l1.name == l2.name && l1.kind == l2.kind && l1.verbatim == l2.verbatim)
         .filter_map(|lib| {
             let name = lib.name;
             match lib.kind {
@@ -1454,11 +1465,22 @@ fn print_native_static_libs(
             lib_args.push(format!("-l{}", lib));
         }
     }
-    if !lib_args.is_empty() {
-        sess.emit_note(errors::StaticLibraryNativeArtifacts);
-        // Prefix for greppability
-        // Note: This must not be translated as tools are allowed to depend on this exact string.
-        sess.note_without_error(format!("native-static-libs: {}", &lib_args.join(" ")));
+
+    match out {
+        OutFileName::Real(path) => {
+            out.overwrite(&lib_args.join(" "), sess);
+            if !lib_args.is_empty() {
+                sess.emit_note(errors::StaticLibraryNativeArtifactsToFile { path });
+            }
+        }
+        OutFileName::Stdout => {
+            if !lib_args.is_empty() {
+                sess.emit_note(errors::StaticLibraryNativeArtifacts);
+                // Prefix for greppability
+                // Note: This must not be translated as tools are allowed to depend on this exact string.
+                sess.note_without_error(format!("native-static-libs: {}", &lib_args.join(" ")));
+            }
+        }
     }
 }
 
@@ -2970,10 +2992,25 @@ fn add_lld_args(cmd: &mut dyn Linker, sess: &Session, flavor: LinkerFlavor) {
         return;
     }
 
+    let self_contained_linker = sess.opts.cg.link_self_contained.linker();
+
+    // FIXME: some targets default to using `lld`, but users can only override the linker on the CLI
+    // and cannot yet select the precise linker flavor to opt out of that. See for example issue
+    // #113597 for the `thumbv6m-none-eabi` target: a driver is used, and its default linker
+    // conflicts with the target's flavor, causing unexpected arguments being passed.
+    //
+    // Until the new `LinkerFlavor`-like CLI options are stabilized, we only adopt MCP510's behavior
+    // if its dedicated unstable CLI flags are used, to keep the current sub-optimal stable
+    // behavior.
+    let using_mcp510 =
+        self_contained_linker || sess.opts.cg.linker_flavor.is_some_and(|f| f.is_unstable());
+    if !using_mcp510 && !unstable_use_lld {
+        return;
+    }
+
     // 1. Implement the "self-contained" part of this feature by adding rustc distribution
     //    directories to the tool's search path.
-    let self_contained_linker = sess.opts.cg.link_self_contained.linker() || unstable_use_lld;
-    if self_contained_linker {
+    if self_contained_linker || unstable_use_lld {
         for path in sess.get_tools_search_paths(false) {
             cmd.arg({
                 let mut arg = OsString::from("-B");

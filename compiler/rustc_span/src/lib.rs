@@ -707,24 +707,28 @@ impl Span {
         self.ctxt().edition()
     }
 
+    /// Is this edition 2015?
     #[inline]
     pub fn is_rust_2015(self) -> bool {
         self.edition().is_rust_2015()
     }
 
+    /// Are we allowed to use features from the Rust 2018 edition?
     #[inline]
-    pub fn rust_2018(self) -> bool {
-        self.edition().rust_2018()
+    pub fn at_least_rust_2018(self) -> bool {
+        self.edition().at_least_rust_2018()
     }
 
+    /// Are we allowed to use features from the Rust 2021 edition?
     #[inline]
-    pub fn rust_2021(self) -> bool {
-        self.edition().rust_2021()
+    pub fn at_least_rust_2021(self) -> bool {
+        self.edition().at_least_rust_2021()
     }
 
+    /// Are we allowed to use features from the Rust 2024 edition?
     #[inline]
-    pub fn rust_2024(self) -> bool {
-        self.edition().rust_2024()
+    pub fn at_least_rust_2024(self) -> bool {
+        self.edition().at_least_rust_2024()
     }
 
     /// Returns the source callee.
@@ -2159,7 +2163,8 @@ where
         // If this is not an empty or invalid span, we want to hash the last
         // position that belongs to it, as opposed to hashing the first
         // position past it.
-        let Some((file, line_lo, col_lo, line_hi, col_hi)) = ctx.span_data_to_lines_and_cols(&span) else {
+        let Some((file, line_lo, col_lo, line_hi, col_hi)) = ctx.span_data_to_lines_and_cols(&span)
+        else {
             Hash::hash(&TAG_INVALID_SPAN, hasher);
             return;
         };

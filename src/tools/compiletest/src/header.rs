@@ -6,7 +6,6 @@ use std::io::BufReader;
 use std::path::{Path, PathBuf};
 use std::process::Command;
 
-use build_helper::ci::CiEnv;
 use tracing::*;
 
 use crate::common::{Config, Debugger, FailMode, Mode, PassMode};
@@ -232,7 +231,7 @@ impl TestProps {
             aux_builds: vec![],
             aux_crates: vec![],
             revisions: vec![],
-            rustc_env: vec![],
+            rustc_env: vec![("RUSTC_ICE".to_string(), "0".to_string())],
             unset_rustc_env: vec![],
             exec_env: vec![],
             unset_exec_env: vec![],
@@ -298,13 +297,6 @@ impl TestProps {
     /// `//[foo]`), then the property is ignored unless `cfg` is
     /// `Some("foo")`.
     fn load_from(&mut self, testfile: &Path, cfg: Option<&str>, config: &Config) {
-        // In CI, we've sometimes encountered non-determinism related to truncating very long paths.
-        // Set a consistent (short) prefix to avoid issues, but only in CI to avoid regressing the
-        // contributor experience.
-        if CiEnv::is_ci() {
-            self.remap_src_base = config.mode == Mode::Ui && !config.suite.contains("rustdoc");
-        }
-
         let mut has_edition = false;
         if !testfile.is_dir() {
             let file = File::open(testfile).unwrap();
@@ -541,16 +533,15 @@ impl TestProps {
     }
 
     fn update_pass_mode(&mut self, ln: &str, revision: Option<&str>, config: &Config) {
-        let check_no_run = |s| {
-            if config.mode != Mode::Ui && config.mode != Mode::Incremental {
-                panic!("`{}` header is only supported in UI and incremental tests", s);
+        let check_no_run = |s| match (config.mode, s) {
+            (Mode::Ui, _) => (),
+            (Mode::Codegen, "build-pass") => (),
+            (Mode::Incremental, _) => {
+                if revision.is_some() && !self.revisions.iter().all(|r| r.starts_with("cfail")) {
+                    panic!("`{s}` header is only supported in `cfail` incremental tests")
+                }
             }
-            if config.mode == Mode::Incremental
-                && !revision.map_or(false, |r| r.starts_with("cfail"))
-                && !self.revisions.iter().all(|r| r.starts_with("cfail"))
-            {
-                panic!("`{}` header is only supported in `cfail` incremental tests", s);
-            }
+            (mode, _) => panic!("`{s}` header is not supported in `{mode}` tests"),
         };
         let pass_mode = if config.parse_name_directive(ln, "check-pass") {
             check_no_run("check-pass");
@@ -559,9 +550,7 @@ impl TestProps {
             check_no_run("build-pass");
             Some(PassMode::Build)
         } else if config.parse_name_directive(ln, "run-pass") {
-            if config.mode != Mode::Ui {
-                panic!("`run-pass` header is only supported in UI tests")
-            }
+            check_no_run("run-pass");
             Some(PassMode::Run)
         } else {
             None
@@ -588,21 +577,25 @@ impl TestProps {
     }
 }
 
+/// Extract a `(Option<line_config>, directive)` directive from a line if comment is present.
 pub fn line_directive<'line>(
     comment: &str,
     ln: &'line str,
 ) -> Option<(Option<&'line str>, &'line str)> {
+    let ln = ln.trim_start();
     if ln.starts_with(comment) {
         let ln = ln[comment.len()..].trim_start();
         if ln.starts_with('[') {
             // A comment like `//[foo]` is specific to revision `foo`
-            if let Some(close_brace) = ln.find(']') {
-                let lncfg = &ln[1..close_brace];
+            let Some(close_brace) = ln.find(']') else {
+                panic!(
+                    "malformed condition directive: expected `{}[foo]`, found `{}`",
+                    comment, ln
+                );
+            };
 
-                Some((Some(lncfg), ln[(close_brace + 1)..].trim_start()))
-            } else {
-                panic!("malformed condition directive: expected `{}[foo]`, found `{}`", comment, ln)
-            }
+            let lncfg = &ln[1..close_brace];
+            Some((Some(lncfg), ln[(close_brace + 1)..].trim_start()))
         } else {
             Some((None, ln))
         }

@@ -167,7 +167,7 @@ error: cannot rebase: You have unstaged changes.
 error: Please commit or stash them.
 ```
 
-(See https://git-scm.com/book/en/v2/Getting-Started-What-is-Git%3F#_the_three_states for the difference between the two.)
+(See <https://git-scm.com/book/en/v2/Getting-Started-What-is-Git%3F#_the_three_states> for the difference between the two.)
 
 This means you have made changes since the last time you made a commit. To be able to rebase, either
 commit your changes, or make a temporary commit called a "stash" to have them still not be commited
@@ -178,7 +178,7 @@ will prevent the "cannot rebase" error in nearly all cases:
 git config --global rebase.autostash true
 ```
 
-See https://git-scm.com/book/en/v2/Git-Tools-Stashing-and-Cleaning for more info about stashing.
+See <https://git-scm.com/book/en/v2/Git-Tools-Stashing-and-Cleaning> for more info about stashing.
 
 ### I see 'Untracked Files: src/stdarch'?
 
@@ -443,7 +443,7 @@ that merge commits in PRs are not accepted. As a result, if you are running
 course, this is not always true; if your merge will just be a fast-forward,
 like the merges that `git pull` usually performs, then no merge commit is
 created and you have nothing to worry about. Running `git config merge.ff only`
-(this will apply the config to the local repo).
+(this will apply the config to the local repo)
 once will ensure that all the merges you perform are of this type, so that you
 cannot make a mistake.
 

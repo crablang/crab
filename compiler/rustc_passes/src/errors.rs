@@ -267,6 +267,25 @@ pub struct DocInlineOnlyUse {
     pub item_span: Option<Span>,
 }
 
+#[derive(LintDiagnostic)]
+#[diag(passes_doc_masked_only_extern_crate)]
+#[note]
+pub struct DocMaskedOnlyExternCrate {
+    #[label]
+    pub attr_span: Span,
+    #[label(passes_not_an_extern_crate_label)]
+    pub item_span: Option<Span>,
+}
+
+#[derive(LintDiagnostic)]
+#[diag(passes_doc_masked_not_extern_crate_self)]
+pub struct DocMaskedNotExternCrateSelf {
+    #[label]
+    pub attr_span: Span,
+    #[label(passes_extern_crate_self_label)]
+    pub item_span: Option<Span>,
+}
+
 #[derive(Diagnostic)]
 #[diag(passes_doc_attr_not_crate_level)]
 pub struct DocAttrNotCrateLevel<'a> {
@@ -615,6 +634,38 @@ pub struct RustcStdInternalSymbol {
 pub struct LinkOrdinal {
     #[primary_span]
     pub attr_span: Span,
+}
+
+#[derive(Diagnostic)]
+#[diag(passes_confusables)]
+pub struct Confusables {
+    #[primary_span]
+    pub attr_span: Span,
+}
+
+#[derive(Diagnostic)]
+#[diag(passes_empty_confusables)]
+pub(crate) struct EmptyConfusables {
+    #[primary_span]
+    pub span: Span,
+}
+
+#[derive(Diagnostic)]
+#[diag(passes_incorrect_meta_item, code = "E0539")]
+pub(crate) struct IncorrectMetaItem {
+    #[primary_span]
+    pub span: Span,
+    #[subdiagnostic]
+    pub suggestion: IncorrectMetaItemSuggestion,
+}
+
+#[derive(Subdiagnostic)]
+#[multipart_suggestion(passes_incorrect_meta_item_suggestion, applicability = "maybe-incorrect")]
+pub(crate) struct IncorrectMetaItemSuggestion {
+    #[suggestion_part(code = "\"")]
+    pub lo: Span,
+    #[suggestion_part(code = "\"")]
+    pub hi: Span,
 }
 
 #[derive(Diagnostic)]

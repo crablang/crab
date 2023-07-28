@@ -101,17 +101,17 @@ pub(crate) fn try_destructure_mir_constant_for_diagnostics<'tcx>(
             return None;
         }
         ty::Adt(def, _) => {
-            let variant = ecx.read_discriminant(&op).ok()?.1;
-            let down = ecx.operand_downcast(&op, variant).ok()?;
+            let variant = ecx.read_discriminant(&op).ok()?;
+            let down = ecx.project_downcast(&op, variant).ok()?;
             (def.variants()[variant].fields.len(), Some(variant), down)
         }
-        ty::Tuple(substs) => (substs.len(), None, op),
+        ty::Tuple(args) => (args.len(), None, op),
         _ => bug!("cannot destructure mir constant {:?}", val),
     };
 
     let fields_iter = (0..field_count)
         .map(|i| {
-            let field_op = ecx.operand_field(&down, i).ok()?;
+            let field_op = ecx.project_field(&down, i).ok()?;
             let val = op_to_const(&ecx, &field_op);
             Some((val, field_op.layout.ty))
         })

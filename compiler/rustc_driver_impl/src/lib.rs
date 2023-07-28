@@ -7,6 +7,8 @@
 #![doc(html_root_url = "https://doc.rust-lang.org/nightly/nightly-rustc/")]
 #![feature(lazy_cell)]
 #![feature(decl_macro)]
+#![feature(ice_to_disk)]
+#![feature(let_chains)]
 #![recursion_limit = "256"]
 #![allow(rustc::potential_query_instability)]
 #![deny(rustc::untranslatable_diagnostic)]
@@ -35,9 +37,7 @@ use rustc_interface::{interface, Queries};
 use rustc_lint::LintStore;
 use rustc_metadata::locator;
 use rustc_session::config::{nightly_options, CG_OPTIONS, Z_OPTIONS};
-use rustc_session::config::{
-    ErrorOutputType, Input, OutFileName, OutputType, PrintRequest, TrimmedDefPaths,
-};
+use rustc_session::config::{ErrorOutputType, Input, OutFileName, OutputType, TrimmedDefPaths};
 use rustc_session::cstore::MetadataLoader;
 use rustc_session::getopts::{self, Matches};
 use rustc_session::lint::{Lint, LintId};
@@ -51,20 +51,29 @@ use std::cmp::max;
 use std::collections::BTreeMap;
 use std::env;
 use std::ffi::OsString;
+use std::fmt::Write as _;
 use std::fs;
 use std::io::{self, IsTerminal, Read, Write};
 use std::panic::{self, catch_unwind};
 use std::path::PathBuf;
 use std::process::{self, Command, Stdio};
 use std::str;
+use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::OnceLock;
-use std::time::Instant;
+use std::time::{Instant, SystemTime};
+use time::format_description::well_known::Rfc3339;
+use time::OffsetDateTime;
 
 #[allow(unused_macros)]
 macro do_not_use_print($($t:tt)*) {
     std::compile_error!(
         "Don't use `print` or `println` here, use `safe_print` or `safe_println` instead"
     )
+}
+
+#[allow(unused_macros)]
+macro do_not_use_safe_print($($t:tt)*) {
+    std::compile_error!("Don't use `safe_print` or `safe_println` here, use `println_info` instead")
 }
 
 // This import blocks the use of panicking `print` and `println` in all the code
@@ -279,9 +288,6 @@ fn run_compiler(
 
     let sopts = config::build_session_options(&mut early_error_handler, &matches);
 
-    // Set parallel mode before thread pool creation, which will create `Lock`s.
-    interface::set_thread_safe_mode(&sopts.unstable_opts);
-
     if let Some(ref code) = matches.opt_str("explain") {
         handle_explain(&early_error_handler, diagnostics_registry(), code, sopts.color);
         return Ok(());
@@ -297,6 +303,7 @@ fn run_compiler(
         input: Input::File(PathBuf::new()),
         output_file: ofile,
         output_dir: odir,
+        ice_file: ice_path().clone(),
         file_loader,
         locale_resources: DEFAULT_LOCALE_RESOURCES,
         lint_caps: Default::default(),
@@ -717,10 +724,17 @@ fn print_crate_info(
     sess: &Session,
     parse_attrs: bool,
 ) -> Compilation {
-    use rustc_session::config::PrintRequest::*;
+    use rustc_session::config::PrintKind::*;
+
+    // This import prevents the following code from using the printing macros
+    // used by the rest of the module. Within this function, we only write to
+    // the output specified by `sess.io.output_file`.
+    #[allow(unused_imports)]
+    use {do_not_use_safe_print as safe_print, do_not_use_safe_print as safe_println};
+
     // NativeStaticLibs and LinkArgs are special - printed during linking
     // (empty iterator returns true)
-    if sess.opts.prints.iter().all(|&p| p == NativeStaticLibs || p == LinkArgs) {
+    if sess.opts.prints.iter().all(|p| p.kind == NativeStaticLibs || p.kind == LinkArgs) {
         return Compilation::Continue;
     }
 
@@ -736,17 +750,23 @@ fn print_crate_info(
     } else {
         None
     };
+
     for req in &sess.opts.prints {
-        match *req {
+        let mut crate_info = String::new();
+        macro println_info($($arg:tt)*) {
+            crate_info.write_fmt(format_args!("{}\n", format_args!($($arg)*))).unwrap()
+        }
+
+        match req.kind {
             TargetList => {
                 let mut targets = rustc_target::spec::TARGETS.to_vec();
                 targets.sort_unstable();
-                safe_println!("{}", targets.join("\n"));
+                println_info!("{}", targets.join("\n"));
             }
-            Sysroot => safe_println!("{}", sess.sysroot.display()),
-            TargetLibdir => safe_println!("{}", sess.target_tlib_path.dir.display()),
+            Sysroot => println_info!("{}", sess.sysroot.display()),
+            TargetLibdir => println_info!("{}", sess.target_tlib_path.dir.display()),
             TargetSpec => {
-                safe_println!("{}", serde_json::to_string_pretty(&sess.target.to_json()).unwrap());
+                println_info!("{}", serde_json::to_string_pretty(&sess.target.to_json()).unwrap());
             }
             AllTargetSpecs => {
                 let mut targets = BTreeMap::new();
@@ -755,25 +775,29 @@ fn print_crate_info(
                     let target = Target::expect_builtin(&triple);
                     targets.insert(name, target.to_json());
                 }
-                safe_println!("{}", serde_json::to_string_pretty(&targets).unwrap());
+                println_info!("{}", serde_json::to_string_pretty(&targets).unwrap());
             }
-            FileNames | CrateName => {
+            FileNames => {
                 let Some(attrs) = attrs.as_ref() else {
                     // no crate attributes, print out an error and exit
                     return Compilation::Continue;
                 };
                 let t_outputs = rustc_interface::util::build_output_filenames(attrs, sess);
                 let id = rustc_session::output::find_crate_name(sess, attrs);
-                if *req == PrintRequest::CrateName {
-                    safe_println!("{id}");
-                    continue;
-                }
                 let crate_types = collect_crate_types(sess, attrs);
                 for &style in &crate_types {
                     let fname =
                         rustc_session::output::filename_for_input(sess, style, id, &t_outputs);
-                    safe_println!("{}", fname.as_path().file_name().unwrap().to_string_lossy());
+                    println_info!("{}", fname.as_path().file_name().unwrap().to_string_lossy());
                 }
+            }
+            CrateName => {
+                let Some(attrs) = attrs.as_ref() else {
+                    // no crate attributes, print out an error and exit
+                    return Compilation::Continue;
+                };
+                let id = rustc_session::output::find_crate_name(sess, attrs);
+                println_info!("{id}");
             }
             Cfg => {
                 let mut cfgs = sess
@@ -806,13 +830,13 @@ fn print_crate_info(
 
                 cfgs.sort();
                 for cfg in cfgs {
-                    safe_println!("{cfg}");
+                    println_info!("{cfg}");
                 }
             }
             CallingConventions => {
                 let mut calling_conventions = rustc_target::spec::abi::all_names();
                 calling_conventions.sort_unstable();
-                safe_println!("{}", calling_conventions.join("\n"));
+                println_info!("{}", calling_conventions.join("\n"));
             }
             RelocationModels
             | CodeModels
@@ -820,7 +844,7 @@ fn print_crate_info(
             | TargetCPUs
             | StackProtectorStrategies
             | TargetFeatures => {
-                codegen_backend.print(*req, sess);
+                codegen_backend.print(req, &mut crate_info, sess);
             }
             // Any output here interferes with Cargo's parsing of other printed output
             NativeStaticLibs => {}
@@ -830,7 +854,7 @@ fn print_crate_info(
 
                 for split in &[Off, Packed, Unpacked] {
                     if sess.target.options.supported_split_debuginfo.contains(split) {
-                        safe_println!("{split}");
+                        println_info!("{split}");
                     }
                 }
             }
@@ -838,7 +862,7 @@ fn print_crate_info(
                 use rustc_target::spec::current_apple_deployment_target;
 
                 if sess.target.is_like_osx {
-                    safe_println!(
+                    println_info!(
                         "deployment_target={}",
                         current_apple_deployment_target(&sess.target)
                             .expect("unknown Apple target OS")
@@ -849,6 +873,8 @@ fn print_crate_info(
                 }
             }
         }
+
+        req.out.overwrite(&crate_info, sess);
     }
     Compilation::Stop
 }
@@ -1295,9 +1321,29 @@ pub fn catch_with_exit_code(f: impl FnOnce() -> interface::Result<()>) -> i32 {
     }
 }
 
-/// Stores the default panic hook, from before [`install_ice_hook`] was called.
-static DEFAULT_HOOK: OnceLock<Box<dyn Fn(&panic::PanicInfo<'_>) + Sync + Send + 'static>> =
-    OnceLock::new();
+pub static ICE_PATH: OnceLock<Option<PathBuf>> = OnceLock::new();
+
+pub fn ice_path() -> &'static Option<PathBuf> {
+    ICE_PATH.get_or_init(|| {
+        if !rustc_feature::UnstableFeatures::from_environment(None).is_nightly_build() {
+            return None;
+        }
+        if let Ok("0") = std::env::var("RUST_BACKTRACE").as_deref() {
+            return None;
+        }
+        let mut path = match std::env::var("RUSTC_ICE").as_deref() {
+            // Explicitly opting out of writing ICEs to disk.
+            Ok("0") => return None,
+            Ok(s) => PathBuf::from(s),
+            Err(_) => std::env::current_dir().unwrap_or_default(),
+        };
+        let now: OffsetDateTime = SystemTime::now().into();
+        let file_now = now.format(&Rfc3339).unwrap_or(String::new());
+        let pid = std::process::id();
+        path.push(format!("rustc-ice-{file_now}-{pid}.txt"));
+        Some(path)
+    })
+}
 
 /// Installs a panic hook that will print the ICE message on unexpected panics.
 ///
@@ -1321,8 +1367,6 @@ pub fn install_ice_hook(bug_report_url: &'static str, extra_info: fn(&Handler)) 
         std::env::set_var("RUST_BACKTRACE", "full");
     }
 
-    let default_hook = DEFAULT_HOOK.get_or_init(panic::take_hook);
-
     panic::set_hook(Box::new(move |info| {
         // If the error was caused by a broken pipe then this is not a bug.
         // Write the error and return immediately. See #98700.
@@ -1339,7 +1383,7 @@ pub fn install_ice_hook(bug_report_url: &'static str, extra_info: fn(&Handler)) 
         // Invoke the default handler, which prints the actual panic message and optionally a backtrace
         // Don't do this for delayed bugs, which already emit their own more useful backtrace.
         if !info.payload().is::<rustc_errors::DelayedBugPanic>() {
-            (*default_hook)(info);
+            std::panic_hook_with_disk_dump(info, ice_path().as_deref());
 
             // Separate the output with an empty line
             eprintln!();
@@ -1371,7 +1415,7 @@ pub fn report_ice(info: &panic::PanicInfo<'_>, bug_report_url: &str, extra_info:
         false,
         TerminalUrl::No,
     ));
-    let handler = rustc_errors::Handler::with_emitter(true, None, emitter);
+    let handler = rustc_errors::Handler::with_emitter(emitter);
 
     // a .span_bug or .bug call has already printed what
     // it wants to print.
@@ -1382,10 +1426,40 @@ pub fn report_ice(info: &panic::PanicInfo<'_>, bug_report_url: &str, extra_info:
     }
 
     handler.emit_note(session_diagnostics::IceBugReport { bug_report_url });
-    handler.emit_note(session_diagnostics::IceVersion {
-        version: util::version_str!().unwrap_or("unknown_version"),
-        triple: config::host_triple(),
-    });
+
+    let version = util::version_str!().unwrap_or("unknown_version");
+    let triple = config::host_triple();
+
+    static FIRST_PANIC: AtomicBool = AtomicBool::new(true);
+
+    let file = if let Some(path) = ice_path().as_ref() {
+        // Create the ICE dump target file.
+        match crate::fs::File::options().create(true).append(true).open(&path) {
+            Ok(mut file) => {
+                handler
+                    .emit_note(session_diagnostics::IcePath { path: path.display().to_string() });
+                if FIRST_PANIC.swap(false, Ordering::SeqCst) {
+                    let _ = write!(file, "\n\nrustc version: {version}\nplatform: {triple}");
+                }
+                Some(file)
+            }
+            Err(err) => {
+                // The path ICE couldn't be written to disk, provide feedback to the user as to why.
+                handler.emit_warning(session_diagnostics::IcePathError {
+                    path: path.display().to_string(),
+                    error: err.to_string(),
+                    env_var: std::env::var("RUSTC_ICE")
+                        .ok()
+                        .map(|env_var| session_diagnostics::IcePathErrorEnv { env_var }),
+                });
+                handler.emit_note(session_diagnostics::IceVersion { version, triple });
+                None
+            }
+        }
+    } else {
+        handler.emit_note(session_diagnostics::IceVersion { version, triple });
+        None
+    };
 
     if let Some((flags, excluded_cargo_defaults)) = extra_compiler_flags() {
         handler.emit_note(session_diagnostics::IceFlags { flags: flags.join(" ") });
@@ -1399,7 +1473,7 @@ pub fn report_ice(info: &panic::PanicInfo<'_>, bug_report_url: &str, extra_info:
 
     let num_frames = if backtrace { None } else { Some(2) };
 
-    interface::try_print_query_stack(&handler, num_frames);
+    interface::try_print_query_stack(&handler, num_frames, file);
 
     // We don't trust this callback not to panic itself, so run it at the end after we're sure we've
     // printed all the relevant info.
@@ -1453,13 +1527,13 @@ mod signal_handler {
     /// When an error signal (such as SIGABRT or SIGSEGV) is delivered to the
     /// process, print a stack trace and then exit.
     pub(super) fn install() {
+        use std::alloc::{alloc, Layout};
+
         unsafe {
-            const ALT_STACK_SIZE: usize = libc::MINSIGSTKSZ + 64 * 1024;
+            let alt_stack_size: usize = min_sigstack_size() + 64 * 1024;
             let mut alt_stack: libc::stack_t = std::mem::zeroed();
-            alt_stack.ss_sp =
-                std::alloc::alloc(std::alloc::Layout::from_size_align(ALT_STACK_SIZE, 1).unwrap())
-                    as *mut libc::c_void;
-            alt_stack.ss_size = ALT_STACK_SIZE;
+            alt_stack.ss_sp = alloc(Layout::from_size_align(alt_stack_size, 1).unwrap()).cast();
+            alt_stack.ss_size = alt_stack_size;
             libc::sigaltstack(&alt_stack, std::ptr::null_mut());
 
             let mut sa: libc::sigaction = std::mem::zeroed();
@@ -1468,6 +1542,23 @@ mod signal_handler {
             libc::sigemptyset(&mut sa.sa_mask);
             libc::sigaction(libc::SIGSEGV, &sa, std::ptr::null_mut());
         }
+    }
+
+    /// Modern kernels on modern hardware can have dynamic signal stack sizes.
+    #[cfg(any(target_os = "linux", target_os = "android"))]
+    fn min_sigstack_size() -> usize {
+        const AT_MINSIGSTKSZ: core::ffi::c_ulong = 51;
+        let dynamic_sigstksz = unsafe { libc::getauxval(AT_MINSIGSTKSZ) };
+        // If getauxval couldn't find the entry, it returns 0,
+        // so take the higher of the "constant" and auxval.
+        // This transparently supports older kernels which don't provide AT_MINSIGSTKSZ
+        libc::MINSIGSTKSZ.max(dynamic_sigstksz as _)
+    }
+
+    /// Not all OS support hardware where this is needed.
+    #[cfg(not(any(target_os = "linux", target_os = "android")))]
+    fn min_sigstack_size() -> usize {
+        libc::MINSIGSTKSZ
     }
 }
 

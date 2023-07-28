@@ -195,9 +195,9 @@ pub(crate) fn placeholder_type_error_diag<'tcx>(
             sugg.push((arg.span, (*type_name).to_string()));
         } else if let Some(span) = generics.span_for_param_suggestion() {
             // Account for bounds, we want `fn foo<T: E, K>(_: K)` not `fn foo<T, K: E>(_: K)`.
-            sugg.push((span, format!(", {}", type_name)));
+            sugg.push((span, format!(", {type_name}")));
         } else {
-            sugg.push((generics.span, format!("<{}>", type_name)));
+            sugg.push((generics.span, format!("<{type_name}>")));
         }
     }
 
@@ -329,7 +329,7 @@ fn bad_placeholder<'tcx>(
     mut spans: Vec<Span>,
     kind: &'static str,
 ) -> DiagnosticBuilder<'tcx, ErrorGuaranteed> {
-    let kind = if kind.ends_with('s') { format!("{}es", kind) } else { format!("{}s", kind) };
+    let kind = if kind.ends_with('s') { format!("{kind}es") } else { format!("{kind}s") };
 
     spans.sort();
     tcx.sess.create_err(errors::PlaceholderNotAllowedItemSignatures { spans, kind })
@@ -401,13 +401,13 @@ impl<'tcx> AstConv<'tcx> for ItemCtxt<'tcx> {
         poly_trait_ref: ty::PolyTraitRef<'tcx>,
     ) -> Ty<'tcx> {
         if let Some(trait_ref) = poly_trait_ref.no_bound_vars() {
-            let item_substs = self.astconv().create_substs_for_associated_item(
+            let item_args = self.astconv().create_args_for_associated_item(
                 span,
                 item_def_id,
                 item_segment,
-                trait_ref.substs,
+                trait_ref.args,
             );
-            Ty::new_projection(self.tcx(), item_def_id, item_substs)
+            Ty::new_projection(self.tcx(), item_def_id, item_args)
         } else {
             // There are no late-bound regions; we can just ignore the binder.
             let (mut mpart_sugg, mut inferred_sugg) = (None, None);
@@ -425,10 +425,8 @@ impl<'tcx> AstConv<'tcx> for ItemCtxt<'tcx> {
                         | hir::ItemKind::Union(_, generics) => {
                             let lt_name = get_new_lifetime_name(self.tcx, poly_trait_ref, generics);
                             let (lt_sp, sugg) = match generics.params {
-                                [] => (generics.span, format!("<{}>", lt_name)),
-                                [bound, ..] => {
-                                    (bound.span.shrink_to_lo(), format!("{}, ", lt_name))
-                                }
+                                [] => (generics.span, format!("<{lt_name}>")),
+                                [bound, ..] => (bound.span.shrink_to_lo(), format!("{lt_name}, ")),
                             };
                             mpart_sugg = Some(errors::AssociatedTypeTraitUninferredGenericParamsMultipartSuggestion {
                                 fspan: lt_sp,
@@ -1027,7 +1025,7 @@ fn trait_def(tcx: TyCtxt<'_>, def_id: LocalDefId) -> ty::TraitDef {
             } else {
                 tcx.sess.span_err(
                     meta.span(),
-                    format!("unknown meta item passed to `rustc_deny_explicit_impl` {:?}", meta),
+                    format!("unknown meta item passed to `rustc_deny_explicit_impl` {meta:?}"),
                 );
             }
         }
@@ -1145,8 +1143,8 @@ fn fn_sig(tcx: TyCtxt<'_>, def_id: LocalDefId) -> ty::EarlyBinder<ty::PolyFnSig<
         }
 
         Ctor(data) | Variant(hir::Variant { data, .. }) if data.ctor().is_some() => {
-            let ty = tcx.type_of(tcx.hir().get_parent_item(hir_id)).subst_identity();
-            let inputs = data.fields().iter().map(|f| tcx.type_of(f.def_id).subst_identity());
+            let ty = tcx.type_of(tcx.hir().get_parent_item(hir_id)).instantiate_identity();
+            let inputs = data.fields().iter().map(|f| tcx.type_of(f.def_id).instantiate_identity());
             ty::Binder::dummy(tcx.mk_fn_sig(
                 inputs,
                 ty,
@@ -1161,15 +1159,13 @@ fn fn_sig(tcx: TyCtxt<'_>, def_id: LocalDefId) -> ty::EarlyBinder<ty::PolyFnSig<
             // signatures and cannot be accessed through `fn_sig`. For
             // example, a closure signature excludes the `self`
             // argument. In any case they are embedded within the
-            // closure type as part of the `ClosureSubsts`.
+            // closure type as part of the `ClosureArgs`.
             //
             // To get the signature of a closure, you should use the
-            // `sig` method on the `ClosureSubsts`:
+            // `sig` method on the `ClosureArgs`:
             //
-            //    substs.as_closure().sig(def_id, tcx)
-            bug!(
-                "to get the signature of a closure, use `substs.as_closure().sig()` not `fn_sig()`",
-            );
+            //    args.as_closure().sig(def_id, tcx)
+            bug!("to get the signature of a closure, use `args.as_closure().sig()` not `fn_sig()`",);
         }
 
         x => {
@@ -1266,7 +1262,7 @@ fn suggest_impl_trait<'tcx>(
 ) -> Option<String> {
     let format_as_assoc: fn(_, _, _, _, _) -> _ =
         |tcx: TyCtxt<'tcx>,
-         _: ty::SubstsRef<'tcx>,
+         _: ty::GenericArgsRef<'tcx>,
          trait_def_id: DefId,
          assoc_item_def_id: DefId,
          item_ty: Ty<'tcx>| {
@@ -1276,13 +1272,15 @@ fn suggest_impl_trait<'tcx>(
         };
     let format_as_parenthesized: fn(_, _, _, _, _) -> _ =
         |tcx: TyCtxt<'tcx>,
-         substs: ty::SubstsRef<'tcx>,
+         args: ty::GenericArgsRef<'tcx>,
          trait_def_id: DefId,
          _: DefId,
          item_ty: Ty<'tcx>| {
             let trait_name = tcx.item_name(trait_def_id);
-            let args_tuple = substs.type_at(1);
-            let ty::Tuple(types) = *args_tuple.kind() else { return None; };
+            let args_tuple = args.type_at(1);
+            let ty::Tuple(types) = *args_tuple.kind() else {
+                return None;
+            };
             let types = types.make_suggestable(tcx, false)?;
             let maybe_ret =
                 if item_ty.is_unit() { String::new() } else { format!(" -> {item_ty}") };
@@ -1315,31 +1313,34 @@ fn suggest_impl_trait<'tcx>(
             format_as_parenthesized,
         ),
     ] {
-        let Some(trait_def_id) = trait_def_id else { continue; };
-        let Some(assoc_item_def_id) = assoc_item_def_id else { continue; };
+        let Some(trait_def_id) = trait_def_id else {
+            continue;
+        };
+        let Some(assoc_item_def_id) = assoc_item_def_id else {
+            continue;
+        };
         if tcx.def_kind(assoc_item_def_id) != DefKind::AssocTy {
             continue;
         }
         let param_env = tcx.param_env(def_id);
         let infcx = tcx.infer_ctxt().build();
-        let substs = ty::InternalSubsts::for_item(tcx, trait_def_id, |param, _| {
+        let args = ty::GenericArgs::for_item(tcx, trait_def_id, |param, _| {
             if param.index == 0 { ret_ty.into() } else { infcx.var_for_def(span, param) }
         });
-        if !infcx.type_implements_trait(trait_def_id, substs, param_env).must_apply_modulo_regions()
-        {
+        if !infcx.type_implements_trait(trait_def_id, args, param_env).must_apply_modulo_regions() {
             continue;
         }
         let ocx = ObligationCtxt::new(&infcx);
         let item_ty = ocx.normalize(
             &ObligationCause::misc(span, def_id),
             param_env,
-            Ty::new_projection(tcx, assoc_item_def_id, substs),
+            Ty::new_projection(tcx, assoc_item_def_id, args),
         );
         // FIXME(compiler-errors): We may benefit from resolving regions here.
         if ocx.select_where_possible().is_empty()
             && let item_ty = infcx.resolve_vars_if_possible(item_ty)
             && let Some(item_ty) = item_ty.make_suggestable(tcx, false)
-            && let Some(sugg) = formatter(tcx, infcx.resolve_vars_if_possible(substs), trait_def_id, assoc_item_def_id, item_ty)
+            && let Some(sugg) = formatter(tcx, infcx.resolve_vars_if_possible(args), trait_def_id, assoc_item_def_id, item_ty)
         {
             return Some(sugg);
         }
@@ -1357,7 +1358,7 @@ fn impl_trait_ref(
         .of_trait
         .as_ref()
         .map(|ast_trait_ref| {
-            let selfty = tcx.type_of(def_id).subst_identity();
+            let selfty = tcx.type_of(def_id).instantiate_identity();
             icx.astconv().instantiate_mono_trait_ref(
                 ast_trait_ref,
                 selfty,
@@ -1502,7 +1503,7 @@ fn compute_sig_of_foreign_fn_decl<'tcx>(
                     .sess
                     .source_map()
                     .span_to_snippet(ast_ty.span)
-                    .map_or_else(|_| String::new(), |s| format!(" `{}`", s));
+                    .map_or_else(|_| String::new(), |s| format!(" `{s}`"));
                 tcx.sess.emit_err(errors::SIMDFFIHighlyExperimental { span: ast_ty.span, snip });
             }
         };

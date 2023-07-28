@@ -3,9 +3,14 @@
 use std::{fmt::Display, iter};
 
 use crate::{
-    consteval::usize_const, db::HirDatabase, display::HirDisplay, infer::PointerCast,
-    lang_items::is_box, mapping::ToChalk, CallableDefId, ClosureId, Const, ConstScalar,
-    InferenceResult, Interner, MemoryMap, Substitution, Ty, TyKind,
+    consteval::usize_const,
+    db::HirDatabase,
+    display::HirDisplay,
+    infer::{normalize, PointerCast},
+    lang_items::is_box,
+    mapping::ToChalk,
+    CallableDefId, ClosureId, Const, ConstScalar, InferenceResult, Interner, MemoryMap,
+    Substitution, TraitEnvironment, Ty, TyKind,
 };
 use base_db::CrateId;
 use chalk_ir::Mutability;
@@ -22,7 +27,9 @@ mod pretty;
 mod monomorphization;
 
 pub use borrowck::{borrowck_query, BorrowckResult, MutabilityReason};
-pub use eval::{interpret_mir, pad16, Evaluator, MirEvalError, VTableMap};
+pub use eval::{
+    interpret_mir, pad16, render_const_using_debug_impl, Evaluator, MirEvalError, VTableMap,
+};
 pub use lower::{
     lower_to_mir, mir_body_for_closure_query, mir_body_query, mir_body_recover, MirLowerError,
 };
@@ -32,6 +39,7 @@ pub use monomorphization::{
 };
 use smallvec::{smallvec, SmallVec};
 use stdx::{impl_from, never};
+use triomphe::Arc;
 
 use super::consteval::{intern_const_scalar, try_const_usize};
 
@@ -129,13 +137,21 @@ pub enum ProjectionElem<V, T> {
 impl<V, T> ProjectionElem<V, T> {
     pub fn projected_ty(
         &self,
-        base: Ty,
+        mut base: Ty,
         db: &dyn HirDatabase,
         closure_field: impl FnOnce(ClosureId, &Substitution, usize) -> Ty,
         krate: CrateId,
     ) -> Ty {
+        if matches!(base.kind(Interner), TyKind::Alias(_) | TyKind::AssociatedType(..)) {
+            base = normalize(
+                db,
+                // FIXME: we should get this from caller
+                Arc::new(TraitEnvironment::empty(krate)),
+                base,
+            );
+        }
         match self {
-            ProjectionElem::Deref => match &base.data(Interner).kind {
+            ProjectionElem::Deref => match &base.kind(Interner) {
                 TyKind::Raw(_, inner) | TyKind::Ref(_, _, inner) => inner.clone(),
                 TyKind::Adt(adt, subst) if is_box(db, adt.0) => {
                     subst.at(Interner, 0).assert_ty_ref(Interner).clone()
@@ -145,7 +161,7 @@ impl<V, T> ProjectionElem<V, T> {
                     return TyKind::Error.intern(Interner);
                 }
             },
-            ProjectionElem::Field(f) => match &base.data(Interner).kind {
+            ProjectionElem::Field(f) => match &base.kind(Interner) {
                 TyKind::Adt(_, subst) => {
                     db.field_types(f.parent)[f.local_id].clone().substitute(Interner, subst)
                 }
@@ -154,7 +170,7 @@ impl<V, T> ProjectionElem<V, T> {
                     return TyKind::Error.intern(Interner);
                 }
             },
-            ProjectionElem::TupleOrClosureField(f) => match &base.data(Interner).kind {
+            ProjectionElem::TupleOrClosureField(f) => match &base.kind(Interner) {
                 TyKind::Tuple(_, subst) => subst
                     .as_slice(Interner)
                     .get(*f)
@@ -171,7 +187,7 @@ impl<V, T> ProjectionElem<V, T> {
                 }
             },
             ProjectionElem::ConstantIndex { .. } | ProjectionElem::Index(_) => {
-                match &base.data(Interner).kind {
+                match &base.kind(Interner) {
                     TyKind::Array(inner, _) | TyKind::Slice(inner) => inner.clone(),
                     _ => {
                         never!("Overloaded index is not a projection");
@@ -179,7 +195,7 @@ impl<V, T> ProjectionElem<V, T> {
                     }
                 }
             }
-            &ProjectionElem::Subslice { from, to } => match &base.data(Interner).kind {
+            &ProjectionElem::Subslice { from, to } => match &base.kind(Interner) {
                 TyKind::Array(inner, c) => {
                     let next_c = usize_const(
                         db,
@@ -321,8 +337,8 @@ impl SwitchTargets {
 
 #[derive(Debug, PartialEq, Eq, Clone)]
 pub struct Terminator {
-    span: MirSpan,
-    kind: TerminatorKind,
+    pub span: MirSpan,
+    pub kind: TerminatorKind,
 }
 
 #[derive(Debug, PartialEq, Eq, Clone)]

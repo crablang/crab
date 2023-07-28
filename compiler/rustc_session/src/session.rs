@@ -677,7 +677,7 @@ impl Session {
     pub fn delay_span_bug<S: Into<MultiSpan>>(
         &self,
         sp: S,
-        msg: impl Into<DiagnosticMessage>,
+        msg: impl Into<String>,
     ) -> ErrorGuaranteed {
         self.diagnostic().delay_span_bug(sp, msg)
     }
@@ -995,18 +995,18 @@ impl Session {
     }
 
     /// Are we allowed to use features from the Rust 2018 edition?
-    pub fn rust_2018(&self) -> bool {
-        self.edition().rust_2018()
+    pub fn at_least_rust_2018(&self) -> bool {
+        self.edition().at_least_rust_2018()
     }
 
     /// Are we allowed to use features from the Rust 2021 edition?
-    pub fn rust_2021(&self) -> bool {
-        self.edition().rust_2021()
+    pub fn at_least_rust_2021(&self) -> bool {
+        self.edition().at_least_rust_2021()
     }
 
     /// Are we allowed to use features from the Rust 2024 edition?
-    pub fn rust_2024(&self) -> bool {
-        self.edition().rust_2024()
+    pub fn at_least_rust_2024(&self) -> bool {
+        self.edition().at_least_rust_2024()
     }
 
     /// Returns `true` if we should use the PLT for shared library calls.
@@ -1055,6 +1055,10 @@ impl Session {
 impl Session {
     pub fn verbose(&self) -> bool {
         self.opts.unstable_opts.verbose
+    }
+
+    pub fn print_llvm_stats(&self) -> bool {
+        self.opts.unstable_opts.print_codegen_stats
     }
 
     pub fn verify_llvm_ir(&self) -> bool {
@@ -1392,6 +1396,7 @@ pub fn build_session(
     file_loader: Option<Box<dyn FileLoader + Send + Sync + 'static>>,
     target_override: Option<Target>,
     cfg_version: &'static str,
+    ice_file: Option<PathBuf>,
 ) -> Session {
     // FIXME: This is not general enough to make the warning lint completely override
     // normal diagnostic warnings, since the warning lint can also be denied and changed
@@ -1420,7 +1425,7 @@ pub fn build_session(
     let loader = file_loader.unwrap_or_else(|| Box::new(RealFileLoader));
     let hash_kind = sopts.unstable_opts.src_hash_algorithm.unwrap_or_else(|| {
         if target_cfg.is_like_msvc {
-            SourceFileHashAlgorithm::Sha1
+            SourceFileHashAlgorithm::Sha256
         } else {
             SourceFileHashAlgorithm::Md5
         }
@@ -1437,10 +1442,11 @@ pub fn build_session(
     );
     let emitter = default_emitter(&sopts, registry, source_map.clone(), bundle, fallback_bundle);
 
-    let span_diagnostic = rustc_errors::Handler::with_emitter_and_flags(
-        emitter,
-        sopts.unstable_opts.diagnostic_handler_flags(can_emit_warnings),
-    );
+    let mut span_diagnostic = rustc_errors::Handler::with_emitter(emitter)
+        .with_flags(sopts.unstable_opts.diagnostic_handler_flags(can_emit_warnings));
+    if let Some(ice_file) = ice_file {
+        span_diagnostic = span_diagnostic.with_ice_file(ice_file);
+    }
 
     let self_profiler = if let SwitchWithOptPath::Enabled(ref d) = sopts.unstable_opts.self_profile
     {
@@ -1731,7 +1737,7 @@ pub struct EarlyErrorHandler {
 impl EarlyErrorHandler {
     pub fn new(output: ErrorOutputType) -> Self {
         let emitter = mk_emitter(output);
-        Self { handler: rustc_errors::Handler::with_emitter(true, None, emitter) }
+        Self { handler: rustc_errors::Handler::with_emitter(emitter) }
     }
 
     pub fn abort_if_errors(&self) {
@@ -1745,7 +1751,7 @@ impl EarlyErrorHandler {
         self.handler.abort_if_errors();
 
         let emitter = mk_emitter(output);
-        self.handler = Handler::with_emitter(true, None, emitter);
+        self.handler = Handler::with_emitter(emitter);
     }
 
     #[allow(rustc::untranslatable_diagnostic)]

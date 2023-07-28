@@ -106,7 +106,12 @@ impl Step for JsonDocs {
     /// Builds the `rust-docs-json` installer component.
     fn run(self, builder: &Builder<'_>) -> Option<GeneratedTarball> {
         let host = self.host;
-        builder.ensure(crate::doc::Std::new(builder.top_stage, host, DocumentationFormat::JSON));
+        builder.ensure(crate::doc::Std::new(
+            builder.top_stage,
+            host,
+            builder,
+            DocumentationFormat::JSON,
+        ));
 
         let dest = "share/doc/rust/json";
 
@@ -897,7 +902,9 @@ impl Step for Src {
 
     /// Creates the `rust-src` installer component
     fn run(self, builder: &Builder<'_>) -> GeneratedTarball {
-        builder.update_submodule(&Path::new("src/llvm-project"));
+        if !builder.config.dry_run() {
+            builder.update_submodule(&Path::new("src/llvm-project"));
+        }
 
         let tarball = Tarball::new_targetless(builder, "rust-src");
 
@@ -1074,20 +1081,9 @@ impl Step for Cargo {
 
         tarball.add_file(&cargo, "bin", 0o755);
         tarball.add_file(etc.join("_cargo"), "share/zsh/site-functions", 0o644);
-        tarball.add_renamed_file(
-            etc.join("cargo.bashcomp.sh"),
-            "src/etc/bash_completion.d",
-            "cargo",
-        );
+        tarball.add_renamed_file(etc.join("cargo.bashcomp.sh"), "etc/bash_completion.d", "cargo");
         tarball.add_dir(etc.join("man"), "share/man/man1");
         tarball.add_legal_and_readme_to("share/doc/cargo");
-
-        for dirent in fs::read_dir(cargo.parent().unwrap()).expect("read_dir") {
-            let dirent = dirent.expect("read dir entry");
-            if dirent.file_name().to_str().expect("utf8").starts_with("cargo-credential-") {
-                tarball.add_file(&dirent.path(), "libexec", 0o755);
-            }
-        }
 
         Some(tarball.generate())
     }

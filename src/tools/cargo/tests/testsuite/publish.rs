@@ -194,8 +194,8 @@ fn simple_publish_with_asymmetric() {
         .file("src/main.rs", "fn main() {}")
         .build();
 
-    p.cargo("publish --no-verify -Zregistry-auth --registry dummy-registry")
-        .masquerade_as_nightly_cargo(&["registry-auth"])
+    p.cargo("publish --no-verify -Zcredential-process --registry dummy-registry")
+        .masquerade_as_nightly_cargo(&["credential-process"])
         .with_stderr(
             "\
 [UPDATING] `dummy-registry` index
@@ -338,7 +338,7 @@ fn git_deps() {
         .file("src/main.rs", "fn main() {}")
         .build();
 
-    p.cargo("publish -v --no-verify")
+    p.cargo("publish --no-verify")
         .replace_crates_io(registry.index_url())
         .with_status(101)
         .with_stderr(
@@ -2023,10 +2023,10 @@ fn api_other_error() {
 [ERROR] failed to publish to registry at http://127.0.0.1:[..]/
 
 Caused by:
-  invalid response from server
+  invalid response body from server
 
 Caused by:
-  response body was not valid utf-8
+  invalid utf-8 sequence of [..]
 ",
         )
         .run();

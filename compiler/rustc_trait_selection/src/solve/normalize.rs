@@ -20,8 +20,23 @@ pub(crate) fn deeply_normalize<'tcx, T: TypeFoldable<TyCtxt<'tcx>>>(
     at: At<'_, 'tcx>,
     value: T,
 ) -> Result<T, Vec<FulfillmentError<'tcx>>> {
+    assert!(!value.has_escaping_bound_vars());
+    deeply_normalize_with_skipped_universes(at, value, vec![])
+}
+
+/// Deeply normalize all aliases in `value`. This does not handle inference and expects
+/// its input to be already fully resolved.
+///
+/// Additionally takes a list of universes which represents the binders which have been
+/// entered before passing `value` to the function. This is currently needed for
+/// `normalize_erasing_regions`, which skips binders as it walks through a type.
+pub(crate) fn deeply_normalize_with_skipped_universes<'tcx, T: TypeFoldable<TyCtxt<'tcx>>>(
+    at: At<'_, 'tcx>,
+    value: T,
+    universes: Vec<Option<UniverseIndex>>,
+) -> Result<T, Vec<FulfillmentError<'tcx>>> {
     let fulfill_cx = FulfillmentCtxt::new(at.infcx);
-    let mut folder = NormalizationFolder { at, fulfill_cx, depth: 0, universes: Vec::new() };
+    let mut folder = NormalizationFolder { at, fulfill_cx, depth: 0, universes };
 
     value.try_fold_with(&mut folder)
 }
@@ -117,7 +132,7 @@ impl<'tcx> NormalizationFolder<'_, 'tcx> {
             self.at.cause.clone(),
             self.at.param_env,
             ty::Binder::dummy(ty::ProjectionPredicate {
-                projection_ty: tcx.mk_alias_ty(uv.def, uv.substs),
+                projection_ty: tcx.mk_alias_ty(uv.def, uv.args),
                 term: new_infer_ct.into(),
             }),
         );
@@ -180,7 +195,7 @@ impl<'tcx> FallibleTypeFolder<TyCtxt<'tcx>> for NormalizationFolder<'_, 'tcx> {
                 mapped_regions,
                 mapped_types,
                 mapped_consts,
-                &mut self.universes,
+                &self.universes,
                 result,
             ))
         } else {
@@ -210,7 +225,7 @@ impl<'tcx> FallibleTypeFolder<TyCtxt<'tcx>> for NormalizationFolder<'_, 'tcx> {
                 mapped_regions,
                 mapped_types,
                 mapped_consts,
-                &mut self.universes,
+                &self.universes,
                 result,
             ))
         } else {

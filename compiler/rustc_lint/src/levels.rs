@@ -265,7 +265,10 @@ impl LintLevelsProvider for QueryMapExpectationsWrapper<'_> {
         self.specs.lint_level_id_at_node(self.tcx, LintId::of(lint), self.cur)
     }
     fn push_expectation(&mut self, id: LintExpectationId, expectation: LintExpectation) {
-        let LintExpectationId::Stable { attr_id: Some(attr_id), hir_id, attr_index, .. } = id else { bug!("unstable expectation id should already be mapped") };
+        let LintExpectationId::Stable { attr_id: Some(attr_id), hir_id, attr_index, .. } = id
+        else {
+            bug!("unstable expectation id should already be mapped")
+        };
         let key = LintExpectationId::Unstable { attr_id, lint_index: None };
 
         self.unstable_to_stable_ids.entry(key).or_insert(LintExpectationId::Stable {
@@ -542,7 +545,7 @@ impl<'s, P: LintLevelsProvider> LintLevelsBuilder<'s, P> {
 
             let Ok(ids) = self.store.find_lints(&lint_name) else {
                 // errors handled in check_lint_name_cmdline above
-                continue
+                continue;
             };
             for id in ids {
                 // ForceWarn and Forbid cannot be overridden
@@ -685,9 +688,7 @@ impl<'s, P: LintLevelsProvider> LintLevelsBuilder<'s, P> {
                 Some(lvl) => lvl,
             };
 
-            let Some(mut metas) = attr.meta_item_list() else {
-                continue
-            };
+            let Some(mut metas) = attr.meta_item_list() else { continue };
 
             if metas.is_empty() {
                 // This emits the unused_attributes lint for `#[level()]`
@@ -944,7 +945,7 @@ impl<'s, P: LintLevelsProvider> LintLevelsBuilder<'s, P> {
                             );
                         }
                     } else {
-                        panic!("renamed lint does not exist: {}", new_name);
+                        panic!("renamed lint does not exist: {new_name}");
                     }
                 }
             }
@@ -956,8 +957,9 @@ impl<'s, P: LintLevelsProvider> LintLevelsBuilder<'s, P> {
                     continue;
                 }
 
-                let LintLevelSource::Node { name: lint_attr_name, span: lint_attr_span, .. } = *src else {
-                    continue
+                let LintLevelSource::Node { name: lint_attr_name, span: lint_attr_span, .. } = *src
+                else {
+                    continue;
                 };
 
                 self.emit_spanned_lint(
@@ -976,6 +978,7 @@ impl<'s, P: LintLevelsProvider> LintLevelsBuilder<'s, P> {
     /// Returns `true` if the lint's feature is enabled.
     // FIXME only emit this once for each attribute, instead of repeating it 4 times for
     // pre-expansion lints, post-expansion lints, `shallow_lint_levels_on` and `lint_expectations`.
+    #[track_caller]
     fn check_gated_lint(&self, lint_id: LintId, span: Span) -> bool {
         if let Some(feature) = lint_id.lint.feature_gate {
             if !self.sess.features_untracked().enabled(feature) {
@@ -1013,6 +1016,7 @@ impl<'s, P: LintLevelsProvider> LintLevelsBuilder<'s, P> {
     ///
     /// [`struct_lint_level`]: rustc_middle::lint::struct_lint_level#decorate-signature
     #[rustc_lint_diagnostics]
+    #[track_caller]
     pub(crate) fn struct_lint(
         &self,
         lint: &'static Lint,
@@ -1026,6 +1030,7 @@ impl<'s, P: LintLevelsProvider> LintLevelsBuilder<'s, P> {
         struct_lint_level(self.sess, lint, level, src, span, msg, decorate)
     }
 
+    #[track_caller]
     pub fn emit_spanned_lint(
         &self,
         lint: &'static Lint,
@@ -1038,6 +1043,7 @@ impl<'s, P: LintLevelsProvider> LintLevelsBuilder<'s, P> {
         });
     }
 
+    #[track_caller]
     pub fn emit_lint(&self, lint: &'static Lint, decorate: impl for<'a> DecorateLint<'a, ()>) {
         let (level, src) = self.lint_level(lint);
         struct_lint_level(self.sess, lint, level, src, None, decorate.msg(), |lint| {

@@ -25,6 +25,7 @@ use std::io::Write;
 use std::ops::ControlFlow;
 
 use crate::traits::specialization_graph;
+use crate::traits::vtable::{count_own_vtable_entries, prepare_vtable_segments, VtblSegment};
 
 use super::inspect::ProofTreeBuilder;
 use super::search_graph::{self, OverflowHandler};
@@ -116,7 +117,8 @@ impl NestedGoals<'_> {
 #[derive(PartialEq, Eq, Debug, Hash, HashStable, Clone, Copy)]
 pub enum GenerateProofTree {
     Yes(UseGlobalCache),
-    No,
+    IfEnabled,
+    Never,
 }
 
 #[derive(PartialEq, Eq, Debug, Hash, HashStable, Clone, Copy)]
@@ -202,7 +204,7 @@ impl<'a, 'tcx> EvalCtxt<'a, 'tcx> {
             (&tree, infcx.tcx.sess.opts.unstable_opts.dump_solver_proof_tree)
         {
             let mut lock = std::io::stdout().lock();
-            let _ = lock.write_fmt(format_args!("{tree:?}"));
+            let _ = lock.write_fmt(format_args!("{tree:?}\n"));
             let _ = lock.flush();
         }
 
@@ -270,6 +272,7 @@ impl<'a, 'tcx> EvalCtxt<'a, 'tcx> {
         // assertions against dropping an `InferCtxt` without taking opaques.
         // FIXME: Once we remove support for the old impl we can remove this.
         if input.anchor != DefiningAnchor::Error {
+            // This seems ok, but fragile.
             let _ = infcx.take_opaque_types();
         }
 
@@ -341,7 +344,7 @@ impl<'a, 'tcx> EvalCtxt<'a, 'tcx> {
             Ok(response) => response,
         };
 
-        let has_changed = !canonical_response.value.var_values.is_identity()
+        let has_changed = !canonical_response.value.var_values.is_identity_modulo_regions()
             || !canonical_response.value.external_constraints.opaque_types.is_empty();
         let (certainty, nested_goals) = match self.instantiate_and_apply_query_response(
             goal.param_env,
@@ -430,11 +433,8 @@ impl<'a, 'tcx> EvalCtxt<'a, 'tcx> {
                 ty::PredicateKind::Coerce(predicate) => {
                     self.compute_coerce_goal(Goal { param_env, predicate })
                 }
-                ty::PredicateKind::ClosureKind(def_id, substs, kind) => self
-                    .compute_closure_kind_goal(Goal {
-                        param_env,
-                        predicate: (def_id, substs, kind),
-                    }),
+                ty::PredicateKind::ClosureKind(def_id, args, kind) => self
+                    .compute_closure_kind_goal(Goal { param_env, predicate: (def_id, args, kind) }),
                 ty::PredicateKind::ObjectSafe(trait_def_id) => {
                     self.compute_object_safe_goal(trait_def_id)
                 }
@@ -774,24 +774,18 @@ impl<'tcx> EvalCtxt<'_, 'tcx> {
         self.infcx.resolve_vars_if_possible(value)
     }
 
-    pub(super) fn fresh_substs_for_item(&self, def_id: DefId) -> ty::SubstsRef<'tcx> {
-        self.infcx.fresh_substs_for_item(DUMMY_SP, def_id)
+    pub(super) fn fresh_args_for_item(&self, def_id: DefId) -> ty::GenericArgsRef<'tcx> {
+        self.infcx.fresh_args_for_item(DUMMY_SP, def_id)
     }
 
-    pub(super) fn translate_substs(
+    pub(super) fn translate_args(
         &self,
         param_env: ty::ParamEnv<'tcx>,
         source_impl: DefId,
-        source_substs: ty::SubstsRef<'tcx>,
+        source_args: ty::GenericArgsRef<'tcx>,
         target_node: specialization_graph::Node,
-    ) -> ty::SubstsRef<'tcx> {
-        crate::traits::translate_substs(
-            self.infcx,
-            param_env,
-            source_impl,
-            source_substs,
-            target_node,
-        )
+    ) -> ty::GenericArgsRef<'tcx> {
+        crate::traits::translate_args(self.infcx, param_env, source_impl, source_args, target_node)
     }
 
     pub(super) fn register_ty_outlives(&self, ty: Ty<'tcx>, lt: ty::Region<'tcx>) {
@@ -863,14 +857,14 @@ impl<'tcx> EvalCtxt<'_, 'tcx> {
     pub(super) fn add_item_bounds_for_hidden_type(
         &mut self,
         opaque_def_id: DefId,
-        opaque_substs: ty::SubstsRef<'tcx>,
+        opaque_args: ty::GenericArgsRef<'tcx>,
         param_env: ty::ParamEnv<'tcx>,
         hidden_ty: Ty<'tcx>,
     ) {
         let mut obligations = Vec::new();
         self.infcx.add_item_bounds_for_hidden_type(
             opaque_def_id,
-            opaque_substs,
+            opaque_args,
             ObligationCause::dummy(),
             param_env,
             hidden_ty,
@@ -896,13 +890,13 @@ impl<'tcx> EvalCtxt<'_, 'tcx> {
                 continue;
             }
             values.extend(self.probe_candidate("opaque type storage").enter(|ecx| {
-                for (a, b) in std::iter::zip(candidate_key.substs, key.substs) {
+                for (a, b) in std::iter::zip(candidate_key.args, key.args) {
                     ecx.eq(param_env, a, b)?;
                 }
                 ecx.eq(param_env, candidate_ty, ty)?;
                 ecx.add_item_bounds_for_hidden_type(
                     candidate_key.def_id.to_def_id(),
-                    candidate_key.substs,
+                    candidate_key.args,
                     param_env,
                     candidate_ty,
                 );
@@ -927,5 +921,40 @@ impl<'tcx> EvalCtxt<'_, 'tcx> {
             Err(ErrorHandled::Reported(e)) => Some(ty::Const::new_error(self.tcx(), e.into(), ty)),
             Err(ErrorHandled::TooGeneric) => None,
         }
+    }
+
+    /// Walk through the vtable of a principal trait ref, executing a `supertrait_visitor`
+    /// for every trait ref encountered (including the principal). Passes both the vtable
+    /// base and the (optional) vptr slot.
+    pub(super) fn walk_vtable(
+        &mut self,
+        principal: ty::PolyTraitRef<'tcx>,
+        mut supertrait_visitor: impl FnMut(&mut Self, ty::PolyTraitRef<'tcx>, usize, Option<usize>),
+    ) {
+        let tcx = self.tcx();
+        let mut offset = 0;
+        prepare_vtable_segments::<()>(tcx, principal, |segment| {
+            match segment {
+                VtblSegment::MetadataDSA => {
+                    offset += TyCtxt::COMMON_VTABLE_ENTRIES.len();
+                }
+                VtblSegment::TraitOwnEntries { trait_ref, emit_vptr } => {
+                    let own_vtable_entries = count_own_vtable_entries(tcx, trait_ref);
+
+                    supertrait_visitor(
+                        self,
+                        trait_ref,
+                        offset,
+                        emit_vptr.then(|| offset + own_vtable_entries),
+                    );
+
+                    offset += own_vtable_entries;
+                    if emit_vptr {
+                        offset += 1;
+                    }
+                }
+            }
+            ControlFlow::Continue(())
+        });
     }
 }

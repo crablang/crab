@@ -94,7 +94,10 @@ pub(crate) fn document_highlight_kind(
 pub(crate) fn diagnostic_severity(severity: Severity) -> lsp_types::DiagnosticSeverity {
     match severity {
         Severity::Error => lsp_types::DiagnosticSeverity::ERROR,
+        Severity::Warning => lsp_types::DiagnosticSeverity::WARNING,
         Severity::WeakWarning => lsp_types::DiagnosticSeverity::HINT,
+        // unreachable
+        Severity::Allow => lsp_types::DiagnosticSeverity::INFORMATION,
     }
 }
 
@@ -637,6 +640,7 @@ fn semantic_token_type_and_modifiers(
         HlTag::CharLiteral => semantic_tokens::CHAR,
         HlTag::Comment => semantic_tokens::COMMENT,
         HlTag::EscapeSequence => semantic_tokens::ESCAPE_SEQUENCE,
+        HlTag::InvalidEscapeSequence => semantic_tokens::INVALID_ESCAPE_SEQUENCE,
         HlTag::FormatSpecifier => semantic_tokens::FORMAT_SPECIFIER,
         HlTag::Keyword => semantic_tokens::KEYWORD,
         HlTag::None => semantic_tokens::GENERIC,

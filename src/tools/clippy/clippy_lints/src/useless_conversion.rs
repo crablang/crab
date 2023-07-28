@@ -1,9 +1,8 @@
 use clippy_utils::diagnostics::{span_lint_and_help, span_lint_and_sugg, span_lint_and_then};
-use clippy_utils::is_ty_alias;
 use clippy_utils::source::{snippet, snippet_with_applicability, snippet_with_context};
 use clippy_utils::sugg::Sugg;
 use clippy_utils::ty::{is_copy, is_type_diagnostic_item, same_type_and_consts};
-use clippy_utils::{get_parent_expr, is_trait_method, match_def_path, path_to_local, paths};
+use clippy_utils::{get_parent_expr, is_trait_method, is_ty_alias, match_def_path, path_to_local, paths};
 use if_chain::if_chain;
 use rustc_errors::Applicability;
 use rustc_hir::def_id::DefId;
@@ -116,7 +115,7 @@ impl<'tcx> LateLintPass<'tcx> for UselessConversion {
         match e.kind {
             ExprKind::Match(_, arms, MatchSource::TryDesugar) => {
                 let (ExprKind::Ret(Some(e)) | ExprKind::Break(_, Some(e))) = arms[0].body.kind else {
-                     return
+                    return;
                 };
                 if let ExprKind::Call(_, [arg, ..]) = e.kind {
                     self.try_desugar_arm.push(arg.hir_id);
@@ -227,8 +226,8 @@ impl<'tcx> LateLintPass<'tcx> for UselessConversion {
                     let a = cx.typeck_results().expr_ty(e);
                     let b = cx.typeck_results().expr_ty(recv);
                     if is_type_diagnostic_item(cx, a, sym::Result);
-                    if let ty::Adt(_, substs) = a.kind();
-                    if let Some(a_type) = substs.types().next();
+                    if let ty::Adt(_, args) = a.kind();
+                    if let Some(a_type) = args.types().next();
                     if same_type_and_consts(a_type, b);
 
                     then {
@@ -255,8 +254,8 @@ impl<'tcx> LateLintPass<'tcx> for UselessConversion {
                         if_chain! {
                             if match_def_path(cx, def_id, &paths::TRY_FROM);
                             if is_type_diagnostic_item(cx, a, sym::Result);
-                            if let ty::Adt(_, substs) = a.kind();
-                            if let Some(a_type) = substs.types().next();
+                            if let ty::Adt(_, args) = a.kind();
+                            if let Some(a_type) = args.types().next();
                             if same_type_and_consts(a_type, b);
 
                             then {

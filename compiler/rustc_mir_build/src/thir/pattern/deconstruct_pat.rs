@@ -306,9 +306,9 @@ impl fmt::Debug for IntRange {
         let (lo, hi) = self.boundaries();
         let bias = self.bias;
         let (lo, hi) = (lo ^ bias, hi ^ bias);
-        write!(f, "{}", lo)?;
+        write!(f, "{lo}")?;
         write!(f, "{}", RangeEnd::Included)?;
-        write!(f, "{}", hi)
+        write!(f, "{hi}")
     }
 }
 
@@ -922,7 +922,7 @@ impl<'tcx> SplitWildcard<'tcx> {
                 let kind = if cx.is_uninhabited(*sub_ty) { FixedLen(0) } else { VarLen(0, 0) };
                 smallvec![Slice(Slice::new(None, kind))]
             }
-            ty::Adt(def, substs) if def.is_enum() => {
+            ty::Adt(def, args) if def.is_enum() => {
                 // If the enum is declared as `#[non_exhaustive]`, we treat it as if it had an
                 // additional "unknown" constructor.
                 // There is no point in enumerating all possible variants, because the user can't
@@ -950,21 +950,19 @@ impl<'tcx> SplitWildcard<'tcx> {
                 let is_secretly_empty =
                     def.variants().is_empty() && !is_exhaustive_pat_feature && !pcx.is_top_level;
 
-                let mut ctors: SmallVec<[_; 1]> = def
-                    .variants()
-                    .iter_enumerated()
-                    .filter(|(_, v)| {
-                        // If `exhaustive_patterns` is enabled, we exclude variants known to be
-                        // uninhabited.
-                        !is_exhaustive_pat_feature
-                            || v.inhabited_predicate(cx.tcx, *def).subst(cx.tcx, substs).apply(
-                                cx.tcx,
-                                cx.param_env,
-                                cx.module,
-                            )
-                    })
-                    .map(|(idx, _)| Variant(idx))
-                    .collect();
+                let mut ctors: SmallVec<[_; 1]> =
+                    def.variants()
+                        .iter_enumerated()
+                        .filter(|(_, v)| {
+                            // If `exhaustive_patterns` is enabled, we exclude variants known to be
+                            // uninhabited.
+                            !is_exhaustive_pat_feature
+                                || v.inhabited_predicate(cx.tcx, *def)
+                                    .instantiate(cx.tcx, args)
+                                    .apply(cx.tcx, cx.param_env, cx.module)
+                        })
+                        .map(|(idx, _)| Variant(idx))
+                        .collect();
 
                 if is_secretly_empty || is_declared_nonexhaustive {
                     ctors.push(NonExhaustive);
@@ -1156,12 +1154,12 @@ impl<'p, 'tcx> Fields<'p, 'tcx> {
         ty: Ty<'tcx>,
         variant: &'a VariantDef,
     ) -> impl Iterator<Item = (FieldIdx, Ty<'tcx>)> + Captures<'a> + Captures<'p> {
-        let ty::Adt(adt, substs) = ty.kind() else { bug!() };
+        let ty::Adt(adt, args) = ty.kind() else { bug!() };
         // Whether we must not match the fields of this variant exhaustively.
         let is_non_exhaustive = variant.is_field_list_non_exhaustive() && !adt.did().is_local();
 
         variant.fields.iter().enumerate().filter_map(move |(i, field)| {
-            let ty = field.ty(cx.tcx, substs);
+            let ty = field.ty(cx.tcx, args);
             // `field.ty()` doesn't normalize after substituting.
             let ty = cx.tcx.normalize_erasing_regions(cx.param_env, ty);
             let is_visible = adt.is_enum() || field.vis.is_accessible_from(cx.module, cx.tcx);
@@ -1183,11 +1181,11 @@ impl<'p, 'tcx> Fields<'p, 'tcx> {
             Single | Variant(_) => match pcx.ty.kind() {
                 ty::Tuple(fs) => Fields::wildcards_from_tys(pcx.cx, fs.iter(), pcx.span),
                 ty::Ref(_, rty, _) => Fields::wildcards_from_tys(pcx.cx, once(*rty), pcx.span),
-                ty::Adt(adt, substs) => {
+                ty::Adt(adt, args) => {
                     if adt.is_box() {
                         // The only legal patterns of type `Box` (outside `std`) are `_` and box
                         // patterns. If we're here we can assume this is a box pattern.
-                        Fields::wildcards_from_tys(pcx.cx, once(substs.type_at(0)), pcx.span)
+                        Fields::wildcards_from_tys(pcx.cx, once(args.type_at(0)), pcx.span)
                     } else {
                         let variant = &adt.variant(constructor.variant_index_for_adt(*adt));
                         let tys = Fields::list_variant_nonhidden_fields(pcx.cx, pcx.ty, variant)
@@ -1294,7 +1292,7 @@ impl<'p, 'tcx> DeconstructedPat<'p, 'tcx> {
                         }
                         fields = Fields::from_iter(cx, wilds);
                     }
-                    ty::Adt(adt, substs) if adt.is_box() => {
+                    ty::Adt(adt, args) if adt.is_box() => {
                         // The only legal patterns of type `Box` (outside `std`) are `_` and box
                         // patterns. If we're here we can assume this is a box pattern.
                         // FIXME(Nadrieril): A `Box` can in theory be matched either with `Box(_,
@@ -1311,7 +1309,7 @@ impl<'p, 'tcx> DeconstructedPat<'p, 'tcx> {
                         let pat = if let Some(pat) = pattern {
                             mkpat(&pat.pattern)
                         } else {
-                            DeconstructedPat::wildcard(substs.type_at(0), pat.span)
+                            DeconstructedPat::wildcard(args.type_at(0), pat.span)
                         };
                         ctor = Single;
                         fields = Fields::singleton(cx, pat);
@@ -1437,7 +1435,7 @@ impl<'p, 'tcx> DeconstructedPat<'p, 'tcx> {
                     // the pattern is a box pattern.
                     PatKind::Deref { subpattern: subpatterns.next().unwrap() }
                 }
-                ty::Adt(adt_def, substs) => {
+                ty::Adt(adt_def, args) => {
                     let variant_index = self.ctor.variant_index_for_adt(*adt_def);
                     let variant = &adt_def.variant(variant_index);
                     let subpatterns = Fields::list_variant_nonhidden_fields(cx, self.ty, variant)
@@ -1446,7 +1444,7 @@ impl<'p, 'tcx> DeconstructedPat<'p, 'tcx> {
                         .collect();
 
                     if adt_def.is_enum() {
-                        PatKind::Variant { adt_def: *adt_def, substs, variant_index, subpatterns }
+                        PatKind::Variant { adt_def: *adt_def, args, variant_index, subpatterns }
                     } else {
                         PatKind::Leaf { subpatterns }
                     }
@@ -1621,7 +1619,7 @@ impl<'p, 'tcx> fmt::Debug for DeconstructedPat<'p, 'tcx> {
                     // of `std`). So this branch is only reachable when the feature is enabled and
                     // the pattern is a box pattern.
                     let subpattern = self.iter_fields().next().unwrap();
-                    write!(f, "box {:?}", subpattern)
+                    write!(f, "box {subpattern:?}")
                 }
                 ty::Adt(..) | ty::Tuple(..) => {
                     let variant = match self.ty.kind() {
@@ -1640,7 +1638,7 @@ impl<'p, 'tcx> fmt::Debug for DeconstructedPat<'p, 'tcx> {
                     write!(f, "(")?;
                     for p in self.iter_fields() {
                         write!(f, "{}", start_or_comma())?;
-                        write!(f, "{:?}", p)?;
+                        write!(f, "{p:?}")?;
                     }
                     write!(f, ")")
                 }
@@ -1676,11 +1674,11 @@ impl<'p, 'tcx> fmt::Debug for DeconstructedPat<'p, 'tcx> {
                 write!(f, "]")
             }
             &FloatRange(lo, hi, end) => {
-                write!(f, "{}", lo)?;
-                write!(f, "{}", end)?;
-                write!(f, "{}", hi)
+                write!(f, "{lo}")?;
+                write!(f, "{end}")?;
+                write!(f, "{hi}")
             }
-            IntRange(range) => write!(f, "{:?}", range), // Best-effort, will render e.g. `false` as `0..=0`
+            IntRange(range) => write!(f, "{range:?}"), // Best-effort, will render e.g. `false` as `0..=0`
             Wildcard | Missing { .. } | NonExhaustive => write!(f, "_ : {:?}", self.ty),
             Or => {
                 for pat in self.iter_fields() {
@@ -1688,7 +1686,7 @@ impl<'p, 'tcx> fmt::Debug for DeconstructedPat<'p, 'tcx> {
                 }
                 Ok(())
             }
-            Str(value) => write!(f, "{}", value),
+            Str(value) => write!(f, "{value}"),
             Opaque => write!(f, "<constant pattern>"),
         }
     }

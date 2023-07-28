@@ -98,6 +98,9 @@ passes_collapse_debuginfo =
     `collapse_debuginfo` attribute should be applied to macro definitions
     .label = not a macro definition
 
+passes_confusables = attribute should be applied to an inherent method
+    .label = not an inherent method
+
 passes_const_impl_const_trait =
     const `impl`s must be for traits marked with `#[const_trait]`
     .note = this trait must be annotated with `#[const_trait]`
@@ -208,6 +211,17 @@ passes_doc_keyword_not_mod =
 passes_doc_keyword_only_impl =
     `#[doc(keyword = "...")]` should be used on impl blocks
 
+passes_doc_masked_not_extern_crate_self =
+    this attribute cannot be applied to an `extern crate self` item
+    .label = not applicable on `extern crate self` items
+    .extern_crate_self_label = `extern crate self` defined here
+
+passes_doc_masked_only_extern_crate =
+    this attribute can only be applied to an `extern crate` item
+    .label = only applicable on `extern crate` items
+    .not_an_extern_crate_label = not an `extern crate` item
+    .note = read <https://doc.rust-lang.org/unstable-book/language-features/doc-masked.html> for more information
+
 passes_doc_test_literal = `#![doc(test(...)]` does not take a literal
 
 passes_doc_test_takes_list =
@@ -265,6 +279,9 @@ passes_duplicate_lang_item_crate_depends =
     .second_definition_local = second definition in the local crate (`{$crate_name}`)
     .first_definition_path = first definition in `{$orig_crate_name}` loaded from {$orig_path}
     .second_definition_path = second definition in `{$crate_name}` loaded from {$path}
+
+passes_empty_confusables =
+    expected at least one confusable name
 
 passes_export_name =
     attribute should be applied to a free function, impl method or static
@@ -325,6 +342,9 @@ passes_implied_feature_not_exist =
 
 passes_incorrect_do_not_recommend_location =
     `#[do_not_recommend]` can only be placed on trait implementations
+
+passes_incorrect_meta_item = expected a quoted string literal
+passes_incorrect_meta_item_suggestion = consider surrounding this with quotes
 
 passes_incorrect_target =
     `{$name}` language item must be applied to a {$kind} with {$at_least ->

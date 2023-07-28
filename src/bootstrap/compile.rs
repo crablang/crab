@@ -55,17 +55,6 @@ impl Std {
     }
 }
 
-/// Given an `alias` selected by the `Step` and the paths passed on the command line,
-/// return a list of the crates that should be built.
-///
-/// Normally, people will pass *just* `library` if they pass it.
-/// But it's possible (although strange) to pass something like `library std core`.
-/// Build all crates anyway, as if they hadn't passed the other args.
-pub(crate) fn make_run_crates(run: &RunConfig<'_>, alias: &str) -> Interned<Vec<String>> {
-    let has_alias = run.paths.iter().any(|set| set.assert_single_path().path.ends_with(alias));
-    if has_alias { Default::default() } else { run.cargo_crates_in_set() }
-}
-
 impl Step for Std {
     type Output = ();
     const DEFAULT: bool = true;
@@ -80,10 +69,15 @@ impl Step for Std {
     }
 
     fn make_run(run: RunConfig<'_>) {
+        // If the paths include "library", build the entire standard library.
+        let has_alias =
+            run.paths.iter().any(|set| set.assert_single_path().path.ends_with("library"));
+        let crates = if has_alias { Default::default() } else { run.cargo_crates_in_set() };
+
         run.builder.ensure(Std {
             compiler: run.builder.compiler(run.builder.top_stage, run.build_triple()),
             target: run.target,
-            crates: make_run_crates(&run, "library"),
+            crates,
             force_recompile: false,
         });
     }
@@ -228,13 +222,6 @@ fn copy_third_party_objects(
 ) -> Vec<(PathBuf, DependencyType)> {
     let mut target_deps = vec![];
 
-    // FIXME: remove this in 2021
-    if target == "x86_64-fortanix-unknown-sgx" {
-        if env::var_os("X86_FORTANIX_SGX_LIBS").is_some() {
-            builder.info("Warning: X86_FORTANIX_SGX_LIBS environment variable is ignored, libunwind is now compiled as part of rustbuild");
-        }
-    }
-
     if builder.config.sanitizers_enabled(target) && compiler.stage != 0 {
         // The sanitizers are only copied in stage1 or above,
         // to avoid creating dependency on LLVM.
@@ -274,7 +261,7 @@ fn copy_self_contained_objects(
     // to using gcc from a glibc-targeting toolchain for linking.
     // To do that we have to distribute musl startup objects as a part of Rust toolchain
     // and link with them manually in the self-contained mode.
-    if target.contains("musl") {
+    if target.contains("musl") && !target.contains("unikraft") {
         let srcdir = builder.musl_libdir(target).unwrap_or_else(|| {
             panic!("Target {:?} does not have a \"musl-libdir\" key", target.triple)
         });
@@ -508,6 +495,49 @@ impl Step for StdLink {
         };
 
         add_to_sysroot(builder, &libdir, &hostdir, &libstd_stamp(builder, compiler, target));
+
+        // Special case for stage0, to make `rustup toolchain link` and `x dist --stage 0`
+        // work for stage0-sysroot. We only do this if the stage0 compiler comes from beta,
+        // and is not set to a custom path.
+        if compiler.stage == 0
+            && builder
+                .build
+                .config
+                .initial_rustc
+                .starts_with(builder.out.join(&compiler.host.triple).join("stage0/bin"))
+        {
+            // Copy bin files from stage0/bin to stage0-sysroot/bin
+            let sysroot = builder.out.join(&compiler.host.triple).join("stage0-sysroot");
+
+            let host = compiler.host.triple;
+            let stage0_bin_dir = builder.out.join(&host).join("stage0/bin");
+            let sysroot_bin_dir = sysroot.join("bin");
+            t!(fs::create_dir_all(&sysroot_bin_dir));
+            builder.cp_r(&stage0_bin_dir, &sysroot_bin_dir);
+
+            // Copy all *.so files from stage0/lib to stage0-sysroot/lib
+            let stage0_lib_dir = builder.out.join(&host).join("stage0/lib");
+            if let Ok(files) = fs::read_dir(&stage0_lib_dir) {
+                for file in files {
+                    let file = t!(file);
+                    let path = file.path();
+                    if path.is_file() && is_dylib(&file.file_name().into_string().unwrap()) {
+                        builder.copy(&path, &sysroot.join("lib").join(path.file_name().unwrap()));
+                    }
+                }
+            }
+
+            // Copy codegen-backends from stage0
+            let sysroot_codegen_backends = builder.sysroot_codegen_backends(compiler);
+            t!(fs::create_dir_all(&sysroot_codegen_backends));
+            let stage0_codegen_backends = builder
+                .out
+                .join(&host)
+                .join("stage0/lib/rustlib")
+                .join(&host)
+                .join("codegen-backends");
+            builder.cp_r(&stage0_codegen_backends, &sysroot_codegen_backends);
+        }
     }
 }
 
@@ -645,8 +675,8 @@ fn cp_rustc_component_to_ci_sysroot(
     contents: Vec<String>,
 ) {
     let sysroot = builder.ensure(Sysroot { compiler, force_recompile: false });
+    let ci_rustc_dir = builder.config.ci_rustc_dir();
 
-    let ci_rustc_dir = builder.out.join(&*builder.build.build.triple).join("ci-rustc");
     for file in contents {
         let src = ci_rustc_dir.join(&file);
         let dst = sysroot.join(file);
@@ -1381,7 +1411,7 @@ impl Step for Sysroot {
                 // FIXME: this is wrong when compiler.host != build, but we don't support that today
                 OsStr::new(std::env::consts::DLL_EXTENSION),
             ];
-            let ci_rustc_dir = builder.ci_rustc_dir(builder.config.build);
+            let ci_rustc_dir = builder.config.ci_rustc_dir();
             builder.cp_filtered(&ci_rustc_dir, &sysroot, &|path| {
                 if path.extension().map_or(true, |ext| !filtered_extensions.contains(&ext)) {
                     return true;
@@ -1783,7 +1813,7 @@ pub fn run_cargo(
     });
 
     if !ok {
-        crate::detail_exit_macro!(1);
+        crate::exit!(1);
     }
 
     // Ok now we need to actually find all the files listed in `toplevel`. We've

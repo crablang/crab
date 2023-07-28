@@ -9,7 +9,6 @@ members = [
   "src/tools/cargotest",
   "src/tools/clippy",
   "src/tools/clippy/clippy_dev",
-  "src/tools/clippy/clippy_test_deps",
   "src/tools/compiletest",
   "src/tools/error_index_generator",
   "src/tools/linkchecker",
@@ -43,6 +42,7 @@ members = [
   "src/tools/suggest-tests",
   "src/tools/generate-windows-sys",
   "src/tools/rustdoc-gui-test",
+  "src/tools/opt-dist",
 ]
 
 exclude = [

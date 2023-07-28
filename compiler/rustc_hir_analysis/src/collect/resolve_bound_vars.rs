@@ -137,12 +137,6 @@ enum Scope<'a> {
         s: ScopeRef<'a>,
     },
 
-    /// A scope which either determines unspecified lifetimes or errors
-    /// on them (e.g., due to ambiguity).
-    Elision {
-        s: ScopeRef<'a>,
-    },
-
     /// Use a specific lifetime (if `Some`) or leave it unset (to be
     /// inferred in a function body or potentially error outside one),
     /// for the default choice of lifetime in a trait object type.
@@ -211,7 +205,6 @@ impl<'a> fmt::Debug for TruncatedScopeDebug<'a> {
             Scope::Body { id, s: _ } => {
                 f.debug_struct("Body").field("id", id).field("s", &"..").finish()
             }
-            Scope::Elision { s: _ } => f.debug_struct("Elision").field("s", &"..").finish(),
             Scope::ObjectLifetimeDefault { lifetime, s: _ } => f
                 .debug_struct("ObjectLifetimeDefault")
                 .field("lifetime", lifetime)
@@ -325,9 +318,7 @@ impl<'a, 'tcx> BoundVarContext<'a, 'tcx> {
                     break (vec![], BinderScopeType::Normal);
                 }
 
-                Scope::Elision { s, .. }
-                | Scope::ObjectLifetimeDefault { s, .. }
-                | Scope::AnonConstBoundary { s } => {
+                Scope::ObjectLifetimeDefault { s, .. } | Scope::AnonConstBoundary { s } => {
                     scope = s;
                 }
 
@@ -526,15 +517,11 @@ impl<'a, 'tcx> Visitor<'tcx> for BoundVarContext<'a, 'tcx> {
             | hir::ItemKind::Macro(..)
             | hir::ItemKind::Mod(..)
             | hir::ItemKind::ForeignMod { .. }
+            | hir::ItemKind::Static(..)
+            | hir::ItemKind::Const(..)
             | hir::ItemKind::GlobalAsm(..) => {
                 // These sorts of items have no lifetime parameters at all.
                 intravisit::walk_item(self, item);
-            }
-            hir::ItemKind::Static(..) | hir::ItemKind::Const(..) => {
-                // No lifetime parameters, but implied 'static.
-                self.with(Scope::Elision { s: self.scope }, |this| {
-                    intravisit::walk_item(this, item)
-                });
             }
             hir::ItemKind::OpaqueTy(hir::OpaqueTy {
                 origin: hir::OpaqueTyOrigin::TyAlias { .. },
@@ -727,12 +714,7 @@ impl<'a, 'tcx> Visitor<'tcx> for BoundVarContext<'a, 'tcx> {
                         // Elided lifetimes are not allowed in non-return
                         // position impl Trait
                         let scope = Scope::TraitRefBoundary { s: self.scope };
-                        self.with(scope, |this| {
-                            let scope = Scope::Elision { s: this.scope };
-                            this.with(scope, |this| {
-                                intravisit::walk_item(this, opaque_ty);
-                            })
-                        });
+                        self.with(scope, |this| intravisit::walk_item(this, opaque_ty));
 
                         return;
                     }
@@ -749,9 +731,7 @@ impl<'a, 'tcx> Visitor<'tcx> for BoundVarContext<'a, 'tcx> {
                 // `fn foo<'a>() -> MyAnonTy<'a> { ... }`
                 //          ^                 ^this gets resolved in the current scope
                 for lifetime in lifetimes {
-                    let hir::GenericArg::Lifetime(lifetime) = lifetime else {
-                        continue
-                    };
+                    let hir::GenericArg::Lifetime(lifetime) = lifetime else { continue };
                     self.visit_lifetime(lifetime);
 
                     // Check for predicates like `impl for<'a> Trait<impl OtherTrait<'a>>`
@@ -759,12 +739,8 @@ impl<'a, 'tcx> Visitor<'tcx> for BoundVarContext<'a, 'tcx> {
                     // well-supported at the moment, so this doesn't work.
                     // In the future, this should be fixed and this error should be removed.
                     let def = self.map.defs.get(&lifetime.hir_id).cloned();
-                    let Some(ResolvedArg::LateBound(_, _, def_id)) = def else {
-                        continue
-                    };
-                    let Some(def_id) = def_id.as_local() else {
-                        continue
-                    };
+                    let Some(ResolvedArg::LateBound(_, _, def_id)) = def else { continue };
+                    let Some(def_id) = def_id.as_local() else { continue };
                     let hir_id = self.tcx.hir().local_def_id_to_hir_id(def_id);
                     // Ensure that the parent of the def is an item, not HRTB
                     let parent_id = self.tcx.hir().parent_id(hir_id);
@@ -1299,8 +1275,7 @@ impl<'a, 'tcx> BoundVarContext<'a, 'tcx> {
                     scope = s;
                 }
 
-                Scope::Elision { s, .. }
-                | Scope::ObjectLifetimeDefault { s, .. }
+                Scope::ObjectLifetimeDefault { s, .. }
                 | Scope::Supertrait { s, .. }
                 | Scope::TraitRefBoundary { s, .. }
                 | Scope::AnonConstBoundary { s } => {
@@ -1363,7 +1338,6 @@ impl<'a, 'tcx> BoundVarContext<'a, 'tcx> {
                 Scope::Root { .. } => break,
                 Scope::Binder { s, .. }
                 | Scope::Body { s, .. }
-                | Scope::Elision { s, .. }
                 | Scope::ObjectLifetimeDefault { s, .. }
                 | Scope::Supertrait { s, .. }
                 | Scope::TraitRefBoundary { s, .. }
@@ -1415,8 +1389,7 @@ impl<'a, 'tcx> BoundVarContext<'a, 'tcx> {
                     scope = s;
                 }
 
-                Scope::Elision { s, .. }
-                | Scope::ObjectLifetimeDefault { s, .. }
+                Scope::ObjectLifetimeDefault { s, .. }
                 | Scope::Supertrait { s, .. }
                 | Scope::TraitRefBoundary { s, .. } => {
                     scope = s;
@@ -1489,7 +1462,6 @@ impl<'a, 'tcx> BoundVarContext<'a, 'tcx> {
                 Scope::Root { .. } => break,
                 Scope::Binder { s, .. }
                 | Scope::Body { s, .. }
-                | Scope::Elision { s, .. }
                 | Scope::ObjectLifetimeDefault { s, .. }
                 | Scope::Supertrait { s, .. }
                 | Scope::TraitRefBoundary { s, .. }
@@ -1570,7 +1542,6 @@ impl<'a, 'tcx> BoundVarContext<'a, 'tcx> {
                         Scope::Body { .. } => break true,
 
                         Scope::Binder { s, .. }
-                        | Scope::Elision { s, .. }
                         | Scope::ObjectLifetimeDefault { s, .. }
                         | Scope::Supertrait { s, .. }
                         | Scope::TraitRefBoundary { s, .. }
@@ -1727,7 +1698,7 @@ impl<'a, 'tcx> BoundVarContext<'a, 'tcx> {
                         },
                     ));
                     bound_vars
-                        .extend(self.tcx.fn_sig(assoc_fn.def_id).subst_identity().bound_vars());
+                        .extend(self.tcx.fn_sig(assoc_fn.def_id).instantiate_identity().bound_vars());
                     bound_vars
                 } else {
                     self.tcx.sess.delay_span_bug(
@@ -1838,14 +1809,20 @@ impl<'a, 'tcx> BoundVarContext<'a, 'tcx> {
         output: Option<&'tcx hir::Ty<'tcx>>,
         in_closure: bool,
     ) {
-        self.with(Scope::Elision { s: self.scope }, |this| {
-            for input in inputs {
-                this.visit_ty(input);
-            }
-            if !in_closure && let Some(output) = output {
-                this.visit_ty(output);
-            }
-        });
+        self.with(
+            Scope::ObjectLifetimeDefault {
+                lifetime: Some(ResolvedArg::StaticLifetime),
+                s: self.scope,
+            },
+            |this| {
+                for input in inputs {
+                    this.visit_ty(input);
+                }
+                if !in_closure && let Some(output) = output {
+                    this.visit_ty(output);
+                }
+            },
+        );
         if in_closure && let Some(output) = output {
             self.visit_ty(output);
         }
@@ -1865,7 +1842,7 @@ impl<'a, 'tcx> BoundVarContext<'a, 'tcx> {
                     scope = s;
                 }
 
-                Scope::Root { .. } | Scope::Elision { .. } => break ResolvedArg::StaticLifetime,
+                Scope::Root { .. } => break ResolvedArg::StaticLifetime,
 
                 Scope::Body { .. } | Scope::ObjectLifetimeDefault { lifetime: None, .. } => return,
 
@@ -2044,12 +2021,12 @@ fn is_late_bound_map(
                     hir::Path { res: Res::Def(DefKind::TyAlias, alias_def), segments, span },
                 )) => {
                     // See comments on `ConstrainedCollectorPostAstConv` for why this arm does not just consider
-                    // substs to be unconstrained.
+                    // args to be unconstrained.
                     let generics = self.tcx.generics_of(alias_def);
                     let mut walker = ConstrainedCollectorPostAstConv {
                         arg_is_constrained: vec![false; generics.params.len()].into_boxed_slice(),
                     };
-                    walker.visit_ty(self.tcx.type_of(alias_def).subst_identity());
+                    walker.visit_ty(self.tcx.type_of(alias_def).instantiate_identity());
 
                     match segments.last() {
                         Some(hir::PathSegment { args: Some(args), .. }) => {
@@ -2063,8 +2040,7 @@ fn is_late_bound_map(
                                             tcx.sess.delay_span_bug(
                                                 *span,
                                                 format!(
-                                                    "Incorrect generic arg count for alias {:?}",
-                                                    alias_def
+                                                    "Incorrect generic arg count for alias {alias_def:?}"
                                                 ),
                                             );
                                             None

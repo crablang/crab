@@ -215,6 +215,9 @@ lint_expectation = this lint expectation is unfulfilled
     .note = the `unfulfilled_lint_expectations` lint can't be expected and will always produce this message
     .rationale = {$rationale}
 
+lint_fn_null_check = function pointers are not nullable, so checking them for null will always return false
+    .help = wrap the function pointer inside an `Option` and use `Option::is_none` to check for null pointer value
+
 lint_for_loops_over_fallibles =
     for loop over {$article} `{$ty}`. This is more readably written as an `if let` statement
     .suggestion = consider using `if let` to clear intent
@@ -263,8 +266,6 @@ lint_improper_ctypes_char_help = consider using `u32` or `libc::wchar_t` instead
 
 lint_improper_ctypes_char_reason = the `char` type has no C equivalent
 lint_improper_ctypes_dyn = trait objects have no C equivalent
-
-lint_improper_ctypes_enum_phantomdata = this enum contains a PhantomData field
 
 lint_improper_ctypes_enum_repr_help =
     consider adding a `#[repr(C)]`, `#[repr(transparent)]`, or integer `#[repr(...)]` attribute to this enum

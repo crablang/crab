@@ -288,7 +288,7 @@ pub fn suggest_new_region_bound(
 
                 // Get the identity type for this RPIT
                 let did = item_id.owner_id.to_def_id();
-                let ty = Ty::new_opaque(tcx, did, ty::InternalSubsts::identity_for_item(tcx, did));
+                let ty = Ty::new_opaque(tcx, did, ty::GenericArgs::identity_for_item(tcx, did));
 
                 if let Some(span) = opaque.bounds.iter().find_map(|arg| match arg {
                     GenericBound::Outlives(Lifetime {
@@ -333,11 +333,7 @@ pub fn suggest_new_region_bound(
                     } else {
                         None
                     };
-                    let name = if let Some(name) = &existing_lt_name {
-                        format!("{}", name)
-                    } else {
-                        format!("'a")
-                    };
+                    let name = if let Some(name) = &existing_lt_name { name } else { "'a" };
                     // if there are more than one elided lifetimes in inputs, the explicit `'_` lifetime cannot be used.
                     // introducing a new lifetime `'a` or making use of one from existing named lifetimes if any
                     if let Some(id) = scope_def_id
@@ -350,7 +346,7 @@ pub fn suggest_new_region_bound(
                                   if p.span.hi() - p.span.lo() == rustc_span::BytePos(1) { // Ampersand (elided without '_)
                                       (p.span.shrink_to_hi(),format!("{name} "))
                                   } else { // Underscore (elided with '_)
-                                      (p.span, format!("{name}"))
+                                      (p.span, name.to_string())
                                   }
                             )
                             .collect::<Vec<_>>()
@@ -493,7 +489,7 @@ impl<'a, 'tcx> NiceRegionError<'a, 'tcx> {
             tcx,
             ctxt.param_env,
             ctxt.assoc_item.def_id,
-            self.cx.resolve_vars_if_possible(ctxt.substs),
+            self.cx.resolve_vars_if_possible(ctxt.args),
         ) else {
             return false;
         };
@@ -503,7 +499,9 @@ impl<'a, 'tcx> NiceRegionError<'a, 'tcx> {
 
         // Get the `Ident` of the method being called and the corresponding `impl` (to point at
         // `Bar` in `impl Foo for dyn Bar {}` and the definition of the method being called).
-        let Some((ident, self_ty)) = NiceRegionError::get_impl_ident_and_self_ty_from_trait(tcx, instance.def_id(), &v.0) else {
+        let Some((ident, self_ty)) =
+            NiceRegionError::get_impl_ident_and_self_ty_from_trait(tcx, instance.def_id(), &v.0)
+        else {
             return false;
         };
 

@@ -3,7 +3,6 @@ use rustc_hir as hir;
 use rustc_hir::def_id::LocalDefId;
 use rustc_hir::HirId;
 use rustc_middle::ty::print::with_forced_trimmed_paths;
-use rustc_middle::ty::subst::InternalSubsts;
 use rustc_middle::ty::util::IntTypeExt;
 use rustc_middle::ty::{self, ImplTraitInTraitData, IsSuggestable, Ty, TyCtxt, TypeVisitableExt};
 use rustc_span::symbol::Ident;
@@ -157,7 +156,7 @@ fn anon_const_type_of<'tcx>(tcx: TyCtxt<'tcx>, def_id: LocalDefId) -> Ty<'tcx> {
             let Some(type_dependent_def) = tables.type_dependent_def_id(parent_node_id) else {
                 return Ty::new_error_with_message(tcx,
                     tcx.def_span(def_id),
-                    format!("unable to find type-dependent def for {:?}", parent_node_id),
+                    format!("unable to find type-dependent def for {parent_node_id:?}"),
                 );
             };
             let idx = segment
@@ -198,14 +197,14 @@ fn anon_const_type_of<'tcx>(tcx: TyCtxt<'tcx>, def_id: LocalDefId) -> Ty<'tcx> {
                     } else {
                         return Ty::new_error_with_message(tcx,
                             tcx.def_span(def_id),
-                            format!("unable to find const parent for {} in pat {:?}", hir_id, pat),
+                            format!("unable to find const parent for {hir_id} in pat {pat:?}"),
                         );
                     }
                 }
                 _ => {
                     return Ty::new_error_with_message(tcx,
                         tcx.def_span(def_id),
-                        format!("unexpected const parent path {:?}", parent_node),
+                        format!("unexpected const parent path {parent_node:?}"),
                     );
                 }
             };
@@ -338,8 +337,8 @@ pub(super) fn type_of(tcx: TyCtxt<'_>, def_id: LocalDefId) -> ty::EarlyBinder<Ty
     let output = match tcx.hir().get(hir_id) {
         Node::TraitItem(item) => match item.kind {
             TraitItemKind::Fn(..) => {
-                let substs = InternalSubsts::identity_for_item(tcx, def_id);
-                Ty::new_fn_def(tcx, def_id.to_def_id(), substs)
+                let args = ty::GenericArgs::identity_for_item(tcx, def_id);
+                Ty::new_fn_def(tcx, def_id.to_def_id(), args)
             }
             TraitItemKind::Const(ty, body_id) => body_id
                 .and_then(|body_id| {
@@ -363,8 +362,8 @@ pub(super) fn type_of(tcx: TyCtxt<'_>, def_id: LocalDefId) -> ty::EarlyBinder<Ty
 
         Node::ImplItem(item) => match item.kind {
             ImplItemKind::Fn(..) => {
-                let substs = InternalSubsts::identity_for_item(tcx, def_id);
-                Ty::new_fn_def(tcx, def_id.to_def_id(), substs)
+                let args = ty::GenericArgs::identity_for_item(tcx, def_id);
+                Ty::new_fn_def(tcx, def_id.to_def_id(), args)
             }
             ImplItemKind::Const(ty, body_id) => {
                 if is_suggestable_infer_ty(ty) {
@@ -426,13 +425,13 @@ pub(super) fn type_of(tcx: TyCtxt<'_>, def_id: LocalDefId) -> ty::EarlyBinder<Ty
                     _ => icx.to_ty(*self_ty),
                 },
                 ItemKind::Fn(..) => {
-                    let substs = InternalSubsts::identity_for_item(tcx, def_id);
-                    Ty::new_fn_def(tcx, def_id.to_def_id(), substs)
+                    let args = ty::GenericArgs::identity_for_item(tcx, def_id);
+                    Ty::new_fn_def(tcx, def_id.to_def_id(), args)
                 }
                 ItemKind::Enum(..) | ItemKind::Struct(..) | ItemKind::Union(..) => {
                     let def = tcx.adt_def(def_id);
-                    let substs = InternalSubsts::identity_for_item(tcx, def_id);
-                    Ty::new_adt(tcx, def, substs)
+                    let args = ty::GenericArgs::identity_for_item(tcx, def_id);
+                    Ty::new_adt(tcx, def, args)
                 }
                 ItemKind::OpaqueTy(OpaqueTy {
                     origin: hir::OpaqueTyOrigin::TyAlias { .. },
@@ -472,8 +471,8 @@ pub(super) fn type_of(tcx: TyCtxt<'_>, def_id: LocalDefId) -> ty::EarlyBinder<Ty
 
         Node::ForeignItem(foreign_item) => match foreign_item.kind {
             ForeignItemKind::Fn(..) => {
-                let substs = InternalSubsts::identity_for_item(tcx, def_id);
-                Ty::new_fn_def(tcx, def_id.to_def_id(), substs)
+                let args = ty::GenericArgs::identity_for_item(tcx, def_id);
+                Ty::new_fn_def(tcx, def_id.to_def_id(), args)
             }
             ForeignItemKind::Static(t, _) => icx.to_ty(t),
             ForeignItemKind::Type => Ty::new_foreign(tcx, def_id.to_def_id()),
@@ -481,11 +480,11 @@ pub(super) fn type_of(tcx: TyCtxt<'_>, def_id: LocalDefId) -> ty::EarlyBinder<Ty
 
         Node::Ctor(def) | Node::Variant(Variant { data: def, .. }) => match def {
             VariantData::Unit(..) | VariantData::Struct(..) => {
-                tcx.type_of(tcx.hir().get_parent_item(hir_id)).subst_identity()
+                tcx.type_of(tcx.hir().get_parent_item(hir_id)).instantiate_identity()
             }
             VariantData::Tuple(..) => {
-                let substs = InternalSubsts::identity_for_item(tcx, def_id);
-                Ty::new_fn_def(tcx, def_id.to_def_id(), substs)
+                let args = ty::GenericArgs::identity_for_item(tcx, def_id);
+                Ty::new_fn_def(tcx, def_id.to_def_id(), args)
             }
         },
 
@@ -498,8 +497,8 @@ pub(super) fn type_of(tcx: TyCtxt<'_>, def_id: LocalDefId) -> ty::EarlyBinder<Ty
         Node::AnonConst(_) => anon_const_type_of(tcx, def_id),
 
         Node::ConstBlock(_) => {
-            let substs = InternalSubsts::identity_for_item(tcx, def_id.to_def_id());
-            substs.as_inline_const().ty()
+            let args = ty::GenericArgs::identity_for_item(tcx, def_id.to_def_id());
+            args.as_inline_const().ty()
         }
 
         Node::GenericParam(param) => match &param.kind {
@@ -545,7 +544,7 @@ fn infer_placeholder_type<'a>(
                 if let Some(ty) = ty.make_suggestable(tcx, false) {
                     err.span_suggestion(
                         span,
-                        format!("provide a type for the {item}", item = kind),
+                        format!("provide a type for the {kind}"),
                         format!("{colon} {ty}"),
                         Applicability::MachineApplicable,
                     );

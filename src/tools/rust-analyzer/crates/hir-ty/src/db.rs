@@ -77,8 +77,12 @@ pub trait HirDatabase: DefDatabase + Upcast<dyn DefDatabase> {
 
     #[salsa::invoke(crate::consteval::const_eval_query)]
     #[salsa::cycle(crate::consteval::const_eval_recover)]
-    fn const_eval(&self, def: GeneralConstId, subst: Substitution)
-        -> Result<Const, ConstEvalError>;
+    fn const_eval(
+        &self,
+        def: GeneralConstId,
+        subst: Substitution,
+        trait_env: Option<Arc<crate::TraitEnvironment>>,
+    ) -> Result<Const, ConstEvalError>;
 
     #[salsa::invoke(crate::consteval::const_eval_static_query)]
     #[salsa::cycle(crate::consteval::const_eval_static_recover)]
@@ -100,15 +104,27 @@ pub trait HirDatabase: DefDatabase + Upcast<dyn DefDatabase> {
         &self,
         def: AdtId,
         subst: Substitution,
-        krate: CrateId,
+        env: Arc<crate::TraitEnvironment>,
     ) -> Result<Arc<Layout>, LayoutError>;
 
     #[salsa::invoke(crate::layout::layout_of_ty_query)]
     #[salsa::cycle(crate::layout::layout_of_ty_recover)]
-    fn layout_of_ty(&self, ty: Ty, krate: CrateId) -> Result<Arc<Layout>, LayoutError>;
+    fn layout_of_ty(
+        &self,
+        ty: Ty,
+        env: Arc<crate::TraitEnvironment>,
+    ) -> Result<Arc<Layout>, LayoutError>;
 
     #[salsa::invoke(crate::layout::target_data_layout_query)]
     fn target_data_layout(&self, krate: CrateId) -> Option<Arc<TargetDataLayout>>;
+
+    #[salsa::invoke(crate::method_resolution::lookup_impl_method_query)]
+    fn lookup_impl_method(
+        &self,
+        env: Arc<crate::TraitEnvironment>,
+        func: FunctionId,
+        fn_subst: Substitution,
+    ) -> (FunctionId, Substitution);
 
     #[salsa::invoke(crate::lower::callable_item_sig)]
     fn callable_item_signature(&self, def: CallableDefId) -> PolyFnSig;
