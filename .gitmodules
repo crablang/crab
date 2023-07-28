@@ -1,6 +1,3 @@
-[submodule "src/doc/reference"]
-	path = src/doc/reference
-	url = https://github.com/rust-lang/reference.git
 [submodule "src/doc/book"]
 	path = src/doc/book
 	url = https://github.com/rust-lang/book.git
