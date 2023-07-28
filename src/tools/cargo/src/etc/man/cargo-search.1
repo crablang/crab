@@ -1,0 +1,138 @@
+'\" t
+.TH "CARGO\-SEARCH" "1"
+.nh
+.ad l
+.ss \n[.ss] 0
+.SH "NAME"
+cargo\-search \[em] Search packages in crates.io
+.SH "SYNOPSIS"
+\fBcargo search\fR [\fIoptions\fR] [\fIquery\fR\[u2026]]
+.SH "DESCRIPTION"
+This performs a textual search for crates on <https://crates.io>\&. The matching
+crates will be displayed along with their description in TOML format suitable
+for copying into a \fBCargo.toml\fR manifest.
+.SH "OPTIONS"
+.SS "Search Options"
+.sp
+\fB\-\-limit\fR \fIlimit\fR
+.RS 4
+Limit the number of results (default: 10, max: 100).
+.RE
+.sp
+\fB\-\-index\fR \fIindex\fR
+.RS 4
+The URL of the registry index to use.
+.RE
+.sp
+\fB\-\-registry\fR \fIregistry\fR
+.RS 4
+Name of the registry to use. Registry names are defined in \fICargo config
+files\fR <https://doc.rust\-lang.org/cargo/reference/config.html>\&. If not specified, the default registry is used,
+which is defined by the \fBregistry.default\fR config key which defaults to
+\fBcrates\-io\fR\&.
+.RE
+.SS "Display Options"
+.sp
+\fB\-v\fR, 
+\fB\-\-verbose\fR
+.RS 4
+Use verbose output. May be specified twice for \[lq]very verbose\[rq] output which
+includes extra output such as dependency warnings and build script output.
+May also be specified with the \fBterm.verbose\fR
+\fIconfig value\fR <https://doc.rust\-lang.org/cargo/reference/config.html>\&.
+.RE
+.sp
+\fB\-q\fR, 
+\fB\-\-quiet\fR
+.RS 4
+Do not print cargo log messages.
+May also be specified with the \fBterm.quiet\fR
+\fIconfig value\fR <https://doc.rust\-lang.org/cargo/reference/config.html>\&.
+.RE
+.sp
+\fB\-\-color\fR \fIwhen\fR
+.RS 4
+Control when colored output is used. Valid values:
+.sp
+.RS 4
+\h'-04'\(bu\h'+02'\fBauto\fR (default): Automatically detect if color support is available on the
+terminal.
+.RE
+.sp
+.RS 4
+\h'-04'\(bu\h'+02'\fBalways\fR: Always display colors.
+.RE
+.sp
+.RS 4
+\h'-04'\(bu\h'+02'\fBnever\fR: Never display colors.
+.RE
+.sp
+May also be specified with the \fBterm.color\fR
+\fIconfig value\fR <https://doc.rust\-lang.org/cargo/reference/config.html>\&.
+.RE
+.SS "Common Options"
+.sp
+\fB+\fR\fItoolchain\fR
+.RS 4
+If Cargo has been installed with rustup, and the first argument to \fBcargo\fR
+begins with \fB+\fR, it will be interpreted as a rustup toolchain name (such
+as \fB+stable\fR or \fB+nightly\fR).
+See the \fIrustup documentation\fR <https://rust\-lang.github.io/rustup/overrides.html>
+for more information about how toolchain overrides work.
+.RE
+.sp
+\fB\-\-config\fR \fIKEY=VALUE\fR or \fIPATH\fR
+.RS 4
+Overrides a Cargo configuration value. The argument should be in TOML syntax of \fBKEY=VALUE\fR,
+or provided as a path to an extra configuration file. This flag may be specified multiple times.
+See the \fIcommand\-line overrides section\fR <https://doc.rust\-lang.org/cargo/reference/config.html#command\-line\-overrides> for more information.
+.RE
+.sp
+\fB\-C\fR \fIPATH\fR
+.RS 4
+Changes the current working directory before executing any specified operations. This affects
+things like where cargo looks by default for the project manifest (\fBCargo.toml\fR), as well as
+the directories searched for discovering \fB\&.cargo/config.toml\fR, for example. This option must
+appear before the command name, for example \fBcargo \-C path/to/my\-project build\fR\&.
+.sp
+This option is only available on the \fInightly
+channel\fR <https://doc.rust\-lang.org/book/appendix\-07\-nightly\-rust.html> and
+requires the \fB\-Z unstable\-options\fR flag to enable (see
+\fI#10098\fR <https://github.com/rust\-lang/cargo/issues/10098>).
+.RE
+.sp
+\fB\-h\fR, 
+\fB\-\-help\fR
+.RS 4
+Prints help information.
+.RE
+.sp
+\fB\-Z\fR \fIflag\fR
+.RS 4
+Unstable (nightly\-only) flags to Cargo. Run \fBcargo \-Z help\fR for details.
+.RE
+.SH "ENVIRONMENT"
+See \fIthe reference\fR <https://doc.rust\-lang.org/cargo/reference/environment\-variables.html> for
+details on environment variables that Cargo reads.
+.SH "EXIT STATUS"
+.sp
+.RS 4
+\h'-04'\(bu\h'+02'\fB0\fR: Cargo succeeded.
+.RE
+.sp
+.RS 4
+\h'-04'\(bu\h'+02'\fB101\fR: Cargo failed to complete.
+.RE
+.SH "EXAMPLES"
+.sp
+.RS 4
+\h'-04' 1.\h'+01'Search for a package from crates.io:
+.sp
+.RS 4
+.nf
+cargo search serde
+.fi
+.RE
+.RE
+.SH "SEE ALSO"
+\fBcargo\fR(1), \fBcargo\-install\fR(1), \fBcargo\-publish\fR(1)
