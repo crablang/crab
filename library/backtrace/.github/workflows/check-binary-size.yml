@@ -1,0 +1,83 @@
+# This workflow checks if a PR commit has changed the size of a hello world Rust program.
+# It downloads Rustc and compiles two versions of a stage0 compiler - one using the base commit
+# of the PR, and one using the latest commit in the PR.
+# If the size of the hello world program has changed, it posts a comment to the PR.
+name: Check binary size
+
+on:
+  pull_request_target:
+    branches:
+      - master
+
+jobs:
+  test:
+    name: Check binary size
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    steps:
+      - name: Print info
+        run: |
+          echo "Current SHA: ${{ github.event.pull_request.head.sha }}"
+          echo "Base SHA: ${{ github.event.pull_request.base.sha }}"
+      - name: Clone Rustc
+        uses: actions/checkout@v3
+        with:
+          repository: rust-lang/rust
+          fetch-depth: 1
+      - name: Fetch backtrace
+        run: git submodule update --init library/backtrace
+      - name: Create hello world program that uses backtrace
+        run: printf "fn main() { panic!(); }" > foo.rs
+      - name: Build binary with base version of backtrace
+        run: |
+          printf "[llvm]\ndownload-ci-llvm = true\n\n[rust]\nincremental = false\n" > config.toml
+          cd library/backtrace
+          git remote add head-pr https://github.com/${{ github.event.pull_request.head.repo.full_name }}
+          git fetch --all
+          git checkout ${{ github.event.pull_request.base.sha }}
+          cd ../..
+          git add library/backtrace
+          python3 x.py build library --stage 0
+          ./build/x86_64-unknown-linux-gnu/stage0-sysroot/bin/rustc -O foo.rs -o binary-reference
+      - name: Build binary with PR version of backtrace
+        run: |
+          cd library/backtrace
+          git checkout ${{ github.event.pull_request.head.sha }}
+          cd ../..
+          git add library/backtrace
+          rm -rf build/x86_64-unknown-linux-gnu/stage0-std
+          python3 x.py build library --stage 0
+          ./build/x86_64-unknown-linux-gnu/stage0-sysroot/bin/rustc -O foo.rs -o binary-updated
+      - name: Display binary size
+        run: |
+          ls -la binary-*
+          echo "SIZE_REFERENCE=$(stat -c '%s' binary-reference)" >> "$GITHUB_ENV"
+          echo "SIZE_UPDATED=$(stat -c '%s' binary-updated)" >> "$GITHUB_ENV"
+      - name: Post a PR comment if the size has changed
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const reference = process.env.SIZE_REFERENCE;
+            const updated = process.env.SIZE_UPDATED;
+            const diff = updated - reference;
+            const plus = diff > 0 ? "+" : "";
+            const diff_str = `${plus}${diff}B`;
+
+            if (diff !== 0) {
+              const percent = (((updated / reference) - 1) * 100).toFixed(2);
+              // The body is created here and wrapped so "weirdly" to avoid whitespace at the start of the lines,
+              // which is interpreted as a code block by Markdown.
+              const body = `Below is the size of a hello-world Rust program linked with libstd with backtrace.
+
+            Original binary size: **${reference}B**
+            Updated binary size: **${updated}B**
+            Difference: **${diff_str}** (${percent}%)`;
+
+              github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body
+              })
+            }
