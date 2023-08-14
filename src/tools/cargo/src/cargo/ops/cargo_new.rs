@@ -184,12 +184,12 @@ fn check_name(
                 "\n\
                 If you need a binary with the name \"{name}\", use a valid package \
                 name, and set the binary name to be different from the package. \
-                This can be done by setting the binary filename to `src/bin/{name}.rs` \
+                This can be done by setting the binary filename to `src/bin/{name}.crab` \
                 or change the name in Cargo.toml with:\n\
                 \n    \
                 [[bin]]\n    \
                 name = \"{name}\"\n    \
-                path = \"src/main.rs\"\n\
+                path = \"src/main.crab\"\n\
             ",
                 name = name
             ));
@@ -297,27 +297,27 @@ fn detect_source_paths_and_types(
 
     let tests = vec![
         Test {
-            proposed_path: "src/main.rs".to_string(),
+            proposed_path: "src/main.crab".to_string(),
             handling: H::Bin,
         },
         Test {
-            proposed_path: "main.rs".to_string(),
+            proposed_path: "main.crab".to_string(),
             handling: H::Bin,
         },
         Test {
-            proposed_path: format!("src/{}.rs", name),
+            proposed_path: format!("src/{}.crab", name),
             handling: H::Detect,
         },
         Test {
-            proposed_path: format!("{}.rs", name),
+            proposed_path: format!("{}.crab", name),
             handling: H::Detect,
         },
         Test {
-            proposed_path: "src/lib.rs".to_string(),
+            proposed_path: "src/lib.crab".to_string(),
             handling: H::Lib,
         },
         Test {
-            proposed_path: "lib.rs".to_string(),
+            proposed_path: "lib.crab".to_string(),
             handling: H::Lib,
         },
     ];
@@ -393,13 +393,13 @@ cannot automatically generate Cargo.toml as the main target would be ambiguous",
 fn plan_new_source_file(bin: bool, package_name: String) -> SourceFileInformation {
     if bin {
         SourceFileInformation {
-            relative_path: "src/main.rs".to_string(),
+            relative_path: "src/main.crab".to_string(),
             target_name: package_name,
             bin: true,
         }
     } else {
         SourceFileInformation {
-            relative_path: "src/lib.rs".to_string(),
+            relative_path: "src/lib.crab".to_string(),
             target_name: package_name,
             bin: false,
         }
@@ -783,7 +783,7 @@ fn mk(config: &Config, opts: &MkOptions<'_>) -> CargoResult<()> {
     // Calculate what `[lib]` and `[[bin]]`s we need to append to `Cargo.toml`.
     for i in &opts.source_files {
         if i.bin {
-            if i.relative_path != "src/main.rs" {
+            if i.relative_path != "src/main.crab" {
                 let mut bin = toml_edit::Table::new();
                 bin["name"] = toml_edit::value(i.target_name.clone());
                 bin["path"] = toml_edit::value(i.relative_path.clone());
@@ -795,7 +795,7 @@ fn mk(config: &Config, opts: &MkOptions<'_>) -> CargoResult<()> {
                     .expect("bin is an array of tables")
                     .push(bin);
             }
-        } else if i.relative_path != "src/lib.rs" {
+        } else if i.relative_path != "src/lib.crab" {
             let mut lib = toml_edit::Table::new();
             lib["name"] = toml_edit::value(i.target_name.clone());
             lib["path"] = toml_edit::value(i.relative_path.clone());
