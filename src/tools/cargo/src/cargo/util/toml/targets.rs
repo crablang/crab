@@ -184,11 +184,11 @@ fn clean_lib(
         (Some(path), _) => package_root.join(&path.0),
         (None, Some(path)) => path,
         (None, None) => {
-            let legacy_path = package_root.join("src").join(format!("{}.rs", lib.name()));
+            let legacy_path = package_root.join("src").join(format!("{}.crab", lib.name()));
             if edition == Edition::Edition2015 && legacy_path.exists() {
                 warnings.push(format!(
                     "path `{}` was erroneously implicitly accepted for library `{}`,\n\
-                     please rename the file to `src/lib.rs` or set lib.path in Cargo.toml",
+                     please rename the file to `src/lib.crab` or set lib.path in Cargo.toml",
                     legacy_path.display(),
                     lib.name()
                 ));
@@ -196,7 +196,7 @@ fn clean_lib(
             } else {
                 anyhow::bail!(
                     "can't find library `{}`, \
-                     rename file to `src/lib.rs` or specify lib.path",
+                     rename file to `src/lib.crab` or specify lib.path",
                     lib.name()
                 )
             }
@@ -355,12 +355,12 @@ fn clean_bins(
 
     fn legacy_bin_path(package_root: &Path, name: &str, has_lib: bool) -> Option<PathBuf> {
         if !has_lib {
-            let path = package_root.join("src").join(format!("{}.rs", name));
+            let path = package_root.join("src").join(format!("{}.crab", name));
             if path.exists() {
                 return Some(path);
             }
         }
-        let path = package_root.join("src").join("main.rs");
+        let path = package_root.join("src").join("main.crab");
         if path.exists() {
             return Some(path);
         }
@@ -368,7 +368,7 @@ fn clean_bins(
         let path = package_root
             .join("src")
             .join(DEFAULT_BIN_DIR_NAME)
-            .join("main.rs");
+            .join("main.crab");
         if path.exists() {
             return Some(path);
         }
@@ -466,7 +466,7 @@ fn clean_benches(
 
     let targets = {
         let mut legacy_bench_path = |bench: &TomlTarget| {
-            let legacy_path = package_root.join("src").join("bench.rs");
+            let legacy_path = package_root.join("src").join("bench.crab");
             if !(bench.name() == "bench" && legacy_path.exists()) {
                 return None;
             }
@@ -589,7 +589,7 @@ fn clean_targets_with_legacy_path(
 }
 
 fn inferred_lib(package_root: &Path) -> Option<PathBuf> {
-    let lib = package_root.join("src").join("lib.rs");
+    let lib = package_root.join("src").join("lib.crab");
     if lib.exists() {
         Some(lib)
     } else {
@@ -598,7 +598,7 @@ fn inferred_lib(package_root: &Path) -> Option<PathBuf> {
 }
 
 fn inferred_bins(package_root: &Path, package_name: &str) -> Vec<(String, PathBuf)> {
-    let main = package_root.join("src").join("main.rs");
+    let main = package_root.join("src").join("main.crab");
     let mut result = Vec::new();
     if main.exists() {
         result.push((package_name.to_string(), main));
@@ -626,7 +626,7 @@ fn infer_from_directory(directory: &Path) -> Vec<(String, PathBuf)> {
 fn infer_any(entry: &DirEntry) -> Option<(String, PathBuf)> {
     if entry.file_type().map_or(false, |t| t.is_dir()) {
         infer_subdirectory(entry)
-    } else if entry.path().extension().and_then(|p| p.to_str()) == Some("rs") {
+    } else if entry.path().extension().and_then(|p| p.to_str()) == Some("crab") {
         infer_file(entry)
     } else {
         None
@@ -642,7 +642,7 @@ fn infer_file(entry: &DirEntry) -> Option<(String, PathBuf)> {
 
 fn infer_subdirectory(entry: &DirEntry) -> Option<(String, PathBuf)> {
     let path = entry.path();
-    let main = path.join("main.rs");
+    let main = path.join("main.crab");
     let name = path.file_name().and_then(|n| n.to_str());
     match (name, main.exists()) {
         (Some(name), true) => Some((name.to_owned(), main)),
@@ -868,11 +868,11 @@ fn target_path_not_found_error_message(
 
         let target_path_file = {
             let mut path = target_path.clone();
-            path.set_extension("rs");
+            path.set_extension("crab");
             path
         };
         let target_path_subdir = {
-            target_path.push("main.rs");
+            target_path.push("main.crab");
             target_path
         };
         return [target_path_file, target_path_subdir];
