@@ -280,6 +280,7 @@ fn detect_source_paths_and_types(
     package_path: &Path,
     package_name: &str,
     detected_files: &mut Vec<SourceFileInformation>,
+    file_extension: &str,
 ) -> CargoResult<()> {
     let path = package_path;
     let name = package_name;
@@ -297,27 +298,27 @@ fn detect_source_paths_and_types(
 
     let tests = vec![
         Test {
-            proposed_path: "src/main.crab".to_string(),
+            proposed_path: format!("src/main.{}", file_extension),
             handling: H::Bin,
         },
         Test {
-            proposed_path: "main.crab".to_string(),
+            proposed_path: format!("main.{}", file_extension),
             handling: H::Bin,
         },
         Test {
-            proposed_path: format!("src/{}.crab", name),
+            proposed_path: format!("src/{}.{}", name, file_extension),
             handling: H::Detect,
         },
         Test {
-            proposed_path: format!("{}.crab", name),
+            proposed_path: format!("{}.{}", name, file_extension),
             handling: H::Detect,
         },
         Test {
-            proposed_path: "src/lib.crab".to_string(),
+            proposed_path: format!("src/lib.{}", file_extension),
             handling: H::Lib,
         },
         Test {
-            proposed_path: "lib.crab".to_string(),
+            proposed_path: format!("lib.{}", file_extension),
             handling: H::Lib,
         },
     ];
@@ -390,16 +391,16 @@ cannot automatically generate Cargo.toml as the main target would be ambiguous",
     Ok(())
 }
 
-fn plan_new_source_file(bin: bool, package_name: String) -> SourceFileInformation {
+fn plan_new_source_file(bin: bool, package_name: String, file_extension: &str) -> SourceFileInformation {
     if bin {
         SourceFileInformation {
-            relative_path: "src/main.crab".to_string(),
+            relative_path: format!("src/main.{}", file_extension),
             target_name: package_name,
             bin: true,
         }
     } else {
         SourceFileInformation {
-            relative_path: "src/lib.crab".to_string(),
+            relative_path: format!("src/lib.{}", file_extension),
             target_name: package_name,
             bin: false,
         }
@@ -443,11 +444,12 @@ pub fn new(opts: &NewOptions, config: &Config) -> CargoResult<()> {
     let name = get_name(path, opts)?;
     check_name(name, opts.name.is_none(), is_bin, &mut config.shell())?;
 
+    let file_extension = &config.file_extension
     let mkopts = MkOptions {
         version_control: opts.version_control,
         path,
         name,
-        source_files: vec![plan_new_source_file(opts.kind.is_bin(), name.to_string())],
+        source_files: vec![plan_new_source_file(opts.kind.is_bin(), name.to_string(), file_extension)],
         bin: is_bin,
         edition: opts.edition.as_deref(),
         registry: opts.registry.as_deref(),
@@ -481,13 +483,15 @@ pub fn init(opts: &NewOptions, config: &Config) -> CargoResult<NewProjectKind> {
 
     let mut src_paths_types = vec![];
 
-    detect_source_paths_and_types(path, name, &mut src_paths_types)?;
+    let file_extension = &config.file_extension
+
+    detect_source_paths_and_types(path, name, &mut src_paths_types, file_extension)?;
 
     let kind = calculate_new_project_kind(opts.kind, opts.auto_detect_kind, &src_paths_types);
     let has_bin = kind.is_bin();
 
     if src_paths_types.is_empty() {
-        src_paths_types.push(plan_new_source_file(has_bin, name.to_string()));
+        src_paths_types.push(plan_new_source_file(has_bin, name.to_string(), file_extension));
     } else if src_paths_types.len() == 1 && !src_paths_types.iter().any(|x| x.bin == has_bin) {
         // we've found the only file and it's not the type user wants. Change the type and warn
         let file_type = if src_paths_types[0].bin {
@@ -780,10 +784,11 @@ fn mk(config: &Config, opts: &MkOptions<'_>) -> CargoResult<()> {
     dep_table.decor_mut().set_prefix("\n# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html\n\n");
     manifest["dependencies"] = toml_edit::Item::Table(dep_table);
 
+    let file_extension = &config.file_extension
     // Calculate what `[lib]` and `[[bin]]`s we need to append to `Cargo.toml`.
     for i in &opts.source_files {
         if i.bin {
-            if i.relative_path != "src/main.crab" {
+            if i.relative_path != format!("src/main.{}", file_extension) {
                 let mut bin = toml_edit::Table::new();
                 bin["name"] = toml_edit::value(i.target_name.clone());
                 bin["path"] = toml_edit::value(i.relative_path.clone());
@@ -795,7 +800,7 @@ fn mk(config: &Config, opts: &MkOptions<'_>) -> CargoResult<()> {
                     .expect("bin is an array of tables")
                     .push(bin);
             }
-        } else if i.relative_path != "src/lib.crab" {
+        } else if i.relative_path != format!("src/lib.{}", file_extension) {
             let mut lib = toml_edit::Table::new();
             lib["name"] = toml_edit::value(i.target_name.clone());
             lib["path"] = toml_edit::value(i.relative_path.clone());

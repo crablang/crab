@@ -255,6 +255,16 @@ pub trait CommandExt: Sized {
             .require_equals(true),
         )
     }
+
+    fn arg_file_extension(self) -> Self {
+        self._arg(
+            optional_opt(
+                "file-extension",
+                "Specify a custom extension for source files.",
+            )
+            .value_name("FILE-EXTENSION"),
+        )
+    }
 }
 
 impl CommandExt for Command {
@@ -560,6 +570,10 @@ pub trait ArgMatchesExt {
             if build_config.timing_outputs.is_empty() {
                 build_config.timing_outputs.push(TimingOutput::Html);
             }
+        }
+
+        if self._value_of("file-extension").is_some() {
+            build_config.file_extension = *(self._value_of("file-extension").unwrap());
         }
 
         if build_config.keep_going {

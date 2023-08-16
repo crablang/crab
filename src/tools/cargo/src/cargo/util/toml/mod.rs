@@ -2116,6 +2116,7 @@ impl TomlManifest {
             &package.metabuild,
             &mut warnings,
             &mut errors,
+            &config.file_extension,
         )?;
 
         if targets.is_empty() {

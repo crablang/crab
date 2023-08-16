@@ -41,6 +41,7 @@ pub fn targets(
     metabuild: &Option<StringOrVec>,
     warnings: &mut Vec<String>,
     errors: &mut Vec<String>,
+    file_extension: &str,
 ) -> CargoResult<Vec<Target>> {
     let mut targets = Vec::new();
 
@@ -52,6 +53,7 @@ pub fn targets(
         package_name,
         edition,
         warnings,
+        file_extension,
     )? {
         targets.push(target);
         has_lib = true;
@@ -75,6 +77,7 @@ pub fn targets(
         warnings,
         errors,
         has_lib,
+        file_extension,
     )?);
 
     targets.extend(clean_examples(
@@ -84,6 +87,7 @@ pub fn targets(
         package.autoexamples,
         warnings,
         errors,
+        file_extension,
     )?);
 
     targets.extend(clean_tests(
@@ -93,6 +97,7 @@ pub fn targets(
         package.autotests,
         warnings,
         errors,
+        file_extension,
     )?);
 
     targets.extend(clean_benches(
@@ -102,6 +107,7 @@ pub fn targets(
         package.autobenches,
         warnings,
         errors,
+        file_extension,
     )?);
 
     // processing the custom build script
@@ -149,8 +155,9 @@ fn clean_lib(
     package_name: &str,
     edition: Edition,
     warnings: &mut Vec<String>,
+    file_extension: &str,
 ) -> CargoResult<Option<Target>> {
-    let inferred = inferred_lib(package_root);
+    let inferred = inferred_lib(package_root, file_extension);
     let lib = match toml_lib {
         Some(lib) => {
             if let Some(ref name) = lib.name {
@@ -184,7 +191,7 @@ fn clean_lib(
         (Some(path), _) => package_root.join(&path.0),
         (None, Some(path)) => path,
         (None, None) => {
-            let legacy_path = package_root.join("src").join(format!("{}.crab", lib.name()));
+            let legacy_path = package_root.join("src").join(format!("{}.{}", lib.name(), file_extension));
             if edition == Edition::Edition2015 && legacy_path.exists() {
                 warnings.push(format!(
                     "path `{}` was erroneously implicitly accepted for library `{}`,\n\
@@ -263,8 +270,9 @@ fn clean_bins(
     warnings: &mut Vec<String>,
     errors: &mut Vec<String>,
     has_lib: bool,
+    file_extension: &str,
 ) -> CargoResult<Vec<Target>> {
-    let inferred = inferred_bins(package_root, package_name);
+    let inferred = inferred_bins(package_root, package_name, file_extension);
 
     let bins = toml_targets_and_inferred(
         toml_bins,
@@ -276,6 +284,7 @@ fn clean_bins(
         "binary",
         "bin",
         "autobins",
+        file_extension,
     );
 
     // This loop performs basic checks on each of the TomlTarget in `bins`.
@@ -323,7 +332,7 @@ fn clean_bins(
     let mut result = Vec::new();
     for bin in &bins {
         let path = target_path(bin, &inferred, "bin", package_root, edition, &mut |_| {
-            if let Some(legacy_path) = legacy_bin_path(package_root, &bin.name(), has_lib) {
+            if let Some(legacy_path) = legacy_bin_path(package_root, &bin.name(), has_lib, file_extension) {
                 warnings.push(format!(
                     "path `{}` was erroneously implicitly accepted for binary `{}`,\n\
                      please set bin.path in Cargo.toml",
@@ -334,7 +343,9 @@ fn clean_bins(
             } else {
                 None
             }
-        });
+        },
+        file_extension
+        );
         let path = match path {
             Ok(path) => path,
             Err(e) => anyhow::bail!("{}", e),
@@ -353,14 +364,14 @@ fn clean_bins(
     }
     return Ok(result);
 
-    fn legacy_bin_path(package_root: &Path, name: &str, has_lib: bool) -> Option<PathBuf> {
+    fn legacy_bin_path(package_root: &Path, name: &str, has_lib: bool, file_extension: &str) -> Option<PathBuf> {
         if !has_lib {
-            let path = package_root.join("src").join(format!("{}.crab", name));
+            let path = package_root.join("src").join(format!("{}.{}", name, file_extension));
             if path.exists() {
                 return Some(path);
             }
         }
-        let path = package_root.join("src").join("main.crab");
+        let path = package_root.join("src").join("main.{}", file_extension);
         if path.exists() {
             return Some(path);
         }
@@ -368,7 +379,7 @@ fn clean_bins(
         let path = package_root
             .join("src")
             .join(DEFAULT_BIN_DIR_NAME)
-            .join("main.crab");
+            .join("main.{}", file_extension);
         if path.exists() {
             return Some(path);
         }
@@ -383,8 +394,9 @@ fn clean_examples(
     autodiscover: Option<bool>,
     warnings: &mut Vec<String>,
     errors: &mut Vec<String>,
+    file_extension: &str,
 ) -> CargoResult<Vec<Target>> {
-    let inferred = infer_from_directory(&package_root.join(DEFAULT_EXAMPLE_DIR_NAME));
+    let inferred = infer_from_directory(&package_root.join(DEFAULT_EXAMPLE_DIR_NAME), file_extension);
 
     let targets = clean_targets(
         "example",
@@ -397,6 +409,7 @@ fn clean_examples(
         warnings,
         errors,
         "autoexamples",
+        file_extension,
     )?;
 
     let mut result = Vec::new();
@@ -428,8 +441,9 @@ fn clean_tests(
     autodiscover: Option<bool>,
     warnings: &mut Vec<String>,
     errors: &mut Vec<String>,
+    file_extension: &str,
 ) -> CargoResult<Vec<Target>> {
-    let inferred = infer_from_directory(&package_root.join(DEFAULT_TEST_DIR_NAME));
+    let inferred = infer_from_directory(&package_root.join(DEFAULT_TEST_DIR_NAME), file_extension);
 
     let targets = clean_targets(
         "test",
@@ -442,6 +456,7 @@ fn clean_tests(
         warnings,
         errors,
         "autotests",
+        file_extension,
     )?;
 
     let mut result = Vec::new();
@@ -461,12 +476,13 @@ fn clean_benches(
     autodiscover: Option<bool>,
     warnings: &mut Vec<String>,
     errors: &mut Vec<String>,
+    file_extension: &str,
 ) -> CargoResult<Vec<Target>> {
     let mut legacy_warnings = vec![];
 
     let targets = {
         let mut legacy_bench_path = |bench: &TomlTarget| {
-            let legacy_path = package_root.join("src").join("bench.crab");
+            let legacy_path = package_root.join("src").join("bench.{}", file_extension);
             if !(bench.name() == "bench" && legacy_path.exists()) {
                 return None;
             }
@@ -479,7 +495,7 @@ fn clean_benches(
             Some(legacy_path)
         };
 
-        let inferred = infer_from_directory(&package_root.join("benches"));
+        let inferred = infer_from_directory(&package_root.join("benches"), file_extension);
 
         clean_targets_with_legacy_path(
             "benchmark",
@@ -493,6 +509,7 @@ fn clean_benches(
             errors,
             &mut legacy_bench_path,
             "autobenches",
+            file_extension,
         )?
     };
 
@@ -520,6 +537,7 @@ fn clean_targets(
     warnings: &mut Vec<String>,
     errors: &mut Vec<String>,
     autodiscover_flag_name: &str,
+    file_extension: &str,
 ) -> CargoResult<Vec<(PathBuf, TomlTarget)>> {
     clean_targets_with_legacy_path(
         target_kind_human,
@@ -533,6 +551,7 @@ fn clean_targets(
         errors,
         &mut |_| None,
         autodiscover_flag_name,
+        file_extension,
     )
 }
 
@@ -548,6 +567,7 @@ fn clean_targets_with_legacy_path(
     errors: &mut Vec<String>,
     legacy_path: &mut dyn FnMut(&TomlTarget) -> Option<PathBuf>,
     autodiscover_flag_name: &str,
+    file_extension: &str,
 ) -> CargoResult<Vec<(PathBuf, TomlTarget)>> {
     let toml_targets = toml_targets_and_inferred(
         toml_targets,
@@ -559,6 +579,7 @@ fn clean_targets_with_legacy_path(
         target_kind_human,
         target_kind,
         autodiscover_flag_name,
+        file_extension,
     );
 
     for target in &toml_targets {
@@ -575,6 +596,7 @@ fn clean_targets_with_legacy_path(
             package_root,
             edition,
             legacy_path,
+            file_extension,
         );
         let path = match path {
             Ok(path) => path,
@@ -588,8 +610,8 @@ fn clean_targets_with_legacy_path(
     Ok(result)
 }
 
-fn inferred_lib(package_root: &Path) -> Option<PathBuf> {
-    let lib = package_root.join("src").join("lib.crab");
+fn inferred_lib(package_root: &Path, file_extension: &str) -> Option<PathBuf> {
+    let lib = package_root.join("src").join("lib.{}", file_extension);
     if lib.exists() {
         Some(lib)
     } else {
@@ -597,20 +619,21 @@ fn inferred_lib(package_root: &Path) -> Option<PathBuf> {
     }
 }
 
-fn inferred_bins(package_root: &Path, package_name: &str) -> Vec<(String, PathBuf)> {
-    let main = package_root.join("src").join("main.crab");
+fn inferred_bins(package_root: &Path, package_name: &str, file_extension: &str) -> Vec<(String, PathBuf)> {
+    let main = package_root.join("src").join("main.{}", file_extension);
     let mut result = Vec::new();
     if main.exists() {
         result.push((package_name.to_string(), main));
     }
     result.extend(infer_from_directory(
         &package_root.join("src").join(DEFAULT_BIN_DIR_NAME),
+        file_extension,
     ));
 
     result
 }
 
-fn infer_from_directory(directory: &Path) -> Vec<(String, PathBuf)> {
+fn infer_from_directory(directory: &Path, file_extension: &str) -> Vec<(String, PathBuf)> {
     let entries = match fs::read_dir(directory) {
         Err(_) => return Vec::new(),
         Ok(dir) => dir,
@@ -619,14 +642,14 @@ fn infer_from_directory(directory: &Path) -> Vec<(String, PathBuf)> {
     entries
         .filter_map(|e| e.ok())
         .filter(is_not_dotfile)
-        .filter_map(|d| infer_any(&d))
+        .filter_map(|d| infer_any(&d, file_extension))
         .collect()
 }
 
-fn infer_any(entry: &DirEntry) -> Option<(String, PathBuf)> {
+fn infer_any(entry: &DirEntry, file_extension: &str) -> Option<(String, PathBuf)> {
     if entry.file_type().map_or(false, |t| t.is_dir()) {
-        infer_subdirectory(entry)
-    } else if entry.path().extension().and_then(|p| p.to_str()) == Some("crab") {
+        infer_subdirectory(entry, file_extension)
+    } else if entry.path().extension().and_then(|p| p.to_str()) == Some("{}", file_extension) {
         infer_file(entry)
     } else {
         None
@@ -640,9 +663,9 @@ fn infer_file(entry: &DirEntry) -> Option<(String, PathBuf)> {
         .map(|p| (p.to_owned(), path.clone()))
 }
 
-fn infer_subdirectory(entry: &DirEntry) -> Option<(String, PathBuf)> {
+fn infer_subdirectory(entry: &DirEntry, file_extension: &str) -> Option<(String, PathBuf)> {
     let path = entry.path();
-    let main = path.join("main.crab");
+    let main = path.join("main.{}", file_extension);
     let name = path.file_name().and_then(|n| n.to_str());
     match (name, main.exists()) {
         (Some(name), true) => Some((name.to_owned(), main)),
@@ -664,6 +687,7 @@ fn toml_targets_and_inferred(
     target_kind_human: &str,
     target_kind: &str,
     autodiscover_flag_name: &str,
+    file_extension,
 ) -> Vec<TomlTarget> {
     let inferred_targets = inferred_to_toml_targets(inferred);
     match toml_targets {
@@ -844,8 +868,9 @@ fn target_path_not_found_error_message(
     package_root: &Path,
     target: &TomlTarget,
     target_kind: &str,
+    file_extension: &str,
 ) -> String {
-    fn possible_target_paths(name: &str, kind: &str, commonly_wrong: bool) -> [PathBuf; 2] {
+    fn possible_target_paths(name: &str, kind: &str, commonly_wrong: bool, file_extension: &str) -> [PathBuf; 2] {
         let mut target_path = PathBuf::new();
         match (kind, commonly_wrong) {
             // commonly wrong paths
@@ -868,19 +893,19 @@ fn target_path_not_found_error_message(
 
         let target_path_file = {
             let mut path = target_path.clone();
-            path.set_extension("crab");
+            path.set_extension(file_extension);
             path
         };
         let target_path_subdir = {
-            target_path.push("main.crab");
+            target_path.push("main.{}", file_extension);
             target_path
         };
         return [target_path_file, target_path_subdir];
     }
 
     let target_name = target.name();
-    let commonly_wrong_paths = possible_target_paths(&target_name, target_kind, true);
-    let possible_paths = possible_target_paths(&target_name, target_kind, false);
+    let commonly_wrong_paths = possible_target_paths(&target_name, target_kind, true, file_extension);
+    let possible_paths = possible_target_paths(&target_name, target_kind, false, file_extension);
     let existing_wrong_path_index = match (
         package_root.join(&commonly_wrong_paths[0]).exists(),
         package_root.join(&commonly_wrong_paths[1]).exists(),
@@ -920,6 +945,7 @@ fn target_path(
     package_root: &Path,
     edition: Edition,
     legacy_path: &mut dyn FnMut(&TomlTarget) -> Option<PathBuf>,
+    file_extension: &str,
 ) -> Result<PathBuf, String> {
     if let Some(ref path) = target.path {
         // Should we verify that this path exists here?
@@ -946,6 +972,7 @@ fn target_path(
                 package_root,
                 target,
                 target_kind,
+                file_extension,
             ))
         }
         (Some(p0), Some(p1)) => {
