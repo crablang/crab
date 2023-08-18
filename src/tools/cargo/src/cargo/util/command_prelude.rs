@@ -573,7 +573,7 @@ pub trait ArgMatchesExt {
         }
 
         if self._value_of("file-extension").is_some() {
-            build_config.file_extension = *(self._value_of("file-extension").unwrap());
+            build_config.file_extension = *(self._value_of("file-extension").as_ref().unwrap());
         }
 
         if build_config.keep_going {
