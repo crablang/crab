@@ -1,0 +1,38 @@
+[package]
+name = "cargo-test-support"
+version = "0.1.0"
+rust-version.workspace = true
+license.workspace = true
+edition.workspace = true
+publish = false
+
+[lib]
+doctest = false
+
+[dependencies]
+anstream.workspace = true
+anstyle.workspace = true
+anyhow.workspace = true
+cargo-test-macro.workspace = true
+cargo-util.workspace = true
+crates-io.workspace = true
+filetime.workspace = true
+flate2.workspace = true
+git2.workspace = true
+glob.workspace = true
+itertools.workspace = true
+pasetors.workspace = true
+serde = { workspace = true, features = ["derive"] }
+serde_json.workspace = true
+snapbox.workspace = true
+tar.workspace = true
+time.workspace = true
+toml.workspace = true
+url.workspace = true
+walkdir.workspace = true
+
+[target.'cfg(windows)'.dependencies]
+windows-sys = { workspace = true, features = ["Win32_Storage_FileSystem"] }
+
+[lints]
+workspace = true

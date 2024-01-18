@@ -1,0 +1,16 @@
+[package]
+name = "resolver-tests"
+version = "0.0.0"
+rust-version.workspace = true
+edition.workspace = true
+publish = false
+
+[dependencies]
+cargo.workspace = true
+cargo-util-schemas.workspace = true
+cargo-util.workspace = true
+proptest.workspace = true
+varisat.workspace = true
+
+[lints]
+workspace = true

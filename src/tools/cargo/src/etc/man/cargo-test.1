@@ -1,0 +1,601 @@
+'\" t
+.TH "CARGO\-TEST" "1"
+.nh
+.ad l
+.ss \n[.ss] 0
+.SH "NAME"
+cargo\-test \[em] Execute unit and integration tests of a package
+.SH "SYNOPSIS"
+\fBcargo test\fR [\fIoptions\fR] [\fItestname\fR] [\fB\-\-\fR \fItest\-options\fR]
+.SH "DESCRIPTION"
+Compile and execute unit, integration, and documentation tests.
+.sp
+The test filtering argument \fBTESTNAME\fR and all the arguments following the two
+dashes (\fB\-\-\fR) are passed to the test binaries and thus to \fIlibtest\fR (rustc\[cq]s
+built in unit\-test and micro\-benchmarking framework).  If you\[cq]re passing
+arguments to both Cargo and the binary, the ones after \fB\-\-\fR go to the binary,
+the ones before go to Cargo.  For details about libtest\[cq]s arguments see the
+output of \fBcargo test \-\- \-\-help\fR and check out the rustc book\[cq]s chapter on
+how tests work at <https://doc.rust\-lang.org/rustc/tests/index.html>\&.
+.sp
+As an example, this will filter for tests with \fBfoo\fR in their name and run them
+on 3 threads in parallel:
+.sp
+.RS 4
+.nf
+cargo test foo \-\- \-\-test\-threads 3
+.fi
+.RE
+.sp
+Tests are built with the \fB\-\-test\fR option to \fBrustc\fR which creates a special
+executable by linking your code with libtest. The executable automatically
+runs all functions annotated with the \fB#[test]\fR attribute in multiple threads.
+\fB#[bench]\fR annotated functions will also be run with one iteration to verify
+that they are functional.
+.sp
+If the package contains multiple test targets, each target compiles to a
+special executable as aforementioned, and then is run serially.
+.sp
+The libtest harness may be disabled by setting \fBharness = false\fR in the target
+manifest settings, in which case your code will need to provide its own \fBmain\fR
+function to handle running tests.
+.SS "Documentation tests"
+Documentation tests are also run by default, which is handled by \fBrustdoc\fR\&. It
+extracts code samples from documentation comments of the library target, and
+then executes them.
+.sp
+Different from normal test targets, each code block compiles to a doctest
+executable on the fly with \fBrustc\fR\&. These executables run in parallel in
+separate processes. The compilation of a code block is in fact a part of test
+function controlled by libtest, so some options such as \fB\-\-jobs\fR might not
+take effect. Note that this execution model of doctests is not guaranteed
+and may change in the future; beware of depending on it.
+.sp
+See the \fIrustdoc book\fR <https://doc.rust\-lang.org/rustdoc/> for more information
+on writing doc tests.
+.SS "Working directory of tests"
+The working directory when running each unit and integration test is set to the
+root directory of the package the test belongs to.
+Setting the working directory of tests to the package\[cq]s root directory makes it
+possible for tests to reliably access the package\[cq]s files using relative paths,
+regardless from where \fBcargo test\fR was executed from.
+.sp
+For documentation tests, the working directory when invoking \fBrustdoc\fR is set to
+the workspace root directory, and is also the directory \fBrustdoc\fR uses as the
+compilation directory of each documentation test.
+The working directory when running each documentation test is set to the root
+directory of the package the test belongs to, and is controlled via \fBrustdoc\fR\[cq]s
+\fB\-\-test\-run\-directory\fR option.
+.SH "OPTIONS"
+.SS "Test Options"
+.sp
+\fB\-\-no\-run\fR
+.RS 4
+Compile, but don\[cq]t run tests.
+.RE
+.sp
+\fB\-\-no\-fail\-fast\fR
+.RS 4
+Run all tests regardless of failure. Without this flag, Cargo will exit
+after the first executable fails. The Rust test harness will run all tests
+within the executable to completion, this flag only applies to the executable
+as a whole.
+.RE
+.SS "Package Selection"
+By default, when no package selection options are given, the packages selected
+depend on the selected manifest file (based on the current working directory if
+\fB\-\-manifest\-path\fR is not given). If the manifest is the root of a workspace then
+the workspaces default members are selected, otherwise only the package defined
+by the manifest will be selected.
+.sp
+The default members of a workspace can be set explicitly with the
+\fBworkspace.default\-members\fR key in the root manifest. If this is not set, a
+virtual workspace will include all workspace members (equivalent to passing
+\fB\-\-workspace\fR), and a non\-virtual workspace will include only the root crate itself.
+.sp
+\fB\-p\fR \fIspec\fR\[u2026], 
+\fB\-\-package\fR \fIspec\fR\[u2026]
+.RS 4
+Test only the specified packages. See \fBcargo\-pkgid\fR(1) for the
+SPEC format. This flag may be specified multiple times and supports common Unix
+glob patterns like \fB*\fR, \fB?\fR and \fB[]\fR\&. However, to avoid your shell accidentally 
+expanding glob patterns before Cargo handles them, you must use single quotes or
+double quotes around each pattern.
+.RE
+.sp
+\fB\-\-workspace\fR
+.RS 4
+Test all members in the workspace.
+.RE
+.sp
+\fB\-\-all\fR
+.RS 4
+Deprecated alias for \fB\-\-workspace\fR\&.
+.RE
+.sp
+\fB\-\-exclude\fR \fISPEC\fR\[u2026]
+.RS 4
+Exclude the specified packages. Must be used in conjunction with the
+\fB\-\-workspace\fR flag. This flag may be specified multiple times and supports
+common Unix glob patterns like \fB*\fR, \fB?\fR and \fB[]\fR\&. However, to avoid your shell
+accidentally expanding glob patterns before Cargo handles them, you must use
+single quotes or double quotes around each pattern.
+.RE
+.SS "Target Selection"
+When no target selection options are given, \fBcargo test\fR will build the
+following targets of the selected packages:
+.sp
+.RS 4
+\h'-04'\(bu\h'+02'lib \[em] used to link with binaries, examples, integration tests, and doc tests
+.RE
+.sp
+.RS 4
+\h'-04'\(bu\h'+02'bins (only if integration tests are built and required features are
+available)
+.RE
+.sp
+.RS 4
+\h'-04'\(bu\h'+02'examples \[em] to ensure they compile
+.RE
+.sp
+.RS 4
+\h'-04'\(bu\h'+02'lib as a unit test
+.RE
+.sp
+.RS 4
+\h'-04'\(bu\h'+02'bins as unit tests
+.RE
+.sp
+.RS 4
+\h'-04'\(bu\h'+02'integration tests
+.RE
+.sp
+.RS 4
+\h'-04'\(bu\h'+02'doc tests for the lib target
+.RE
+.sp
+The default behavior can be changed by setting the \fBtest\fR flag for the target
+in the manifest settings. Setting examples to \fBtest = true\fR will build and run
+the example as a test, replacing the example\[cq]s \fBmain\fR function with the
+libtest harness. If you don\[cq]t want the \fBmain\fR function replaced, also include
+\fBharness = false\fR, in which case the example will be built and executed as\-is.
+.sp
+Setting targets to \fBtest = false\fR will stop them from being tested by default.
+Target selection options that take a target by name (such as \fB\-\-example foo\fR)
+ignore the \fBtest\fR flag and will always test the given target.
+.sp
+Doc tests for libraries may be disabled by setting \fBdoctest = false\fR for the
+library in the manifest.
+.sp
+See \fIConfiguring a target\fR <https://doc.rust\-lang.org/cargo/reference/cargo\-targets.html#configuring\-a\-target>
+for more information on per\-target settings.
+.sp
+Binary targets are automatically built if there is an integration test or
+benchmark being selected to test. This allows an integration
+test to execute the binary to exercise and test its behavior. 
+The \fBCARGO_BIN_EXE_<name>\fR
+\fIenvironment variable\fR <https://doc.rust\-lang.org/cargo/reference/environment\-variables.html#environment\-variables\-cargo\-sets\-for\-crates>
+is set when the integration test is built so that it can use the
+\fI\f(BIenv\fI macro\fR <https://doc.rust\-lang.org/std/macro.env.html> to locate the
+executable.
+.sp
+Passing target selection flags will test only the specified
+targets. 
+.sp
+Note that \fB\-\-bin\fR, \fB\-\-example\fR, \fB\-\-test\fR and \fB\-\-bench\fR flags also 
+support common Unix glob patterns like \fB*\fR, \fB?\fR and \fB[]\fR\&. However, to avoid your 
+shell accidentally expanding glob patterns before Cargo handles them, you must 
+use single quotes or double quotes around each glob pattern.
+.sp
+\fB\-\-lib\fR
+.RS 4
+Test the package\[cq]s library.
+.RE
+.sp
+\fB\-\-bin\fR \fIname\fR\[u2026]
+.RS 4
+Test the specified binary. This flag may be specified multiple times
+and supports common Unix glob patterns.
+.RE
+.sp
+\fB\-\-bins\fR
+.RS 4
+Test all binary targets.
+.RE
+.sp
+\fB\-\-example\fR \fIname\fR\[u2026]
+.RS 4
+Test the specified example. This flag may be specified multiple times
+and supports common Unix glob patterns.
+.RE
+.sp
+\fB\-\-examples\fR
+.RS 4
+Test all example targets.
+.RE
+.sp
+\fB\-\-test\fR \fIname\fR\[u2026]
+.RS 4
+Test the specified integration test. This flag may be specified
+multiple times and supports common Unix glob patterns.
+.RE
+.sp
+\fB\-\-tests\fR
+.RS 4
+Test all targets in test mode that have the \fBtest = true\fR manifest
+flag set. By default this includes the library and binaries built as
+unittests, and integration tests. Be aware that this will also build any
+required dependencies, so the lib target may be built twice (once as a
+unittest, and once as a dependency for binaries, integration tests, etc.).
+Targets may be enabled or disabled by setting the \fBtest\fR flag in the
+manifest settings for the target.
+.RE
+.sp
+\fB\-\-bench\fR \fIname\fR\[u2026]
+.RS 4
+Test the specified benchmark. This flag may be specified multiple
+times and supports common Unix glob patterns.
+.RE
+.sp
+\fB\-\-benches\fR
+.RS 4
+Test all targets in benchmark mode that have the \fBbench = true\fR
+manifest flag set. By default this includes the library and binaries built
+as benchmarks, and bench targets. Be aware that this will also build any
+required dependencies, so the lib target may be built twice (once as a
+benchmark, and once as a dependency for binaries, benchmarks, etc.).
+Targets may be enabled or disabled by setting the \fBbench\fR flag in the
+manifest settings for the target.
+.RE
+.sp
+\fB\-\-all\-targets\fR
+.RS 4
+Test all targets. This is equivalent to specifying \fB\-\-lib \-\-bins \-\-tests \-\-benches \-\-examples\fR\&.
+.RE
+.sp
+\fB\-\-doc\fR
+.RS 4
+Test only the library\[cq]s documentation. This cannot be mixed with other
+target options.
+.RE
+.SS "Feature Selection"
+The feature flags allow you to control which features are enabled. When no
+feature options are given, the \fBdefault\fR feature is activated for every
+selected package.
+.sp
+See \fIthe features documentation\fR <https://doc.rust\-lang.org/cargo/reference/features.html#command\-line\-feature\-options>
+for more details.
+.sp
+\fB\-F\fR \fIfeatures\fR, 
+\fB\-\-features\fR \fIfeatures\fR
+.RS 4
+Space or comma separated list of features to activate. Features of workspace
+members may be enabled with \fBpackage\-name/feature\-name\fR syntax. This flag may
+be specified multiple times, which enables all specified features.
+.RE
+.sp
+\fB\-\-all\-features\fR
+.RS 4
+Activate all available features of all selected packages.
+.RE
+.sp
+\fB\-\-no\-default\-features\fR
+.RS 4
+Do not activate the \fBdefault\fR feature of the selected packages.
+.RE
+.SS "Compilation Options"
+.sp
+\fB\-\-target\fR \fItriple\fR
+.RS 4
+Test for the given architecture. The default is the host architecture. The general format of the triple is
+\fB<arch><sub>\-<vendor>\-<sys>\-<abi>\fR\&. Run \fBrustc \-\-print target\-list\fR for a
+list of supported targets. This flag may be specified multiple times.
+.sp
+This may also be specified with the \fBbuild.target\fR
+\fIconfig value\fR <https://doc.rust\-lang.org/cargo/reference/config.html>\&.
+.sp
+Note that specifying this flag makes Cargo run in a different mode where the
+target artifacts are placed in a separate directory. See the
+\fIbuild cache\fR <https://doc.rust\-lang.org/cargo/guide/build\-cache.html> documentation for more details.
+.RE
+.sp
+\fB\-r\fR, 
+\fB\-\-release\fR
+.RS 4
+Test optimized artifacts with the \fBrelease\fR profile.
+See also the \fB\-\-profile\fR option for choosing a specific profile by name.
+.RE
+.sp
+\fB\-\-profile\fR \fIname\fR
+.RS 4
+Test with the given profile.
+See \fIthe reference\fR <https://doc.rust\-lang.org/cargo/reference/profiles.html> for more details on profiles.
+.RE
+.sp
+\fB\-\-ignore\-rust\-version\fR
+.RS 4
+Test the target even if the selected Rust compiler is older than the
+required Rust version as configured in the project\[cq]s \fBrust\-version\fR field.
+.RE
+.sp
+\fB\-\-timings=\fR\fIfmts\fR
+.RS 4
+Output information how long each compilation takes, and track concurrency
+information over time. Accepts an optional comma\-separated list of output
+formats; \fB\-\-timings\fR without an argument will default to \fB\-\-timings=html\fR\&.
+Specifying an output format (rather than the default) is unstable and requires
+\fB\-Zunstable\-options\fR\&. Valid output formats:
+.sp
+.RS 4
+\h'-04'\(bu\h'+02'\fBhtml\fR (unstable, requires \fB\-Zunstable\-options\fR): Write a human\-readable file \fBcargo\-timing.html\fR to the
+\fBtarget/cargo\-timings\fR directory with a report of the compilation. Also write
+a report to the same directory with a timestamp in the filename if you want
+to look at older runs. HTML output is suitable for human consumption only,
+and does not provide machine\-readable timing data.
+.RE
+.sp
+.RS 4
+\h'-04'\(bu\h'+02'\fBjson\fR (unstable, requires \fB\-Zunstable\-options\fR): Emit machine\-readable JSON
+information about timing information.
+.RE
+.RE
+.SS "Output Options"
+.sp
+\fB\-\-target\-dir\fR \fIdirectory\fR
+.RS 4
+Directory for all generated artifacts and intermediate files. May also be
+specified with the \fBCARGO_TARGET_DIR\fR environment variable, or the
+\fBbuild.target\-dir\fR \fIconfig value\fR <https://doc.rust\-lang.org/cargo/reference/config.html>\&.
+Defaults to \fBtarget\fR in the root of the workspace.
+.RE
+.SS "Display Options"
+By default the Rust test harness hides output from test execution to keep
+results readable. Test output can be recovered (e.g., for debugging) by passing
+\fB\-\-nocapture\fR to the test binaries:
+.sp
+.RS 4
+.nf
+cargo test \-\- \-\-nocapture
+.fi
+.RE
+.sp
+\fB\-v\fR, 
+\fB\-\-verbose\fR
+.RS 4
+Use verbose output. May be specified twice for \[lq]very verbose\[rq] output which
+includes extra output such as dependency warnings and build script output.
+May also be specified with the \fBterm.verbose\fR
+\fIconfig value\fR <https://doc.rust\-lang.org/cargo/reference/config.html>\&.
+.RE
+.sp
+\fB\-q\fR, 
+\fB\-\-quiet\fR
+.RS 4
+Do not print cargo log messages.
+May also be specified with the \fBterm.quiet\fR
+\fIconfig value\fR <https://doc.rust\-lang.org/cargo/reference/config.html>\&.
+.RE
+.sp
+\fB\-\-color\fR \fIwhen\fR
+.RS 4
+Control when colored output is used. Valid values:
+.sp
+.RS 4
+\h'-04'\(bu\h'+02'\fBauto\fR (default): Automatically detect if color support is available on the
+terminal.
+.RE
+.sp
+.RS 4
+\h'-04'\(bu\h'+02'\fBalways\fR: Always display colors.
+.RE
+.sp
+.RS 4
+\h'-04'\(bu\h'+02'\fBnever\fR: Never display colors.
+.RE
+.sp
+May also be specified with the \fBterm.color\fR
+\fIconfig value\fR <https://doc.rust\-lang.org/cargo/reference/config.html>\&.
+.RE
+.sp
+\fB\-\-message\-format\fR \fIfmt\fR
+.RS 4
+The output format for diagnostic messages. Can be specified multiple times
+and consists of comma\-separated values. Valid values:
+.sp
+.RS 4
+\h'-04'\(bu\h'+02'\fBhuman\fR (default): Display in a human\-readable text format. Conflicts with
+\fBshort\fR and \fBjson\fR\&.
+.RE
+.sp
+.RS 4
+\h'-04'\(bu\h'+02'\fBshort\fR: Emit shorter, human\-readable text messages. Conflicts with \fBhuman\fR
+and \fBjson\fR\&.
+.RE
+.sp
+.RS 4
+\h'-04'\(bu\h'+02'\fBjson\fR: Emit JSON messages to stdout. See
+\fIthe reference\fR <https://doc.rust\-lang.org/cargo/reference/external\-tools.html#json\-messages>
+for more details. Conflicts with \fBhuman\fR and \fBshort\fR\&.
+.RE
+.sp
+.RS 4
+\h'-04'\(bu\h'+02'\fBjson\-diagnostic\-short\fR: Ensure the \fBrendered\fR field of JSON messages contains
+the \[lq]short\[rq] rendering from rustc. Cannot be used with \fBhuman\fR or \fBshort\fR\&.
+.RE
+.sp
+.RS 4
+\h'-04'\(bu\h'+02'\fBjson\-diagnostic\-rendered\-ansi\fR: Ensure the \fBrendered\fR field of JSON messages
+contains embedded ANSI color codes for respecting rustc\[cq]s default color
+scheme. Cannot be used with \fBhuman\fR or \fBshort\fR\&.
+.RE
+.sp
+.RS 4
+\h'-04'\(bu\h'+02'\fBjson\-render\-diagnostics\fR: Instruct Cargo to not include rustc diagnostics
+in JSON messages printed, but instead Cargo itself should render the
+JSON diagnostics coming from rustc. Cargo\[cq]s own JSON diagnostics and others
+coming from rustc are still emitted. Cannot be used with \fBhuman\fR or \fBshort\fR\&.
+.RE
+.RE
+.SS "Manifest Options"
+.sp
+\fB\-\-manifest\-path\fR \fIpath\fR
+.RS 4
+Path to the \fBCargo.toml\fR file. By default, Cargo searches for the
+\fBCargo.toml\fR file in the current directory or any parent directory.
+.RE
+.sp
+\fB\-\-frozen\fR, 
+\fB\-\-locked\fR
+.RS 4
+Either of these flags requires that the \fBCargo.lock\fR file is
+up\-to\-date. If the lock file is missing, or it needs to be updated, Cargo will
+exit with an error. The \fB\-\-frozen\fR flag also prevents Cargo from
+attempting to access the network to determine if it is out\-of\-date.
+.sp
+These may be used in environments where you want to assert that the
+\fBCargo.lock\fR file is up\-to\-date (such as a CI build) or want to avoid network
+access.
+.RE
+.sp
+\fB\-\-offline\fR
+.RS 4
+Prevents Cargo from accessing the network for any reason. Without this
+flag, Cargo will stop with an error if it needs to access the network and
+the network is not available. With this flag, Cargo will attempt to
+proceed without the network if possible.
+.sp
+Beware that this may result in different dependency resolution than online
+mode. Cargo will restrict itself to crates that are downloaded locally, even
+if there might be a newer version as indicated in the local copy of the index.
+See the \fBcargo\-fetch\fR(1) command to download dependencies before going
+offline.
+.sp
+May also be specified with the \fBnet.offline\fR \fIconfig value\fR <https://doc.rust\-lang.org/cargo/reference/config.html>\&.
+.RE
+.SS "Common Options"
+.sp
+\fB+\fR\fItoolchain\fR
+.RS 4
+If Cargo has been installed with rustup, and the first argument to \fBcargo\fR
+begins with \fB+\fR, it will be interpreted as a rustup toolchain name (such
+as \fB+stable\fR or \fB+nightly\fR).
+See the \fIrustup documentation\fR <https://rust\-lang.github.io/rustup/overrides.html>
+for more information about how toolchain overrides work.
+.RE
+.sp
+\fB\-\-config\fR \fIKEY=VALUE\fR or \fIPATH\fR
+.RS 4
+Overrides a Cargo configuration value. The argument should be in TOML syntax of \fBKEY=VALUE\fR,
+or provided as a path to an extra configuration file. This flag may be specified multiple times.
+See the \fIcommand\-line overrides section\fR <https://doc.rust\-lang.org/cargo/reference/config.html#command\-line\-overrides> for more information.
+.RE
+.sp
+\fB\-C\fR \fIPATH\fR
+.RS 4
+Changes the current working directory before executing any specified operations. This affects
+things like where cargo looks by default for the project manifest (\fBCargo.toml\fR), as well as
+the directories searched for discovering \fB\&.cargo/config.toml\fR, for example. This option must
+appear before the command name, for example \fBcargo \-C path/to/my\-project build\fR\&.
+.sp
+This option is only available on the \fInightly
+channel\fR <https://doc.rust\-lang.org/book/appendix\-07\-nightly\-rust.html> and
+requires the \fB\-Z unstable\-options\fR flag to enable (see
+\fI#10098\fR <https://github.com/rust\-lang/cargo/issues/10098>).
+.RE
+.sp
+\fB\-h\fR, 
+\fB\-\-help\fR
+.RS 4
+Prints help information.
+.RE
+.sp
+\fB\-Z\fR \fIflag\fR
+.RS 4
+Unstable (nightly\-only) flags to Cargo. Run \fBcargo \-Z help\fR for details.
+.RE
+.SS "Miscellaneous Options"
+The \fB\-\-jobs\fR argument affects the building of the test executable but does not
+affect how many threads are used when running the tests. The Rust test harness
+includes an option to control the number of threads used:
+.sp
+.RS 4
+.nf
+cargo test \-j 2 \-\- \-\-test\-threads=2
+.fi
+.RE
+.sp
+\fB\-j\fR \fIN\fR, 
+\fB\-\-jobs\fR \fIN\fR
+.RS 4
+Number of parallel jobs to run. May also be specified with the
+\fBbuild.jobs\fR \fIconfig value\fR <https://doc.rust\-lang.org/cargo/reference/config.html>\&. Defaults to
+the number of logical CPUs. If negative, it sets the maximum number of
+parallel jobs to the number of logical CPUs plus provided value. If
+a string \fBdefault\fR is provided, it sets the value back to defaults.
+Should not be 0.
+.RE
+.sp
+\fB\-\-future\-incompat\-report\fR
+.RS 4
+Displays a future\-incompat report for any future\-incompatible warnings
+produced during execution of this command
+.sp
+See \fBcargo\-report\fR(1)
+.RE
+.sp
+While \fBcargo test\fR involves compilation, it does not provide a \fB\-\-keep\-going\fR
+flag. Use \fB\-\-no\-fail\-fast\fR to run as many tests as possible without stopping at
+the first failure. To \[lq]compile\[rq] as many tests as possible, use \fB\-\-tests\fR to
+build test binaries separately. For example:
+.sp
+.RS 4
+.nf
+cargo build \-\-tests \-\-keep\-going
+cargo test \-\-tests \-\-no\-fail\-fast
+.fi
+.RE
+.SH "ENVIRONMENT"
+See \fIthe reference\fR <https://doc.rust\-lang.org/cargo/reference/environment\-variables.html> for
+details on environment variables that Cargo reads.
+.SH "EXIT STATUS"
+.sp
+.RS 4
+\h'-04'\(bu\h'+02'\fB0\fR: Cargo succeeded.
+.RE
+.sp
+.RS 4
+\h'-04'\(bu\h'+02'\fB101\fR: Cargo failed to complete.
+.RE
+.SH "EXAMPLES"
+.sp
+.RS 4
+\h'-04' 1.\h'+01'Execute all the unit and integration tests of the current package:
+.sp
+.RS 4
+.nf
+cargo test
+.fi
+.RE
+.RE
+.sp
+.RS 4
+\h'-04' 2.\h'+01'Run only tests whose names match against a filter string:
+.sp
+.RS 4
+.nf
+cargo test name_filter
+.fi
+.RE
+.RE
+.sp
+.RS 4
+\h'-04' 3.\h'+01'Run only a specific test within a specific integration test:
+.sp
+.RS 4
+.nf
+cargo test \-\-test int_test_name \-\- modname::test_name
+.fi
+.RE
+.RE
+.SH "SEE ALSO"
+\fBcargo\fR(1), \fBcargo\-bench\fR(1), \fItypes of tests\fR <https://doc.rust\-lang.org/cargo/reference/cargo\-targets.html#tests>, \fIhow to write tests\fR <https://doc.rust\-lang.org/rustc/tests/index.html>

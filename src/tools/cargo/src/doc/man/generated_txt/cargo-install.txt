@@ -1,0 +1,408 @@
+CARGO-INSTALL(1)
+
+NAME
+       cargo-install — Build and install a Rust binary
+
+SYNOPSIS
+       cargo install [options] crate[@version]…
+       cargo install [options] --path path
+       cargo install [options] --git url [crate…]
+       cargo install [options] --list
+
+DESCRIPTION
+       This command manages Cargo’s local set of installed binary crates.
+       Only packages which have executable [[bin]] or [[example]] targets can
+       be installed, and all executables are installed into the installation
+       root’s bin folder. By default only binaries, not examples, are
+       installed.
+
+       The installation root is determined, in order of precedence:
+
+       o  --root option
+
+       o  CARGO_INSTALL_ROOT environment variable
+
+       o  install.root Cargo config value
+          <https://doc.rust-lang.org/cargo/reference/config.html>
+
+       o  CARGO_HOME environment variable
+
+       o  $HOME/.cargo
+
+       There are multiple sources from which a crate can be installed. The
+       default source location is crates.io but the --git, --path, and
+       --registry flags can change this source. If the source contains more
+       than one package (such as crates.io or a git repository with multiple
+       crates) the crate argument is required to indicate which crate should be
+       installed.
+
+       Crates from crates.io can optionally specify the version they wish to
+       install via the --version flags, and similarly packages from git
+       repositories can optionally specify the branch, tag, or revision that
+       should be installed. If a crate has multiple binaries, the --bin
+       argument can selectively install only one of them, and if you’d rather
+       install examples the --example argument can be used as well.
+
+       If the package is already installed, Cargo will reinstall it if the
+       installed version does not appear to be up-to-date. If any of the
+       following values change, then Cargo will reinstall the package:
+
+       o  The package version and source.
+
+       o  The set of binary names installed.
+
+       o  The chosen features.
+
+       o  The profile (--profile).
+
+       o  The target (--target).
+
+       Installing with --path will always build and install, unless there are
+       conflicting binaries from another package. The --force flag may be used
+       to force Cargo to always reinstall the package.
+
+       If the source is crates.io or --git then by default the crate will be
+       built in a temporary target directory. To avoid this, the target
+       directory can be specified by setting the CARGO_TARGET_DIR environment
+       variable to a relative path. In particular, this can be useful for
+       caching build artifacts on continuous integration systems.
+
+   Dealing with the Lockfile
+       By default, the Cargo.lock file that is included with the package will
+       be ignored. This means that Cargo will recompute which versions of
+       dependencies to use, possibly using newer versions that have been
+       released since the package was published. The --locked flag can be used
+       to force Cargo to use the packaged Cargo.lock file if it is available.
+       This may be useful for ensuring reproducible builds, to use the exact
+       same set of dependencies that were available when the package was
+       published. It may also be useful if a newer version of a dependency is
+       published that no longer builds on your system, or has other problems.
+       The downside to using --locked is that you will not receive any fixes or
+       updates to any dependency. Note that Cargo did not start publishing
+       Cargo.lock files until version 1.37, which means packages published with
+       prior versions will not have a Cargo.lock file available.
+
+   Configuration Discovery
+       This command operates on system or user level, not project level. This
+       means that the local configuration discovery
+       <https://doc.rust-lang.org/cargo/reference/config.html#hierarchical-structure>
+       is ignored. Instead, the configuration discovery begins at
+       $CARGO_HOME/config.toml. If the package is installed with --path $PATH,
+       the local configuration will be used, beginning discovery at
+       $PATH/.cargo/config.toml.
+
+OPTIONS
+   Install Options
+       --vers version, --version version
+           Specify a version to install. This may be a version requirement
+           <https://doc.rust-lang.org/cargo/reference/specifying-dependencies.html>,
+           like ~1.2, to have Cargo select the newest version from the given
+           requirement. If the version does not have a requirement operator
+           (such as ^ or ~), then it must be in the form MAJOR.MINOR.PATCH, and
+           will install exactly that version; it is not treated as a caret
+           requirement like Cargo dependencies are.
+
+       --git url
+           Git URL to install the specified crate from.
+
+       --branch branch
+           Branch to use when installing from git.
+
+       --tag tag
+           Tag to use when installing from git.
+
+       --rev sha
+           Specific commit to use when installing from git.
+
+       --path path
+           Filesystem path to local crate to install from.
+
+       --list
+           List all installed packages and their versions.
+
+       -f, --force
+           Force overwriting existing crates or binaries. This can be used if a
+           package has installed a binary with the same name as another
+           package. This is also useful if something has changed on the system
+           that you want to rebuild with, such as a newer version of rustc.
+
+       --no-track
+           By default, Cargo keeps track of the installed packages with a
+           metadata file stored in the installation root directory. This flag
+           tells Cargo not to use or create that file. With this flag, Cargo
+           will refuse to overwrite any existing files unless the --force flag
+           is used. This also disables Cargo’s ability to protect against
+           multiple concurrent invocations of Cargo installing at the same
+           time.
+
+       --bin name…
+           Install only the specified binary.
+
+       --bins
+           Install all binaries. This is the default behavior.
+
+       --example name…
+           Install only the specified example.
+
+       --examples
+           Install all examples.
+
+       --root dir
+           Directory to install packages into.
+
+       --registry registry
+           Name of the registry to use. Registry names are defined in Cargo
+           config files
+           <https://doc.rust-lang.org/cargo/reference/config.html>. If not
+           specified, the default registry is used, which is defined by the
+           registry.default config key which defaults to crates-io.
+
+       --index index
+           The URL of the registry index to use.
+
+   Feature Selection
+       The feature flags allow you to control which features are enabled. When
+       no feature options are given, the default feature is activated for every
+       selected package.
+
+       See the features documentation
+       <https://doc.rust-lang.org/cargo/reference/features.html#command-line-feature-options>
+       for more details.
+
+       -F features, --features features
+           Space or comma separated list of features to activate. Features of
+           workspace members may be enabled with package-name/feature-name
+           syntax. This flag may be specified multiple times, which enables all
+           specified features.
+
+       --all-features
+           Activate all available features of all selected packages.
+
+       --no-default-features
+           Do not activate the default feature of the selected packages.
+
+   Compilation Options
+       --target triple
+           Install for the given architecture. The default is the host
+           architecture. The general format of the triple is
+           <arch><sub>-<vendor>-<sys>-<abi>. Run rustc --print target-list for
+           a list of supported targets.
+
+           This may also be specified with the build.target config value
+           <https://doc.rust-lang.org/cargo/reference/config.html>.
+
+           Note that specifying this flag makes Cargo run in a different mode
+           where the target artifacts are placed in a separate directory. See
+           the build cache
+           <https://doc.rust-lang.org/cargo/guide/build-cache.html>
+           documentation for more details.
+
+       --target-dir directory
+           Directory for all generated artifacts and intermediate files. May
+           also be specified with the CARGO_TARGET_DIR environment variable, or
+           the build.target-dir config value
+           <https://doc.rust-lang.org/cargo/reference/config.html>. Defaults to
+           a new temporary folder located in the temporary directory of the
+           platform.
+
+           When using --path, by default it will use target directory in the
+           workspace of the local crate unless --target-dir is specified.
+
+       --debug
+           Build with the dev profile instead of the release profile. See also
+           the --profile option for choosing a specific profile by name.
+
+       --profile name
+           Install with the given profile. See the reference
+           <https://doc.rust-lang.org/cargo/reference/profiles.html> for more
+           details on profiles.
+
+       --ignore-rust-version
+           Install the target even if the selected Rust compiler is older than
+           the required Rust version as configured in the project’s
+           rust-version field.
+
+       --timings=fmts
+           Output information how long each compilation takes, and track
+           concurrency information over time. Accepts an optional
+           comma-separated list of output formats; --timings without an
+           argument will default to --timings=html. Specifying an output format
+           (rather than the default) is unstable and requires
+           -Zunstable-options. Valid output formats:
+
+           o  html (unstable, requires -Zunstable-options): Write a
+              human-readable file cargo-timing.html to the target/cargo-timings
+              directory with a report of the compilation. Also write a report
+              to the same directory with a timestamp in the filename if you
+              want to look at older runs. HTML output is suitable for human
+              consumption only, and does not provide machine-readable timing
+              data.
+
+           o  json (unstable, requires -Zunstable-options): Emit
+              machine-readable JSON information about timing information.
+
+   Manifest Options
+       --frozen, --locked
+           Either of these flags requires that the Cargo.lock file is
+           up-to-date. If the lock file is missing, or it needs to be updated,
+           Cargo will exit with an error. The --frozen flag also prevents Cargo
+           from attempting to access the network to determine if it is
+           out-of-date.
+
+           These may be used in environments where you want to assert that the
+           Cargo.lock file is up-to-date (such as a CI build) or want to avoid
+           network access.
+
+       --offline
+           Prevents Cargo from accessing the network for any reason. Without
+           this flag, Cargo will stop with an error if it needs to access the
+           network and the network is not available. With this flag, Cargo will
+           attempt to proceed without the network if possible.
+
+           Beware that this may result in different dependency resolution than
+           online mode. Cargo will restrict itself to crates that are
+           downloaded locally, even if there might be a newer version as
+           indicated in the local copy of the index. See the cargo-fetch(1)
+           command to download dependencies before going offline.
+
+           May also be specified with the net.offline config value
+           <https://doc.rust-lang.org/cargo/reference/config.html>.
+
+   Miscellaneous Options
+       -j N, --jobs N
+           Number of parallel jobs to run. May also be specified with the
+           build.jobs config value
+           <https://doc.rust-lang.org/cargo/reference/config.html>. Defaults to
+           the number of logical CPUs. If negative, it sets the maximum number
+           of parallel jobs to the number of logical CPUs plus provided value.
+           If a string default is provided, it sets the value back to defaults.
+           Should not be 0.
+
+       --keep-going
+           Build as many crates in the dependency graph as possible, rather
+           than aborting the build on the first one that fails to build.
+
+           For example if the current package depends on dependencies fails and
+           works, one of which fails to build, cargo install -j1 may or may not
+           build the one that succeeds (depending on which one of the two
+           builds Cargo picked to run first), whereas cargo install -j1
+           --keep-going would definitely run both builds, even if the one run
+           first fails.
+
+   Display Options
+       -v, --verbose
+           Use verbose output. May be specified twice for “very verbose”
+           output which includes extra output such as dependency warnings and
+           build script output. May also be specified with the term.verbose
+           config value
+           <https://doc.rust-lang.org/cargo/reference/config.html>.
+
+       -q, --quiet
+           Do not print cargo log messages. May also be specified with the
+           term.quiet config value
+           <https://doc.rust-lang.org/cargo/reference/config.html>.
+
+       --color when
+           Control when colored output is used. Valid values:
+
+           o  auto (default): Automatically detect if color support is
+              available on the terminal.
+
+           o  always: Always display colors.
+
+           o  never: Never display colors.
+
+           May also be specified with the term.color config value
+           <https://doc.rust-lang.org/cargo/reference/config.html>.
+
+       --message-format fmt
+           The output format for diagnostic messages. Can be specified multiple
+           times and consists of comma-separated values. Valid values:
+
+           o  human (default): Display in a human-readable text format.
+              Conflicts with short and json.
+
+           o  short: Emit shorter, human-readable text messages. Conflicts with
+              human and json.
+
+           o  json: Emit JSON messages to stdout. See the reference
+              <https://doc.rust-lang.org/cargo/reference/external-tools.html#json-messages>
+              for more details. Conflicts with human and short.
+
+           o  json-diagnostic-short: Ensure the rendered field of JSON messages
+              contains the “short” rendering from rustc. Cannot be used
+              with human or short.
+
+           o  json-diagnostic-rendered-ansi: Ensure the rendered field of JSON
+              messages contains embedded ANSI color codes for respecting
+              rustc’s default color scheme. Cannot be used with human or
+              short.
+
+           o  json-render-diagnostics: Instruct Cargo to not include rustc
+              diagnostics in JSON messages printed, but instead Cargo itself
+              should render the JSON diagnostics coming from rustc. Cargo’s
+              own JSON diagnostics and others coming from rustc are still
+              emitted. Cannot be used with human or short.
+
+   Common Options
+       +toolchain
+           If Cargo has been installed with rustup, and the first argument to
+           cargo begins with +, it will be interpreted as a rustup toolchain
+           name (such as +stable or +nightly). See the rustup documentation
+           <https://rust-lang.github.io/rustup/overrides.html> for more
+           information about how toolchain overrides work.
+
+       --config KEY=VALUE or PATH
+           Overrides a Cargo configuration value. The argument should be in
+           TOML syntax of KEY=VALUE, or provided as a path to an extra
+           configuration file. This flag may be specified multiple times. See
+           the command-line overrides section
+           <https://doc.rust-lang.org/cargo/reference/config.html#command-line-overrides>
+           for more information.
+
+       -C PATH
+           Changes the current working directory before executing any specified
+           operations. This affects things like where cargo looks by default
+           for the project manifest (Cargo.toml), as well as the directories
+           searched for discovering .cargo/config.toml, for example. This
+           option must appear before the command name, for example cargo -C
+           path/to/my-project build.
+
+           This option is only available on the nightly channel
+           <https://doc.rust-lang.org/book/appendix-07-nightly-rust.html> and
+           requires the -Z unstable-options flag to enable (see #10098
+           <https://github.com/rust-lang/cargo/issues/10098>).
+
+       -h, --help
+           Prints help information.
+
+       -Z flag
+           Unstable (nightly-only) flags to Cargo. Run cargo -Z help for
+           details.
+
+ENVIRONMENT
+       See the reference
+       <https://doc.rust-lang.org/cargo/reference/environment-variables.html>
+       for details on environment variables that Cargo reads.
+
+EXIT STATUS
+       o  0: Cargo succeeded.
+
+       o  101: Cargo failed to complete.
+
+EXAMPLES
+       1. Install or upgrade a package from crates.io:
+
+              cargo install ripgrep
+
+       2. Install or reinstall the package in the current directory:
+
+              cargo install --path .
+
+       3. View the list of installed packages:
+
+              cargo install --list
+
+SEE ALSO
+       cargo(1), cargo-uninstall(1), cargo-search(1), cargo-publish(1)
+

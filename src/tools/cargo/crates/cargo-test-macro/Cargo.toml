@@ -1,0 +1,17 @@
+[package]
+name = "cargo-test-macro"
+version = "0.1.0"
+rust-version.workspace = true
+edition.workspace = true
+license.workspace = true
+homepage.workspace = true
+repository.workspace = true
+documentation = "https://github.com/rust-lang/cargo"
+description = "Helper proc-macro for Cargo's testsuite."
+publish = false
+
+[lib]
+proc-macro = true
+
+[lints]
+workspace = true

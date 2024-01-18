@@ -1,0 +1,8 @@
+[workspace]
+members = [
+  "library/alloc",
+  "library/core",
+  "library/proc_macro",
+  "library/std",
+  "library/test",
+]
