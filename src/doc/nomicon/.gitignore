@@ -1,0 +1,7 @@
+*.html
+book
+
+# linkcheck stuff
+linkcheck
+linkchecker
+linkcheck.sh

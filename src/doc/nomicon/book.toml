@@ -1,0 +1,35 @@
+[book]
+author = "The Rust Project Developers"
+title = "The Rustonomicon"
+description = "The Dark Arts of Advanced and Unsafe Rust Programming"
+
+[output.html]
+additional-css = ["theme/nomicon.css"]
+git-repository-url = "https://github.com/rust-lang/nomicon"
+
+[output.html.redirect]
+# Vec-related chapters.
+"./vec-alloc.html" = "./vec/vec-alloc.html"
+"./vec-dealloc.html" = "./vec/vec-dealloc.html"
+"./vec-deref.html" = "./vec/vec-deref.html"
+"./vec-drain.html" = "./vec/vec-drain.html"
+"./vec-final.html" = "./vec/vec-final.html"
+"./vec-insert-remove.html" = "./vec/vec-insert-remove.html"
+"./vec-into-iter.html" = "./vec/vec-into-iter.html"
+"./vec-layout.html" = "./vec/vec-layout.html"
+"./vec-push-pop.html" = "./vec/vec-push-pop.html"
+"./vec-raw.html" = "./vec/vec-raw.html"
+"./vec-zsts.html" = "./vec/vec-zsts.html"
+"./vec.html" = "./vec/vec.html"
+
+# Arc and Mutex related chapters.
+"./arc-and-mutex.html" = "./arc-mutex/arc-and-mutex.html"
+"./arc-base.html" = "./arc-mutex/arc-base.html"
+"./arc-clone.html" = "./arc-mutex/arc-clone.html"
+"./arc-drop.html" = "./arc-mutex/arc-drop.html"
+"./arc-final.html" = "./arc-mutex/arc-final.html"
+"./arc-layout.html" = "./arc-mutex/arc-layout.html"
+"./arc.html" = "./arc-mutex/arc.html"
+
+[rust]
+edition = "2021"
