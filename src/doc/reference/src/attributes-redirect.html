@@ -1,0 +1,29 @@
+<script>
+(function() {
+    var fragments = {
+        "#cold-attribute": "attributes/codegen.html#the-cold-attribute",
+        "#conditional-compilation": "conditional-compilation.html",
+        "#deprecation": "attributes/diagnostics.html#the-deprecated-attribute",
+        "#derive": "attributes/derive.html",
+        "#documentation": "../rustdoc/the-doc-attribute.html",
+        "#ffi-attributes": "attributes.html#built-in-attributes-index",
+        "#inline-attribute": "attributes/codegen.html#the-inline-attribute",
+        "#lint-check-attributes": "attributes/diagnostics.html#lint-check-attributes",
+        "#macro-related-attributes": "attributes.html#built-in-attributes-index",
+        "#miscellaneous-attributes": "attributes.html#built-in-attributes-index",
+        "#must_use": "attributes/diagnostics.html#the-must_use-attribute",
+        "#optimization-hints": "attributes/codegen.html#optimization-hints",
+        "#path": "items/modules.html#the-path-attribute",
+        "#preludes": "crates-and-source-files.html#preludes-and-no_std",
+        "#testing": "attributes/testing.html",
+        "#tool-lint-attributes": "attributes/diagnostics.html#tool-lint-attributes",
+        "#crate-only-attributes": "attributes.html#built-in-attributes-index",
+    };
+    var target = fragments[window.location.hash];
+    if (target) {
+        var url = window.location.toString();
+        var base = url.substring(0, url.lastIndexOf('/'));
+        window.location.replace(base + "/" + target);
+    }
+})();
+</script>

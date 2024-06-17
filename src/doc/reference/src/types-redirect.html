@@ -1,0 +1,43 @@
+<script>
+(function() {
+    var fragments = {
+        "#boolean-type": "types/boolean.html",
+        "#numeric-types": "types/numeric.html",
+        "#machine-types": "types/numeric.html",
+        "#machine-dependent-integer-types": "types/numeric.html#machine-dependent-integer-types",
+        "#textual-types": "types/textual.html",
+        "#never-type": "types/never.html",
+        "#tuple-types": "types/tuple.html",
+        "#array-and-slice-types": "types/array.html",
+        "#struct-types": "types/struct.html",
+        "#enumerated-types": "types/enum.html",
+        "#union-types": "types/union.html",
+        "#pointer-types": "types/pointer.html",
+        "#shared-references-": "types/pointer.html#shared-references-",
+        "#mutable-references-": "types/pointer.html#mutable-references-mut",
+        "#raw-pointers-const-and-mut": "types/pointer.html#raw-pointers-const-and-mut",
+        "#smart-pointers": "types/pointer.html#smart-pointers",
+        "#function-item-types": "types/function-item.html",
+        "#function-pointer-types": "types/function-pointer.html",
+        "#closure-types": "types/closure.html",
+        "#capture-modes": "types/closure.html#capture-modes",
+        "#unique-immutable-borrows-in-captures": "types/closure.html#unique-immutable-borrows-in-captures",
+        "#call-traits-and-coercions": "types/closure.html#call-traits-and-coercions",
+        "#other-traits": "types/closure.html#other-traits",
+        "#trait-objects": "types/trait-object.html",
+        "#trait-object-lifetime-bounds": "types/trait-object.html#trait-object-lifetime-bounds",
+        "#impl-trait": "types/impl-trait.html",
+        "#anonymous-type-parameters": "types/impl-trait.html#anonymous-type-parameters",
+        "#abstract-return-types": "types/impl-trait.html#abstract-return-types",
+        "#self-types": "paths.html#self-1",
+        "#inferred-type": "types/inferred.html",
+        "#type-parameters": "types/parameters.html",
+    };
+    var target = fragments[window.location.hash];
+    if (target) {
+        var url = window.location.toString();
+        var base = url.substring(0, url.lastIndexOf('/'));
+        window.location.replace(base + "/" + target);
+    }
+})();
+</script>
