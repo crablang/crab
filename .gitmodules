@@ -1,6 +1,3 @@
-[submodule "src/doc/edition-guide"]
-	path = src/doc/edition-guide
-	url = https://github.com/rust-lang/edition-guide.git
 [submodule "src/llvm-project"]
 	path = src/llvm-project
 	url = https://github.com/rust-lang/llvm-project.git
