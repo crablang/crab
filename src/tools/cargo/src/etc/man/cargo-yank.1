@@ -1,0 +1,248 @@
+'\" t
+.TH "CARGO\-YANK" "1"
+.nh
+.ad l
+.ss \n[.ss] 0
+.SH "NAME"
+cargo\-yank \[em] Remove a pushed crate from the index
+.SH "SYNOPSIS"
+\fBcargo yank\fR [\fIoptions\fR] \fIcrate\fR@\fIversion\fR
+.br
+\fBcargo yank\fR [\fIoptions\fR] \fB\-\-version\fR \fIversion\fR [\fIcrate\fR]
+.SH "DESCRIPTION"
+The yank command removes a previously published crate\[cq]s version from the
+server\[cq]s index. This command does not delete any data, and the crate will
+still be available for download via the registry\[cq]s download link.
+.sp
+Cargo will not use a yanked version for any new project or checkout without a
+pre\-existing lockfile, and will generate an error if there are no longer
+any compatible versions for your crate.
+.sp
+This command requires you to be authenticated with either the \fB\-\-token\fR option
+or using \fBcargo\-login\fR(1).
+.sp
+If the crate name is not specified, it will use the package name from the
+current directory.
+.SS "How yank works"
+For example, the \fBfoo\fR crate published version \fB1.5.0\fR and another crate \fBbar\fR
+declared a dependency on version \fBfoo = "1.5"\fR\&. Now \fBfoo\fR releases a new, but
+not semver compatible, version \fB2.0.0\fR, and finds a critical issue with \fB1.5.0\fR\&.
+If \fB1.5.0\fR is yanked, no new project or checkout without an existing lockfile
+will be able to use crate \fBbar\fR as it relies on \fB1.5\fR\&.
+.sp
+In this case, the maintainers of \fBfoo\fR should first publish a semver compatible
+version such as \fB1.5.1\fR prior to yanking \fB1.5.0\fR so that \fBbar\fR and all projects
+that depend on \fBbar\fR will continue to work.
+.sp
+As another example, consider a crate \fBbar\fR with published versions \fB1.5.0\fR,
+\fB1.5.1\fR, \fB1.5.2\fR, \fB2.0.0\fR and \fB3.0.0\fR\&. The following table identifies the
+versions cargo could use in the absence of a lockfile for different SemVer
+requirements, following a given release being yanked:
+
+.TS
+allbox tab(:);
+lt lt lt lt.
+T{
+Yanked Version / SemVer requirement
+T}:T{
+\fBbar = "1.5.0"\fR
+T}:T{
+\fBbar = "=1.5.0"\fR
+T}:T{
+\fBbar = "2.0.0"\fR
+T}
+T{
+\fB1.5.0\fR
+T}:T{
+Use either \fB1.5.1\fR or \fB1.5.2\fR
+T}:T{
+\fBReturn Error\fR
+T}:T{
+Use \fB2.0.0\fR
+T}
+T{
+\fB1.5.1\fR
+T}:T{
+Use either \fB1.5.0\fR or \fB1.5.2\fR
+T}:T{
+Use \fB1.5.0\fR
+T}:T{
+Use \fB2.0.0\fR
+T}
+T{
+\fB2.0.0\fR
+T}:T{
+Use either \fB1.5.0\fR, \fB1.5.1\fR or \fB1.5.2\fR
+T}:T{
+Use \fB1.5.0\fR
+T}:T{
+\fBReturn Error\fR
+T}
+.TE
+.sp
+.SS "When to yank"
+Crates should only be yanked in exceptional circumstances, for example, an
+accidental publish, an unintentional SemVer breakages, or a significantly
+broken and unusable crate. In the case of security vulnerabilities, \fIRustSec\fR <https://rustsec.org/>
+is typically a less disruptive mechanism to inform users and encourage them
+to upgrade, and avoids the possibility of significant downstream disruption
+irrespective of susceptibility to the vulnerability in question.
+.sp
+A common workflow is to yank a crate having already published a semver
+compatible version, to reduce the probability of preventing dependent
+crates from compiling.
+.sp
+When addressing copyright, licensing, or personal data issues with a published
+crate, simply yanking it may not suffice. In such cases, contact the maintainers
+of the registry you used. For crates.io, refer to their \fIpolicies\fR <https://crates.io/policies> and contact
+them at <help@crates.io>\&.
+.sp
+If credentials have been leaked, the recommended course of action is to revoke
+them immediately. Once a crate has been published, it is impossible to determine
+if the leaked credentials have been copied. Yanking the crate only prevents new
+users from downloading it, but cannot stop those who have already downloaded it
+from keeping or even spreading the leaked credentials.
+.SH "OPTIONS"
+.SS "Yank Options"
+.sp
+\fB\-\-vers\fR \fIversion\fR, 
+\fB\-\-version\fR \fIversion\fR
+.RS 4
+The version to yank or un\-yank.
+.RE
+.sp
+\fB\-\-undo\fR
+.RS 4
+Undo a yank, putting a version back into the index.
+.RE
+.sp
+\fB\-\-token\fR \fItoken\fR
+.RS 4
+API token to use when authenticating. This overrides the token stored in
+the credentials file (which is created by \fBcargo\-login\fR(1)).
+.sp
+\fICargo config\fR <https://doc.rust\-lang.org/cargo/reference/config.html> environment variables can be
+used to override the tokens stored in the credentials file. The token for
+crates.io may be specified with the \fBCARGO_REGISTRY_TOKEN\fR environment
+variable. Tokens for other registries may be specified with environment
+variables of the form \fBCARGO_REGISTRIES_NAME_TOKEN\fR where \fBNAME\fR is the name
+of the registry in all capital letters.
+.RE
+.sp
+\fB\-\-index\fR \fIindex\fR
+.RS 4
+The URL of the registry index to use.
+.RE
+.sp
+\fB\-\-registry\fR \fIregistry\fR
+.RS 4
+Name of the registry to use. Registry names are defined in \fICargo config
+files\fR <https://doc.rust\-lang.org/cargo/reference/config.html>\&. If not specified, the default registry is used,
+which is defined by the \fBregistry.default\fR config key which defaults to
+\fBcrates\-io\fR\&.
+.RE
+.SS "Display Options"
+.sp
+\fB\-v\fR, 
+\fB\-\-verbose\fR
+.RS 4
+Use verbose output. May be specified twice for \[lq]very verbose\[rq] output which
+includes extra output such as dependency warnings and build script output.
+May also be specified with the \fBterm.verbose\fR
+\fIconfig value\fR <https://doc.rust\-lang.org/cargo/reference/config.html>\&.
+.RE
+.sp
+\fB\-q\fR, 
+\fB\-\-quiet\fR
+.RS 4
+Do not print cargo log messages.
+May also be specified with the \fBterm.quiet\fR
+\fIconfig value\fR <https://doc.rust\-lang.org/cargo/reference/config.html>\&.
+.RE
+.sp
+\fB\-\-color\fR \fIwhen\fR
+.RS 4
+Control when colored output is used. Valid values:
+.sp
+.RS 4
+\h'-04'\(bu\h'+02'\fBauto\fR (default): Automatically detect if color support is available on the
+terminal.
+.RE
+.sp
+.RS 4
+\h'-04'\(bu\h'+02'\fBalways\fR: Always display colors.
+.RE
+.sp
+.RS 4
+\h'-04'\(bu\h'+02'\fBnever\fR: Never display colors.
+.RE
+.sp
+May also be specified with the \fBterm.color\fR
+\fIconfig value\fR <https://doc.rust\-lang.org/cargo/reference/config.html>\&.
+.RE
+.SS "Common Options"
+.sp
+\fB+\fR\fItoolchain\fR
+.RS 4
+If Cargo has been installed with rustup, and the first argument to \fBcargo\fR
+begins with \fB+\fR, it will be interpreted as a rustup toolchain name (such
+as \fB+stable\fR or \fB+nightly\fR).
+See the \fIrustup documentation\fR <https://rust\-lang.github.io/rustup/overrides.html>
+for more information about how toolchain overrides work.
+.RE
+.sp
+\fB\-\-config\fR \fIKEY=VALUE\fR or \fIPATH\fR
+.RS 4
+Overrides a Cargo configuration value. The argument should be in TOML syntax of \fBKEY=VALUE\fR,
+or provided as a path to an extra configuration file. This flag may be specified multiple times.
+See the \fIcommand\-line overrides section\fR <https://doc.rust\-lang.org/cargo/reference/config.html#command\-line\-overrides> for more information.
+.RE
+.sp
+\fB\-C\fR \fIPATH\fR
+.RS 4
+Changes the current working directory before executing any specified operations. This affects
+things like where cargo looks by default for the project manifest (\fBCargo.toml\fR), as well as
+the directories searched for discovering \fB\&.cargo/config.toml\fR, for example. This option must
+appear before the command name, for example \fBcargo \-C path/to/my\-project build\fR\&.
+.sp
+This option is only available on the \fInightly
+channel\fR <https://doc.rust\-lang.org/book/appendix\-07\-nightly\-rust.html> and
+requires the \fB\-Z unstable\-options\fR flag to enable (see
+\fI#10098\fR <https://github.com/rust\-lang/cargo/issues/10098>).
+.RE
+.sp
+\fB\-h\fR, 
+\fB\-\-help\fR
+.RS 4
+Prints help information.
+.RE
+.sp
+\fB\-Z\fR \fIflag\fR
+.RS 4
+Unstable (nightly\-only) flags to Cargo. Run \fBcargo \-Z help\fR for details.
+.RE
+.SH "ENVIRONMENT"
+See \fIthe reference\fR <https://doc.rust\-lang.org/cargo/reference/environment\-variables.html> for
+details on environment variables that Cargo reads.
+.SH "EXIT STATUS"
+.sp
+.RS 4
+\h'-04'\(bu\h'+02'\fB0\fR: Cargo succeeded.
+.RE
+.sp
+.RS 4
+\h'-04'\(bu\h'+02'\fB101\fR: Cargo failed to complete.
+.RE
+.SH "EXAMPLES"
+.sp
+.RS 4
+\h'-04' 1.\h'+01'Yank a crate from the index:
+.sp
+.RS 4
+.nf
+cargo yank foo@1.0.7
+.fi
+.RE
+.RE
+.SH "SEE ALSO"
+\fBcargo\fR(1), \fBcargo\-login\fR(1), \fBcargo\-publish\fR(1)

@@ -1,0 +1,11 @@
+[workspace]
+
+[package]
+name = "cargo-list-test-fixture"
+version = "0.0.0"
+edition = "2015"
+
+[dependencies]
+# Before versioned-package
+versioned-package = { version = "0.1.1", optional = true }  # After versioned-package
+# End
