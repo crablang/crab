@@ -1,0 +1,10 @@
+[package]
+name = "dylib-dep"
+version = "0.1.0"
+edition = "2021"
+authors = []
+publish = false
+
+[lib]
+name = "dylib_dep"
+crate-type = ["cdylib", "rlib"]

@@ -1,0 +1,8 @@
+[package]
+name = "macos_frames_test"
+version = "0.1.0"
+authors = ["Aaron Hill <aa1ronham@gmail.com>"]
+edition = "2021"
+
+[dependencies.backtrace]
+path = "../.."
