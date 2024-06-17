@@ -1,0 +1,78 @@
+name: CI
+on: [push, pull_request]
+
+env:
+  # Update the language picker in index.hbs to link new languages.
+  LANGUAGES: ja
+
+jobs:
+  test:
+    name: Run tests
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        # We need the full history below.
+        fetch-depth: 0
+
+    - name: Update rustup
+      run: rustup self update
+
+    - name: Install Rust
+      run: |
+        rustup set profile minimal
+        rustup toolchain install nightly -c rust-docs
+        rustup default nightly
+
+    - name: Install mdbook
+      run: |
+        mkdir bin
+        curl -sSL https://github.com/rust-lang/mdBook/releases/download/v0.4.37/mdbook-v0.4.37-x86_64-unknown-linux-gnu.tar.gz | tar -xz --directory=bin
+        echo "$(pwd)/bin" >> ${GITHUB_PATH}
+
+    - name: Install mdbook-i18n-helpers
+      run: |
+        cargo install mdbook-i18n-helpers --locked --version 0.3.4
+
+    - name: Report versions
+      run: |
+        rustup --version
+        rustc -Vv
+        mdbook --version
+
+    - name: Run tests
+      run: mdbook test
+
+    - name: Build HTML
+      run: mdbook build
+
+    - name: Check for broken links
+      run: |
+        curl -sSLo linkcheck.sh \
+          https://raw.githubusercontent.com/rust-lang/rust/master/src/tools/linkchecker/linkcheck.sh
+        sh linkcheck.sh --all rust-by-example
+
+    - name: Build all translations
+      run: |
+        for po_lang in ${{ env.LANGUAGES }}; do
+          echo "::group::Building $po_lang translation"
+          # Set language and adjust site URL. Clear the redirects
+          # since they are in sync with the source files, not the
+          # translation.
+          MDBOOK_BOOK__LANGUAGE=$po_lang \
+          mdbook build -d book/$po_lang
+          echo "::endgroup::"
+        done
+
+    - name: Check all translations for broken links
+      run: |
+        for po_lang in ${{ env.LANGUAGES }}; do
+          MDBOOK_BOOK__LANGUAGE=$po_lang \
+          sh linkcheck.sh --all rust-by-example
+        done
+
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: rust-by-example
+        path: book
