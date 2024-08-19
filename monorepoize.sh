@@ -26,9 +26,9 @@ main() {
     fi
 
     # copy over the README from remote master branch
-    git checkout origin/master -- README.md >/dev/null 2>&1 || fail "failed to copy README.md from remote master branch"
-    git add README.md >/dev/null 2>&1 || fail "failed to add README.md"
-    git commit -m "use CrabLang README.md" >/dev/null 2>&1 || fail "failed to commit README.md"
+    git checkout origin/master -- README.md monorepoize.sh >/dev/null 2>&1 || fail "failed to copy README.md and monorepoize.sh from remote master branch"
+    git add README.md monorepoize.sh >/dev/null 2>&1 || fail "failed to add README.md and monorepoize.sh"
+    git commit -m "use CrabLang README.md and monorepoize.sh" >/dev/null 2>&1 || fail "failed to commit README.md and monorepoize.sh"
 
     # force push master branch to remote
     git push -f origin current >/dev/null 2>&1 || fail "failed to push 'current' branch to remote"
