@@ -1,0 +1,25 @@
+[workspace]
+members = ["packages/tools"]
+default-members = ["packages/tools"]
+resolver = "2"
+exclude = [
+    "linkchecker", # linkchecker is part of the CI workflow
+    "listings",    # these are intentionally distinct from the workspace
+    "tmp",         # listings are built here when updating output via tools/update-rustc.sh
+
+    # These are used as path dependencies in `rust-lang/rust` (since we are not
+    # publishing them to crates.io), so they cannot be part of this workspace,
+    # because path dependencies do not get built as a crate within the hosting
+    # workspace.
+    "packages/mdbook-trpl-listing",
+    "packages/mdbook-trpl-note",
+]
+
+[workspace.dependencies]
+walkdir = "2.3.1"
+docopt = "1.1.0"
+serde = "1.0"
+regex = "1.3.3"
+lazy_static = "1.4.0"
+flate2 = "1.0.13"
+tar = "0.4.26"
