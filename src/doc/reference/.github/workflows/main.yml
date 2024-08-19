@@ -1,0 +1,117 @@
+name: CI
+on:
+  pull_request:
+  merge_group:
+
+env:
+  MDBOOK_VERSION: 0.4.40
+
+jobs:
+  code-tests:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+    - name: Update rustup
+      run: rustup self update
+    - name: Install Rust
+      run: |
+        rustup set profile minimal
+        rustup toolchain install nightly
+        rustup default nightly
+    - name: Install mdbook
+      run: |
+        mkdir bin
+        curl -sSL https://github.com/rust-lang/mdBook/releases/download/v${MDBOOK_VERSION}/mdbook-v${MDBOOK_VERSION}-x86_64-unknown-linux-gnu.tar.gz | tar -xz --directory=bin
+        echo "$(pwd)/bin" >> $GITHUB_PATH
+    - name: Report versions
+      run: |
+        rustup --version
+        rustc -Vv
+        mdbook --version
+    - name: Run tests
+      run: mdbook test
+
+  style-tests:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+    - name: Update rustup
+      run: rustup self update
+    - name: Install Rust
+      run: |
+        rustup set profile minimal
+        rustup toolchain install nightly -c rust-docs,rustfmt
+        rustup default nightly
+    - name: Install mdbook
+      run: |
+        mkdir bin
+        curl -sSL https://github.com/rust-lang/mdBook/releases/download/v${MDBOOK_VERSION}/mdbook-v${MDBOOK_VERSION}-x86_64-unknown-linux-gnu.tar.gz | tar -xz --directory=bin
+        echo "$(pwd)/bin" >> $GITHUB_PATH
+    - name: Report versions
+      run: |
+        rustup --version
+        rustc -Vv
+        mdbook --version
+    - name: Verify the book builds
+      env:
+        SPEC_DENY_WARNINGS: 1
+      run: mdbook build
+    - name: Style checks
+      working-directory: style-check
+      run: cargo run --locked -- ../src
+    - name: Style fmt
+      working-directory: style-check
+      run: cargo fmt --check
+    - name: Check for broken links
+      run: |
+        curl -sSLo linkcheck.sh \
+          https://raw.githubusercontent.com/rust-lang/rust/master/src/tools/linkchecker/linkcheck.sh
+        sh linkcheck.sh --all reference
+
+  mdbook-spec:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+    - name: Update rustup
+      run: rustup self update
+    - name: Install Rust
+      run: |
+        rustup set profile minimal
+        rustup toolchain install nightly -c rustfmt
+        rustup default nightly
+    - name: Install mdbook
+      run: |
+        mkdir bin
+        curl -sSL https://github.com/rust-lang/mdBook/releases/download/v${MDBOOK_VERSION}/mdbook-v${MDBOOK_VERSION}-x86_64-unknown-linux-gnu.tar.gz | tar -xz --directory=bin
+        echo "$(pwd)/bin" >> $GITHUB_PATH
+    - name: Report versions
+      run: |
+        rustup --version
+        rustc -Vv
+    - name: Verify mdbook-spec lockfile is current
+      working-directory: ./mdbook-spec
+      run: cargo update -p mdbook-spec --locked
+    - name: Test mdbook-spec
+      working-directory: ./mdbook-spec
+      run: cargo test
+    - name: Rustfmt check
+      working-directory: ./mdbook-spec
+      run: cargo fmt --check
+
+  # The success job is here to consolidate the total success/failure state of
+  # all other jobs. This job is then included in the GitHub branch protection
+  # rule which prevents merges unless all other jobs are passing. This makes
+  # it easier to manage the list of jobs via this yml file and to prevent
+  # accidentally adding new jobs without also updating the branch protections.
+  success:
+    name: Success gate
+    if: always()
+    needs:
+      - code-tests
+      - style-tests
+      - mdbook-spec
+    runs-on: ubuntu-latest
+    steps:
+      - run: jq --exit-status 'all(.result == "success")' <<< '${{ toJson(needs) }}'
+      - name: Done
+        run: exit 0
