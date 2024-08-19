@@ -1,0 +1,330 @@
+CARGO-PACKAGE(1)
+
+NAME
+       cargo-package — Assemble the local package into a distributable
+       tarball
+
+SYNOPSIS
+       cargo package [options]
+
+DESCRIPTION
+       This command will create a distributable, compressed .crate file with
+       the source code of the package in the current directory. The resulting
+       file will be stored in the target/package directory. This performs the
+       following steps:
+
+       1. Load and check the current workspace, performing some basic checks.
+          o  Path dependencies are not allowed unless they have a version key.
+             Cargo will ignore the path key for dependencies in published
+             packages. dev-dependencies do not have this restriction.
+
+       2. Create the compressed .crate file.
+          o  The original Cargo.toml file is rewritten and normalized.
+
+          o  [patch], [replace], and [workspace] sections are removed from the
+             manifest.
+
+          o  Cargo.lock is automatically included if the package contains an
+             executable binary or example target. cargo-install(1) will use the
+             packaged lock file if the --locked flag is used.
+
+          o  A .cargo_vcs_info.json file is included that contains information
+             about the current VCS checkout hash if available, as well as a
+             flag if the worktree is dirty.
+
+       3. Extract the .crate file and build it to verify it can build.
+          o  This will rebuild your package from scratch to ensure that it can
+             be built from a pristine state. The --no-verify flag can be used
+             to skip this step.
+
+       4. Check that build scripts did not modify any source files.
+
+       The list of files included can be controlled with the include and
+       exclude fields in the manifest.
+
+       See the reference
+       <https://doc.rust-lang.org/cargo/reference/publishing.html> for more
+       details about packaging and publishing.
+
+   .cargo_vcs_info.json format
+       Will generate a .cargo_vcs_info.json in the following format
+
+           {
+            "git": {
+              "sha1": "aac20b6e7e543e6dd4118b246c77225e3a3a1302",
+              "dirty": true
+            },
+            "path_in_vcs": ""
+           }
+
+       dirty indicates that the Git worktree was dirty when the package was
+       built.
+
+       path_in_vcs will be set to a repo-relative path for packages in
+       subdirectories of the version control repository.
+
+       The compatibility of this file is maintained under the same policy as
+       the JSON output of cargo-metadata(1).
+
+       Note that this file provides a best-effort snapshot of the VCS
+       information. However, the provenance of the package is not verified.
+       There is no guarantee that the source code in the tarball matches the
+       VCS information.
+
+OPTIONS
+   Package Options
+       -l, --list
+           Print files included in a package without making one.
+
+       --no-verify
+           Don’t verify the contents by building them.
+
+       --no-metadata
+           Ignore warnings about a lack of human-usable metadata (such as the
+           description or the license).
+
+       --allow-dirty
+           Allow working directories with uncommitted VCS changes to be
+           packaged.
+
+       --index index
+           The URL of the registry index to use.
+
+       --registry registry
+           Name of the registry to package for; see cargo publish --help for
+           more details about configuration of registry names. The packages
+           will not be published to this registry, but if we are packaging
+           multiple inter-dependent crates, lock-files will be generated under
+           the assumption that dependencies will be published to this registry.
+
+   Package Selection
+       By default, when no package selection options are given, the packages
+       selected depend on the selected manifest file (based on the current
+       working directory if --manifest-path is not given). If the manifest is
+       the root of a workspace then the workspaces default members are
+       selected, otherwise only the package defined by the manifest will be
+       selected.
+
+       The default members of a workspace can be set explicitly with the
+       workspace.default-members key in the root manifest. If this is not set,
+       a virtual workspace will include all workspace members (equivalent to
+       passing --workspace), and a non-virtual workspace will include only the
+       root crate itself.
+
+       -p spec…, --package spec…
+           Package only the specified packages. See cargo-pkgid(1) for the SPEC
+           format. This flag may be specified multiple times and supports
+           common Unix glob patterns like *, ? and []. However, to avoid your
+           shell accidentally expanding glob patterns before Cargo handles
+           them, you must use single quotes or double quotes around each
+           pattern.
+
+       --workspace
+           Package all members in the workspace.
+
+       --exclude SPEC…
+           Exclude the specified packages. Must be used in conjunction with the
+           --workspace flag. This flag may be specified multiple times and
+           supports common Unix glob patterns like *, ? and []. However, to
+           avoid your shell accidentally expanding glob patterns before Cargo
+           handles them, you must use single quotes or double quotes around
+           each pattern.
+
+   Compilation Options
+       --target triple
+           Package for the given architecture. The default is the host
+           architecture. The general format of the triple is
+           <arch><sub>-<vendor>-<sys>-<abi>. Run rustc --print target-list for
+           a list of supported targets. This flag may be specified multiple
+           times.
+
+           This may also be specified with the build.target config value
+           <https://doc.rust-lang.org/cargo/reference/config.html>.
+
+           Note that specifying this flag makes Cargo run in a different mode
+           where the target artifacts are placed in a separate directory. See
+           the build cache
+           <https://doc.rust-lang.org/cargo/guide/build-cache.html>
+           documentation for more details.
+
+       --target-dir directory
+           Directory for all generated artifacts and intermediate files. May
+           also be specified with the CARGO_TARGET_DIR environment variable, or
+           the build.target-dir config value
+           <https://doc.rust-lang.org/cargo/reference/config.html>. Defaults to
+           target in the root of the workspace.
+
+   Feature Selection
+       The feature flags allow you to control which features are enabled. When
+       no feature options are given, the default feature is activated for every
+       selected package.
+
+       See the features documentation
+       <https://doc.rust-lang.org/cargo/reference/features.html#command-line-feature-options>
+       for more details.
+
+       -F features, --features features
+           Space or comma separated list of features to activate. Features of
+           workspace members may be enabled with package-name/feature-name
+           syntax. This flag may be specified multiple times, which enables all
+           specified features.
+
+       --all-features
+           Activate all available features of all selected packages.
+
+       --no-default-features
+           Do not activate the default feature of the selected packages.
+
+   Manifest Options
+       --manifest-path path
+           Path to the Cargo.toml file. By default, Cargo searches for the
+           Cargo.toml file in the current directory or any parent directory.
+
+       --locked
+           Asserts that the exact same dependencies and versions are used as
+           when the existing Cargo.lock file was originally generated. Cargo
+           will exit with an error when either of the following scenarios
+           arises:
+
+           o  The lock file is missing.
+
+           o  Cargo attempted to change the lock file due to a different
+              dependency resolution.
+
+           It may be used in environments where deterministic builds are
+           desired, such as in CI pipelines.
+
+       --offline
+           Prevents Cargo from accessing the network for any reason. Without
+           this flag, Cargo will stop with an error if it needs to access the
+           network and the network is not available. With this flag, Cargo will
+           attempt to proceed without the network if possible.
+
+           Beware that this may result in different dependency resolution than
+           online mode. Cargo will restrict itself to crates that are
+           downloaded locally, even if there might be a newer version as
+           indicated in the local copy of the index. See the cargo-fetch(1)
+           command to download dependencies before going offline.
+
+           May also be specified with the net.offline config value
+           <https://doc.rust-lang.org/cargo/reference/config.html>.
+
+       --frozen
+           Equivalent to specifying both --locked and --offline.
+
+       --lockfile-path PATH
+           Changes the path of the lockfile from the default
+           (<workspace_root>/Cargo.lock) to PATH. PATH must end with Cargo.lock
+           (e.g. --lockfile-path /tmp/temporary-lockfile/Cargo.lock). Note that
+           providing --lockfile-path will ignore existing lockfile at the
+           default path, and instead will either use the lockfile from PATH, or
+           write a new lockfile into the provided PATH if it doesn’t exist.
+           This flag can be used to run most commands in read-only directories,
+           writing lockfile into the provided PATH.
+
+           This option is only available on the nightly channel
+           <https://doc.rust-lang.org/book/appendix-07-nightly-rust.html> and
+           requires the -Z unstable-options flag to enable (see #14421
+           <https://github.com/rust-lang/cargo/issues/14421>).
+
+   Miscellaneous Options
+       -j N, --jobs N
+           Number of parallel jobs to run. May also be specified with the
+           build.jobs config value
+           <https://doc.rust-lang.org/cargo/reference/config.html>. Defaults to
+           the number of logical CPUs. If negative, it sets the maximum number
+           of parallel jobs to the number of logical CPUs plus provided value.
+           If a string default is provided, it sets the value back to defaults.
+           Should not be 0.
+
+       --keep-going
+           Build as many crates in the dependency graph as possible, rather
+           than aborting the build on the first one that fails to build.
+
+           For example if the current package depends on dependencies fails and
+           works, one of which fails to build, cargo package -j1 may or may not
+           build the one that succeeds (depending on which one of the two
+           builds Cargo picked to run first), whereas cargo package -j1
+           --keep-going would definitely run both builds, even if the one run
+           first fails.
+
+   Display Options
+       -v, --verbose
+           Use verbose output. May be specified twice for “very verbose”
+           output which includes extra output such as dependency warnings and
+           build script output. May also be specified with the term.verbose
+           config value
+           <https://doc.rust-lang.org/cargo/reference/config.html>.
+
+       -q, --quiet
+           Do not print cargo log messages. May also be specified with the
+           term.quiet config value
+           <https://doc.rust-lang.org/cargo/reference/config.html>.
+
+       --color when
+           Control when colored output is used. Valid values:
+
+           o  auto (default): Automatically detect if color support is
+              available on the terminal.
+
+           o  always: Always display colors.
+
+           o  never: Never display colors.
+
+           May also be specified with the term.color config value
+           <https://doc.rust-lang.org/cargo/reference/config.html>.
+
+   Common Options
+       +toolchain
+           If Cargo has been installed with rustup, and the first argument to
+           cargo begins with +, it will be interpreted as a rustup toolchain
+           name (such as +stable or +nightly). See the rustup documentation
+           <https://rust-lang.github.io/rustup/overrides.html> for more
+           information about how toolchain overrides work.
+
+       --config KEY=VALUE or PATH
+           Overrides a Cargo configuration value. The argument should be in
+           TOML syntax of KEY=VALUE, or provided as a path to an extra
+           configuration file. This flag may be specified multiple times. See
+           the command-line overrides section
+           <https://doc.rust-lang.org/cargo/reference/config.html#command-line-overrides>
+           for more information.
+
+       -C PATH
+           Changes the current working directory before executing any specified
+           operations. This affects things like where cargo looks by default
+           for the project manifest (Cargo.toml), as well as the directories
+           searched for discovering .cargo/config.toml, for example. This
+           option must appear before the command name, for example cargo -C
+           path/to/my-project build.
+
+           This option is only available on the nightly channel
+           <https://doc.rust-lang.org/book/appendix-07-nightly-rust.html> and
+           requires the -Z unstable-options flag to enable (see #10098
+           <https://github.com/rust-lang/cargo/issues/10098>).
+
+       -h, --help
+           Prints help information.
+
+       -Z flag
+           Unstable (nightly-only) flags to Cargo. Run cargo -Z help for
+           details.
+
+ENVIRONMENT
+       See the reference
+       <https://doc.rust-lang.org/cargo/reference/environment-variables.html>
+       for details on environment variables that Cargo reads.
+
+EXIT STATUS
+       o  0: Cargo succeeded.
+
+       o  101: Cargo failed to complete.
+
+EXAMPLES
+       1. Create a compressed .crate file of the current package:
+
+              cargo package
+
+SEE ALSO
+       cargo(1), cargo-publish(1)
+

@@ -1,0 +1,16 @@
+mod add_members_to_non_workspace;
+mod add_members_to_workspace_format_previous_items;
+mod add_members_to_workspace_format_sorted;
+mod add_members_to_workspace_with_absolute_package_path;
+mod add_members_to_workspace_with_empty_members;
+mod add_members_to_workspace_with_exclude_list;
+mod add_members_to_workspace_with_members_glob;
+mod add_members_to_workspace_without_members;
+mod empty_name;
+mod help;
+mod inherit_workspace_lints;
+mod inherit_workspace_package_table;
+mod inherit_workspace_package_table_with_edition;
+mod inherit_workspace_package_table_with_registry;
+mod inherit_workspace_package_table_without_version;
+mod not_inherit_workspace_package_table_if_not_members;

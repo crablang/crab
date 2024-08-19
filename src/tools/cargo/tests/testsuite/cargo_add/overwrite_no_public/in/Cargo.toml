@@ -1,0 +1,12 @@
+cargo-features = ["public-dependency"]
+[workspace]
+
+[package]
+name = "cargo-list-test-fixture"
+version = "0.0.0"
+edition = "2015"
+
+[dependencies]
+# Before my-package
+my-package = "0.1.0"  # After my-package
+# End

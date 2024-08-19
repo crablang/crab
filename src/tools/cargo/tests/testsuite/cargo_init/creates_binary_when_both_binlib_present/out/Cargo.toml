@@ -1,0 +1,13 @@
+[package]
+name = "case"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+
+[[bin]]
+name = "case"
+path = "case.rs"
+
+[lib]
+path = "lib.rs"

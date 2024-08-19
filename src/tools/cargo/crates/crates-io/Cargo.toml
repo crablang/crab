@@ -1,0 +1,26 @@
+[package]
+name = "crates-io"
+version = "0.40.5"
+rust-version = "1.80"  # MSRV:1
+edition.workspace = true
+license.workspace = true
+homepage.workspace = true
+repository.workspace = true
+description = """
+Helpers for interacting with crates.io
+"""
+
+[lib]
+name = "crates_io"
+path = "lib.rs"
+
+[dependencies]
+curl.workspace = true
+percent-encoding.workspace = true
+serde = { workspace = true, features = ["derive"] }
+serde_json.workspace = true
+thiserror.workspace = true
+url.workspace = true
+
+[lints]
+workspace = true

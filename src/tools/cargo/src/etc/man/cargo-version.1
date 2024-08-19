@@ -1,0 +1,52 @@
+'\" t
+.TH "CARGO\-VERSION" "1"
+.nh
+.ad l
+.ss \n[.ss] 0
+.SH "NAME"
+cargo\-version \[em] Show version information
+.SH "SYNOPSIS"
+\fBcargo version\fR [\fIoptions\fR]
+.SH "DESCRIPTION"
+Displays the version of Cargo.
+.SH "OPTIONS"
+.sp
+\fB\-v\fR, 
+\fB\-\-verbose\fR
+.RS 4
+Display additional version information.
+.RE
+.SH "EXAMPLES"
+.sp
+.RS 4
+\h'-04' 1.\h'+01'Display the version:
+.sp
+.RS 4
+.nf
+cargo version
+.fi
+.RE
+.RE
+.sp
+.RS 4
+\h'-04' 2.\h'+01'The version is also available via flags:
+.sp
+.RS 4
+.nf
+cargo \-\-version
+cargo \-V
+.fi
+.RE
+.RE
+.sp
+.RS 4
+\h'-04' 3.\h'+01'Display extra version information:
+.sp
+.RS 4
+.nf
+cargo \-Vv
+.fi
+.RE
+.RE
+.SH "SEE ALSO"
+\fBcargo\fR(1)
