@@ -1,0 +1,17 @@
+[package]
+name = "line-tables-only"
+version = "0.1.0"
+edition = "2021"
+
+[build-dependencies]
+cc = "1.0"
+
+[dependencies]
+libc = { version = "0.2", default-features = false }
+
+[dependencies.backtrace]
+path = "../.."
+features = [
+  'libunwind',
+  'std',
+]
